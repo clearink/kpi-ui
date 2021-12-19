@@ -1,0 +1,22 @@
+{
+  "name": "kpi-ui",
+  "version": "0.0.0",
+  "main": "index.js",
+  "private": true,
+  "useWorkspaces": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "description": "A KPI UI Design",
+  "scripts": {
+    "test": "lerna run test",
+    "diff": "lerna diff"
+  },
+  "husky": {
+    "hooks": {}
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}
