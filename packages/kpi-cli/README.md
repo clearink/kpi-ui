@@ -1,11 +1,7 @@
 # `kpi-cli`
 
-> TODO: description
+> 用于运行 KPI-UI 的脚手架
 
 ## Usage
 
-```
-const kpiCli = require('kpi-cli');
-
-// TODO: DEMONSTRATE API
-```
+TODO: 建设中
