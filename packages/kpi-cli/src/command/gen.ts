@@ -1,60 +1,39 @@
-import { outputFile, pathExistsSync } from 'fs-extra'
+import { ensureDir, outputFile, pathExistsSync, removeSync } from 'fs-extra'
 import ora from 'ora'
 import { resolve } from 'path'
-import getKpiConfig from '../config/kpi.config'
-import {
-  DOCS_DIR_NAME,
-  EXAMPLE_DIR_NAME,
-  EXAMPLE_LOCALE_DIR_NAME,
-  SRC_DIR,
-  STYLE_DIR_NAME,
-  TESTS_DIR_NAME,
-} from '../shared/constant'
 import logger from '../shared/logger'
 import { camelCase } from '../shared/utils'
+import { GEN_CONST } from '../shared/constant'
 
-const config = getKpiConfig()
-
-const { prefix } = config
-export default async function create(name: string) {
-
+export default async function create(name: string, config: { force: boolean }) {
   const uiName = camelCase(name, true)
 
   const tsxTemplate = `\
-import styles from './style.module.scss';
+    import styles from './style.scss';
+    import {${uiName}Props} from './${GEN_CONST.PROPS_FILE_NAME}';
 
-function ${uiName}(props: any){
-  return (
-    <div className="${prefix}_${name}">
-      ${name}
-    </div>
-  )
-export default ${uiName}
-}
-  `
-  const styleTemplate = `\
-  .${prefix}_${name}{
-
-  }
+    function ${uiName}(props: ${uiName}Props){
+      return (
+        <div className="${name}">
+          ${name}
+        </div>
+      )
+    }
+    export default ${uiName}
   `
   const indexTemplate = `\
-  export { default as ${uiName} } from './${uiName}';
+    export { default as ${uiName} } from './${uiName}';
   `
   const propsTemplate = `\
-export interface ${uiName}Props{
-  
-}
-  `
-  const testsTemplate = `\
-  
-  `
+    export interface ${uiName}Props{
 
-  const uiDir = resolve(SRC_DIR, name)
-  const testsDir = resolve(SRC_DIR, TESTS_DIR_NAME)
-  const styleDir = resolve(SRC_DIR, STYLE_DIR_NAME)
-  const exampleDir = resolve(SRC_DIR, EXAMPLE_DIR_NAME)
-  const exampleLocalDir = resolve(SRC_DIR, EXAMPLE_LOCALE_DIR_NAME)
-  const docsDir = resolve(SRC_DIR, DOCS_DIR_NAME)
+    }
+  `
+  const uiDir = resolve(GEN_CONST.SRC_DIR, name)
+  const testsDir = resolve(uiDir, GEN_CONST.TEST_DIR_NAME)
+  const docsDir = resolve(uiDir, GEN_CONST.DOCS_DIR_NAME)
+
+  config.force && removeSync(uiDir)
 
   if (pathExistsSync(uiDir)) {
     logger.error(`component directory is existed`)
@@ -62,11 +41,14 @@ export interface ${uiName}Props{
   }
   const spinner = ora(`正在生成${uiName} ...`).start()
   try {
+    const name = GEN_CONST.COMPONENT_FILE_NAME.replace(/\{name\}/g, uiName)
     await Promise.all([
-      outputFile(resolve(uiDir, `${uiName}.tsx`), tsxTemplate), // 生成 button.tsx
-      outputFile(resolve(uiDir, `index.tsx`), indexTemplate), // 生成 index.ts
-      outputFile(resolve(styleDir, `style.module.scss`), styleTemplate), // 生成 style
-      outputFile(resolve(uiDir, `props.ts`), propsTemplate), // props.ts
+      ensureDir(testsDir),
+      outputFile(resolve(docsDir, 'zh-CN.md'), ''), // 生成 button.tsx
+      outputFile(resolve(uiDir, name), tsxTemplate), // 生成 button.tsx
+      outputFile(resolve(uiDir, GEN_CONST.INDEX_FILE_NAME), indexTemplate), // 生成 index.ts
+      outputFile(resolve(uiDir, GEN_CONST.STYLE_FILE_NAME), ''), // 生成 style
+      outputFile(resolve(uiDir, GEN_CONST.PROPS_FILE_NAME), propsTemplate), // props.ts
     ])
     spinner.succeed(logger.success(`创建 ${name} 成功`, false))
   } catch (error) {

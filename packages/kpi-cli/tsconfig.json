@@ -10,5 +10,5 @@
     "jsx": "react-jsx",
     "lib": ["ESNext", "DOM"]
   },
-  "include": ["src/**/*", "kpi.default.config.js"]
+  "include": ["src/**/*"]
 }

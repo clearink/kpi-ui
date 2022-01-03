@@ -42,30 +42,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs_extra_1 = require("fs-extra");
 var ora_1 = __importDefault(require("ora"));
 var path_1 = require("path");
-var kpi_config_1 = __importDefault(require("../config/kpi.config"));
-var constant_1 = require("../shared/constant");
 var logger_1 = __importDefault(require("../shared/logger"));
 var utils_1 = require("../shared/utils");
-var config = (0, kpi_config_1.default)();
-var prefix = config.prefix;
-function create(name) {
+var constant_1 = require("../shared/constant");
+function create(name, config) {
     return __awaiter(this, void 0, void 0, function () {
-        var uiName, tsxTemplate, styleTemplate, indexTemplate, propsTemplate, testsTemplate, uiDir, testsDir, styleDir, exampleDir, exampleLocalDir, docsDir, spinner, error_1;
+        var uiName, tsxTemplate, indexTemplate, propsTemplate, uiDir, testsDir, docsDir, spinner, name_1, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     uiName = (0, utils_1.camelCase)(name, true);
-                    tsxTemplate = "import styles from './style.module.scss';\n\nfunction ".concat(uiName, "(props: any){\n  return (\n    <div className=\"").concat(prefix, "_").concat(name, "\">\n      ").concat(name, "\n    </div>\n  )\nexport default ").concat(uiName, "\n}\n  ");
-                    styleTemplate = "  .".concat(prefix, "_").concat(name, "{\n\n  }\n  ");
-                    indexTemplate = "  export { default as ".concat(uiName, " } from './").concat(uiName, "';\n  ");
-                    propsTemplate = "export interface ".concat(uiName, "Props{\n  \n}\n  ");
-                    testsTemplate = "  \n  ";
-                    uiDir = (0, path_1.resolve)(constant_1.SRC_DIR, name);
-                    testsDir = (0, path_1.resolve)(constant_1.SRC_DIR, constant_1.TESTS_DIR_NAME);
-                    styleDir = (0, path_1.resolve)(constant_1.SRC_DIR, constant_1.STYLE_DIR_NAME);
-                    exampleDir = (0, path_1.resolve)(constant_1.SRC_DIR, constant_1.EXAMPLE_DIR_NAME);
-                    exampleLocalDir = (0, path_1.resolve)(constant_1.SRC_DIR, constant_1.EXAMPLE_LOCALE_DIR_NAME);
-                    docsDir = (0, path_1.resolve)(constant_1.SRC_DIR, constant_1.DOCS_DIR_NAME);
+                    tsxTemplate = "    import styles from './style.scss';\n    import {".concat(uiName, "Props} from './").concat(constant_1.GEN_CONST.PROPS_FILE_NAME, "';\n\n    function ").concat(uiName, "(props: ").concat(uiName, "Props){\n      return (\n        <div className=\"").concat(name, "\">\n          ").concat(name, "\n        </div>\n      )\n    }\n    export default ").concat(uiName, "\n  ");
+                    indexTemplate = "    export { default as ".concat(uiName, " } from './").concat(uiName, "';\n  ");
+                    propsTemplate = "    export interface ".concat(uiName, "Props{\n\n    }\n  ");
+                    uiDir = (0, path_1.resolve)(constant_1.GEN_CONST.SRC_DIR, name);
+                    testsDir = (0, path_1.resolve)(uiDir, constant_1.GEN_CONST.TEST_DIR_NAME);
+                    docsDir = (0, path_1.resolve)(uiDir, constant_1.GEN_CONST.DOCS_DIR_NAME);
+                    config.force && (0, fs_extra_1.removeSync)(uiDir);
                     if ((0, fs_extra_1.pathExistsSync)(uiDir)) {
                         logger_1.default.error("component directory is existed");
                         return [2 /*return*/];
@@ -74,15 +67,18 @@ function create(name) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
+                    name_1 = constant_1.GEN_CONST.COMPONENT_FILE_NAME.replace(/\{name\}/g, uiName);
                     return [4 /*yield*/, Promise.all([
-                            (0, fs_extra_1.outputFile)((0, path_1.resolve)(uiDir, "".concat(uiName, ".tsx")), tsxTemplate),
-                            (0, fs_extra_1.outputFile)((0, path_1.resolve)(uiDir, "index.tsx"), indexTemplate),
-                            (0, fs_extra_1.outputFile)((0, path_1.resolve)(styleDir, "style.module.scss"), styleTemplate),
-                            (0, fs_extra_1.outputFile)((0, path_1.resolve)(uiDir, "props.ts"), propsTemplate), // props.ts
+                            (0, fs_extra_1.ensureDir)(testsDir),
+                            (0, fs_extra_1.outputFile)((0, path_1.resolve)(docsDir, 'zh-CN.md'), ''),
+                            (0, fs_extra_1.outputFile)((0, path_1.resolve)(uiDir, name_1), tsxTemplate),
+                            (0, fs_extra_1.outputFile)((0, path_1.resolve)(uiDir, constant_1.GEN_CONST.INDEX_FILE_NAME), indexTemplate),
+                            (0, fs_extra_1.outputFile)((0, path_1.resolve)(uiDir, constant_1.GEN_CONST.STYLE_FILE_NAME), ''),
+                            (0, fs_extra_1.outputFile)((0, path_1.resolve)(uiDir, constant_1.GEN_CONST.PROPS_FILE_NAME), propsTemplate), // props.ts
                         ])];
                 case 2:
                     _a.sent();
-                    spinner.succeed(logger_1.default.success("\u521B\u5EFA ".concat(name, " \u6210\u529F"), false));
+                    spinner.succeed(logger_1.default.success("\u521B\u5EFA ".concat(name_1, " \u6210\u529F"), false));
                     return [3 /*break*/, 4];
                 case 3:
                     error_1 = _a.sent();

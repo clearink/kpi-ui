@@ -1,0 +1,38 @@
+import { resolve } from 'path'
+import { existsSync, pathExistsSync, realpathSync } from 'fs-extra'
+export const CWD = realpathSync(process.cwd()) // 当前运行环境
+
+export function resolveApp(relativePath: string) {
+  return resolve(CWD, relativePath)
+}
+// dev command constant
+export const DEV_CONST = (() => {
+  const constant = {
+    APP_DIR: resolveApp('.'),
+    SRC_DIR: resolveApp('src'),
+    PUBLIC_DIR: resolveApp('public'),
+    OUTPUT_PATH: resolveApp('dist'),
+    RESOLVE_EXTENSIONS: ['.tsx', '.ts', '.js', '.jsx', '.mjs'], // 待优化
+    PUBLIC_PATH: '/', //待优化
+    WEBPACK_CACHE_DIR: resolveApp('node_modules/.cache'),
+    TS_CONFIG: resolveApp('tsconfig.json'),
+    JS_CONFIG: resolveApp('jsconfig.json'),
+    NODE_MODULES: resolveApp('node_modules'), // 待优化
+  }
+  return Object.assign(constant, {
+    FIND_ENTRY_FILE: () => {
+      const extension =
+        constant.RESOLVE_EXTENSIONS.find((ext) =>
+          existsSync(resolve(constant.SRC_DIR, `index${ext}`))
+        ) ?? '.js'
+      return resolve(constant.SRC_DIR, `index${extension}`)
+    },
+    CACHE_VERSION: require('../../package.json').version, //待优化
+    PUBLIC_HTML_FILE: resolve(constant.PUBLIC_DIR, 'index.html'),
+    PUBLIC_FILES: `${constant.PUBLIC_DIR}/*`,
+    FIND_CACHE_TSCONFIG: () => {
+      const list = [constant.TS_CONFIG, constant.JS_CONFIG]
+      return list.filter((f) => pathExistsSync(f))
+    },
+  })
+})()
