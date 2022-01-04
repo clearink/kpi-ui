@@ -10,7 +10,8 @@
   "description": "A KPI UI Design",
   "scripts": {
     "test": "lerna run test",
-    "diff": "lerna diff"
+    "diff": "lerna diff",
+    "bootstrap": "lerna bootstrap"
   },
   "husky": {
     "hooks": {}

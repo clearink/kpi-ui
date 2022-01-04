@@ -7,9 +7,8 @@ import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import ESLintPlugin from 'eslint-webpack-plugin'
 
-import getEnvConstant from '../shared/get_env_constant'
-import InterpolateHtmlPlugin from '../shared/interpolate_html_plugin'
-import getStyleLoader from '../shared/get_style_loader'
+import InterpolateHtmlPlugin from '../plugins/interpolate_html_plugin'
+import { getEnvConstant, getStyleLoader } from '../shared/utils'
 // TODO: 使用 dotenv 获取自定义变量
 const envConstant = getEnvConstant()
 
@@ -21,7 +20,7 @@ export default function common(mode: 'development' | 'production'): Record<strin
   return {
     target: ['browserslist'],
     entry: DEV_CONST.FIND_ENTRY_FILE(),
-    // context: DEV_CONST.SRC_DIR,
+    context: DEV_CONST.APP_DIR,
     output: {
       path: DEV_CONST.OUTPUT_PATH,
       assetModuleFilename: 'media/[name].[hash][ext]',

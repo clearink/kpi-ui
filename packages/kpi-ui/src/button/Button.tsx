@@ -1,7 +1,4 @@
-import './style.scss'
-import { ButtonProps } from './props'
-
-function Button(props: ButtonProps) {
+function Button() {
   return <div className="button">button</div>
 }
 export default Button

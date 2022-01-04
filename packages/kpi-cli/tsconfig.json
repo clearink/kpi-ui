@@ -4,10 +4,10 @@
     "target": "ES5",
     "strict": true,
     "downlevelIteration": true,
-    "declaration": true,
+    "declaration": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "lib": ["ESNext", "DOM"]
   },
   "include": ["src/**/*"]

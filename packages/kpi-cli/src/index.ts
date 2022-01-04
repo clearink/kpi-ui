@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import logger from './shared/logger'
 import { Command } from 'commander'
-import { create, gen } from './command'
+import { gen, preview, compile } from './command'
 
 const VERSION = require('../package.json')
 
-const program = new Command()
+const program = new Command('@kpi/cli')
 program.version(`kpi-cli ${VERSION.version || '0.0.1'}`).usage('<command> [options]')
 
 program
@@ -14,7 +14,18 @@ program
   .description('Generate a component directory')
   .action(gen)
 
-program.command('create <name>').description('create a new ui application').action(create)
+program
+  .command('preview')
+  .option('-no, --no-open', "Don't open default browser")
+  .option('-p, --port <number>', 'Server port', '4000')
+  .description('Run kpi-ui development server')
+  .action(preview)
+
+program
+  .command('compile')
+  .option('-m, --mode [mode]', 'compile mode cjs umd esm', 'cjs')
+  .description('compile kpi-ui')
+  .action(compile)
 
 program.on('command:*', ([cmd]) => {
   logger.error(`\nunknown command: ${cmd}\n`)

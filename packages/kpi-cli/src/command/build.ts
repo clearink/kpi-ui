@@ -1,7 +1,8 @@
 import webpack from 'webpack'
-import logger from '../shared/logger'
 import prod from '../config/webpack.prod'
+import logger from '../shared/logger'
 
+// build site
 export default async function build() {
   process.env.NODE_ENV = 'production'
   const compiler = webpack(prod(), (err, stats) => {

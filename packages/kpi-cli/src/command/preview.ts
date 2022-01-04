@@ -2,7 +2,9 @@ import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
 import logger from '../shared/logger'
 import dev from '../config/webpack.dev'
-export default async function start(options: { open: boolean; port: number }) {
+
+// preview site
+export default async function preview(options: { open: boolean; port: number }) {
   process.env.NODE_ENV = 'development'
   const config = dev()
 

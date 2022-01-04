@@ -8,22 +8,22 @@ export const colors = {
 }
 
 export default {
-  info(text: string, log = true) {
+  info(text?: string, log = true) {
     const str = chalk.hex(colors.info)(text)
     if (!log) return str
     console.log(str)
   },
-  success(text: string, log = true) {
+  success(text?: string, log = true) {
     const str = chalk.hex(colors.success)(text)
     if (!log) return str
     console.log(str)
   },
-  warning(text: string, log = true) {
+  warning(text?: string, log = true) {
     const str = chalk.hex(colors.warning)(text)
     if (!log) return str
     console.log(str)
   },
-  error(text: string, log = true) {
+  error(text?: string, log = true) {
     const str = chalk.hex(colors.error)(text)
     if (!log) return str
     console.log(str)
