@@ -20,7 +20,7 @@ function common(mode) {
     return {
         target: ['browserslist'],
         entry: constant_1.DEV_CONST.FIND_ENTRY_FILE(),
-        // context: DEV_CONST.SRC_DIR,
+        context: constant_1.DEV_CONST.APP_DIR,
         output: {
             path: constant_1.DEV_CONST.OUTPUT_PATH,
             assetModuleFilename: 'media/[name].[hash][ext]',

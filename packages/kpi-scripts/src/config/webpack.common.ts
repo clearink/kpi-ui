@@ -21,7 +21,7 @@ export default function common(mode: 'development' | 'production'): Record<strin
   return {
     target: ['browserslist'],
     entry: DEV_CONST.FIND_ENTRY_FILE(),
-    // context: DEV_CONST.SRC_DIR,
+    context: DEV_CONST.APP_DIR,
     output: {
       path: DEV_CONST.OUTPUT_PATH,
       assetModuleFilename: 'media/[name].[hash][ext]',

@@ -1,5 +1,5 @@
 {
-  "name": "kpi-scripts",
+  "name": "@kpi/scripts",
   "version": "0.0.1",
   "description": "script of kpi-cli",
   "bin": {
