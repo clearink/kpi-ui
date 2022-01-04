@@ -10,7 +10,7 @@ var html_webpack_plugin_1 = __importDefault(require("html-webpack-plugin"));
 var react_refresh_webpack_plugin_1 = __importDefault(require("@pmmmwh/react-refresh-webpack-plugin"));
 // TODO: 使用 dotenv 获取自定义变量
 // 开发环境
-function dev(options) {
+function dev() {
     return (0, webpack_merge_1.merge)((0, webpack_common_1.default)('development'), {
         mode: 'development',
         devtool: 'cheap-module-source-map',
@@ -18,6 +18,8 @@ function dev(options) {
             filename: 'js/bundle.js',
             chunkFilename: 'js/[name].chunk.js',
         },
+        // TODO: 待完善
+        stats: 'errors-only',
         optimization: {
             minimize: false,
         },
@@ -31,15 +33,6 @@ function dev(options) {
                 exclude: [/node_modules/],
                 overlay: false,
             }),
-            // // ts error
-            // new ForkTsCheckerWebpackPlugin({
-            //   async: false,
-            // }),
-            // // TODO: 待优化
-            // new ESLintPlugin({
-            //   extensions: DEV_CONST.RESOLVE_EXTENSIONS,
-            //   exclude: ['node_modules', DEV_CONST.NODE_MODULES],
-            // }),
         ],
         devServer: {
             static: {
@@ -48,8 +41,6 @@ function dev(options) {
             },
             hot: true,
             compress: true,
-            port: options.port,
-            open: options.open,
             client: {
                 overlay: {
                     errors: true,

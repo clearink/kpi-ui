@@ -18,11 +18,15 @@ exports.DEV_CONST = (function () {
         RESOLVE_EXTENSIONS: ['.tsx', '.ts', '.js', '.jsx', '.mjs'],
         PUBLIC_PATH: '/',
         WEBPACK_CACHE_DIR: resolveApp('node_modules/.cache'),
-        TS_CONFIG: resolveApp('tsconfig.json'),
-        JS_CONFIG: resolveApp('jsconfig.json'),
+        TS_CONFIG: (0, path_1.resolve)(exports.CWD, 'tsconfig.json'),
+        JS_CONFIG: (0, path_1.resolve)(exports.CWD, 'jsconfig.json'),
         NODE_MODULES: resolveApp('node_modules'), // 待优化
     };
     return Object.assign(constant, {
+        CACHE_VERSION: require('../../package.json').version,
+        PUBLIC_HTML_FILE: (0, path_1.resolve)(constant.PUBLIC_DIR, 'index.html'),
+        PUBLIC_FILES: "".concat(constant.PUBLIC_DIR, "/*"),
+        ESLINT_CACHE_DIR: (0, path_1.resolve)(constant.WEBPACK_CACHE_DIR, '.eslint'),
         FIND_ENTRY_FILE: function () {
             var _a;
             var extension = (_a = constant.RESOLVE_EXTENSIONS.find(function (ext) {
@@ -30,12 +34,11 @@ exports.DEV_CONST = (function () {
             })) !== null && _a !== void 0 ? _a : '.js';
             return (0, path_1.resolve)(constant.SRC_DIR, "index".concat(extension));
         },
-        CACHE_VERSION: require('../../package.json').version,
-        PUBLIC_HTML_FILE: (0, path_1.resolve)(constant.PUBLIC_DIR, 'index.html'),
-        PUBLIC_FILES: "".concat(constant.PUBLIC_DIR, "/*"),
-        FIND_CACHE_TSCONFIG: function () {
+        FIND_TSCONFIG: function () {
             var list = [constant.TS_CONFIG, constant.JS_CONFIG];
             return list.filter(function (f) { return (0, fs_extra_1.pathExistsSync)(f); });
         },
+        USE_TAILWIND: function () { return (0, fs_extra_1.pathExistsSync)(resolveApp('tailwind.config.js')); },
+        USE_TYPESCRIPT: function () { return (0, fs_extra_1.pathExistsSync)(constant.TS_CONFIG); },
     });
 })();

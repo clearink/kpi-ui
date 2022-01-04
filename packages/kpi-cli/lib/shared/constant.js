@@ -18,7 +18,7 @@ exports.GEN_CONST = (function () {
         COMPONENT_FILE_NAME: '{name}.tsx',
         INDEX_FILE_NAME: 'index.tsx',
         STYLE_FILE_NAME: 'style.scss',
-        PROPS_FILE_NAME: 'props.ts',
+        PROPS_FILE_NAME: function (extension) { return "props".concat(extension ? '.ts' : ''); },
     };
     return constant;
 })();

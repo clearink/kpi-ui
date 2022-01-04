@@ -56,45 +56,50 @@ var logger_1 = __importDefault(require("../shared/logger"));
 var webpack_dev_1 = __importDefault(require("../config/webpack.dev"));
 function start(options) {
     return __awaiter(this, void 0, void 0, function () {
-        var config, compiler, server_1, close_1;
+        var config, compiler, server, close_1, error_1;
         return __generator(this, function (_a) {
-            process.env.NODE_ENV = 'development';
-            config = (0, webpack_dev_1.default)(options);
-            compiler = null;
-            try {
-                compiler = (0, webpack_1.default)(config);
-            }
-            catch (error) {
-                logger_1.default.error('编译失败!\n');
-                logger_1.default.error(error === null || error === void 0 ? void 0 : error.message);
-                process.exit(1);
-            }
-            compiler.hooks.invalid.tap('invalid', function () {
-                console.clear();
-                logger_1.default.info('编译中,请稍后...');
-            });
-            try {
-                server_1 = new webpack_dev_server_1.default(__assign({}, config.devServer), compiler);
-                server_1.startCallback(function () {
+            switch (_a.label) {
+                case 0:
+                    process.env.NODE_ENV = 'development';
+                    config = (0, webpack_dev_1.default)();
+                    compiler = null;
+                    try {
+                        compiler = (0, webpack_1.default)(config);
+                    }
+                    catch (error) {
+                        logger_1.default.error(error === null || error === void 0 ? void 0 : error.message);
+                        process.exit(1);
+                    }
+                    compiler.hooks.invalid.tap('invalid', function () {
+                        console.clear();
+                    });
+                    server = new webpack_dev_server_1.default(__assign(__assign({}, config.devServer), options), compiler);
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, server.start()];
+                case 2:
+                    _a.sent();
                     logger_1.default.success("Successfully started server on http://localhost:".concat(options.port));
-                });
-                close_1 = function () {
-                    server_1.close();
-                    process.exit();
-                };
-                ['SIGINT', 'SIGTERM'].forEach(function (sig) {
-                    process.on(sig, close_1);
-                });
-                if (process.env.CI !== 'true') {
-                    // Gracefully exit when stdin ends
-                    process.stdin.on('end', close_1);
-                }
+                    close_1 = function () {
+                        server.close();
+                        process.exit();
+                    };
+                    ['SIGINT', 'SIGTERM'].forEach(function (sig) {
+                        process.on(sig, close_1);
+                    });
+                    if (process.env.CI !== 'true') {
+                        // Gracefully exit when stdin ends
+                        process.stdin.on('end', close_1);
+                    }
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_1 = _a.sent();
+                    console.log(error_1);
+                    process.exit(1);
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
-            catch (error) {
-                console.log(error);
-                process.exit(1);
-            }
-            return [2 /*return*/];
         });
     });
 }

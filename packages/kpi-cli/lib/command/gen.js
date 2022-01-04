@@ -52,9 +52,9 @@ function create(name, config) {
             switch (_a.label) {
                 case 0:
                     uiName = (0, utils_1.camelCase)(name, true);
-                    tsxTemplate = "    import styles from './style.scss';\n    import {".concat(uiName, "Props} from './").concat(constant_1.GEN_CONST.PROPS_FILE_NAME, "';\n\n    function ").concat(uiName, "(props: ").concat(uiName, "Props){\n      return (\n        <div className=\"").concat(name, "\">\n          ").concat(name, "\n        </div>\n      )\n    }\n    export default ").concat(uiName, "\n  ");
-                    indexTemplate = "    export { default as ".concat(uiName, " } from './").concat(uiName, "';\n  ");
-                    propsTemplate = "    export interface ".concat(uiName, "Props{\n\n    }\n  ");
+                    tsxTemplate = "import './style.scss'\nimport { ".concat(uiName, "Props } from './").concat(constant_1.GEN_CONST.PROPS_FILE_NAME(false), "'\n\nfunction ").concat(uiName, "(props: ").concat(uiName, "Props) {\n  return <div className=\"").concat(name, "\">").concat(name, "</div>\n}\nexport default ").concat(uiName, "\n  ");
+                    indexTemplate = "export { default as ".concat(uiName, " } from './").concat(uiName, "'\n  ");
+                    propsTemplate = "export interface ".concat(uiName, "Props{\n\n}\n  ");
                     uiDir = (0, path_1.resolve)(constant_1.GEN_CONST.SRC_DIR, name);
                     testsDir = (0, path_1.resolve)(uiDir, constant_1.GEN_CONST.TEST_DIR_NAME);
                     docsDir = (0, path_1.resolve)(uiDir, constant_1.GEN_CONST.DOCS_DIR_NAME);
@@ -74,7 +74,7 @@ function create(name, config) {
                             (0, fs_extra_1.outputFile)((0, path_1.resolve)(uiDir, name_1), tsxTemplate),
                             (0, fs_extra_1.outputFile)((0, path_1.resolve)(uiDir, constant_1.GEN_CONST.INDEX_FILE_NAME), indexTemplate),
                             (0, fs_extra_1.outputFile)((0, path_1.resolve)(uiDir, constant_1.GEN_CONST.STYLE_FILE_NAME), ''),
-                            (0, fs_extra_1.outputFile)((0, path_1.resolve)(uiDir, constant_1.GEN_CONST.PROPS_FILE_NAME), propsTemplate), // props.ts
+                            (0, fs_extra_1.outputFile)((0, path_1.resolve)(uiDir, constant_1.GEN_CONST.PROPS_FILE_NAME(true)), propsTemplate), // props.ts
                         ])];
                 case 2:
                     _a.sent();

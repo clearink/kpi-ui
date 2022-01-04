@@ -2,26 +2,26 @@ import { DEV_CONST } from '../shared/constant'
 import webpack from 'webpack'
 import WebPackBarPlugin from 'webpackbar'
 
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
-import TerserPlugin from 'terser-webpack-plugin'
-
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import ESLintPlugin from 'eslint-webpack-plugin'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
 
 import getEnvConstant from '../shared/get_env_constant'
 import InterpolateHtmlPlugin from '../shared/interpolate_html_plugin'
+import getStyleLoader from '../shared/get_style_loader'
 // TODO: 使用 dotenv 获取自定义变量
 const envConstant = getEnvConstant()
 
 export default function common(mode: 'development' | 'production'): Record<string, any> {
   const isDev = mode === 'development'
   const isProd = mode === 'production'
+  const useTailwind = DEV_CONST.USE_TAILWIND()
+  const useTypeScript = DEV_CONST.USE_TYPESCRIPT()
   return {
     target: ['browserslist'],
     entry: DEV_CONST.FIND_ENTRY_FILE(),
+    // context: DEV_CONST.SRC_DIR,
     output: {
       path: DEV_CONST.OUTPUT_PATH,
       assetModuleFilename: 'media/[name].[hash][ext]',
@@ -36,39 +36,18 @@ export default function common(mode: 'development' | 'production'): Record<strin
       buildDependencies: {
         defaultWebpack: ['webpack/lib/'],
         config: [__filename],
-        tsConfig: DEV_CONST.FIND_CACHE_TSCONFIG(),
+        tsConfig: DEV_CONST.FIND_TSCONFIG(),
       },
     },
     infrastructureLogging: {
       level: 'none',
     },
-    optimization: {
-      // minimizer: [
-      //   new TerserPlugin({
-      //     terserOptions: {
-      //       parse: { ecma: 2017 },
-      //       compress: {
-      //         ecma: 5,
-      //         warnings: false,
-      //         comparisons: false,
-      //         inline: 2,
-      //       },
-      //       mangle: {
-      //         safari10: true,
-      //       },
-      //       format: {
-      //         ecma: 5,
-      //         comments: false,
-      //         ascii_only: true,
-      //       },
-      //     },
-      //   }),
-      //   new CssMinimizerPlugin(),
-      // ],
-    },
     resolve: {
       modules: ['node_modules', DEV_CONST.NODE_MODULES],
       extensions: DEV_CONST.RESOLVE_EXTENSIONS,
+      alias: {
+        '@': DEV_CONST.SRC_DIR,
+      },
     },
     module: {
       strictExportPresence: true,
@@ -76,53 +55,96 @@ export default function common(mode: 'development' | 'production'): Record<strin
         {
           test: /\.(js|mjs|jsx|ts|tsx)$/,
           include: DEV_CONST.SRC_DIR,
-          loader: require.resolve('babel-loader'),
-          options: {
-            presets: [
-              require.resolve('@babel/preset-env'),
-              require.resolve('@babel/preset-react'),
-              require.resolve('@babel/preset-typescript'),
-            ],
-            plugins: [
-              [
-                require.resolve('@babel/plugin-transform-runtime'),
-                {
-                  regenerator: true,
-                },
-              ],
-              isDev && require.resolve('react-refresh/babel'),
-            ].filter(Boolean),
-            cacheDirectory: true,
-            cacheCompression: false,
-            compact: isProd,
-          },
+          use: [
+            {
+              loader: require.resolve('babel-loader'),
+              options: {
+                presets: [
+                  require.resolve('@babel/preset-env'),
+                  require.resolve('@babel/preset-react'),
+                  require.resolve('@babel/preset-typescript'),
+                ],
+                plugins: [
+                  [
+                    require.resolve('@babel/plugin-transform-runtime'),
+                    {
+                      regenerator: true,
+                    },
+                  ],
+                  isDev && require.resolve('react-refresh/babel'),
+                ].filter(Boolean),
+                cacheDirectory: true,
+                cacheCompression: false,
+                compact: isProd,
+              },
+            },
+            require.resolve('thread-loader'),
+          ],
+        },
+        {
+          test: /\.(bmp|svg|jpg|jpeg|gif|png)$/i,
+          include: DEV_CONST.SRC_DIR,
+          type: 'asset/resource',
+          /**
+           * asset/resource 发送一个单独的文件并导出 URL。之前通过使用 file-loader 实现
+           * asset/inline 导出一个资源的 data URI。之前通过使用 url-loader 实现
+           * asset/source 导出资源的源代码。之前通过使用 raw-loader 实现
+           * asset 在导出一个 data URI 和发送一个单独的文件之间自动选择。
+           * 之前通过使用 url-loader，并且配置资源体积限制实现
+           */
+        },
+        {
+          // TODO: 字体是否需要呢？
+          test: /\.(woff2?|eot|ttf|otf)$/i,
+          include: DEV_CONST.SRC_DIR,
+          type: 'asset/resource',
         },
         {
           test: /\.css$/,
+          include: DEV_CONST.SRC_DIR,
           exclude: /\.module\.css$/,
-          use: [
-            'style-loader',
-            'css-loader',
-            // {
-            //   loader: require.resolve('css-loader'),
-            //   options: {
-            //     importLoaders: 1,
-            //   },
-            // },
-            // {
-            //   loader: require.resolve('postcss-loader'),
-            //   options: {
-            //     postcssOptions: {
-            //       ident: 'postcss',
-            //     },
-            //   },
-            // },
-          ],
+          use: getStyleLoader({
+            mode,
+            useTailwind,
+            module: false,
+            sass: false,
+          }),
+        },
+        {
+          test: /\.module\.css$/,
+          include: DEV_CONST.SRC_DIR,
+          use: getStyleLoader({
+            mode,
+            useTailwind,
+            module: true,
+            sass: false,
+          }),
+        },
+        {
+          test: /\.s(c|a)ss$/,
+          include: DEV_CONST.SRC_DIR,
+          exclude: /\.module\.s(c|a)ss$/,
+          use: getStyleLoader({
+            mode,
+            useTailwind,
+            module: false,
+            sass: true,
+          }),
+        },
+        {
+          test: /\.module\.s(c|a)ss$/,
+          include: DEV_CONST.SRC_DIR,
+          use: getStyleLoader({
+            mode,
+            useTailwind,
+            module: true,
+            sass: true,
+          }),
         },
       ],
     },
     plugins: [
-      new WebPackBarPlugin({ profile: true }),
+      new WebPackBarPlugin(),
       new InterpolateHtmlPlugin(getEnvConstant().env),
       // new WebpackManifestPlugin({
       //   fileName: 'asset-manifest.json',
@@ -134,13 +156,22 @@ export default function common(mode: 'development' | 'production'): Record<strin
         contextRegExp: /moment$/,
       }),
       // // 单独一个进程检查
-      // new ForkTsCheckerWebpackPlugin({
-      //   async: isDev,
-      // }),
+      useTypeScript &&
+        new ForkTsCheckerWebpackPlugin({
+          async: isDev,
+        }),
       // // 待优化
       // new ESLintPlugin({
-      //   extensions: DEV_CONST.RESOLVE_EXTENSIONS as never,
-      //   // eslintPath: require.resolve('eslint')
+      //   cache: true,
+      //   context: DEV_CONST.SRC_DIR,
+      //   extensions: DEV_CONST.RESOLVE_EXTENSIONS,
+      //   eslintPath: require.resolve('eslint'),
+      //   cacheLocation: DEV_CONST.ESLINT_CACHE_DIR,
+      //   // eslint class options
+      //   cwd: DEV_CONST.APP_DIR,
+      //   resolvePluginsRelativeTo: __dirname,
+      //   // TODO: 待优化
+      //   // baseConfig: {},
       // }),
       // 插入全局变量
       new webpack.DefinePlugin(envConstant.str),

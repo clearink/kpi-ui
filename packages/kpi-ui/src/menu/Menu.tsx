@@ -1,12 +1,6 @@
-    import styles from './style.scss';
-    import {MenuProps} from './props.ts';
+import { MenuProps } from './props'
 
-    function Menu(props: MenuProps){
-      return (
-        <div className="menu">
-          menu
-        </div>
-      )
-    }
-    export default Menu
-  
+function Menu(props: MenuProps) {
+  return <div className="menu">menu</div>
+}
+export default Menu

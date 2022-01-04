@@ -12,9 +12,12 @@ export declare const DEV_CONST: {
     JS_CONFIG: string;
     NODE_MODULES: string;
 } & {
-    FIND_ENTRY_FILE: () => string;
     CACHE_VERSION: any;
     PUBLIC_HTML_FILE: string;
     PUBLIC_FILES: string;
-    FIND_CACHE_TSCONFIG: () => string[];
+    ESLINT_CACHE_DIR: string;
+    FIND_ENTRY_FILE: () => string;
+    FIND_TSCONFIG: () => string[];
+    USE_TAILWIND: () => boolean;
+    USE_TYPESCRIPT: () => boolean;
 };

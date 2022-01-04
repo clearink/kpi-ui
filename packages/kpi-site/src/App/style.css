@@ -1,0 +1,13 @@
+body {
+  margin: 0;
+  height: 100vh;
+  background-color: skyblue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.app-wrap {
+  font-weight: bold;
+  font-size: 40px;
+  color: #fff;
+}
