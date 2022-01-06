@@ -1,2 +1,1 @@
-export * from './button'
-export * from './menu'
+export { default as Button } from './button'

@@ -18,7 +18,7 @@
   },
   "scripts": {
     "dev": "npm run build -- -w",
-    "build": "rimraf lib && babel src --out-dir lib --extensions \".ts\""
+    "build": "rimraf lib && babel src -d lib --extensions \".ts\""
   },
   "dependencies": {
     "@babel/core": "^7.16.7",
@@ -64,6 +64,7 @@
     "@babel/cli": "^7.16.7",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
     "@babel/plugin-proposal-object-rest-spread": "^7.16.7",
+    "@types/babel__core": "^7.1.18",
     "@types/fork-ts-checker-webpack-plugin": "^0.4.5",
     "@types/fs-extra": "^9.0.13",
     "@types/mini-css-extract-plugin": "^2.4.0",

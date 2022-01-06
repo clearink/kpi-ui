@@ -1,5 +1,6 @@
-import { readdir, statSync } from 'fs-extra'
+import { readdir, readFileSync, statSync } from 'fs-extra'
 import { resolve } from 'path'
+import { transformAsync } from '@babel/core'
 import webpack from 'webpack'
 import prod from '../config/webpack.prod'
 import { DEV_CONST } from '../shared/constant'
@@ -25,12 +26,25 @@ export default async function compile({ mode }: { mode: 'cjs' | 'umd' | 'esm' })
 function compileCjs() {
   readdir(DEV_CONST.SRC_DIR, (err, files) => {
     if (err) return logger.error(err.message)
-    files
-      .map((name) => resolve(DEV_CONST.SRC_DIR, name))
-      .forEach((path) => {
-        if (statSync(path).isFile()) return
-        console.log(path)
+    files.forEach(async (file) => {
+      const filePath = resolve(DEV_CONST.SRC_DIR, file)
+      if (statSync(filePath).isFile()) return
+      const path = resolve(filePath, 'index.tsx')
+      const source = readFileSync(path, 'utf-8')
+      const result = await transformAsync(source, {
+        filename: 'index.tsx',
+        presets: [
+          require.resolve('@babel/preset-env'),
+          require.resolve('@babel/preset-react'),
+          require.resolve('@babel/preset-typescript'),
+        ],
+        plugins: [
+          [require.resolve('@babel/plugin-transform-runtime'), { regenerator: true }],
+          require.resolve('@babel/plugin-proposal-class-properties'),
+        ],
       })
+      console.log(result?.code)
+    })
   })
 }
 function compileUmd() {}
