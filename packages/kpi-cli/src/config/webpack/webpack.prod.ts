@@ -1,6 +1,6 @@
 import { merge } from 'webpack-merge'
 import common from './webpack.common'
-import { DEV_CONST } from '../../shared/constant'
+import { KPI_CONST } from '../../shared/constant'
 
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
@@ -71,7 +71,7 @@ export default function prod() {
     plugins: [
       new HtmlWebpackPlugin({
         inject: true,
-        template: DEV_CONST.PUBLIC_HTML_FILE,
+        template: KPI_CONST.PUBLIC_HTML_FILE,
         minify: {
           removeComments: true,
           collapseWhitespace: true,

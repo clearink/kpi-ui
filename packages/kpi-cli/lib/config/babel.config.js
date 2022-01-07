@@ -6,13 +6,15 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = babelConfig;
 
 function babelConfig(mode) {
-  var isCjs = mode === 'cjs';
+  var isEsm = mode === 'esm';
   return {
-    presets: [[require.resolve('@babel/preset-env'), {
-      modules: isCjs ? undefined : false
-    }], require.resolve('@babel/preset-react'), require.resolve('@babel/preset-typescript')],
-    plugins: [[require.resolve('@babel/plugin-transform-runtime'), {
+    presets: [[require.resolve('@babel/preset-env'), isEsm && {
+      modules: false
+    }].filter(Boolean), [require.resolve('@babel/preset-react'), {
+      runtime: 'automatic'
+    }], require.resolve('@babel/preset-typescript')],
+    plugins: [require.resolve('@babel/plugin-proposal-class-properties'), [require.resolve('@babel/plugin-transform-runtime'), {
       regenerator: true
-    }], require.resolve('@babel/plugin-proposal-class-properties')]
+    }]]
   };
 }

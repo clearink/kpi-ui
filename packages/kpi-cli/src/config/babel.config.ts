@@ -1,14 +1,14 @@
 export default function babelConfig(mode: 'esm' | 'cjs' | 'umd') {
-  const isCjs = mode === 'cjs'
+  const isEsm = mode === 'esm'
   return {
     presets: [
-      [require.resolve('@babel/preset-env'), { modules: isCjs ? undefined : false }],
-      require.resolve('@babel/preset-react'),
+      [require.resolve('@babel/preset-env'), isEsm && { modules: false }].filter(Boolean),
+      [require.resolve('@babel/preset-react'), { runtime: 'automatic' }],
       require.resolve('@babel/preset-typescript'),
     ],
     plugins: [
-      [require.resolve('@babel/plugin-transform-runtime'), { regenerator: true }],
       require.resolve('@babel/plugin-proposal-class-properties'),
+      [require.resolve('@babel/plugin-transform-runtime'), { regenerator: true }],
     ],
   }
 }

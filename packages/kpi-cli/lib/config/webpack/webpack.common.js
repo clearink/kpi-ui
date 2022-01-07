@@ -26,51 +26,53 @@ function common(mode) {
   var isDev = mode === 'development';
   var isProd = mode === 'production';
 
-  var useTailwind = _constant.DEV_CONST.USE_TAILWIND();
+  var useTailwind = _constant.KPI_CONST.USE_TAILWIND();
 
-  var useTypeScript = _constant.DEV_CONST.USE_TYPESCRIPT();
+  var useTypeScript = _constant.KPI_CONST.USE_TYPESCRIPT();
 
   return {
     target: ['browserslist'],
-    entry: _constant.DEV_CONST.FIND_ENTRY_FILE(),
-    context: _constant.DEV_CONST.APP_DIR,
+    entry: _constant.KPI_CONST.FIND_ENTRY_FILE(),
+    context: _constant.KPI_CONST.APP_DIR,
     output: {
-      path: _constant.DEV_CONST.OUTPUT_PATH,
+      path: _constant.KPI_CONST.OUTPUT_PATH,
       assetModuleFilename: 'media/[name].[hash][ext]',
-      publicPath: _constant.DEV_CONST.PUBLIC_PATH
+      publicPath: _constant.KPI_CONST.PUBLIC_PATH
     },
     cache: {
       type: 'filesystem',
       // 使用文件缓存
       //待优化
-      version: _constant.DEV_CONST.CACHE_VERSION,
-      cacheDirectory: _constant.DEV_CONST.WEBPACK_CACHE_DIR,
+      version: _constant.KPI_CONST.CACHE_VERSION,
+      cacheDirectory: _constant.KPI_CONST.WEBPACK_CACHE_DIR,
       store: 'pack',
       buildDependencies: {
         defaultWebpack: ['webpack/lib/'],
         config: [__filename],
-        tsConfig: _constant.DEV_CONST.FIND_TSCONFIG()
+        tsConfig: _constant.KPI_CONST.FIND_TSCONFIG()
       }
     },
     infrastructureLogging: {
       level: 'none'
     },
     resolve: {
-      modules: ['node_modules', _constant.DEV_CONST.NODE_MODULES],
-      extensions: _constant.DEV_CONST.RESOLVE_EXTENSIONS,
+      modules: ['node_modules', _constant.KPI_CONST.NODE_MODULES],
+      extensions: _constant.KPI_CONST.RESOLVE_EXTENSIONS,
       alias: {
-        '@': _constant.DEV_CONST.SRC_DIR
+        '@': _constant.KPI_CONST.SRC_DIR
       }
     },
     module: {
       strictExportPresence: true,
       rules: [{
         test: /\.(js|mjs|jsx|ts|tsx)$/,
-        include: _constant.DEV_CONST.SRC_DIR,
+        include: _constant.KPI_CONST.SRC_DIR,
         use: [{
           loader: require.resolve('babel-loader'),
           options: {
-            presets: [require.resolve('@babel/preset-env'), require.resolve('@babel/preset-react'), require.resolve('@babel/preset-typescript')],
+            presets: [require.resolve('@babel/preset-env'), [require.resolve('@babel/preset-react'), {
+              runtime: _constant.KPI_CONST.HAS_JSX_RUNTIME() ? 'automatic' : 'classic'
+            }], require.resolve('@babel/preset-typescript')],
             plugins: [[require.resolve('@babel/plugin-transform-runtime'), {
               regenerator: true
             }], isDev && require.resolve('react-refresh/babel')].filter(Boolean),
@@ -81,7 +83,7 @@ function common(mode) {
         }, require.resolve('thread-loader')]
       }, {
         test: /\.(bmp|svg|jpg|jpeg|gif|png)$/i,
-        include: _constant.DEV_CONST.SRC_DIR,
+        include: _constant.KPI_CONST.SRC_DIR,
         type: 'asset/resource'
         /**
          * asset/resource 发送一个单独的文件并导出 URL。之前通过使用 file-loader 实现
@@ -94,11 +96,11 @@ function common(mode) {
       }, {
         // TODO: 字体是否需要呢？
         test: /\.(woff2?|eot|ttf|otf)$/i,
-        include: _constant.DEV_CONST.SRC_DIR,
+        include: _constant.KPI_CONST.SRC_DIR,
         type: 'asset/resource'
       }, {
         test: /\.css$/,
-        include: _constant.DEV_CONST.SRC_DIR,
+        include: _constant.KPI_CONST.SRC_DIR,
         exclude: /\.module\.css$/,
         use: (0, _utils.getStyleLoader)({
           mode: mode,
@@ -108,7 +110,7 @@ function common(mode) {
         })
       }, {
         test: /\.module\.css$/,
-        include: _constant.DEV_CONST.SRC_DIR,
+        include: _constant.KPI_CONST.SRC_DIR,
         use: (0, _utils.getStyleLoader)({
           mode: mode,
           useTailwind: useTailwind,
@@ -117,7 +119,7 @@ function common(mode) {
         })
       }, {
         test: /\.s(c|a)ss$/,
-        include: _constant.DEV_CONST.SRC_DIR,
+        include: _constant.KPI_CONST.SRC_DIR,
         exclude: /\.module\.s(c|a)ss$/,
         use: (0, _utils.getStyleLoader)({
           mode: mode,
@@ -127,7 +129,7 @@ function common(mode) {
         })
       }, {
         test: /\.module\.s(c|a)ss$/,
-        include: _constant.DEV_CONST.SRC_DIR,
+        include: _constant.KPI_CONST.SRC_DIR,
         use: (0, _utils.getStyleLoader)({
           mode: mode,
           useTailwind: useTailwind,
@@ -138,7 +140,7 @@ function common(mode) {
     },
     plugins: [new _webpackbar["default"](), new _interpolate_html_plugin["default"]((0, _utils.getEnvConstant)().env), // new WebpackManifestPlugin({
     //   fileName: 'asset-manifest.json',
-    //   publicPath: DEV_CONST.PUBLIC_PATH,
+    //   publicPath: KPI_CONST.PUBLIC_PATH,
     //   // generate //待优化
     // }),
     new _webpack["default"].IgnorePlugin({
@@ -150,12 +152,12 @@ function common(mode) {
     }), // // 待优化
     // new ESLintPlugin({
     //   cache: true,
-    //   context: DEV_CONST.SRC_DIR,
-    //   extensions: DEV_CONST.RESOLVE_EXTENSIONS,
+    //   context: KPI_CONST.SRC_DIR,
+    //   extensions: KPI_CONST.RESOLVE_EXTENSIONS,
     //   eslintPath: require.resolve('eslint'),
-    //   cacheLocation: DEV_CONST.ESLINT_CACHE_DIR,
+    //   cacheLocation: KPI_CONST.ESLINT_CACHE_DIR,
     //   // eslint class options
-    //   cwd: DEV_CONST.APP_DIR,
+    //   cwd: KPI_CONST.APP_DIR,
     //   resolvePluginsRelativeTo: __dirname,
     //   // TODO: 待优化
     //   // baseConfig: {},

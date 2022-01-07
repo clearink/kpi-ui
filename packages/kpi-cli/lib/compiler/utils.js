@@ -6,7 +6,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.compileDir = compileDir;
-exports.compileFile = compileFile;
+exports.compileScript = compileScript;
+exports.compileStyle = compileStyle;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -34,148 +35,151 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-// 编译文件夹
-function compileDir(_x) {
+var APP_DIR = _constant.KPI_CONST.APP_DIR,
+    STYLE_EXTENSIONS = _constant.KPI_CONST.STYLE_EXTENSIONS,
+    RESOLVE_EXTENSIONS = _constant.KPI_CONST.RESOLVE_EXTENSIONS;
+var DOCS_DIR_NAME = _constant.GEN_CONST.DOCS_DIR_NAME,
+    TEST_DIR_NAME = _constant.GEN_CONST.TEST_DIR_NAME,
+    PROPS_FILE_NAME = _constant.GEN_CONST.PROPS_FILE_NAME; // 编译文件夹
+
+function compileDir(_x, _x2, _x3) {
   return _compileDir.apply(this, arguments);
 } // 编译文件
 
 
 function _compileDir() {
-  _compileDir = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(dirPath) {
-    var dirs, _iterator, _step, dir;
+  _compileDir = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(entryDir, outDir, options) {
+    var dirs, _iterator, _step, name, filePath, fileStat, extension, outputPath;
 
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return (0, _fsExtra.readdir)(dirPath);
+            return (0, _fsExtra.readdir)(entryDir);
 
           case 2:
             dirs = _context.sent;
             _iterator = _createForOfIteratorHelper(dirs);
+            _context.prev = 4;
 
-            try {
-              for (_iterator.s(); !(_step = _iterator.n()).done;) {
-                dir = _step.value;
-              }
-            } catch (err) {
-              _iterator.e(err);
-            } finally {
-              _iterator.f();
+            _iterator.s();
+
+          case 6:
+            if ((_step = _iterator.n()).done) {
+              _context.next = 16;
+              break;
             }
 
-          case 5:
+            name = _step.value;
+            filePath = (0, _path.resolve)(entryDir, name);
+            _context.next = 11;
+            return (0, _fsExtra.stat)(filePath);
+
+          case 11:
+            fileStat = _context.sent;
+            extension = (0, _path.extname)(filePath);
+
+            if (fileStat.isDirectory() && ![DOCS_DIR_NAME, TEST_DIR_NAME].includes(name)) {
+              compileDir(filePath, (0, _path.resolve)(outDir, name), options);
+            } else if (STYLE_EXTENSIONS.includes(extension)) {
+              compileStyle(filePath, options);
+            } else if (RESOLVE_EXTENSIONS.includes(extension) && name !== PROPS_FILE_NAME) {
+              outputPath = (0, _path.resolve)(outDir, name.replace(/\.tsx?$/g, '.js'));
+              compileScript(filePath, outputPath, options);
+            }
+
+          case 14:
+            _context.next = 6;
+            break;
+
+          case 16:
+            _context.next = 21;
+            break;
+
+          case 18:
+            _context.prev = 18;
+            _context.t0 = _context["catch"](4);
+
+            _iterator.e(_context.t0);
+
+          case 21:
+            _context.prev = 21;
+
+            _iterator.f();
+
+            return _context.finish(21);
+
+          case 24:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee);
+    }, _callee, null, [[4, 18, 21, 24]]);
   }));
   return _compileDir.apply(this, arguments);
 }
 
-function compileFile() {
-  return _compileFile.apply(this, arguments);
-}
+function compileScript(_x4, _x5, _x6) {
+  return _compileScript.apply(this, arguments);
+} // 编译样式文件
 
-function _compileFile() {
-  _compileFile = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
-    var _options, mode, entry, output, babelOptions, dirPath, dirs, _iterator2, _step2, dir, filePath, fileStat, entryFile, source, result, outputPath;
 
+function _compileScript() {
+  _compileScript = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(filePath, outputPath, options) {
+    var mode, entry, output, source, result;
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _options = options, mode = _options.mode, entry = _options.entry, output = _options.output;
-            babelOptions = (0, _babel["default"])(mode);
-            dirPath = (0, _path.resolve)(_constant.DEV_CONST.APP_DIR, entry);
-            _context2.next = 5;
-            return (0, _fsExtra.readdir)(dirPath);
+            mode = options.mode, entry = options.entry, output = options.output;
+            _context2.next = 3;
+            return (0, _fsExtra.readFileSync)(filePath, 'utf-8');
 
-          case 5:
-            dirs = _context2.sent;
-            _iterator2 = _createForOfIteratorHelper(dirs);
-            _context2.prev = 7;
-
-            _iterator2.s();
-
-          case 9:
-            if ((_step2 = _iterator2.n()).done) {
-              _context2.next = 31;
-              break;
-            }
-
-            dir = _step2.value;
-            filePath = (0, _path.resolve)(dirPath, dir);
-            fileStat = (0, _fsExtra.statSync)(filePath);
-
-            if (!fileStat.isFile()) {
-              _context2.next = 16;
-              break;
-            }
-
-            _context2.next = 29;
-            break;
-
-          case 16:
-            if (!fileStat.isDirectory()) {
-              _context2.next = 29;
-              break;
-            }
-
-            // compileDir();
-            entryFile = (0, _path.resolve)(filePath, 'index.tsx');
-            _context2.next = 20;
-            return (0, _fsExtra.readFileSync)(entryFile, 'utf-8');
-
-          case 20:
+          case 3:
             source = _context2.sent;
-            _context2.next = 23;
+            _context2.next = 6;
             return (0, _core.transformAsync)(source, _objectSpread({
               ast: false,
-              filename: entryFile
+              filename: filePath
             }, (0, _babel["default"])(mode)));
 
-          case 23:
+          case 6:
             result = _context2.sent;
-            outputPath = (0, _path.resolve)(_constant.DEV_CONST.APP_DIR, output, dir, 'index.js');
-            _context2.next = 27;
+            _context2.next = 9;
             return (0, _fsExtra.ensureFile)(outputPath);
 
-          case 27:
-            _context2.next = 29;
+          case 9:
+            _context2.next = 11;
             return (0, _fsExtra.writeFile)(outputPath, result === null || result === void 0 ? void 0 : result.code, {
               encoding: 'utf-8'
             });
 
-          case 29:
-            _context2.next = 9;
-            break;
-
-          case 31:
-            _context2.next = 36;
-            break;
-
-          case 33:
-            _context2.prev = 33;
-            _context2.t0 = _context2["catch"](7);
-
-            _iterator2.e(_context2.t0);
-
-          case 36:
-            _context2.prev = 36;
-
-            _iterator2.f();
-
-            return _context2.finish(36);
-
-          case 39:
+          case 11:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[7, 33, 36, 39]]);
+    }, _callee2);
   }));
-  return _compileFile.apply(this, arguments);
+  return _compileScript.apply(this, arguments);
+}
+
+function compileStyle(_x7, _x8) {
+  return _compileStyle.apply(this, arguments);
+}
+
+function _compileStyle() {
+  _compileStyle = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(filePath, options) {
+    return _regenerator["default"].wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3);
+  }));
+  return _compileStyle.apply(this, arguments);
 }

@@ -35,15 +35,15 @@ function dev() {
     plugins: [// 生成html，自动引入所有bundle
     new _htmlWebpackPlugin["default"]({
       inject: true,
-      template: _constant.DEV_CONST.PUBLIC_HTML_FILE
+      template: _constant.KPI_CONST.PUBLIC_HTML_FILE
     }), new _reactRefreshWebpackPlugin["default"]({
       exclude: [/node_modules/],
       overlay: false
     })],
     devServer: {
       "static": {
-        directory: _constant.DEV_CONST.PUBLIC_DIR,
-        publicPath: [_constant.DEV_CONST.PUBLIC_PATH]
+        directory: _constant.KPI_CONST.PUBLIC_DIR,
+        publicPath: [_constant.KPI_CONST.PUBLIC_PATH]
       },
       hot: true,
       compress: true,

@@ -84,7 +84,7 @@ function prod() {
     },
     plugins: [new _htmlWebpackPlugin["default"]({
       inject: true,
-      template: _constant.DEV_CONST.PUBLIC_HTML_FILE,
+      template: _constant.KPI_CONST.PUBLIC_HTML_FILE,
       minify: {
         removeComments: true,
         collapseWhitespace: true,

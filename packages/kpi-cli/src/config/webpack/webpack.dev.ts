@@ -1,6 +1,6 @@
 import { merge } from 'webpack-merge'
 import common from './webpack.common'
-import { DEV_CONST } from '../../shared/constant'
+import { KPI_CONST } from '../../shared/constant'
 
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
@@ -23,7 +23,7 @@ export default function dev() {
       // 生成html，自动引入所有bundle
       new HtmlWebpackPlugin({
         inject: true,
-        template: DEV_CONST.PUBLIC_HTML_FILE,
+        template: KPI_CONST.PUBLIC_HTML_FILE,
       }),
       new ReactRefreshWebpackPlugin({
         exclude: [/node_modules/],
@@ -32,8 +32,8 @@ export default function dev() {
     ],
     devServer: {
       static: {
-        directory: DEV_CONST.PUBLIC_DIR,
-        publicPath: [DEV_CONST.PUBLIC_PATH],
+        directory: KPI_CONST.PUBLIC_DIR,
+        publicPath: [KPI_CONST.PUBLIC_PATH],
       },
       hot: true,
       compress: true,

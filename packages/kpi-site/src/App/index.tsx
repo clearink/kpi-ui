@@ -1,7 +1,10 @@
-import React from 'react'
 import './style.css'
 import { Button } from '@kpi/ui'
-console.log(Button);
 export default function App() {
-  return <div className="app-wrap">of kpi-ui</div>
+  return (
+    <div className="app-wrap">
+      <Button />
+      of kpi-ui22
+    </div>
+  )
 }

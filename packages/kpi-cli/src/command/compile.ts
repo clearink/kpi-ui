@@ -1,14 +1,14 @@
-import compileLib, { CompileOptions } from '../compiler/compile.lib'
+import compileFile, { CompileProps } from '../compiler'
 import logger from '../shared/logger'
 
 // compiler kpi-ui
 
-export default async function compile(options: CompileOptions) {
+export default async function compile(options: CompileProps) {
   process.env.NODE_ENV = 'production'
-  const { mode, entry, output } = options
-  switch (mode) {
+  switch (options.mode) {
     case 'cjs':
-      return compileLib(options)
+    case 'esm':
+      return compileFile(options)
     case 'umd':
       return compileUmd()
     default:

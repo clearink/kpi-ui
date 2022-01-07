@@ -11,7 +11,7 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
-var _compile2 = _interopRequireDefault(require("../compiler/compile.lib"));
+var _compiler = _interopRequireDefault(require("../compiler"));
 
 var _logger = _interopRequireDefault(require("../shared/logger"));
 
@@ -22,29 +22,27 @@ function compile(_x) {
 
 function _compile() {
   _compile = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(options) {
-    var mode, entry, output;
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             process.env.NODE_ENV = 'production';
-            mode = options.mode, entry = options.entry, output = options.output;
-            _context.t0 = mode;
-            _context.next = _context.t0 === 'cjs' ? 5 : _context.t0 === 'umd' ? 6 : 7;
+            _context.t0 = options.mode;
+            _context.next = _context.t0 === 'cjs' ? 4 : _context.t0 === 'esm' ? 4 : _context.t0 === 'umd' ? 5 : 6;
             break;
 
-          case 5:
-            return _context.abrupt("return", (0, _compile2["default"])(options));
+          case 4:
+            return _context.abrupt("return", (0, _compiler["default"])(options));
 
-          case 6:
+          case 5:
             return _context.abrupt("return", compileUmd());
 
-          case 7:
+          case 6:
             _logger["default"].error("compile mode must be one of ['cjs', 'umd', 'esm']");
 
             return _context.abrupt("return");
 
-          case 9:
+          case 8:
           case "end":
             return _context.stop();
         }

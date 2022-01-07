@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.GEN_CONST = exports.DEV_CONST = exports.CWD = void 0;
+exports.KPI_CONST = exports.GEN_CONST = exports.CWD = void 0;
 exports.resolveApp = resolveApp;
 
 var _path = require("path");
@@ -21,25 +21,22 @@ exports.CWD = CWD;
 
 var GEN_CONST = function () {
   var constant = {
-    SRC_DIR: resolveApp('src'),
-    // 文件入口
     KPI_CONFIG: resolveApp('kpi.config.js'),
     TEST_DIR_NAME: '__tests__',
     DOCS_DIR_NAME: 'docs',
+    PROPS_DIR_NAME: 'props',
     COMPONENT_FILE_NAME: '{name}.tsx',
-    INDEX_FILE_NAME: 'index.tsx',
-    STYLE_FILE_NAME: 'style.scss',
-    PROPS_FILE_NAME: function PROPS_FILE_NAME(extension) {
-      return "props".concat(extension ? '.ts' : '');
-    }
+    STYLE_FILE_NAME: 'style.scss'
   };
-  return constant;
+  return Object.assign(constant, {
+    PROPS_FILE_NAME: "".concat(constant.PROPS_DIR_NAME, ".ts")
+  });
 }(); // dev command constant
 
 
 exports.GEN_CONST = GEN_CONST;
 
-var DEV_CONST = function () {
+var KPI_CONST = function () {
   var constant = {
     APP_DIR: resolveApp('.'),
     SRC_DIR: resolveApp('src'),
@@ -47,6 +44,7 @@ var DEV_CONST = function () {
     OUTPUT_PATH: resolveApp('dist'),
     RESOLVE_EXTENSIONS: ['.tsx', '.ts', '.js', '.jsx', '.mjs'],
     // 待优化
+    STYLE_EXTENSIONS: ['.scss', '.sass', '.css'],
     PUBLIC_PATH: '/',
     //待优化
     WEBPACK_CACHE_DIR: resolveApp('node_modules/.cache'),
@@ -59,7 +57,6 @@ var DEV_CONST = function () {
     CACHE_VERSION: require('../../package.json').version,
     //待优化
     PUBLIC_HTML_FILE: (0, _path.resolve)(constant.PUBLIC_DIR, 'index.html'),
-    PUBLIC_FILES: "".concat(constant.PUBLIC_DIR, "/*"),
     ESLINT_CACHE_DIR: (0, _path.resolve)(constant.WEBPACK_CACHE_DIR, '.eslint'),
     FIND_ENTRY_FILE: function FIND_ENTRY_FILE() {
       var _constant$RESOLVE_EXT;
@@ -80,8 +77,17 @@ var DEV_CONST = function () {
     },
     USE_TYPESCRIPT: function USE_TYPESCRIPT() {
       return (0, _fsExtra.pathExistsSync)(constant.TS_CONFIG);
+    },
+    HAS_JSX_RUNTIME: function HAS_JSX_RUNTIME() {
+      try {
+        require.resolve('react/jsx-runtime');
+
+        return true;
+      } catch (_unused) {
+        return false;
+      }
     }
   });
 }();
 
-exports.DEV_CONST = DEV_CONST;
+exports.KPI_CONST = KPI_CONST;
