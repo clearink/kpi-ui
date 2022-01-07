@@ -1,6 +1,6 @@
 import { merge } from 'webpack-merge'
 import common from './webpack.common'
-import { DEV_CONST } from '../shared/constant'
+import { DEV_CONST } from '../../shared/constant'
 
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'

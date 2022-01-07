@@ -17,9 +17,9 @@ var _webpack = _interopRequireDefault(require("webpack"));
 
 var _webpackDevServer = _interopRequireDefault(require("webpack-dev-server"));
 
-var _logger = _interopRequireDefault(require("../shared/logger"));
+var _webpack2 = _interopRequireDefault(require("../config/webpack/webpack.dev"));
 
-var _webpack2 = _interopRequireDefault(require("../config/webpack.dev"));
+var _logger = _interopRequireDefault(require("../shared/logger"));
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 

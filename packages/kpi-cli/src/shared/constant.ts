@@ -4,7 +4,9 @@ import { existsSync, pathExistsSync, realpathSync } from 'fs-extra'
 export function resolveApp(relativePath: string) {
   return resolve(CWD, relativePath)
 }
+
 export const CWD = realpathSync(process.cwd()) // 当前运行环境
+
 // gen command constant
 export const GEN_CONST = (() => {
   const constant = {

@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = common;
 
-var _constant = require("../shared/constant");
+var _constant = require("../../shared/constant");
 
 var _webpack = _interopRequireDefault(require("webpack"));
 
@@ -15,9 +15,9 @@ var _webpackbar = _interopRequireDefault(require("webpackbar"));
 
 var _forkTsCheckerWebpackPlugin = _interopRequireDefault(require("fork-ts-checker-webpack-plugin"));
 
-var _interpolate_html_plugin = _interopRequireDefault(require("../plugins/interpolate_html_plugin"));
+var _interpolate_html_plugin = _interopRequireDefault(require("../../plugins/interpolate_html_plugin"));
 
-var _utils = require("../shared/utils");
+var _utils = require("../../shared/utils");
 
 // TODO: 使用 dotenv 获取自定义变量
 var envConstant = (0, _utils.getEnvConstant)();

@@ -13,7 +13,7 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _webpack = _interopRequireDefault(require("webpack"));
 
-var _webpack2 = _interopRequireDefault(require("../config/webpack.prod"));
+var _webpack2 = _interopRequireDefault(require("../config/webpack/webpack.prod"));
 
 var _logger = _interopRequireDefault(require("../shared/logger"));
 

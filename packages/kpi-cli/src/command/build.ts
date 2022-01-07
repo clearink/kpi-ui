@@ -1,5 +1,5 @@
 import webpack from 'webpack'
-import prod from '../config/webpack.prod'
+import prod from '../config/webpack/webpack.prod'
 import logger from '../shared/logger'
 
 // build site

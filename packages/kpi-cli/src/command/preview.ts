@@ -1,7 +1,7 @@
 import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
+import dev from '../config/webpack/webpack.dev'
 import logger from '../shared/logger'
-import dev from '../config/webpack.dev'
 
 // preview site
 export default async function preview(options: { open: boolean; port: number }) {

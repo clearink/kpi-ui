@@ -24,6 +24,8 @@ program
 program
   .command('compile')
   .option('-m, --mode [mode]', 'compile mode cjs umd esm', 'cjs')
+  .option('-e, --entry [entry]', 'entry dir', 'src')
+  .option('-d, --output [output]', 'output dir', 'lib')
   .description('compile kpi-ui')
   .action(compile)
 

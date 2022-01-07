@@ -1,4 +1,4 @@
-import { DEV_CONST } from '../shared/constant'
+import { DEV_CONST } from '../../shared/constant'
 import webpack from 'webpack'
 import WebPackBarPlugin from 'webpackbar'
 
@@ -7,8 +7,8 @@ import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import ESLintPlugin from 'eslint-webpack-plugin'
 
-import InterpolateHtmlPlugin from '../plugins/interpolate_html_plugin'
-import { getEnvConstant, getStyleLoader } from '../shared/utils'
+import InterpolateHtmlPlugin from '../../plugins/interpolate_html_plugin'
+import { getEnvConstant, getStyleLoader } from '../../shared/utils'
 // TODO: 使用 dotenv 获取自定义变量
 const envConstant = getEnvConstant()
 

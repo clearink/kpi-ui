@@ -11,7 +11,7 @@ var _webpackMerge = require("webpack-merge");
 
 var _webpack = _interopRequireDefault(require("./webpack.common"));
 
-var _constant = require("../shared/constant");
+var _constant = require("../../shared/constant");
 
 var _htmlWebpackPlugin = _interopRequireDefault(require("html-webpack-plugin"));
 

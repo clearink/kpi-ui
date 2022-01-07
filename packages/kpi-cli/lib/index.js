@@ -17,7 +17,7 @@ var program = new _commander.Command('@kpi/cli');
 program.version("kpi-cli ".concat(VERSION.version || '0.0.1')).usage('<command> [options]');
 program.command('gen <name>').option('-f, --force', 'remove old and creat new component directory', false).description('Generate a component directory').action(_command.gen);
 program.command('preview').option('-no, --no-open', "Don't open default browser").option('-p, --port <number>', 'Server port', '4000').description('Run kpi-ui development server').action(_command.preview);
-program.command('compile').option('-m, --mode [mode]', 'compile mode cjs umd esm', 'cjs').description('compile kpi-ui').action(_command.compile);
+program.command('compile').option('-m, --mode [mode]', 'compile mode cjs umd esm', 'cjs').option('-e, --entry [entry]', 'entry dir', 'src').option('-d, --output [output]', 'output dir', 'lib').description('compile kpi-ui').action(_command.compile);
 program.on('command:*', function (_ref) {
   var _ref2 = (0, _slicedToArray2["default"])(_ref, 1),
       cmd = _ref2[0];
