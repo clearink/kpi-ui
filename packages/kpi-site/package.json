@@ -12,7 +12,7 @@
     "registry": "https://registry.npm.taobao.org/"
   },
   "scripts": {
-    "start": "kpi-cli preview",
+    "dev": "kpi-cli preview",
     "build": "kpi-cli build"
   },
   "dependencies": {

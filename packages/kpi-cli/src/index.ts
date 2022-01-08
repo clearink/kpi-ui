@@ -26,6 +26,8 @@ program
   .option('-m, --mode [mode]', 'compile mode cjs umd esm', 'cjs')
   .option('-e, --entry [entry]', 'entry dir', 'src')
   .option('-d, --output [output]', 'output dir', 'lib')
+  .option('-f, --force [force]', 'remove old compiled file and compile new content', false)
+  .option('-w, --watch [watch]', 'watch file change and compile', false)
   .description('compile kpi-ui')
   .action(compile)
 

@@ -1,3 +1,4 @@
 /// <reference types="react" />
-declare function Button(): JSX.Element;
+import { ButtonProps } from './props';
+declare function Button(props: ButtonProps): JSX.Element;
 export default Button;

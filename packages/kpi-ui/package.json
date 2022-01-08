@@ -20,8 +20,9 @@
   },
   "scripts": {
     "compile:lib": "kpi-cli compile -d lib",
-    "compile:es": "kpi-cli compile -d es",
-    "compile:types": "rimraf types && tsc --outDir types -d --emitDeclarationOnly"
+    "compile:es": "kpi-cli compile -d es -m esm",
+    "compile:types": "rimraf types && tsc --outDir types -d --emitDeclarationOnly",
+    "dev": "npm run compile:es -- -w"
   },
   "dependencies": {
     "react": "^17.0.2",
