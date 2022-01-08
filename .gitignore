@@ -1,6 +1,9 @@
 lerna-debug.log
-node_modules
-/packages/kpi-cli/lib/
-/packages/kpi-ui/lib/
-/packages/kpi-ui/es/
-/packages/kpi-ui/types
+package-lock.json
+/node_modules/
+/packages/*/node_modules/
+
+# bundle files
+packages/*/lib/
+packages/*/es/
+packages/*/types/
