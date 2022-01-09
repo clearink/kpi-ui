@@ -6,7 +6,7 @@
   "author": "clearink <1561939638@qq.com>",
   "license": "MIT",
   "main": "lib/index.js",
-  "module": "es/index.js",
+  "module": "esm/index.js",
   "typings": "types/index.d.ts",
   "directories": {
     "lib": "lib",
@@ -19,19 +19,16 @@
     "registry": "https://registry.npm.taobao.org/"
   },
   "scripts": {
-    "compile:lib": "kpi-cli compile -d lib",
-    "compile:es": "kpi-cli compile -d es -m esm",
-    "compile:types": "rimraf types && tsc --outDir types -d --emitDeclarationOnly",
-    "dev": "npm run compile:es -- -w"
+    "compile": "kpi-cli compile -f",
+    "dev": "kpi-cli dev"
   },
-  "dependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@kpi/cli": "^0.0.1",
     "@types/react": "^17.0.38",
-    "@types/react-dom": "^17.0.11"
+    "@types/react-dom": "^17.0.11",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "browserslist": {
     "production": [

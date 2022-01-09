@@ -1,6 +1,7 @@
-import { KPI_CONST } from '../../shared/constant'
 import webpack from 'webpack'
 import WebPackBarPlugin from 'webpackbar'
+
+import KPI_CONST from '../../shared/constant'
 
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 
@@ -15,37 +16,38 @@ const envConstant = getEnvConstant()
 export default function common(mode: 'development' | 'production'): Record<string, any> {
   const isDev = mode === 'development'
   const isProd = mode === 'production'
-  const useTailwind = KPI_CONST.USE_TAILWIND()
-  const useTypeScript = KPI_CONST.USE_TYPESCRIPT()
+  const constant = KPI_CONST(mode)
+
+  const useTailwind = constant.USE_TAILWIND()
+  const useTypeScript = constant.USE_TYPESCRIPT()
   return {
     target: ['browserslist'],
-    entry: KPI_CONST.FIND_ENTRY_FILE(),
-    context: KPI_CONST.APP_DIR,
+    entry: constant.FIND_ENTRY_FILE(),
     output: {
-      path: KPI_CONST.OUTPUT_PATH,
+      path: constant.OUTPUT_PATH,
       assetModuleFilename: 'media/[name].[hash][ext]',
-      publicPath: KPI_CONST.PUBLIC_PATH,
+      publicPath: constant.PUBLIC_PATH,
     },
     cache: {
       type: 'filesystem', // 使用文件缓存
       //待优化
-      version: KPI_CONST.CACHE_VERSION,
-      cacheDirectory: KPI_CONST.WEBPACK_CACHE_DIR,
+      version: constant.CACHE_VERSION,
+      cacheDirectory: constant.WEBPACK_CACHE_DIR,
       store: 'pack',
       buildDependencies: {
         defaultWebpack: ['webpack/lib/'],
         config: [__filename],
-        tsConfig: KPI_CONST.FIND_TSCONFIG(),
+        tsConfig: constant.FIND_TSCONFIG(),
       },
     },
     infrastructureLogging: {
       level: 'none',
     },
     resolve: {
-      modules: ['node_modules', KPI_CONST.NODE_MODULES],
-      extensions: KPI_CONST.RESOLVE_EXTENSIONS,
+      modules: ['node_modules', constant.NODE_MODULES],
+      extensions: constant.RESOLVE_EXTENSIONS,
       alias: {
-        '@': KPI_CONST.SRC_DIR,
+        '@': constant.SRC_DIR,
       },
     },
     module: {
@@ -53,7 +55,7 @@ export default function common(mode: 'development' | 'production'): Record<strin
       rules: [
         {
           test: /\.(js|mjs|jsx|ts|tsx)$/,
-          include: KPI_CONST.SRC_DIR,
+          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
           use: [
             {
               loader: require.resolve('babel-loader'),
@@ -63,18 +65,13 @@ export default function common(mode: 'development' | 'production'): Record<strin
                   [
                     require.resolve('@babel/preset-react'),
                     {
-                      runtime: KPI_CONST.HAS_JSX_RUNTIME() ? 'automatic' : 'classic',
+                      runtime: constant.HAS_JSX_RUNTIME() ? 'automatic' : 'classic',
                     },
                   ],
                   require.resolve('@babel/preset-typescript'),
                 ],
                 plugins: [
-                  [
-                    require.resolve('@babel/plugin-transform-runtime'),
-                    {
-                      regenerator: true,
-                    },
-                  ],
+                  require.resolve('@babel/plugin-transform-runtime'),
                   isDev && require.resolve('react-refresh/babel'),
                 ].filter(Boolean),
                 cacheDirectory: true,
@@ -87,7 +84,7 @@ export default function common(mode: 'development' | 'production'): Record<strin
         },
         {
           test: /\.(bmp|svg|jpg|jpeg|gif|png)$/i,
-          include: KPI_CONST.SRC_DIR,
+          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
           type: 'asset/resource',
           /**
            * asset/resource 发送一个单独的文件并导出 URL。之前通过使用 file-loader 实现
@@ -100,12 +97,12 @@ export default function common(mode: 'development' | 'production'): Record<strin
         {
           // TODO: 字体是否需要呢？
           test: /\.(woff2?|eot|ttf|otf)$/i,
-          include: KPI_CONST.SRC_DIR,
+          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
           type: 'asset/resource',
         },
         {
           test: /\.css$/,
-          include: KPI_CONST.SRC_DIR,
+          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
           exclude: /\.module\.css$/,
           use: getStyleLoader({
             mode,
@@ -116,7 +113,7 @@ export default function common(mode: 'development' | 'production'): Record<strin
         },
         {
           test: /\.module\.css$/,
-          include: KPI_CONST.SRC_DIR,
+          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
           use: getStyleLoader({
             mode,
             useTailwind,
@@ -126,7 +123,7 @@ export default function common(mode: 'development' | 'production'): Record<strin
         },
         {
           test: /\.s(c|a)ss$/,
-          include: KPI_CONST.SRC_DIR,
+          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
           exclude: /\.module\.s(c|a)ss$/,
           use: getStyleLoader({
             mode,
@@ -137,7 +134,7 @@ export default function common(mode: 'development' | 'production'): Record<strin
         },
         {
           test: /\.module\.s(c|a)ss$/,
-          include: KPI_CONST.SRC_DIR,
+          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
           use: getStyleLoader({
             mode,
             useTailwind,

@@ -1,9 +1,9 @@
-import './style.css'
 import { Button } from '@kpi/ui'
+
 export default function App() {
   return (
     <div className="app-wrap">
-      <Button>button</Button>
+      <Button>1212121212</Button>
     </div>
   )
 }

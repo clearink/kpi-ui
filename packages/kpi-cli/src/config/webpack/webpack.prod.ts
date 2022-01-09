@@ -1,6 +1,6 @@
 import { merge } from 'webpack-merge'
 import common from './webpack.common'
-import { KPI_CONST } from '../../shared/constant'
+import KPI_CONST from '../../shared/constant'
 
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
@@ -9,6 +9,7 @@ import TerserPlugin from 'terser-webpack-plugin'
 
 // 生产环境
 export default function prod() {
+  const constant = KPI_CONST('production')
   return merge(common('production'), {
     mode: 'production',
     bail: true,
@@ -71,7 +72,7 @@ export default function prod() {
     plugins: [
       new HtmlWebpackPlugin({
         inject: true,
-        template: KPI_CONST.PUBLIC_HTML_FILE,
+        template: constant.PUBLIC_HTML_FILE,
         minify: {
           removeComments: true,
           collapseWhitespace: true,

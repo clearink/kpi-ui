@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import logger from './shared/logger'
 import { Command } from 'commander'
-import { gen, preview, compile } from './command'
+import { gen, dev, compile } from './command'
 
 const VERSION = require('../package.json')
 
@@ -15,19 +15,19 @@ program
   .action(gen)
 
 program
-  .command('preview')
+  .command('dev')
   .option('-no, --no-open', "Don't open default browser")
   .option('-p, --port <number>', 'Server port', '4000')
   .description('Run kpi-ui development server')
-  .action(preview)
+  .action(dev)
 
 program
   .command('compile')
-  .option('-m, --mode [mode]', 'compile mode cjs umd esm', 'cjs')
   .option('-e, --entry [entry]', 'entry dir', 'src')
-  .option('-d, --output [output]', 'output dir', 'lib')
-  .option('-f, --force [force]', 'remove old compiled file and compile new content', false)
-  .option('-w, --watch [watch]', 'watch file change and compile', false)
+  .option('-f, --force', 'remove and compile', false)
+  .option('-nc, --no-component', 'watch', false)
+  .option('-nt, --no-type', `Don't compile types `)
+  .option('-ns, --no-style', `Don't compile style `)
   .description('compile kpi-ui')
   .action(compile)
 

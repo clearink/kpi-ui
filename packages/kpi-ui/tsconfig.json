@@ -18,6 +18,6 @@
     "types": ["react", "react-dom", "node"]
   },
   "include": ["src"],
-  "exclude": ["node_modules", "lib", "es", "**/__tests__/**", "tests"],
+  "exclude": ["docs", "tests", "**/**/*.scss"],
   "compileOnSave": false
 }

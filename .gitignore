@@ -7,3 +7,4 @@ package-lock.json
 packages/*/lib/
 packages/*/es/
 packages/*/types/
+packages/*/.kpi/

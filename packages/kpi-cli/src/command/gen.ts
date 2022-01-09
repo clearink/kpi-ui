@@ -3,11 +3,11 @@ import ora from 'ora'
 import { resolve } from 'path'
 import logger from '../shared/logger'
 import { camelCase } from '../shared/utils'
-import { GEN_CONST, KPI_CONST } from '../shared/constant'
+import KPI_CONST from '../shared/constant'
 
 export default async function create(name: string, config: { force: boolean }) {
   const uiName = camelCase(name, true)
-
+  const GEN_CONST = KPI_CONST('development')
   const tsxTemplate = `\
 import './style.scss'
 import { ${uiName}Props } from './${GEN_CONST.PROPS_DIR_NAME}'
@@ -22,7 +22,7 @@ export interface ${uiName}Props{
 
 }
   `
-  const uiDir = resolve(KPI_CONST.SRC_DIR, name)
+  const uiDir = resolve(GEN_CONST.SRC_DIR, name)
   const testsDir = resolve(uiDir, GEN_CONST.TEST_DIR_NAME)
   const docsDir = resolve(uiDir, GEN_CONST.DOCS_DIR_NAME)
 
