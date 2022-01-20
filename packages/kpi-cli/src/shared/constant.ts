@@ -42,7 +42,7 @@ export default function KPI_CONST(mode: 'development' | 'production') {
     ESM_DIR_NAME: 'esm',
     TYPE_DIR_NAME: 'types',
   }
-  const { APP_DIR, SRC_DIR, RESOLVE_EXTENSIONS } = constant
+  const { APP_DIR, SRC_DIR, DEV_SRC_DIR, RESOLVE_EXTENSIONS } = constant
 
   const TS_CONFIG = isDev
     ? resolve(APP_DIR, '.kpi', 'tsconfig.json')
@@ -59,12 +59,11 @@ export default function KPI_CONST(mode: 'development' | 'production') {
     PROPS_FILE_NAME: `${constant.PROPS_DIR_NAME}.ts`,
 
     FIND_ENTRY_FILE: () => {
-      const dir = isDev ? resolveApp('.kpi/src') : SRC_DIR
-      const extension =
-        RESOLVE_EXTENSIONS.find((ext) => {
-          return existsSync(resolve(dir, `index${ext}`))
-        }) ?? '.js'
-      return resolve(dir, `index${extension}`)
+      const dir = DEV_SRC_DIR || SRC_DIR
+      const extension = RESOLVE_EXTENSIONS.find((ext) => {
+        return existsSync(resolve(dir, `index${ext}`))
+      })
+      return resolve(dir, `index${extension ?? '.js'}`)
     },
     FIND_TSCONFIG: () => {
       const list = [TS_CONFIG, JS_CONFIG]

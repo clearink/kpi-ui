@@ -1,0 +1,16 @@
+.kpi-ripple-root {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  .kpi-ripple {
+    position: absolute;
+    opacity: 0.3;
+    transform: scale3d(0, 0, 0);
+    background-color: #3498db;
+    border-radius: 50%;
+    transition: all 0.5s ease-in-out;
+  }
+}

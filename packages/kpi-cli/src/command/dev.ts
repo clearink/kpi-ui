@@ -15,7 +15,6 @@ export default async function preview(options: { open: boolean; port: number }) 
 
   const kpiDir = resolve(APP_DIR, '.kpi')
   await copy(resolve(__dirname, '../../site'), kpiDir)
-  config.entry = resolve(APP_DIR, '.kpi/src/index.tsx')
 
   try {
     const compiler = webpack(config)
