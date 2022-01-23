@@ -1,13 +1,23 @@
-import useRipple from '../hooks/use_ripple'
+import withDefaultProps from '../hocs/withDefaultProps'
+import usePrefix from '../hooks/use_prefix'
+import useWave from '../hooks/use_wave'
+import { omit } from '../utils/value'
+import useBtnClass from './hooks/use_btn_class'
 import { ButtonProps } from './props'
 import './style.scss'
 function Button(props: ButtonProps) {
-  const { children, style, className } = props
-  const ref = useRipple<HTMLButtonElement>()
+  const { children, htmlType, ...rest } = props
+  const ref = useWave<HTMLButtonElement>()
+  const name = usePrefix('btn')
+  const className = useBtnClass(props, name)
+  const attr = omit(rest, ['type', 'block', 'danger', 'shape', 'size', 'ghost', 'loading'])
   return (
-    <button className={`kpi-button ${className || ''}`} style={style} ref={ref}>
-      <span className="kpi-button-text">{children}</span>
+    <button className={className} ref={ref} type={htmlType} {...attr}>
+      <span className={`${name}-text`}>{children}</span>
     </button>
   )
 }
-export default Button
+export default withDefaultProps(Button, {
+  type: 'default',
+  htmlType: 'button',
+})

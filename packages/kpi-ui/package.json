@@ -22,7 +22,10 @@
     "compile": "kpi-cli compile -f",
     "dev": "kpi-cli dev"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@react-spring/web": "^9.4.2",
+    "classnames": "^2.3.1"
+  },
   "devDependencies": {
     "@kpi/cli": "^0.0.1",
     "@types/react": "^17.0.38",

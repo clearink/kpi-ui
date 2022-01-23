@@ -1,0 +1,54 @@
+$blue-base: #1890ff;
+$for $i from 1 through 10 {
+  $blue-#{$i}: $blue-base;
+}
+
+$purple-base: #722ed1;
+$for $i from 1 through 10 {
+  $purple-#{$i}: $purple-base;
+}
+
+$cyan-base: #13c2c2;
+$for $i from 1 through 10 {
+  $cyan-#{$i}: $cyan-base;
+}
+
+$magenta-base: #eb2f96;
+$for $i from 1 through 10 {
+  $magenta-#{$i}: $magenta-base;
+}
+
+$red-base: #f5222d;
+$for $i from 1 through 10 {
+  $red-#{$i}: $red-base;
+}
+
+$orange-base: #fa8c16;
+$for $i from 1 through 10 {
+  $orange-#{$i}: $orange-base;
+}
+
+$yellow-base: #fadb14;
+$for $i from 1 through 10 {
+  $yellow-#{$i}: $yellow-base;
+}
+
+$volcano-base: #fa541c;
+$for $i from 1 through 10 {
+  $volcano-#{$i}: $volcano-base;
+}
+
+$geekblue-base: #2f54eb;
+$for $i from 1 through 10 {
+  $geekblue-#{$i}: $geekblue-base;
+}
+
+$lime-base: #a0d911;
+$for $i from 1 through 10 {
+  $lime-#{$i}: $lime-base;
+}
+
+$gold-base: #faad14;
+$for $i from 1 through 10 {
+  $gold-#{$i}: $gold-base;
+}

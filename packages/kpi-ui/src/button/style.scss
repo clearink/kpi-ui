@@ -1,22 +1,64 @@
-.kpi-button {
-  display: inline-block;
-  color: #1976d2;
-  overflow: hidden;
+$kpi-prefix: kpi;
+@mixin button-base {
+  line-height: 1.5715;
   position: relative;
-  outline: none;
-  background-color: transparent;
-  border: 1px solid rgba(25, 118, 210, 0.5);
-  border-radius: 4px;
-  height: 36px;
-  padding: 0 15px;
+  display: inline-block;
+  font-weight: 400;
+  white-space: nowrap;
+  text-align: center;
+  background-image: none;
+  border: 1px solid transparent;
+  box-shadow: 0 2px #00000004;
   cursor: pointer;
-  transition: box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  &:hover {
-    text-decoration: none;
-    border: 1px solid #1976d2;
+  transition: all 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
+  user-select: none;
+  touch-action: manipulation;
+  height: 32px;
+  padding: 4px 15px;
+  font-size: 14px;
+  border-radius: 2px;
+  color: #000;
+  border-color: #d9d9d9;
+  background: #fff;
+}
+
+.#{$kpi-prefix}-btn {
+  @include button-base();
+  &,
+  &:active,
+  &:focus {
+    outline: 0;
   }
-  .kpi-button-text {
-    user-select: none;
+  &:hover,
+  &:active,
+  &:focus {
+    text-decoration: none;
+    background: #fff;
+  }
+  &:hover,
+  &:focus {
+    color: #40a9ff;
+    border-color: #40a9ff;
+  }
+  &:active {
+    color: #096dd9;
+    border-color: #096dd9;
+  }
+  &-text {
+    display: inline-block;
+  }
+  &-block {
+    width: 100%;
+  }
+  // 预设颜色
+  &-primary {
+  }
+  &-info {
+  }
+  &-success {
+  }
+  &-warning {
+  }
+  &-danger {
   }
 }
