@@ -1,0 +1,130 @@
+// @use 'sass:math';
+// @import '../../styles/themes/index.scss';
+// @mixin btn-size($height, $p-x, $font-size, $border-radius) {
+//   $p-y: math.max(
+//     math.round(math.round((($height - $font-size * $line-height-base) / 2) * 10) / 10) - $border-width-base,
+//     0
+//   );
+
+//   height: $height;
+//   padding: $p-x $p-y;
+//   font-size: $font-size;
+//   border-radius: $border-radius;
+// }
+
+// @mixin btm-base {
+//   line-height: $btn-line-height;
+//   position: relative;
+//   display: inline-block;
+//   font-weight: $btn-font-weight;
+//   white-space: nowrap;
+//   text-align: center;
+//   background-image: none;
+//   border: $btn-border-width $btn-border-style transparent;
+//   box-shadow: $btn-shadow;
+//   cursor: pointer;
+//   transition: all 0.3s ease-in-out;
+//   user-select: none;
+//   touch-action: manipulation;
+//   @include btn-size($btn-height-base, $btn-padding-horizontal-base, $font-size-base, $btn-border-radius-base);
+//   &,
+//   &:active,
+//   &:focus {
+//     outline: 0;
+//   }
+//   &:not([disabled]):hover {
+//     text-decoration: none;
+//   }
+//   &:not([disabled]):active {
+//     outline: 0;
+//     box-shadow: none;
+//   }
+//   &[disabled] {
+//     cursor: not-allowed;
+//     > * {
+//       pointer-events: none;
+//     }
+//   }
+//   &-lg {
+//     @include btn-size($btn-height-lg, $btn-padding-horizontal-lg, $font-size-lg, $btn-border-radius-base);
+//   }
+//   &-sm {
+//     @include btn-size($btn-height-sm, $btn-padding-horizontal-sm, $font-size-sm, $btn-border-radius-sm);
+//   }
+// }
+
+// .btn-default() {
+//   &:hover,
+//   &:focus,
+//   &:active {
+//     text-decoration: none;
+//     background: $btn-default-bg;
+//   }
+// }
+
+@use 'sass:math';
+@import '../../styles/themes/index.scss';
+
+@mixin button-base {
+  line-height: 1.5715;
+  position: relative;
+  display: inline-block;
+  font-weight: 400;
+  white-space: nowrap;
+  text-align: center;
+  background-image: none;
+  border: 1px solid transparent;
+  box-shadow: 0 2px #00000004;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
+  user-select: none;
+  touch-action: manipulation;
+  height: 32px;
+  padding: 4px 15px;
+  font-size: 14px;
+  border-radius: 2px;
+  color: #000;
+  border-color: #d9d9d9;
+  background: #fff;
+}
+
+.#{$kpi-prefix}-btn {
+  @include button-base();
+  &,
+  &:active,
+  &:focus {
+    outline: 0;
+  }
+  &:hover,
+  &:active,
+  &:focus {
+    text-decoration: none;
+    background: #fff;
+  }
+  &:hover,
+  &:focus {
+    color: $link-hover-color;
+    border-color: $link-hover-color;
+  }
+  &:active {
+    color: $link-active-color;
+    border-color: $link-active-color;
+  }
+  &-text {
+    display: inline-block;
+  }
+  &-block {
+    width: 100%;
+  }
+  // 预设颜色
+  &-primary {
+  }
+  &-info {
+  }
+  &-success {
+  }
+  &-warning {
+  }
+  &-danger {
+  }
+}
