@@ -1,5 +1,7 @@
 @import './palette';
 
+// 颜色生成算法参考自 ant-design
+
 $red-base: #f5222d;
 $red-1: palette($red-base, 1);
 $red-2: palette($red-base, 2);

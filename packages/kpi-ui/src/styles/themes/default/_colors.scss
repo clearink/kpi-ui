@@ -1,0 +1,23 @@
+@use 'sass:color';
+@import '../../color/colors';
+
+// ant-design 设计语言 - 颜色
+
+//品牌色
+$primary-color: $blue-6;
+// 选中的背景色
+$primary-select-bg: palette($primary-color, 1);
+// hover 颜色
+$primary-hover-color: palette($primary-color, 5);
+// click active focus 颜色
+$primary-active-color: palette($primary-color, 7);
+
+// 功能色
+$info-color: $primary-color;
+$success-color: $green-6;
+$warning-color: $gold-6;
+$error-color: $red-5;
+$white: #fff;
+$black: #000;
+
+// 中性色 - 移至 _font.scss
