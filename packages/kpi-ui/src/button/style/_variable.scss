@@ -1,0 +1,106 @@
+// 关于 button 的一些变量参考自 antd
+@import '../../style/themes/index';
+
+// 尺寸
+$btn-height-base: $height-base;
+$btn-height-lg: $height-lg;
+$btn-height-sm: $height-sm;
+
+// 字体大小
+$btn-font-size-base: $font-size-base;
+$btn-font-size-sm: $font-size-base;
+$btn-font-size-lg: $font-size-lg;
+
+// 图标大小
+// TODO: 待完善
+$btn-icon-text-space: 8px;
+
+// padding
+$btn-px-base: $padding-md - 1px;
+$btn-px-lg: $btn-px-base;
+$btn-px-sm: $padding-xs - 1px;
+
+/*---------------- 颜色 -----------------------------*/
+
+// primary
+// 文字颜色 背景 边框 hover
+
+$btn-primary-text: $white; // 字体颜色
+$btn-primary-color-hover: $primary-color-hover;
+$btn-primary-color-active: $primary-color-active;
+$btn-primary-bg: $primary-color;
+$btn-primary-border: $primary-color;
+
+// default
+$btn-default-text: $text-color;
+$btn-default-color-hover: $primary-color-hover;
+$btn-default-color-active: $primary-color-active;
+$btn-default-bg: $bg-color-component;
+$btn-default-border: $border-color-base;
+
+// danger
+$btn-danger-text: $error-color;
+$btn-danger-color-hover: $error-color-hover;
+$btn-danger-color-active: $error-color-active;
+$btn-danger-bg: $error-color;
+$btn-danger-border: $error-color;
+
+// link/text
+$btn-link-text: $primary-color;
+$btn-link-color-hover: $primary-color-hover;
+$btn-link-color-active: $primary-color-active;
+$btn-link-bg: transparent;
+$btn-link-border: transparent;
+
+// disabled
+$btn-disabled-text: $disabled-color;
+$btn-disabled-bg: $disabled-bg;
+$btn-disabled-border: $border-color-base;
+
+// ghost
+$btn-ghost-text: $white;
+$btn-ghost-color-hover: $primary-color-hover;
+$btn-ghost-color-active: $primary-color-active;
+$btn-ghost-bg: transparent;
+$btn-ghost-border: $bg-color-component;
+
+// 边框
+$btn-border-width: $border-width-base;
+$btn-border-style: $border-style-base;
+$btn-border-raduis: $border-radius-base;
+$btn-border-raduis-sm: $border-radius-sm;
+
+// 阴影
+$btn-font-weight: 400;
+$btn-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+$btn-primary-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+$btn-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+
+// font
+$btn-font-size-base: $font-size-base;
+$btn-font-size-sm: $font-size-base;
+$btn-font-size-lg: $font-size-lg;
+
+// padding
+$btn-px-base: $padding-md - 1px;
+$btn-px-lg: $btn-px-base;
+$btn-px-sm: $padding-xs - 1px;
+
+// line height
+$btn-line-height: $line-height;
+
+// circle
+$btn-circle-size: $btn-height-base;
+$btn-circle-size-lg: $btn-height-lg;
+$btn-circle-size-sm: $btn-height-sm;
+
+// square
+$btn-square-size: $btn-height-base;
+$btn-square-size-lg: $btn-height-lg;
+$btn-square-size-sm: $btn-height-sm;
+$btn-square-only-icon-size: $font-size-base + 2px;
+$btn-square-only-icon-size-sm: $font-size-base;
+$btn-square-only-icon-size-lg: $btn-font-size-lg + 2px;
+
+// TODO: move animation.scss
+$ease-in-out: cubic-bezier(0.65, 0.05, 0.36, 1);

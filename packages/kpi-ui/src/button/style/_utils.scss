@@ -1,0 +1,84 @@
+@import './variable';
+
+// 高 内边距 字体大小 圆角
+@mixin btn-size($height, $font-size, $px, $radius) {
+  $diff: math.div($height - $font-size * $line-height, 2);
+  $py: max(math.div(round($diff * 10), 10) - $btn-border-width, 0);
+
+  height: $height;
+  padding: $py $px;
+  font-size: $font-size;
+  border-radius: $radius;
+}
+
+// 字体颜色 背景色 边框颜色
+@mixin btn-color($text, $bg, $border) {
+  color: $text;
+  border-color: $border;
+  @if ($bg) {
+    background-color: $bg;
+  }
+}
+// 禁用
+
+@mixin btn-disabled($color: $btn-disabled-text, $bg: $btn-disabled-bg, $border: $btn-disabled-border) {
+  &[disabled] {
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+      @include btn-color($color, $bg, $border);
+      text-shadow: none;
+      box-shadow: none;
+    }
+  }
+}
+
+// 按钮 hover focus active 以及平时的颜色。暂时不考虑 暗色模式、紧凑模式等
+@mixin btn-variant($text, $bg, $border, $variant: 'default', $ghost: false) {
+  $bg-color: if($ghost, transparent, $bg);
+  @include btn-color($text, $bg-color, $border);
+  &:hover,
+  &:focus {
+    @if ($variant == 'default') {
+      $text: palette($btn-primary-bg, 5);
+      $border: $text;
+    } @else if($variant == 'danger') {
+      $text: palette($text, 5);
+      $bg: $white;
+      $border: $text;
+    } @else if($variant == 'text') {
+      $text: palette($text, 5);
+      $bg: transparent;
+      $border: transparent;
+    } @else if($variant == 'primary') {
+      $bg: palette($bg, 5);
+      $text: if($ghost, $bg, $text);
+      $border: $bg;
+    }
+    $bg-color: if($ghost, transparent, $bg);
+    @include btn-color($text, $bg-color, $border);
+  }
+
+  &:active {
+    @if ($variant == 'default') {
+      $text: palette($btn-primary-bg, 7);
+      $bg: null;
+      $border: $text;
+    } @else if($variant == 'danger') {
+      $text: palette($text, 7);
+      $bg: $white;
+      $border: $text;
+    } @else if($variant == 'text') {
+      $text: palette($text, 7);
+      $bg: transparent;
+      $border: transparent;
+    } @else if($variant == 'primary') {
+      $bg: palette($bg, 7);
+      $text: if($ghost, $bg, $text);
+      $border: $bg;
+    }
+    $bg-color: if($ghost, transparent, $bg);
+    @include btn-color($text, $bg-color, $border);
+  }
+}

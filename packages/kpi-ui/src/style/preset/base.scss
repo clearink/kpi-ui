@@ -1,0 +1,11 @@
+@import '../variables';
+// ant-design 预设值
+[class^='#{$prefix}-'],
+[class*='#{$prefix}-'] {
+  // remove the clear button of a text input control in IE10+
+  &::-ms-clear,
+  input::-ms-clear,
+  input::-ms-reveal {
+    display: none;
+  }
+}

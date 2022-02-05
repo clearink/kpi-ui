@@ -1,0 +1,115 @@
+@use 'sass:list';
+@use 'sass:color';
+@use 'sass:math';
+
+/* -------------------- tinyColor ------------------------- */
+// 将颜色转换成 hsv 模式
+@function hsl_to_hsv($color) {
+  $hsl-h: color.hue($color);
+  $hsl-s: color.saturation($color);
+  $hsl-l: color.lightness($color);
+
+  $hsl-h: math.div($hsl-h * math.$pi, 180deg);
+  $hsl-s: 0 + math.div($hsl-s, 100%);
+  $hsl-l: 0 + math.div($hsl-l, 100%) * 2;
+
+  $hsl-s: if($hsl-l <= 1, $hsl-s * $hsl-l, $hsl-s * (2 - $hsl-l));
+  $hsl-v: math.div($hsl-l + $hsl-s, 2);
+
+  $hsl-s: if($hsl-l + $hsl-s != 0, math.div(2 * $hsl-s, $hsl-l + $hsl-s), 0);
+
+  $hsv-h: color.hue($color);
+  $hsv-s: percentage(max(0, min(1, $hsl-s)));
+  $hsv-v: percentage(max(0, min(1, $hsl-v)));
+  @return ($hsv-h, $hsv-s, $hsv-v);
+}
+// xxdeg xx% xx%
+@function hsv_to_rgb($h, $s, $v) {
+  @if (unit($s) == '%') {
+    $s: math.div($s, 1%);
+  }
+  @if (unit($v) == '%') {
+    $v: math.div($v, 1%);
+  }
+  @if ($v == 0) {
+    @return hsl(0, 0, 0);
+  } @else {
+    $hsl-l: math.div($v, 2) * (2 - math.div($s, 100));
+    $hsl-s: math.div(($v * $s), if($hsl-l < 50, $hsl-l * 2, 200 - $hsl-l * 2));
+    @return hsl($h, $hsl-s * 1%, $hsl-l * 1%);
+  }
+}
+
+/* -------------------- tinyColor ------------------------- */
+
+/* -------------------- paletteColor ------------------------- */
+// 颜色生成算法参考自 ant-design
+
+$HUE_STEP: 2;
+$SATURATION_STEP: 0.16, 0.05;
+$BRIGHTNESS_STEP: 0.05, -0.15;
+$COLOR_COUNT: 5, 4;
+
+// $H: xxxdeg
+@function H($H, $i, $light) {
+  // 转换成 数字
+  @if (unit($H) == 'deg') {
+    $H: math.div($H, 1deg);
+  }
+  @if ($H >= 60 and $H <= 240) {
+    $multiple: if($light, -1, 1);
+    $H: $H + $HUE_STEP * $i * $multiple;
+  } @else {
+    $multiple: if($light, 1, -1);
+    $H: $H + $HUE_STEP * $i * $multiple;
+  }
+  // 控制在 0 - 360 以内
+  @return round(($H + 360) % 360);
+}
+
+// $S: xxx.xx %
+@function S($S, $i, $light) {
+  @if (unit($S) == '%') {
+    $S: math.div($S, 100%);
+  }
+  @if ($light) {
+    $S: $S - list.nth($SATURATION_STEP, 1) * $i;
+  } @else if($i == list.nth($COLOR_COUNT, 2)) {
+    $S: $S + list.nth($SATURATION_STEP, 1);
+  } @else {
+    $S: $S + list.nth($SATURATION_STEP, 2) * $i;
+  }
+  $S: min($S, 1);
+  @if ($light and $i== list.nth($COLOR_COUNT, 1) and $S > 0.1) {
+    $S: 0.1;
+  }
+  @return round(percentage(clamp(0.06, $S, 1)));
+}
+
+// $V: xxx.xxx %
+@function V($V, $i, $light) {
+  @if (unit($V) == '%') {
+    $V: math.div($V, 100%);
+  }
+  $index: if($light, 1, 2);
+  $step: list.nth($BRIGHTNESS_STEP, $index);
+  // 控制在 0 - 360 以内
+  @return round(percentage(min($V + $step * $i, 1)));
+}
+
+@function palette($color, $index: 6) {
+  $light: $index <= 6;
+  $lightColorCount: 5;
+  $i: if($light, $lightColorCount + 1 - $index, $index - $lightColorCount - 1);
+  $hsv: hsl_to_hsv($color);
+
+  $hsv-s: list.nth($hsv, 2);
+  @if ($hsv-s < 70%) {
+    @warn '饱和度建议不低于70（当前：#{math.div($hsv-s, 1%)}）';
+  }
+  $H: H(list.nth($hsv, 1), $i, $light);
+  $S: S(list.nth($hsv, 2), $i, $light);
+  $V: V(list.nth($hsv, 3), $i, $light);
+  @return hsv_to_rgb($H, $S, $V);
+}
+/* -------------------- paletteColor ------------------------- */

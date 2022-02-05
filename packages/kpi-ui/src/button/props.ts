@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, ReactChild, ReactNode } from 'react'
 // export type LiteralUnion<T extends U, U> = T | (U & {})
 export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   /** 按钮类型 */
-  type?: 'default' | 'primary' | 'dashed' | 'link' | 'text'
+  type?: 'default' | 'primary' | 'dashed' | 'text'
   shape?: 'default' | 'circle' | 'round'
   /** 按钮大小 */
   size?: 'small' | 'middle' | 'large'

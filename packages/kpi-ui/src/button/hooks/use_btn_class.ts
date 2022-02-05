@@ -5,7 +5,7 @@ export default function useBtnClass(props: ButtonProps, name: string) {
   const { type, block, danger, shape, size, ghost, loading } = props
   return useMemo(() => {
     return cls(name, {
-      [`${name}--${type}`]: type !== 'default',
+      [`${name}-${type}`]: type !== 'default',
       [`${name}-block`]: block,
       [`${name}-danger`]: danger,
       [`${name}-circle`]: shape === 'circle',
@@ -15,5 +15,5 @@ export default function useBtnClass(props: ButtonProps, name: string) {
       [`${name}-ghost`]: ghost,
       [`${name}-loading`]: loading,
     })
-  }, [name, type, block, danger, shape, ghost, loading])
+  }, [name, type, block, danger, shape, size, ghost, loading])
 }
