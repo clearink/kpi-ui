@@ -2,7 +2,7 @@
 
 // 高 内边距 字体大小 圆角
 @mixin btn-size($height, $font-size, $px, $radius) {
-  $diff: math.div($height - $font-size * $line-height, 2);
+  $diff: math.div($height - $font-size * $btn-line-height, 2);
   $py: max(math.div(round($diff * 10), 10) - $btn-border-width, 0);
 
   height: $height;

@@ -93,7 +93,7 @@ $heading-2-size: math.ceil($font-size-base * 2.14);
 $heading-3-size: math.ceil($font-size-base * 1.71);
 $heading-4-size: math.ceil($font-size-base * 1.42);
 $heading-5-size: math.ceil($font-size-base * 1.14);
-$line-height: 1.5715; // 行高
+$line-height-base: 1.5715; // 行高
 // 渲染配置
 $font-variant: tabular-nums;
 $font-feature-settings: tnum;

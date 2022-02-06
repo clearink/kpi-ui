@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, ReactChild, ReactNode } from 'react'
+import { ButtonHTMLAttributes, ReactNode } from 'react'
 // export type LiteralUnion<T extends U, U> = T | (U & {})
 export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   /** 按钮类型 */
@@ -19,7 +19,7 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
   /** 图标 */
   icon?: ReactNode
   htmlType?: 'submit' | 'reset' | 'button'
-  children?: ReactChild
+  children?: ReactNode
 
   href?: string
   target?: string
