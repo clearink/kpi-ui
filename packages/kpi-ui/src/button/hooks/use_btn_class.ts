@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
 import cls from 'classnames'
 import { ButtonProps } from '../props'
-export default function useBtnClass(props: ButtonProps, name: string) {
-  const { type, block, danger, shape, size, ghost, loading } = props
+import usePrefix from '../../hooks/use_prefix'
+export default function useBtnClass(props: ButtonProps) {
+  const name = usePrefix('btn')
+  const { type = 'default', block, danger, shape, size, ghost, loading } = props
   return useMemo(() => {
     return cls(name, {
       [`${name}-${type}`]: type !== 'default',

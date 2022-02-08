@@ -1,4 +1,6 @@
 @import './mixin';
+@import '../../style/index.scss';
+
 $btn-cls: '#{$prefix}-btn';
 .#{$btn-cls} {
   @include btn();
