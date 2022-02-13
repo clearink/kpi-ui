@@ -2,7 +2,7 @@
 @use 'sass:color';
 @use 'sass:math';
 
-/* -------------------- tinyColor ------------------------- */
+// -------------------- tinyColor -------------------------
 // 将颜色转换成 hsv 模式
 @function hsl_to_hsv($color) {
   $hsl-h: color.hue($color);
@@ -23,7 +23,7 @@
   $hsv-v: percentage(max(0, min(1, $hsl-v)));
   @return ($hsv-h, $hsv-s, $hsv-v);
 }
-// xxdeg xx% xx%
+// xx deg xx% xx%
 @function hsv_to_rgb($h, $s, $v) {
   @if (unit($s) == '%') {
     $s: math.div($s, 1%);
@@ -40,9 +40,7 @@
   }
 }
 
-/* -------------------- tinyColor ------------------------- */
-
-/* -------------------- paletteColor ------------------------- */
+// -------------------- paletteColor -------------------------
 // 颜色生成算法参考自 ant-design
 
 $HUE_STEP: 2;
@@ -50,7 +48,7 @@ $SATURATION_STEP: 0.16, 0.05;
 $BRIGHTNESS_STEP: 0.05, -0.15;
 $COLOR_COUNT: 5, 4;
 
-// $H: xxxdeg
+// $H: xxx deg
 @function H($H, $i, $light) {
   // 转换成 数字
   @if (unit($H) == 'deg') {
@@ -103,13 +101,8 @@ $COLOR_COUNT: 5, 4;
   $i: if($light, $lightColorCount + 1 - $index, $index - $lightColorCount - 1);
   $hsv: hsl_to_hsv($color);
 
-  $hsv-s: list.nth($hsv, 2);
-  @if ($hsv-s < 70%) {
-    @warn '饱和度建议不低于70（当前：#{math.div($hsv-s, 1%)}）';
-  }
   $H: H(list.nth($hsv, 1), $i, $light);
   $S: S(list.nth($hsv, 2), $i, $light);
   $V: V(list.nth($hsv, 3), $i, $light);
   @return hsv_to_rgb($H, $S, $V);
 }
-/* -------------------- paletteColor ------------------------- */

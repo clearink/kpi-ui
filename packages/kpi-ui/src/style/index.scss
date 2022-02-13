@@ -1,2 +1,6 @@
-@import './themes/index.scss';
-@import './preset/index.scss';
+// core
+@import './core/index';
+// 预设样式
+@import './preset/index';
+// 组件主题
+@import './themes/index';

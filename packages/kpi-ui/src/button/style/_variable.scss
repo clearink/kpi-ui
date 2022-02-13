@@ -1,6 +1,3 @@
-// 关于 button 的一些变量参考自 antd
-@import '../../style/themes/index';
-
 // 尺寸
 $btn-height-base: $height-base;
 $btn-height-lg: $height-lg;
@@ -20,7 +17,7 @@ $btn-px-base: $padding-md - 1px;
 $btn-px-lg: $btn-px-base;
 $btn-px-sm: $padding-xs - 1px;
 
-/*---------------- 颜色 -----------------------------*/
+//---------------- 颜色 -----------------------------
 
 // primary
 // 文字颜色 背景 边框 hover

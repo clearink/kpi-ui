@@ -1,9 +1,8 @@
 @use 'sass:math';
 @import './utils';
 @import './variable';
-@import '../../style/themes/index';
 
-@mixin btn {
+@mixin btn-base() {
   position: relative;
   display: inline-block;
   font-weight: $btn-font-weight;
@@ -144,3 +143,22 @@
   text-decoration: none;
   text-shadow: none;
 }
+
+// @mixin btn-base() {
+// }
+
+// // 主题 暂时只有 default primary danger
+// @mixin btn-theme() {
+// }
+
+// // 大小
+// @mixin btn-size() {
+// }
+
+// // link
+// @mixin btn-link() {
+// }
+
+// // ghost
+// @mixin btn-ghost() {
+// }

@@ -1,0 +1,6 @@
+// 优化打包性能引入除了 preset 的内容
+@import '../../style/core/index'; // 引入 BEM
+@import '../../style/themes/index'; // 引入 变量
+@include b(typography){
+  display: inline-block;
+}

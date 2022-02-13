@@ -1,43 +1,50 @@
-@import './mixin';
-@import '../../style/index.scss';
+// 优化打包性能引入除了 preset 的内容
+@import '../../style/core/index'; // 引入 BEM
+@import '../../style/themes/index'; // 引入 变量
+@import './mixins';
 
 $btn-cls: '#{$prefix}-btn';
-.#{$btn-cls} {
-  @include btn();
+@include b(button) {
+  @include btn-base();
   @include btn-default();
-  line-height: $btn-line-height;
-
-  // 预设颜色
-  &-primary {
-    @include btn-primary();
-  }
-
-  &-dashed {
-    @include btn-dashed();
-  }
-  &-text {
-    @include btn-text();
-  }
-  &-lg {
-    @include btn-lg();
-  }
-  &-sm {
-    @include btn-sm();
-  }
-  &-block {
-    width: 100%;
-  }
-
-  &-circle {
-    @include btn-circle($btn-cls);
-  }
-  &-round {
-    @include btn-round($btn-cls);
-  }
-  &-danger {
-    @include btn-danger($btn-cls);
-  }
-  &-ghost {
-    @include btn-ghost($btn-cls);
-  }
 }
+
+// .#{$btn-cls} {
+//   @include btn();
+//   @include btn-default();
+//   line-height: $btn-line-height;
+
+//   // 预设颜色
+//   &-primary {
+//     @include btn-primary();
+//   }
+
+//   &-dashed {
+//     @include btn-dashed();
+//   }
+//   &-text {
+//     @include btn-text();
+//   }
+//   &-lg {
+//     @include btn-lg();
+//   }
+//   &-sm {
+//     @include btn-sm();
+//   }
+//   &-block {
+//     width: 100%;
+//   }
+
+//   &-circle {
+//     @include btn-circle($btn-cls);
+//   }
+//   &-round {
+//     @include btn-round($btn-cls);
+//   }
+//   &-danger {
+//     @include btn-danger($btn-cls);
+//   }
+//   &-ghost {
+//     @include btn-ghost($btn-cls);
+//   }
+// }

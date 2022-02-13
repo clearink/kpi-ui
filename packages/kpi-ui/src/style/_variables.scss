@@ -21,8 +21,8 @@ $purple-base: #722ed1;
 $magenta-base: #eb2f96;
 
 $outline-opacity: 0.2;
-/* ---------------- 颜色色板 ---------------- */
-/* ---------------- 功能色 ---------------- */
+// ---------------- 颜色色板 ----------------
+// ---------------- 功能色 ----------------
 // 品牌色
 $primary-color: $blue-base;
 $primary-color-hover: palette($primary-color, 5);
@@ -64,7 +64,7 @@ $error-color-border: palette($error-color, 3);
 $black: #000;
 $white: #fff;
 
-/* ---------------- background ---------------- */
+// ---------------- background ----------------
 // 背景色
 $bg-color-body: #fff;
 $bg-color-component: #fff;
@@ -72,7 +72,7 @@ $bg-color-base: #f5f5f5;
 $bg-color--light: #fafafa;
 $bg-color-selection: $primary-color;
 
-/* ---------------- font ---------------- */
+// ---------------- font ----------------
 $heading-color: fade-out($black, 1 - 0.85); // 标题
 $text-color: fade-out($black, 1 - 0.85); // 基础
 $text-color-secondary: fade-out($black, 1 - 0.45); // 次级
@@ -81,10 +81,10 @@ $text-color-secondary: fade-out($black, 1 - 0.45); // 次级
 $font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
   'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 $code-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-/*
-font-size   12 14 16 20 24 30 38 46 56 68
-line-height 20 22 24 28 32 38 46 54 64 76
-*/
+
+// font-size   12 14 16 20 24 30 38 46 56 68
+// line-height 20 22 24 28 32 38 46 54 64 76
+
 $font-size-base: 14px;
 $font-size-lg: $font-size-base + 2px;
 $font-size-sm: 12px;
@@ -98,7 +98,7 @@ $line-height-base: 1.5715; // 行高
 $font-variant: tabular-nums;
 $font-feature-settings: tnum;
 
-/* ---------------- border ---------------- */
+// ---------------- border ----------------
 $border-radius-base: 2px;
 $border-radius-sm: $border-radius-base;
 $border-color-base: hsv_to_rgb(0, 0, 85%);
@@ -107,18 +107,18 @@ $border-color-inverse: $white;
 $border-width-base: 1px;
 $border-style-base: solid;
 
-/* ---------------- outline ---------------- */
-$outlint-width-base: 2px;
+// ---------------- outline ----------------
+$outline-width-base: 2px;
 $outline-width-blur: 0;
 $outline-color: $primary-color;
 
-/* ---------------- disable ---------------- */
+// ---------------- disable ----------------
 $disabled-color: fade-out($black, 1 - 0.25); // 禁用
 $disabled-bg: $bg-color-base;
 $disabled-active-bg: color.mix(#fff, $black, 90%);
 $disabled-active-dark: fade-out($white, 1 - 0.35); // 禁用
 
-/* ---------------- padding ---------------- */
+// ---------------- padding ----------------
 $padding-lg: 24px; // containers
 $padding-md: 16px; // small containers and buttons
 $padding-sm: 12px; // form controls and items
@@ -128,19 +128,19 @@ $padding-xss: 4px; // mini items
 $padding-x-base: $padding-sm;
 $padding-x-sm: $padding-xs;
 
-/* ---------------- margin ---------------- */
+// ---------------- margin ----------------
 $margin-lg: 24px;
 $margin-md: 16px;
 $margin-sm: 12px;
 $margin-xs: 8px;
 $margin-xss: 4px;
 
-/* ---------------- height ---------------- */
+// ---------------- height ----------------
 $height-base: 32px;
 $height-lg: 40px;
 $height-sm: 24px;
 
-/* ---------------- link ---------------- */
+// ---------------- link ----------------
 $link-color: $primary-color;
 $link-color-hover: palette($link-color, 5);
 $link-color-active: palette($link-color, 7);
@@ -149,30 +149,17 @@ $link-decoration-hover: none;
 $link-decoration-focus: none;
 $link-outline-focus: none;
 
-/* ---------------- animation ---------------- */
+// ---------------- animation ----------------
 // TODO: 后续完善
 
-/* ---------------- shadow ---------------- */
+// ---------------- shadow ----------------
 $shadow-color: rgba(#000, 0.15);
-/*
-高度
-0: 物体紧贴地面,投影与物体完全重,即不设置阴影值. 如: 输入框等控件
-1: 物体位于低层级,处于悬浮状态时需要体现状态反馈, 如卡片 hover
-2: 物体位于中层级,此时物体与基准面的关系是展开并跟随,
-物体由地面上的元素展开产生,会跟随元素所在的层级的移动而移动,如: 下拉面板
 
-3: 物体位于高层级,该物体的运动与其他层级没有关联.如: 对话框等
-*/
+// 1. 阴影向下: 主要用于组件内部或组件本身, 用于常规的场景
+// 2. 阴影向上: 底部导航或工具栏
+// 3. 阴影向左: 右侧导航栏,抽屉或者固定表格栏
+// 4. 阴影向右: 左边导航栏、抽屉组件或固定表格栏
 
-// 光源
-
-// 阴影值
-/* 
-1. 阴影向下: 主要用于组件内部或组件本身, 用于常规的场景
-2. 阴影向上: 底部导航或工具栏
-3. 阴影向左: 右侧导航栏,抽屉或者固定表格栏
-4. 阴影向右: 左边导航栏、抽屉组件或固定表格栏
-*/
 $shadow-color-base: rgba(#000, 0.15);
 // level-1
 $shadow-1-up: 0 -1px 2px -2px rgba($black, 0.16), 0 -3px 6px 0 rgba($black, 0.12), 0 -5px 12px 4px rgba($black, 0.09);
