@@ -19,31 +19,48 @@ $btn-px-sm: $padding-xs - 1px;
 
 //---------------- 颜色 -----------------------------
 
-// primary
-// 文字颜色 背景 边框 hover
-
-$btn-primary-text: $white; // 字体颜色
-$btn-primary-color-hover: $primary-color-hover;
-$btn-primary-color-active: $primary-color-active;
-$btn-primary-bg: $primary-color;
-$btn-primary-border: $primary-color;
-
-// default
-$btn-default-text: $text-color;
-$btn-default-color-hover: $primary-color-hover;
-$btn-default-color-active: $primary-color-active;
+// theme default
+$btn-default-color: $text-color;
 $btn-default-bg: $bg-color-component;
 $btn-default-border: $border-color-base;
+// hover
+$btn-default-color-hover: $primary-color-hover;
+$btn-default-bg-hover: $bg-color-component;
+$btn-default-border-hover: $primary-color-hover;
+// active
+$btn-default-color-active: $primary-color-active;
+$btn-default-bg-active: $bg-color-component;
+$btn-default-border-active: $primary-color-active;
 
-// danger
-$btn-danger-text: $error-color;
-$btn-danger-color-hover: $error-color-hover;
-$btn-danger-color-active: $error-color-active;
-$btn-danger-bg: $error-color;
+// theme primary
+$btn-primary-color: $white; // 字体颜色
+$btn-primary-bg: $primary-color;
+$btn-primary-border: $primary-color;
+// hover
+$btn-primary-color-hover: $white; // 字体颜色
+$btn-primary-bg-hover: $primary-color-hover;
+$btn-primary-border-hover: $primary-color-hover;
+// active
+$btn-primary-color-active: $white; // 字体颜色
+$btn-primary-bg-active: $primary-color-active;
+$btn-primary-border-active: $primary-color-active;
+
+// theme danger
+$btn-danger-color: $error-color;
+$btn-danger-bg:  $bg-color-component;
 $btn-danger-border: $error-color;
+// hover
+$btn-danger-color-hover: $error-color-hover;
+$btn-danger-bg-hover: $bg-color-component;
+$btn-danger-border-hover: $error-color-hover;
+// active
+$btn-danger-color-active: $error-color-active;
+$btn-danger-bg-active:$bg-color-component;
+$btn-danger-border-active: $error-color-active;
 
-// link/text
-$btn-link-text: $primary-color;
+
+// link
+$btn-link-color: $primary-color;
 $btn-link-color-hover: $primary-color-hover;
 $btn-link-color-active: $primary-color-active;
 $btn-link-bg: transparent;
@@ -64,8 +81,8 @@ $btn-ghost-border: $bg-color-component;
 // 边框
 $btn-border-width: $border-width-base;
 $btn-border-style: $border-style-base;
-$btn-border-raduis: $border-radius-base;
-$btn-border-raduis-sm: $border-radius-sm;
+$btn-border-radius: $border-radius-base;
+$btn-border-radius-sm: $border-radius-sm;
 
 // 阴影
 $btn-font-weight: 400;

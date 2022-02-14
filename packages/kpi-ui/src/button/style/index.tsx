@@ -1,3 +1,5 @@
-// 主要是引入 preset 为了实现按需引入
-import '../../style/preset'
+// 实现按需引入
+
+// 样式配置
+import '../../style/index.scss'
 import './index.scss'

@@ -1,5 +1,5 @@
-import { Button } from '@kpi/ui'
-
+import { Button } from '../../../src'
+import '../../../src/style'
 export default function App() {
   return (
     <div className="app-wrap">

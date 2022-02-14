@@ -1,12 +1,132 @@
+@use 'sass:math';
 // 优化打包性能引入除了 preset 的内容
-@import '../../style/core/index'; // 引入 BEM
+@import '../../style/core/index.scss'; // 引入 BEM
 @import '../../style/themes/index'; // 引入 变量
 @import './mixins';
 
-$btn-cls: '#{$prefix}-btn';
 @include b(button) {
   @include btn-base();
-  @include btn-default();
+  @include btn-size($btn-height-base, $btn-font-size-base, $btn-px-base, $btn-border-radius);
+  @include btn-theme(
+    $btn-default-color,
+    $btn-default-bg,
+    $btn-default-border,
+    $btn-default-color-hover,
+    $btn-default-bg-hover,
+    $btn-default-border-hover,
+    $btn-default-color-active,
+    $btn-default-bg-active,
+    $btn-default-border-active
+  );
+  @include btn-disabled();
+
+  // theme
+  @include m(text) {
+    box-shadow: none;
+    @include btn-theme(
+      $btn-link-color,
+      $btn-link-bg,
+      $btn-link-border,
+      $btn-link-color-hover,
+      $btn-link-bg,
+      $btn-link-border,
+      $btn-link-color-active,
+      $btn-link-bg,
+      $btn-link-border
+    );
+    @include btn-disabled(undefined, transparent, transparent);
+  }
+
+  @include m(primary) {
+    @include btn-theme(
+      $btn-primary-color,
+      $btn-primary-bg,
+      $btn-primary-border,
+      $btn-primary-color-hover,
+      $btn-primary-bg-hover,
+      $btn-primary-border-hover,
+      $btn-primary-color-active,
+      $btn-primary-bg-active,
+      $btn-primary-border-active
+    );
+  }
+
+  @include m(danger) {
+    @include btn-theme(
+      $btn-danger-color,
+      $btn-danger-bg,
+      $btn-danger-border,
+      $btn-danger-color-hover,
+      $btn-danger-bg-hover,
+      $btn-danger-border-hover,
+      $btn-danger-color-active,
+      $btn-danger-bg-active,
+      $btn-danger-border-active
+    );
+    @include m(primary) {
+      @include btn-theme(
+        $btn-primary-color,
+        $btn-danger-color,
+        $btn-danger-border,
+        $btn-primary-color-hover,
+        $btn-danger-color-hover,
+        $btn-danger-border-hover,
+        $btn-primary-color-active,
+        $btn-danger-color-active,
+        $btn-danger-border-active
+      );
+    }
+
+    @include m(text) {
+      @include btn-theme(
+        $btn-danger-color,
+        $btn-link-bg,
+        $btn-link-border,
+        $btn-danger-color-hover,
+        $btn-link-bg,
+        $btn-link-border,
+        $btn-danger-color-active,
+        $btn-link-bg,
+        $btn-link-border
+      );
+    }
+  }
+
+  @include m(dashed) {
+    border-style: dashed;
+  }
+
+  // size
+  @include m(lg) {
+    @include btn-size($btn-height-lg, $btn-font-size-lg, $btn-px-base, $btn-border-radius);
+  }
+  
+  @include m(sm) {
+    @include btn-size($btn-height-sm, $btn-font-size-sm, $btn-px-sm, $btn-border-radius);
+  }
+
+  // shape
+  @include m(circle) {
+    min-width: $btn-height-base;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center;
+    border-radius: 50%;
+  }
+
+  @include m(round) {
+    $px: math.div($btn-height-base, 2);
+    @include btn-size($btn-height-base, $btn-font-size-base, $px, $btn-height-base);
+
+    @include m(lg) {
+      $px: math.div($btn-height-lg, 2);
+      @include btn-size($btn-height-lg, $btn-font-size-lg, $px, $btn-height-lg);
+    }
+    @include m(sm) {
+      $px: math.div($btn-height-sm, 2);
+      @include btn-size($btn-height-lg, $btn-font-size-lg, $px, $btn-height-lg);
+    }
+  }
 }
 
 // .#{$btn-cls} {

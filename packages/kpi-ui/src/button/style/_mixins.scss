@@ -1,6 +1,56 @@
 @use 'sass:math';
-@import './utils';
 @import './variable';
+// 主题。暂时不考虑 暗色模式、紧凑模式等
+@mixin btn-theme(
+  $text-color,
+  $bg-color,
+  $border-color,
+  $text-color-hover,
+  $bg-color-hover,
+  $border-color-hover,
+  $text-color-active,
+  $bg-color-active,
+  $border-color-active
+) {
+  @include btn-color($text-color, $bg-color, $border-color);
+  &:hover,
+  &:focus {
+    @include btn-color($text-color-hover, $bg-color-hover, $border-color-hover);
+  }
+  &:active {
+    @include btn-color($text-color-active, $bg-color-active, $border-color-active);
+  }
+}
+@mixin btn-disabled($color: $btn-disabled-text, $bg: $btn-disabled-bg, $border: $btn-disabled-border) {
+  &[disabled] {
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+      @include btn-color($color, $bg, $border);
+      text-shadow: none;
+      box-shadow: none;
+    }
+  }
+}
+// 大小
+@mixin btn-size($height, $font-size, $px, $radius) {
+  $diff: math.div($height - $font-size * $btn-line-height, 2);
+  $py: max(math.div(round($diff * 10), 10) - $btn-border-width, 0);
+
+  height: $height;
+  padding: $py $px;
+  font-size: $font-size;
+  border-radius: $radius;
+}
+// 颜色
+@mixin btn-color($text, $bg, $border) {
+  color: $text;
+  border-color: $border;
+  @if ($bg) {
+    background-color: $bg;
+  }
+}
 
 @mixin btn-base() {
   position: relative;
@@ -15,7 +65,6 @@
   transition: all 0.3s $ease-in-out;
   user-select: none;
   touch-action: manipulation;
-  @include btn-size($btn-height-base, $btn-font-size-base, $btn-px-base, $btn-border-raduis);
   > span {
     display: inline-block;
   }
@@ -29,6 +78,9 @@
     outline: 0;
   }
 
+  &:hover,
+  &:focus,
+  &:active,
   &:not([disabled]):hover {
     text-decoration: none;
   }
@@ -40,109 +92,108 @@
 
   &[disabled] {
     cursor: not-allowed;
-
     > * {
       pointer-events: none;
     }
   }
 }
 
-@mixin btn-lg {
-  @include btn-size($btn-height-lg, $btn-font-size-lg, $btn-px-base, $btn-border-raduis);
-}
-@mixin btn-sm {
-  @include btn-size($btn-height-sm, $btn-font-size-sm, $btn-px-sm, $btn-border-raduis);
-}
-@mixin btn-default {
-  @include btn-variant($btn-default-text, $btn-default-bg, $btn-default-border);
-  &:hover,
-  &:focus,
-  &:active {
-    text-decoration: none;
-    background: $btn-default-bg;
-  }
-  @include btn-disabled();
-}
+// @mixin btn-lg {
+//   @include btn-size($btn-height-lg, $btn-font-size-lg, $btn-px-base, $btn-border-raduis);
+// }
+// @mixin btn-sm {
+//   @include btn-size($btn-height-sm, $btn-font-size-sm, $btn-px-sm, $btn-border-raduis);
+// }
+// @mixin btn-default {
+//   @include btn-variant($btn-default-text, $btn-default-bg, $btn-default-border);
+//   &:hover,
+//   &:focus,
+//   &:active {
+//     text-decoration: none;
+//     background: $btn-default-bg;
+//   }
+//   @include btn-disabled();
+// }
 
-@mixin btn-dashed {
-  @include btn-variant($btn-default-text, $btn-default-bg, $btn-default-border);
-  border-style: dashed;
-}
+// @mixin btn-dashed {
+//   @include btn-variant($btn-default-text, $btn-default-bg, $btn-default-border);
+//   border-style: dashed;
+// }
 
-@mixin btn-text {
-  @include btn-variant($btn-link-text, transparent, transparent, 'text');
-  box-shadow: none;
-  &:hover {
-    background: transparent;
-  }
+// @mixin btn-text {
+//   @include btn-variant($btn-link-text, transparent, transparent, 'text');
+//   box-shadow: none;
+//   &:hover {
+//     background: transparent;
+//   }
 
-  &:hover,
-  &:focus,
-  &:active {
-    border-color: transparent;
-  }
-  @include btn-disabled(undefined, transparent, transparent);
-}
+//   &:hover,
+//   &:focus,
+//   &:active {
+//     border-color: transparent;
+//   }
+//   @include btn-disabled(undefined, transparent, transparent);
+// }
 
-@mixin btn-primary {
-  @include btn-variant($btn-primary-text, $btn-primary-bg, $btn-primary-border, 'primary');
-  text-shadow: $btn-text-shadow;
-  box-shadow: $btn-primary-shadow;
-  @include btn-disabled();
-}
+// @mixin btn-primary {
+//   @include btn-variant($btn-primary-text, $btn-primary-bg, $btn-primary-border, 'primary');
+//   text-shadow: $btn-text-shadow;
+//   box-shadow: $btn-primary-shadow;
+//   @include btn-disabled();
+// }
 
-@mixin btn-circle($btn-cls) {
-  min-width: $btn-height-base;
-  padding-left: 0;
-  padding-right: 0;
-  text-align: center;
-  border-radius: 50%;
-  &.#{$btn-cls}-lg {
-    min-width: $btn-height-lg;
-  }
-  &.#{$btn-cls}-sm {
-    min-width: $btn-height-sm;
-  }
-}
+// @mixin btn-circle($btn-cls) {
+//   min-width: $btn-height-base;
+//   padding-left: 0;
+//   padding-right: 0;
+//   text-align: center;
+//   border-radius: 50%;
+//   &.#{$btn-cls}-lg {
+//     min-width: $btn-height-lg;
+//   }
+//   &.#{$btn-cls}-sm {
+//     min-width: $btn-height-sm;
+//   }
+// }
 
-@mixin btn-round($btn-cls) {
-  $px: math.div($btn-height-base, 2);
-  @include btn-size($btn-height-base, $btn-font-size-base, $px, $btn-height-base);
-  &.#{$btn-cls}-lg {
-    $px: math.div($btn-height-lg, 2);
-    @include btn-size($btn-height-lg, $btn-font-size-lg, $px, $btn-height-lg);
-  }
-  &.#{$btn-cls}-sm {
-    $px: math.div($btn-height-sm, 2);
-    @include btn-size($btn-height-sm, $btn-font-size-sm, $px, $btn-height-sm);
-  }
-}
+// @mixin btn-round($btn-cls) {
+//   $px: math.div($btn-height-base, 2);
+//   @include btn-size($btn-height-base, $btn-font-size-base, $px, $btn-height-base);
+//   &.#{$btn-cls}-lg {
+//     $px: math.div($btn-height-lg, 2);
+//     @include btn-size($btn-height-lg, $btn-font-size-lg, $px, $btn-height-lg);
+//   }
+//   &.#{$btn-cls}-sm {
+//     $px: math.div($btn-height-sm, 2);
+//     @include btn-size($btn-height-sm, $btn-font-size-sm, $px, $btn-height-sm);
+//   }
+// }
 
-@mixin btn-danger($btn-cls) {
-  @include btn-variant($btn-danger-text, null, $btn-danger-border, 'danger');
-  &.#{$btn-cls}-primary {
-    @include btn-variant($btn-primary-text, $btn-danger-bg, $btn-danger-border, 'primary');
-    @include btn-disabled();
-  }
-  &.#{$btn-cls}-text {
-    @include btn-variant($btn-danger-text, transparent, transparent, 'text');
-    @include btn-disabled($btn-disabled-text, undefined, transparent);
-  }
-}
+// @mixin btn-danger($btn-cls) {
+//   @include btn-variant($btn-danger-text, null, $btn-danger-border, 'danger');
+//   &.#{$btn-cls}-primary {
+//     @include btn-variant($btn-primary-text, $btn-danger-bg, $btn-danger-border, 'primary');
+//     @include btn-disabled();
+//   }
+//   &.#{$btn-cls}-text {
+//     @include btn-variant($btn-danger-text, transparent, transparent, 'text');
+//     @include btn-disabled($btn-disabled-text, undefined, transparent);
+//   }
+// }
 
-@mixin btn-ghost($btn-cls) {
-  @include btn-variant($btn-ghost-text, transparent, $btn-primary-text, 'default', true);
-  @include btn-disabled(undefined, transparent, undefined);
-  &.#{$btn-cls}-primary {
-    @include btn-variant($btn-primary-bg, $btn-primary-bg, $btn-primary-border, 'primary', true);
-  }
-  &.#{$btn-cls}-danger {
-    @include btn-variant($btn-danger-text, transparent, $btn-danger-border, 'danger', true);
-  }
-  background: 0 0;
-  text-decoration: none;
-  text-shadow: none;
-}
+// @mixin btn-ghost($btn-cls) {
+//   @include btn-variant($btn-ghost-text, transparent, $btn-primary-text, 'default', true);
+//   @include btn-disabled(undefined, transparent, undefined);
+//   &.#{$btn-cls}-primary {
+//     @include btn-variant($btn-primary-bg, $btn-primary-bg, $btn-primary-border, 'primary', true);
+//   }
+//   &.#{$btn-cls}-danger {
+//     @include btn-variant($btn-danger-text, transparent, $btn-danger-border, 'danger', true);
+//   }
+//   background: 0 0;
+//   text-decoration: none;
+//   text-shadow: none;
+// }
 
 // @mixin btn-base() {
 // }

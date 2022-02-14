@@ -9,11 +9,11 @@ export default function useBtnClass(props: ButtonProps) {
     return cls(name, {
       [`${name}--${type}`]: type,
       [`${name}-block`]: block,
-      [`${name}-danger`]: danger,
+      [`${name}--danger`]: danger,
       [`${name}--circle`]: shape === 'circle',
       [`${name}--round`]: shape === 'round',
-      [`${name}-lg`]: size === 'large',
-      [`${name}-sm`]: size === 'small',
+      [`${name}--lg`]: size === 'large',
+      [`${name}--sm`]: size === 'small',
       [`${name}-ghost`]: ghost,
       [`${name}-loading`]: loading,
     })

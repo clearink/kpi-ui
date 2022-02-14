@@ -82,3 +82,7 @@
     @include btn-color($text, $bg-color, $border);
   }
 }
+
+// 主题
+@mixin btn-theme() {
+}
