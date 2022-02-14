@@ -20,42 +20,43 @@ $btn-px-sm: $padding-xs - 1px;
 //---------------- 颜色 -----------------------------
 
 // theme default
-$btn-default-color: $text-color;
+$btn-default-text: $text-color;
 $btn-default-bg: $bg-color-component;
 $btn-default-border: $border-color-base;
 // hover
-$btn-default-color-hover: $primary-color-hover;
-$btn-default-bg-hover: $bg-color-component;
+$btn-default-text-hover: $primary-color-hover;
 $btn-default-border-hover: $primary-color-hover;
 // active
-$btn-default-color-active: $primary-color-active;
-$btn-default-bg-active: $bg-color-component;
+$btn-default-text-active: $primary-color-active;
 $btn-default-border-active: $primary-color-active;
 
 // theme primary
-$btn-primary-color: $white; // 字体颜色
+$btn-primary-color: $primary-color; // 字体颜色
+
+$btn-primary-text: $white; // 字体颜色
 $btn-primary-bg: $primary-color;
 $btn-primary-border: $primary-color;
 // hover
-$btn-primary-color-hover: $white; // 字体颜色
+
 $btn-primary-bg-hover: $primary-color-hover;
 $btn-primary-border-hover: $primary-color-hover;
 // active
-$btn-primary-color-active: $white; // 字体颜色
 $btn-primary-bg-active: $primary-color-active;
 $btn-primary-border-active: $primary-color-active;
 
 // theme danger
 $btn-danger-color: $error-color;
+$btn-danger-color-hover: $error-color-hover;
+$btn-danger-color-active: $error-color-active;
+
+$btn-danger-text: $error-color;
 $btn-danger-bg:  $bg-color-component;
 $btn-danger-border: $error-color;
 // hover
-$btn-danger-color-hover: $error-color-hover;
-$btn-danger-bg-hover: $bg-color-component;
+$btn-danger-text-hover: $error-color-hover;
 $btn-danger-border-hover: $error-color-hover;
 // active
-$btn-danger-color-active: $error-color-active;
-$btn-danger-bg-active:$bg-color-component;
+$btn-danger-text-active: $error-color-active;
 $btn-danger-border-active: $error-color-active;
 
 
@@ -72,11 +73,13 @@ $btn-disabled-bg: $disabled-bg;
 $btn-disabled-border: $border-color-base;
 
 // ghost
-$btn-ghost-text: $white;
+$btn-ghost-color: $white;
 $btn-ghost-color-hover: $primary-color-hover;
 $btn-ghost-color-active: $primary-color-active;
-$btn-ghost-bg: transparent;
+
 $btn-ghost-border: $bg-color-component;
+
+$btn-ghost-bg: transparent;
 
 // 边框
 $btn-border-width: $border-width-base;

@@ -8,14 +8,14 @@ export default function useBtnClass(props: ButtonProps) {
   return useMemo(() => {
     return cls(name, {
       [`${name}--${type}`]: type,
-      [`${name}-block`]: block,
+      [`${name}--block`]: block,
       [`${name}--danger`]: danger,
       [`${name}--circle`]: shape === 'circle',
       [`${name}--round`]: shape === 'round',
       [`${name}--lg`]: size === 'large',
       [`${name}--sm`]: size === 'small',
-      [`${name}-ghost`]: ghost,
-      [`${name}-loading`]: loading,
+      [`${name}--ghost`]: ghost,
+      [`${name}--loading`]: loading,
     })
   }, [name, type, block, danger, shape, size, ghost, loading])
 }

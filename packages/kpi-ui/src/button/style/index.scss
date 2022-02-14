@@ -8,14 +8,14 @@
   @include btn-base();
   @include btn-size($btn-height-base, $btn-font-size-base, $btn-px-base, $btn-border-radius);
   @include btn-theme(
-    $btn-default-color,
+    $btn-default-text,
     $btn-default-bg,
     $btn-default-border,
-    $btn-default-color-hover,
-    $btn-default-bg-hover,
+    $btn-default-text-hover,
+    $btn-default-bg,
     $btn-default-border-hover,
-    $btn-default-color-active,
-    $btn-default-bg-active,
+    $btn-default-text-active,
+    $btn-default-bg,
     $btn-default-border-active
   );
   @include btn-disabled();
@@ -34,18 +34,18 @@
       $btn-link-bg,
       $btn-link-border
     );
-    @include btn-disabled(undefined, transparent, transparent);
+    @include btn-disabled(null, transparent, transparent);
   }
 
   @include m(primary) {
     @include btn-theme(
-      $btn-primary-color,
+      $btn-primary-text,
       $btn-primary-bg,
       $btn-primary-border,
-      $btn-primary-color-hover,
+      $btn-primary-text,
       $btn-primary-bg-hover,
       $btn-primary-border-hover,
-      $btn-primary-color-active,
+      $btn-primary-text,
       $btn-primary-bg-active,
       $btn-primary-border-active
     );
@@ -53,25 +53,25 @@
 
   @include m(danger) {
     @include btn-theme(
-      $btn-danger-color,
+      $btn-danger-text,
       $btn-danger-bg,
       $btn-danger-border,
-      $btn-danger-color-hover,
-      $btn-danger-bg-hover,
+      $btn-danger-text-hover,
+      $btn-danger-bg,
       $btn-danger-border-hover,
-      $btn-danger-color-active,
-      $btn-danger-bg-active,
+      $btn-danger-text-active,
+      $btn-danger-bg,
       $btn-danger-border-active
     );
     @include m(primary) {
       @include btn-theme(
-        $btn-primary-color,
+        $btn-primary-text,
         $btn-danger-color,
         $btn-danger-border,
-        $btn-primary-color-hover,
+        $btn-primary-text,
         $btn-danger-color-hover,
         $btn-danger-border-hover,
-        $btn-primary-color-active,
+        $btn-primary-text,
         $btn-danger-color-active,
         $btn-danger-border-active
       );
@@ -82,13 +82,14 @@
         $btn-danger-color,
         $btn-link-bg,
         $btn-link-border,
-        $btn-danger-color-hover,
+        $btn-danger-text-hover,
         $btn-link-bg,
         $btn-link-border,
-        $btn-danger-color-active,
+        $btn-danger-text-active,
         $btn-link-bg,
         $btn-link-border
       );
+      @include btn-disabled($bg: transparent, $border: transparent);
     }
   }
 
@@ -100,9 +101,13 @@
   @include m(lg) {
     @include btn-size($btn-height-lg, $btn-font-size-lg, $btn-px-base, $btn-border-radius);
   }
-  
+
   @include m(sm) {
     @include btn-size($btn-height-sm, $btn-font-size-sm, $btn-px-sm, $btn-border-radius);
+  }
+
+  @include m(block) {
+    width: 100%;
   }
 
   // shape
@@ -112,6 +117,12 @@
     padding-right: 0;
     text-align: center;
     border-radius: 50%;
+    @include m(lg) {
+      min-width: $btn-height-lg;
+    }
+    @include m(sm) {
+      min-width: $btn-height-sm;
+    }
   }
 
   @include m(round) {
@@ -124,47 +135,48 @@
     }
     @include m(sm) {
       $px: math.div($btn-height-sm, 2);
-      @include btn-size($btn-height-lg, $btn-font-size-lg, $px, $btn-height-lg);
+      @include btn-size($btn-height-sm, $btn-font-size-sm, $px, $btn-height-sm);
+    }
+  }
+
+  @include m(ghost) {
+    @include btn-theme(
+      $btn-ghost-color,
+      transparent,
+      $btn-ghost-color,
+      $btn-ghost-color-hover,
+      transparent,
+      $btn-ghost-color-hover,
+      $btn-ghost-color-active,
+      transparent,
+      $btn-ghost-color-active
+    );
+    @include btn-disabled($bg: transparent);
+    @include m(primary) {
+      @include btn-theme(
+        $btn-primary-color,
+        transparent,
+        $btn-primary-color,
+        $btn-default-text-hover,
+        transparent,
+        $btn-primary-border-hover,
+        $btn-default-text-active,
+        transparent,
+        $btn-primary-border-active
+      );
+    }
+    @include m(danger) {
+      @include btn-theme(
+        $btn-danger-color,
+        transparent,
+        $btn-danger-color,
+        $btn-danger-color-hover,
+        transparent,
+        $btn-danger-color-hover,
+        $btn-danger-color-active,
+        transparent,
+        $btn-danger-color-active
+      );
     }
   }
 }
-
-// .#{$btn-cls} {
-//   @include btn();
-//   @include btn-default();
-//   line-height: $btn-line-height;
-
-//   // 预设颜色
-//   &-primary {
-//     @include btn-primary();
-//   }
-
-//   &-dashed {
-//     @include btn-dashed();
-//   }
-//   &-text {
-//     @include btn-text();
-//   }
-//   &-lg {
-//     @include btn-lg();
-//   }
-//   &-sm {
-//     @include btn-sm();
-//   }
-//   &-block {
-//     width: 100%;
-//   }
-
-//   &-circle {
-//     @include btn-circle($btn-cls);
-//   }
-//   &-round {
-//     @include btn-round($btn-cls);
-//   }
-//   &-danger {
-//     @include btn-danger($btn-cls);
-//   }
-//   &-ghost {
-//     @include btn-ghost($btn-cls);
-//   }
-// }
