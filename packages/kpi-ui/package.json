@@ -20,7 +20,8 @@
   },
   "scripts": {
     "compile": "kpi-cli compile -f",
-    "dev": "kpi-cli dev"
+    "dev": "kpi-cli dev",
+    "gen": "kpi-cli gen"
   },
   "dependencies": {
     "@react-spring/web": "^9.4.2",

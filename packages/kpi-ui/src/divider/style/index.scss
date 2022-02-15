@@ -1,0 +1,11 @@
+// 优化打包性能引入除了 preset 的内容
+@import '../../style/core/index.scss'; // 引入 BEM
+@import '../../style/themes/index.scss'; // 引入 变量
+@import './variable';
+@include b(divider) {
+  display: flex;
+  clear: both;
+  width: 100%;
+  min-width: 100%;
+  margin: $divider-margin-base 0;
+}

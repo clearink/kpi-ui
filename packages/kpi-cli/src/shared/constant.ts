@@ -30,8 +30,10 @@ export default function KPI_CONST(mode: 'development' | 'production') {
     TEST_DIR_NAME: '__tests__',
     DOCS_DIR_NAME: 'docs',
     PROPS_DIR_NAME: 'props',
+    STYLE_DIR_NAME: 'style',
+    STYLE_FILE_NAME: 'index.scss',
+    ENTRY_FILE: 'index.tsx',
     COMPONENT_FILE_NAME: '{name}.tsx',
-    STYLE_FILE_NAME: 'style.scss',
 
     // change
 
