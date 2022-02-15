@@ -3,9 +3,16 @@
 @import '../../style/themes/index.scss'; // 引入 变量
 @import './variable';
 @include b(divider) {
-  display: flex;
-  clear: both;
-  width: 100%;
-  min-width: 100%;
-  margin: $divider-margin-base 0;
+  @include reset-component();
+  border-top: $divider-width solid $divider-color;
+  @include m(horizontal) {
+    display: flex;
+    clear: both;
+    width: 100%;
+    min-width: 100%;
+    margin: $divider-margin-base 0;
+  }
+  @include m(dashed) {
+    border-style: dashed;
+  }
 }

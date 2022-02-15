@@ -107,6 +107,10 @@ $border-color-inverse: $white;
 $border-width-base: 1px;
 $border-style-base: solid;
 
+// ---------------- divider ----------------
+$divider-width: 1px;
+$divider-color: fade-out($black, 1- 0.06);
+
 // ---------------- outline ----------------
 $outline-width-base: 2px;
 $outline-width-blur: 0;
