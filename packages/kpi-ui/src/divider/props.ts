@@ -4,8 +4,8 @@ export interface DividerProps {
   children?: ReactNode
   className?: string
   dashed: boolean
-  orientation: 'left' | 'right' | 'top' | 'bottom'
-  orientationMargin: string | number
+  orientation: 'left' | 'right' | 'center'
+  orientationMargin?: string | number
   plain: boolean
   style?: CSSProperties
   type: 'horizontal' | 'vertical'

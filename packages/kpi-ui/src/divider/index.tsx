@@ -1,8 +1,15 @@
+import withDefaultProps from '../hocs/withDefaultProps'
+import useDividerClass from './hooks/use_divider_class'
 import { DividerProps } from './props'
 
 function Divider(props: DividerProps) {
-  console.log(props);
-  return <div className="divider">divider</div>
+  const className = useDividerClass(props)
+  return <div className={className}></div>
 }
-export default Divider
-  
+// dashed, orientation, orientationMargin, plain, type
+export default withDefaultProps(Divider, {
+  dashed: false,
+  orientation: 'center',
+  plain: false,
+  type: 'horizontal',
+})

@@ -96,7 +96,7 @@ $heading-5-size: math.ceil($font-size-base * 1.14);
 $line-height-base: 1.5715; // 行高
 // 渲染配置
 $font-variant: tabular-nums;
-$font-feature-settings: tnum;
+$font-feature-settings: 'tnum';
 
 // ---------------- border ----------------
 $border-radius-base: 2px;
@@ -109,7 +109,7 @@ $border-style-base: solid;
 
 // ---------------- divider ----------------
 $divider-width: 1px;
-$divider-color: fade-out($black, 1- 0.06);
+$divider-color: fade-out($black, 1 - 0.06);
 
 // ---------------- outline ----------------
 $outline-width-base: 2px;

@@ -13,6 +13,22 @@
     margin: $divider-margin-base 0;
   }
   @include m(dashed) {
-    border-style: dashed;
+    border-top-style: dashed;
+  }
+  @include m(vertical) {
+    position: relative;
+    top: -0.06em;
+    display: inline-block;
+    height: 0.9em;
+    margin: 0 $divider-margin-vertical;
+    vertical-align: middle;
+    border-top: none;
+    border-left: $divider-width solid $divider-color;
+  }
+  @include m(text-left) {
+  }
+  @include m(text-center) {
+  }
+  @include m(text-right) {
   }
 }
