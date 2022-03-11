@@ -5,12 +5,42 @@
 @include b(divider) {
   @include reset-component();
   border-top: $divider-width solid $divider-color;
+  // e
+  @include e(inner-text) {
+    display: inline-block;
+    padding: 0 1em;
+  }
+
+  // m
   @include m(horizontal) {
     display: flex;
     clear: both;
     width: 100%;
     min-width: 100%;
     margin: $divider-margin-base 0;
+    @include m(with-text) {
+      // 设定了文字
+      display: flex;
+      margin: $divider-margin-with-text 0;
+      color: $text-color;
+      font-weight: 500;
+      font-size: 16px;
+      white-space: nowrap;
+      border-top: none;
+      text-align: center;
+      &::before,
+      &::after {
+        content: '';
+        position: relative;
+        top: 50%;
+        transform: translateY(50%);
+        border-top: $divider-width solid $divider-color;
+      }
+      @include m(plain) {
+        font-size: 14px;
+        font-weight: 400;
+      }
+    }
   }
   @include m(dashed) {
     border-top-style: dashed;
@@ -25,10 +55,43 @@
     border-top: none;
     border-left: $divider-width solid $divider-color;
   }
+
   @include m(text-left) {
+    &::before {
+      width: 5%;
+    }
+    &::after {
+      width: 95%;
+    }
+    @include m(custom-margin) {
+      &::before {
+        width: 0;
+      }
+      &::after {
+        width: 100%;
+      }
+    }
   }
   @include m(text-center) {
+    &::before,
+    &::after {
+      width: 50%;
+    }
   }
   @include m(text-right) {
+    &::before {
+      width: 95%;
+    }
+    &::after {
+      width: 5%;
+    }
+    @include m(custom-margin) {
+      &::before {
+        width: 100%;
+      }
+      &::after {
+        width: 0;
+      }
+    }
   }
 }

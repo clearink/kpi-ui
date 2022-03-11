@@ -1,16 +1,22 @@
 import { DividerProps } from '../props'
 import { useMemo } from 'react'
 import cls from 'classnames'
-import usePrefix from '../../hooks/use_prefix'
 
-export default function useDividerClass(props: DividerProps) {
-  const name = usePrefix('divider')
-  const { type, dashed, orientation } = props
+export default function useDividerClass(name: string, props: DividerProps) {
+  const { type, dashed, orientation, children, plain, orientationMargin } = props
+
+  // 自定义边距
+  const customMargin = useMemo(() => {
+    return ['left', 'right'].includes(orientation) && orientationMargin !== undefined
+  }, [])
   return useMemo(() => {
     return cls(name, {
       [`${name}--${type}`]: type,
       [`${name}--dashed`]: dashed,
+      [`${name}--plain`]: plain,
+      [`${name}--with-text`]: children,
       [`${name}--text-${orientation}`]: orientation,
+      [`${name}--custom-margin`]: customMargin,
     })
-  }, [type, dashed])
+  }, [type, dashed, children, customMargin, plain])
 }
