@@ -2,6 +2,7 @@
 @import '../../style/core/index.scss'; // 引入 BEM
 @import '../../style/themes/index.scss'; // 引入 变量
 @import './variable';
+@import './mixins';
 @include b(divider) {
   @include reset-component();
   border-top: $divider-width solid $divider-color;
@@ -57,41 +58,18 @@
   }
 
   @include m(text-left) {
-    &::before {
-      width: 5%;
-    }
-    &::after {
-      width: 95%;
-    }
+    @include divider-percent(5%);
     @include m(custom-margin) {
-      &::before {
-        width: 0;
-      }
-      &::after {
-        width: 100%;
-      }
+      @include divider-percent(0%);
     }
   }
   @include m(text-center) {
-    &::before,
-    &::after {
-      width: 50%;
-    }
+    @include divider-percent(50%);
   }
   @include m(text-right) {
-    &::before {
-      width: 95%;
-    }
-    &::after {
-      width: 5%;
-    }
+    @include divider-percent(95%);
     @include m(custom-margin) {
-      &::before {
-        width: 100%;
-      }
-      &::after {
-        width: 0;
-      }
+      @include divider-percent(100%);
     }
   }
 }

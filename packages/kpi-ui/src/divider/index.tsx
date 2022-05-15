@@ -1,30 +1,37 @@
 import { useMemo } from 'react'
-import withDefaultProps from '../hocs/withDefaultProps'
-import usePrefix from '../hooks/use_prefix'
-import capitalize from '../utils/capitalize'
+import withDefaultProps from '../_util/hocs/withDefaultProps'
+import { usePrefix } from '../_util/hooks'
+import capitalize from '../_util/capitalize'
+import { omit } from '../_util/value'
 import useDividerClass from './hooks/use_divider_class'
 import { DividerProps } from './props'
+// 导出组件属性
+export type { DividerProps }
+
 
 function Divider(props: DividerProps) {
-  const { children, orientation, orientationMargin, style } = props
+  const { children, orientation, orientationMargin, ...rest } = props
+  const attrs = omit(rest, ['className', 'type', 'dashed', 'plain'])
+
   const name = usePrefix('divider')
   const className = useDividerClass(name, props)
-  const innerTextMargin = useMemo(() => {
+
+  const innerStyle = useMemo(() => {
     const prop = `margin${capitalize(orientation)}`
     return { [prop]: orientationMargin }
   }, [orientation, orientationMargin])
 
   return (
-    <div className={className} style={style}>
-      {children ? (
-        <span className={`${name}__inner-text`} style={innerTextMargin}>
+    <div className={className} {...attrs}>
+      {children && (
+        <span className={`${name}__inner-text`} style={innerStyle}>
           {children}
         </span>
-      ) : null}
+      )}
     </div>
   )
 }
-// dashed, orientation, orientationMargin, plain, type
+
 export default withDefaultProps(Divider, {
   dashed: false,
   orientation: 'center',
