@@ -7,6 +7,7 @@
 
 @include b(button) {
   @include btn-base();
+  @include reset-component();
   @include btn-size($btn-height-base, $btn-font-size-base, $btn-px-base, $btn-border-radius);
   @include btn-theme(
     $btn-default-text,

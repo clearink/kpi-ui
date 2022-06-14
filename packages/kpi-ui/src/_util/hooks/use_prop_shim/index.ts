@@ -1,5 +1,5 @@
 import { useMemo, useRef } from 'react'
-import { isObject } from '../../validate_type'
+import { isPlainObject } from '../../validate_type'
 /**
  * @description
  * 首先该hook的使用场景:
@@ -17,7 +17,7 @@ export default function usePropShim<A extends any, D extends Extract<A, object>>
     console.log('return useMemo(() => {')
     function assign($default: Partial<D>, target: object) {
       if (target === undefined) return $default // 唯一不确定的是这里, 是否在外部传入 undefined 时仍然让其为默认值呢?
-      if (target === null || !isObject(target)) return target
+      if (target === null || !isPlainObject(target)) return target
       return Object.keys($default).reduce((result, key) => {
         if (key in target) {
           const current: any = assign($default[key], target[key])

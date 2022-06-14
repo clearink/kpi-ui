@@ -1,10 +1,6 @@
 import { BracketItem, NodePath, NodeType, RemovedDestToken, TokenItem } from '../interface'
 import { Dot, CBL, CBR, SBL, SBR } from './_token'
-
-export const isPlainObject = <T extends object>(obj: any): obj is T => obj !== null && typeof obj === 'object'
-
-export const isString = (obj: any): obj is string => typeof obj === 'string'
-export const isArray = Array.isArray
+import { isPlainObject } from '../../validate_type'
 
 // 是否为数据解构
 export function isDestToken(tokens: TokenItem[], index: number) {

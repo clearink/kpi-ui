@@ -15,6 +15,7 @@ export default function validatePatten($input: string) {
   if (/(?<!\.)\{/.test(input)) {
     throw new Error(`'{' 不允许单独使用, 前面必须跟 '.'`) // 6 15 16
   }
+
   // 'a.b.{a}a'
   if (/(?<=[\}\]])\w/.test(input)) throw new Error(`['}', ']'] 位置错误`)
 

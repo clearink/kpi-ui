@@ -1,6 +1,6 @@
+import { isPlainObject } from '../../validate_type'
 import { RemovedCommaToken, RemovedDestToken } from '../interface'
 import { Comma } from './_token'
-import { isPlainObject } from './_helps'
 
 // 处理 ','  按照 ',' 将数据分隔开
 function handleCommaToken(tokens: RemovedDestToken[]) {

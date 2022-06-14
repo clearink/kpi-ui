@@ -1,5 +1,6 @@
+import { isPlainObject } from '../../validate_type'
 import { NodePath, NodeType, RemovedCommaToken } from '../interface'
-import { fixLastAndValidateToken, isPlainObject } from './_helps'
+import { fixLastAndValidateToken } from './_helps'
 import { Colon } from './_token'
 
 function handleColonToken(matrix: RemovedCommaToken[][], type: NodeType) {
@@ -22,7 +23,8 @@ function handleColonToken(matrix: RemovedCommaToken[][], type: NodeType) {
       } else if ('attr' in token) last.push(token)
     }
 
-    if (item.length < 2) item[1] = item[0].slice()
+    if (item.length === 0) item.push([], [])
+    else if (item.length === 1) item.push(item[0].slice())
     if (type === 'array') item[0] = [index]
 
     // 修正最后一项

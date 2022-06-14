@@ -1,6 +1,7 @@
+import { isPlainObject } from '../validate_type'
 import { NodePath, GetValueResult } from './interface'
 import setValue from './set_value'
-import { initValue, isPlainObject, isString } from './utils/_helps'
+import { initValue } from './utils/_helps'
 
 function getValue<D extends any>(object: D, paths: NodePath[]): GetValueResult {
   if (!paths.length) return [false, object]
@@ -9,11 +10,11 @@ function getValue<D extends any>(object: D, paths: NodePath[]): GetValueResult {
 
   // 为了确保能够解析到最后一项
   if (!isPlainObject(object)) {
-    const type = isString(attribute) ? 'object' : attribute.type
+    const type = isPlainObject(attribute) ? attribute.type : 'object'
     return getValue(initValue(type), $paths)
   }
 
-  if (isString(attribute)) {
+  if (!isPlainObject(attribute)) {
     return [attribute in object, object[attribute]]
   }
 
