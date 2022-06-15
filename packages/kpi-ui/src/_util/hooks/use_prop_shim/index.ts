@@ -12,11 +12,10 @@ import { isPlainObject } from '../../validate_type'
  */
 export default function usePropShim<A extends any, D extends Extract<A, object>>(attr: A, $default: Partial<D>) {
   const ref = useRef($default)
-  ref.current = $default
   return useMemo(() => {
-    console.log('return useMemo(() => {')
     function assign($default: Partial<D>, target: object) {
-      if (target === undefined) return $default // 唯一不确定的是这里, 是否在外部传入 undefined 时仍然让其为默认值呢?
+      // 唯一不确定的是这里, 是否在外部传入 undefined 时仍然让其为默认值呢?
+      if (target === undefined) return $default
       if (target === null || !isPlainObject(target)) return target
       return Object.keys($default).reduce((result, key) => {
         if (key in target) {
