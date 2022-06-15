@@ -5,15 +5,15 @@ import setValue from './set_value'
 import tokenizer from './tokenizer'
 
 class FormPath {
-  private map = new Map<string, NodePath[]>()
+  private cache = new Map<string, NodePath[]>()
 
   // 缓存路径数据
   private handleCacheInput(input: string) {
-    if (!this.map.has(input)) {
+    if (!this.cache.has(input)) {
       const paths = parser(tokenizer(input))
-      this.map.set(input, paths)
+      this.cache.set(input, paths)
     }
-    return this.map.get(input)!
+    return this.cache.get(input)!
   }
 
   public set<R extends any>(object: any, input: string, value: any): R {
