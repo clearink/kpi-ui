@@ -1,0 +1,23 @@
+@mixin generate-grid($count: 24) {
+
+  @for $col from 1 through $count {
+    $percent: math.div($col, $count) * 100%;
+    .#{$prefix}-col-#{$col} {
+      display: block;
+      flex-basis: 0 0 $percent;
+      max-width: $percent;
+    }
+    .#{$prefix}-col-push-#{$col} {
+      left: $percent;
+    }
+    .#{$prefix}-col-pull-#{$col} {
+      right: $percent;
+    }
+    .#{$prefix}-col-offset-#{$col} {
+      margin-left: $percent;
+    }
+    .#{$prefix}-col-order-#{$col} {
+      order: $col;
+    }
+  }
+}

@@ -1,10 +1,9 @@
-// 这里也需要预处理下
-
 import { NodePath, TokenItem } from './interface'
 import { fixLastAndValidateToken, isArrayToken, isDestToken, isBracketMatch } from './utils/_helps'
 import { normalizeDestToken } from './utils'
 import { Dot } from './utils/_token'
 
+/** 解析 tokens 生成 paths */
 function parser(tokens: TokenItem[]) {
   const brackets: string[] = []
   const result: NodePath[] = []

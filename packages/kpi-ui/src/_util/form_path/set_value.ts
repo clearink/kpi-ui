@@ -1,7 +1,7 @@
 import getValue from './get_value'
-import { NodePath } from './interface'
 import { initValue } from './utils/_helps'
 import { isArray, isPlainObject } from '../validate_type'
+import { NodePath } from './interface'
 
 function setValue<D extends any>(object: D, paths: NodePath[], value: any) {
   if (!paths.length || !isPlainObject(object)) return object

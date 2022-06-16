@@ -1,7 +1,7 @@
-import { isPlainObject } from '../validate_type'
-import { NodePath, GetValueResult } from './interface'
 import setValue from './set_value'
 import { initValue } from './utils/_helps'
+import { isPlainObject } from '../validate_type'
+import { NodePath, GetValueResult } from './interface'
 
 function getValue<D extends any>(object: D, paths: NodePath[]): GetValueResult {
   if (!paths.length) return [false, object]

@@ -1,5 +1,4 @@
-import { config } from 'dotenv'
-import { copy, ensureDir, remove } from 'fs-extra'
+import { copy, existsSync } from 'fs-extra'
 import { resolve } from 'path'
 import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
@@ -14,7 +13,9 @@ export default async function preview(options: { open: boolean; port: number }) 
   const { APP_DIR } = KPI_CONST('development')
 
   const kpiDir = resolve(APP_DIR, '.kpi')
-  await copy(resolve(__dirname, '../../site'), kpiDir)
+  if (!existsSync(kpiDir)) {
+    await copy(resolve(__dirname, '../../site'), kpiDir)
+  }
 
   try {
     const compiler = webpack(config)

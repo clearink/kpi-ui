@@ -1,8 +1,19 @@
 // 优化打包性能引入除了 preset 的内容
+@use 'sass:math';
 @import '../../style/core/index.scss'; // 引入 BEM
 @import '../../style/themes/index.scss'; // 引入 变量
 @import './variable';
 @import './mixins';
-@include b(breadcrumb) {
-  @include reset-component();
+
+@include b(row) {
+  display: flex;
+  flex-flow: row wrap;
+  &::before,
+  &::after {
+    display: flex;
+  }
+}
+
+@include b(col) {
+  @include generate-grid(24); // 生成 24 格栅栏样式
 }

@@ -2,7 +2,7 @@ import { Operator, All, Bracket } from './utils/_token'
 import { TokenItem } from './interface'
 import validatePatten from './utils/validate_patten'
 
-// 解析输入生成 tokens数组
+/* 解析 input 生成 tokens */
 function tokenizer($input: string) {
   const letters = validatePatten($input)
 
