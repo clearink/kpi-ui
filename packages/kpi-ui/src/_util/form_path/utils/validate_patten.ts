@@ -31,7 +31,9 @@ export default function validatePatten($input: string) {
   if (/\,(?!\w|\.[\[\{])/.test(input)) throw new Error(`数据解构元素错误`) // 14 暂定
 
   // 不满足数组元素匹配
-  const hasErrorItem = Array.from(input.matchAll(/\w\[(.*?)\]/g)).some((item) => !/^\d+$/.test(item[1]))
+  const hasErrorItem = Array.from(input.matchAll(/\w\[(.*?)\]/g)).some(
+    (item) => !/^\d+$/.test(item[1])
+  )
   if (hasErrorItem) throw new Error(`数组元素匹配错误`) // 17 18
 
   // 上面的正则中以然包含了 8 19

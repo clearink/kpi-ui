@@ -2,7 +2,13 @@
 
 import { BracketItem, RemovedDestToken, TokenItem } from '../interface'
 import { Dot } from './_token'
-import { isDestToken, findDestToken, fixLastAndValidateToken, isArrayToken, isBracketMatch } from './_helps'
+import {
+  isDestToken,
+  findDestToken,
+  fixLastAndValidateToken,
+  isArrayToken,
+  isBracketMatch,
+} from './_helps'
 
 // 获取数据解构 tokens
 function handleDestToken(tokens: TokenItem[], brackets: BracketItem[]) {

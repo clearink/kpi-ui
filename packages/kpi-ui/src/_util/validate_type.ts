@@ -12,7 +12,8 @@ type VariableType =
   | 'BigInt'
   | 'AsyncFunction'
   | 'Map'
-export const validateType = (obj: any, type: VariableType) => Object.prototype.toString.call(obj) === `[object ${type}]`
+export const validateType = (obj: any, type: VariableType) =>
+  Object.prototype.toString.call(obj) === `[object ${type}]`
 
 export const isObject = (obj: any): obj is object => validateType(obj, 'Object')
 export const isPlainObject = (obj: any): obj is object => obj !== null && typeof obj === 'object'
@@ -27,4 +28,5 @@ export const isSymbol = (obj: any): obj is symbol => validateType(obj, 'Symbol')
 export const isBigInt = (obj: any): obj is bigint => validateType(obj, 'BigInt')
 export const isMap = (obj: any): obj is Map<any, any> => validateType(obj, 'Map')
 
-export const isNullUndefined = (obj: any): obj is null | undefined => isNull(obj) || isUndefined(obj)
+export const isNullUndefined = (obj: any): obj is null | undefined =>
+  isNull(obj) || isUndefined(obj)

@@ -5,7 +5,7 @@ export const SPACE_SIZE = {
 } as const
 
 // 断点 TODO: 尝试可以配置
-export const BREAKPOINT_MAP = {
+export const BREAKPOINT = {
   xs: { size: 575, mode: 'max' },
   sm: { size: 576, mode: 'min' },
   md: { size: 768, mode: 'min' },

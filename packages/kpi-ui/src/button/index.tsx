@@ -21,5 +21,3 @@ function Button(props: ButtonProps) {
   )
 }
 export default withDefaultProps(Button, { htmlType: 'button', type: 'default' })
-
-

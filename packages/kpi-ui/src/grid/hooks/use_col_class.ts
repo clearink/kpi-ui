@@ -1,8 +1,8 @@
-import { GridProps } from '../props'
 import { useMemo } from 'react'
 import cls from 'classnames'
+import { ColProps } from '../props'
 
-export default function useGridClass(name: string, props: GridProps) {
+export default function useColClass(name: string, props: ColProps) {
   const {} = props
 
   return useMemo(() => {

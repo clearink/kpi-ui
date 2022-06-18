@@ -1,4 +1,4 @@
-export function omit<T, K extends keyof T>(obj: T, keys: Array<K>): Omit<T, K> {
+function omit<T, K extends keyof T>(obj: T, keys: Array<K>): Omit<T, K> {
   const result = Object.assign({}, obj)
   for (let i = 0; i < keys.length; i += 1) {
     const key = keys[i]
@@ -7,7 +7,7 @@ export function omit<T, K extends keyof T>(obj: T, keys: Array<K>): Omit<T, K> {
   return result
 }
 
-export function pick<T, K extends keyof T>(obj: T, keys: Array<K>, allowUndefined = false): Pick<T, K> {
+function pick<T, K extends keyof T>(obj: T, keys: Array<K>, allowUndefined = false): Pick<T, K> {
   const result = {} as T
   for (let i = 0; i < keys.length; i += 1) {
     const key = keys[i]
@@ -16,3 +16,5 @@ export function pick<T, K extends keyof T>(obj: T, keys: Array<K>, allowUndefine
   }
   return result
 }
+
+export { omit, pick }

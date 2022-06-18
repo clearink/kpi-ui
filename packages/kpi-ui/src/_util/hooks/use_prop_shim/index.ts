@@ -10,7 +10,7 @@ import { isPlainObject } from '../../validate_type'
  * 注: 由于 js 结构的限制
  * 我们认为 attr = undefined 和 没有传该 attr 是一致的行为
  */
-export default function usePropShim<A extends any, D extends Extract<A, object>>(attr: A, $default: Partial<D>) {
+function usePropShim<A extends any, D extends Extract<A, object>>(attr: A, $default: Partial<D>) {
   const ref = useRef($default)
   return useMemo(() => {
     function assign($default: Partial<D>, target: object) {
@@ -28,3 +28,4 @@ export default function usePropShim<A extends any, D extends Extract<A, object>>
     return assign(ref.current, attr as A & object) as A
   }, [attr])
 }
+export default usePropShim

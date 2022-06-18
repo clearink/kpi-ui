@@ -8,7 +8,6 @@ import { DividerProps } from './props'
 // 导出组件属性
 export type { DividerProps }
 
-
 function Divider(props: DividerProps) {
   const { children, orientation, orientationMargin, ...rest } = props
   const attrs = omit(rest, ['className', 'type', 'dashed', 'plain'])

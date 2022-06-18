@@ -11,7 +11,7 @@ export default function detectFlexGap() {
 
   flexContainer.appendChild(document.createElement('div'))
   flexContainer.appendChild(document.createElement('div'))
-  
+
   document.body.appendChild(flexContainer)
   supported = flexContainer.scrollHeight === 1
   document.body.removeChild(flexContainer)
