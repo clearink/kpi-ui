@@ -10,7 +10,7 @@ program.version(`kpi-cli ${VERSION.version || '0.0.1'}`).usage('<command> [optio
 
 program
   .command('gen <name>')
-  .option('-f, --force', 'remove old and creat new component directory', false)
+  .option('-f, --force', 'remove old and create new component directory', false)
   .description('Generate a component directory')
   .action(gen)
 
@@ -30,6 +30,9 @@ program
   .option('-ns, --no-style', `Don't compile style `)
   .description('compile kpi-ui')
   .action(compile)
+
+// TODO
+program.command('lint')
 
 program.on('command:*', ([cmd]) => {
   logger.error(`\nunknown command: ${cmd}\n`)

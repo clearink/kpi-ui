@@ -32,12 +32,9 @@ export default function common(mode: 'development' | 'production'): Record<strin
       type: 'filesystem', // 使用文件缓存
       //待优化
       version: constant.CACHE_VERSION,
-      cacheDirectory: constant.WEBPACK_CACHE_DIR,
       store: 'pack',
       buildDependencies: {
-        defaultWebpack: ['webpack/lib/'],
         config: [__filename],
-        tsConfig: constant.FIND_TSCONFIG(),
       },
     },
     infrastructureLogging: {
