@@ -67,16 +67,23 @@ export default function KPI_CONST(preview: boolean) {
       },
       USE_TAILWIND: () => pathExistsSync(resolveApp('tailwind.config.js')),
       USE_TYPESCRIPT: () => pathExistsSync(_.TS_CONFIG),
-      JSX_RUNTIME: () => {
+      HAS_JSX_RUNTIME: () => {
         try {
           require.resolve('react/jsx-runtime')
-          return 'automatic'
+          return true
         } catch {
-          return 'classic'
+          return false
         }
-      },
+      }
     }))
     .add((_) => ({
+      JSX_RUNTIME: () => {
+        return _.HAS_JSX_RUNTIME() ? 'automatic' : 'classic'
+      },
+      JSX_ESLINT_RULE: () => {
+        if (_.HAS_JSX_RUNTIME()) return undefined
+        return { 'react/react-in-jsx-scope': 'error' as const }
+      },
       RESOLVE_EXTENSIONS: () => {
         const useTs = _.USE_TYPESCRIPT()
         return _.FILE_EXTENSIONS.filter((ext) => {

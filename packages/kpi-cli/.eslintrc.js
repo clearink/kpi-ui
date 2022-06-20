@@ -1,3 +1,4 @@
+const constant = require('./lib/shared/constant').default(true)
 module.exports = {
   root: true,
   env: {
@@ -11,10 +12,10 @@ module.exports = {
     },
     ecmaVersion: 12,
     sourceType: 'module',
-    project: './tsconfig.json',
+    project: constant.TS_CONFIG,
   },
   plugins: ['react', 'react-hooks', '@typescript-eslint'],
-  extends: ['plugin:react/recommended', 'airbnb'],
+  extends: ['plugin:react/recommended', 'airbnb-base', 'airbnb-typescript'],
   parser: '@typescript-eslint/parser',
   rules: {
     // 禁止使用 var

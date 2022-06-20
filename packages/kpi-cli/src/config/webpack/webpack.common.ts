@@ -46,38 +46,37 @@ export default function common(mode: 'development' | 'production', constant: Con
         {
           test: /\.(js|mjs|jsx|ts|tsx)$/,
           include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
-          loader: require.resolve('esbuild-loader'),
-          options: {
-            charset: 'utf-8',
-            loader: 'tsx',
-            target: 'es2015',
-            tsconfigRaw: require(constant.TS_CONFIG),
-          },
-          // use: [
-          //   {
-          //     loader: require.resolve('babel-loader'),
-          //     options: {
-          //       presets: [
-          //         require.resolve('@babel/preset-env'),
-          //         [
-          //           require.resolve('@babel/preset-react'),
-          //           {
-          //             runtime: constant.JSX_RUNTIME(),
-          //           },
-          //         ],
-          //         require.resolve('@babel/preset-typescript'),
-          //       ],
-          //       plugins: [
-          //         require.resolve('@babel/plugin-transform-runtime'),
-          //         isDev && require.resolve('react-refresh/babel'),
-          //       ],
-          //       cacheDirectory: true,
-          //       cacheCompression: false,
-          //       compact: isProd,
-          //     },
-          //   },
-          //   require.resolve('thread-loader'),
-          // ],
+          // loader: require.resolve('esbuild-loader'),
+          // options: {
+          //   loader: 'tsx',
+          //   target: 'es2015',
+          //   tsconfigRaw: require(constant.TS_CONFIG),
+          // },
+          use: [
+            {
+              loader: require.resolve('babel-loader'),
+              options: {
+                presets: [
+                  require.resolve('@babel/preset-env'),
+                  [
+                    require.resolve('@babel/preset-react'),
+                    {
+                      runtime: constant.JSX_RUNTIME(),
+                    },
+                  ],
+                  require.resolve('@babel/preset-typescript'),
+                ],
+                plugins: [
+                  require.resolve('@babel/plugin-transform-runtime'),
+                  isDev && require.resolve('react-refresh/babel'),
+                ],
+                cacheDirectory: true,
+                cacheCompression: false,
+                compact: !isDev,
+              },
+            },
+            require.resolve('thread-loader'),
+          ],
         },
         {
           test: /\.(bmp|svg|jpg|jpeg|gif|png)$/i,
@@ -179,12 +178,8 @@ export default function common(mode: 'development' | 'production', constant: Con
         cwd: constant.APP_DIR,
         resolvePluginsRelativeTo: __dirname,
         baseConfig: {
-          extends: [require.resolve('eslint-config-react-app/base')],
-          rules: {
-            ...(!hasJsxRuntime && {
-              'react/react-in-jsx-scope': 'error',
-            }),
-          },
+          extends: [require.resolve('../../../.eslintrc.js')],
+          rules: constant.JSX_ESLINT_RULE()
         },
       }),
       // TODO 插入全局变量
