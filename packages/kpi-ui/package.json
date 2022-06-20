@@ -20,7 +20,7 @@
   },
   "scripts": {
     "compile": "kpi-cli compile -f",
-    "dev": "kpi-cli dev",
+    "preview": "kpi-cli preview",
     "gen": "kpi-cli gen"
   },
   "dependencies": {

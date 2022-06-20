@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import logger from './shared/logger'
 import { Command } from 'commander'
-import { gen, dev, compile } from './command'
+import { gen, preview, compile, lint, dev, build } from './command'
 
 const VERSION = require('../package.json')
 
@@ -15,11 +15,11 @@ program
   .action(gen)
 
 program
-  .command('dev')
+  .command('preview')
   .option('-no, --no-open', "Don't open default browser")
   .option('-p, --port <number>', 'Server port', '4000')
-  .description('Run kpi-ui development server')
-  .action(dev)
+  .description('Preview kpi-ui components')
+  .action(preview)
 
 program
   .command('compile')
@@ -33,6 +33,16 @@ program
 
 // TODO
 program.command('lint')
+
+// TODO: 常规指令
+program
+  .command('dev')
+  .option('-no, --no-open', "Don't open default browser")
+  .option('-p, --port <number>', 'Server port', '4000')
+  .description('Run development server')
+  .action(dev)
+
+program.command('build').description('Build App').action(build)
 
 program.on('command:*', ([cmd]) => {
   logger.error(`\nunknown command: ${cmd}\n`)

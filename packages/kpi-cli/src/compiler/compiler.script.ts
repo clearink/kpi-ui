@@ -7,7 +7,7 @@ import KPI_CONST from '../shared/constant'
 export default function compileScript(mode: 'cjs' | 'esm', options: CompileProps) {
   const { entry, force } = options
   const constant = KPI_CONST('production')
-  const { CJS_DIR_NAME, ESM_DIR_NAME, RESOLVE_EXTENSIONS } = constant
+  const { CJS_DIR_NAME, ESM_DIR_NAME, FILE_EXTENSIONS } = constant
   const { TEST_DIR_NAME, PROPS_FILE_NAME, DOCS_DIR_NAME } = constant
   // 删除之前编译目录
   const output = mode === 'cjs' ? CJS_DIR_NAME : ESM_DIR_NAME
@@ -17,7 +17,7 @@ export default function compileScript(mode: 'cjs' | 'esm', options: CompileProps
     require.resolve('@babel/cli/bin/babel'),
     entry,
     '--extensions',
-    RESOLVE_EXTENSIONS.join(','),
+    FILE_EXTENSIONS.join(','),
     '--out-dir',
     output,
     '--ignore',

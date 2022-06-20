@@ -9,18 +9,23 @@ import TerserPlugin from 'terser-webpack-plugin'
 
 // 生产环境
 export default function prod() {
-  const constant = KPI_CONST('production')
-  return merge(common('production'), {
+  const constant = KPI_CONST(false)
+  return merge(common('production', constant), {
     mode: 'production',
     bail: true,
     // TODO: 在 分析模式下打开
-    performance: false, // 关闭性能提示
     output: {
       clean: true, // 清除 output 目录
       pathinfo: false,
       filename: 'js/[name].[contenthash:8].js',
       chunkFilename: 'js/[name].[contenthash:8].chunk.js',
     },
+    cache: {
+      type: 'filesystem',
+      buildDependencies: {
+        config: [__filename],
+      },
+    }, //使用文件缓存
     optimization: {
       minimize: true,
       runtimeChunk: true,
@@ -72,7 +77,7 @@ export default function prod() {
     plugins: [
       new HtmlWebpackPlugin({
         inject: true,
-        template: constant.PUBLIC_HTML_FILE,
+        template: constant.TEMPLATE_HTML_FILE(),
         minify: {
           removeComments: true,
           collapseWhitespace: true,

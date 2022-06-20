@@ -1,87 +1,87 @@
-import webpack from 'webpack'
+import webpack, { Configuration } from 'webpack'
 import WebPackBarPlugin from 'webpackbar'
 
-import KPI_CONST from '../../shared/constant'
-
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
-
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import ESLintPlugin from 'eslint-webpack-plugin'
+
+import { ConstantType } from '../../shared/constant'
 
 import InterpolateHtmlPlugin from '../../plugins/interpolate_html_plugin'
 import { getEnvConstant, getStyleLoader } from '../../shared/utils'
 // TODO: 使用 dotenv 获取自定义变量
 const envConstant = getEnvConstant()
 
-export default function common(mode: 'development' | 'production'): Record<string, any> {
+export default function common(mode: 'development' | 'production', constant: ConstantType) {
   const isDev = mode === 'development'
-  const isProd = mode === 'production'
-  const constant = KPI_CONST(mode)
 
   const useTailwind = constant.USE_TAILWIND()
   const useTypeScript = constant.USE_TYPESCRIPT()
   return {
     target: ['browserslist'],
-    entry: constant.FIND_ENTRY_FILE(),
+    entry: constant.ENTRY_FILE(),
+    // 不展示性能提示
+    performance: false,
     output: {
       path: constant.OUTPUT_PATH,
       assetModuleFilename: 'media/[name].[hash][ext]',
       publicPath: constant.PUBLIC_PATH,
-    },
-    cache: {
-      type: 'filesystem', // 使用文件缓存
-      //待优化
-      version: constant.CACHE_VERSION,
-      store: 'pack',
-      buildDependencies: {
-        config: [__filename],
-      },
     },
     infrastructureLogging: {
       level: 'none',
     },
     resolve: {
       modules: ['node_modules', constant.NODE_MODULES],
-      extensions: constant.RESOLVE_EXTENSIONS,
+      extensions: constant.RESOLVE_EXTENSIONS(),
       alias: {
+        // TODO: 支持外部扩展
         '@': constant.SRC_DIR,
       },
+      // TODO: 添加额外的解析插件
+      // plugins: [],
     },
     module: {
-      strictExportPresence: true,
       rules: [
         {
           test: /\.(js|mjs|jsx|ts|tsx)$/,
-          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
-          use: [
-            {
-              loader: require.resolve('babel-loader'),
-              options: {
-                presets: [
-                  require.resolve('@babel/preset-env'),
-                  [
-                    require.resolve('@babel/preset-react'),
-                    {
-                      runtime: constant.HAS_JSX_RUNTIME() ? 'automatic' : 'classic',
-                    },
-                  ],
-                  require.resolve('@babel/preset-typescript'),
-                ],
-                plugins: [
-                  require.resolve('@babel/plugin-transform-runtime'),
-                  isDev && require.resolve('react-refresh/babel'),
-                ].filter(Boolean),
-                cacheDirectory: true,
-                cacheCompression: false,
-                compact: isProd,
-              },
-            },
-            require.resolve('thread-loader'),
-          ],
+          include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
+          loader: require.resolve('esbuild-loader'),
+          options: {
+            charset: 'utf-8',
+            loader: 'tsx',
+            target: 'es2015',
+            tsconfigRaw: require(constant.TS_CONFIG),
+          },
+          // use: [
+          //   {
+          //     loader: require.resolve('babel-loader'),
+          //     options: {
+          //       presets: [
+          //         require.resolve('@babel/preset-env'),
+          //         [
+          //           require.resolve('@babel/preset-react'),
+          //           {
+          //             runtime: constant.JSX_RUNTIME(),
+          //           },
+          //         ],
+          //         require.resolve('@babel/preset-typescript'),
+          //       ],
+          //       plugins: [
+          //         require.resolve('@babel/plugin-transform-runtime'),
+          //         isDev && require.resolve('react-refresh/babel'),
+          //       ],
+          //       cacheDirectory: true,
+          //       cacheCompression: false,
+          //       compact: isProd,
+          //     },
+          //   },
+          //   require.resolve('thread-loader'),
+          // ],
         },
         {
           test: /\.(bmp|svg|jpg|jpeg|gif|png)$/i,
-          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
+          include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
           type: 'asset/resource',
           /**
            * asset/resource 发送一个单独的文件并导出 URL。之前通过使用 file-loader 实现
@@ -94,12 +94,12 @@ export default function common(mode: 'development' | 'production'): Record<strin
         {
           // TODO: 字体是否需要呢？
           test: /\.(woff2?|eot|ttf|otf)$/i,
-          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
+          include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
           type: 'asset/resource',
         },
         {
           test: /\.css$/,
-          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
+          include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
           exclude: /\.module\.css$/,
           use: getStyleLoader({
             mode,
@@ -110,7 +110,7 @@ export default function common(mode: 'development' | 'production'): Record<strin
         },
         {
           test: /\.module\.css$/,
-          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
+          include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
           use: getStyleLoader({
             mode,
             useTailwind,
@@ -120,7 +120,7 @@ export default function common(mode: 'development' | 'production'): Record<strin
         },
         {
           test: /\.s(c|a)ss$/,
-          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
+          include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
           exclude: /\.module\.s(c|a)ss$/,
           use: getStyleLoader({
             mode,
@@ -131,7 +131,7 @@ export default function common(mode: 'development' | 'production'): Record<strin
         },
         {
           test: /\.module\.s(c|a)ss$/,
-          include: [constant.SRC_DIR, constant.DEV_SRC_DIR].filter(Boolean),
+          include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
           use: getStyleLoader({
             mode,
             useTailwind,
@@ -143,6 +143,12 @@ export default function common(mode: 'development' | 'production'): Record<strin
     },
     plugins: [
       new WebPackBarPlugin(),
+      new HtmlWebpackPlugin({
+        inject: true,
+        template: constant.TEMPLATE_HTML_FILE(),
+        minify: constant.HTML_PLUGIN_MINIFY(isDev),
+      }),
+      // TODO
       new InterpolateHtmlPlugin(getEnvConstant().env),
       // new WebpackManifestPlugin({
       //   fileName: 'asset-manifest.json',
@@ -158,21 +164,31 @@ export default function common(mode: 'development' | 'production'): Record<strin
         new ForkTsCheckerWebpackPlugin({
           async: isDev,
         }),
-      // // 待优化
-      // new ESLintPlugin({
-      //   cache: true,
-      //   context: KPI_CONST.SRC_DIR,
-      //   extensions: KPI_CONST.RESOLVE_EXTENSIONS,
-      //   eslintPath: require.resolve('eslint'),
-      //   cacheLocation: KPI_CONST.ESLINT_CACHE_DIR,
-      //   // eslint class options
-      //   cwd: KPI_CONST.APP_DIR,
-      //   resolvePluginsRelativeTo: __dirname,
-      //   // TODO: 待优化
-      //   // baseConfig: {},
-      // }),
-      // 插入全局变量
+      new ESLintPlugin({
+        fix: true /* 自动帮助修复 */,
+        context: constant.SRC_DIR,
+        extensions: constant.RESOLVE_EXTENSIONS(),
+        eslintPath: require.resolve('eslint'),
+        failOnError: !isDev,
+        cache: true,
+        cacheLocation: constant.ESLINT_CACHE_DIR,
+        exclude: 'node_modules',
+        threads: true,
+        // formatter: require.resolve('react-dev-utils/eslintFormatter'),
+        // ESLint class options
+        cwd: constant.APP_DIR,
+        resolvePluginsRelativeTo: __dirname,
+        baseConfig: {
+          extends: [require.resolve('eslint-config-react-app/base')],
+          rules: {
+            ...(!hasJsxRuntime && {
+              'react/react-in-jsx-scope': 'error',
+            }),
+          },
+        },
+      }),
+      // TODO 插入全局变量
       new webpack.DefinePlugin(envConstant.str),
-    ].filter(Boolean),
-  }
+    ],
+  } as Configuration
 }

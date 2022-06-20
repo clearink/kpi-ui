@@ -1,4 +1,5 @@
 export default {
+  comments: true,
   presets: [
     require.resolve('@babel/preset-env'),
     [require.resolve('@babel/preset-react'), { runtime: 'automatic' }],

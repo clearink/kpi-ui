@@ -8,24 +8,24 @@ export function resolveApp(relativePath: string) {
   return resolve(CWD, relativePath)
 }
 
+export type ConstantType = ReturnType<typeof KPI_CONST>
+
 // kpi config constant
-export default function KPI_CONST(mode: 'development' | 'production') {
-  const isDev = mode === 'development'
+export default function KPI_CONST(preview: boolean) {
   return new Constant()
     .add(() => ({
       // other
-      KPI_CONFIG: resolveApp('kpi.config.js'),
-      CACHE_VERSION: require('../../package.json').version, // 待优化
-      APP_DIR: resolveApp('.'),
-      RESOLVE_EXTENSIONS: ['.tsx', '.ts', '.js', '.jsx', '.mjs'], // 待优化
+      FILE_EXTENSIONS: ['.tsx', '.ts', '.js', '.jsx', '.mjs'], // 待优化
       STYLE_EXTENSIONS: ['.scss', '.sass', '.css'],
-      ESLINT_CACHE_DIR: resolveApp('node_modules/.cache/.eslint'),
-      JS_CONFIG: resolve('jsconfig.json'),
       NODE_MODULES: resolveApp('node_modules'), // 待优化
-      OUTPUT_PATH: resolveApp('dist'),
       PUBLIC_PATH: '/', //待优化
+      APP_DIR: resolveApp('.'),
       SRC_DIR: resolveApp('src'),
-      DEV_DIR: resolveApp('.kpi'), // dev 模板路径
+      OUTPUT_PATH: resolveApp('dist'),
+      PUBLIC_DIR: resolveApp('public'),
+      TS_CONFIG: resolveApp('tsconfig.json'),
+      JS_CONFIG: resolveApp('jsconfig.json'),
+      KPI_CONFIG: resolveApp('kpi.config.js'),
 
       // gen
       TEST_DIR_NAME: '__tests__',
@@ -42,34 +42,60 @@ export default function KPI_CONST(mode: 'development' | 'production') {
       TYPE_DIR_NAME: 'types',
     }))
     .add((_) => ({
-      // gen
-      PROPS_FILE_NAME: `${_.PROPS_DIR_NAME}.ts`,
-      DEV_SRC_DIR: isDev && resolve(_.DEV_DIR, 'src'),
-      // dev 和 build 不同
-      PUBLIC_DIR: isDev ? resolve(_.DEV_DIR, 'public') : resolveApp('public'),
-      TS_CONFIG: isDev ? resolve(_.DEV_DIR, 'tsconfig.json') : resolve(_.APP_DIR, 'tsconfig.json'),
+      ESLINT_CACHE_DIR: resolve(_.NODE_MODULES, '.cache/eslint'),
+      PROPS_FILE_NAME: `${_.PROPS_DIR_NAME}.ts`, // gen
+      // preview  constant
+      PREVIEW_DIR: resolveApp('.kpi'),
     }))
     .add((_) => ({
-      PUBLIC_HTML_FILE: resolve(_.PUBLIC_DIR, 'index.html'),
-      FIND_ENTRY_FILE: () => {
-        const dir = _.DEV_SRC_DIR || _.SRC_DIR
-        const extension = _.RESOLVE_EXTENSIONS.find((ext) => {
+      // preview  constant
+      PREVIEW_SRC_DIR: resolve(_.PREVIEW_DIR, 'src'),
+      PREVIEW_PUBLIC_DIR: resolve(_.PREVIEW_DIR, 'public'),
+    }))
+    .add((_) => ({
+      // html 模板文件
+      TEMPLATE_HTML_FILE: () => {
+        const dir = preview ? _.PREVIEW_PUBLIC_DIR : _.PUBLIC_DIR
+        return resolve(dir, 'index.html')
+      },
+      ENTRY_FILE: () => {
+        const dir = preview ? _.PREVIEW_SRC_DIR : _.SRC_DIR
+        const extension = _.FILE_EXTENSIONS.find((ext) => {
           return existsSync(resolve(dir, `index${ext}`))
         })
         return resolve(dir, `index${extension ?? '.js'}`)
       },
-      FIND_TSCONFIG: () => {
-        const list = [_.TS_CONFIG, _.JS_CONFIG]
-        return list.filter((file) => pathExistsSync(file))
-      },
       USE_TAILWIND: () => pathExistsSync(resolveApp('tailwind.config.js')),
       USE_TYPESCRIPT: () => pathExistsSync(_.TS_CONFIG),
-      HAS_JSX_RUNTIME: () => {
+      JSX_RUNTIME: () => {
         try {
           require.resolve('react/jsx-runtime')
-          return true
+          return 'automatic'
         } catch {
-          return false
+          return 'classic'
+        }
+      },
+    }))
+    .add((_) => ({
+      RESOLVE_EXTENSIONS: () => {
+        const useTs = _.USE_TYPESCRIPT()
+        return _.FILE_EXTENSIONS.filter((ext) => {
+          return useTs || !ext.includes('ts')
+        })
+      },
+      HTML_PLUGIN_MINIFY: (dev: boolean) => {
+        if (dev) return false
+        return {
+          removeComments: true,
+          collapseWhitespace: true,
+          removeRedundantAttributes: true,
+          useShortDoctype: true,
+          removeEmptyAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+          keepClosingSlash: true,
+          minifyJS: true,
+          minifyCSS: true,
+          minifyURLs: true,
         }
       },
     }))

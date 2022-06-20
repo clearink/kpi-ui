@@ -1,0 +1,10 @@
+export var SBL = '[';
+export var SBR = ']';
+export var CBL = '{';
+export var CBR = '}';
+export var Dot = '.';
+export var Colon = ':';
+export var Comma = ',';
+export var Bracket = [SBL, SBR, CBL, CBR];
+export var Operator = [Dot, Colon, Comma];
+export var All = Bracket.concat(Operator);
