@@ -1,23 +1,30 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "@kpi/ui": ["src/index.tsx"],
-      "@kpi/ui/es/*": ["src/*"]
-    },
-    "experimentalDecorators": true,
-    "strictNullChecks": true,
-    "moduleResolution": "node",
-    "jsx": "react-jsx",
-    "noUnusedParameters": true,
-    "noUnusedLocals": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es6",
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "types": ["react", "react-dom", "node"]
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "experimentalDecorators": true,
+    "downlevelIteration": true,
+    // 忽略 string 不能当索引
+    "suppressImplicitAnyIndexErrors": true,
+    "noImplicitAny": false, // 不用显式返回 any
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src"],
-  "exclude": ["docs", "tests", "**/**/*.scss"],
-  "compileOnSave": false
+  "exclude": ["docs", "tests", "**/**/*.scss"]
 }

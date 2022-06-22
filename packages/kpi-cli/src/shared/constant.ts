@@ -42,7 +42,7 @@ export default function KPI_CONST(preview: boolean) {
       TYPE_DIR_NAME: 'types',
     }))
     .add((_) => ({
-      ESLINT_CACHE_DIR: resolve(_.NODE_MODULES, '.cache/eslint'),
+      ESLINT_CACHE: resolve(_.NODE_MODULES, '.cache/.eslintcache'),
       PROPS_FILE_NAME: `${_.PROPS_DIR_NAME}.ts`, // gen
       // preview  constant
       PREVIEW_DIR: resolveApp('.kpi'),
@@ -74,7 +74,7 @@ export default function KPI_CONST(preview: boolean) {
         } catch {
           return false
         }
-      }
+      },
     }))
     .add((_) => ({
       JSX_RUNTIME: () => {
@@ -89,21 +89,6 @@ export default function KPI_CONST(preview: boolean) {
         return _.FILE_EXTENSIONS.filter((ext) => {
           return useTs || !ext.includes('ts')
         })
-      },
-      HTML_PLUGIN_MINIFY: (dev: boolean) => {
-        if (dev) return false
-        return {
-          removeComments: true,
-          collapseWhitespace: true,
-          removeRedundantAttributes: true,
-          useShortDoctype: true,
-          removeEmptyAttributes: true,
-          removeStyleLinkTypeAttributes: true,
-          keepClosingSlash: true,
-          minifyJS: true,
-          minifyCSS: true,
-          minifyURLs: true,
-        }
       },
     }))
 }

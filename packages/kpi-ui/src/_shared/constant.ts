@@ -2,7 +2,7 @@ export const SPACE_SIZE = {
   small: 8,
   middle: 16,
   large: 24,
-} as const
+} as const;
 
 // 断点 TODO: 尝试可以配置
 export const BREAKPOINT = {
@@ -12,4 +12,4 @@ export const BREAKPOINT = {
   lg: { size: 992, mode: 'min' },
   xl: { size: 1200, mode: 'min' },
   xxl: { size: 1600, mode: 'min' },
-} as const
+} as const;

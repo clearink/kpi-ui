@@ -5,8 +5,6 @@ import { PaginationProps } from './props'
 
 // TODO: 待开发
 function Pagination(props: PaginationProps) {
-  const {} = props
-
   const name = usePrefix('pagination')
   const className = usePaginationClass(name, props)
 
@@ -18,6 +16,3 @@ export default withDefaultProps(Pagination, {
   size: 'small',
   wrap: false,
 })
-
-// 导出组件属性
-export { PaginationProps }

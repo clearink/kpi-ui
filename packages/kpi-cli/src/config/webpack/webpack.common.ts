@@ -4,7 +4,7 @@ import WebPackBarPlugin from 'webpackbar'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
-import ESLintPlugin from 'eslint-webpack-plugin'
+import ESLintWebpackPlugin from 'eslint-webpack-plugin'
 
 import { ConstantType } from '../../shared/constant'
 
@@ -20,6 +20,7 @@ export default function common(mode: 'development' | 'production', constant: Con
   const useTypeScript = constant.USE_TYPESCRIPT()
   return {
     target: ['browserslist'],
+    context: constant.APP_DIR,
     entry: constant.ENTRY_FILE(),
     // 不展示性能提示
     performance: false,
@@ -46,6 +47,7 @@ export default function common(mode: 'development' | 'production', constant: Con
         {
           test: /\.(js|mjs|jsx|ts|tsx)$/,
           include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
+          // TODO: 解决 esbuild-loader 的一些问题
           // loader: require.resolve('esbuild-loader'),
           // options: {
           //   loader: 'tsx',
@@ -142,11 +144,6 @@ export default function common(mode: 'development' | 'production', constant: Con
     },
     plugins: [
       new WebPackBarPlugin(),
-      new HtmlWebpackPlugin({
-        inject: true,
-        template: constant.TEMPLATE_HTML_FILE(),
-        minify: constant.HTML_PLUGIN_MINIFY(isDev),
-      }),
       // TODO
       new InterpolateHtmlPlugin(getEnvConstant().env),
       // new WebpackManifestPlugin({
@@ -163,23 +160,52 @@ export default function common(mode: 'development' | 'production', constant: Con
         new ForkTsCheckerWebpackPlugin({
           async: isDev,
         }),
-      new ESLintPlugin({
+      new ESLintWebpackPlugin({
         fix: true /* 自动帮助修复 */,
         context: constant.SRC_DIR,
         extensions: constant.RESOLVE_EXTENSIONS(),
         eslintPath: require.resolve('eslint'),
         failOnError: !isDev,
         cache: true,
-        cacheLocation: constant.ESLINT_CACHE_DIR,
-        exclude: 'node_modules',
+        cacheLocation: constant.ESLINT_CACHE,
         threads: true,
-        // formatter: require.resolve('react-dev-utils/eslintFormatter'),
         // ESLint class options
         cwd: constant.APP_DIR,
         resolvePluginsRelativeTo: __dirname,
         baseConfig: {
-          extends: [require.resolve('../../../.eslintrc.js')],
-          rules: constant.JSX_ESLINT_RULE()
+          // extends: [
+          //   JSON.stringify({
+          //     root: true,
+          //     env: {
+          //       node: true,
+          //       browser: true,
+          //       es6: true,
+          //     },
+          //     parserOptions: {
+          //       ecmaFeatures: {
+          //         jsx: true,
+          //       },
+          //       ecmaVersion: 12,
+          //       sourceType: 'module',
+          //       project: constant.TS_CONFIG,
+          //     },
+          //     plugins: ['react', 'react-hooks', '@typescript-eslint'],
+          //     extends: ['plugin:react/recommended', 'airbnb-base', 'airbnb-typescript'],
+          //     parser: '@typescript-eslint/parser',
+          //     rules: {
+          //       // 禁止使用 var
+          //       'no-var': 'error',
+          //       // 优先使用 interface 而不是 type
+          //       '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+          //       '@typescript-eslint/no-explicit-any': 'off',
+          //       '@typescript-eslint/explicit-module-boundary-types': 'off',
+          //       'react-hooks/rules-of-hooks': 'error',
+          //       'react-hooks/exhaustive-deps': 'warn',
+          //       'react/prop-types': 'off',
+          //     },
+          //   }),
+          // ],
+          rules: constant.JSX_ESLINT_RULE(),
         },
       }),
       // TODO 插入全局变量

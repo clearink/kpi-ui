@@ -5,7 +5,6 @@ import KPI_CONST from '../../shared/constant'
 
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
-import { ESBuildMinifyPlugin } from 'esbuild-loader'
 
 // TODO: 使用 dotenv 获取自定义变量
 // 开发环境
@@ -23,12 +22,7 @@ export default function dev(preview: boolean) {
     // TODO: 待完善
     stats: 'errors-only',
     optimization: {
-      minimizer: [
-        new ESBuildMinifyPlugin({
-          target: 'es2015', // Syntax to compile to (see options below for possible values)
-          css: true, // Apply minification to CSS assets
-        }),
-      ],
+      minimize: false,
     },
     plugins: [
       // 生成html，自动引入所有bundle
