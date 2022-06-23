@@ -82,7 +82,7 @@ export default function KPI_CONST(preview: boolean) {
       },
       JSX_ESLINT_RULE: () => {
         if (_.HAS_JSX_RUNTIME()) return undefined
-        return { 'react/react-in-jsx-scope': 'error' as const }
+        return { 'react/react-in-jsx-scope': 'error' } as const
       },
       RESOLVE_EXTENSIONS: () => {
         const useTs = _.USE_TYPESCRIPT()

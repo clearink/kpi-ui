@@ -23,7 +23,7 @@ export const isNull = (obj: any): obj is null => validateType(obj, 'Null')
 export const isNumber = (obj: any): obj is number => validateType(obj, 'Number')
 export const isString = (obj: any): obj is string => validateType(obj as string, 'String')
 export const isBoolean = (obj: any): obj is boolean => validateType(obj, 'Boolean')
-export const isFunction = (obj: any): obj is Function => typeof obj === 'function'
+export const isFunction = (obj: any): obj is (...args: any[]) => any => typeof obj === 'function'
 export const isSymbol = (obj: any): obj is symbol => validateType(obj, 'Symbol')
 export const isBigInt = (obj: any): obj is bigint => validateType(obj, 'BigInt')
 export const isMap = (obj: any): obj is Map<any, any> => validateType(obj, 'Map')

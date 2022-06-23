@@ -4,8 +4,6 @@ import withDefaultProps from '../_util/hocs/withDefaultProps'
 import { RowProps } from './props'
 
 function Row(props: RowProps) {
-  const {} = props
-
   const name = usePrefix('row')
   const className = useRowClass(name, props)
 

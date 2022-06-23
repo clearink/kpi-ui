@@ -2,12 +2,12 @@
 export default function validatePatten($input: string) {
   const input = $input.replace(/\s+/g, '') // 去除空格与换行
 
-  if (/(\.\.)|(\,\,)|(\:\:)/.test(input)) {
+  if (/(\.\.)|(,,)|(::)/.test(input)) {
     throw new Error(`无法解析连续的操作符 ['.', ',', ':']`) // 1
   }
   if (/\.$/.test(input)) throw new Error(`末尾不可为 '.' 符号`) // 2
 
-  if (/(?<!\w)\:|\:(?!\w|\.[\[\{])/.test(input)) {
+  if (/(?<!\w):|:(?!\w|\.[[{])/.test(input)) {
     throw new Error(`':' 位置错误`) // 3 4 20
   }
 
@@ -17,18 +17,18 @@ export default function validatePatten($input: string) {
   }
 
   // 'a.b.{a}a'
-  if (/(?<=[\}\]])\w/.test(input)) throw new Error(`['}', ']'] 位置错误`)
+  if (/(?<=[}\]])\w/.test(input)) throw new Error(`['}', ']'] 位置错误`)
 
   // '[' 仅允许在 \w或者 '.' 的后面使用
   if (/(?<!(\w|\.))\[/.test(input)) throw new Error(`'[' 位置错误`)
 
-  if (/[\[\{]{2,}/.test(input)) {
+  if (/[[{]{2,}/.test(input)) {
     throw new Error(`无法解析连续的 '{'或'[' 符号`) // 7 11 12 13
   }
 
-  if (/[\[\{]\,/.test(input)) throw new Error(`',' 位置错误`) // 9
+  if (/[[{],/.test(input)) throw new Error(`',' 位置错误`) // 9
 
-  if (/\,(?!\w|\.[\[\{])/.test(input)) throw new Error(`数据解构元素错误`) // 14 暂定
+  if (/,(?!\w|\.[[{])/.test(input)) throw new Error(`数据解构元素错误`) // 14 暂定
 
   // 不满足数组元素匹配
   const hasErrorItem = Array.from(input.matchAll(/\w\[(.*?)\]/g)).some(

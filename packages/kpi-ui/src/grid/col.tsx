@@ -4,8 +4,6 @@ import withDefaultProps from '../_util/hocs/withDefaultProps'
 import { ColProps } from './props'
 
 function Col(props: ColProps) {
-  const {} = props
-
   const name = usePrefix('col')
   const className = useColClass(name, props)
 

@@ -30,7 +30,6 @@ export default class MediaObserver {
   private extendHandler(handler: (e: typeof initMatches) => void) {
     // 闭包 只在 currentMatches 变化时调用 handler 函数
     return (e: MediaQueryListEvent) => {
-      console.log(e)
       const breakpoint = this.breakpointMap.get(e.media)
       if (breakpoint && this.currentMatches[breakpoint] !== e.matches) {
         this.currentMatches[breakpoint] = e.matches // 更新值
@@ -40,7 +39,7 @@ export default class MediaObserver {
   }
 
   public unsubscribe() {
-    for (let listener of this.listeners) {
+    for (const listener of this.listeners) {
       listener.removeEventListener('change', this.queryHandler)
     }
     this.listeners = []
