@@ -6,46 +6,26 @@
     "target": "es5", // 指定编译到的 es 版本 es5
     "strict": false, // 使用严格类型检查
     "jsx": "react", // 指定 jsx 语法 react
-    "lib": [
-      "ES2021",
-      "dom"
-    ], // 指定ts检测语法支持到哪一个ECMA版本
+    "lib": ["ES2021", "dom"], // 指定ts检测语法支持到哪一个ECMA版本
     "allowJs": true, // 允许使用 js 语法
     "allowSyntheticDefaultImports": true, // 允许使用类似 import React from 'react' 的语法
     "sourceMap": true,
     "moduleResolution": "Node",
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "@": [
-        "src/"
-      ]
+      "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules", "dist"],
   "rules": {
-    "indent": [
-      true,
-      "spaces",
-      2
-    ],
+    "indent": [true, "spaces", 2],
     "interface-name": false,
     "no-consecutive-blank-lines": false,
     "object-literal-sort-keys": false,
     "ordered-imports": false,
-    "quotemark": [
-      true,
-      "single"
-    ],
-    "semicolon": [
-      true,
-      "never"
-    ],
+    "quotemark": [true, "single"],
+    "semicolon": [true, "never"],
     "trailing-comma": [
       true,
       {

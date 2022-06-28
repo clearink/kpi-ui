@@ -13,7 +13,6 @@ export default function prod() {
   return merge(common('production', constant), {
     mode: 'production',
     bail: true,
-    // TODO: 在 分析模式下打开
     output: {
       clean: true, // 清除 output 目录
       pathinfo: false,
@@ -27,33 +26,7 @@ export default function prod() {
       },
     }, //使用文件缓存
     optimization: {
-      minimize: true,
       runtimeChunk: true,
-      minimizer: [
-        new TerserPlugin({
-          parallel: 4,
-          terserOptions: {
-            parse: { ecma: 2017 },
-            compress: {
-              ecma: 5,
-              warnings: false,
-              comparisons: false,
-              inline: 2,
-            },
-            mangle: {
-              safari10: true,
-            },
-            format: {
-              ecma: 5,
-              comments: false,
-              ascii_only: true,
-            },
-          },
-        }),
-        new CssMinimizerPlugin({
-          parallel: 4,
-        }),
-      ],
       splitChunks: {
         chunks: 'all',
         cacheGroups: {
@@ -72,10 +45,59 @@ export default function prod() {
           },
         },
       },
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            compress: {
+              arrows: false,
+              collapse_vars: false,
+              comparisons: false,
+              computed_props: false,
+              hoist_funs: false,
+              hoist_props: false,
+              hoist_vars: false,
+              inline: false,
+              loops: false,
+              negate_iife: false,
+              properties: false,
+              reduce_funcs: false,
+              reduce_vars: false,
+              switches: false,
+              toplevel: false,
+              typeofs: false,
+              booleans: true,
+              if_return: true,
+              sequences: true,
+              unused: true,
+              conditionals: true,
+              dead_code: true,
+              evaluate: true,
+            },
+            mangle: {
+              safari10: true,
+            },
+          },
+          parallel: true,
+          extractComments: false,
+        }),
+        new CssMinimizerPlugin({
+          parallel: true,
+          minimizerOptions: {
+            preset: [
+              'default',
+              {
+                mergeLonghand: false,
+                cssDeclarationSorter: false,
+              },
+            ],
+          },
+        }),
+      ],
     },
 
     plugins: [
       new HtmlWebpackPlugin({
+        scriptLoading: 'defer',
         inject: true,
         template: constant.TEMPLATE_HTML_FILE(),
         minify: {

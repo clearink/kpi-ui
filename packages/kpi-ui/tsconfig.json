@@ -22,7 +22,7 @@
     "noImplicitAny": false, // 不用显式返回 any
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src"],

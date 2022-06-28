@@ -26,7 +26,6 @@ export default function common(mode: 'development' | 'production', constant: Con
     performance: false,
     output: {
       path: constant.OUTPUT_PATH,
-      assetModuleFilename: 'media/[name].[hash][ext]',
       publicPath: constant.PUBLIC_PATH,
     },
     infrastructureLogging: {
@@ -39,21 +38,12 @@ export default function common(mode: 'development' | 'production', constant: Con
         // TODO: 支持外部扩展
         '@': constant.SRC_DIR,
       },
-      // TODO: 添加额外的解析插件
-      // plugins: [],
     },
     module: {
       rules: [
         {
           test: /\.(js|mjs|jsx|ts|tsx)$/,
           include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
-          // TODO: 解决 esbuild-loader 的一些问题
-          // loader: require.resolve('esbuild-loader'),
-          // options: {
-          //   loader: 'tsx',
-          //   target: 'es2015',
-          //   tsconfigRaw: require(constant.TS_CONFIG),
-          // },
           use: [
             {
               loader: require.resolve('babel-loader'),
@@ -66,8 +56,8 @@ export default function common(mode: 'development' | 'production', constant: Con
                       runtime: constant.JSX_RUNTIME(),
                     },
                   ],
-                  require.resolve('@babel/preset-typescript'),
-                ],
+                  constant.USE_TYPESCRIPT() && require.resolve('@babel/preset-typescript'),
+                ].filter(Boolean),
                 plugins: [
                   require.resolve('@babel/plugin-transform-runtime'),
                   isDev && require.resolve('react-refresh/babel'),
@@ -81,9 +71,20 @@ export default function common(mode: 'development' | 'production', constant: Con
           ],
         },
         {
-          test: /\.(bmp|svg|jpg|jpeg|gif|png)$/i,
+          test: /\.(svg)(\?.*)?$/,
           include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
           type: 'asset/resource',
+          generator: {
+            filename: 'img/[name].[hash:8][ext]',
+          },
+        },
+        {
+          test: /\.(bmp|svg|jpe?g|gif|png|webp|avif)$/i,
+          include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
+          type: 'asset',
+          generator: {
+            filename: 'img/[name].[hash:8][ext]',
+          },
           /**
            * asset/resource 发送一个单独的文件并导出 URL。之前通过使用 file-loader 实现
            * asset/inline 导出一个资源的 data URI。之前通过使用 url-loader 实现
@@ -93,8 +94,15 @@ export default function common(mode: 'development' | 'production', constant: Con
            */
         },
         {
-          // TODO: 字体是否需要呢？
-          test: /\.(woff2?|eot|ttf|otf)$/i,
+          test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+          include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
+          type: 'asset',
+          generator: {
+            filename: 'fonts/[name].[hash:8][ext]',
+          },
+        },
+        {
+          test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/i,
           include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
           type: 'asset/resource',
         },
@@ -156,13 +164,10 @@ export default function common(mode: 'development' | 'production', constant: Con
         contextRegExp: /moment$/,
       }),
       // // 单独一个进程检查
-      useTypeScript &&
-        new ForkTsCheckerWebpackPlugin({
-          async: isDev,
-        }),
+      useTypeScript && new ForkTsCheckerWebpackPlugin(),
       new ESLintWebpackPlugin({
         fix: true /* 自动帮助修复 */,
-        context: constant.SRC_DIR,
+        context: constant.APP_DIR,
         extensions: constant.RESOLVE_EXTENSIONS(),
         eslintPath: require.resolve('eslint'),
         cache: true,
@@ -175,7 +180,13 @@ export default function common(mode: 'development' | 'production', constant: Con
         },
       }),
       // TODO 插入全局变量
-      new webpack.DefinePlugin(envConstant.str),
+      new webpack.DefinePlugin({
+        ...envConstant.str,
+        // 'process.env': {
+        //   NODE_ENV: `"${mode}"`,
+        //   BASE_URL: '"/"',
+        // },
+      }),
     ],
   } as Configuration
 }

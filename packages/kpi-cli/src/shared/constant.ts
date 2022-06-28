@@ -81,7 +81,9 @@ export default function KPI_CONST(preview: boolean) {
         return _.HAS_JSX_RUNTIME() ? 'automatic' : 'classic'
       },
       JSX_ESLINT_RULE: () => {
-        if (_.HAS_JSX_RUNTIME()) return undefined
+        if (_.HAS_JSX_RUNTIME()) {
+          return { 'react/react-in-jsx-scope': 'off' } as const
+        }
         return { 'react/react-in-jsx-scope': 'error' } as const
       },
       RESOLVE_EXTENSIONS: () => {

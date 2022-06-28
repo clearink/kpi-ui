@@ -1,7 +1,4 @@
-import $constant from '../../shared/constant'
-const constant = $constant(true)
-
-export default {
+module.exports = {
   root: true,
   env: {
     node: true,
@@ -14,7 +11,7 @@ export default {
     },
     ecmaVersion: 12,
     sourceType: 'module',
-    project: constant.TS_CONFIG,
+    project: 'tsconfig.json',
   },
   plugins: ['react', 'react-hooks', '@typescript-eslint'],
   extends: ['plugin:react/recommended', 'airbnb-base', 'airbnb-typescript'],
@@ -22,6 +19,7 @@ export default {
   rules: {
     // 禁止使用 var
     'no-var': 'error',
+    'no-console': 'error',
     // 优先使用 interface 而不是 type
     '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
     '@typescript-eslint/no-explicit-any': 'off',
