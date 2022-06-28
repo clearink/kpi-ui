@@ -2,7 +2,6 @@ import webpack, { Configuration } from 'webpack'
 import WebPackBarPlugin from 'webpackbar'
 
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import ESLintWebpackPlugin from 'eslint-webpack-plugin'
 
