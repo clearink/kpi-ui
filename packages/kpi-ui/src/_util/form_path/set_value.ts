@@ -1,28 +1,29 @@
-import getValue from './get_value'
-import { initValue } from './utils/_helps'
-import { isArray, isPlainObject } from '../validate_type'
-import { NodePath } from './interface'
+// eslint-disable-next-line import/no-cycle
+import getValue from './get_value';
+import { initValue } from './utils/_helps';
+import { isArray, isPlainObject } from '../validate_type';
+import { NodePath } from './interface';
 
 function setValue<D extends any>(object: D, paths: NodePath[], value: any) {
-  if (!paths.length || !isPlainObject(object)) return object
+  if (!paths.length || !isPlainObject(object)) return object;
 
-  const [attribute, ...$paths] = paths
+  const [attribute, ...$paths] = paths;
 
   if (!isPlainObject(attribute)) {
-    if (isArray(object) && isNaN(+attribute)) return object
-    object[attribute] = value
+    if (isArray(object) && isNaN(+attribute)) return object;
+    object[attribute] = value;
   } else if ('attr' in attribute) {
-    const { type, attr } = attribute
-    object[attr] = setValue(initValue(type, object[attr]), $paths, value)
+    const { type, attr } = attribute;
+    object[attr] = setValue(initValue(type, object[attr]), $paths, value);
   } else if ('attrs' in attribute) {
     // 默认 attrs 也是最后一项
     return attribute.attrs.reduce((result, { left, right }) => {
-      const [match, $value] = getValue(value, left)
-      if (!match) return result // 匹配失败就不用继续 set 了
-      return setValue(result, right, $value)
-    }, object)
+      const [match, $value] = getValue(value, left);
+      if (!match) return result; // 匹配失败就不用继续 set 了
+      return setValue(result, right, $value);
+    }, object);
   }
-  return object
+  return object;
 }
 
-export default setValue
+export default setValue;

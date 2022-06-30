@@ -166,7 +166,7 @@ export default function common(mode: 'development' | 'production', constant: Con
       useTypeScript && new ForkTsCheckerWebpackPlugin(),
       new ESLintWebpackPlugin({
         fix: true /* 自动帮助修复 */,
-        context: constant.APP_DIR,
+        context: constant.SRC_DIR,
         extensions: constant.RESOLVE_EXTENSIONS(),
         eslintPath: require.resolve('eslint'),
         cache: true,
@@ -186,6 +186,6 @@ export default function common(mode: 'development' | 'production', constant: Con
         //   BASE_URL: '"/"',
         // },
       }),
-    ],
+    ].filter(Boolean),
   } as Configuration
 }

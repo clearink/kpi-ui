@@ -21,6 +21,9 @@ export default function dev(preview: boolean) {
     cache: true, // dev 下使用内存缓存
     // TODO: 待完善
     stats: 'errors-only',
+    optimization: {
+      minimize: false,
+    },
     plugins: [
       // 生成html，自动引入所有bundle
       new HtmlWebpackPlugin({

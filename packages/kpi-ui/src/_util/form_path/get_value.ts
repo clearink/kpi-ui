@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import setValue from './set_value';
 import { initValue } from './utils/_helps';
 import { isPlainObject } from '../validate_type';

@@ -24,7 +24,6 @@ export default function KPI_CONST(preview: boolean) {
       OUTPUT_PATH: resolveApp('dist'),
       PUBLIC_DIR: resolveApp('public'),
       TS_CONFIG: resolveApp('tsconfig.json'),
-      JS_CONFIG: resolveApp('jsconfig.json'),
       KPI_CONFIG: resolveApp('kpi.config.js'),
 
       // gen
@@ -81,9 +80,7 @@ export default function KPI_CONST(preview: boolean) {
         return _.HAS_JSX_RUNTIME() ? 'automatic' : 'classic'
       },
       JSX_ESLINT_RULE: () => {
-        if (_.HAS_JSX_RUNTIME()) {
-          return { 'react/react-in-jsx-scope': 'off' } as const
-        }
+        if (_.HAS_JSX_RUNTIME()) return undefined
         return { 'react/react-in-jsx-scope': 'error' } as const
       },
       RESOLVE_EXTENSIONS: () => {

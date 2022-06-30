@@ -12,7 +12,8 @@
     "test": "lerna run test",
     "diff": "lerna diff",
     "bootstrap": "lerna bootstrap",
-    "build:cli": "cd ./packages/kpi-cli & npm run build"
+    "build:cli": "cd ./packages/kpi-cli & npm run build",
+    "create:eslint": "lerna create @kpi/eslint-config"
   },
   "husky": {
     "hooks": {}

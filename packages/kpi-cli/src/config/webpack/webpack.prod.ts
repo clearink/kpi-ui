@@ -27,6 +27,7 @@ export default function prod() {
     }, //使用文件缓存
     optimization: {
       runtimeChunk: true,
+      minimize: true,
       splitChunks: {
         chunks: 'all',
         cacheGroups: {
