@@ -1,10 +1,11 @@
 lerna-debug.log
 package-lock.json
-/node_modules/
-/packages/*/node_modules/
+node_modules
 
 # bundle files
 packages/*/lib/
 packages/*/es/
 packages/*/types/
 packages/*/.kpi/
+packages/kpi-ui/esm
+packages/kpi-ui/lib
