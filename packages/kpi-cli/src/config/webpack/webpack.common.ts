@@ -40,6 +40,11 @@ export default function common(mode: 'development' | 'production', constant: Con
       },
     },
     module: {
+      parser: {
+        javascript: {
+          exportsPresence: 'error'
+        },
+      },
       rules: [
         {
           test: /\.(js|mjs|jsx|ts|tsx)$/,
@@ -163,10 +168,9 @@ export default function common(mode: 'development' | 'production', constant: Con
         resourceRegExp: /^\.\/locale$/,
         contextRegExp: /moment$/,
       }),
-      // // 单独一个进程检查
+      // 单独一个进程检查
       useTypeScript && new ForkTsCheckerWebpackPlugin(),
       new ESLintWebpackPlugin({
-        fix: true /* 自动帮助修复 */,
         context: constant.SRC_DIR,
         extensions: constant.RESOLVE_EXTENSIONS(),
         eslintPath: require.resolve('eslint'),
