@@ -39,10 +39,7 @@ export function isBracketMatch(left: BracketItem | string, right: string) {
 }
 
 // 修正最后一项 并且验证数据解构语句的位置
-export function fixLastAndValidateToken(
-  tokens: NodePath[] | RemovedDestToken[],
-  fixArray?: boolean,
-) {
+export function fixLastToken(tokens: NodePath[] | RemovedDestToken[], fixArray?: boolean) {
   const len = tokens.length;
   const last = tokens[len - 1];
   if (!isPlainObject(last)) return tokens as NodePath[];

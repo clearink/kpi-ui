@@ -1,7 +1,6 @@
-import getValue from './get_value';
 import { NodePath } from './interface';
 import parser from './parser';
-import setValue from './set_value';
+import { setValue, getValue } from './core';
 import tokenizer from './tokenizer';
 
 class FormPath {

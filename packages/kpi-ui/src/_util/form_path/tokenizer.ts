@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 import { Operator, All, Bracket } from './utils/_token';
 import { TokenItem } from './interface';
 import validatePatten from './utils/validate_patten';
@@ -20,11 +21,11 @@ function tokenizer($input: string) {
     }
     // 截取 attr
     const next = letters.slice(index);
-    const start = next.findIndex((item) => All.includes(item.value));
+    const start = next.findIndex((token) => All.includes(token.value));
 
     const attrs = start !== -1 ? next.slice(0, start) : next;
     attrs.forEach((attr) => (attr.used = true)); // 设置为 true
-    const attr = attrs.map((item) => item.value).join('');
+    const attr = attrs.map((token) => token.value).join('');
 
     return result.concat({ type: 'Attr', value: attr });
   }, [] as TokenItem[]);

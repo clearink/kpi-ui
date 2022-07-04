@@ -1,13 +1,12 @@
-import { usePrefix } from '../_util/hooks'
-import useRowClass from './hooks/use_row_class'
-import withDefaultProps from '../_util/hocs/withDefaultProps'
-import { RowProps } from './props'
+import { usePrefix } from '../_util/hooks';
+import useRowClass from './hooks/use_row_class';
+import withDefaultProps from '../_util/hocs/withDefaultProps';
 
-function Row(props: RowProps) {
-  const name = usePrefix('row')
-  const className = useRowClass(name, props)
+function Row() {
+  const name = usePrefix('row');
+  const className = useRowClass(name);
 
-  return <div className={className}>grid</div>
+  return <div className={className}>grid</div>;
 }
 
 export default withDefaultProps(Row, {
@@ -15,4 +14,4 @@ export default withDefaultProps(Row, {
   gutter: 0,
   justify: 'start',
   wrap: true,
-})
+});

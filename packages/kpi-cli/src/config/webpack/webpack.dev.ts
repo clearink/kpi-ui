@@ -18,8 +18,7 @@ export default function dev(preview: boolean) {
       filename: 'js/bundle.js',
       chunkFilename: 'js/[name].chunk.js',
     },
-    cache: true, // dev 下使用内存缓存
-    // TODO: 待完善
+    cache: true,
     stats: 'errors-only',
     optimization: {
       minimize: false,

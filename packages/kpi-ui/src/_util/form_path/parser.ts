@@ -1,8 +1,8 @@
 import { NodePath, TokenItem } from './interface';
 import {
-  fixLastAndValidateToken, isArrayToken, isDestToken, isBracketMatch,
+  fixLastToken, isArrayToken, isDestToken, isBracketMatch,
 } from './utils/_helps';
-import { normalizeDestToken } from './utils';
+import normalizeDestToken from './utils/normalize_dest_token';
 import { Dot } from './utils/_token';
 
 /** 解析 tokens 生成 paths */
@@ -17,7 +17,7 @@ function parser(tokens: TokenItem[]) {
     // 数据解构优先级最高
     if (isDestToken(tokens, i)) result.push(normalizeDestToken(tokens, i));
     // 其次为数组
-    else if (isArrayToken(tokens, i)) fixLastAndValidateToken(result, true);
+    else if (isArrayToken(tokens, i)) fixLastToken(result, true);
     // 直接存储 attr
     else if (type === 'Attr') result.push({ type: 'object', attr: value });
     else if (type === 'Operator' && value !== Dot) {
@@ -29,6 +29,6 @@ function parser(tokens: TokenItem[]) {
     else if (type === 'Bracket') brackets.push(value);
   }
   if (brackets.length) throw new Error('括号不匹配');
-  return fixLastAndValidateToken(result); // 修正最后一项
+  return fixLastToken(result); // 修正最后一项
 }
 export default parser;

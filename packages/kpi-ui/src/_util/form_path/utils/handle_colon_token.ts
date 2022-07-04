@@ -1,6 +1,6 @@
 import { isPlainObject } from '../../validate_type';
 import { NodePath, NodeType, RemovedCommaToken } from '../interface';
-import { fixLastAndValidateToken } from './_helps';
+import { fixLastToken } from './_helps';
 import { Colon } from './_token';
 
 function handleColonToken(matrix: RemovedCommaToken[][], type: NodeType) {
@@ -28,8 +28,8 @@ function handleColonToken(matrix: RemovedCommaToken[][], type: NodeType) {
     if (type === 'array') item[0] = [index];
 
     // 修正最后一项
-    const left = fixLastAndValidateToken(item[0]);
-    const right = fixLastAndValidateToken(item[1]);
+    const left = fixLastToken(item[0]);
+    const right = fixLastToken(item[1]);
     result.push({ left, right });
   }
   return result;

@@ -3,11 +3,7 @@
 import { BracketItem, RemovedDestToken, TokenItem } from '../interface';
 import { Dot } from './_token';
 import {
-  isDestToken,
-  findDestToken,
-  fixLastAndValidateToken,
-  isArrayToken,
-  isBracketMatch,
+  isDestToken, findDestToken, fixLastToken, isArrayToken, isBracketMatch,
 } from './_helps';
 
 // 获取数据解构 tokens
@@ -19,14 +15,17 @@ function handleDestToken(tokens: TokenItem[], brackets: BracketItem[]) {
     tokens[i].used = true;
 
     if (isDestToken(tokens, i)) {
-      const [$tokens, type, bracket] = findDestToken(tokens, i);
+      const [$tokens, type$, bracket] = findDestToken(tokens, i);
       brackets.push({ dest: true, value: bracket });
-      result.push({ type, attrs: handleDestToken($tokens, brackets) });
+      const attrs = handleDestToken($tokens, brackets);
+      result.push({ type: type$, attrs });
     } else if (isArrayToken(tokens, i)) {
-      fixLastAndValidateToken(result, true);
+      fixLastToken(result, true);
     } else if (type === 'Attr') {
       result.push({ type: 'object', attr: value });
-    } else if (type === 'Operator' && value !== Dot) result.push(value);
+    } else if (type === 'Operator' && value !== Dot) {
+      result.push(value);
+    }
 
     const bracket = brackets[brackets.length - 1];
     if (isBracketMatch(bracket, value)) {
