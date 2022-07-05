@@ -21,7 +21,8 @@
   "scripts": {
     "compile": "kpi-cli compile -f",
     "dev": "kpi-cli preview",
-    "gen": "kpi-cli gen"
+    "gen": "kpi-cli gen",
+    "lint": "npx eslint --fix ./src --ext .ts,.tsx"
   },
   "dependencies": {
     "@react-spring/web": "^9.4.5",

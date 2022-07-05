@@ -1,15 +1,15 @@
-export type PathKey = string
-export type NodeType = 'object' | 'array'
+export type PathKey = string;
+export type NodeType = 'object' | 'array';
 export type NodePath =
   | PathKey
   | {
-      type: NodeType
-      attr: PathKey
-    }
+    type: NodeType
+    attr: PathKey
+  }
   | {
-      type: NodeType
-      attrs: { left: NodePath[]; right: NodePath[] }[]
-    }
+    type: NodeType
+    attrs: { left: NodePath[]; right: NodePath[] }[]
+  };
 
 export interface TokenItem {
   type: 'Operator' | 'Bracket' | 'Attr'
@@ -19,23 +19,23 @@ export interface TokenItem {
 export type RemovedDestToken =
   | PathKey
   | {
-      type: NodeType
-      attr: PathKey
-    }
+    type: NodeType
+    attr: PathKey
+  }
   | {
-      type: NodeType
-      attrs: RemovedDestToken[]
-    }
+    type: NodeType
+    attrs: RemovedDestToken[]
+  };
 
 export type RemovedCommaToken =
   | PathKey
   | {
-      type: NodeType
-      attr: PathKey
-    }
+    type: NodeType
+    attr: PathKey
+  }
   | {
-      type: NodeType
-      attrs: RemovedCommaToken[][]
-    }
-export type BracketItem = { value: string; dest?: true }
-export type GetValueResult = [boolean, any]
+    type: NodeType
+    attrs: RemovedCommaToken[][]
+  };
+export interface BracketItem { value: string; dest?: true }
+export type GetValueResult = [boolean, any];

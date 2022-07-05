@@ -20,5 +20,5 @@ export default function useDividerClass(name: string, props: SpaceProps) {
       [`${name}--wrap`]: wrap,
     },
     className,
-  ), [name, className, direction, wrap]);
+  ), [name, direction, align, wrap, className]);
 }

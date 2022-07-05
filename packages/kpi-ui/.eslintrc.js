@@ -22,6 +22,7 @@ module.exports = {
     // 禁止使用 var
     'no-var': 'error',
     'no-plusplus': 'off',
+    'linebreak-style': 'off',
     'no-continue': 'off',
     'no-param-reassign': 'off',
     'no-restricted-globals': ['error', 'event', 'fdescribe'],

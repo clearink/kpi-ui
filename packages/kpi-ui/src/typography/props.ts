@@ -1,4 +1,4 @@
-import { ReactChild, ReactNode } from 'react'
+import { ReactChild, ReactNode } from 'react';
 
 interface CopyableConfig {
   icon?: ReactNode

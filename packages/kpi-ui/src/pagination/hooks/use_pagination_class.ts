@@ -1,10 +1,7 @@
-import { PaginationProps } from '../props'
-import { useMemo } from 'react'
-import cls from 'classnames'
+import { useMemo } from 'react';
+import cls from 'classnames';
+// import { PaginationProps } from '../props';
 
-export default function usePaginationProps(name: string, props: PaginationProps) {
-  const {} = props
-  return useMemo(() => {
-    return cls(name, {})
-  }, [name])
+export default function usePaginationProps(name: string) {
+  return useMemo(() => cls(name, {}), [name]);
 }

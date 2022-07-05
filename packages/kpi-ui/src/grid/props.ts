@@ -1,10 +1,10 @@
-import { HTMLAttributes } from 'react'
-import { Breakpoint, LiteralUnion } from '../_shared/props'
+import { HTMLAttributes } from 'react';
+import { Breakpoint, LiteralUnion } from '../_shared/props';
 
 /* ------------------------------ row ------------------------------ */
-export type AlignType = ['top', 'middle', 'bottom', 'stretch'][number]
-export type JustifyType = ['start', 'end', 'center', 'space-around', 'space-between'][number]
-export type Gutter = number | Partial<Record<Breakpoint, number>>
+export type AlignType = ['top', 'middle', 'bottom', 'stretch'][number];
+export type JustifyType = ['start', 'end', 'center', 'space-around', 'space-between'][number];
+export type Gutter = number | Partial<Record<Breakpoint, number>>;
 export interface RowProps extends HTMLAttributes<HTMLDivElement> {
   align: AlignType
   gutter: Gutter | [Gutter, Gutter]
@@ -14,8 +14,8 @@ export interface RowProps extends HTMLAttributes<HTMLDivElement> {
 
 /* ------------------------------ col ------------------------------- */
 
-export type FlexType = number | LiteralUnion<'none' | 'auto', string>
-export type ColSpanType = string | number
+export type FlexType = number | LiteralUnion<'none' | 'auto', string>;
+export type ColSpanType = string | number;
 export interface ColSize {
   flex?: FlexType
   span?: ColSpanType
@@ -26,5 +26,5 @@ export interface ColSize {
 }
 export interface ColProps
   extends ColSize,
-    HTMLAttributes<HTMLDivElement>,
-    Partial<Record<Breakpoint, ColSpanType | ColSize>> {}
+  HTMLAttributes<HTMLDivElement>,
+  Partial<Record<Breakpoint, ColSpanType | ColSize>> {}
