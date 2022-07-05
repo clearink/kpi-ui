@@ -17,7 +17,7 @@ module.exports = {
     },
   },
   plugins: ['react', 'react-hooks', '@typescript-eslint'],
-  extends: ['plugin:react/recommended', 'airbnb-base', 'airbnb-typescript'],
+  extends: ['plugin:react/recommended', 'airbnb-base', 'airbnb-typescript', 'prettier'],
   rules: {
     // 禁止使用 var
     'no-var': 'error',
