@@ -23,9 +23,6 @@ export default function dev(preview: boolean) {
     optimization: {
       minimize: false,
     },
-    watchOptions:{
-      ignored: ['**/node_modules/**', '**/tsconfig.json', '**/package.json']
-    },
     plugins: [
       // 生成html，自动引入所有bundle
       new HtmlWebpackPlugin({
