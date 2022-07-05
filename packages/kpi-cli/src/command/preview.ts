@@ -26,9 +26,9 @@ export default async function preview(options: { open: boolean; port: number }) 
 
     compiler.hooks.invalid.tap('invalid', () => console.clear())
     ;['SIGINT', 'SIGTERM'].forEach((sig) => {
-      process.on(sig, () => (server.close(), process.exit(0)))
+      process.on(sig, () => process.exit())
     })
-  } catch (error: any) {
+  } catch (error) {
     logger.error(error?.message)
     process.exit(1)
   }
