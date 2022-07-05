@@ -16,11 +16,15 @@ module.exports = {
       jsx: true,
     },
   },
-  plugins: ['react', 'react-hooks', '@typescript-eslint'],
-  extends: ['plugin:react/recommended', 'airbnb-base', 'airbnb-typescript', 'prettier'],
+  plugins: ['react', '@typescript-eslint', 'react-hooks', 'prettier'],
+  extends: [
+    'plugin:react/recommended',
+    'airbnb-base',
+    'airbnb-typescript',
+    'plugin:prettier/recommended',
+  ],
   rules: {
     // 禁止使用 var
-    'no-var': 'error',
     'no-plusplus': 'off',
     'linebreak-style': 'off',
     'no-continue': 'off',
@@ -53,5 +57,10 @@ module.exports = {
     react: {
       version: 'detect',
     },
+    // 'import/resolver': {
+    //   webpack: {
+    //     // config:
+    //   },
+    // },
   },
-};
+}

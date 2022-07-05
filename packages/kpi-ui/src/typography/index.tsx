@@ -1,6 +1,6 @@
-import Text from './Text';
+import Text from './Text'
 
 const Typography = {
   Text,
-};
-export default Typography;
+}
+export default Typography

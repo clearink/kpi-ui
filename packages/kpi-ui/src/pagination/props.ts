@@ -1,3 +1,1 @@
-export interface PaginationProps {
-
-}
+export interface PaginationProps {}

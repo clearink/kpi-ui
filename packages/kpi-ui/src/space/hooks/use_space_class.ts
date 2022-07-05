@@ -1,24 +1,26 @@
-import { useMemo } from 'react';
-import cls from 'classnames';
-import { SpaceProps } from '../props';
+import { useMemo } from 'react'
+import cls from 'classnames'
+import { SpaceProps } from '../props'
 
 export default function useDividerClass(name: string, props: SpaceProps) {
-  const {
-    className, direction, align: $align, wrap,
-  } = props;
+  const { className, direction, align: $align, wrap } = props
 
   const align = useMemo(() => {
-    const useDefault = direction === 'horizontal' && $align === undefined;
-    return useDefault ? 'center' : $align;
-  }, [$align, direction]);
+    const useDefault = direction === 'horizontal' && $align === undefined
+    return useDefault ? 'center' : $align
+  }, [$align, direction])
 
-  return useMemo(() => cls(
-    name,
-    {
-      [`${name}--${direction}`]: direction,
-      [`${name}--align-${align}`]: align,
-      [`${name}--wrap`]: wrap,
-    },
-    className,
-  ), [name, direction, align, wrap, className]);
+  return useMemo(
+    () =>
+      cls(
+        name,
+        {
+          [`${name}--${direction}`]: direction,
+          [`${name}--align-${align}`]: align,
+          [`${name}--wrap`]: wrap,
+        },
+        className
+      ),
+    [name, direction, align, wrap, className]
+  )
 }

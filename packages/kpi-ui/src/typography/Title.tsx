@@ -1,3 +1,3 @@
 // 标题
 function Title() {}
-export default Title;
+export default Title
