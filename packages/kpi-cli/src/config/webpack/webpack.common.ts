@@ -1,22 +1,22 @@
-import webpack, { Configuration } from 'webpack';
-import WebPackBarPlugin from 'webpackbar';
+import webpack, { Configuration } from 'webpack'
+import WebPackBarPlugin from 'webpackbar'
 
-import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
-import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import ESLintWebpackPlugin from 'eslint-webpack-plugin';
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
+import ESLintWebpackPlugin from 'eslint-webpack-plugin'
 
-import { ConstantType } from '../../shared/constant';
+import { ConstantType } from '../../shared/constant'
 
-import InterpolateHtmlPlugin from '../../plugins/interpolate_html_plugin';
-import { getEnvConstant, getStyleLoader } from '../../shared/utils';
+import InterpolateHtmlPlugin from '../../plugins/interpolate_html_plugin'
+import { getEnvConstant, getStyleLoader } from '../../shared/utils'
 // TODO: 使用 dotenv 获取自定义变量
-const envConstant = getEnvConstant();
+const envConstant = getEnvConstant()
 
 export default function common(mode: 'development' | 'production', constant: ConstantType) {
-  const isDev = mode === 'development';
+  const isDev = mode === 'development'
 
-  const useTailwind = constant.USE_TAILWIND();
-  const useTypeScript = constant.USE_TYPESCRIPT();
+  const useTailwind = constant.USE_TAILWIND()
+  const useTypeScript = constant.USE_TYPESCRIPT()
 
   return {
     target: ['browserslist'],
@@ -42,7 +42,7 @@ export default function common(mode: 'development' | 'production', constant: Con
     module: {
       parser: {
         javascript: {
-          exportsPresence: 'error'
+          exportsPresence: 'error',
         },
       },
       rules: [
@@ -61,12 +61,12 @@ export default function common(mode: 'development' | 'production', constant: Con
                       runtime: constant.JSX_RUNTIME(),
                     },
                   ],
-                  constant.USE_TYPESCRIPT() && require.resolve('@babel/preset-typescript'),
+                  useTypeScript && require.resolve('@babel/preset-typescript'),
                 ].filter(Boolean),
                 plugins: [
                   require.resolve('@babel/plugin-transform-runtime'),
                   isDev && require.resolve('react-refresh/babel'),
-                ],
+                ].filter(Boolean),
                 cacheDirectory: true,
                 cacheCompression: false,
                 compact: !isDev,
@@ -192,5 +192,5 @@ export default function common(mode: 'development' | 'production', constant: Con
         // },
       }),
     ].filter(Boolean),
-  } as Configuration;
+  } as Configuration
 }

@@ -5,14 +5,10 @@ import logger from '../shared/logger'
 // build site
 export default async function build() {
   process.env.NODE_ENV = 'production'
-  const compiler = webpack(prod(), (err, stats) => {
+
+  webpack(prod(), (err, stats) => {
     if (err || stats?.hasErrors()) {
       logger.error(err?.message ?? stats?.toString())
-    }
+    } else logger.success('编译成功')
   })
-  // console.log(dev(options))
-
-  // compiler.watch({}, (a: any) => {
-  //   console.log(a)
-  // })
 }
