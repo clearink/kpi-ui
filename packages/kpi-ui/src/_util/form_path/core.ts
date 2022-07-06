@@ -8,7 +8,7 @@ function setValue<D extends any>(object: D, paths: NodePath[], value: any) {
   const [attribute, ...$paths] = paths
 
   if (!isPlainObject(attribute)) {
-    if (isArray(object) && isNaN(+attribute)) return object
+    if (isArray(object) && Number.isNaN(+attribute)) return object
     object[attribute] = value
   } else if ('attr' in attribute) {
     const { type, attr } = attribute
