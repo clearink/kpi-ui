@@ -1,5 +1,5 @@
-node_modules
-esm
-lib
-types
-dist
+node_modules/
+esm/
+lib/
+types/
+dist/

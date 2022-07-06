@@ -2,7 +2,7 @@ import { initValue } from './utils/_helps'
 import { isArray, isPlainObject } from '../validate_type'
 import { NodePath, GetValueResult } from './interface'
 
-function setValue<D extends any>(object: D, paths: NodePath[], value: any) {
+function setValue<D>(object: D, paths: NodePath[], value: any) {
   if (!paths.length || !isPlainObject(object)) return object
 
   const [attribute, ...$paths] = paths
@@ -24,7 +24,7 @@ function setValue<D extends any>(object: D, paths: NodePath[], value: any) {
   return object
 }
 
-function getValue<D extends any>(object: D, paths: NodePath[]): GetValueResult {
+function getValue<D>(object: D, paths: NodePath[]): GetValueResult {
   if (!paths.length) return [false, object]
 
   const [attribute, ...$paths] = paths

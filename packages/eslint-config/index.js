@@ -1,6 +1,5 @@
 'use strict'
 const restrictedGlobals = require('confusing-browser-globals')
-
 module.exports = {
   extends: [require.resolve('./base')],
   plugins: ['import', 'jsx-a11y', 'react-hooks'],
@@ -14,11 +13,14 @@ module.exports = {
         ecmaFeatures: {
           jsx: true,
         },
-
-        // typescript-eslint specific options
-        warnOnUnsupportedTypeScriptVersion: true,
       },
-      plugins: ['@typescript-eslint'],
+      plugins: ['@typescript-eslint', 'prettier'],
+      extends: [
+        'airbnb-base',
+        'plugin:@typescript-eslint/recommended',
+        'airbnb-typescript',
+        'plugin:prettier/recommended',
+      ],
       rules: {
         'default-case': 'off',
         'no-dupe-class-members': 'off',
@@ -176,21 +178,6 @@ module.exports = {
     'unicode-bom': ['warn', 'never'],
     'use-isnan': 'warn',
     'valid-typeof': 'warn',
-    'no-restricted-properties': [
-      'error',
-      {
-        object: 'require',
-        property: 'ensure',
-        message:
-          'Please use import() instead. More info: https://facebook.github.io/create-react-app/docs/code-splitting',
-      },
-      {
-        object: 'System',
-        property: 'import',
-        message:
-          'Please use import() instead. More info: https://facebook.github.io/create-react-app/docs/code-splitting',
-      },
-    ],
     'getter-return': 'warn',
 
     'import/first': 'error',

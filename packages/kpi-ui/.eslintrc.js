@@ -1,12 +1,11 @@
 module.exports = {
   root: true,
   parserOptions: {
-    project: ['tsconfig.eslint.json', 'tsconfig.json'],
+    project: './tsconfig.eslint.json',
     tsconfigRootDir: __dirname,
-    allowImportExportEverywhere: true,
   },
-  plugins: ['prettier'],
-  extends: ['kpi-ui', 'airbnb-base', 'airbnb-typescript', 'plugin:prettier/recommended'],
+  extends: ['kpi-ui'],
+  ignorePatterns: ['node_modules', 'lib', 'esm', 'types'],
   rules: {
     'no-plusplus': 'off',
     'no-continue': 'off',
@@ -14,15 +13,5 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'consistent-return': 'off',
     'implicit-arrow-linebreak': 'off',
-    'no-use-before-define': 'off',
-    '@typescript-eslint/no-use-before-define': [
-      'warn',
-      {
-        functions: false,
-        classes: false,
-        variables: false,
-        typedefs: false,
-      },
-    ],
   },
 }

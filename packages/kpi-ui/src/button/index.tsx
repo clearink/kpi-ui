@@ -1,4 +1,4 @@
-import withDefaultProps from '../_util/hocs/withDefaultProps'
+import withDefaultProps from '@/_util/hocs/withDefaultProps'
 import { usePrefix } from '../_util/hooks'
 import useWave from '../_util/hooks/use_wave'
 import { omit } from '../_util/value'

@@ -12,20 +12,21 @@ class FormPath {
       const paths = parser(tokenizer(input))
       this.cache.set(input, paths)
     }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.cache.get(input)!
   }
 
-  public set<R extends any>(object: any, input: string, value: any): R {
+  public set<R>(object: unknown, input: string, value: unknown): R {
     const paths = this.handleCacheInput(input)
     return setValue(object, paths, value)
   }
 
-  public get<R extends any>(object: any, input: string): R {
+  public get<R>(object: unknown, input: string): R {
     const paths = this.handleCacheInput(input)
     return getValue(object, paths)[1]
   }
 
-  public exist(object: any, input: string) {
+  public exist(object: unknown, input: string) {
     const paths = this.handleCacheInput(input)
     return getValue(object, paths)[0]
   }
