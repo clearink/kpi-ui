@@ -1,5 +1,5 @@
 import { HTMLAttributes } from 'react'
-import { Breakpoint, LiteralUnion } from '../_shared/props'
+import { Breakpoint, LiteralUnion } from '../_util/props'
 
 /* ------------------------------ row ------------------------------ */
 export type AlignType = ['top', 'middle', 'bottom', 'stretch'][number]

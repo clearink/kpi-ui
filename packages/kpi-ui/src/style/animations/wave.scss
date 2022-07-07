@@ -1,0 +1,17 @@
+@import '../variables.scss';
+
+$wave-width: 6px;
+@keyframes #{$prefix}-wave-animate {
+  0% {
+    box-shadow: 0 0 0 0 inherit;
+  }
+
+  60% {
+    box-shadow: 0 0 0 $wave-width inherit;
+  }
+
+  100% {
+    box-shadow: 0 0 0 $wave-width inherit;
+    opacity: 0;
+  }
+}

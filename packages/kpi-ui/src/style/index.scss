@@ -2,6 +2,10 @@
 @import './themes/index';
 // core
 @import './core/index';
+
+// normalize
+@import './preset/normalize.css';
+
 // 预设样式
 @import './preset/index';
 // 动画

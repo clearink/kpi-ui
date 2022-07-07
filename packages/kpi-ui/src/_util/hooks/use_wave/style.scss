@@ -1,5 +1,6 @@
 $time-line: cubic-bezier(0.4, 0, 0.2, 1);
 $wave-animation-width: 6px;
+
 .kpi-wave {
   position: absolute;
   left: 0;
@@ -9,17 +10,21 @@ $wave-animation-width: 6px;
   pointer-events: none;
   border-radius: inherit;
   opacity: 0.2;
+
   &.kpi-wave--active {
     animation: kpi-wave 0.6s $time-line;
   }
 }
+
 @keyframes kpi-wave {
   0% {
     box-shadow: 0 0 0 0 #1890ff;
   }
+
   60% {
     box-shadow: 0 0 0 6px #1890ff;
   }
+
   100% {
     box-shadow: 0 0 0 6px #1890ff;
     opacity: 0;

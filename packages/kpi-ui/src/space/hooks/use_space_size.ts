@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
+import { SPACE_SIZE } from '@/_util/constant'
 import { SpaceProps } from '../props'
-import { SPACE_SIZE } from '../../_shared/constant'
 
 export default function useSpaceSize(size: SpaceProps['size'], hasSplit: boolean) {
   return useMemo(() => {

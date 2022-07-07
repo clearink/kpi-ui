@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import './style.scss'
+// import './style.scss'
 import Wave from './wave'
 // TODO: 待优化 对 mui 和 antd 的动画效果都不太满意
 export default function useWave<H extends HTMLElement>() {

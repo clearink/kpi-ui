@@ -1,5 +1,5 @@
-import { BREAKPOINT } from '../../../_shared/constant'
-import { ScreenMatch } from '../../../_shared/props'
+import { BREAKPOINT } from '@/_util/constant'
+import { ScreenMatch } from '../../props'
 
 // 初始状态
 export const initMatches = Object.keys(BREAKPOINT).reduce(
