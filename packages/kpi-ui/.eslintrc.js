@@ -6,12 +6,4 @@ module.exports = {
   },
   extends: ['kpi-ui'],
   ignorePatterns: ['node_modules', 'lib', 'esm', 'types'],
-  rules: {
-    'no-plusplus': 'off',
-    'no-continue': 'off',
-    'no-param-reassign': 'off',
-    'no-restricted-syntax': 'off',
-    'consistent-return': 'off',
-    'implicit-arrow-linebreak': 'off',
-  },
 }

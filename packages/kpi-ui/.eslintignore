@@ -3,3 +3,4 @@ esm/
 lib/
 types/
 dist/
+.kpi/
