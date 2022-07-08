@@ -19,7 +19,7 @@ export default function dev(preview: boolean) {
       chunkFilename: 'js/[name].chunk.js',
     },
     cache: true,
-    stats: 'errors-only',
+    stats: 'errors-warnings',
     optimization: {
       minimize: false,
     },

@@ -29,7 +29,7 @@ export default function common(mode: 'development' | 'production', constant: Con
       publicPath: constant.PUBLIC_PATH,
     },
     infrastructureLogging: {
-      level: 'none',
+      level: 'warn',
     },
     resolve: {
       modules: ['node_modules', constant.NODE_MODULES],
