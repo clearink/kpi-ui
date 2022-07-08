@@ -1,5 +1,5 @@
 import { useMemo, useRef } from 'react'
-import { isPlainObject } from '../../validate_type'
+import { isPlainObject } from '../../_utils/validate_type'
 /**
  * @description
  * 首先该hook的使用场景:

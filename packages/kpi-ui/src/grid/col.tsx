@@ -1,6 +1,6 @@
-import { usePrefix } from '../_util/hooks'
+import { usePrefix } from '@hooks'
+import { withDefault } from '@utils'
 import useColClass from './hooks/use_col_class'
-import withDefaultProps from '../_util/hocs/withDefaultProps'
 // import { ColProps } from './props';
 
 function Col() {
@@ -10,4 +10,4 @@ function Col() {
   return <div className={className}>grid</div>
 }
 
-export default withDefaultProps(Col, {})
+export default withDefault(Col, {})

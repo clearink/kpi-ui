@@ -1,6 +1,6 @@
-import { usePrefix } from '../_util/hooks'
+import { withDefault } from '@utils'
+import { usePrefix } from '../_hooks'
 import useRowClass from './hooks/use_row_class'
-import withDefaultProps from '../_util/hocs/withDefaultProps'
 
 function Row() {
   const name = usePrefix('row')
@@ -9,7 +9,7 @@ function Row() {
   return <div className={className}>grid</div>
 }
 
-export default withDefaultProps(Row, {
+export default withDefault(Row, {
   align: 'top',
   gutter: 0,
   justify: 'start',

@@ -37,6 +37,10 @@ export default function common(mode: 'development' | 'production', constant: Con
       alias: {
         // TODO: 支持外部扩展
         '@': constant.SRC_DIR,
+        '@hooks': constant.HOOKS_ALIAS_DIR,
+        '@utils': constant.UTILS_ALIAS_DIR,
+        '@shard': constant.SHARD_ALIAS_DIR,
+        '@style': constant.STYLE_ALIAS_DIR,
       },
     },
     module: {

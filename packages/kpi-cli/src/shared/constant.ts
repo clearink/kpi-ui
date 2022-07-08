@@ -41,6 +41,12 @@ export default function KPI_CONST(preview: boolean) {
       TYPE_DIR_NAME: 'types',
     }))
     .add((_) => ({
+      HOOKS_ALIAS_DIR: resolve(_.SRC_DIR, '_hooks'),
+      UTILS_ALIAS_DIR: resolve(_.SRC_DIR, '_utils'),
+      SHARD_ALIAS_DIR: resolve(_.SRC_DIR, '_shard'),
+      STYLE_ALIAS_DIR: resolve(_.SRC_DIR, 'style'),
+    }))
+    .add((_) => ({
       ESLINT_CACHE: resolve(_.NODE_MODULES, '.cache/.eslintcache'),
       PROPS_FILE_NAME: `${_.PROPS_DIR_NAME}.ts`, // gen
       // preview  constant

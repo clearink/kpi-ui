@@ -5,6 +5,6 @@ export { default as Space } from './space'
 export { default as Breadcrumb } from './breadcrumb'
 export { default as Row } from './grid/row'
 export { default as Col } from './grid/col'
-export { default as FormPath } from './_util/form_path'
+export { default as FormPath } from '@utils/form_path'
 // hooks
-export { default as useBreakpoint } from './_util/hooks/use_breakpoint'
+export { default as useBreakpoint } from '@hooks/use_breakpoint'

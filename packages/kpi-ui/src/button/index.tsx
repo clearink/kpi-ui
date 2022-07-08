@@ -1,7 +1,7 @@
-import withDefaultProps from '@/_util/hocs/withDefaultProps'
-import { usePrefix } from '../_util/hooks'
-import useWave from '../_util/hooks/use_wave'
-import { omit } from '../_util/value'
+import { usePrefix } from '@hooks'
+import useWave from '@hooks/use_wave'
+import { omit } from '@utils/value'
+import { withDefault } from '@utils'
 import useBtnClass from './hooks/use_btn_class'
 import { ButtonProps } from './props'
 // 导出组件属性
@@ -20,4 +20,4 @@ function Button(props: ButtonProps) {
     </button>
   )
 }
-export default withDefaultProps(Button, { htmlType: 'button', type: 'default' })
+export default withDefault(Button, { htmlType: 'button', type: 'default' })

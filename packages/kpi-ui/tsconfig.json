@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -26,15 +22,15 @@
     "noImplicitAny": false, // 不用显式返回 any
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["src/*"],
+      "@hooks": ["src/_hooks"],
+      "@hooks/*": ["src/_hooks/*"],
+      "@utils": ["src/_utils"],
+      "@utils/*": ["src/_utils/*"],
+      "@shard/*": ["src/_shard/*"],
+      "@style/*": ["src/style/*"]
     }
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

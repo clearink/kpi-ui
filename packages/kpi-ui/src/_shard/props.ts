@@ -1,4 +1,4 @@
-import { BREAKPOINT } from './constant'
+import { BREAKPOINT } from '@shard/constant'
 
 // 公共类型
 export type SizeType = 'small' | 'middle' | 'large'

@@ -1,6 +1,6 @@
-import { usePrefix } from '../_util/hooks'
+import { withDefault } from '@utils'
+import { usePrefix } from '../_hooks'
 import usePaginationClass from './hooks/use_pagination_class'
-import withDefaultProps from '../_util/hocs/withDefaultProps'
 // import { PaginationProps } from './props';
 
 // TODO: 待开发
@@ -11,7 +11,7 @@ function Pagination() {
   return <div className={className}>pagination</div>
 }
 
-export default withDefaultProps(Pagination, {
+export default withDefault(Pagination, {
   direction: 'horizontal',
   size: 'small',
   wrap: false,
