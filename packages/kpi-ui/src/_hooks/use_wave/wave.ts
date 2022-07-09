@@ -1,27 +1,37 @@
 /* 波纹 */
 export default class Wave {
-  private wave: HTMLSpanElement | null = null
+  private container: HTMLSpanElement | null = null
 
-  constructor(dom: HTMLElement) {
-    this.wave = document.createElement('span')
-    this.wave.className = 'kpi-wave'
-    this.wave.addEventListener('animationend', () => {
-      this.wave?.classList.remove('kpi-wave--active')
-    })
-    dom.appendChild(this.wave)
+  constructor(private prefix: string, private node: HTMLElement) {
+    this.container = document.createElement('span')
+    this.container.className = prefix
+    node.appendChild(this.container)
+  }
+
+  private setWaveColor() {
+    const computed = getComputedStyle(this.node)
+    const color =
+      computed.getPropertyValue('border-top-color') || // Firefox Compatible
+      computed.getPropertyValue('border-color') ||
+      computed.getPropertyValue('background-color')
+    this.container?.style.setProperty('--wave-color', color)
   }
 
   // 销毁
   destroy() {
-    this.wave?.parentNode?.removeChild(this.wave)
+    this.container?.parentNode?.removeChild(this.container)
   }
 
   createWave() {
-    const { wave } = this
-    if (!wave) return
-    wave.classList.remove('kpi-wave--active')
-    setTimeout(() => {
-      wave.classList.add('kpi-wave--active')
+    const { container } = this
+    if (!container) return
+    this.setWaveColor()
+
+    const wave = document.createElement('span')
+    wave.className = `${this.prefix}__item`
+    wave.addEventListener('animationend', () => {
+      this.container?.removeChild(wave)
     })
+    this.container?.appendChild(wave)
   }
 }

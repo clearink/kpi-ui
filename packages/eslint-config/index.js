@@ -24,6 +24,7 @@ module.exports = {
     'implicit-arrow-linebreak': 'off',
     'react/jsx-props-no-spreading': 'off',
     'react/button-has-type': 'off',
+    'react/destructuring-assignment': 'off',
     'import/extensions': 'off',
     '@typescript-eslint/no-unused-vars': 'warn',
     'no-use-before-define': 'off',

@@ -11,7 +11,7 @@ function Space(props: SpaceProps) {
   const { children: $children, size, style: $style, direction, wrap, split, ...rest } = props
 
   // 是否支持 gap 属性
-  const canUseFlexGap = useFlexGapSupport()
+  const gapSupport = useFlexGapSupport()
 
   const name = usePrefix('space')
   const className = useSpaceClass(name, props)
@@ -23,10 +23,10 @@ function Space(props: SpaceProps) {
 
   const style = useMemo(() => {
     let gapStyle = {}
-    if (canUseFlexGap) gapStyle = { rowGap: YGap, columnGap: XGap }
+    if (gapSupport) gapStyle = { rowGap: YGap, columnGap: XGap }
     else if (wrap || vertical) gapStyle = { marginBottom: -YGap }
     return Object.assign(gapStyle, $style)
-  }, [$style, XGap, YGap, canUseFlexGap, wrap, vertical])
+  }, [$style, XGap, YGap, gapSupport, wrap, vertical])
 
   // 处理 children
   const children = useMemo(() => {
@@ -35,7 +35,7 @@ function Space(props: SpaceProps) {
       const isEndItem = count - index === 1
       const marginRight = isEndItem || vertical ? undefined : XGap
       const paddingBottom = wrap || vertical ? YGap : undefined
-      const gapStyle = canUseFlexGap ? undefined : { marginRight, paddingBottom }
+      const gapStyle = gapSupport ? undefined : { marginRight, paddingBottom }
       return (
         <>
           <div className={`${name}-item`} style={gapStyle}>
@@ -49,7 +49,7 @@ function Space(props: SpaceProps) {
         </>
       )
     })
-  }, [$children, XGap, YGap, canUseFlexGap, name, vertical, wrap, split])
+  }, [$children, XGap, YGap, gapSupport, name, vertical, wrap, split])
 
   return (
     <div className={className} style={style} {...rest}>

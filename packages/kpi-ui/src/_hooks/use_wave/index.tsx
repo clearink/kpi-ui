@@ -1,16 +1,21 @@
 import { useEffect, useRef } from 'react'
-// import './style.scss'
+import { usePrefix } from '@hooks'
 import Wave from './wave'
-// TODO: 待优化 对 mui 和 antd 的动画效果都不太满意
+
+import './style.scss'
+
 export default function useWave<H extends HTMLElement>() {
+  const name = usePrefix('wave')
   const ref = useRef<H>(null)
+  const destroy = useRef(() => {})
   // 事件
   useEffect(() => {
     const dom = ref.current
     if (!dom) return
-    const wave = new Wave(dom)
+    const wave = new Wave(name, dom)
     dom.addEventListener('mouseup', () => wave.createWave())
+    destroy.current = () => wave.destroy()
     return () => wave.destroy()
-  }, [])
-  return ref
+  }, [name])
+  return [ref, destroy] as const
 }

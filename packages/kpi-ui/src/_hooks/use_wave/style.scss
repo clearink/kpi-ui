@@ -1,32 +1,20 @@
-$time-line: cubic-bezier(0.4, 0, 0.2, 1);
-$wave-animation-width: 6px;
+// 优化打包性能引入除了 preset 的内容
+@import '@style/core/index.scss'; // 引入 BEM
+@import '@style/themes/index.scss'; // 引入 变量
 
-.kpi-wave {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
+@include b(wave) {
   border-radius: inherit;
-  opacity: 0.2;
-
-  &.kpi-wave--active {
-    animation: kpi-wave 0.6s $time-line;
-  }
-}
-
-@keyframes kpi-wave {
-  0% {
-    box-shadow: 0 0 0 0 #1890ff;
-  }
-
-  60% {
-    box-shadow: 0 0 0 6px #1890ff;
-  }
-
-  100% {
-    box-shadow: 0 0 0 6px #1890ff;
-    opacity: 0;
+  pointer-events: none;
+  --wave-color: $primary-color;
+  @include e(item) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    opacity: 0.3;
+    animation: wave-animate 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
