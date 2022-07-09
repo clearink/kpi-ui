@@ -12,7 +12,6 @@ class FormPath {
       const paths = parser(tokenizer(input))
       this.cache.set(input, paths)
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.cache.get(input)!
   }
 

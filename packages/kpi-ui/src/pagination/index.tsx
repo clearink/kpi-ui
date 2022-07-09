@@ -1,4 +1,4 @@
-import { withDefault } from '@utils'
+import { withDefault } from '../_utils'
 import { usePrefix } from '../_hooks'
 import usePaginationClass from './hooks/use_pagination_class'
 // import { PaginationProps } from './props';

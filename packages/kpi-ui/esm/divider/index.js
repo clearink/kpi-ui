@@ -7,10 +7,8 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 import { useMemo } from 'react';
-import withDefaultProps from '../_util/hocs/withDefaultProps';
-import { usePrefix } from '../_util/hooks';
-import capitalize from '../_util/capitalize';
-import { omit } from '../_util/value';
+import { usePrefix } from '../_hooks';
+import { capitalize, omit, withDefault } from '../_utils';
 import useDividerClass from './hooks/use_divider_class';
 import { jsx as _jsx } from "react/jsx-runtime";
 
@@ -38,7 +36,7 @@ function Divider(props) {
   }));
 }
 
-export default withDefaultProps(Divider, {
+export default withDefault(Divider, {
   dashed: false,
   orientation: 'center',
   plain: false,

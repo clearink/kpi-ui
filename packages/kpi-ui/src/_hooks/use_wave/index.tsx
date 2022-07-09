@@ -1,11 +1,9 @@
 import { useEffect, useRef } from 'react'
-import { usePrefix } from '@hooks'
 import Wave from './wave'
 
 import './style.scss'
 
-export default function useWave<H extends HTMLElement>() {
-  const name = usePrefix('wave')
+export default function useWave<H extends HTMLElement>(name: string) {
   const ref = useRef<H>(null)
   const destroy = useRef(() => {})
   // 事件

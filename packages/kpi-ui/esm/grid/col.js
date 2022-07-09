@@ -1,18 +1,16 @@
-import _objectDestructuringEmpty from "@babel/runtime/helpers/objectDestructuringEmpty";
-import { usePrefix } from '../_util/hooks';
+import { usePrefix } from '../_hooks';
+import { withDefault } from '../_utils';
 import useColClass from './hooks/use_col_class';
-import withDefaultProps from '../_util/hocs/withDefaultProps';
 import { jsx as _jsx } from "react/jsx-runtime";
 
 function Col(props) {
-  _objectDestructuringEmpty(props);
-
+  var children = props.children;
   var name = usePrefix('col');
   var className = useColClass(name, props);
   return /*#__PURE__*/_jsx("div", {
     className: className,
-    children: "grid"
+    children: children
   });
 }
 
-export default withDefaultProps(Col, {});
+export default withDefault(Col, {});

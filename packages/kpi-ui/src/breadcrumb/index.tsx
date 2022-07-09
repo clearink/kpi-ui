@@ -1,5 +1,5 @@
-import { usePrefix } from '@hooks'
-import { withDefault } from '@utils'
+import { usePrefix } from '../_hooks'
+import { withDefault } from '../_utils'
 import useBreadcrumbClass from './hooks/use_breadcrumb_class'
 // import { BreadcrumbProps } from './props';
 

@@ -8,8 +8,8 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 import { useMemo, Children } from 'react';
-import { useFlexGapSupport, usePrefix } from '../_util/hooks';
-import withDefaultProps from '../_util/hocs/withDefaultProps';
+import { withDefault } from '../_utils';
+import { useFlexGapSupport, usePrefix } from '../_hooks';
 import useSpaceSize from './hooks/use_space_size';
 import useSpaceClass from './hooks/use_space_class';
 import { jsx as _jsx } from "react/jsx-runtime";
@@ -26,7 +26,7 @@ function Space(props) {
       rest = _objectWithoutProperties(props, _excluded); // 是否支持 gap 属性
 
 
-  var canUseFlexGap = useFlexGapSupport();
+  var gapSupport = useFlexGapSupport();
   var name = usePrefix('space');
   var className = useSpaceClass(name, props); // 水平 垂直 间距
 
@@ -39,14 +39,14 @@ function Space(props) {
   var vertical = direction === 'vertical';
   var style = useMemo(function () {
     var gapStyle = {};
-    if (canUseFlexGap) gapStyle = {
+    if (gapSupport) gapStyle = {
       rowGap: YGap,
       columnGap: XGap
     };else if (wrap || vertical) gapStyle = {
       marginBottom: -YGap
     };
     return Object.assign(gapStyle, $style);
-  }, [$style, XGap, YGap, canUseFlexGap, wrap, vertical]); // 处理 children
+  }, [$style, XGap, YGap, gapSupport, wrap, vertical]); // 处理 children
 
   var children = useMemo(function () {
     var count = Children.count($children);
@@ -54,7 +54,7 @@ function Space(props) {
       var isEndItem = count - index === 1;
       var marginRight = isEndItem || vertical ? undefined : XGap;
       var paddingBottom = wrap || vertical ? YGap : undefined;
-      var gapStyle = canUseFlexGap ? undefined : {
+      var gapStyle = gapSupport ? undefined : {
         marginRight: marginRight,
         paddingBottom: paddingBottom
       };
@@ -70,7 +70,7 @@ function Space(props) {
         })]
       });
     });
-  }, [$children, XGap, YGap, canUseFlexGap, name, vertical, wrap, split]);
+  }, [$children, XGap, YGap, gapSupport, name, vertical, wrap, split]);
   return /*#__PURE__*/_jsx("div", _objectSpread(_objectSpread({
     className: className,
     style: style
@@ -79,7 +79,7 @@ function Space(props) {
   }));
 }
 
-export default withDefaultProps(Space, {
+export default withDefault(Space, {
   direction: 'horizontal',
   size: 'small',
   wrap: false

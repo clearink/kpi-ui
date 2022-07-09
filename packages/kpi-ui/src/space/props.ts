@@ -1,5 +1,5 @@
 import { HTMLAttributes, ReactNode } from 'react'
-import { SizeType } from '@shard/props'
+import { SizeType } from '../_shard/props'
 
 type Size = SizeType | number
 export interface SpaceProps extends HTMLAttributes<HTMLDivElement> {

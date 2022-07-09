@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { SPACE_SIZE } from '../../_shared/constant';
+import { SPACE_SIZE } from '../../_shard/constant';
 export default function useSpaceSize(size, hasSplit) {
   return useMemo(function () {
     var sizes = Array.isArray(size) ? size : [size, size];

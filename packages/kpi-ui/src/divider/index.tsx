@@ -1,8 +1,6 @@
 import { useMemo } from 'react'
-import { usePrefix } from '@hooks'
-import capitalize from '@utils/capitalize'
-import { omit } from '@utils/value'
-import { withDefault } from '@utils'
+import { usePrefix } from '../_hooks'
+import { capitalize, omit, withDefault } from '../_utils'
 import useDividerClass from './hooks/use_divider_class'
 import { DividerProps } from './props'
 // 导出组件属性

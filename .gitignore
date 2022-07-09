@@ -5,7 +5,7 @@ dist
 
 # bundle files
 packages/*/lib/
-packages/*/es/
+packages/*/esm/
 packages/*/types/
 packages/*/.kpi/
 packages/kpi-ui/esm

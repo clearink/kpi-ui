@@ -34,14 +34,6 @@ export default function common(mode: 'development' | 'production', constant: Con
     resolve: {
       modules: ['node_modules', constant.NODE_MODULES],
       extensions: constant.RESOLVE_EXTENSIONS(),
-      alias: {
-        // TODO: 支持外部扩展
-        '@': constant.SRC_DIR,
-        '@hooks': constant.HOOKS_ALIAS_DIR,
-        '@utils': constant.UTILS_ALIAS_DIR,
-        '@shard': constant.SHARD_ALIAS_DIR,
-        '@style': constant.STYLE_ALIAS_DIR,
-      },
     },
     module: {
       parser: {
@@ -107,13 +99,16 @@ export default function common(mode: 'development' | 'production', constant: Con
           include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
           type: 'asset',
           generator: {
-            filename: 'fonts/[name].[hash:8][ext]',
+            filename: 'media/[name].[hash:8][ext]',
           },
         },
         {
           test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/i,
           include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
           type: 'asset/resource',
+          generator: {
+            filename: 'fonts/[name].[hash:8][ext]',
+          },
         },
         {
           test: /\.css$/,

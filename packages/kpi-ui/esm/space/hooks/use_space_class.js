@@ -14,5 +14,5 @@ export default function useDividerClass(name, props) {
     var _cls;
 
     return cls(name, (_cls = {}, _defineProperty(_cls, "".concat(name, "--").concat(direction), direction), _defineProperty(_cls, "".concat(name, "--align-").concat(align), align), _defineProperty(_cls, "".concat(name, "--wrap"), wrap), _cls), className);
-  }, [name, className, direction, wrap]);
+  }, [name, direction, align, wrap, className]);
 }

@@ -2,12 +2,8 @@
   "extends": "./tsconfig.json",
   "include": [
     "src",
+    ".kpi/src", // TODO: 移除
     ".eslintrc.js"
   ],
-  "exclude": [
-    "node_modules",
-    "lib",
-    "esm",
-    "types"
-  ]
+  "exclude": ["node_modules", "lib", "esm", "types"]
 }

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { SPACE_SIZE } from '@shard/constant'
+import { SPACE_SIZE } from '../../_shard/constant'
 import { SpaceProps } from '../props'
 
 export default function useSpaceSize(size: SpaceProps['size'], hasSplit: boolean) {

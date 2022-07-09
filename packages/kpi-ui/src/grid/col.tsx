@@ -1,13 +1,14 @@
-import { usePrefix } from '@hooks'
-import { withDefault } from '@utils'
+import { usePrefix } from '../_hooks'
+import { withDefault } from '../_utils'
 import useColClass from './hooks/use_col_class'
-// import { ColProps } from './props';
+import { ColProps } from './props'
 
-function Col() {
+function Col(props: ColProps) {
+  const { children } = props
   const name = usePrefix('col')
-  const className = useColClass(name)
+  const className = useColClass(name, props)
 
-  return <div className={className}>grid</div>
+  return <div className={className}>{children}</div>
 }
 
 export default withDefault(Col, {})

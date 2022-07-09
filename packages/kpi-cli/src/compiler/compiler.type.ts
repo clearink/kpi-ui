@@ -7,7 +7,7 @@ import { CompileProps } from '../command/compile'
 
 export default function compileType(options: CompileProps) {
   const { force } = options
-  const { APP_DIR, TYPE_DIR_NAME } = KPI_CONST('production')
+  const { APP_DIR, TYPE_DIR_NAME } = KPI_CONST(false)
   force && remove(resolve(APP_DIR, TYPE_DIR_NAME))
 
   const args = [
@@ -17,7 +17,10 @@ export default function compileType(options: CompileProps) {
     '--removeComments', // 移除注释
     '--declaration', // 生成 .d.ts 文件
     '--emitDeclarationOnly', // 仅生成 .d.ts 文件
+    '--noEmit',
+    'false',
   ]
+  console.log(args)
   const child = spawn('node', args)
   child.stderr.pipe(process.stderr)
   return new Promise<void>((res, rej) => {

@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
-import { usePrefix } from '@hooks'
-import useWave from '@hooks/use_wave'
-import { withDefault, omit } from '@utils'
+import { withDefault, omit } from '../_utils'
+import { usePrefix, useWave } from '../_hooks'
 import useBtnClass from './hooks/use_btn_class'
 import { ButtonProps } from './props'
 // 导出组件属性
@@ -11,7 +10,7 @@ function Button(props: ButtonProps) {
   const { children, htmlType, type, ...rest } = props
   const attrs = omit(rest, ['block', 'danger', 'shape', 'size', 'ghost', 'loading'])
 
-  const [ref, destroy] = useWave<HTMLButtonElement>()
+  const [ref, destroy] = useWave<HTMLButtonElement>(usePrefix('wave'))
 
   useEffect(() => {
     if (type === 'text') destroy.current()

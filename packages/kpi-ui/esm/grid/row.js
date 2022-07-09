@@ -1,21 +1,19 @@
-import _objectDestructuringEmpty from "@babel/runtime/helpers/objectDestructuringEmpty";
-import { usePrefix } from '../_util/hooks';
+import { usePrefix } from '../_hooks';
+import { withDefault } from '../_utils';
 import useRowClass from './hooks/use_row_class';
-import withDefaultProps from '../_util/hocs/withDefaultProps';
 import { jsx as _jsx } from "react/jsx-runtime";
 
 function Row(props) {
-  _objectDestructuringEmpty(props);
-
+  var children = props.children;
   var name = usePrefix('row');
-  var className = useRowClass(name, props);
+  var className = useRowClass(name);
   return /*#__PURE__*/_jsx("div", {
     className: className,
-    children: "grid"
+    children: children
   });
 }
 
-export default withDefaultProps(Row, {
+export default withDefault(Row, {
   align: 'top',
   gutter: 0,
   justify: 'start',

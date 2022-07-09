@@ -20,16 +20,7 @@
     // 忽略 string 不能当索引
     "suppressImplicitAnyIndexErrors": true,
     "noImplicitAny": false, // 不用显式返回 any
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@hooks": ["src/_hooks"],
-      "@hooks/*": ["src/_hooks/*"],
-      "@utils": ["src/_utils"],
-      "@utils/*": ["src/_utils/*"],
-      "@shard/*": ["src/_shard/*"],
-      "@style/*": ["src/style/*"]
-    }
+    "baseUrl": "./"
   },
   "include": ["src"],
   "exclude": ["node_modules"]
