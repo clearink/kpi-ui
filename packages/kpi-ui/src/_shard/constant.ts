@@ -1,8 +1,8 @@
 /* ----------------------------------- 公共类型 ----------------------------------- */
 export type SizeType = 'small' | 'middle' | 'large'
 export type Breakpoint = typeof BREAKPOINT_NAME[number]
-export type BreakpointMap = Record<Breakpoint, string>
-export type ScreenMatch = Record<Breakpoint, boolean>
+export type ScreenMatch = Partial<Record<Breakpoint, boolean>>
+export type ScreenQuery<K extends any> = Partial<Record<Breakpoint, K>>
 
 /* ----------------------------------- 公共常量 ----------------------------------- */
 // component Space

@@ -1,0 +1,47 @@
+// 优化打包性能引入除了 preset 的内容
+@use 'sass:math';
+@import '../../style/core/index.scss'; // 引入 BEM
+@import '../../style/themes/index.scss'; // 引入 变量
+@import './variable';
+@import './mixins';
+
+@include b(row) {
+  display: flex;
+  flex-flow: row wrap;
+  &::before,
+  &::after {
+    display: flex;
+  }
+
+  @include m(start) {
+    justify-content: flex-start;
+  }
+  @include m(end) {
+    justify-content: flex-end;
+  }
+  @include m(center) {
+    justify-content: center;
+  }
+  @include m(space-around) {
+    justify-content: space-around;
+  }
+  @include m(space-between) {
+    justify-content: space-between;
+  }
+  @include m(space-evenly) {
+    justify-content: space-evenly;
+  }
+
+  @include m(top) {
+    align-items: flex-start;
+  }
+  @include m(middle) {
+    align-items: center;
+  }
+  @include m(bottom) {
+    align-items: flex-end;
+  }
+  @include m(stretch) {
+    align-items: stretch;
+  }
+}

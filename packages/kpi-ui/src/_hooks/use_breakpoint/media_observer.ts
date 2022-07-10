@@ -1,4 +1,11 @@
-import { BREAKPOINT, INIT_MATCHES, ScreenMatch } from '../../_shard/constant'
+import {
+  BREAKPOINT,
+  BREAKPOINT_NAME,
+  INIT_MATCHES,
+  ScreenMatch,
+  ScreenQuery,
+} from '../../_shard/constant'
+import { hasOwn } from '../../_utils'
 
 export default class MediaObserver {
   private listeners: MediaQueryList[] = [] // 记录所有的 QueryList 对象
@@ -41,5 +48,15 @@ export default class MediaObserver {
       listener.removeEventListener('change', this.queryHandler)
     }
     this.listeners = []
+  }
+}
+
+// 匹配相应的断点数据
+export function handleMatchPoint<Q extends unknown>(matches: ScreenMatch, target: ScreenQuery<Q>) {
+  for (const point of BREAKPOINT_NAME) {
+    const matched = matches[point]
+    if (matched && hasOwn(target, point)) {
+      return target[point]
+    }
   }
 }

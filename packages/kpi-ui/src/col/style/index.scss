@@ -5,15 +5,6 @@
 @import './variable';
 @import './mixins';
 
-@include b(row) {
-  display: flex;
-  flex-flow: row wrap;
-  &::before,
-  &::after {
-    display: flex;
-  }
-}
-
 @include b(col) {
   position: relative;
   max-width: 100%;

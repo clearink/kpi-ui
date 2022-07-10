@@ -1,0 +1,31 @@
+@mixin generate-grid($name, $count) {
+  .ant-col-0 {
+    display: none;
+  }
+  @for $col from 0 through $count {
+    $percent: math.div($col, $count) * 100%;
+    @if $col == 0 {
+      .#{$name}.#{$name}-#{$col} {
+        display: none;
+      }
+    } @else {
+      .#{$name}.#{$name}-#{$col} {
+        display: block;
+        flex: 0 0 $percent;
+        max-width: $percent;
+      }
+      .#{$name}.#{$name}-push-#{$col} {
+        left: $percent;
+      }
+      .#{$name}.#{$name}-pull-#{$col} {
+        right: $percent;
+      }
+      .#{$name}.#{$name}-offset-#{$col} {
+        margin-left: $percent;
+      }
+      .#{$name}.#{$name}-order-#{$col} {
+        order: $col;
+      }
+    }
+  }
+}

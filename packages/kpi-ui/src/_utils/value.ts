@@ -21,6 +21,6 @@ export function pick<T, K extends keyof T>(
   return result
 }
 
-export function hasOwn<O>(obj: O, key: keyof any) {
+export function hasOwn<O extends unknown>(obj: O, key: keyof any) {
   return Object.prototype.hasOwnProperty.call(obj, key)
 }

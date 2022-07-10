@@ -3,10 +3,10 @@ import cls from 'classnames'
 import { ButtonProps } from '../props'
 
 export default function useBtnClass(name: string, props: ButtonProps) {
-  const { type, block, danger, shape, size, ghost, loading } = props
+  const { className, type, block, danger, shape, size, ghost, loading } = props
   return useMemo(
     () =>
-      cls(name, {
+      cls(name, className, {
         [`${name}--${type}`]: type,
         [`${name}--block`]: block,
         [`${name}--danger`]: danger,
@@ -17,6 +17,6 @@ export default function useBtnClass(name: string, props: ButtonProps) {
         [`${name}--ghost`]: ghost,
         [`${name}--loading`]: loading,
       }),
-    [name, type, block, danger, shape, size, ghost, loading]
+    [name, className, type, block, danger, shape, size, ghost, loading]
   )
 }
