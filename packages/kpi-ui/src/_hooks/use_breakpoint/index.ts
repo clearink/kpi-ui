@@ -5,11 +5,11 @@ import useRefCallback from '../use_ref_callback'
 import MediaObserver from './media_observer'
 
 // 基础响应式断点 hooks
-export type ShouldUpdateHandler = (query: ScreenMatch) => boolean
+export type ShouldUpdateHandler = (query: ScreenMatch<boolean>) => boolean
 export default function useBreakpoint(shouldUpdate?: ShouldUpdateHandler) {
   const [matches, updateMatches] = useState(() => INIT_MATCHES)
 
-  const subscribe = useRefCallback((query: ScreenMatch) => {
+  const subscribe = useRefCallback((query: ScreenMatch<boolean>) => {
     if (isUndefined(shouldUpdate) || shouldUpdate(query)) {
       updateMatches(query)
     }

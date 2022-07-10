@@ -1,10 +1,4 @@
-import {
-  BREAKPOINT,
-  BREAKPOINT_NAME,
-  INIT_MATCHES,
-  ScreenMatch,
-  ScreenQuery,
-} from '../../_shard/constant'
+import { BREAKPOINT, BREAKPOINT_NAME, INIT_MATCHES, ScreenMatch } from '../../_shard/constant'
 import { hasOwn } from '../../_utils'
 
 export default class MediaObserver {
@@ -16,7 +10,7 @@ export default class MediaObserver {
 
   private currentMatches = { ...INIT_MATCHES } // 当前匹配值
 
-  constructor(handler: (e: ScreenMatch) => void) {
+  constructor(handler: (e: ScreenMatch<boolean>) => void) {
     this.queryHandler = this.extendHandler(handler)
 
     for (const [breakpoint, { size, mode }] of Object.entries(BREAKPOINT)) {
@@ -32,7 +26,7 @@ export default class MediaObserver {
   }
 
   // 扩展事件函数
-  private extendHandler(handler: (e: ScreenMatch) => void) {
+  private extendHandler(handler: (e: ScreenMatch<boolean>) => void) {
     // 闭包 只在 currentMatches 变化时调用 handler 函数
     return (e: MediaQueryListEvent) => {
       const breakpoint = this.breakpointMap.get(e.media)
@@ -52,7 +46,10 @@ export default class MediaObserver {
 }
 
 // 匹配相应的断点数据
-export function handleMatchPoint<Q extends unknown>(matches: ScreenMatch, target: ScreenQuery<Q>) {
+export function handleMatchPoint<Q extends unknown>(
+  matches: ScreenMatch<boolean>,
+  target: ScreenMatch<Q>
+) {
   for (const point of BREAKPOINT_NAME) {
     const matched = matches[point]
     if (matched && hasOwn(target, point)) {

@@ -1,8 +1,7 @@
 /* ----------------------------------- 公共类型 ----------------------------------- */
 export type SizeType = 'small' | 'middle' | 'large'
 export type Breakpoint = typeof BREAKPOINT_NAME[number]
-export type ScreenMatch = Partial<Record<Breakpoint, boolean>>
-export type ScreenQuery<K extends any> = Partial<Record<Breakpoint, K>>
+export type ScreenMatch<K extends unknown> = Partial<Record<Breakpoint, K>>
 
 /* ----------------------------------- 公共常量 ----------------------------------- */
 // component Space
@@ -27,5 +26,5 @@ export const BREAKPOINT = {
 
 export const INIT_MATCHES = BREAKPOINT_NAME.reduce(
   (res, name) => ({ ...res, [name]: false }),
-  {} as ScreenMatch
+  {} as ScreenMatch<boolean>
 )
