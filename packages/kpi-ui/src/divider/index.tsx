@@ -3,8 +3,6 @@ import { usePrefix } from '../_hooks'
 import { capitalize, omit, withDefault } from '../_utils'
 import useDividerClass from './hooks/use_divider_class'
 import { DividerProps } from './props'
-// 导出组件属性
-export type { DividerProps }
 
 function Divider(props: DividerProps) {
   const { children, orientation, orientationMargin, ...rest } = props
@@ -34,4 +32,4 @@ export default withDefault(Divider, {
   orientation: 'center',
   plain: false,
   type: 'horizontal',
-})
+} as const)

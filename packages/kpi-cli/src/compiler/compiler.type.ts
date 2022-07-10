@@ -20,9 +20,10 @@ export default function compileType(options: CompileProps) {
     '--noEmit',
     'false',
   ]
-  console.log(args)
+
   const child = spawn('node', args)
   child.stderr.pipe(process.stderr)
+
   return new Promise<void>((res, rej) => {
     child.on('exit', (code) => {
       code ? rej() : res()

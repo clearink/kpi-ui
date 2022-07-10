@@ -14,10 +14,10 @@
   }
 }
 
-@include generate-grid(24); // 生成 24 格栅栏样式
-
 @include b(col) {
   position: relative;
   max-width: 100%;
   min-height: 1px;
 }
+// 生成 24 格栅栏样式
+@include generate-grid(#{$prefix}-col, 24);

@@ -1,11 +1,5 @@
-import { ScreenMatch } from '../../_shard/props'
-import { BREAKPOINT } from '../../_shard/constant'
+import { BREAKPOINT, INIT_MATCHES, ScreenMatch } from '../../_shard/constant'
 
-// 初始状态
-export const initMatches = Object.keys(BREAKPOINT).reduce(
-  (res, cur) => ({ ...res, [cur]: false }),
-  {}
-) as ScreenMatch
 export default class MediaObserver {
   private listeners: MediaQueryList[] = [] // 记录所有的 QueryList 对象
 
@@ -13,9 +7,9 @@ export default class MediaObserver {
 
   private queryHandler: (e: MediaQueryListEvent) => void // 内部扩展的触发函数
 
-  private currentMatches = { ...initMatches } // 当前匹配值
+  private currentMatches = { ...INIT_MATCHES } // 当前匹配值
 
-  constructor(handler: (e: typeof initMatches) => void) {
+  constructor(handler: (e: ScreenMatch) => void) {
     this.queryHandler = this.extendHandler(handler)
 
     for (const [breakpoint, { size, mode }] of Object.entries(BREAKPOINT)) {
@@ -31,7 +25,7 @@ export default class MediaObserver {
   }
 
   // 扩展事件函数
-  private extendHandler(handler: (e: typeof initMatches) => void) {
+  private extendHandler(handler: (e: ScreenMatch) => void) {
     // 闭包 只在 currentMatches 变化时调用 handler 函数
     return (e: MediaQueryListEvent) => {
       const breakpoint = this.breakpointMap.get(e.media)

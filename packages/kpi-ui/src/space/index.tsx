@@ -4,8 +4,6 @@ import { useFlexGapSupport, usePrefix } from '../_hooks'
 import useSpaceSize from './hooks/use_space_size'
 import useSpaceClass from './hooks/use_space_class'
 import { SpaceProps } from './props'
-// 导出组件属性
-export type { SpaceProps }
 
 function Space(props: SpaceProps) {
   const { children: $children, size, style: $style, direction, wrap, split, ...rest } = props
@@ -62,4 +60,4 @@ export default withDefault(Space, {
   direction: 'horizontal',
   size: 'small',
   wrap: false,
-})
+} as const)

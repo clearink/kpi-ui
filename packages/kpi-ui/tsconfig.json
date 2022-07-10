@@ -20,7 +20,6 @@
     // 忽略 string 不能当索引
     "suppressImplicitAnyIndexErrors": true,
     "noImplicitAny": false, // 不用显式返回 any
-    "baseUrl": "./"
   },
   "include": ["src"],
   "exclude": ["node_modules"]

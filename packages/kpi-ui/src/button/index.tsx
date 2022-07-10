@@ -3,8 +3,6 @@ import { withDefault, omit } from '../_utils'
 import { usePrefix, useWave } from '../_hooks'
 import useBtnClass from './hooks/use_btn_class'
 import { ButtonProps } from './props'
-// 导出组件属性
-export type { ButtonProps }
 
 function Button(props: ButtonProps) {
   const { children, htmlType, type, ...rest } = props
@@ -23,4 +21,4 @@ function Button(props: ButtonProps) {
     </button>
   )
 }
-export default withDefault(Button, { htmlType: 'button', type: 'default' })
+export default withDefault(Button, { htmlType: 'button', type: 'default' } as const)

@@ -1,8 +1,19 @@
-export const SPACE_SIZE = {
+/* ----------------------------------- 公共类型 ----------------------------------- */
+export type SizeType = 'small' | 'middle' | 'large'
+export type Breakpoint = typeof BREAKPOINT_NAME[number]
+export type BreakpointMap = Record<Breakpoint, string>
+export type ScreenMatch = Record<Breakpoint, boolean>
+
+/* ----------------------------------- 公共常量 ----------------------------------- */
+// component Space
+export const SPACE_SIZE: Record<SizeType, number> = {
   small: 8,
   middle: 16,
   large: 24,
-} as const
+}
+
+// 响应式断点
+export const BREAKPOINT_NAME = ['xxl', 'xl', 'lg', 'md', 'sm', 'xs'] as const
 
 // 断点 TODO: 尝试可以配置
 export const BREAKPOINT = {
@@ -13,3 +24,8 @@ export const BREAKPOINT = {
   xl: { size: 1200, mode: 'min' },
   xxl: { size: 1600, mode: 'min' },
 } as const
+
+export const INIT_MATCHES = BREAKPOINT_NAME.reduce(
+  (res, name) => ({ ...res, [name]: false }),
+  {} as ScreenMatch
+)

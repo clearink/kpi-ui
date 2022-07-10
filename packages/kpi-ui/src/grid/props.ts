@@ -1,5 +1,5 @@
 import { HTMLAttributes } from 'react'
-import { Breakpoint, LiteralUnion } from '../_shard/props'
+import { Breakpoint } from '../_shard/constant'
 
 /* ------------------------------ row ------------------------------ */
 export type AlignType = ['top', 'middle', 'bottom', 'stretch'][number]

@@ -1,4 +1,4 @@
-function omit<T, K extends keyof T>(obj: T, keys: Array<K>): Omit<T, K> {
+export function omit<T, K extends keyof T>(obj: T, keys: Array<K>): Omit<T, K> {
   const result = { ...obj }
   for (let i = 0; i < keys.length; i += 1) {
     const key = keys[i]
@@ -7,7 +7,11 @@ function omit<T, K extends keyof T>(obj: T, keys: Array<K>): Omit<T, K> {
   return result
 }
 
-function pick<T, K extends keyof T>(obj: T, keys: Array<K>, allowUndefined = false): Pick<T, K> {
+export function pick<T, K extends keyof T>(
+  obj: T,
+  keys: Array<K>,
+  allowUndefined = false
+): Pick<T, K> {
   const result = {} as T
   for (let i = 0; i < keys.length; i += 1) {
     const key = keys[i]
@@ -17,4 +21,6 @@ function pick<T, K extends keyof T>(obj: T, keys: Array<K>, allowUndefined = fal
   return result
 }
 
-export { omit, pick }
+export function hasOwn<O>(obj: O, key: keyof any) {
+  return Object.prototype.hasOwnProperty.call(obj, key)
+}

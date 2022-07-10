@@ -1,4 +1,4 @@
-import { ReactChild, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 interface CopyableConfig {
   icon?: ReactNode
@@ -25,5 +25,5 @@ export interface TypographyBaseProps {
 }
 
 export interface TextProps extends TypographyBaseProps {
-  children?: ReactChild
+  children?: ReactNode
 }

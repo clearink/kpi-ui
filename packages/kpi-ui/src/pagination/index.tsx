@@ -15,4 +15,4 @@ export default withDefault(Pagination, {
   direction: 'horizontal',
   size: 'small',
   wrap: false,
-})
+} as const)

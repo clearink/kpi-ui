@@ -4,11 +4,15 @@ import useColClass from './hooks/use_col_class'
 import { ColProps } from './props'
 
 function Col(props: ColProps) {
-  const { children } = props
+  const { children, span, className: $className, ...rest } = props
   const name = usePrefix('col')
   const className = useColClass(name, props)
 
-  return <div className={className}>{children}</div>
+  return (
+    <div className={className} {...rest}>
+      {children}
+    </div>
+  )
 }
 
 export default withDefault(Col, {})
