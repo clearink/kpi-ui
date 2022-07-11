@@ -8,13 +8,25 @@ export default class Wave {
     node.appendChild(this.container)
   }
 
-  private setWaveColor() {
+  // 如果 waveColor 是 白色，透明直接 return
+  static isValidColor(color: string) {
+    const matches = color.split(/[(rgba?()),\s]/g).filter(Boolean)
+    if (matches.length === 3) {
+      return !['255,255,255'].includes(matches.join(','))
+    }
+    if (matches.length === 4) {
+      return matches[3] !== '0'
+    }
+    return false
+  }
+
+  private getWaveColor() {
     const computed = getComputedStyle(this.node)
-    const color =
+    return (
       computed.getPropertyValue('border-top-color') || // Firefox Compatible
       computed.getPropertyValue('border-color') ||
       computed.getPropertyValue('background-color')
-    this.container?.style.setProperty('--wave-color', color)
+    )
   }
 
   // 销毁
@@ -25,8 +37,11 @@ export default class Wave {
   createWave() {
     const { container } = this
     if (!container) return
-    this.setWaveColor()
 
+    const waveColor = this.getWaveColor()
+    if (!Wave.isValidColor(waveColor)) return
+
+    this.container?.style.setProperty('--wave-color', waveColor)
     const wave = document.createElement('span')
     wave.className = `${this.prefix}__item`
     wave.addEventListener('animationend', () => {

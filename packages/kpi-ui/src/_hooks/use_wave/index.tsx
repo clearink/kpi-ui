@@ -2,18 +2,21 @@ import { useEffect, useRef } from 'react'
 import Wave from './wave'
 
 import './style.scss'
+import usePrefix from '../use_prefix'
 
-export default function useWave<H extends HTMLElement>(name: string) {
+export default function useWave<H extends HTMLElement>() {
   const ref = useRef<H>(null)
-  const destroy = useRef(() => {})
-  // 事件
+  const name = usePrefix('wave')
   useEffect(() => {
     const dom = ref.current
     if (!dom) return
     const wave = new Wave(name, dom)
-    dom.addEventListener('mouseup', () => wave.createWave())
-    destroy.current = () => wave.destroy()
-    return () => wave.destroy()
+    const handler = () => wave.createWave()
+    dom.addEventListener('click', handler, true)
+    return () => {
+      dom.removeEventListener('click', handler, true)
+      wave.destroy()
+    }
   }, [name])
-  return [ref, destroy] as const
+  return ref
 }

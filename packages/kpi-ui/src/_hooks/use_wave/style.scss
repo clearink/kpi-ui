@@ -5,16 +5,35 @@
 @include b(wave) {
   border-radius: inherit;
   pointer-events: none;
-  --wave-color: $primary-color;
+  --wave-color: #{$primary-color};
+
   @include e(item) {
     position: absolute;
+    inset: 0;
     left: 0;
     top: 0;
     right: 0;
     bottom: 0;
-    pointer-events: none;
+    display: block;
     border-radius: inherit;
-    opacity: 0.3;
-    animation: wave-animate 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    box-shadow: 0 0 0 0 var(--wave-color);
+    opacity: 0.2;
+    animation: wave-animate 1.5s cubic-bezier(.08, .82, .17, 1);
   }
+
+  $wave-width: 16px;
+  @keyframes wave-animate {
+    0% {
+      box-shadow: 0 0 0 0 var(--wave-color);
+    }
+    30% {
+      box-shadow: 0 0 0 6px var(--wave-color);
+    }
+    100% {
+      box-shadow: 0 0 0 8px var(--wave-color);
+      opacity: 0;
+    }
+  }
+
 }

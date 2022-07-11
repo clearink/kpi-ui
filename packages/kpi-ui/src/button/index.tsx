@@ -8,11 +8,8 @@ function Button(props: ButtonProps) {
   const { children, htmlType, type, ...rest } = props
   const attrs = omit(rest, ['block', 'danger', 'shape', 'size', 'ghost', 'loading'])
 
-  const [ref, destroy] = useWave<HTMLButtonElement>(usePrefix('wave'))
+  const ref = useWave<HTMLButtonElement>()
 
-  useEffect(() => {
-    if (type === 'text') destroy.current()
-  }, [destroy, type])
   const className = useBtnClass(usePrefix('button'), props)
 
   return (
