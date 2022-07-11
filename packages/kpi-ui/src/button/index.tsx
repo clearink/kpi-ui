@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { withDefault, omit } from '../_utils'
 import { usePrefix, useWave } from '../_hooks'
 import useBtnClass from './hooks/use_btn_class'

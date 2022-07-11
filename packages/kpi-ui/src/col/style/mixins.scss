@@ -1,29 +1,30 @@
-@mixin generate-grid($name, $count) {
-  .ant-col-0 {
-    display: none;
-  }
+@import '../../style/themes/index.scss';
+$name: #{$prefix}-col;
+
+@mixin generate-grid($size: null, $count: 24) {
+  $col-name: if($size, $name + '-' + $size, $name);
   @for $col from 0 through $count {
-    $percent: math.div($col, $count) * 100%;
     @if $col == 0 {
-      .#{$name}.#{$name}-#{$col} {
+      .#{$col-name}-#{$col} {
         display: none;
       }
     } @else {
-      .#{$name}.#{$name}-#{$col} {
+      $percent: math.div($col, $count) * 100%;
+      .#{$col-name}-#{$col} {
         display: block;
         flex: 0 0 $percent;
         max-width: $percent;
       }
-      .#{$name}.#{$name}-push-#{$col} {
+      .#{$col-name}-push-#{$col} {
         left: $percent;
       }
-      .#{$name}.#{$name}-pull-#{$col} {
+      .#{$col-name}-pull-#{$col} {
         right: $percent;
       }
-      .#{$name}.#{$name}-offset-#{$col} {
+      .#{$col-name}-offset-#{$col} {
         margin-left: $percent;
       }
-      .#{$name}.#{$name}-order-#{$col} {
+      .#{$col-name}-order-#{$col} {
         order: $col;
       }
     }

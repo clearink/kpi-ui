@@ -10,5 +10,27 @@
   max-width: 100%;
   min-height: 1px;
 }
+
 // 生成 24 格栅栏样式
-@include generate-grid(#{$prefix}-col, 24);
+@include generate-grid();
+@include generate-grid(xs);
+
+@include media(sm) {
+  @include generate-grid(sm);
+}
+
+@include media(md) {
+  @include generate-grid(md);
+}
+
+@include media(lg) {
+  @include generate-grid(lg);
+}
+
+@include media(xl) {
+  @include generate-grid(xl);
+}
+
+@include media(xxl) {
+  @include generate-grid(xxl);
+}

@@ -78,8 +78,9 @@ $text-color: fade-out($black, 1 - 0.85); // 基础
 $text-color-secondary: fade-out($black, 1 - 0.45); // 次级
 
 // 字体
-$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
-  'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+  'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+  'Noto Color Emoji';
 $code-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 
 // font-size   12 14 16 20 24 30 38 46 56 68
@@ -166,30 +167,47 @@ $shadow-color: rgba(#000, 0.15);
 
 $shadow-color-base: rgba(#000, 0.15);
 // level-1
-$shadow-1-up: 0 -1px 2px -2px rgba($black, 0.16), 0 -3px 6px 0 rgba($black, 0.12), 0 -5px 12px 4px rgba($black, 0.09);
+$shadow-1-up: 0 -1px 2px -2px rgba($black, 0.16), 0 -3px 6px 0 rgba($black, 0.12),
+  0 -5px 12px 4px rgba($black, 0.09);
 
-$shadow-1-down: 0 1px 2px -2px rgba($black, 0.16), 0 3px 6px 0 rgba($black, 0.12), 0 5px 12px 4px rgba($black, 0.09);
+$shadow-1-down: 0 1px 2px -2px rgba($black, 0.16), 0 3px 6px 0 rgba($black, 0.12),
+  0 5px 12px 4px rgba($black, 0.09);
 
-$shadow-1-left: -1 0 2px -2px rgba($black, 0.16), 3px 0 6px 0 rgba($black, 0.12), -5px 0 12px 4px rgba($black, 0.09);
+$shadow-1-left: -1 0 2px -2px rgba($black, 0.16), 3px 0 6px 0 rgba($black, 0.12),
+  -5px 0 12px 4px rgba($black, 0.09);
 
-$shadow-1-right: 1px 0 2px -2px rgba($black, 0.16), 3px 0 6px 0 rgba($black, 0.12), 5px 0 12px 4px rgba($black, 0.09);
+$shadow-1-right: 1px 0 2px -2px rgba($black, 0.16), 3px 0 6px 0 rgba($black, 0.12),
+  5px 0 12px 4px rgba($black, 0.09);
 
 // level-2
-$shadow-2-up: 0 -3px 6px -4px rgba($black, 0.12), 0 -6px 16px 0 rgba($black, 0.08), 0 -9px 28px 8px rgba($black, 0.05);
+$shadow-2-up: 0 -3px 6px -4px rgba($black, 0.12), 0 -6px 16px 0 rgba($black, 0.08),
+  0 -9px 28px 8px rgba($black, 0.05);
 
-$shadow-2-down: 0 3px 6px -4px rgba($black, 0.12), 0 6px 16px 0 rgba($black, 0.08), 0 9px 28px 8px rgba($black, 0.05);
+$shadow-2-down: 0 3px 6px -4px rgba($black, 0.12), 0 6px 16px 0 rgba($black, 0.08),
+  0 9px 28px 8px rgba($black, 0.05);
 
-$shadow-2-left: -3px 0 6px -4px rgba($black, 0.12), -6px 0 16px 0 rgba($black, 0.08), -9px 0 28px 8px rgba($black, 0.05);
+$shadow-2-left: -3px 0 6px -4px rgba($black, 0.12), -6px 0 16px 0 rgba($black, 0.08),
+  -9px 0 28px 8px rgba($black, 0.05);
 
-$shadow-2-right: 3px 0 6px -4px rgba($black, 0.12), 6px 0 16px 0 rgba($black, 0.08), 9px 0 28px 8px rgba($black, 0.05);
+$shadow-2-right: 3px 0 6px -4px rgba($black, 0.12), 6px 0 16px 0 rgba($black, 0.08),
+  9px 0 28px 8px rgba($black, 0.05);
 
 // level-3
 $shadow-3-up: 0 -6px 16px -8px rgba($black, 0.08), 0 -9px 28px 0 rgba($black, 0.05),
   0 -12px 48px 16px rgba($black, 0.03);
 
-$shadow-3-down: 0 6px 16px -8px rgba($black, 0.08), 0 9px 28px 0 rgba($black, 0.05), 0 12px 48px 16px rgba($black, 0.03);
+$shadow-3-down: 0 6px 16px -8px rgba($black, 0.08), 0 9px 28px 0 rgba($black, 0.05),
+  0 12px 48px 16px rgba($black, 0.03);
 
 $shadow-3-left: -6px 0 16px -8px rgba($black, 0.08), -9px 0 28px 0 rgba($black, 0.05),
   -12px 0 48px 16px rgba($black, 0.03);
 $shadow-3-right: 6px 0 16px -8px rgba($black, 0.08), 9px 0 28px 0 rgba($black, 0.05),
   12px 0 48px 16px rgba($black, 0.03);
+
+// 响应式断点
+$breakpoint-xs: 575px;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-xxl: 1600px;
