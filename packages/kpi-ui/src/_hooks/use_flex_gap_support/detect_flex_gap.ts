@@ -1,7 +1,6 @@
 let supported: boolean | undefined
 export default function detectFlexGap() {
   if (!document.documentElement && !document.body) return false
-
   if (supported !== undefined) return supported
 
   const flexContainer = document.createElement('div')

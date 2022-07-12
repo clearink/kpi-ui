@@ -3,7 +3,6 @@ import { usePrefix } from '../_hooks'
 import usePaginationClass from './hooks/use_pagination_class'
 // import { PaginationProps } from './props';
 
-// TODO: 待开发
 function Pagination() {
   const name = usePrefix('pagination')
   const className = usePaginationClass(name)
