@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import cls from 'classnames'
 import { ColProps } from '../props'
 import { BREAKPOINT_NAME } from '../../_shard/constant'
@@ -18,11 +17,13 @@ export default function useColClass(name: string, props: ColProps) {
       ...res,
     }
   }, {})
-  return cls(name, className, extraClass, {
+  return cls(name, {
     [`${name}-${span}`]: true,
     [`${name}-offset-${offset}`]: !!offset,
     [`${name}-pull-${pull}`]: !!pull,
     [`${name}-push-${push}`]: !!push,
     [`${name}-order-${order}`]: !!order,
+    ...extraClass,
+    [className!]: !!className,
   })
 }

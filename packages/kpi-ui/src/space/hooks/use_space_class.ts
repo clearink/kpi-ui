@@ -12,10 +12,11 @@ export default function useDividerClass(name: string, props: SpaceProps) {
 
   return useMemo(
     () =>
-      cls(name, className, {
+      cls(name, {
         [`${name}--${direction}`]: direction,
         [`${name}--align-${align}`]: align,
         [`${name}--wrap`]: wrap,
+        [className!]: !!className,
       }),
     [name, className, direction, align, wrap]
   )

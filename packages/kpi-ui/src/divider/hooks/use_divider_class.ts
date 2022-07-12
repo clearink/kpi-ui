@@ -12,13 +12,14 @@ export default function useDividerClass(name: string, props: DividerProps) {
   )
   return useMemo(
     () =>
-      cls(name, className, {
+      cls(name, {
         [`${name}--${type}`]: type,
         [`${name}--dashed`]: dashed,
         [`${name}--plain`]: plain,
         [`${name}--with-text`]: children,
         [`${name}--text-${orientation}`]: orientation,
         [`${name}--custom-margin`]: customMargin,
+        [className!]: !!className,
       }),
     [name, className, type, dashed, children, customMargin, plain, orientation]
   )

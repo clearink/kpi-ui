@@ -7,7 +7,7 @@ import { isDestToken, findDestToken, fixLastToken, isArrayToken, isBracketMatch 
 // 获取数据解构 tokens
 function handleDestToken(tokens: TokenItem[], brackets: BracketItem[]) {
   const result: RemovedDestToken[] = []
-  for (let i = 0; i < tokens.length; i++) {
+  for (let i = 0; i < tokens.length; i += 1) {
     const { type, value, used } = tokens[i]
     if (used === true) continue
     tokens[i].used = true

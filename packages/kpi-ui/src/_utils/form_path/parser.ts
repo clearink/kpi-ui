@@ -7,7 +7,7 @@ import { Dot } from './utils/_token'
 function parser(tokens: TokenItem[]) {
   const brackets: string[] = []
   const result: NodePath[] = []
-  for (let i = 0; i < tokens.length; i++) {
+  for (let i = 0; i < tokens.length; i += 1) {
     const { type, value, used } = tokens[i]
     if (used === true) continue
     tokens[i].used = true
