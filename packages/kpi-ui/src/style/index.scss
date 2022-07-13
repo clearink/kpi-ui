@@ -9,4 +9,6 @@
 // 预设样式
 @import './preset/index';
 // 动画
-@import './animations/index'
+@import './animations/index';
+
+@import '../_hooks/use_wave/style.scss';

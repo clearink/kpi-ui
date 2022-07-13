@@ -1,7 +1,7 @@
 import { CSSProperties, useMemo } from 'react'
 import { RowContext } from '../_context'
 import { usePrefix } from '../_hooks'
-import { BREAKPOINT_NAME, COL_FLEX_REG } from '../_shard/constant'
+import { BREAKPOINT_NAME, COL_FLEX_REG } from '../_constant/breakpoint'
 import { isNumber, omit, withDefault } from '../_utils'
 import useColClass from './hooks/use_col_class'
 import { ColProps } from './props'

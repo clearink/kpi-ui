@@ -1,6 +1,6 @@
 import cls from 'classnames'
 import { ColProps } from '../props'
-import { BREAKPOINT_NAME } from '../../_shard/constant'
+import { BREAKPOINT_NAME } from '../../_constant/breakpoint'
 import { isNumber } from '../../_utils'
 
 export default function useColClass(name: string, props: ColProps) {

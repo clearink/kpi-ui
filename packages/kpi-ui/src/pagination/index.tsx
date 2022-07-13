@@ -1,17 +1,13 @@
 import { withDefault } from '../_utils'
 import { usePrefix } from '../_hooks'
 import usePaginationClass from './hooks/use_pagination_class'
-// import { PaginationProps } from './props';
+import { PaginationProps } from './props'
 
-function Pagination() {
+function Pagination(props: PaginationProps) {
   const name = usePrefix('pagination')
-  const className = usePaginationClass(name)
+  const className = usePaginationClass(name, props)
 
   return <div className={className}>pagination</div>
 }
 
-export default withDefault(Pagination, {
-  direction: 'horizontal',
-  size: 'small',
-  wrap: false,
-} as const)
+export default withDefault(Pagination, {} as const)

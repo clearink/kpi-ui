@@ -1,5 +1,5 @@
 import { HTMLAttributes } from 'react'
-import { Breakpoint } from '../_shard/constant'
+import { Breakpoint } from '../_constant/breakpoint'
 
 export type AlignType = ['top', 'middle', 'bottom', 'stretch'][number]
 export type JustifyType = [

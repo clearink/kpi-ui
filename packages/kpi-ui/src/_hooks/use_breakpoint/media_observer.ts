@@ -1,4 +1,4 @@
-import { BREAKPOINT, BREAKPOINT_NAME, INIT_MATCHES, ScreenMatch } from '../../_shard/constant'
+import { BREAKPOINT, BREAKPOINT_NAME, INIT_MATCHES, ScreenMatch } from '../../_constant/breakpoint'
 import { hasOwn } from '../../_utils'
 
 export default class MediaObserver {

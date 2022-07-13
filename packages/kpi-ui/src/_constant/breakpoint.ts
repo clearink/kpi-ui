@@ -1,15 +1,9 @@
 /* ----------------------------------- 公共类型 ----------------------------------- */
-export type SizeType = 'small' | 'middle' | 'large'
+
 export type Breakpoint = typeof BREAKPOINT_NAME[number]
 export type ScreenMatch<K extends unknown> = Partial<Record<Breakpoint, K>>
 
 /* ----------------------------------- 公共常量 ----------------------------------- */
-// component Space
-export const SPACE_SIZE: Record<SizeType, number> = {
-  small: 8,
-  middle: 16,
-  large: 24,
-}
 
 // 响应式断点
 export const BREAKPOINT_NAME = ['xxl', 'xl', 'lg', 'md', 'sm', 'xs'] as const

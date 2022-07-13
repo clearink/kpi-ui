@@ -1,3 +1,5 @@
+import { rawType } from './value'
+
 // 判断类型
 type VariableType =
   | 'Object'
@@ -12,8 +14,8 @@ type VariableType =
   | 'BigInt'
   | 'AsyncFunction'
   | 'Map'
-export const validateType = (obj: any, type: VariableType) =>
-  Object.prototype.toString.call(obj) === `[object ${type}]`
+
+export const validateType = (obj: any, type: VariableType) => rawType(obj) === type
 
 export const isObject = (obj: any): obj is object => validateType(obj, 'Object')
 export const isPlainObject = (obj: any): obj is object => obj !== null && typeof obj === 'object'

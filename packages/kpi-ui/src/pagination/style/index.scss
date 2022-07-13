@@ -3,6 +3,19 @@
 @import '../../style/themes/index.scss'; // 引入 变量
 @import './variable';
 @import './mixins';
-@include b(breadcrumb) {
+
+@include b(pagination) {
   @include reset-component();
+
+  @include e(item) {
+    margin-right: 8px;
+  }
+
+  @include e(pre) {
+    margin-right: 8px;
+  }
+
+  @include e(next) {
+    
+  }
 }

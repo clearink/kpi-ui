@@ -3,7 +3,8 @@
 ## TODO
 
 1. 增加组件
-- 完善`Wave`组件
+- 待优化`useBreakpoint`
+- 新增`useMediaQuery`
 
 2. 完善 #`kpi-cli`
 
