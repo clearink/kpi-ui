@@ -1,6 +1,5 @@
+// eslint-disable-next-line max-classes-per-file
 import { RuleMessage, SchemaRule } from '../types/schema'
-// eslint-disable-next-line import/no-cycle
-import OptionalSchema from './optional'
 
 export default abstract class BaseSchema<T extends unknown> {
   // eslint-disable-next-line no-underscore-dangle
@@ -46,3 +45,91 @@ function makeRule<T extends any>(rule: SchemaRule<T>, message?: RuleMessage) {
     return res
   }
 }
+
+// operator 全局操作符
+
+/** ================================================ */
+/** ================================================ */
+/** ================  Optional  ==================== */
+/** ================================================ */
+/** ================================================ */
+
+class OptionalSchema<T extends unknown> extends BaseSchema<T | undefined> {
+  private readonly inner: BaseSchema<T>
+
+  constructor(inner: BaseSchema<T>) {
+    super('required')
+    this.inner = inner
+  }
+
+  unwrap() {
+    return this.inner
+  }
+
+  static create<S extends unknown>(inner: BaseSchema<S>) {
+    return new OptionalSchema(inner)
+  }
+
+  public async validate(input?: any): Promise<boolean> {
+    if (input === undefined) {
+      return true
+    }
+    return this.inner.validate(input)
+  }
+}
+
+type NonUndefined<T> = T extends undefined ? never : T
+class RequiredSchema<T extends unknown> extends BaseSchema<NonUndefined<T>> {
+  private readonly inner!: BaseSchema<T>
+
+  constructor(inner: BaseSchema<T>) {
+    super('required')
+    this.inner = inner
+  }
+
+  unwrap() {
+    return this.inner
+  }
+
+  static create<S extends BaseSchema<S>>(inner: S) {
+    return new RequiredSchema(inner)
+  }
+
+  public async validate(input?: any): Promise<boolean> {}
+}
+
+/** ================================================ */
+/** ================================================ */
+/** ================  Nullable  ==================== */
+/** ================================================ */
+/** ================================================ */
+
+/** ================================================ */
+/** ================================================ */
+/** ================    Array    =================== */
+/** ================================================ */
+/** ================================================ */
+
+/** ================================================ */
+/** ================================================ */
+/** ================     And     =================== */
+/** ================================================ */
+/** ================================================ */
+
+/** ================================================ */
+/** ================================================ */
+/** ===============      or      =================== */
+/** ================================================ */
+/** ================================================ */
+
+/** ================================================ */
+/** ================================================ */
+/** ================   nullish   =================== */
+/** ================================================ */
+/** ================================================ */
+
+/** ================================================ */
+/** ================================================ */
+/** ================    array    =================== */
+/** ================================================ */
+/** ================================================ */
