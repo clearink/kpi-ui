@@ -43,5 +43,16 @@ module.exports = {
         typedefs: false,
       },
     ],
+    'no-underscore-dangle': [
+      'error',
+      {
+        allowAfterThis: true,
+        allowAfterSuper: true,
+        allowAfterThisConstructor: true,
+        enforceInMethodNames: true,
+        enforceInClassFields: true,
+        allowFunctionParams: true,
+      },
+    ],
   },
 }
