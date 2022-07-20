@@ -1,18 +1,16 @@
 import { MayBe, NonUndefined, Message } from '../types/schema'
 import BaseSchema from './base'
 
-export default class StringSchema<
-  T extends MayBe<string> = string | undefined
-> extends BaseSchema<T> {
-  constructor() {
-    super('string', (input): input is NonNullable<T> => {
-      if (input instanceof String) input = input.valueOf()
-      return typeof input === 'string'
+export default class ObjectSchema<T extends MayBe<Record<string, any>>> extends BaseSchema<T> {
+  constructor(shape: T) {
+    // TODO: 待优化 仅支持 plain object
+    super('object', (input): input is NonNullable<T> => {
+      return typeof input === 'object' && input !== null
     })
   }
 
-  static create() {
-    return new StringSchema()
+  static create(shape?: MayBe<Record<string, BaseSchema>>) {
+    return new ObjectSchema(shape)
   }
 
   /** =============================== */
@@ -49,19 +47,19 @@ export default class StringSchema<
   /** ========== Operator =========== */
   /** =============================== */
 
-  public required(): StringSchema<NonUndefined<T>> {
+  public required(): ObjectSchema<NonUndefined<T>> {
     return super.required()
   }
 
-  public optional(): StringSchema<T | undefined> {
+  public optional(): ObjectSchema<T | undefined> {
     return super.optional()
   }
 
-  public nullable(): StringSchema<T | null> {
+  public nullable(): ObjectSchema<T | null> {
     return super.nullable()
   }
 
-  public nullish(): StringSchema<MayBe<T>> {
+  public nullish(): ObjectSchema<MayBe<T>> {
     return super.nullish()
   }
 }

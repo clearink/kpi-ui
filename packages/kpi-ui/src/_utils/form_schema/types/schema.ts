@@ -1,4 +1,7 @@
-export type RuleMessage = string | { message: string }
-export type SchemaRule<T extends unknown = unknown> = (
-  value: T,
-) => boolean | Promise<boolean>
+export type TypeChecker<T> = (value: any) => value is NonNullable<T>
+export type Rule = (value: any) => boolean | Promise<boolean>
+export type Message = string | { message: string }
+export type MayBe<T> = T | null | undefined
+export type NonUndefined<T> = T extends undefined ? never : T
+
+export type EffectType = 'required' | 'nullable' 

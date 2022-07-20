@@ -1,43 +1,95 @@
+/* eslint-disable no-underscore-dangle */
 // eslint-disable-next-line max-classes-per-file
-import { RuleMessage, SchemaRule } from '../types/schema'
+import { Message, EffectType, Rule, TypeChecker } from '../types/schema'
 
-export default abstract class BaseSchema<T extends unknown> {
+export default abstract class BaseSchema<T extends unknown = unknown> {
   // eslint-disable-next-line no-underscore-dangle
   readonly _type!: T
 
-  private readonly rules: SchemaRule<T>[] = []
+  // 条件
+  private readonly conditions: any[] = []
 
-  public constructor(type: string) {
+  private readonly _typeCheck!: TypeChecker<T>
+
+  // 记录副作用
+  private readonly effect: Set<EffectType> = new Set()
+
+  // 记录数据转换函数， 在类型检查之前进行
+  private readonly transforms: any[] = []
+
+  private readonly rules: Rule[] = []
+
+  public constructor(type: string, check: TypeChecker<T>) {
+    this._typeCheck = check
     this._type = type as T
   }
 
-  public optional() {
-    return OptionalSchema.create(this)
+  // 检查副作用
+  private _effectTest(input?: any, context?: any) {
+    const { effect } = this
+
+    if (!effect.has('nullable') && input === null) {
+      throw new Error('filed not null')
+    }
   }
 
-  // public nullable(message?: RuleMessage) {
-  //   return NullableSchema.create(this, message)
-  // }
+  private _preCheck(input?: any, context?: any) {
+    const { effect } = this
+    if (input === undefined) {
+      const required = effect.has('required')
+      if (required) throw new Error('field required')
+      return // 默认全部为可选
+    }
+    if (input === null && effect.has('nullable')) return
+    const res = this._typeCheck(input)
+    if (!res) throw new Error('field type is error')
+  }
 
-  // public nullish(message?: RuleMessage) {
-  //   return this.nullable()
-  // }
-
-  protected test(tester: SchemaRule<any>, message?: RuleMessage) {
+  protected test(tester: Rule, message?: Message) {
     this.rules.push(makeRule<T>(tester, message))
     return this
   }
 
   public async validate(input?: any) {
+    this._preCheck(input) // 前置操作
+
     for (const rule of this.rules) {
       // eslint-disable-next-line no-await-in-loop
       const res = await rule(<T>input)
       if (!res) throw new Error('error')
     }
-    return true
+    return input as T
+  }
+
+  /** =============================== */
+  /** ========== Operator =========== */
+  /** =============================== */
+
+  // 不能传 undefined
+  protected required(): any {
+    this.effect.add('required')
+    return this
+  }
+
+  // 可以传 undefined
+  protected optional(): any {
+    this.effect.delete('required')
+    return this
+  }
+
+  // 可以传 null
+  protected nullable(): any {
+    this.effect.add('nullable')
+    return this
+  }
+
+  // 可以传 null undefined
+  protected nullish(): any {
+    return this.optional().nullable()
   }
 }
-function makeRule<T extends any>(rule: SchemaRule<T>, message?: RuleMessage) {
+
+function makeRule<T extends any>(rule: Rule, message?: Message) {
   const $message = typeof message === 'object' ? message : { message }
   return async (input: T) => {
     const res = await rule(input)
@@ -45,70 +97,6 @@ function makeRule<T extends any>(rule: SchemaRule<T>, message?: RuleMessage) {
     return res
   }
 }
-
-// operator 全局操作符
-
-/** ================================================ */
-/** ================================================ */
-/** ================  Optional  ==================== */
-/** ================================================ */
-/** ================================================ */
-
-class OptionalSchema<T extends unknown> extends BaseSchema<T | undefined> {
-  private readonly inner: BaseSchema<T>
-
-  constructor(inner: BaseSchema<T>) {
-    super('required')
-    this.inner = inner
-  }
-
-  unwrap() {
-    return this.inner
-  }
-
-  static create<S extends unknown>(inner: BaseSchema<S>) {
-    return new OptionalSchema(inner)
-  }
-
-  public async validate(input?: any): Promise<boolean> {
-    if (input === undefined) {
-      return true
-    }
-    return this.inner.validate(input)
-  }
-}
-
-type NonUndefined<T> = T extends undefined ? never : T
-class RequiredSchema<T extends unknown> extends BaseSchema<NonUndefined<T>> {
-  private readonly inner!: BaseSchema<T>
-
-  constructor(inner: BaseSchema<T>) {
-    super('required')
-    this.inner = inner
-  }
-
-  unwrap() {
-    return this.inner
-  }
-
-  static create<S extends BaseSchema<S>>(inner: S) {
-    return new RequiredSchema(inner)
-  }
-
-  public async validate(input?: any): Promise<boolean> {}
-}
-
-/** ================================================ */
-/** ================================================ */
-/** ================  Nullable  ==================== */
-/** ================================================ */
-/** ================================================ */
-
-/** ================================================ */
-/** ================================================ */
-/** ================    Array    =================== */
-/** ================================================ */
-/** ================================================ */
 
 /** ================================================ */
 /** ================================================ */
@@ -119,17 +107,5 @@ class RequiredSchema<T extends unknown> extends BaseSchema<NonUndefined<T>> {
 /** ================================================ */
 /** ================================================ */
 /** ===============      or      =================== */
-/** ================================================ */
-/** ================================================ */
-
-/** ================================================ */
-/** ================================================ */
-/** ================   nullish   =================== */
-/** ================================================ */
-/** ================================================ */
-
-/** ================================================ */
-/** ================================================ */
-/** ================    array    =================== */
 /** ================================================ */
 /** ================================================ */
