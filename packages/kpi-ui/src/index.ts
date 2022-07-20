@@ -1,5 +1,5 @@
 // components
-import k from './_utils/form_schema'
+import * as k from './_utils/form_schema'
 
 export { default as Button } from './button'
 export { default as Typography } from './typography'
@@ -14,9 +14,12 @@ export { default as Pagination } from './pagination'
 const s = k.string().required() // .min(2, '长度等于${len}')
 const n = k.number().equal(123)
 const o = k.object({
-  a: k.string().min(1),
+  a: k.string().min(2).required(),
+  aa: k.string().min(2),
+  aaa: k.string().min(2).required(),
 })
-type A = typeof s._type
+
+type A = k.infer<typeof o>
 // console.log(s)
 /* eslint-disable no-new-wrappers */
 n.validate(23)

@@ -1,9 +1,8 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-underscore-dangle */
-// eslint-disable-next-line max-classes-per-file
 import { Message, EffectType, Rule, TypeChecker } from '../types/schema'
 
 export default abstract class BaseSchema<T extends unknown = unknown> {
-  // eslint-disable-next-line no-underscore-dangle
   readonly _type!: T
 
   // 条件

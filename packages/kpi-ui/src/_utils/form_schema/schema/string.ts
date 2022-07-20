@@ -61,7 +61,7 @@ export default class StringSchema<
     return super.nullable()
   }
 
-  public nullish(): StringSchema<MayBe<T>> {
-    return super.nullish()
+  public nullish() {
+    return this.optional().nullable()
   }
 }

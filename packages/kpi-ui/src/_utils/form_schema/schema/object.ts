@@ -1,16 +1,20 @@
-import { MayBe, NonUndefined, Message } from '../types/schema'
+/* eslint-disable import/no-cycle */
+import { MayBe, NonUndefined, Message, ObjectShape } from '../types/schema'
 import BaseSchema from './base'
 
-export default class ObjectSchema<T extends MayBe<Record<string, any>>> extends BaseSchema<T> {
+export default class ObjectSchema<T extends MayBe<ObjectShape>> extends BaseSchema<T> {
+  public readonly shape!: T
+
   constructor(shape: T) {
     // TODO: 待优化 仅支持 plain object
     super('object', (input): input is NonNullable<T> => {
       return typeof input === 'object' && input !== null
     })
+    this.shape = shape
   }
 
-  static create(shape?: MayBe<Record<string, BaseSchema>>) {
-    return new ObjectSchema(shape)
+  static create<S extends ObjectShape = {}>(shape?: S) {
+    return new ObjectSchema(shape!)
   }
 
   /** =============================== */
@@ -59,7 +63,7 @@ export default class ObjectSchema<T extends MayBe<Record<string, any>>> extends 
     return super.nullable()
   }
 
-  public nullish(): ObjectSchema<MayBe<T>> {
-    return super.nullish()
+  public nullish() {
+    return this.optional().nullable()
   }
 }
