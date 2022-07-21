@@ -22,7 +22,9 @@ export type RequiredKey<T extends ObjectShape> = Exclude<keyof T, OptionalKey<T>
 
 export type MakePartialKey<T extends ObjectShape> = {
   [K in OptionalKey<T>]: T[K]['_type']
-} & { [K in RequiredKey<T>]?: T[K]['_type'] }
+} & {
+  [K in RequiredKey<T>]?: T[K]['_type']
+}
 
 export type TypeOf<T extends BaseSchema> = T extends ObjectSchema<any>
   ? MakePartialKey<T['shape']>
