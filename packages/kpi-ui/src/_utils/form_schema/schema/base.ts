@@ -1,14 +1,17 @@
-/* eslint-disable import/no-cycle */
 /* eslint-disable no-underscore-dangle */
-import { Message, EffectType, Rule, TypeChecker } from '../types/schema'
+import { Message, EffectType, Rule, TypeChecker } from '../types'
 
-export default abstract class BaseSchema<T extends unknown = unknown> {
-  readonly _type!: T
+export default abstract class BaseSchema<In = any, Out = any> {
+  readonly _type!: any
+
+  readonly _In!: In
+
+  readonly _Out!: Out
 
   // 条件
   private readonly conditions: any[] = []
 
-  private readonly _typeCheck!: TypeChecker<T>
+  private readonly _typeCheck!: TypeChecker<In>
 
   // 记录副作用
   private readonly effect: Set<EffectType> = new Set()
@@ -18,9 +21,9 @@ export default abstract class BaseSchema<T extends unknown = unknown> {
 
   private readonly rules: Rule[] = []
 
-  public constructor(type: string, check: TypeChecker<T>) {
+  public constructor(type: string, check: TypeChecker<In>) {
     this._typeCheck = check
-    this._type = type as T
+    this._type = type
   }
 
   // 检查副作用
@@ -45,7 +48,7 @@ export default abstract class BaseSchema<T extends unknown = unknown> {
   }
 
   protected test(tester: Rule, message?: Message) {
-    this.rules.push(makeRule<T>(tester, message))
+    this.rules.push(makeRule<In>(tester, message))
     return this
   }
 
@@ -54,10 +57,10 @@ export default abstract class BaseSchema<T extends unknown = unknown> {
 
     for (const rule of this.rules) {
       // eslint-disable-next-line no-await-in-loop
-      const res = await rule(<T>input)
+      const res = await rule(<In>input)
       if (!res) throw new Error('error')
     }
-    return input as T
+    return input as In
   }
 
   /** =============================== */
@@ -96,15 +99,3 @@ function makeRule<T extends any>(rule: Rule, message?: Message) {
     return res
   }
 }
-
-/** ================================================ */
-/** ================================================ */
-/** ================     And     =================== */
-/** ================================================ */
-/** ================================================ */
-
-/** ================================================ */
-/** ================================================ */
-/** ===============      or      =================== */
-/** ================================================ */
-/** ================================================ */

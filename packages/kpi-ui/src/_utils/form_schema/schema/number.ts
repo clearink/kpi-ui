@@ -1,9 +1,7 @@
-import { MayBe, NonUndefined, Message } from '../types/schema'
+import { MayBe, NonUndefined, Message } from '../types'
 import BaseSchema from './base'
 
-export default class NumberSchema<
-  T extends MayBe<number> = number | undefined
-> extends BaseSchema<T> {
+export default class NumberSchema<T extends MayBe<number>> extends BaseSchema<T, T> {
   constructor() {
     // TODO: bigInt Infinity 与 nan 是否需要排除?
     super('number', (input): input is NonNullable<T> => {
@@ -13,7 +11,7 @@ export default class NumberSchema<
   }
 
   static create() {
-    return new NumberSchema()
+    return new NumberSchema<number | undefined>()
   }
 
   /** =============================== */

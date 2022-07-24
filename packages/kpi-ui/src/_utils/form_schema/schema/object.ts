@@ -1,8 +1,10 @@
-/* eslint-disable import/no-cycle */
-import { MayBe, NonUndefined, Message, ObjectShape } from '../types/schema'
+import { NonUndefined, ObjectShape, MakePartial, MayBe, FilterSchema } from '../types'
 import BaseSchema from './base'
 
-export default class ObjectSchema<T extends MayBe<ObjectShape>> extends BaseSchema<T> {
+export default class ObjectSchema<T extends MayBe<ObjectShape>> extends BaseSchema<
+  T,
+  MakePartial<T>
+> {
   public readonly shape!: T
 
   constructor(shape: T) {
@@ -14,7 +16,7 @@ export default class ObjectSchema<T extends MayBe<ObjectShape>> extends BaseSche
   }
 
   static create<S extends ObjectShape = {}>(shape?: S) {
-    return new ObjectSchema(shape!)
+    return new ObjectSchema<FilterSchema<S>>(shape as any)
   }
 
   /** =============================== */
@@ -24,28 +26,6 @@ export default class ObjectSchema<T extends MayBe<ObjectShape>> extends BaseSche
   /** =============================== */
   /** ==========  Feature  ========== */
   /** =============================== */
-
-  min(len: number, message?: Message) {
-    return this.test((value) => value.length >= len, message)
-  }
-
-  max(len: number, message?: Message) {
-    return this.test((value) => value.length <= len, message)
-  }
-
-  length(len: number, message?: Message) {
-    return this.test((value) => value.length === len, message)
-  }
-
-  // TODO
-  email(email: string, message?: Message) {
-    return this.test((value) => /some/.test(value), message)
-  }
-
-  // TODO
-  uuid(email: string, message?: Message) {
-    return this.test((value) => /uuid/.test(value), message)
-  }
 
   /** =============================== */
   /** ========== Operator =========== */

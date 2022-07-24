@@ -1,10 +1,7 @@
-/* eslint-disable import/no-cycle */
-import { MayBe, NonUndefined, Message } from '../types/schema'
+import { MayBe, NonUndefined, Message } from '../types'
 import BaseSchema from './base'
 
-export default class StringSchema<
-  T extends MayBe<string> = string | undefined
-> extends BaseSchema<T> {
+export default class StringSchema<T extends MayBe<string>> extends BaseSchema<T, T> {
   constructor() {
     super('string', (input): input is NonNullable<T> => {
       if (input instanceof String) input = input.valueOf()
@@ -13,7 +10,7 @@ export default class StringSchema<
   }
 
   static create() {
-    return new StringSchema()
+    return new StringSchema<string | undefined>()
   }
 
   /** =============================== */
