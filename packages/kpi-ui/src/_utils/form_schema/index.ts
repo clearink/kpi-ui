@@ -20,10 +20,13 @@ export const or = OrSchema.create
 
 const o = object({
   a: string().min(1),
+  aa: string().min(1).required(),
+  b: object(),
   c: array(),
   d: array(object({ a: number() })),
   dd: array(number()),
-  ee: and([number(), string()]),
-  ff: or([number(), string()]),
+  // ee: and([number(), string()]),
+  // ff: or([number(), string()]),
 })
+
 type A = typeof o._Out

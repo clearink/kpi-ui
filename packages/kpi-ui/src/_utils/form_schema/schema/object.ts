@@ -16,7 +16,7 @@ export default class ObjectSchema<T extends MayBe<ObjectShape>> extends BaseSche
   }
 
   static create<S extends ObjectShape = {}>(shape?: S) {
-    return new ObjectSchema<FilterSchema<S>>(shape as any)
+    return new ObjectSchema<FilterSchema<S> | undefined>(shape as any)
   }
 
   /** =============================== */
