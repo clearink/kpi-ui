@@ -1,8 +1,10 @@
-import { NonUndefined, MayBe, ArrayInner, MakeInnerType } from '../types'
+import { NonUndefined, MayBe, ArrayInner, UnionInput, UnionOutput } from '../types'
 import { Schema } from '../types/schema'
 import BaseSchema from './base'
 
-export default class OrSchema<T extends MayBe<any[]>> extends BaseSchema<T, MakeInnerType<T>> {
+export default class UnionSchema<
+  T extends MayBe<UnionInput> = UnionInput | undefined
+> extends BaseSchema<T, UnionOutput<T>> {
   public readonly inner?: Schema<ArrayInner<T>>
 
   constructor(inner?: Schema<ArrayInner<T>>) {
@@ -12,8 +14,8 @@ export default class OrSchema<T extends MayBe<any[]>> extends BaseSchema<T, Make
     this.inner = inner
   }
 
-  static create<I extends Schema = any>(inner?: I) {
-    return new OrSchema<I[] | undefined>(inner as any)
+  static create<U extends UnionInput = UnionInput>(inner: Readonly<U>) {
+    return new UnionSchema<U | undefined>(inner as any)
   }
 
   /** =============================== */
@@ -28,15 +30,15 @@ export default class OrSchema<T extends MayBe<any[]>> extends BaseSchema<T, Make
   /** ========== Operator =========== */
   /** =============================== */
 
-  public required(): OrSchema<NonUndefined<T>> {
+  public required(): UnionSchema<NonUndefined<T>> {
     return super.required()
   }
 
-  public optional(): OrSchema<T | undefined> {
+  public optional(): UnionSchema<T | undefined> {
     return super.optional()
   }
 
-  public nullable(): OrSchema<T | null> {
+  public nullable(): UnionSchema<T | null> {
     return super.nullable()
   }
 

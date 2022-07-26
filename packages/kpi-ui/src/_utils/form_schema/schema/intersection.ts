@@ -1,8 +1,10 @@
-import { NonUndefined, MayBe, ArrayInner, MakeInnerType } from '../types'
+import { NonUndefined, MayBe, ArrayInner, IntersectionInput, IntersectionOutput } from '../types'
 import { Schema } from '../types/schema'
 import BaseSchema from './base'
 
-export default class AndSchema<T extends MayBe<any[]>> extends BaseSchema<T, MakeInnerType<T>> {
+export default class IntersectionSchema<
+  T extends MayBe<IntersectionInput> = IntersectionInput | undefined
+> extends BaseSchema<T, IntersectionOutput<[...NonNullable<T>]>> {
   public readonly inner?: Schema<ArrayInner<T>>
 
   constructor(inner?: Schema<ArrayInner<T>>) {
@@ -12,8 +14,8 @@ export default class AndSchema<T extends MayBe<any[]>> extends BaseSchema<T, Mak
     this.inner = inner
   }
 
-  static create<I extends Schema = any>(inner?: I) {
-    return new AndSchema<I[] | undefined>(inner as any)
+  static create<U extends IntersectionInput = IntersectionInput>(inner: Readonly<U>) {
+    return new IntersectionSchema<U | undefined>(inner as any)
   }
 
   /** =============================== */
@@ -28,15 +30,15 @@ export default class AndSchema<T extends MayBe<any[]>> extends BaseSchema<T, Mak
   /** ========== Operator =========== */
   /** =============================== */
 
-  public required(): AndSchema<NonUndefined<T>> {
+  public required(): IntersectionSchema<NonUndefined<T>> {
     return super.required()
   }
 
-  public optional(): AndSchema<T | undefined> {
+  public optional(): IntersectionSchema<T | undefined> {
     return super.optional()
   }
 
-  public nullable(): AndSchema<T | null> {
+  public nullable(): IntersectionSchema<T | null> {
     return super.nullable()
   }
 
