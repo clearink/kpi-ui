@@ -3,6 +3,7 @@ export * from './object'
 export * from './array'
 export * from './union'
 export * from './intersection'
+export * from './enum'
 
 // const App = () => {
 //   const form = useForm()
