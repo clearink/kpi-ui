@@ -7,6 +7,7 @@ import AnySchema from './schema/any'
 import UnionSchema from './schema/union'
 import IntersectionSchema from './schema/intersection'
 import EnumSchema from './schema/enums'
+import DateSchema from './schema/date'
 
 // types
 export * from './types'
@@ -24,8 +25,22 @@ const or = UnionSchema.create
 const intersection = IntersectionSchema.create
 const and = IntersectionSchema.create
 const enums = EnumSchema.create
+const data = DateSchema.create
 
-export { any, string, boolean, number, object, array, union, or, intersection, and, enums as enum }
+export {
+  any,
+  string,
+  boolean,
+  number,
+  object,
+  array,
+  union,
+  or,
+  intersection,
+  and,
+  enums as enum,
+  data,
+}
 
 const a = ['a', 'b', 'c'] as const
 const o = object({
