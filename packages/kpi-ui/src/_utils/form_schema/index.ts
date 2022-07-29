@@ -45,14 +45,15 @@ export {
 const a = ['a', 'b', 'c'] as const
 const o = object({
   // a: string().min(1),
-  // aa: string().min(1).required(),
-  // aaa: boolean(),
-  b: object(),
-  c: array(),
-  gg: enums(['a', 'b', 'b']),
-  // d: array(object({ a: number() })),
-  // // dd: array(number()),
-  // ee: and([object({ a: number() }), object({ b: number().required() })]).required(),
-  // ff: or([number(), string()]).required(),
+  aa: string().min(1).optional(),
+  // // aaa: boolean(),
+  // b: object(),
+  // c: array(),
+  // gg: enums(['a', 'b', 'b']),
+  // // d: array(object({ a: number() })),
+  // // // dd: array(number()),
+  // // ee: and([object({ a: number() }), object({ b: number().required() })]).required(),
+  // // ff: or([number(), string()]).required(),
 })
-type OOO = typeof o._Out
+const aa = string().min(1).nullish()
+type OOO = typeof aa._Output

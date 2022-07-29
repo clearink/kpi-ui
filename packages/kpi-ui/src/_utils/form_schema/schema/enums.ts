@@ -1,24 +1,20 @@
-import { NonUndefined, MayBe, Writeable } from '../types'
+import { NonUndefined, MayBe, Writable } from '../types'
 import BaseSchema from './base'
 
 type EnumInput = readonly [any, ...any[]] // [any, ...any[]]
-export default class EnumSchema<
-  T extends MayBe<EnumInput> = EnumInput | undefined
-> extends BaseSchema<T, NonNullable<T>[number]> {
+export default class EnumSchema<T extends EnumInput> extends BaseSchema<T, NonNullable<T>[number]> {
   public readonly enums!: T
 
   constructor(enums: T) {
-    super('enum', (input): input is NonNullable<T> => {
-      return Array.isArray(input)
-    })
+    super('enum')
     this.enums = enums
   }
 
   static create<U extends string, E extends Readonly<[U, ...U[]]>>(
     enums: E
-  ): EnumSchema<Writeable<E> | undefined>
+  ): EnumSchema<Writable<E>>
   static create<U extends string, E extends [U, ...U[]]>(enums: E) {
-    return new EnumSchema<E | undefined>(enums)
+    return new EnumSchema<E>(enums)
   }
 
   /** =============================== */

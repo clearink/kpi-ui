@@ -1,7 +1,9 @@
+/* eslint-disable max-classes-per-file */
 /* eslint-disable no-underscore-dangle */
-import { Message, EffectType, Rule, TypeChecker } from '../types'
+import { Message, EffectType, Rule } from '../types'
+import { InputValue, VALID, ValidateReturnType } from '../utils'
 
-export default abstract class BaseSchema<In = any, Out = any> {
+export default abstract class BaseSchema<Out = any, In = Out> {
   readonly _type!: any
 
   readonly _In!: In
@@ -11,8 +13,6 @@ export default abstract class BaseSchema<In = any, Out = any> {
   // 条件
   private readonly conditions: any[] = []
 
-  private readonly _typeCheck!: TypeChecker<In>
-
   // 记录副作用
   private readonly effect: Set<EffectType> = new Set()
 
@@ -21,8 +21,9 @@ export default abstract class BaseSchema<In = any, Out = any> {
 
   private readonly rules: Rule[] = []
 
-  public constructor(type: string, check: TypeChecker<In>) {
-    this._typeCheck = check
+  abstract _validate(input: InputValue): ValidateReturnType<this['_Out']>
+
+  public constructor(type: string) {
     this._type = type
   }
 
@@ -48,7 +49,7 @@ export default abstract class BaseSchema<In = any, Out = any> {
   }
 
   protected test(tester: Rule, message?: Message) {
-    this.rules.push(makeRule<In>(tester, message))
+    this.rules.push(makeRule<Input>(tester, message))
     return this
   }
 
@@ -57,36 +58,28 @@ export default abstract class BaseSchema<In = any, Out = any> {
 
     for (const rule of this.rules) {
       // eslint-disable-next-line no-await-in-loop
-      const res = await rule(<In>input)
+      const res = await rule(<Input>input)
       if (!res) throw new Error('error')
     }
-    return input as In
+    return input as Input
   }
 
   /** =============================== */
   /** ========== Operator =========== */
   /** =============================== */
 
-  // 不能传 undefined
-  protected required(): any {
-    this.effect.add('required')
-    return this
-  }
-
   // 可以传 undefined
-  protected optional(): any {
-    this.effect.delete('required')
-    return this
+  public optional(): OptionalSchema<this> {
+    return OptionalSchema.create(this) as any
   }
 
   // 可以传 null
-  protected nullable(): any {
-    this.effect.add('nullable')
-    return this
+  public nullable(): NullableSchema<this> {
+    return NullableSchema.create(this) as any
   }
 
   // 可以传 null undefined
-  protected nullish(): any {
+  public nullish() {
     return this.optional().nullable()
   }
 }
@@ -99,3 +92,7 @@ function makeRule<T extends any>(rule: Rule, message?: Message) {
     return res
   }
 }
+
+/** =============================== */
+/** ========== Operator =========== */
+/** =============================== */
