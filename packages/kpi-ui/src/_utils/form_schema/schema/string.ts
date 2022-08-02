@@ -1,14 +1,9 @@
-import { MayBe, NonUndefined, Message } from '../types'
+/* eslint-disable class-methods-use-this */
 import BaseSchema from './base'
+import { Message } from '../types'
+import { InputValue, Invalid, toRawType, Valid, ValidateReturnType } from '../utils'
 
-export default class StringSchema extends BaseSchema<string, string> {
-  constructor() {
-    super('string', (input): input is string => {
-      if (input instanceof String) input = input.valueOf()
-      return typeof input === 'string'
-    })
-  }
-
+export default class StringSchema extends BaseSchema<string> {
   static create() {
     return new StringSchema()
   }
@@ -16,6 +11,14 @@ export default class StringSchema extends BaseSchema<string, string> {
   /** =============================== */
   /** ==========  Validate  ========= */
   /** =============================== */
+  private isType(input: InputValue) {
+    return toRawType(input.value) === 'string'
+  }
+
+  public _validate(input: InputValue): ValidateReturnType<this['_Out']> {
+    if (!this.isType(input)) return Invalid
+    return Valid(input.value)
+  }
 
   /** =============================== */
   /** ==========  Feature  ========== */
@@ -35,27 +38,11 @@ export default class StringSchema extends BaseSchema<string, string> {
 
   // TODO
   email(email: string, message?: Message) {
-    return this.test((value) => /some/.test(value), message)
+    return this.test((value) => /email/.test(value), message)
   }
 
   // TODO
   uuid(email: string, message?: Message) {
     return this.test((value) => /uuid/.test(value), message)
   }
-
-  /** =============================== */
-  /** ========== Operator =========== */
-  /** =============================== */
-
-  // public optional(): StringSchema<T | undefined> {
-  //   return super.optional()
-  // }
-
-  // public nullable(): StringSchema<T | null> {
-  //   return super.nullable()
-  // }
-
-  // public nullish() {
-  //   return this.optional().nullable()
-  // }
 }

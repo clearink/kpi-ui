@@ -1,46 +1,30 @@
-import { NonUndefined, MayBe, ArrayInner, MakeInnerType } from '../types'
-import { Schema } from '../types/schema'
+import { ArrayInner, MakeInnerType } from '../types'
+import { InputValue, Invalid, toRawType, Valid, ValidateReturnType } from '../utils'
 import BaseSchema from './base'
 
-export default class ArraySchema<T extends MayBe<any[]>> extends BaseSchema<T, MakeInnerType<T>> {
-  public readonly inner?: Schema<ArrayInner<T>>
-
-  constructor(inner?: Schema<ArrayInner<T>>) {
-    super('object', (input): input is NonNullable<T> => {
-      return Array.isArray(input)
-    })
-    this.inner = inner
+export default class ArraySchema<T extends any[]> extends BaseSchema<MakeInnerType<T>, T> {
+  constructor(private readonly innerType: BaseSchema<ArrayInner<T>>) {
+    super()
   }
 
-  static create<I extends Schema = any>(inner?: I) {
-    return new ArraySchema<I[] | undefined>(inner as any)
+  static create<I extends BaseSchema>(innerType: I) {
+    return new ArraySchema<I[]>(innerType as any)
   }
 
   /** =============================== */
   /** ==========  Validate  ========= */
   /** =============================== */
+  // eslint-disable-next-line class-methods-use-this
+  private isType(input: InputValue) {
+    return toRawType(input.value) === 'string'
+  }
+
+  public _validate(input: InputValue): ValidateReturnType<this['_Out']> {
+    if (!this.isType(input)) return Invalid
+    return Valid(input.value)
+  }
 
   /** =============================== */
   /** ==========  Feature  ========== */
   /** =============================== */
-
-  /** =============================== */
-  /** ========== Operator =========== */
-  /** =============================== */
-
-  public required(): ArraySchema<NonUndefined<T>> {
-    return super.required()
-  }
-
-  public optional(): ArraySchema<T | undefined> {
-    return super.optional()
-  }
-
-  public nullable(): ArraySchema<T | null> {
-    return super.nullable()
-  }
-
-  public nullish() {
-    return this.optional().nullable()
-  }
 }

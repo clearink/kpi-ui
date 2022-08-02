@@ -1,11 +1,11 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable max-classes-per-file */
-/* eslint-disable no-underscore-dangle */
 import { Message, EffectType, Rule } from '../types'
-import { InputValue, VALID, ValidateReturnType } from '../utils'
+import { InputValue, toRawType, ValidateReturnType } from '../utils'
+import NullableSchema from './nullable'
+import OptionalSchema from './optional'
 
 export default abstract class BaseSchema<Out = any, In = Out> {
-  readonly _type!: any
-
   readonly _In!: In
 
   readonly _Out!: Out
@@ -23,10 +23,6 @@ export default abstract class BaseSchema<Out = any, In = Out> {
 
   abstract _validate(input: InputValue): ValidateReturnType<this['_Out']>
 
-  public constructor(type: string) {
-    this._type = type
-  }
-
   // 检查副作用
   private _effectTest(input?: any, context?: any) {
     const { effect } = this
@@ -36,32 +32,13 @@ export default abstract class BaseSchema<Out = any, In = Out> {
     }
   }
 
-  private _preCheck(input?: any, context?: any) {
-    const { effect } = this
-    if (input === undefined) {
-      const required = effect.has('required')
-      if (required) throw new Error('field required')
-      return // 默认全部为可选
-    }
-    if (input === null && effect.has('nullable')) return
-    const res = this._typeCheck(input)
-    if (!res) throw new Error('field type is error')
-  }
-
   protected test(tester: Rule, message?: Message) {
-    this.rules.push(makeRule<Input>(tester, message))
+    this.rules.push(makeRule<In>(tester, message))
     return this
   }
 
-  public async validate(input?: any) {
-    this._preCheck(input) // 前置操作
-
-    for (const rule of this.rules) {
-      // eslint-disable-next-line no-await-in-loop
-      const res = await rule(<Input>input)
-      if (!res) throw new Error('error')
-    }
-    return input as Input
+  public async validate(input: InputValue) {
+    return this._validate(input)
   }
 
   /** =============================== */
@@ -92,7 +69,3 @@ function makeRule<T extends any>(rule: Rule, message?: Message) {
     return res
   }
 }
-
-/** =============================== */
-/** ========== Operator =========== */
-/** =============================== */

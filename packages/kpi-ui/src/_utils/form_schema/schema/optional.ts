@@ -1,22 +1,21 @@
-/* eslint-disable no-underscore-dangle */
-import { InputValue, Valid, ValidateReturnType } from '../utils'
+/* eslint-disable class-methods-use-this */
+/* eslint-disable import/no-cycle */
 import BaseSchema from './base'
+import { InputValue, Invalid, toRawType, Valid, ValidateReturnType } from '../utils'
 
 export default class OptionalSchema<T extends BaseSchema> extends BaseSchema<
   T['_Out'] | undefined
 > {
-  private innerType!: T
+  constructor(private readonly innerType: T) {
+    super()
+  }
 
-  constructor(innerType: T) {
-    super('optional')
-    this.innerType = innerType
+  private isType(input: InputValue) {
+    return toRawType(input.value) === 'undefined'
   }
 
   public _validate(input: InputValue): ValidateReturnType<this['_Out']> {
-    // const valueType = getValueType(input.value)
-    if (input.value === 'undefined') {
-      return Valid(undefined)
-    }
+    if (this.isType(input)) return Valid(input.value)
     return this.innerType._validate(input)
   }
 
@@ -24,7 +23,7 @@ export default class OptionalSchema<T extends BaseSchema> extends BaseSchema<
     return this.innerType
   }
 
-  static create<S extends BaseSchema>(innerType: S) {
-    return new OptionalSchema(innerType)
+  static create<S extends BaseSchema>(innerSchema: S) {
+    return new OptionalSchema(innerSchema)
   }
 }

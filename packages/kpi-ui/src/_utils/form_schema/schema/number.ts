@@ -1,14 +1,9 @@
-/* eslint-disable no-underscore-dangle */
-import { NonUndefined, Message } from '../types'
-import { InputValue, ValidateReturnType } from '../utils'
+/* eslint-disable class-methods-use-this */
 import BaseSchema from './base'
+import { Message } from '../types'
+import { InputValue, Invalid, toRawType, Valid, ValidateReturnType } from '../utils'
 
 export default class NumberSchema extends BaseSchema<number> {
-  constructor() {
-    // TODO: bigInt Infinity 与 nan 是否需要排除?
-    super('number')
-  }
-
   static create() {
     return new NumberSchema()
   }
@@ -17,8 +12,16 @@ export default class NumberSchema extends BaseSchema<number> {
   /** ==========  Validate  ========= */
   /** =============================== */
 
+  private isType(input: InputValue) {
+    if (Number.isNaN(input.value)) {
+      return false
+    }
+    return toRawType(input.value) === 'number'
+  }
+
   public _validate(input: InputValue): ValidateReturnType<this['_Out']> {
-    return input.value
+    if (!this.isType(input)) return Invalid
+    return Valid(input.value)
   }
 
   /** =============================== */
@@ -46,7 +49,6 @@ export default class NumberSchema extends BaseSchema<number> {
   }
 
   integer(message?: Message) {
-    // 注意 isInteger 不兼容ie
     return this.test((value: number) => Number.isInteger(value), message)
   }
 }

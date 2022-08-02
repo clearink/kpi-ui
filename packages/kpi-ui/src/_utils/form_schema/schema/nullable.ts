@@ -1,20 +1,19 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable class-methods-use-this */
-/* eslint-disable no-underscore-dangle */
-import { InputValue, Valid, ValidateReturnType } from '../utils'
 import BaseSchema from './base'
+import { InputValue, toRawType, Valid, ValidateReturnType } from '../utils'
 
 export default class NullableSchema<T extends BaseSchema> extends BaseSchema<T['_Out'] | null> {
-  private innerType!: T
+  constructor(private readonly innerType: T) {
+    super()
+  }
 
-  constructor(innerType: T) {
-    super('nullable')
-    this.innerType = innerType
+  private isType(input: InputValue) {
+    return toRawType(input.value) === 'null'
   }
 
   public _validate(input: InputValue): ValidateReturnType<this['_Out']> {
-    if (input.value === null) {
-      return Valid(null)
-    }
+    if (this.isType(input)) return Valid(input.value)
     return this.innerType._validate(input)
   }
 
@@ -22,7 +21,7 @@ export default class NullableSchema<T extends BaseSchema> extends BaseSchema<T['
     return this.innerType
   }
 
-  static create<S extends BaseSchema>(innerType: S) {
-    return new NullableSchema(innerType)
+  static create<S extends BaseSchema>(innerSchema: S) {
+    return new NullableSchema(innerSchema)
   }
 }

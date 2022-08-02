@@ -1,24 +1,25 @@
-import { MayBe, NonUndefined, Message } from '../types'
+/* eslint-disable class-methods-use-this */
 import BaseSchema from './base'
+import { Message } from '../types'
+import { InputValue, toRawType, ValidateReturnType, Invalid, Valid } from '../utils'
 
-export default class DateSchema<T extends MayBe<Date> = Date | undefined> extends BaseSchema<T, T> {
-  constructor() {
-    super('string', (input): input is NonNullable<T> => {
-      if (input instanceof Date) {
-        return !Number.isNaN(input.getTime())
-      }
-      return false
-    })
-  }
-
+export default class DateSchema extends BaseSchema<Date> {
   static create() {
-    return new DateSchema<Date | undefined>()
+    return new DateSchema()
   }
 
   /** =============================== */
   /** ==========  Validate  ========= */
   /** =============================== */
+  private isType(input: InputValue) {
+    const isDate = toRawType(input.value) === 'date'
+    return isDate && !Number.isNaN(input.value?.getTime())
+  }
 
+  public _validate(input: InputValue): ValidateReturnType<this['_Out']> {
+    if (!this.isType(input)) return Invalid
+    return Valid(input.value)
+  }
   /** =============================== */
   /** ==========  Feature  ========== */
   /** =============================== */
@@ -43,25 +44,5 @@ export default class DateSchema<T extends MayBe<Date> = Date | undefined> extend
   // TODO
   uuid(email: string, message?: Message) {
     return this.test((value) => /uuid/.test(value), message)
-  }
-
-  /** =============================== */
-  /** ========== Operator =========== */
-  /** =============================== */
-
-  public required(): DateSchema<NonUndefined<T>> {
-    return super.required()
-  }
-
-  public optional(): DateSchema<T | undefined> {
-    return super.optional()
-  }
-
-  public nullable(): DateSchema<T | null> {
-    return super.nullable()
-  }
-
-  public nullish() {
-    return this.optional().nullable()
   }
 }

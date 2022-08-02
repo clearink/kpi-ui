@@ -1,43 +1,26 @@
-import { MayBe, NonUndefined, Message } from '../types'
+/* eslint-disable class-methods-use-this */
+import { MayBe, NonUndefined } from '../types'
+import { InputValue, Invalid, toRawType, Valid, ValidateReturnType } from '../utils'
 import BaseSchema from './base'
 
-export default class BooleanSchema<T extends MayBe<boolean>> extends BaseSchema<T, T> {
-  constructor() {
-    super('number', (input): input is NonNullable<T> => {
-      if (input instanceof Boolean) input = input.valueOf()
-      return typeof input === 'boolean'
-    })
-  }
-
+export default class BooleanSchema extends BaseSchema<boolean> {
   static create() {
-    return new BooleanSchema<boolean | undefined>()
+    return new BooleanSchema()
   }
 
   /** =============================== */
   /** ==========  Validate  ========= */
   /** =============================== */
+  private isType(input: InputValue) {
+    return toRawType(input.value) === 'boolean'
+  }
+
+  public _validate(input: InputValue): ValidateReturnType<this['_Out']> {
+    if (!this.isType(input)) return Invalid
+    return Valid(input.value)
+  }
 
   /** =============================== */
   /** ==========  Feature  ========== */
   /** =============================== */
-
-  /** =============================== */
-  /** ========== Operator =========== */
-  /** =============================== */
-
-  public required(): BooleanSchema<NonUndefined<T>> {
-    return super.required()
-  }
-
-  public optional(): BooleanSchema<T | undefined> {
-    return super.optional()
-  }
-
-  public nullable(): BooleanSchema<T | null> {
-    return super.nullable()
-  }
-
-  public nullish(): BooleanSchema<MayBe<T>> {
-    return super.nullish()
-  }
 }

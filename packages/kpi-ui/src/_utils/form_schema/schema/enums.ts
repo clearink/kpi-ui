@@ -1,13 +1,12 @@
-import { NonUndefined, MayBe, Writable } from '../types'
+/* eslint-disable class-methods-use-this */
+import { NonUndefined, Writable } from '../types'
+import { InputValue, toRawType, ValidateReturnType, Invalid, Valid } from '../utils'
 import BaseSchema from './base'
 
 type EnumInput = readonly [any, ...any[]] // [any, ...any[]]
-export default class EnumSchema<T extends EnumInput> extends BaseSchema<T, NonNullable<T>[number]> {
-  public readonly enums!: T
-
-  constructor(enums: T) {
-    super('enum')
-    this.enums = enums
+export default class EnumSchema<T extends EnumInput> extends BaseSchema<T, T[number]> {
+  constructor(private readonly innerType: T) {
+    super()
   }
 
   static create<U extends string, E extends Readonly<[U, ...U[]]>>(
@@ -20,28 +19,20 @@ export default class EnumSchema<T extends EnumInput> extends BaseSchema<T, NonNu
   /** =============================== */
   /** ==========  Validate  ========= */
   /** =============================== */
+  private isType(input: InputValue) {
+    return toRawType(input.value) === 'string'
+  }
+
+  public _validate(input: InputValue): ValidateReturnType<this['_Out']> {
+    if (!this.isType(input)) return Invalid
+    return Valid(input.value)
+  }
 
   /** =============================== */
   /** ==========  Feature  ========== */
   /** =============================== */
 
-  /** =============================== */
-  /** ========== Operator =========== */
-  /** =============================== */
-
-  public required(): EnumSchema<NonUndefined<T>> {
-    return super.required()
-  }
-
-  public optional(): EnumSchema<T | undefined> {
-    return super.optional()
-  }
-
-  public nullable(): EnumSchema<T | null> {
-    return super.nullable()
-  }
-
-  public nullish() {
-    return this.optional().nullable()
+  private get enum() {
+    return this.innerType
   }
 }
