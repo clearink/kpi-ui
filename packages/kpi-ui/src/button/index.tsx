@@ -1,4 +1,4 @@
-import { withDefault, omit } from '../_utils'
+import { withDefaultProps, omit } from '../_utils'
 import { usePrefix, useWave } from '../_hooks'
 import useBtnClass from './hooks/use_btn_class'
 import { ButtonProps } from './props'
@@ -17,4 +17,4 @@ function Button(props: ButtonProps) {
     </button>
   )
 }
-export default withDefault(Button, { htmlType: 'button', type: 'default' } as const)
+export default withDefaultProps(Button, { htmlType: 'button', type: 'default' } as const)

@@ -1,5 +1,5 @@
 import { useMemo, Children } from 'react'
-import { withDefault } from '../_utils'
+import { withDefaultProps } from '../_utils'
 import { useFlexGapSupport, usePrefix } from '../_hooks'
 import useSpaceGutter from './hooks/use_space_gutter'
 import useSpaceClass from './hooks/use_space_class'
@@ -56,7 +56,7 @@ function Space(props: SpaceProps) {
   )
 }
 
-export default withDefault(Space, {
+export default withDefaultProps(Space, {
   direction: 'horizontal',
   size: 'small',
   wrap: false,

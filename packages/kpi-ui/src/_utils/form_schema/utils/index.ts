@@ -3,7 +3,7 @@ export type ValidType<T> = { status: 'valid'; value: T }
 export const Valid = <T>(value: T) => ({ status: 'valid', value } as const)
 
 export type InValidType = { status: 'invalid' }
-export const Invalid = Object.freeze({ status: 'invalid' })
+export const Invalid = Object.freeze({ status: 'invalid' } as const)
 
 export type DirtyType<T> = { status: 'dirty'; value: T }
 export const Dirty = <T>(value: T) => ({ status: 'dirty', value } as const)

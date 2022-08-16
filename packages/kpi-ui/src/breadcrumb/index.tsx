@@ -1,5 +1,5 @@
 import { usePrefix } from '../_hooks'
-import { withDefault } from '../_utils'
+import { withDefaultProps } from '../_utils'
 import useBreadcrumbClass from './hooks/use_breadcrumb_class'
 // import { BreadcrumbProps } from './props';
 
@@ -10,4 +10,4 @@ function Breadcrumb() {
   return <div className={className}>breadcrumb</div>
 }
 
-export default withDefault(Breadcrumb, {})
+export default withDefaultProps(Breadcrumb, {})

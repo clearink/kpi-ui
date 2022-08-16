@@ -1,7 +1,7 @@
 import { CSSProperties, useMemo } from 'react'
 import { RowContext } from '../_context'
 import { useFlexGapSupport, usePrefix } from '../_hooks'
-import { omit, withDefault } from '../_utils'
+import { omit, withDefaultProps } from '../_utils'
 import useRowClass from './hooks/use_row_class'
 import useRowGutter from './hooks/use_row_gutter'
 import { RowProps } from './props'
@@ -34,7 +34,7 @@ function Row(props: RowProps) {
   )
 }
 
-export default withDefault(Row, {
+export default withDefaultProps(Row, {
   gutter: 0,
   wrap: true,
 } as const)

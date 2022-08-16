@@ -14,9 +14,5 @@ export default function contextHelper<R extends unknown>() {
   function useState() {
     return useContext(Context)
   }
-  return {
-    Provider,
-    Consumer,
-    useState,
-  }
+  return { Provider, Consumer, useState }
 }

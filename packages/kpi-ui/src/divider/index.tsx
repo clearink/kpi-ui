@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { usePrefix } from '../_hooks'
-import { capitalize, omit, withDefault } from '../_utils'
+import { capitalize, omit, withDefaultProps } from '../_utils'
 import useDividerClass from './hooks/use_divider_class'
 import { DividerProps } from './props'
 
@@ -27,7 +27,7 @@ function Divider(props: DividerProps) {
   )
 }
 
-export default withDefault(Divider, {
+export default withDefaultProps(Divider, {
   dashed: false,
   orientation: 'center',
   plain: false,

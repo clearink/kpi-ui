@@ -1,5 +1,5 @@
 export * from './value'
 export * from './validate_type'
 export { default as capitalize } from './capitalize'
-export { default as withDefault } from './with_default'
+export { default as withDefaultProps } from './with_default_props'
 export { default as FormPath } from './form_path'
