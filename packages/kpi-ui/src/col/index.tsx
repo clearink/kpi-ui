@@ -1,15 +1,14 @@
 import { CSSProperties, useMemo } from 'react'
 import { RowContext } from '../_context'
-import { usePrefix } from '../_hooks'
 import { BREAKPOINT_NAME, COL_FLEX_REG } from '../_constant/breakpoint'
 import { isNumber, omit, withDefaultProps } from '../_utils'
-import useColClass from './hooks/use_col_class'
+import useClass from './hooks/use_class'
 import { ColProps } from './props'
 
 function Col(props: ColProps) {
   const { children, span, style: $style, flex: $flex, ...rest } = props
-  const name = usePrefix('col')
-  const className = useColClass(name, props)
+
+  const className = useClass(props)
   const attrs = omit(rest, ['className', 'offset', 'order', 'pull', 'push', ...BREAKPOINT_NAME])
 
   const { gapSupport, hGutter, vGutter } = RowContext.useState()

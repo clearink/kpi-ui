@@ -2,14 +2,14 @@ import { CSSProperties, useMemo } from 'react'
 import { RowContext } from '../_context'
 import { useFlexGapSupport, usePrefix } from '../_hooks'
 import { omit, withDefaultProps } from '../_utils'
-import useRowClass from './hooks/use_row_class'
+import useClass from './hooks/use_class'
 import useRowGutter from './hooks/use_row_gutter'
 import { RowProps } from './props'
 
 function Row(props: RowProps) {
   const { children, style: $style, gutter, ...rest } = props
   const name = usePrefix('row')
-  const className = useRowClass(name, props)
+  const className = useClass(name, props)
   const gapSupport = useFlexGapSupport()
   const [hGutter, vGutter] = useRowGutter(gutter)
   const attrs = omit(rest, ['align', 'justify', 'wrap'])

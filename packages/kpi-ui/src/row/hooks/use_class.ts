@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import cls from 'classnames'
 import { RowProps } from '../props'
 
-export default function useRowClass(name: string, props: RowProps) {
+export default function useClass(name: string, props: RowProps) {
   const { className, justify, align } = props
   return useMemo(
     () =>

@@ -1,6 +1,6 @@
 import { withDefaultProps, omit } from '../_utils'
-import { usePrefix, useWave } from '../_hooks'
-import useBtnClass from './hooks/use_btn_class'
+import { useWave } from '../_hooks'
+import useClass from './hooks/use_class'
 import { ButtonProps } from './props'
 
 function Button(props: ButtonProps) {
@@ -9,7 +9,7 @@ function Button(props: ButtonProps) {
 
   const ref = useWave<HTMLButtonElement>()
 
-  const className = useBtnClass(usePrefix('button'), props)
+  const className = useClass(props)
 
   return (
     <button className={className} ref={ref} type={htmlType} {...attrs}>

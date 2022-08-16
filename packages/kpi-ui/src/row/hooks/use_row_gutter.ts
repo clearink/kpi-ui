@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useBreakpoint } from '../../_hooks'
-import { handleMatchPoint } from '../../_hooks/use_breakpoint/media_observer'
+import { handleMatchPoint } from '../../_hooks/use-breakpoint/media_observer'
 import { isArray, isNumber, isPlainObject } from '../../_utils'
 import { RowProps } from '../props'
 

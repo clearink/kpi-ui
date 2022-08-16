@@ -1,9 +1,11 @@
 import { useMemo } from 'react'
 import cls from 'classnames'
-import { PaginationProps } from '../props'
+import { BackTopProps } from '../props'
+import { usePrefix } from '../../_hooks'
 
-export default function usePaginationProps(name: string, props: PaginationProps) {
+export default function useClass(props: BackTopProps) {
   const { className } = props
+  const name = usePrefix('back-top')
   return useMemo(
     () =>
       cls(name, {

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { usePrefix } from '../_hooks'
 import { capitalize, omit, withDefaultProps } from '../_utils'
-import useDividerClass from './hooks/use_divider_class'
+import useClass from './hooks/use_class'
 import { DividerProps } from './props'
 
 function Divider(props: DividerProps) {
@@ -9,7 +9,7 @@ function Divider(props: DividerProps) {
   const attrs = omit(rest, ['className', 'type', 'dashed', 'plain'])
 
   const name = usePrefix('divider')
-  const className = useDividerClass(name, props)
+  const className = useClass(name, props)
 
   const innerStyle = useMemo(() => {
     const prop = `margin${capitalize(orientation)}`

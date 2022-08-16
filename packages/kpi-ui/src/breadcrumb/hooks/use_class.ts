@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 import cls from 'classnames'
+import { usePrefix } from '../../_hooks'
 // import { BreadcrumbProps } from '../props';
 
-export default function useBreadcrumbClass(name: string) {
+export default function useClass() {
+  const name = usePrefix('breadcrumb')
   return useMemo(() => cls(name, {}), [name])
 }

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import cls from 'classnames'
 import { DividerProps } from '../props'
 
-export default function useDividerClass(name: string, props: DividerProps) {
+export default function useClass(name: string, props: DividerProps) {
   const { type, dashed, orientation, children, plain, className, orientationMargin } = props
 
   // 自定义边距

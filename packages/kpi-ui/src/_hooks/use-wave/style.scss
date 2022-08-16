@@ -1,0 +1,39 @@
+// 优化打包性能引入除了 preset 的内容
+@import '../../style/core/index.scss'; // 引入 BEM
+@import '../../style/themes/index.scss'; // 引入 变量
+
+@include b(wave) {
+  border-radius: inherit;
+  pointer-events: none;
+  --wave-color: #{$primary-color};
+
+  @include e(item) {
+    position: absolute;
+    inset: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: 0 0 0 0 var(--wave-color);
+    opacity: 0.2;
+    animation: wave-animate 1.5s cubic-bezier(.08, .82, .17, 1);
+  }
+
+  $wave-width: 16px;
+  @keyframes wave-animate {
+    0% {
+      box-shadow: 0 0 0 0 var(--wave-color);
+    }
+    30% {
+      box-shadow: 0 0 0 6px var(--wave-color);
+    }
+    100% {
+      box-shadow: 0 0 0 8px var(--wave-color);
+      opacity: 0;
+    }
+  }
+
+}

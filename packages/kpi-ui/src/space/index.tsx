@@ -2,7 +2,7 @@ import { useMemo, Children } from 'react'
 import { withDefaultProps } from '../_utils'
 import { useFlexGapSupport, usePrefix } from '../_hooks'
 import useSpaceGutter from './hooks/use_space_gutter'
-import useSpaceClass from './hooks/use_space_class'
+import useClass from './hooks/use_class'
 import { SpaceProps } from './props'
 
 function Space(props: SpaceProps) {
@@ -12,7 +12,7 @@ function Space(props: SpaceProps) {
   const gapSupport = useFlexGapSupport()
 
   const name = usePrefix('space')
-  const className = useSpaceClass(name, props)
+  const className = useClass(name, props)
   // 水平 垂直 间距
   const [hGutter, vGutter] = useSpaceGutter(size, !!split)
 

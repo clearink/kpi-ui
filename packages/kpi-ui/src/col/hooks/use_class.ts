@@ -2,9 +2,11 @@ import cls from 'classnames'
 import { ColProps } from '../props'
 import { BREAKPOINT_NAME } from '../../_constant/breakpoint'
 import { isNumber } from '../../_utils'
+import { usePrefix } from '../../_hooks'
 
-export default function useColClass(name: string, props: ColProps) {
+export default function useClass(props: ColProps) {
   const { className, span, offset, pull, push, order } = props
+  const name = usePrefix('col')
   const extraClass = BREAKPOINT_NAME.reduce((res, size) => {
     const breakpoint = props[size] ?? {}
     const config = isNumber(breakpoint) ? { span: breakpoint } : breakpoint
