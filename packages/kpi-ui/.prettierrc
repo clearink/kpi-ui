@@ -2,5 +2,7 @@
   "printWidth": 100,
   "singleQuote": true,
   "semi": false,
-  "endOfLine": "auto"
+  "endOfLine": "auto",
+  "tabWidth": 2,
+  "singleAttributePerLine": true
 }
