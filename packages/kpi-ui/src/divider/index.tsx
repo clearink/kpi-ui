@@ -17,9 +17,15 @@ function Divider(props: DividerProps) {
   }, [orientation, orientationMargin])
 
   return (
-    <div className={className} {...attrs}>
+    <div
+      className={className}
+      {...attrs}
+    >
       {children && (
-        <span className={`${name}__inner-text`} style={innerStyle}>
+        <span
+          className={`${name}__inner-text`}
+          style={innerStyle}
+        >
           {children}
         </span>
       )}

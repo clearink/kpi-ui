@@ -20,6 +20,7 @@ module.exports = {
     'no-continue': 'off',
     'no-param-reassign': 'off',
     'no-restricted-syntax': 'off',
+    'no-template-curly-in-string': 0,
     'consistent-return': 'off',
     'implicit-arrow-linebreak': 'off',
     'react/jsx-props-no-spreading': 'off',
@@ -28,6 +29,15 @@ module.exports = {
     'import/extensions': 'off',
     '@typescript-eslint/no-unused-vars': 'warn',
     'no-use-before-define': 'off',
+    "jsx-a11y/anchor-is-valid": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "jsx-a11y/no-noninteractive-element-interactions": 0,
+    "jsx-a11y/alt-text": 0,
+    "jsx-a11y/label-has-for": 0,
+    "jsx-a11y/label-has-associated-control": 0,
+    "jsx-a11y/no-noninteractive-tabindex": 0,
+    "jsx-a11y/tabindex-no-positive": 0,
     '@typescript-eslint/no-unused-expressions': [
       'error',
       {

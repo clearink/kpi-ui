@@ -1,6 +1,5 @@
 import Text from './Text'
 
-const Typography = {
+export default {
   Text,
 }
-export default Typography

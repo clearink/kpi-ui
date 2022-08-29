@@ -12,7 +12,12 @@ function Button(props: ButtonProps) {
   const className = useClass(props)
 
   return (
-    <button className={className} ref={ref} type={htmlType} {...attrs}>
+    <button
+      className={className}
+      ref={ref}
+      type={htmlType}
+      {...attrs}
+    >
       <span>{children}</span>
     </button>
   )

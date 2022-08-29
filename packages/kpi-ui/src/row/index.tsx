@@ -28,7 +28,11 @@ function Row(props: RowProps) {
   }, [gapSupport, hGutter, vGutter])
 
   return (
-    <div className={className} style={style} {...attrs}>
+    <div
+      className={className}
+      style={style}
+      {...attrs}
+    >
       <RowContext.Provider value={contextState}>{children}</RowContext.Provider>
     </div>
   )

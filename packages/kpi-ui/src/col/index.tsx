@@ -30,7 +30,11 @@ function Col(props: ColProps) {
   }, [$style, $flex, gapStyle])
 
   return (
-    <div className={className} style={style} {...attrs}>
+    <div
+      className={className}
+      style={style}
+      {...attrs}
+    >
       {children}
     </div>
   )

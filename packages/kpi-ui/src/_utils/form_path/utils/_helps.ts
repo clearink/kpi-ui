@@ -1,6 +1,6 @@
 import { BracketItem, NodePath, NodeType, RemovedDestToken, TokenItem } from '../interface'
 import { Dot, CBL, CBR, SBL, SBR } from './_token'
-import { isPlainObject } from '../../validate_type'
+import { isObject } from '../../validate_type'
 
 // 是否为数据解构
 export function isDestToken(tokens: TokenItem[], index: number) {
@@ -23,7 +23,7 @@ export function isArrayToken(tokens: TokenItem[], index: number) {
 }
 // 括号匹配
 export function isBracketMatch(left: BracketItem | string, right: string) {
-  if (!isPlainObject(left)) {
+  if (!isObject(left)) {
     if (left === SBL && right === SBR) return true
     if (left === CBL && right === CBR) return true
     return false
@@ -38,7 +38,7 @@ export function isBracketMatch(left: BracketItem | string, right: string) {
 export function fixLastToken(tokens: NodePath[] | RemovedDestToken[], fixArray?: boolean) {
   const len = tokens.length
   const last = tokens[len - 1]
-  if (!isPlainObject(last)) return tokens as NodePath[]
+  if (!isObject(last)) return tokens as NodePath[]
   const $tokens = tokens.slice(0, -1) as object[]
   if ($tokens.some((token) => 'attrs' in token)) {
     throw new Error('数据解构语句暂时仅支持语句末尾')
@@ -53,7 +53,7 @@ export function fixLastToken(tokens: NodePath[] | RemovedDestToken[], fixArray?:
 export function findDestToken(tokens: TokenItem[], index: number) {
   const $tokens = tokens.slice(index + 1)
   const first = $tokens[0]
-  if (!isPlainObject(first)) throw new Error(`token is not object: ${first}`)
+  if (!isObject(first)) throw new Error(`token is not object: ${first}`)
   first.used = true
   const bracket = first.value
   const type = bracket === SBL ? 'array' : 'object'

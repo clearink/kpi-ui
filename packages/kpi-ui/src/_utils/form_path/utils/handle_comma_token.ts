@@ -1,4 +1,4 @@
-import { isPlainObject } from '../../validate_type'
+import { isObject } from '../../validate_type'
 import { RemovedCommaToken, RemovedDestToken } from '../interface'
 import { Comma } from './_token'
 
@@ -8,7 +8,7 @@ function handleCommaToken(tokens: RemovedDestToken[]) {
   for (const token of tokens) {
     const last = result[result.length - 1]
     if (token === Comma) result.push([])
-    else if (!isPlainObject(token)) last.push(token)
+    else if (!isObject(token)) last.push(token)
     else if ('attrs' in token && token.attrs.length) {
       const attrs = handleCommaToken(token.attrs)
       last.push({ ...token, attrs })

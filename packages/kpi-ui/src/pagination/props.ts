@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode } from 'react'
+import { CSSProperties, KeyboardEventHandler, MouseEventHandler, ReactNode } from 'react'
 
 export interface PaginationProps {
   /**
@@ -118,4 +118,6 @@ export interface PagerProps {
   className?: string
   prefix: string
   showHtmlTitle: boolean
+  onClick: MouseEventHandler
+  onKeyPress: KeyboardEventHandler
 }

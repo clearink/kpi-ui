@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import { useBreakpoint } from '../../_hooks'
 import { handleMatchPoint } from '../../_hooks/use-breakpoint/media_observer'
-import { isArray, isNumber, isPlainObject } from '../../_utils'
+import { isArray, isNumber, isObject } from '../../_utils'
 import { RowProps } from '../props'
 
 export default function useRowGutter(gutter: RowProps['gutter']) {
   const $gutter = useMemo(() => (isArray(gutter) ? gutter : [gutter, 0]), [gutter])
-  const needMatch = useMemo(() => $gutter.some(isPlainObject), [$gutter])
+  const needMatch = useMemo(() => $gutter.some(isObject), [$gutter])
 
   const matches = useBreakpoint(() => needMatch)
 

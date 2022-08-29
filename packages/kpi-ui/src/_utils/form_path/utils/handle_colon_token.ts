@@ -1,4 +1,4 @@
-import { isPlainObject } from '../../validate_type'
+import { isObject } from '../../validate_type'
 import { NodePath, NodeType, RemovedCommaToken } from '../interface'
 import { fixLastToken } from './_helps'
 import { Colon } from './_token'
@@ -9,7 +9,7 @@ function handleColonToken(matrix: RemovedCommaToken[][], type: NodeType) {
     const item: NodePath[][] = []
     for (const token of tokens) {
       if (token === Colon || !item.length) item.push([])
-      if (!isPlainObject(token)) continue
+      if (!isObject(token)) continue
 
       // 每一层仅允许有一个 ':' 数组时仅允许一个
       const maxLength = type === 'array' ? 1 : 2

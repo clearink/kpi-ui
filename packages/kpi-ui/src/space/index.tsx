@@ -36,11 +36,17 @@ function Space(props: SpaceProps) {
       const gapStyle = gapSupport ? undefined : { marginRight, paddingBottom }
       return (
         <>
-          <div className={`${name}-item`} style={gapStyle}>
+          <div
+            className={`${name}-item`}
+            style={gapStyle}
+          >
             {child}
           </div>
           {split && !isEndItem && (
-            <span className={`${name}-item-split`} style={gapStyle}>
+            <span
+              className={`${name}-item-split`}
+              style={gapStyle}
+            >
               {split}
             </span>
           )}
@@ -50,7 +56,11 @@ function Space(props: SpaceProps) {
   }, [$children, hGutter, vGutter, gapSupport, name, vertical, wrap, split])
 
   return (
-    <div className={className} style={style} {...rest}>
+    <div
+      className={className}
+      style={style}
+      {...rest}
+    >
       {children}
     </div>
   )

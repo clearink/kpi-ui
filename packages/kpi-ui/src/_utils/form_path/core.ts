@@ -1,13 +1,13 @@
 import { initValue } from './utils/_helps'
-import { isArray, isPlainObject } from '../validate_type'
+import { isArray, isObject } from '../validate_type'
 import { NodePath, GetValueResult } from './interface'
 
 function setValue<D>(object: D, paths: NodePath[], value: any) {
-  if (!paths.length || !isPlainObject(object)) return object
+  if (!paths.length || !isObject(object)) return object
 
   const [attribute, ...$paths] = paths
 
-  if (!isPlainObject(attribute)) {
+  if (!isObject(attribute)) {
     if (isArray(object) && Number.isNaN(+attribute)) return object
     object[attribute] = value
   } else if ('attr' in attribute) {
@@ -30,12 +30,12 @@ function getValue<D>(object: D, paths: NodePath[]): GetValueResult {
   const [attribute, ...$paths] = paths
 
   // 为了确保能够解析到最后一项
-  if (!isPlainObject(object)) {
-    const type = isPlainObject(attribute) ? attribute.type : 'object'
+  if (!isObject(object)) {
+    const type = isObject(attribute) ? attribute.type : 'object'
     return getValue(initValue(type), $paths)
   }
 
-  if (!isPlainObject(attribute)) {
+  if (!isObject(attribute)) {
     return [attribute in object, object[attribute]]
   }
 
