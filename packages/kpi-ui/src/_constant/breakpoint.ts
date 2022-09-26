@@ -22,6 +22,3 @@ export const INIT_MATCHES = BREAKPOINT_NAME.reduce(
   (res, name) => ({ ...res, [name]: false }),
   {} as ScreenMatch<boolean>
 )
-
-// flex 解析正则
-export const COL_FLEX_REG = /^\d+(\.\d+)?(px|r?em|%)$/

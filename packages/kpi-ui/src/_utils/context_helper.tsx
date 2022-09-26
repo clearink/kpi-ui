@@ -1,8 +1,8 @@
 import { ConsumerProps, createContext, ProviderProps, useContext } from 'react'
 
 // TODO: 改个名字
-export default function contextHelper<R extends unknown>() {
-  const Context = createContext(null as R)
+export default function contextHelper<R extends unknown>(init?: R) {
+  const Context = createContext(init ?? (null as R))
   function Provider(props: ProviderProps<R>) {
     const { children, value } = props
     return <Context.Provider value={value}>{children}</Context.Provider>

@@ -1,4 +1,4 @@
-import { withDefaultProps } from '../_utils'
+import { withDefaultProps } from '../_hocs'
 import useClass from './hooks/use_class'
 // import { BreadcrumbProps } from './props';
 

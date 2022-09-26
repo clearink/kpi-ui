@@ -1,5 +1,5 @@
 import { useMemo, Children } from 'react'
-import { withDefaultProps } from '../_utils'
+import { withDefaultProps } from '../_hocs'
 import { useFlexGapSupport, usePrefix } from '../_hooks'
 import useSpaceGutter from './hooks/use_space_gutter'
 import useClass from './hooks/use_class'

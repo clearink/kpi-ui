@@ -35,27 +35,22 @@ export abstract class BaseSchema<Out = any, In = Out> {
   // 条件
   protected readonly conditions: any[] = []
 
-  // 转换，在类型检查之前进行
-  protected readonly transforms: any[] = []
-
   // 规则
   protected readonly rules: any[] = []
 
   // 内部校验
   abstract _validate(input: ValidateInput): ValidateResult<this['_Out']>
 
-  public test(tester: RuleHandler, message?: Message) {
-    this.rules.push(makeRule<In>(tester, message))
+  // 数据校验
+  public test(handler: RuleHandler, message?: Message) {
+    this.rules.push(makeRule<In>(handler, message))
     return this
   }
 
   // 获取 context 从而传递给 _validate
   public async validate(value: any) {
     const input: ValidateInput = {
-      value: this.transforms.reduce((result, handle) => {
-        const context = this.getContext()
-        return handle(result, context)
-      }, value),
+      value,
       context: this.getContext(),
       path: [],
     }
@@ -98,6 +93,16 @@ export abstract class BaseSchema<Out = any, In = Out> {
   // or
   public or<S extends BaseSchema>(schema: S): UnionSchema<[this, S]> {
     return UnionSchema.create([this, schema])
+  }
+
+  // transform 还不确定是否需要
+  public transform<NewOut extends any>(transformer: (current: Out) => NewOut | Promise<NewOut>) {
+    return EffectSchema.create()
+  }
+
+  // refine 自定义验证
+  public refine(refinement) {
+    return EffectSchema.create()
   }
 }
 
@@ -621,6 +626,17 @@ export class UnionSchema<T extends UnionInput> extends BaseSchema<UnionOutput<T>
 
 /** ========================================================================== */
 /** ========================================================================== */
-/** RefSchema          TODO: 后续开发                                                     */
+/** EffectSchema       TODO: 后续开发                                           */
 /** ========================================================================== */
 /** ========================================================================== */
+
+// 数据校验后进行转换
+export class EffectSchema<Out extends any, In extends any = Out> extends BaseSchema<Out, In> {
+  public _validate(input: ValidateInput<any>) {
+    return Invalid
+  }
+
+  static create() {
+    return new EffectSchema()
+  }
+}

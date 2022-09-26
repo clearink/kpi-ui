@@ -24,7 +24,3 @@ export function pick<T, K extends keyof T>(
 export function hasOwn<O extends unknown>(obj: O, key: keyof any) {
   return Object.prototype.hasOwnProperty.call(obj, key)
 }
-
-export function rawType(obj: any) {
-  return Object.prototype.toString.call(obj).slice(8, -1)
-}

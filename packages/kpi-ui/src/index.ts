@@ -12,24 +12,20 @@ export { default as Col } from './col'
 export { default as Pagination } from './pagination'
 export { default as BackTop } from './back-top'
 
-const schema = k.object({
-  name: k.string().max(100),
-  age: k.number().range(10, 100),
-  email: k.string().email().optional(),
-  phone: k.string().uuid().optional(),
-  someType: k.enums(['a', 'b', 1, 2, 32, true]),
-})
-
-type O = k.infer<typeof schema>
-
 console.log(k.number().min(10))
 
 /** 问题 */
+// 0. 定位
 // 1. 校验函数怎么定义?
 // 2. 使用方法是什么?
+//
 
 /**
- * 1. 支持异步校验
+ * 0. 定位
+ * 这只是一个校验工具
+ */
+/**
+ * 1. 校验支持异步
  */
 const sleep = (delay: number) =>
   new Promise((res) => {
@@ -42,3 +38,31 @@ k.number()
     await sleep(1000)
     return value <= Math.random() * 4000
   }, '${path} is not less')
+
+// form.item
+// const schema = getContext() ||
+// context
+const schema = k
+  .object({
+    username: k.string().min(10).max(30),
+    age: k.number().min(1).max(100),
+    phone: k.string().refine((value) => /\d{11}/.test(value)),
+    email: k.string().email()
+  })
+  .and(
+    k
+      .object({
+        email: k.string().email(),
+      })
+      .or(
+        k.object({
+          email: k.number(),
+          phone: k.string().uuid(),
+        })
+      )
+  )
+// 要么全部分散验证。要么集中验证
+// 集中验证=>性能问题
+// 分散验证=>类型不明确了
+
+type O = k.infer<typeof schema>

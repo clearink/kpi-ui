@@ -1,5 +1,5 @@
 import { usePrefix } from '../_hooks'
-import { withDefaultProps } from '../_utils'
+import { withDefaultProps } from '../_hocs'
 import useClass from './hooks/use_class'
 import usePageChunk from './hooks/use_page_chunk'
 import { PaginationProps } from './props'

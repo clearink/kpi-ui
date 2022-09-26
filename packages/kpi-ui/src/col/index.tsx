@@ -1,9 +1,10 @@
 import { CSSProperties, useMemo } from 'react'
 import { RowContext } from '../_context'
-import { BREAKPOINT_NAME, COL_FLEX_REG } from '../_constant/breakpoint'
-import { isNumber, omit, withDefaultProps } from '../_utils'
+import { BREAKPOINT_NAME, COL_FLEX_REG } from '../_constant'
+import { isNumber, omit } from '../_utils'
 import useClass from './hooks/use_class'
 import { ColProps } from './props'
+import { withDefaultProps } from '../_hocs'
 
 function Col(props: ColProps) {
   const { children, span, style: $style, flex: $flex, ...rest } = props
