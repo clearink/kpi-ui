@@ -33,7 +33,7 @@ const sleep = (delay: number) =>
   })
 k.number()
   .min(123)
-  // 自定义校验
+  // 自定义校验  context = formInstance
   .refine(async (value, context) => {
     await sleep(1000)
     return value <= Math.random() * 4000
@@ -60,9 +60,14 @@ const schema = k.object({
 // 分散验证=>类型不明确了
 
 type O = k.infer<typeof schema>
-schema.validate({}).then((...args: any[]) => {
-  console.log(args)
-})
+schema
+  .validate({})
+  .then((res) => {
+    console.log('res', res)
+  })
+  .catch((err) => {
+    console.log('err', err)
+  })
 
 const schema1 = k
   .number()
@@ -88,3 +93,8 @@ type AAA = k.infer<typeof schema1>
  *  2.1 数据转换应当在校验时触发，以保证组件的性能。
  *
  *  */
+// k.string()
+//   .required()
+//   .refine((value, form) => {
+//     return value === form.getFieldValue('password')
+//   }, '密码不一致')

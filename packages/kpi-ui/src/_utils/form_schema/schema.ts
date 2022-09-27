@@ -2,7 +2,7 @@
 /* eslint-disable max-classes-per-file */
 import { AnyObject, Full, MayBe, NonUndefined, Writable } from '../../_types'
 import { Invalid, Valid, makeRule } from './shared'
-import { ValidateResult, Message, RuleHandler, EffectHandler } from './interface'
+import { ValidateResult, Message, RuleHandler, EffectHandler, ValidateReturn } from './interface'
 import { isArray, isBoolean, isDate, isNull, isNumber, isObject, isString, isUndefined } from '..'
 
 /** ========================================================================== */
@@ -33,22 +33,45 @@ export abstract class BaseSchema<Out = any, In = Out> {
   protected readonly conditions: any[] = []
 
   // 规则
-  protected readonly rules: any[] = []
+  protected readonly rules: ValidateReturn<Out>[] = []
 
   // 内部校验
-  abstract _validate(input: ValidateInput): ValidateResult<this['_Out']>
 
   // 校验类型
   abstract isType(value: any): boolean
+
+  private _runInternalTests(value: any) {
+    if (this.flag.optional) {
+      return isUndefined(value) ? Valid(value) : Invalid
+    }
+    if (this.flag.nullable) {
+      return isNull(value) ? Valid(value) : Invalid
+    }
+    return Valid(value)
+  }
+
+  private _runEffects(value: any) {
+    return this.transforms.reduce((acc, fn) => {
+      return fn.call(this, acc, value, this.context)
+    }, value)
+  }
+
+  private _runRules(value: any) {
+    const list = this.rules.map((rule) => rule(value, this.context))
+  }
 
   // 获取 context 从而传递给 _validate
   public async validate(value: any) {
     const input: ValidateInput = {
       value,
-      context: this.getContext(),
+      context: this.context,
       path: [],
     }
-    const result = await this._validate(input)
+    // 校验 内部
+    this._runInternalTests(value)
+    // 转换数据 transform
+    const inputVale = this._runEffects(value)
+    const result = await this._runRules(input)
     if (result.status === 'valid') {
       return result.value
     }
@@ -56,7 +79,7 @@ export abstract class BaseSchema<Out = any, In = Out> {
   }
 
   // 获取 context
-  protected getContext() {
+  private get context() {
     return this
   }
 
@@ -445,12 +468,3 @@ export class EnumSchema<T extends EnumInput> extends BaseSchema<T[number], T> {
     return this.innerType
   }
 }
-
-/**
- * schema.validate({}).then()
- *
- * 流程：
- * 1. 检查 flag (默认允许 undefined，不允许 null)
- * 2. 执行 transforms
- * 3. 执行 rules
- */
