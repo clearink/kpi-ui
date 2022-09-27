@@ -1,8 +1,12 @@
-import React, { ComponentType, FormEvent, FormHTMLAttributes, ReactNode } from 'react'
+import { ComponentType, FormEvent, FormHTMLAttributes, ReactNode } from 'react'
+import { ArrowFunction } from '../_types'
 
 export interface FormProps<S = any>
   extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'children'> {
-  as?: keyof HTMLElementTagNameMap | null | ComponentType
+  as?:
+    | keyof Omit<HTMLElementTagNameMap, 'dir' | 'font' | 'frameset' | 'frame' | 'marquee'>
+    | null
+    | ComponentType
   /**
    * @zh 校验成功后的回调
    */
@@ -26,7 +30,7 @@ export interface FormProps<S = any>
 export interface FormInstance<S = any> {
   state: S
   validate: () => Promise<void>
-  submit: () => void
+  submit: (onFinish: ArrowFunction, onFailed: ArrowFunction) => void
   /**
    * @zh 重置一组字段到 `initialValues`
    */

@@ -1,4 +1,4 @@
-import { isObject } from '../../validate_type'
+import { isObject } from '../../is'
 import { NodePath, NodeType, RemovedCommaToken } from '../interface'
 import { fixLastToken } from './_helps'
 import { Colon } from './_token'

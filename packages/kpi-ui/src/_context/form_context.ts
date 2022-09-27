@@ -1,6 +1,6 @@
 import FormControl from '../form/form_control'
 import { FormInstance } from '../form/props'
-import contextHelper from '../_utils/context_helper'
+import ctxHelper from './helper'
 
 // TODO: 目前还不确定
 interface FormContextState {
@@ -8,9 +8,9 @@ interface FormContextState {
 }
 
 // Form 组件传递数据给 Form.Field
-export const FormContext = contextHelper<FormContextState>({
+export const FormContext = ctxHelper<FormContextState>({
   register: () => () => {},
 })
 
 // 将formControl实例传递给field组件
-export const FieldContext = contextHelper<FormControl | null>(null)
+export const FieldContext = ctxHelper<FormControl | null>(null)

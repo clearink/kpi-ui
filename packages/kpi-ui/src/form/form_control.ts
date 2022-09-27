@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { Writable } from '../_types'
+import { ArrowFunction, Writable } from '../_types'
 import { toArray } from '../_utils'
 import { FormInstance, GetIn, NamePath, PathItem } from './props'
 import { getIn, setIn } from './utils'
@@ -80,7 +80,10 @@ export default class FormControl<State = any> {
   }
 
   // 提交表单
-  #submit() {}
+  #submit(onFinish: ArrowFunction, onFailed: ArrowFunction) {
+    // 校验参数
+    // 触发回调
+  }
 
   // 重置表单
   #resetFields(fields?: NamePath[]) {}

@@ -1,3 +1,5 @@
+import { AnyObject } from '../_types'
+
 type ValueType =
   | 'Object'
   | 'Undefined'
@@ -9,6 +11,7 @@ type ValueType =
   | 'Symbol'
   | 'BigInt'
   | 'Map'
+  | 'Promise'
 
 export function rawType(obj: any) {
   return Object.prototype.toString.call(obj).slice(8, -1)
@@ -28,10 +31,16 @@ export const isFunction = (obj: any): obj is (...args: any[]) => any => typeof o
 
 export const isObject = (obj: any): obj is object => validateType(obj, 'Object')
 
-export const isObjectLike = (obj: any): obj is object => obj !== null && typeof obj === 'object'
+export const isObjectLike = (obj: any): obj is AnyObject => obj !== null && typeof obj === 'object'
 
 export const isNumber = (obj: any): obj is number => validateType(obj, 'Number')
 
 export const isString = (obj: any): obj is string => validateType(obj, 'String')
 
 export const isBoolean = (obj: any): obj is boolean => validateType(obj, 'Boolean')
+
+export const isDate = (obj: any): obj is Date => validateType(obj, 'Date')
+
+export const isPromiseLike = (obj: any): obj is PromiseLike<any> =>
+  validateType(obj, 'Promise') ||
+  (isObjectLike(obj) && isFunction(obj.then) && isFunction(obj.catch))

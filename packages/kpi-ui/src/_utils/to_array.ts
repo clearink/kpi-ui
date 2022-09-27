@@ -1,4 +1,4 @@
-import { isArray, isNullish } from './validate_type'
+import { isArray, isNullish } from './is'
 
 /**
  * @desc 严格条件下，不是数组的都将返回空数组。

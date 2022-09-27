@@ -27,7 +27,7 @@ function Form(props: FormProps, ref: ForwardedRef<FormInstance>) {
   const handleSubmit = useEvent((e: FormEvent) => {
     e?.preventDefault?.()
     e?.stopPropagation?.()
-    instance.submit()
+    instance.submit(onFinish, onFailed)
   })
   const handleReset = useEvent((e: FormEvent) => {
     e?.preventDefault?.()

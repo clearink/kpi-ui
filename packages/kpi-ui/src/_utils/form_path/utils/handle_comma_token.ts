@@ -1,4 +1,4 @@
-import { isObject } from '../../validate_type'
+import { isObject } from '../../is'
 import { RemovedCommaToken, RemovedDestToken } from '../interface'
 import { Comma } from './_token'
 

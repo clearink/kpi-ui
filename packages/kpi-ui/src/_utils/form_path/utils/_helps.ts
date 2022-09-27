@@ -1,6 +1,6 @@
 import { BracketItem, NodePath, NodeType, RemovedDestToken, TokenItem } from '../interface'
 import { Dot, CBL, CBR, SBL, SBR } from './_token'
-import { isObject } from '../../validate_type'
+import { isObject } from '../../is'
 
 // 是否为数据解构
 export function isDestToken(tokens: TokenItem[], index: number) {

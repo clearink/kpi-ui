@@ -1,17 +1,9 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { AnyObject, Full, MayBe, NonUndefined, Writable } from './types'
-import { Invalid, Valid, ValidateResult, Message, RuleHandler, makeRule } from './utils'
-import {
-  isArray,
-  isBoolean,
-  isDate,
-  isNull,
-  isNumber,
-  isObject,
-  isString,
-  isUndefined,
-} from '../validate_type'
+import { AnyObject, Full, MayBe, NonUndefined, Writable } from '../../_types'
+import { Invalid, Valid, makeRule } from './shared'
+import { ValidateResult, Message, RuleHandler, EffectHandler } from './interface'
+import { isArray, isBoolean, isDate, isNull, isNumber, isObject, isString, isUndefined } from '..'
 
 /** ========================================================================== */
 /** ========================================================================== */
@@ -32,6 +24,11 @@ export abstract class BaseSchema<Out = any, In = Out> {
 
   readonly _Out!: Out
 
+  private flag: Record<'optional' | 'nullable', boolean> = {
+    optional: true, // 默认能传 undefined
+    nullable: false, // 默认不能传 null
+  }
+
   // 条件
   protected readonly conditions: any[] = []
 
@@ -41,11 +38,8 @@ export abstract class BaseSchema<Out = any, In = Out> {
   // 内部校验
   abstract _validate(input: ValidateInput): ValidateResult<this['_Out']>
 
-  // 数据校验
-  public test(handler: RuleHandler, message?: Message) {
-    this.rules.push(makeRule<In>(handler, message))
-    return this
-  }
+  // 校验类型
+  abstract isType(value: any): boolean
 
   // 获取 context 从而传递给 _validate
   public async validate(value: any) {
@@ -71,38 +65,54 @@ export abstract class BaseSchema<Out = any, In = Out> {
   /** ==================================================== */
 
   // 可以传 undefined
-  public optional(): OptionalSchema<this> {
-    return OptionalSchema.create(this)
+  public optional() {
+    this.flag.optional = true
+    return this
+  }
+
+  // 不能传 undefined
+  public defined(message?: Message) {
+    this.flag.optional = false
+    return this
   }
 
   // 可以传 null
-  public nullable(): NullableSchema<this> {
-    return NullableSchema.create(this)
+  public nullable() {
+    this.flag.nullable = true
+    return this
   }
 
-  // 可以传 null undefined
+  // 不能传 null
+  public nonNullable(message?: Message) {
+    this.flag.nullable = false
+    return this
+  }
+
+  // 不可以传 undefined, null
+  public required(message?: Message) {
+    return this.defined(message).nonNullable(message)
+  }
+
+  // 可以传 undefined, null
   public nullish() {
     return this.optional().nullable()
   }
 
-  // and
-  public and<S extends BaseSchema>(schema: S): IntersectionSchema<[this, S]> {
-    return IntersectionSchema.create([this, schema])
-  }
+  /** ==================================================== */
+  /** transform                                            */
+  /** ==================================================== */
 
-  // or
-  public or<S extends BaseSchema>(schema: S): UnionSchema<[this, S]> {
-    return UnionSchema.create([this, schema])
-  }
+  private transforms: EffectHandler[] = []
 
-  // transform 还不确定是否需要
-  public transform<NewOut extends any>(transformer: (current: Out) => NewOut | Promise<NewOut>) {
-    return EffectSchema.create()
+  public transform(handler: EffectHandler) {
+    this.transforms.push(handler)
+    return this
   }
 
   // refine 自定义验证
-  public refine(refinement) {
-    return EffectSchema.create()
+  public refine(handler: RuleHandler, message?: Message) {
+    this.rules.push(makeRule<In>(handler, message))
+    return this
   }
 }
 
@@ -112,7 +122,7 @@ export abstract class BaseSchema<Out = any, In = Out> {
 /** ========================================================================== */
 /** ========================================================================== */
 
-export class AnySchema extends BaseSchema<any> {
+export class AnySchema extends BaseSchema {
   static create() {
     return new AnySchema()
   }
@@ -120,6 +130,11 @@ export class AnySchema extends BaseSchema<any> {
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
+
+  public isType() {
+    return true
+  }
+
   public _validate(input: ValidateInput) {
     return Valid(input.value)
   }
@@ -131,27 +146,21 @@ export class AnySchema extends BaseSchema<any> {
 /** ========================================================================== */
 /** ========================================================================== */
 
-export class NumberSchema extends BaseSchema<number> {
-  static create() {
-    return new NumberSchema()
+export class NumberSchema<T extends number | undefined> extends BaseSchema<T> {
+  static create<S extends number | undefined>() {
+    return new NumberSchema<S>()
   }
 
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  private isType(value: any) {
+  public isType(value: any) {
     // NaN 视为错误
     return isNumber(value) && !Number.isNaN(value)
   }
 
   public _validate(input: ValidateInput) {
     if (!this.isType(input.value)) return Invalid
-    // for (const rule of this.rules) {
-    //   // eslint-disable-next-line no-await-in-loop
-    //   const result = await rule(input, {})
-    //   if (result === false) {
-    //   }
-    // }
     return Valid(input.value)
   }
 
@@ -160,11 +169,11 @@ export class NumberSchema extends BaseSchema<number> {
   /** ==================================================== */
 
   min(num: number, message?: Message) {
-    return this.test((value: number) => value >= num, message)
+    return this.refine((value: number) => value >= num, message)
   }
 
   max(num: number, message?: Message) {
-    return this.test((value: number) => value <= num, message)
+    return this.refine((value: number) => value <= num, message)
   }
 
   range(min: number, max: number, message?: Message) {
@@ -172,19 +181,19 @@ export class NumberSchema extends BaseSchema<number> {
   }
 
   equal(num: number, message?: Message) {
-    return this.test((value: number) => value === num, message)
+    return this.refine((value: number) => value === num, message)
   }
 
   positive(message?: Message) {
-    return this.test((value: number) => value > 0, message)
+    return this.refine((value: number) => value > 0, message)
   }
 
   negative(message?: Message) {
-    return this.test((value: number) => value < 0, message)
+    return this.refine((value: number) => value < 0, message)
   }
 
   integer(message?: Message) {
-    return this.test((value: number) => Number.isInteger(value), message)
+    return this.refine(Number.isInteger, message)
   }
 }
 
@@ -194,15 +203,15 @@ export class NumberSchema extends BaseSchema<number> {
 /** ========================================================================== */
 /** ========================================================================== */
 
-export class StringSchema extends BaseSchema<string> {
-  static create() {
-    return new StringSchema()
+export class StringSchema<T extends string | undefined> extends BaseSchema<T> {
+  static create<S extends string | undefined>() {
+    return new StringSchema<S>()
   }
 
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  protected isType = isString
+  public isType = isString
 
   public _validate(input: ValidateInput) {
     if (!this.isType(input)) return Invalid
@@ -214,25 +223,25 @@ export class StringSchema extends BaseSchema<string> {
   /** ==================================================== */
 
   min(len: number, message?: Message) {
-    return this.test((value) => value.length >= len, message)
+    return this.refine((value) => value.length >= len, message)
   }
 
   max(len: number, message?: Message) {
-    return this.test((value) => value.length <= len, message)
+    return this.refine((value) => value.length <= len, message)
   }
 
   length(len: number, message?: Message) {
-    return this.test((value) => value.length === len, message)
+    return this.refine((value) => value.length === len, message)
   }
 
   // TODO
   email(message?: Message) {
-    return this.test((value) => /email/.test(value), message)
+    return this.refine((value) => /email/.test(value), message)
   }
 
   // TODO
   uuid(message?: Message) {
-    return this.test((value) => /uuid/.test(value), message)
+    return this.refine((value) => /uuid/.test(value), message)
   }
 }
 
@@ -250,7 +259,7 @@ export class BooleanSchema extends BaseSchema<boolean> {
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  protected isType = isBoolean
+  public isType = isBoolean
 
   public _validate(input: ValidateInput) {
     if (!this.isType(input)) return Invalid
@@ -276,8 +285,8 @@ export class DateSchema extends BaseSchema<Date> {
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  protected isType = (input: ValidateInput) => {
-    return isDate(input.value) && !Number.isNaN(input.value?.getTime())
+  public isType(input: ValidateInput) {
+    return isDate(input.value) && !Number.isNaN(input.value.getTime())
   }
 
   public _validate(input: ValidateInput) {
@@ -287,28 +296,6 @@ export class DateSchema extends BaseSchema<Date> {
   /** ==================================================== */
   /** feature                                              */
   /** ==================================================== */
-
-  min(len: number, message?: Message) {
-    return this.test((value) => value.length >= len, message)
-  }
-
-  max(len: number, message?: Message) {
-    return this.test((value) => value.length <= len, message)
-  }
-
-  length(len: number, message?: Message) {
-    return this.test((value) => value.length === len, message)
-  }
-
-  // TODO
-  email(email: string, message?: Message) {
-    return this.test((value) => /some/.test(value), message)
-  }
-
-  // TODO
-  uuid(email: string, message?: Message) {
-    return this.test((value) => /uuid/.test(value), message)
-  }
 }
 
 /** ========================================================================== */
@@ -352,7 +339,7 @@ export class ObjectSchema<T extends ObjectShape> extends BaseSchema<MakePartial<
   /** validate                                             */
   /** ==================================================== */
 
-  protected isType = (input: ValidateInput) => {
+  public isType = (input: ValidateInput) => {
     return isObject(input.value)
   }
 
@@ -399,12 +386,12 @@ export class ArraySchema<T extends any> extends BaseSchema<MakeInnerType<T[]>, T
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  protected isType = (input: ValidateInput) => {
-    return isArray(input.value)
+  public isType(input: any) {
+    return isArray(input)
   }
 
   public _validate(input: ValidateInput) {
-    if (!this.isType(input)) return Invalid
+    if (!this.isType(input.value)) return Invalid
     return Valid(input.value)
   }
 
@@ -441,12 +428,12 @@ export class EnumSchema<T extends EnumInput> extends BaseSchema<T[number], T> {
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  protected isType = (input: ValidateInput) => {
-    return this.innerType.includes(input.value)
+  public isType(input: T[number]) {
+    return this.innerType.includes(input)
   }
 
   public _validate(input: ValidateInput) {
-    if (!this.isType(input)) return Invalid
+    if (!this.isType(input.value)) return Invalid
     return Valid(input.value)
   }
 
@@ -459,184 +446,11 @@ export class EnumSchema<T extends EnumInput> extends BaseSchema<T[number], T> {
   }
 }
 
-/** ========================================================================== */
-/** ========================================================================== */
-/** OptionalSchema                                                             */
-/** ========================================================================== */
-/** ========================================================================== */
-
-export class OptionalSchema<T extends BaseSchema> extends BaseSchema<T['_Out'] | undefined> {
-  constructor(private readonly innerType: T) {
-    super()
-  }
-
-  /** ==================================================== */
-  /** validate                                             */
-  /** ==================================================== */
-  protected isType = (input: ValidateInput) => {
-    return isUndefined(input.value)
-  }
-
-  public _validate(input: ValidateInput) {
-    if (this.isType(input)) return Valid(input.value)
-    return this.innerType._validate(input)
-  }
-
-  public unwrap() {
-    return this.innerType
-  }
-
-  static create<S extends BaseSchema>(innerSchema: S) {
-    return new OptionalSchema(innerSchema)
-  }
-}
-
-/** ========================================================================== */
-/** ========================================================================== */
-/** NullableSchema                                                             */
-/** ========================================================================== */
-/** ========================================================================== */
-
-export class NullableSchema<T extends BaseSchema> extends BaseSchema<T['_Out'] | null> {
-  constructor(private readonly innerType: T) {
-    super()
-  }
-
-  /** ==================================================== */
-  /** validate                                             */
-  /** ==================================================== */
-  protected isType = (input: ValidateInput) => {
-    return isNull(input.value)
-  }
-
-  public _validate(input: ValidateInput) {
-    if (this.isType(input)) return Valid(input.value)
-    return this.innerType._validate(input)
-  }
-
-  public unwrap() {
-    return this.innerType
-  }
-
-  static create<S extends BaseSchema>(innerSchema: S) {
-    return new NullableSchema(innerSchema)
-  }
-}
-
-/** ========================================================================== */
-/** ========================================================================== */
-/** IntersectionSchema / AndSchema                                                         */
-/** ========================================================================== */
-/** ========================================================================== */
-
-/** types ==================================================================== */
-
-export type IntersectionInput = readonly [BaseSchema, BaseSchema, ...BaseSchema[]]
-export type IntersectionOutput<T extends BaseSchema[]> = Full<
-  T extends [infer I, ...infer RI]
-    ? I extends BaseSchema
-      ? I['_Out'] & (RI extends [BaseSchema, ...BaseSchema[]] ? IntersectionOutput<RI> : unknown)
-      : never
-    : never
->
-
-/** schema ==================================================================== */
-
-export class IntersectionSchema<T extends IntersectionInput> extends BaseSchema<
-  IntersectionOutput<[...T]>,
-  T
-> {
-  constructor(public readonly innerType: BaseSchema<ArrayInner<T>>) {
-    super()
-  }
-
-  static create<U extends IntersectionInput = IntersectionInput>(inner: Readonly<U>) {
-    return new IntersectionSchema<U>(inner as any)
-  }
-
-  /** ==================================================== */
-  /** validate                                             */
-  /** ==================================================== */
-  protected isType = () => {
-    // TODO: 待优化 或者不需要
-    if (!Array.isArray(this.innerType)) return false
-    return this.innerType.every((schema) => schema instanceof BaseSchema)
-  }
-
-  public _validate(input: ValidateInput) {
-    if (!this.isType()) return Invalid
-    return Valid(input.value)
-  }
-  /** ==================================================== */
-  /** feature                                              */
-  /** ==================================================== */
-}
-
-/** ========================================================================== */
-/** ========================================================================== */
-/** UnionSchema / OrSchema                                                                */
-/** ========================================================================== */
-/** ========================================================================== */
-
-/** types ==================================================================== */
-
-export type UnionInput = readonly [BaseSchema, BaseSchema, ...BaseSchema[]]
-export type UnionOutput<T extends UnionInput> = T[number]['_Out']
-
-/** schema =================================================================== */
-
-export class UnionSchema<T extends UnionInput> extends BaseSchema<UnionOutput<T>, T> {
-  constructor(public readonly innerType: UnionInput) {
-    super()
-  }
-
-  static create<U extends UnionInput = UnionInput>(innerType: Readonly<U>) {
-    return new UnionSchema<U>(innerType as any)
-  }
-
-  /** ==================================================== */
-  /** validate                                             */
-  /** ==================================================== */
-
-  protected isType = () => {
-    // TODO: 待优化 或者不需要
-    if (!Array.isArray(this.innerType)) return false
-    return this.innerType.every((schema) => schema instanceof BaseSchema)
-  }
-
-  public _validate(input: ValidateInput) {
-    if (!this.isType()) return Invalid
-    return Invalid
-    // return Promise.all(this.innerType.map((schema) => schema._validate(input.value))).then(
-    //   (results) => {
-    //     for (const result of results) {
-    //       if (result.status === 'valid') {
-    //         return Valid(input.value)
-    //       }
-    //     }
-    //     return Invalid
-    //   }
-    // )
-  }
-
-  /** ==================================================== */
-  /** feature                                              */
-  /** ==================================================== */
-}
-
-/** ========================================================================== */
-/** ========================================================================== */
-/** EffectSchema       TODO: 后续开发                                           */
-/** ========================================================================== */
-/** ========================================================================== */
-
-// 数据校验后进行转换
-export class EffectSchema<Out extends any, In extends any = Out> extends BaseSchema<Out, In> {
-  public _validate(input: ValidateInput<any>) {
-    return Invalid
-  }
-
-  static create() {
-    return new EffectSchema()
-  }
-}
+/**
+ * schema.validate({}).then()
+ *
+ * 流程：
+ * 1. 检查 flag (默认允许 undefined，不允许 null)
+ * 2. 执行 transforms
+ * 3. 执行 rules
+ */

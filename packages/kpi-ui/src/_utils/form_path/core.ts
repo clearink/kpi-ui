@@ -1,5 +1,5 @@
 import { initValue } from './utils/_helps'
-import { isArray, isObject } from '../validate_type'
+import { isArray, isObject } from '../is'
 import { NodePath, GetValueResult } from './interface'
 
 function setValue<D>(object: D, paths: NodePath[], value: any) {
