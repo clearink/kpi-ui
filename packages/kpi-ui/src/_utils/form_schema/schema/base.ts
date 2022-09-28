@@ -111,7 +111,7 @@ export default abstract class BaseSchema<Out = any, In = Out> {
   }
 
   // 规则
-  private readonly rules = new Map<string | number, MakeRuleReturn>()
+  protected readonly rules = new Map<string | number, MakeRuleReturn>()
 
   protected _refine(name: string | number, rule: MakeRuleReturn) {
     this.rules.set(name, rule)
@@ -121,7 +121,6 @@ export default abstract class BaseSchema<Out = any, In = Out> {
   // refine 自定义验证
   public refine(rule: RuleHandler, message: Message) {
     // 如果不提供 name 就自己生成一个，作为唯一id
-    this.rules.set(this.rid, makeRule(rule, message))
-    return this
+    return this._refine(this.rid, makeRule(rule, message))
   }
 }
