@@ -2,8 +2,18 @@
 /* eslint-disable max-classes-per-file */
 import { AnyObject, Full, MayBe, NonUndefined, Writable } from '../../_types'
 import { Invalid, Valid, makeRule } from './shared'
-import { ValidateResult, Message, RuleHandler, EffectHandler, ValidateReturn } from './interface'
-import { isArray, isBoolean, isDate, isNull, isNumber, isObject, isString, isUndefined } from '..'
+import { Message, RuleHandler, EffectHandler, RuleName, RuleValue, MakeRuleReturn } from './interface'
+import {
+  isArray,
+  isBoolean,
+  isDate,
+  isNull,
+  isNumber,
+  isObject,
+  isString,
+  isUndefined,
+} from '../is'
+import { base as locale,string as stringLocale, number as numberLocale } from './locales/default'
 
 /** ========================================================================== */
 /** ========================================================================== */
@@ -24,58 +34,52 @@ export abstract class BaseSchema<Out = any, In = Out> {
 
   readonly _Out!: Out
 
-  private flag: Record<'optional' | 'nullable', boolean> = {
-    optional: true, // 默认能传 undefined
-    nullable: false, // 默认不能传 null
+  private _rid = 0
+
+  private get rid() {
+    return this._rid++
   }
 
-  // 条件
-  protected readonly conditions: any[] = []
+  private internals = new Map<'optional' | 'nullable', MakeRuleReturn>()
 
-  // 规则
-  protected readonly rules: ValidateReturn<Out>[] = []
-
-  // 内部校验
+  public constructor() {
+    this.notNull()
+  }
 
   // 校验类型
   abstract isType(value: any): boolean
 
-  private _runInternalTests(value: any) {
-    if (this.flag.optional) {
-      return isUndefined(value) ? Valid(value) : Invalid
-    }
-    if (this.flag.nullable) {
-      return isNull(value) ? Valid(value) : Invalid
+  // 校验内部规则 TODO: 待优化一下
+  private _runInternalRules(value: any) {
+    for (const rule of this.internals.values()) {
+      if (!rule(value)) return Invalid(value)
     }
     return Valid(value)
   }
 
+  // 数据转换
   private _runEffects(value: any) {
     return this.transforms.reduce((acc, fn) => {
       return fn.call(this, acc, value, this.context)
     }, value)
   }
 
+  // 定义的规则
   private _runRules(value: any) {
-    const list = this.rules.map((rule) => rule(value, this.context))
+    const rules = [...this.rules.values()].map(rule => rule())
   }
 
   // 获取 context 从而传递给 _validate
   public async validate(value: any) {
-    const input: ValidateInput = {
-      value,
-      context: this.context,
-      path: [],
-    }
     // 校验 内部
-    this._runInternalTests(value)
-    // 转换数据 transform
-    const inputVale = this._runEffects(value)
-    const result = await this._runRules(input)
-    if (result.status === 'valid') {
-      return result.value
+    const ret = this._runInternalRules(value)
+    if (ret.status === 'invalid') {
+      return ret
     }
-    return result.status
+    // 转换数据 transform
+    const $value = this._runEffects(value)
+
+    const result = await this._runRules($value)
   }
 
   // 获取 context
@@ -89,31 +93,31 @@ export abstract class BaseSchema<Out = any, In = Out> {
 
   // 可以传 undefined
   public optional() {
-    this.flag.optional = true
+    this.internals.delete('optional')
     return this
   }
 
   // 不能传 undefined
-  public defined(message?: Message) {
-    this.flag.optional = false
+  public defined(message: Message = locale.defined) {
+    this.internals.set('optional', makeRule(isUndefined, message))
     return this
   }
 
   // 可以传 null
   public nullable() {
-    this.flag.nullable = true
+    this.internals.delete('nullable')
     return this
   }
 
   // 不能传 null
-  public nonNullable(message?: Message) {
-    this.flag.nullable = false
+  public notNull(message: Message = locale.notNull) {
+    this.internals.set('nullable', makeRule(isNull, message))
     return this
   }
 
   // 不可以传 undefined, null
-  public required(message?: Message) {
-    return this.defined(message).nonNullable(message)
+  public required(message: Message = locale.required) {
+    return this.defined(message).notNull(message)
   }
 
   // 可以传 undefined, null
@@ -132,9 +136,18 @@ export abstract class BaseSchema<Out = any, In = Out> {
     return this
   }
 
+  // 规则
+  private readonly rules = new Map<RuleName, MakeRuleReturn>()
+
+  protected _refine(name: RuleName, rule: MakeRuleReturn) {
+    this.rules.set(name, rule)
+    return this
+  }
+
   // refine 自定义验证
-  public refine(handler: RuleHandler, message?: Message) {
-    this.rules.push(makeRule<In>(handler, message))
+  public refine(rule: RuleHandler, message: Message) {
+    // 如果不提供 name 就自己生成一个，作为唯一id
+    this.rules.set(this.rid, makeRule(rule, message))
     return this
   }
 }
@@ -191,12 +204,18 @@ export class NumberSchema<T extends number | undefined> extends BaseSchema<T> {
   /** feature                                              */
   /** ==================================================== */
 
-  min(num: number, message?: Message) {
-    return this.refine((value: number) => value >= num, message)
+  min(num: number, message: Message = locale.) {
+    const rule = (value: number) => value >= num
+    return this._refine('min', makeRule(rule, message, { min: num })
   }
 
   max(num: number, message?: Message) {
-    return this.refine((value: number) => value <= num, message)
+    const rule = (value: number) => value <= num
+    return super._refine('max', {
+      rule,
+      params: { max: num },
+      message,
+    })
   }
 
   range(min: number, max: number, message?: Message) {
@@ -255,6 +274,10 @@ export class StringSchema<T extends string | undefined> extends BaseSchema<T> {
 
   length(len: number, message?: Message) {
     return this.refine((value) => value.length === len, message)
+  }
+
+  range(min: number, max: number, message?: Message) {
+    return this.min(min, message).max(max, message)
   }
 
   // TODO

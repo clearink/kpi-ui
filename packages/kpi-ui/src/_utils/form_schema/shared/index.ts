@@ -1,16 +1,17 @@
-import { isObject } from '../../is'
 import { Message, RuleHandler, ValidateResult } from '../interface'
+import formatMessage from './format_message'
 
 // 校验结果
 export const Valid = <T>(value: T) => ({ status: 'valid', value } as const)
-export const Invalid = Object.freeze({ status: 'invalid' } as const)
+export const Invalid = <T>(value: T, message?: string) =>
+  ({ status: 'invalid', value, message } as const)
 
 // 生成校验函数
-export function makeRule<T extends any>(handler: RuleHandler, message?: Message) {
-  const $message = isObject(message) ? message : { message }
+export function makeRule<T = any>(handler: RuleHandler, message: Message, params?: any) {
   return async (value: T, context?: any): Promise<ValidateResult<T>> => {
     const res = await handler(value, context)
-    if (!res) return { status: Invalid.status, ...$message }
-    return Valid(value)
+    if (res) return Valid(value)
+    const $message = formatMessage(message)
+    return Invalid(value, $message(params))
   }
 }

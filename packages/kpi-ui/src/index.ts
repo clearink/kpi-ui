@@ -1,5 +1,6 @@
 // components
 
+import { FormInstance } from './form/props'
 import * as k from './_utils/form_schema'
 
 export { default as Button } from './button'
@@ -98,3 +99,10 @@ type AAA = k.infer<typeof schema1>
 //   .refine((value, form) => {
 //     return value === form.getFieldValue('password')
 //   }, '密码不一致')
+const schema = useEvent((form: FormInstance) => {
+  return k.object({
+    // 10 - 20 要不要重置掉 min(2) 呢？
+    // 很明显 是需要的
+    username: k.number().min(2).range(10, 20),
+  })
+})
