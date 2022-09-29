@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { ValidateInput } from '../schema'
-import { Valid } from '../shared'
+import { Valid } from '../shared/make_rule'
 import BaseSchema from './base'
 
 export default class AnySchema extends BaseSchema {
@@ -12,12 +11,8 @@ export default class AnySchema extends BaseSchema {
   /** validate                                             */
   /** ==================================================== */
 
-  public isType() {
-    return true
-  }
-
   // TODO: ValidateInput 还要优化一下
-  public _validate(input: ValidateInput) {
-    return Valid(input.value)
+  public _validate() {
+    // TODO
   }
 }

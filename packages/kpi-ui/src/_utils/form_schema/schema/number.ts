@@ -1,10 +1,10 @@
 /* eslint-disable class-methods-use-this */
 import { isNumber } from '../../is'
-import { ValidateInput } from '../schema'
 import BaseSchema from './base'
 import { number as locale } from '../locales/default'
 import { Message } from '../interface'
-import { makeRule } from '../shared'
+import { makeRule } from '../shared/make_rule'
+import { MayBe } from '../../../_types'
 
 export default class NumberSchema<T extends number | undefined> extends BaseSchema<T> {
   static create<S extends number | undefined>() {
@@ -14,12 +14,12 @@ export default class NumberSchema<T extends number | undefined> extends BaseSche
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  public isType(value: any) {
+  protected isType(value: MayBe<number>) {
     // NaN 视为错误
     return isNumber(value) && !Number.isNaN(value)
   }
 
-  public _validate(input: ValidateInput) {
+  _validate() {
     // TODO
   }
 
@@ -42,16 +42,19 @@ export default class NumberSchema<T extends number | undefined> extends BaseSche
     return this._refine('equal', makeRule(rule, message, { equal }))
   }
 
+  range(min: number, max: number, message: Message = locale.range) {
+    const rule = (value: number) => value >= min && value <= max
+    return this._refine('range', makeRule(rule, message, { min, max }))
+  }
+
   positive(message: Message = locale.positive) {
     const rule = (value: number) => value > 0
-    // 覆盖 min 校验
-    return this._refine('min', makeRule(rule, message))
+    return this._refine('positive', makeRule(rule, message))
   }
 
   negative(message: Message = locale.negative) {
     const rule = (value: number) => value < 0
-    // 覆盖 max 校验
-    return this._refine('max', makeRule(rule, message))
+    return this._refine('negative', makeRule(rule, message))
   }
 
   integer(message: Message = locale.integer) {

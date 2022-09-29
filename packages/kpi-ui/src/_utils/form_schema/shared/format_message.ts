@@ -7,7 +7,7 @@ export default function formatMessage(message: Message) {
   if (isFunction(message)) return message
   return (params: AnyObject = {}) => {
     return Object.entries(params).reduce((res, [k, v]) => {
-      const reg = new RegExp(k, 'g')
+      const reg = new RegExp(`{#${k}}`, 'g')
       return message.replace(reg, printValue(v))
     }, message)
   }

@@ -1,10 +1,9 @@
 /* eslint-disable class-methods-use-this */
 import { isNullish, isString } from '../../is'
-import { ValidateInput } from '../schema'
 import BaseSchema from './base'
 import { string as locale } from '../locales/default'
 import { Message } from '../interface'
-import { makeRule } from '../shared'
+import { makeRule } from '../shared/make_rule'
 import { MayBe } from '../../../_types'
 
 export default class StringSchema<T extends string | undefined> extends BaseSchema<T> {
@@ -15,11 +14,11 @@ export default class StringSchema<T extends string | undefined> extends BaseSche
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  public isType(value: any) {
+  protected isType(value: MayBe<string>) {
     return isString(value)
   }
 
-  public _validate(input: ValidateInput) {
+  _validate() {
     // TODO
   }
 
@@ -42,8 +41,6 @@ export default class StringSchema<T extends string | undefined> extends BaseSche
     return this._refine('length', makeRule(rule, message, { length }))
   }
 
-  // regex email url uuid 都是需要用 正则验证的
-  // 而且他们好像也是互斥的,那么能否被覆盖呢?
   regex(regex: RegExp, message: Message = locale.regex) {
     const rule = (value: string) => regex.test(value)
     return this._refine('regex', makeRule(rule, message, { regex }))
@@ -57,6 +54,7 @@ export default class StringSchema<T extends string | undefined> extends BaseSche
   }
 
   url(message: Message = locale.url) {
+    // TODO: 待复制
     const regex = /url/
     const rule = (value: string) => regex.test(value)
     return this._refine('url', makeRule(rule, message))
@@ -69,9 +67,9 @@ export default class StringSchema<T extends string | undefined> extends BaseSche
   }
 
   trim(message: Message = locale.trim) {
-    // TODO: 继续理清相关逻辑
     const handler = (value: MayBe<string>) => (isNullish(value) ? value : value.trim())
-    const rule = (value: MayBe<string>) => isNullish(value) || value === value.trim()
+    // 避免别的 transform 改变后造成 trimHandler 失效
+    const rule = (value: string) => value === value.trim()
     return this.transform(handler)._refine('trim', makeRule(rule, message))
   }
 
