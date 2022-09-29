@@ -38,7 +38,7 @@ export default class ObjectSchema<T extends ObjectShape> extends BaseSchema<Make
   /** validate                                             */
   /** ==================================================== */
 
-  protected isType(value: MayBe<MakePartial<T>>) {
+  isType(value: MayBe<MakePartial<T>>) {
     return isObject(value)
   }
 

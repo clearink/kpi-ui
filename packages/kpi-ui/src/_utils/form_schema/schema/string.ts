@@ -14,7 +14,7 @@ export default class StringSchema<T extends string | undefined> extends BaseSche
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  protected isType(value: MayBe<string>) {
+  isType(value: MayBe<string>) {
     return isString(value)
   }
 

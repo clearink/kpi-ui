@@ -1,6 +1,5 @@
 // components
 
-import { FormInstance } from './form/props'
 import * as k from './_utils/form_schema'
 
 export { default as Button } from './button'
@@ -21,6 +20,9 @@ const schema = k.object({
   a: k.boolean(),
   b: k.number(),
   c: k.string(),
+})
+k.number().transform((cur, origin, ctx) => {
+  return ctx.isType(cur) ? cur : Number(origin)
 })
 console.log(schema)
 schema

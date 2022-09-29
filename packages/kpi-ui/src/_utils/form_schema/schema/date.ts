@@ -14,7 +14,7 @@ export default class DateSchema extends BaseSchema<Date> {
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  protected isType(value: MayBe<Date>) {
+  isType(value: MayBe<Date>) {
     return isDate(value) && !Number.isNaN(value.getTime())
   }
 

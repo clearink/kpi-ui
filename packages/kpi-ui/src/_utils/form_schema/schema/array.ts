@@ -25,7 +25,7 @@ export class ArraySchema<T extends any> extends BaseSchema<MakeInnerType<T[]>, T
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  protected isType(value: MayBe<T[]>) {
+  isType(value: MayBe<T[]>) {
     return isArray(value)
   }
 

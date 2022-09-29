@@ -14,7 +14,7 @@ export default class BooleanSchema<T extends boolean | undefined> extends BaseSc
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  protected isType(value: MayBe<boolean>) {
+  isType(value: MayBe<boolean>) {
     return isBoolean(value)
   }
 

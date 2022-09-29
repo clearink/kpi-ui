@@ -14,7 +14,7 @@ export default class NumberSchema<T extends number | undefined> extends BaseSche
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  protected isType(value: MayBe<number>) {
+  isType(value: MayBe<number>) {
     // NaN 视为错误
     return isNumber(value) && !Number.isNaN(value)
   }

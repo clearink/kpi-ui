@@ -15,7 +15,7 @@ export default abstract class BaseSchema<Out = any, In = Out> {
   }
 
   // 校验类型
-  protected isType(value: MayBe<Out>) {
+  isType(value: MayBe<Out>) {
     return true
   }
 
@@ -30,7 +30,7 @@ export default abstract class BaseSchema<Out = any, In = Out> {
   // 数据转换
   private _runEffects(value: any) {
     return this.effects.reduce((acc, fn) => {
-      return fn.call(this, acc, value, this.context)
+      return fn.call(this, acc, value, this)
     }, value)
   }
 
@@ -112,10 +112,10 @@ export default abstract class BaseSchema<Out = any, In = Out> {
   /** transform                                            */
   /** ==================================================== */
 
-  private effects: EffectHandler[] = []
+  private effects: EffectHandler<BaseSchema>[] = []
 
-  transform(handler: EffectHandler) {
-    this.effects.push(handler)
+  transform(handler: EffectHandler<this>) {
+    this.effects.push(handler as EffectHandler<BaseSchema>)
     return this
   }
 
