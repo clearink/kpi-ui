@@ -8,10 +8,10 @@ export const Invalid = <T>(value: T, message: string) =>
 
 // 生成校验函数
 export function makeRule<T = any>(handler: RuleHandler, message: Message, params?: any) {
-  return async (value: T, context?: any): RuleReturn<T> => {
-    const res = await handler(value, context)
+  return (value: T, context?: any): RuleReturn<T> => {
+    const res = handler(value, context)
     if (res) return Valid(value)
     const $message = formatMessage(message)
-    return Promise.reject(Invalid(value, $message(params)))
+    return Invalid(value, $message(params))
   }
 }

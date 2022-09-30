@@ -16,17 +16,15 @@ const sleep = (delay: number) =>
   new Promise((res) => {
     setTimeout(res, delay)
   })
-const schema = k.object({
-  a: k.boolean(),
-  b: k.number(),
-  c: k.string(),
-})
-k.number().transform((cur, origin, ctx) => {
-  return ctx.isType(cur) ? cur : Number(origin)
-})
-console.log(schema)
+const schema = k
+  .number()
+  .range(1, 10)
+  .transform(() => {
+    return '123'
+  })
+type A = k.Infer<typeof schema>
 schema
-  .validate(22)
+  .validate(11)
   .then((res) => {
     console.log(' res', res)
   })
