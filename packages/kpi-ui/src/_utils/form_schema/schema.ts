@@ -561,8 +561,22 @@ export class EffectSchema<T extends BaseSchema, Out = T['_Out'], In = T['_In']> 
   /** ==================================================== */
 
   async _validate(value: T['_Out'], context: any) {
-    const $value = await this.handler(value, context)
-    return this.schema._validate($value, context)
+    if (this.type === 'transform') {
+      // 先校验 后转换
+      const ret = await this.schema._validate(value, context)
+      return this.handler(ret.value, context)
+    }
+    if (this.type === 'preprocess') {
+      // 先转换后校验
+      const $value = await this.handler(value, context)
+      return this.schema._validate($value, context)
+    }
+
+    // TODO: 待完善
+    // refinement 先校验handler 后执行自身的
+    const ret = await this.handler(value, context)
+    if (ret.status === 'invalid') return Invalid(ret.value, '')
+    return this.schema._validate(value, context)
   }
 }
 
