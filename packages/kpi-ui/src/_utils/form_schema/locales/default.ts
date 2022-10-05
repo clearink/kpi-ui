@@ -1,9 +1,7 @@
 // 校验失败声明
 export const base = {
   invalid: '${path} is invalid',
-  // required: '{#path} is a required field',
-  // defined: '{#path} must be defined',
-  // notNull: '{#path} cannot be null',
+  required: '{#path} is a required field',
 }
 
 export const string = {

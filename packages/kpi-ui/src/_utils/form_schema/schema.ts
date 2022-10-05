@@ -1,11 +1,20 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
-import { MakeRuleReturn, Message, RuleHandler, TransformHandler, ValidateReturn } from './interface'
-import { Invalid, makeRule, Valid } from './shared/make_rule'
+import { MakeRuleReturn, Message, EffectOptions, Context, ValidateReturn } from './interface'
+import { Valid, Invalid, makeRule } from './shared/make_rule'
+import * as REGEX from './shared/regex'
 import { base, string, number, boolean, object, date, array, enums } from './locales/default'
-import { isNull, isNumber, isString, isUndefined } from '../is'
+import {
+  isArray,
+  isBoolean,
+  isDate,
+  isObject,
+  isNull,
+  isNumber,
+  isString,
+  isUndefined,
+} from '../is'
 import { AnyObject, Full, MayBe, NonUndefined, Writable } from '../../_types'
-import { isArray, isBoolean, isDate, isObject } from '..'
 
 /** ========================================================================== */
 /** ========================================================================== */
@@ -18,33 +27,41 @@ export abstract class BaseSchema<Out = any, In = Out> {
 
   readonly _Out!: Out
 
-  // 校验类型
-  _validate(value: Out, context: any): ValidateReturn<this['_Out']> {
-    for (const rule of this.rules.values()) {
-      const ret = rule(value, context)
-      if (ret.status === 'invalid') return ret
-    }
-    return Valid(value)
+  // 校验自身 rules 规则
+  // TODO: Context为可选项
+  _validate(value: Out, context: Context): ValidateReturn<Out> {
+    const list = [...this.rules.values()].map((rule) => {
+      const ctx: Context = {
+        path: [...context.path],
+        branch: [...context.branch, value],
+      }
+      return rule(value, ctx)
+    })
+    return Promise.all(list).then((result) => {
+      for (const res of result) {
+        // TODO: 返回多个错误
+        if (res.status === 'invalid') return res
+      }
+      return Valid(value)
+    })
   }
 
-  // 获取 context 从而传递给 _validate
   async validate(value: any = undefined) {
-    const ret = await this._validate(value, this.context)
-    if (ret.status === 'invalid') {
-      return Promise.reject(ret)
-    }
-    return ret
+    const ctx = { path: [], branch: [] }
+    const ret = await this._validate(value, ctx)
+    if (ret.status === 'valid') return ret.value
+    return Promise.reject(ret)
   }
 
-  // 获取 context
-  private get context() {
-    return this
+  // TODO: 获取 context
+  private getContext(ctx?: Context) {
+    return ctx ?? { path: [], branch: [] }
   }
 
   // 规则
-  private readonly rules = new Map<string | number, MakeRuleReturn>()
+  private readonly rules = new Map<string | number, MakeRuleReturn<Out>>()
 
-  protected _refine(name: string | number, rule: MakeRuleReturn) {
+  _refine(name: string | number, rule: MakeRuleReturn) {
     this.rules.set(name, rule)
     return this
   }
@@ -61,7 +78,7 @@ export abstract class BaseSchema<Out = any, In = Out> {
 
   // 可以传 undefined
   optional(): OptionalSchema<this> {
-    return OptionalSchema.create(this)
+    return OptionalSchema.create(this) as any
   }
 
   // 可以传 null
@@ -78,21 +95,28 @@ export abstract class BaseSchema<Out = any, In = Out> {
   refine<Next extends Out>(
     rule: (value: Out) => value is Next,
     message?: Message
-  ): EffectSchema<this, Next, In>
+  ): EffectSchema<this, Next>
   refine(
-    rule: (value: Out) => unknown | Promise<unknown>,
+    rule: (value: Out) => boolean | Promise<boolean>,
     message?: Message
-  ): EffectSchema<this, Out, In>
+  ): EffectSchema<this, Out>
   refine(
-    rule: (value: Out) => unknown | Promise<unknown>,
+    rule: (value: Out) => boolean | Promise<boolean>,
     message: Message = base.invalid
-  ): EffectSchema<this, Out, In> {
-    const $rule = makeRule(rule as RuleHandler, message) as any
-    return EffectSchema.refinement(this, $rule)
+  ): EffectSchema<this, Out> {
+    return EffectSchema.refinement(this, rule, message)
   }
 
-  transform<NewOut>(handler: TransformHandler<Out, NewOut>): EffectSchema<this, NewOut> {
+  // 数据转换
+  transform<Next>(
+    handler: (value: Out, context: any) => Next | Promise<Next>
+  ): EffectSchema<this, Next> {
     return EffectSchema.transform(this, handler) as any
+  }
+
+  // 数据预处理
+  preprocess<Next>(handler: (value: Out) => Next | Promise<Next>): EffectSchema<this, Next> {
+    return EffectSchema.preprocess(this, handler)
   }
 }
 
@@ -111,7 +135,7 @@ export class AnySchema extends BaseSchema {
   /** validate                                             */
   /** ==================================================== */
 
-  _validate(value: any): ValidateReturn<this['_Out']> {
+  _validate(value: any) {
     return Valid(value)
   }
 }
@@ -123,19 +147,23 @@ export class AnySchema extends BaseSchema {
 /** ========================================================================== */
 
 export class StringSchema extends BaseSchema<string> {
-  static create() {
-    return new StringSchema()
+  static create(strict = false) {
+    return new StringSchema(strict)
+  }
+
+  constructor(private strict: boolean) {
+    super()
   }
 
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  isType(value: MayBe<string>) {
-    return isString(value)
-  }
 
-  _validate(value: string, context: any) {
-    if (!isString(value)) return Invalid(value, string.invalid)
+  _validate(value: string, context: Context) {
+    // TODO: 传入参数将确定是否允许空字符串 默认允许
+    if (!isString(value)) return Invalid(value, string.invalid, context)
+    // 严格模式 且 为空字符串 认为是没有传
+    if (this.strict && !value.length) return Invalid(value, base.required, context)
     return super._validate(value, context)
   }
 
@@ -164,31 +192,18 @@ export class StringSchema extends BaseSchema<string> {
   }
 
   email(message: Message = string.email) {
-    // TODO: 待复制
-    const regex = /email/
-    const rule = (value: string) => regex.test(value)
+    const rule = (value: string) => REGEX.email.test(value)
     return this._refine('email', makeRule(rule, message))
   }
 
   url(message: Message = string.url) {
-    // TODO: 待复制
-    const regex = /url/
-    const rule = (value: string) => regex.test(value)
+    const rule = (value: string) => REGEX.url.test(value)
     return this._refine('url', makeRule(rule, message))
   }
 
   uuid(message: Message = string.uuid) {
-    const regex = /uuid/
-    const rule = (value: string) => regex.test(value)
+    const rule = (value: string) => REGEX.uuid.test(value)
     return this._refine('uuid', makeRule(rule, message))
-  }
-
-  trim(message: Message = string.trim) {
-    // TODO: 使用 EffectSchema
-    // const handler = (value: MayBe<string>) => (isNullish(value) ? value : value.trim())
-    // // 避免别的 transform 改变后造成 trimHandler 失效
-    // const rule = (value: string) => value === value.trim()
-    // return this.transform(handler)._refine('trim', makeRule(rule, message))
   }
 
   lowercase(message: Message = string.lowercase) {
@@ -217,9 +232,9 @@ export class NumberSchema extends BaseSchema<number> {
   /** validate                                             */
   /** ==================================================== */
 
-  _validate(value: number, context: any) {
+  _validate(value: number, context: Context) {
     if (!isNumber(value) || Number.isNaN(value)) {
-      return Invalid(value, number.invalid)
+      return Invalid(value, number.invalid, context)
     }
     return super._validate(value, context)
   }
@@ -277,12 +292,9 @@ export class BooleanSchema extends BaseSchema<boolean> {
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  isType(value: MayBe<boolean>) {
-    return isBoolean(value)
-  }
 
-  _validate(value: boolean, context: any) {
-    if (!isBoolean(value)) return Invalid(value, boolean.invalid)
+  _validate(value: boolean, context: Context) {
+    if (!isBoolean(value)) return Invalid(value, boolean.invalid, context)
     return super._validate(value, context)
   }
 
@@ -316,9 +328,9 @@ export class DateSchema extends BaseSchema<Date> {
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  _validate(value: Date, context: any) {
+  _validate(value: Date, context: Context) {
     if (!isDate(value) || Number.isNaN(value.getTime())) {
-      return Invalid(value, date.invalid)
+      return Invalid(value, date.invalid, context)
     }
     return super._validate(value, context)
   }
@@ -358,22 +370,41 @@ export type MakeInnerType<T extends MayBe<any[]>> = T extends Array<infer I>
 /** schema =================================================================== */
 
 export class ArraySchema<T extends BaseSchema> extends BaseSchema<MakeInnerType<T[]>, T[]> {
-  constructor(private readonly innerType: BaseSchema<ArrayInner<T[]>>) {
+  constructor(private readonly inner: BaseSchema<ArrayInner<T[]>>) {
     super()
   }
 
-  static create<I extends BaseSchema>(innerType: I) {
-    return new ArraySchema(innerType)
+  static create<I extends BaseSchema>(inner: I) {
+    return new ArraySchema(inner)
   }
 
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
 
-  _validate(value: MakeInnerType<T[]>, context: any) {
-    if (!isArray(value)) return Invalid(value, array.invalid)
-    // TODO: 校验每项类型
-    return super._validate(value, context)
+  async _validateInner(value: MakeInnerType<T[]>, context: Context) {
+    const list = value.map((item, index) => {
+      // TODO: 重新计算 context
+      const ctx: Context = {
+        path: [...context.path, index],
+        branch: [...context.branch, item],
+      }
+      return this.inner._validate(item, ctx)
+    })
+    return Promise.all(list).then((results) => {
+      for (const result of results) {
+        // TODO: 组合多个错误
+        if (result.status === 'invalid') return result as any
+      }
+      return Valid(value)
+    })
+  }
+
+  async _validate(value: MakeInnerType<T[]>, context: Context) {
+    if (!isArray(value)) return Invalid(value, array.invalid, context)
+    const ret = await super._validate(value, context)
+    if (ret.status === 'invalid') return ret
+    return this._validateInner(value, context)
   }
 
   /** ==================================================== */
@@ -381,7 +412,7 @@ export class ArraySchema<T extends BaseSchema> extends BaseSchema<MakeInnerType<
   /** ==================================================== */
 
   get element() {
-    return this.innerType
+    return this.inner
   }
 
   min(min: number, message: Message = array.min) {
@@ -433,8 +464,8 @@ export class EnumSchema<T extends EnumInput> extends BaseSchema<T[number], T> {
   /** validate                                             */
   /** ==================================================== */
 
-  _validate(value: T[number], context: any) {
-    if (!this.inner.includes(value)) return Invalid(value, enums.invalid)
+  _validate(value: T[number], context: Context) {
+    if (!this.inner.includes(value)) return Invalid(value, enums.invalid, context)
     return super._validate(value, context)
   }
 
@@ -476,23 +507,35 @@ export type MakePartial<T extends MayBe<ObjectShape>> = T extends AnyObject
 /** schema =================================================================== */
 
 export class ObjectSchema<T extends ObjectShape> extends BaseSchema<MakePartial<T>, T> {
-  constructor(public readonly schema: T) {
-    // 校验一下 schema
+  constructor(public readonly inner: T) {
     super()
   }
 
-  static create<S extends ObjectShape = {}>(schema: S) {
-    return new ObjectSchema<S>(schema as any)
+  static create<S extends ObjectShape = {}>(inner: S) {
+    return new ObjectSchema<S>(inner as any)
   }
 
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
 
-  _validate(value: AnyObject, context: any) {
-    if (!isObject(value)) return Invalid(value, object.invalid)
+  async _validate(value: AnyObject, context: Context) {
+    if (!isObject(value)) return Invalid(value, object.invalid, context)
     // TODO: 校验schema中的每一个
-    Object.entries(value)
+    const list = Object.entries(this.inner).map(([key, schema]) => {
+      const ctx: Context = {
+        path: [...context.path, key],
+        branch: [...context.branch, value[key]],
+      }
+      return schema._validate(value[key], ctx)
+    })
+    const ret = await Promise.all(list).then((results) => {
+      for (const result of results) {
+        if (result.status === 'invalid') return result
+      }
+      return Valid(value)
+    })
+    if (ret.status === 'invalid') return ret
     return super._validate(value as any, context)
   }
 
@@ -501,15 +544,18 @@ export class ObjectSchema<T extends ObjectShape> extends BaseSchema<MakePartial<
   /** ==================================================== */
 
   get shape() {
-    return this.schema
+    return this.inner
   }
 
+  // TODO: 舍弃不存在的属性
   strict(message: Message = object.unknown) {
     const rule = (value: AnyObject) => true
     // 这个params要如何传进去呢? 只能在执行的时候通过context传递了
-    return this._refine('strict', makeRule(rule, message, { unknown: '13' }))
+    // return this._refine('strict', makeRule(rule, message, { unknown: '13' }))
+    return this
   }
 
+  // TODO: 保留不存在的属性
   passthrough() {
     this.remove('strict')
     return this
@@ -526,57 +572,61 @@ export class EffectSchema<T extends BaseSchema, Out = T['_Out'], In = T['_In']> 
   Out,
   In
 > {
-  // 数据转换
-  static transform<S extends BaseSchema, NewOut = S['_Out']>(
+  // 数据转换 <NewOut>(value:Out) => NewOut | Promise<NewOut>
+  // 可以改变数据类型
+  static transform<S extends BaseSchema, Next = S['_Out']>(
     schema: S,
-    handler: TransformHandler<S['_Out'], NewOut>
+    handler: (value: S['_Out'], context: any) => Next | Promise<Next>
   ) {
-    return new EffectSchema(schema, handler, 'transform')
+    return new EffectSchema(schema, { type: 'transfrom', handler })
   }
 
-  // 自定义校验
-  static refinement<S extends BaseSchema>(schema, handler: TransformHandler<S['_Out']>) {
-    return new EffectSchema(schema, handler, 'refinement')
-  }
-
-  // 预处理
-  static preprocess<S extends BaseSchema>(schema, handler: TransformHandler<S['_Out']>) {
-    return new EffectSchema(schema, handler, 'preprocess')
-  }
-
-  handler: any = () => {}
-
-  constructor(
-    private schema: T,
-    // TODO: 类型改变下
-    handler: TransformHandler<Out>,
-    private type: 'transform' | 'refinement' | 'preprocess'
+  // 自定义校验 (value: Out) => boolean | Promise<boolean>
+  // 不改变数据类型
+  static refinement<S extends BaseSchema, Out = S['_Out']>(
+    schema,
+    rule: (value: Out) => boolean | Promise<boolean>,
+    message: Message
   ) {
+    const handler = makeRule(rule, message)
+    return new EffectSchema(schema, { type: 'refinement', handler })
+  }
+
+  // 预处理 (value: unknow) => unknow
+  // 改变后才进行校验
+  static preprocess<S extends BaseSchema, Next = S['_Out']>(
+    schema,
+    handler: (value: S['_Out']) => Next | Promise<Next>
+  ) {
+    return new EffectSchema(schema, { type: 'preprocess', handler })
+  }
+
+  constructor(private schema: T, private options: EffectOptions<Out>) {
     super()
-    this.handler = handler as any
   }
 
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
 
-  async _validate(value: T['_Out'], context: any) {
-    if (this.type === 'transform') {
+  async _validate(value: Out, context: any) {
+    const { options } = this
+    if (options.type === 'transfrom') {
       // 先校验 后转换
       const ret = await this.schema._validate(value, context)
-      return this.handler(ret.value, context)
+      if (ret.status === 'invalid') return ret
+      return Valid(await options.handler(ret.value, context))
     }
-    if (this.type === 'preprocess') {
+    if (options.type === 'preprocess') {
       // 先转换后校验
-      const $value = await this.handler(value, context)
+      const $value = await options.handler(value)
       return this.schema._validate($value, context)
     }
 
-    // TODO: 待完善
-    // refinement 先校验handler 后执行自身的
-    const ret = await this.handler(value, context)
-    if (ret.status === 'invalid') return Invalid(ret.value, '')
-    return this.schema._validate(value, context)
+    // refinement 先执行自身的 后校验 handler
+    const ret = await this.schema._validate(value, context)
+    if (ret.status === 'invalid') return ret
+    return options.handler(value, context)
   }
 }
 
@@ -586,10 +636,11 @@ export class EffectSchema<T extends BaseSchema, Out = T['_Out'], In = T['_In']> 
 /** ========================================================================== */
 /** ========================================================================== */
 
-export class OptionalSchema<T extends BaseSchema> extends BaseSchema<
-  T['_Out'] | undefined,
-  T['_In'] | undefined
-> {
+export class OptionalSchema<
+  T extends BaseSchema,
+  Out = T['_Out'],
+  In = T['_In']
+> extends BaseSchema<Out | undefined, In | undefined> {
   static create<S extends BaseSchema>(schema: S) {
     return new OptionalSchema(schema)
   }
@@ -598,7 +649,7 @@ export class OptionalSchema<T extends BaseSchema> extends BaseSchema<
     super()
   }
 
-  async _validate(value: MayBe<undefined>, context: any) {
+  _validate(value: Out | undefined, context: any) {
     if (isUndefined(value)) return Valid(value)
     return this.schema._validate(value, context)
   }
@@ -614,10 +665,11 @@ export class OptionalSchema<T extends BaseSchema> extends BaseSchema<
 /** ========================================================================== */
 /** ========================================================================== */
 
-export class NullableSchema<T extends BaseSchema> extends BaseSchema<
-  T['_Out'] | null,
-  T['_In'] | null
-> {
+export class NullableSchema<
+  T extends BaseSchema,
+  Out = T['_Out'],
+  In = T['_In']
+> extends BaseSchema<Out | null, In | null> {
   static create<S extends BaseSchema>(schema: S) {
     return new NullableSchema(schema)
   }
@@ -626,7 +678,7 @@ export class NullableSchema<T extends BaseSchema> extends BaseSchema<
     super()
   }
 
-  _validate(value: MayBe<null>, context: any) {
+  _validate(value: Out | null, context: any) {
     if (isNull(value)) return Valid(value)
     return this.schema._validate(value, context)
   }

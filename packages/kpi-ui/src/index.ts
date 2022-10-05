@@ -16,20 +16,34 @@ const sleep = (delay: number) =>
   new Promise((res) => {
     setTimeout(res, delay)
   })
+
 const schema = k
-  .number()
-  .range(1, 10)
-  .transform(() => {
-    return '123'
-  })
+  .array(
+    k.object({
+      a: k.number(),
+      b: k.number().optional(),
+      c: k.object({
+        a: k.number(),
+      }),
+    })
+  )
+  .min(3)
 type A = k.Infer<typeof schema>
+
 schema
-  .validate(11)
+  .validate([
+    {
+      a: +'2',
+      c: {
+        a: +'1',
+      },
+    },
+  ])
   .then((res) => {
-    console.log(' res', res)
+    console.log('schema res', res)
   })
   .catch((err) => {
-    console.log(' err', err)
+    console.log('schema err', err)
   })
 
 /** 问题 */
