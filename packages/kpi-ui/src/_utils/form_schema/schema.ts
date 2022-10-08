@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
-import { MakeRuleReturn, Message, EffectOptions, Context, ValidateReturn } from './interface'
+import type { Message, EffectOptions, ValidateReturn, RuleOptions } from './interface'
 import { Valid, Invalid, makeRule } from './shared/make_rule'
 import * as REGEX from './shared/regex'
 import { base, string, number, boolean, object, date, array, enums } from './locales/default'
@@ -15,6 +15,8 @@ import {
   isUndefined,
 } from '../is'
 import { AnyObject, Full, MayBe, NonUndefined, Writable } from '../../_types'
+import formatMessage from './shared/format_message'
+import SchemaContext from './context'
 
 /** ========================================================================== */
 /** ========================================================================== */
@@ -27,30 +29,32 @@ export abstract class BaseSchema<Out = any, In = Out> {
 
   readonly _Out!: Out
 
-  // 校验自身 rules 规则
-  // TODO: Context为可选项
-  _validate(value: Out, context?: Context): ValidateReturn<Out> {
-    const list = [...this.rules.values()].map((rule) => {
-      return rule(value, context)
-    })
-    return Promise.all(list).then(() => Valid(value))
+  // 暂不提供同步校验方法
+  async validate(value: any = undefined) {
+    const ret = await this._validate(value, SchemaContext.create())
+    if (ret.status === 'valid') return ret.value
+    return Promise.reject(ret)
   }
 
-  async validate(value: any = undefined) {
-    const ctx = { path: [] }
-    return this._validate(value, ctx)
+  // 内部校验用同步方式
+  _validate(value: Out, context: SchemaContext): ValidateReturn<Out> {
+    for (const { rule, message, params } of this.rules.values()) {
+      if (rule(value)) continue
+      return Invalid(value, formatMessage(message, context)(params))
+    }
+    return Valid(value)
   }
 
   // 规则
-  private readonly rules = new Map<string | number, MakeRuleReturn<Out>>()
+  private readonly rules = new Map<string | number, RuleOptions<Out>>()
 
-  _refine(name: string | number, rule: MakeRuleReturn) {
+  protected _refine(name: string | number, rule: RuleOptions<Out>) {
     this.rules.set(name, rule)
     return this
   }
 
   // 删除某一项规则
-  remove(name: string | number) {
+  protected remove(name: string | number) {
     this.rules.delete(name)
     return this
   }
@@ -142,11 +146,11 @@ export class StringSchema extends BaseSchema<string> {
   /** validate                                             */
   /** ==================================================== */
 
-  _validate(value: string, context?: Context) {
-    // TODO: 传入参数将确定是否允许空字符串 默认允许
+  _validate(value: string, context: SchemaContext) {
     if (!isString(value)) return Invalid(value, string.invalid, context)
     // 严格模式 且 为空字符串 认为是没有传
     if (this.strict && !value.length) return Invalid(value, base.required, context)
+
     return super._validate(value, context)
   }
 
@@ -156,47 +160,47 @@ export class StringSchema extends BaseSchema<string> {
 
   min(min: number, message: Message = string.min) {
     const rule = (value: string) => value.length >= min
-    return this._refine('min', makeRule(rule, message, { min }))
+    return this._refine('min', { rule, message, params: { min } })
   }
 
   max(max: number, message: Message = string.max) {
     const rule = (value: string) => value.length <= max
-    return this._refine('max', makeRule(rule, message, { max }))
+    return this._refine('max', { rule, message, params: { max } })
   }
 
   length(length: number, message: Message = string.length) {
     const rule = (value: string) => value.length === length
-    return this._refine('length', makeRule(rule, message, { length }))
+    return this._refine('length', { rule, message, params: { length } })
   }
 
   regex(regex: RegExp, message: Message = string.regex) {
     const rule = (value: string) => regex.test(value)
-    return this._refine('regex', makeRule(rule, message, { regex }))
+    return this._refine('regex', { rule, message, params: { regex } })
   }
 
   email(message: Message = string.email) {
     const rule = (value: string) => REGEX.email.test(value)
-    return this._refine('email', makeRule(rule, message))
+    return this._refine('email', { rule, message })
   }
 
   url(message: Message = string.url) {
     const rule = (value: string) => REGEX.url.test(value)
-    return this._refine('url', makeRule(rule, message))
+    return this._refine('url', { rule, message })
   }
 
   uuid(message: Message = string.uuid) {
     const rule = (value: string) => REGEX.uuid.test(value)
-    return this._refine('uuid', makeRule(rule, message))
+    return this._refine('uuid', { rule, message })
   }
 
   lowercase(message: Message = string.lowercase) {
     const rule = (value: string) => value === value.toLowerCase()
-    return this._refine('lowercase', makeRule(rule, message))
+    return this._refine('lowercase', { rule, message })
   }
 
   uppercase(message: Message = string.uppercase) {
     const rule = (value: string) => value === value.toUpperCase()
-    return this._refine('uppercase', makeRule(rule, message))
+    return this._refine('uppercase', { rule, message })
   }
 }
 
@@ -215,7 +219,7 @@ export class NumberSchema extends BaseSchema<number> {
   /** validate                                             */
   /** ==================================================== */
 
-  _validate(value: number, context?: Context) {
+  _validate(value: number, context: SchemaContext) {
     if (!isNumber(value) || Number.isNaN(value)) {
       return Invalid(value, number.invalid, context)
     }
@@ -228,36 +232,36 @@ export class NumberSchema extends BaseSchema<number> {
 
   min(min: number, message: Message = number.min) {
     const rule = (value: number) => value >= min
-    return this._refine('min', makeRule(rule, message, { min }))
+    return this._refine('min', { rule, message, params: { min } })
   }
 
   max(max: number, message: Message = number.max) {
     const rule = (value: number) => value <= max
-    return this._refine('max', makeRule(rule, message, { max }))
+    return this._refine('max', { rule, message, params: { max } })
   }
 
   equal(equal: number, message: Message = number.equal) {
     const rule = (value: number) => value === equal
-    return this._refine('equal', makeRule(rule, message, { equal }))
+    return this._refine('equal', { rule, message, params: { equal } })
   }
 
   range(min: number, max: number, message: Message = number.range) {
     const rule = (value: number) => value >= min && value <= max
-    return this._refine('range', makeRule(rule, message, { min, max }))
+    return this._refine('range', { rule, message, params: { min, max } })
   }
 
   positive(message: Message = number.positive) {
     const rule = (value: number) => value > 0
-    return this._refine('positive', makeRule(rule, message))
+    return this._refine('positive', { rule, message })
   }
 
   negative(message: Message = number.negative) {
     const rule = (value: number) => value < 0
-    return this._refine('negative', makeRule(rule, message))
+    return this._refine('negative', { rule, message })
   }
 
   integer(message: Message = number.integer) {
-    return this._refine('integer', makeRule(Number.isInteger, message))
+    return this._refine('integer', { rule: Number.isInteger, message })
   }
 }
 
@@ -276,7 +280,7 @@ export class BooleanSchema extends BaseSchema<boolean> {
   /** validate                                             */
   /** ==================================================== */
 
-  _validate(value: boolean, context?: Context) {
+  _validate(value: boolean, context: SchemaContext) {
     if (!isBoolean(value)) return Invalid(value, boolean.invalid, context)
     return super._validate(value, context)
   }
@@ -287,13 +291,13 @@ export class BooleanSchema extends BaseSchema<boolean> {
 
   true(message: Message = boolean.true) {
     const rule = (value: boolean) => value === true
-    return this._refine('boolean', makeRule(rule, message))
+    return this._refine('boolean', { rule, message })
   }
 
   // 二者也是互斥的，不能既是 true 又是 false 吧
   false(message: Message = boolean.false) {
     const rule = (value: boolean) => value === false
-    return this._refine('boolean', makeRule(rule, message))
+    return this._refine('boolean', { rule, message })
   }
 }
 
@@ -311,7 +315,7 @@ export class DateSchema extends BaseSchema<Date> {
   /** ==================================================== */
   /** validate                                             */
   /** ==================================================== */
-  _validate(value: Date, context?: Context) {
+  _validate(value: Date, context: SchemaContext) {
     if (!isDate(value) || Number.isNaN(value.getTime())) {
       return Invalid(value, date.invalid, context)
     }
@@ -325,13 +329,13 @@ export class DateSchema extends BaseSchema<Date> {
   min(min: Date, message: Message = date.min) {
     // TODO: 后续传值可以自行解析(是否需要呢？)
     const rule = (value: Date) => value >= min
-    return this._refine('min', makeRule(rule, message, { min }))
+    return this._refine('min', { rule, message, params: { min } })
   }
 
   max(max: Date, message: Message = date.max) {
     // TODO: 后续传值可以自行解析(是否需要呢？)
     const rule = (value: Date) => value <= max
-    return this._refine('max', makeRule(rule, message, { max }))
+    return this._refine('max', { rule, message, params: { max } })
   }
 }
 
@@ -365,20 +369,22 @@ export class ArraySchema<T extends BaseSchema> extends BaseSchema<MakeInnerType<
   /** validate                                             */
   /** ==================================================== */
 
-  async _validateInner(value: MakeInnerType<T[]>, context?: Context) {
+  async _validateInner(value: MakeInnerType<T[]>, context: SchemaContext) {
     const list = value.map((item, index) => {
       // TODO: 重新计算 context
-      const ctx: Context = {
+      const ctx = {
         path: context ? [...context.path, index] : [index],
-      }
+      } as unknown as SchemaContext
       return this.inner._validate(item, ctx)
     })
     return Promise.all(list).then(() => Valid(value))
   }
 
-  async _validate(value: MakeInnerType<T[]>, context: Context) {
-    if (!isArray(value)) return Promise.reject(Invalid(value, array.invalid, context))
-    await super._validate(value, context)
+  async _validate(value: MakeInnerType<T[]>, context: SchemaContext) {
+    if (!isArray(value)) return Invalid(value, array.invalid, context)
+
+    const ret = await super._validate(value, context)
+    if (ret.status === 'invalid') return ret
     return this._validateInner(value, context)
   }
 
@@ -392,17 +398,17 @@ export class ArraySchema<T extends BaseSchema> extends BaseSchema<MakeInnerType<
 
   min(min: number, message: Message = array.min) {
     const rule = (value: any[]) => value.length >= min
-    return this._refine('min', makeRule(rule, message, { min }))
+    return this._refine('min', { rule, message, params: { min } })
   }
 
   max(max: number, message: Message = array.min) {
     const rule = (value: any[]) => value.length <= max
-    return this._refine('max', makeRule(rule, message, { max }))
+    return this._refine('max', { rule, message, params: { max } })
   }
 
   length(length: number, message: Message = array.length) {
     const rule = (value: any[]) => value.length === length
-    return this._refine('length', makeRule(rule, message, { length }))
+    return this._refine('length', { rule, message, params: { length } })
   }
 
   nonempty(message: Message = array.nonempty) {
@@ -439,8 +445,10 @@ export class EnumSchema<T extends EnumInput> extends BaseSchema<T[number], T> {
   /** validate                                             */
   /** ==================================================== */
 
-  _validate(value: T[number], context: Context) {
-    if (!this.inner.includes(value)) return Invalid(value, enums.invalid, context)
+  _validate(value: T[number], context: SchemaContext) {
+    if (!this.inner.includes(value)) {
+      return Invalid(value, enums.invalid, context)
+    }
     return super._validate(value, context)
   }
 
@@ -494,17 +502,21 @@ export class ObjectSchema<T extends ObjectShape> extends BaseSchema<MakePartial<
   /** validate                                             */
   /** ==================================================== */
 
-  async _validate(value: AnyObject, context?: Context) {
+  async _validate(value: AnyObject, context: SchemaContext) {
     if (!isObject(value)) return Invalid(value, object.invalid, context)
+
+    // TODO: 类型修正
+    const ret = await super._validate(value as any, context)
+    if (ret.status === 'invalid') return ret
     // TODO: 校验schema中的每一个
-    const list = Object.entries(this.inner).map(([key, schema]) => {
-      const ctx: Context = {
-        path: context ? [...context.path, key] : [key],
-      }
-      return schema._validate(value[key], ctx)
-    })
-    await Promise.all(list)
-    return super._validate(value as any, context)
+    // const list = Object.entries(this.inner).map(([key, schema]) => {
+    //   const ctx: Context = {
+    //     path: context ? [...context.path, key] : [key],
+    //   }
+    //   return schema._validate(value[key], ctx)
+    // })
+    // await Promise.all(list)
+    return Valid(value as any)
   }
 
   /** ==================================================== */
@@ -576,11 +588,12 @@ export class EffectSchema<T extends BaseSchema, Out = T['_Out'], In = T['_In']> 
   /** validate                                             */
   /** ==================================================== */
 
-  async _validate(value: Out, context?: Context) {
+  async _validate(value: Out, context: SchemaContext) {
     const { options } = this
     if (options.type === 'transform') {
       // 先校验 后转换
-      await this.schema._validate(value, context)
+      const ret = await this.schema._validate(value, context)
+      if (ret.status === 'invalid') return ret
       return Valid(await options.handler(value, context))
     }
     if (options.type === 'preprocess') {
@@ -590,7 +603,8 @@ export class EffectSchema<T extends BaseSchema, Out = T['_Out'], In = T['_In']> 
     }
 
     // refinement 先执行自身的 后校验 handler
-    await this.schema._validate(value, context)
+    const ret = await this.schema._validate(value, context)
+    if (ret.status === 'invalid') return ret
     return options.handler(value, context)
   }
 }
@@ -614,7 +628,7 @@ export class OptionalSchema<
     super()
   }
 
-  _validate(value: Out | undefined, context?: Context) {
+  _validate(value: Out | undefined, context: SchemaContext) {
     if (isUndefined(value)) return Valid(value)
     return this.schema._validate(value, context)
   }
@@ -643,7 +657,7 @@ export class NullableSchema<
     super()
   }
 
-  _validate(value: Out | null, context?: Context) {
+  _validate(value: Out | null, context: SchemaContext) {
     if (isNull(value)) return Valid(value)
     return this.schema._validate(value, context)
   }
