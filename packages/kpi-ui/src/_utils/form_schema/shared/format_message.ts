@@ -1,5 +1,4 @@
-import type { Message } from '../interface'
-import type SchemaContext from '../context'
+import type { Message, Context } from '../interface'
 
 import { isFunction, isNumber } from '../../is'
 import printValue from './print_value'
@@ -11,7 +10,7 @@ const pathToString = (path: (string | number)[]) => {
   }, '')
 }
 
-export default function formatMessage(message: Message, context?: SchemaContext) {
+export default function formatMessage(message: Message, context?: Context) {
   return (params: any = {}) => {
     const $params = { ...params, path: pathToString(context?.path ?? []) || 'this' }
     if (isFunction(message)) return message($params)

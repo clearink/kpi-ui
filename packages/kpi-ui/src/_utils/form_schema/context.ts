@@ -1,8 +1,12 @@
-import { type SchemaIssue } from './interface'
+import type { Context, Name, SchemaIssue } from './interface'
 
 export default class SchemaContext {
-  static create() {
-    return new SchemaContext()
+  static ensure(ctx?: Context, name?: Name | Name[]): Context {
+    const path = ctx?.path || []
+    return {
+      path: name ? path.concat(name) : path,
+      issue: ctx?.issue ?? new SchemaContext(),
+    }
   }
 
   issues: SchemaIssue[] = []
