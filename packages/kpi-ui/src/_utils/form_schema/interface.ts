@@ -15,9 +15,9 @@ export interface SchemaIssue {
 export type Message = string | ((params: any) => string)
 
 export type ValidType<T> = { status: 'valid'; value: T }
-export type InValidType<T> = { status: 'invalid'; message: string; value: T }
+export type InValidType = { status: 'invalid' }
 
-export type RuleReturn<T = any> = ValidType<T> | InValidType<T>
+export type RuleReturn<T = any> = ValidType<T> | InValidType
 export type MakeRuleReturn<T = any> = (value: T, context?: Context) => RuleReturn<T>
 export type ValidateReturn<T> = RuleReturn<T> | Promise<RuleReturn<T>>
 
@@ -30,11 +30,11 @@ export interface RuleOptions<T = any> {
 export type EffectOptions<Prev, Next = Prev> =
   | {
       type: 'transform'
-      handler: (value: Prev, context?: Context) => Next | Promise<Next>
+      handler: (value: Prev, context: Context) => Next | Promise<Next>
     }
   | {
       type: 'refinement'
-      handler: (value: Prev, context?: Context) => RuleReturn<Prev> | Promise<RuleReturn<Prev>>
+      handler: (value: Prev, context: Context) => RuleReturn<Prev> | Promise<RuleReturn<Prev>>
     }
   | {
       type: 'preprocess'

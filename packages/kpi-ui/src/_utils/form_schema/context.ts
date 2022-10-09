@@ -1,11 +1,31 @@
-import type { Context, Name, SchemaIssue } from './interface'
+import { isFunction, isNullish, isNumber } from '../is'
+import type { Context, Message, Name, SchemaIssue } from './interface'
 
-export default class SchemaContext {
+const pathToString = (path: Name[] = []) => {
+  return path.reduce((ret, item) => {
+    if (isNumber(item)) return `${ret}[${item}]`
+    if (item.includes('.')) return `${ret}['${item}']`
+    return `${ret}.${item}`
+  }, '')
+}
+
+export default class SchemaContext extends TypeError {
   static ensure(ctx?: Context, name?: Name | Name[]): Context {
     const path = ctx?.path || []
     return {
-      path: name ? path.concat(name) : path,
+      path: isNullish(name) ? path : path.concat(name),
       issue: ctx?.issue ?? new SchemaContext(),
+    }
+  }
+
+  static format(message: Message, path: Name[] = []) {
+    return (params: any = {}) => {
+      if (isFunction(message)) return message({ ...params, path })
+      const $params = { ...params, path: pathToString(path) || 'this' }
+      return Object.entries($params).reduce((msg, [k, v]) => {
+        const reg = new RegExp(`{#${k}}`, 'g')
+        return msg.replace(reg, String(v))
+      }, message)
     }
   }
 
@@ -15,8 +35,9 @@ export default class SchemaContext {
     return this.issues.length === 0
   }
 
-  addIssue(issue: SchemaIssue) {
-    this.issues.push(issue)
+  addIssue(message: Message, path: Name[], params?: any) {
+    const msg = SchemaContext.format(message, path)(params)
+    this.issues.push({ path, message: msg })
     return this
   }
 
@@ -25,7 +46,8 @@ export default class SchemaContext {
     return this
   }
 
-  toString() {
-    return `Validation Error: ${JSON.stringify(this.issues, null, 2)}`
+  get message() {
+    const issues = this.issues.map((issue) => issue.message)
+    return JSON.stringify(issues, null, 2)
   }
 }
