@@ -2,10 +2,10 @@ import { isFunction, isNullish, isNumber } from '../is'
 import type { Context, Message, Name, SchemaIssue } from './interface'
 
 const pathToString = (path: Name[] = []) => {
-  return path.reduce((ret, item) => {
+  return path.reduce((ret: string, item) => {
     if (isNumber(item)) return `${ret}[${item}]`
     if (item.includes('.')) return `${ret}['${item}']`
-    return `${ret}.${item}`
+    return ret.length ? `${ret}.${item}` : `${item}`
   }, '')
 }
 

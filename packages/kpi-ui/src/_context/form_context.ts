@@ -1,6 +1,5 @@
-import FormControl from '../form/form_control'
-import { FormInstance } from '../form/props'
-import ctxHelper from './helper'
+import CtxHelper from './helper'
+import type { InternalFormInstance, FormInstance } from '../form/props'
 
 // TODO: 目前还不确定
 interface FormContextState {
@@ -8,9 +7,9 @@ interface FormContextState {
 }
 
 // Form 组件传递数据给 Form.Field
-export const FormContext = ctxHelper<FormContextState>({
+export const FormContext = CtxHelper<FormContextState>({
   register: () => () => {},
 })
 
 // 将formControl实例传递给field组件
-export const FieldContext = ctxHelper<FormControl | null>(null)
+export const FieldContext = CtxHelper<InternalFormInstance | null>()

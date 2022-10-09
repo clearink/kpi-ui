@@ -7,7 +7,7 @@ export const Invalid = { status: 'invalid' } as const
 
 // 生成校验函数
 export function makeRule<T = any>(
-  handler: (value: T, context?: Context) => boolean | Promise<boolean>,
+  handler: (value: T, context: Context) => boolean | Promise<boolean>,
   message: Message,
   params?: any
 ) {

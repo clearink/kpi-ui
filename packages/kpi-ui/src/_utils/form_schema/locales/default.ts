@@ -1,6 +1,6 @@
 // 校验失败声明
 export const base = {
-  invalid: '${path} is invalid',
+  invalid: '{#path} is invalid',
   required: '{#path} is a required field',
 }
 

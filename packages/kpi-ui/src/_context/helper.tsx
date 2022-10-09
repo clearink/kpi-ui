@@ -1,4 +1,5 @@
-import { ConsumerProps, createContext, ProviderProps, useContext } from 'react'
+import { createContext, useContext } from 'react'
+import type { ConsumerProps, ProviderProps } from 'react'
 
 // TODO: 改个名字
 export default function contextHelper<R extends unknown>(init?: R) {

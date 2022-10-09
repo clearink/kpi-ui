@@ -17,35 +17,29 @@ const sleep = (delay: number) =>
     setTimeout(res, delay)
   })
 
-const schema = k
-  .array(
-    k.object({
-      a: k.number(),
-      b: k.number().optional(),
-      c: k.object({
-        a: k.number(),
-      }),
-    })
-  )
-  .min(3)
+const schema = k.object({
+  a: k.object({
+    username: k.string().min(10).max(30),
+    age: k.number().min(1).max(100),
+    phone: k.string().refine((value) => /\d{11}/.test(value)),
+    email: k.string().email(),
+    aa: k.enums([1, 2, 'a', 'c']),
+    arr: k.array(
+      k.object({
+        id: k.string().uuid(),
+        value: k.string(),
+      })
+    ),
+  }),
+})
 type A = k.Infer<typeof schema>
-
 schema
-  .validate([
-    {
-      a: +'2',
-      c: {
-        a: +'1',
-      },
-    },
-  ])
+  .validate({
+    a: {},
+  })
   .then((res) => {
-    console.log('schema res', res)
+    console.log('res', res)
   })
-  .catch((err) => {
-    console.log('schema err', err)
-  })
-
 /** 问题 */
 // 0. 定位
 // 1. 校验函数怎么定义?
@@ -60,33 +54,9 @@ schema
  * 1. 校验支持异步
  */
 
-// k.number()
-//   .min(123)
-//   // 自定义校验  context = formInstance
-//   .refine(async (value, context) => {
-//     await sleep(1000)
-//     return value <= Math.random() * 4000
-//   }, '${path} is not less')
-
 // // form.item
 // // const schema = getContext() ||
 // // context
-// const schema = k.object({
-//   username: k.string().min(10).max(30),
-//   age: k.number().min(1).max(100),
-//   phone: k.string().refine((value) => /\d{11}/.test(value)),
-//   email: k.string().email(),
-//   aa: k.enums([1, 2, 'a', 'c']),
-//   arr: k.array(
-//     k.object({
-//       id: k.string().uuid(),
-//       value: k.string(),
-//     })
-//   ),
-// })
-// // 要么全部分散验证。要么集中验证
-// // 集中验证=>性能问题
-// // 分散验证=>类型不明确了
 
 // type O = k.infer<typeof schema>
 // schema

@@ -82,15 +82,15 @@ export abstract class BaseSchema<Out = any, In = Out> {
 
   // refine 自定义验证
   refine<Next extends Out>(
-    rule: (value: Out) => value is Next,
+    rule: (value: Out, context: Context) => value is Next,
     message?: Message
   ): EffectSchema<this, Next>
   refine(
-    rule: (value: Out) => boolean | Promise<boolean>,
+    rule: (value: Out, context: Context) => boolean | Promise<boolean>,
     message?: Message
   ): EffectSchema<this, Out>
   refine(
-    rule: (value: Out) => boolean | Promise<boolean>,
+    rule: (value: Out, context: Context) => boolean | Promise<boolean>,
     message: Message = base.invalid
   ): EffectSchema<this, Out> {
     return EffectSchema.refinement(this, rule, message)
@@ -464,7 +464,7 @@ export class EnumSchema<T extends EnumInput> extends BaseSchema<T[number], T> {
 
   _validate(value: T[number], context: Context) {
     if (!this.inner.includes(value)) {
-      context.issue.addIssue(enums.invalid, context.path)
+      context.issue.addIssue(enums.invalid, context.path, { enums: this.inner })
       return Invalid
     }
     return super._validate(value, context)
@@ -586,11 +586,10 @@ export class EffectSchema<T extends BaseSchema, Out = T['_Out'], In = T['_In']> 
     return new EffectSchema(schema, { type: 'transform', handler })
   }
 
-  // 自定义校验 (value: Out) => boolean | Promise<boolean>
   // 不改变数据类型
   static refinement<S extends BaseSchema, Out = S['_Out']>(
     schema,
-    rule: (value: Out) => boolean | Promise<boolean>,
+    rule: (value: Out, context: Context) => boolean | Promise<boolean>,
     message: Message
   ) {
     const handler = makeRule(rule, message)
