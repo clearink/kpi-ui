@@ -1,7 +1,6 @@
 import type { ComponentType, FormEvent, FormHTMLAttributes, ReactNode } from 'react'
-import type { ArrowFunction } from '../_types'
 import type { BaseSchema } from '../_utils/form_schema/schema'
-import type FormControl from './form_control'
+import type { InternalFormInstance } from './internal_props'
 
 export interface FormProps<S = any>
   extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'children'> {
@@ -40,42 +39,20 @@ export interface FormProps<S = any>
   children?: ReactNode
 }
 
-export interface FormInstance<S = any> {
-  state: S
-  validate: () => Promise<void>
-  submit: (onFinish: ArrowFunction, onFailed: ArrowFunction) => void
-
-  /**
-   * @zh 重置一组字段到 `initialValues`
-   */
-  resetFields: (fields?: NamePath[]) => void
-}
-
-export interface InternalFormInstance<S = any> extends FormInstance<S> {
-  getInternalHooks: (secret: string) => FormControl | null
-}
+/** useForm 向外暴露的实例 */
+export type FormInstance<S = any> = Omit<InternalFormInstance<S>, 'getInternalHooks'>
 
 export type Forms = Record<string, FormInstance>
 
 export type PathItem = string | number
 export type NamePath = PathItem | PathItem[]
 
-export type NotEmptyArray = [any, ...any[]]
-export type GetIn<State extends any, Path extends PathItem[]> = Path extends [infer P, ...infer R]
-  ? P extends keyof State
-    ? R extends NotEmptyArray
-      ? State[P] extends any
-        ? GetIn<State[P], R>
-        : undefined
-      : State[P]
-    : undefined
-  : undefined
-
 export interface FormItemProps<State = any> {
   /**
    * @zh 字段路径
    */
   name?: NamePath
+
   children?: ReactNode
 
   /**
@@ -90,11 +67,16 @@ export interface FormItemProps<State = any> {
   /**
    * @zh 校验规则，设置字段的校验逻辑
    */
-  rules?: BaseSchema<State>
+  rule?: BaseSchema<State>
 
   /**
    * @zh 字段删除时仍然保留数据
    * @default true
    */
   preserve?: boolean
+
+  /**
+   * @zh 设置依赖字段
+   */
+  dependencies?: NamePath[]
 }

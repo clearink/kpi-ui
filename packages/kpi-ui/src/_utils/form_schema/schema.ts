@@ -115,9 +115,9 @@ export abstract class BaseSchema<Out = any, In = Out> {
 /** ========================================================================== */
 /** ========================================================================== */
 
-export class AnySchema extends BaseSchema {
-  static create() {
-    return new AnySchema()
+export class AnySchema<T = any> extends BaseSchema<T> {
+  static create<T = any>() {
+    return new AnySchema<T>()
   }
 
   /** ==================================================== */
@@ -569,6 +569,13 @@ export class ObjectSchema<T extends ObjectShape, Out = MakePartial<T>> extends B
 
 /** ========================================================================== */
 /** ========================================================================== */
+/** UnionSchema                                                               */
+/** ========================================================================== */
+/** ========================================================================== */
+// TODO: 是否要添加union呢?
+
+/** ========================================================================== */
+/** ========================================================================== */
 /** EffectSchema                                                               */
 /** ========================================================================== */
 /** ========================================================================== */
@@ -588,7 +595,7 @@ export class EffectSchema<T extends BaseSchema, Out = T['_Out'], In = T['_In']> 
 
   // 不改变数据类型
   static refinement<S extends BaseSchema, Out = S['_Out']>(
-    schema,
+    schema: S,
     rule: (value: Out, context: Context) => boolean | Promise<boolean>,
     message: Message
   ) {

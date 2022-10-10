@@ -11,7 +11,8 @@ import { FieldContext, FormContext } from '../../_context'
 import { useEvent } from '../../_hooks'
 import { isFunction } from '../../_utils'
 import useForm from '../hooks/use_form'
-import { FormInstance, FormProps, InternalFormInstance } from '../props'
+import { InternalFormInstance } from '../internal_props'
+import type { FormInstance, FormProps } from '../props'
 
 function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance>) {
   const { name, as, form, children, onFinish, onFailed, onReset } = props

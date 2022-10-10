@@ -18,24 +18,23 @@ const sleep = (delay: number) =>
   })
 
 const schema = k.object({
-  a: k.object({
-    username: k.string().min(10).max(30),
-    age: k.number().min(1).max(100),
-    phone: k.string().refine((value) => /\d{11}/.test(value)),
-    email: k.string().email(),
-    aa: k.enums([1, 2, 'a', 'c']),
-    arr: k.array(
-      k.object({
-        id: k.string().uuid(),
-        value: k.string(),
-      })
-    ),
-  }),
+  username: k.string().min(10).max(30),
+  age: k.number().min(1).max(100),
+  phone: k.string().refine((value) => /\d{11}/.test(value), '{#path}：请输入正确的号码'),
+  email: k.string().email(),
+  aa: k.enums([1, 2, 'a', 'c']),
+  arr: k.array(
+    k.object({
+      id: k.string().uuid(),
+      value: k.string(),
+    })
+  ),
 })
+
 type A = k.Infer<typeof schema>
 schema
   .validate({
-    a: {},
+    phone: 'ss',
   })
   .then((res) => {
     console.log('res', res)

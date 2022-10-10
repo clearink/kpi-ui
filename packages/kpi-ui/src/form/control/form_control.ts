@@ -1,35 +1,20 @@
 /* eslint-disable class-methods-use-this */
-import { toArray } from '../_utils'
-import { getIn, setIn } from './utils'
-import type { AnyObject, ArrowFunction, Writable } from '../_types'
-import type { NamePath, PathItem } from './props'
-import type { FormControlStatus, GetIn, InternalFormInstance } from './internal_props'
+import { toArray } from '../../_utils'
+import { getIn, setIn } from '../utils'
+import type { AnyObject, ArrowFunction, Writable } from '../../_types'
+import type { NamePath, PathItem } from '../props'
+import type { FormControlStatus, GetIn, InternalFormInstance } from '../internal_props'
 
 const NOOP = () => {}
 export const NAME_SEPARATOR = '__KPI_FORM_CONTROL__'
 export const HOOK_MARK = '__KPI_FORM_INTERNAL_HOOK__'
 
-export default class FormControl<State = any> {
-  // TODO: 待优化 userForm 返回值
-  get injectForm(): InternalFormInstance<State> {
-    return {
-      state: this._state,
-      validate: this.validate,
-      submit: this.submit,
-      resetFields: this.resetFields,
-      getInternalHooks: this.getInternalHooks,
-    }
-  }
-
-  private getInternalHooks(secret: string) {
-    return secret === HOOK_MARK ? this : null
-  }
-
+export default abstract class FormControl<State = any> {
   // 收集表单数据
-  private _state = {} as State
+  protected _state: State | undefined = undefined
 
-  // 状态
-  private _status: FormControlStatus = 'VALID'
+  // 校验状态
+  protected _status: FormControlStatus = 'VALID'
 
   get valid() {
     return this._status === 'VALID'
@@ -55,7 +40,7 @@ export default class FormControl<State = any> {
     return this._status !== 'DISABLED'
   }
 
-  private _touched = false // 以是否触发 blur 事件为准
+  protected _touched = false // 以是否触发 blur 事件为准
 
   get touched() {
     return this._touched
@@ -69,7 +54,7 @@ export default class FormControl<State = any> {
     this._touched = touched
   }
 
-  private _pristine = true // 未被更改值则为 true
+  protected _pristine = true // 未被更改值则为 true
 
   get pristine() {
     return this._pristine
@@ -83,13 +68,13 @@ export default class FormControl<State = any> {
     this._pristine = pristine
   }
 
-  private _forceUpdate = NOOP // 强制视图更新
+  protected _forceUpdate = NOOP // 强制视图更新
 
   constructor(forceUpdate?: () => void) {
     this._forceUpdate = forceUpdate ?? NOOP
   }
 
-  private _getName(path?: NamePath) {
+  static _getName(path?: NamePath) {
     const paths = toArray(path)
     // log.warn(!paths.length, "name不能为空");
     return paths.join(NAME_SEPARATOR)
@@ -115,14 +100,21 @@ export default class FormControl<State = any> {
   //   return getIn(this._value, toArray(name))
   // }
 
-  private _controls = new Map<string, FormControl>()
+  protected _controls = new Map<string, FormControl>()
 
-  setControl(control: FormControl, namePath?: NamePath) {
-    const name = this._getName(namePath)
-    name && this._controls.set(name, control)
+  addControl(control: FormControl, namePath?: NamePath) {
+    const name = FormControl._getName(namePath)
+    if (!name) return
+    this._controls.set(name, control)
+    this.setParent(this)
   }
 
-  private _parent: FormControl | null = null
+  removeControl(namePath?: NamePath) {
+    const name = FormControl._getName(namePath)
+    name && this._controls.delete(name)
+  }
+
+  protected _parent?: FormControl = undefined
 
   get root() {
     let root: FormControl = this
@@ -130,32 +122,25 @@ export default class FormControl<State = any> {
     return root
   }
 
-  setParent(parent?: FormControl | null) {
+  setParent(parent?: FormControl) {
     if (!parent) return
     this._parent = parent
   }
 
-  register(parent?: FormControl | null, namePath?: NamePath) {
-    this.setParent(parent) // 设置父控件
-    parent?.setControl(this, namePath) // 设置子控件
-  }
-
   // 依赖数组
-  private _watches: Function[] = []
+  protected _watches = new Set<FormControl>()
 
-  watch(dependencies?: NamePath[]) {
-    // 1. 获取 parent
-    if (!this._parent || !dependencies) return
+  watch(control: FormControl, dependencies: NamePath[] = []) {
+    const unwatch: ArrowFunction[] = []
     for (const path of dependencies) {
-      const name = this._getName(path)
-      if (!name) continue
-      // 2. 找到对应的 control
-      const control = this._parent._controls.get(name)
-      if (!control) return
-      // 改变值时自身执行validate方法即可
-      // control.
+      const name = FormControl._getName(path)
+      const target = this._controls.get(name)
+      if (!target) continue
+      target._watches.add(control)
+      unwatch.push(() => target._watches.delete(control))
     }
-    // 需不需要清除事件呢？
+    // return unwatch handler
+    return () => unwatch.forEach((handler) => handler())
   }
 
   // 校验数据 校验自身与 controls
@@ -175,9 +160,6 @@ export default class FormControl<State = any> {
     // 校验参数
     // 触发回调
   }
-
-  // 重置表单 应该拿到外部去
-  private resetFields(fields?: NamePath[]) {}
 }
 
 /**
