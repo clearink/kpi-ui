@@ -1,55 +1,58 @@
-import {
-  useEffect,
-  useRef,
-  Fragment,
-  useReducer,
-  cloneElement,
-  useCallback,
-  isValidElement,
-} from 'react'
+import { useEffect, useRef, Fragment, useReducer, useLayoutEffect } from 'react'
 
-import type { SyntheticEvent, FormEventHandler } from 'react'
+import { withDefaultProps } from '../../_hocs'
 import { FieldContext } from '../../_context'
 import FormFieldControl from '../control/form_field'
 import { HOOK_MARK } from '../control/form_control'
+import useFieldStatus from '../hooks/use_field_status'
+import useInjectField from '../hooks/use_inject_field'
 import type { FormItemProps } from '../props'
 import { useEvent } from '../../_hooks'
 
 function FormItem(props: FormItemProps) {
-  const { name, children, rule, dependencies, shouldUpdate } = props
-
+  const { name, rule, dependencies, shouldUpdate, preserve } = props
   // 重置次数
   const [resetCount, updateCount] = useReducer((count) => count + 1, 0)
+
   // 强制更新视图
   const [, forceUpdate] = useReducer((count) => count + 1, 0)
+
+  // 字段各种状态
+  const fieldStatus = useFieldStatus(props, forceUpdate)
 
   // 父级表单
   const parent = FieldContext.useState()?.getInternalHooks(HOOK_MARK)
   const control = useRef(new FormFieldControl(forceUpdate))
-  parent?.addControl(control.current, name)
 
-  // 销毁时从父级移除该字段
-  useEffect(() => () => parent?.removeControl(name), [parent, name])
+  // 注册子字段 销毁时移除该字段
+  const unregister = parent?.register(control.current, name)
+  const handleUnregister = useEvent(() => unregister?.(preserve))
+  useEffect(() => handleUnregister, [handleUnregister])
 
   // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
-  const unwatch = parent?.watch(control.current, dependencies)
-  const handlerUnwatch = useEvent(() => unwatch?.())
   // 销毁时同步删除监听
-  useEffect(() => handlerUnwatch, [handlerUnwatch])
+  const unwatch = control.current.watch(dependencies)
+  useEffect(() => control.current.listen(dependencies), [dependencies])
 
-  // TODO: 抽离成hook
-  const injectHandler = useCallback((onChange?: FormEventHandler) => {
-    return (e: SyntheticEvent) => {
-      onChange?.(e)
-    }
-  }, [])
-  if (isValidElement(children)) {
-    // TODO: 注入数据与事件
-    const $onChange = injectHandler(children.props.onChange)
-    const node = cloneElement(children as any, { onChange: $onChange })
-  }
+  const $children = useInjectField(props)
 
-  return <Fragment key={resetCount}>{children}</Fragment>
+  return <Fragment key={resetCount}>{$children}</Fragment>
 }
 
-export default FormItem
+export default withDefaultProps(FormItem, {
+  valuePropName: 'value',
+  trigger: 'onChange',
+  required: false,
+  shouldUpdate: false,
+  validateFirst: false,
+} as const)
+
+/**
+ * QA
+ * - 如果每个Form.Item使用不同的control造成的结果
+ * 1. name 变更 如何保留之前的值？ (每次数据变更时都会存到FormGroupControl中)
+ * 2. 同名name 如何处理（需要同步二者数据）
+ * 3.
+ *
+ * - 表单共用一个 control
+ */

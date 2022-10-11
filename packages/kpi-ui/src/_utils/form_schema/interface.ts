@@ -30,7 +30,8 @@ export interface RuleOptions<T = any> {
 export type EffectOptions<Prev, Next = Prev> =
   | {
       type: 'transform'
-      handler: (value: Prev, context: Context) => Next | Promise<Next>
+      // 暂时只能获取path属性
+      handler: (value: Prev, context: Omit<Context, 'issue'>) => Next | Promise<Next>
     }
   | {
       type: 'refinement'

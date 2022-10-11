@@ -53,6 +53,11 @@ export interface FormItemProps<State = any> {
    */
   name?: NamePath
 
+  /**
+   * @zh `label` 标签的文本
+   */
+  label?: ReactNode
+
   children?: ReactNode
 
   /**
@@ -60,9 +65,10 @@ export interface FormItemProps<State = any> {
    */
   noStyle?: boolean
   /**
-   * @zh 自定义字段更新逻辑，说明[见下](#shouldUpdate)。
+   * @zh 自定义字段更新逻辑，说明[见下](#shouldUpdate)
+   * @default false
    */
-  shouldUpdate?: true | ((prev: State, current: State) => boolean)
+  shouldUpdate?: boolean | ((prev: State, current: State) => boolean)
 
   /**
    * @zh 校验规则，设置字段的校验逻辑
@@ -71,7 +77,6 @@ export interface FormItemProps<State = any> {
 
   /**
    * @zh 字段删除时仍然保留数据
-   * @default true
    */
   preserve?: boolean
 
@@ -79,4 +84,43 @@ export interface FormItemProps<State = any> {
    * @zh 设置依赖字段
    */
   dependencies?: NamePath[]
+
+  /**
+   * @zh 注入属性名称(名称待优化)
+   * @default value
+   */
+  valuePropName?: string
+  /**
+   * @zh 收集字段时机
+   * @default onChange
+   */
+  trigger?: string
+
+  /**
+   * @zh 必填样式设置。如不设置，则会根据校验规则自动生成
+   * @default false
+   */
+  required?: boolean
+
+  /**
+   * @zh 当某一规则校验不通过时，是否停止剩下的规则的校验
+   * @default false
+   */
+  validateFirst?: boolean
+
+  /**
+   * @zh 校验状态，如不设置，则会根据校验规则自动生成，可选：'success' 'warning' 'error' 'validating'
+   */
+  validateStatus: 'success' | 'warning' | 'error' | 'validating'
+
+  /**
+   * @zh 设置字段校验的时机
+   * @default onChange
+   */
+  validateTrigger?: string | string[]
+
+  /**
+   * @zh 设置子元素默认值，如果与 Form 的 initialValues 冲突则以 Form 为准
+   */
+  initialValue?: State
 }

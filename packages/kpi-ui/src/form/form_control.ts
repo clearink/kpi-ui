@@ -1,95 +1,47 @@
+/* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
+
 import { toArray } from '../_utils'
-import { getIn, setIn } from './utils'
-import type { AnyObject, ArrowFunction, Writable } from '../_types'
+import type { ArrowFunction, Writable } from '../_types'
+import type { GetIn } from './internal_props'
 import type { NamePath, PathItem } from './props'
-import type { FormControlStatus, GetIn, InternalFormInstance } from './internal_props'
+import { getIn, setIn } from './utils'
 
 const NOOP = () => {}
 export const NAME_SEPARATOR = '__KPI_FORM_CONTROL__'
 export const HOOK_MARK = '__KPI_FORM_INTERNAL_HOOK__'
 
-export default class FormControl<State = any> {
-  // TODO: 待优化 userForm 返回值
-  get injectForm(): InternalFormInstance<State> {
-    return {
-      state: this._state,
-      validate: this.validate,
-      submit: this.submit,
-      resetFields: this.resetFields,
-      getInternalHooks: this.getInternalHooks,
-    }
+/** 收集表单数据 */
+export class FormStore<State = any> {
+  _state = {} as State
+
+  // 设置值
+  setIn(name: NamePath, value: any) {
+    this._state = setIn(this._state, toArray(name), value)
   }
 
-  private getInternalHooks(secret: string) {
-    return secret === HOOK_MARK ? this : null
+  // 获取值
+  getIn<N extends PathItem>(name: N): GetIn<State, [N]>
+  getIn<N extends PathItem, M extends [N, ...N[]]>(name: M): GetIn<State, M>
+  getIn<N extends Readonly<PathItem[]>>(name: N): GetIn<State, Writable<N>>
+  getIn<N extends PathItem | PathItem[]>(name: N) {
+    return getIn(this._state, toArray(name))
   }
+}
 
+/**
+ * 所以还是需要每个Form.Item维护一个control 但是不会收集数据了，都提交给FormGroupControl
+ * _controls 也要变成数组以保证同名Form.Item
+ * 校验状态放在哪里?
+ * */
+export default class FormControl<State = any> extends FormStore<State> {
   // 收集表单数据
-  private _state = {} as State
 
-  // 状态
-  private _status: FormControlStatus = 'VALID'
-
-  get valid() {
-    return this._status === 'VALID'
+  constructor(private forceUpdate: () => void) {
+    super()
   }
 
-  get invalid() {
-    return this._status === 'INVALID'
-  }
-
-  get warning() {
-    return this._status === 'WARNING'
-  }
-
-  get pending() {
-    return this._status === 'PENDING'
-  }
-
-  get disabled() {
-    return this._status === 'DISABLED'
-  }
-
-  get enabled() {
-    return this._status !== 'DISABLED'
-  }
-
-  private _touched = false // 以是否触发 blur 事件为准
-
-  get touched() {
-    return this._touched
-  }
-
-  get untouched() {
-    return !this._touched
-  }
-
-  setTouched(touched: boolean) {
-    this._touched = touched
-  }
-
-  private _pristine = true // 未被更改值则为 true
-
-  get pristine() {
-    return this._pristine
-  }
-
-  get dirty() {
-    return !this._pristine
-  }
-
-  setPristine(pristine: boolean) {
-    this._pristine = pristine
-  }
-
-  private _forceUpdate = NOOP // 强制视图更新
-
-  constructor(forceUpdate?: () => void) {
-    this._forceUpdate = forceUpdate ?? NOOP
-  }
-
-  private _getName(path?: NamePath) {
+  static _getName(path?: NamePath) {
     const paths = toArray(path)
     // log.warn(!paths.length, "name不能为空");
     return paths.join(NAME_SEPARATOR)
@@ -102,60 +54,43 @@ export default class FormControl<State = any> {
     this.errors = toArray(error)
   }
 
-  // // 设置值
-  // setIn(name: NamePath, value: any) {
-  //   this._value = setIn(this._value, toArray(name), value)
+  protected _controls: { name: NamePath; control: FormControl }[] = []
+
+  protected _parent?: FormControl = undefined
+
+  // 因为只有一层 所以不太需要该属性
+  // get root() {
+  //   let root: FormControl = this
+  //   while (root._parent) root = root._parent
+  //   return root
   // }
 
-  // // V
-  // getIn<N extends PathItem>(name: N): GetIn<Value, [N]>
-  // getIn<N extends PathItem, M extends [N, ...N[]]>(name: M): GetIn<Value, M>
-  // getIn<N extends Readonly<PathItem[]>>(name: N): GetIn<Value, Writable<N>>
-  // getIn<N extends PathItem | PathItem[]>(name: N) {
-  //   return getIn(this._value, toArray(name))
-  // }
-
-  private _controls = new Map<string, FormControl>()
-
-  setControl(control: FormControl, namePath?: NamePath) {
-    const name = this._getName(namePath)
-    name && this._controls.set(name, control)
-  }
-
-  private _parent: FormControl | null = null
-
-  get root() {
-    let root: FormControl = this
-    while (root._parent) root = root._parent
-    return root
-  }
-
-  setParent(parent?: FormControl | null) {
-    if (!parent) return
-    this._parent = parent
-  }
-
-  register(parent?: FormControl | null, namePath?: NamePath) {
-    this.setParent(parent) // 设置父控件
-    parent?.setControl(this, namePath) // 设置子控件
-  }
-
-  // 依赖数组
-  private _watches: Function[] = []
-
-  watch(dependencies?: NamePath[]) {
-    // 1. 获取 parent
-    if (!this._parent || !dependencies) return
-    for (const path of dependencies) {
-      const name = this._getName(path)
-      if (!name) continue
-      // 2. 找到对应的 control
-      const control = this._parent._controls.get(name)
-      if (!control) return
-      // 改变值时自身执行validate方法即可
-      // control.
+  /** 注册字段  */
+  register(control: FormControl, namePath?: NamePath) {
+    const name = FormControl._getName(namePath)
+    if (!name) return NOOP
+    this._controls.push({ name: namePath!, control })
+    return () => {
+      // TODO: 取消注册时是否要清空值呢？
+      this._controls.filter(({ control: _control }) => _control !== control)
     }
-    // 需不需要清除事件呢？
+  }
+
+  // 被依赖的 control this._state 变更时需要通知到对方
+  protected _listeners = new Set<FormControl>()
+
+  listen(dependencies: NamePath[] = []) {
+    // if (!this._parent) return NOOP
+    const cancel: ArrowFunction[] = []
+    // for (const path of dependencies) {
+    //   const name = FormControl._getName(path)
+    //   const target = this._parent._controls.get(name)
+    //   if (!target) continue
+    //   target._listeners.add(this)
+    //   cancel.push(() => target._listeners.delete(this))
+    // }
+    // return unwatch handler
+    return () => cancel.forEach((handler) => handler())
   }
 
   // 校验数据 校验自身与 controls
@@ -175,21 +110,4 @@ export default class FormControl<State = any> {
     // 校验参数
     // 触发回调
   }
-
-  // 重置表单 应该拿到外部去
-  private resetFields(fields?: NamePath[]) {}
 }
-
-/**
- * QA:
- *
- * 1. form 共用一个 control 还是每个字段使用一个呢？
- *
- * 1.1 共用一个 control
- * 优点：比较清晰
- * 缺点：代码难以维护
- *
- * 1.2 每个字段使用一个
- * 优点：容易维护
- * 缺点：代码较多，control.state 不能粗暴的设置为对象了
- */

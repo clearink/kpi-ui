@@ -14,6 +14,7 @@ import {
   isString,
   isUndefined,
 } from '../is'
+import { omit } from '../value'
 import type { AnyObject, Full, MayBe, NonUndefined, Writable } from '../../_types'
 import type { Message, EffectOptions, ValidateReturn, RuleOptions, Context } from './interface'
 
@@ -98,7 +99,7 @@ export abstract class BaseSchema<Out = any, In = Out> {
 
   // 数据转换
   transform<Next>(
-    handler: (value: Out, context: Context) => Next | Promise<Next>
+    handler: (value: Out, context: Omit<Context, 'issue'>) => Next | Promise<Next>
   ): EffectSchema<this, Next> {
     return EffectSchema.transform(this, handler) as any
   }
@@ -390,6 +391,7 @@ export class ArraySchema<T extends BaseSchema> extends BaseSchema<MakeInnerType<
       for (const result of results) {
         if (result.status === 'invalid') return Invalid
       }
+      // TODO: value 需要改变 因为内部可能会有 transform 改变了原始值
       return Valid(value)
     })
   }
@@ -531,6 +533,7 @@ export class ObjectSchema<T extends ObjectShape, Out = MakePartial<T>> extends B
         // 已经添加过 invalid 数据 此处直接返回即可
         if (result.status === 'invalid') return result
       }
+      // TODO: value 需要改变 因为内部可能会有 transform 改变了原始值
       return Valid(value)
     })
   }
@@ -588,7 +591,7 @@ export class EffectSchema<T extends BaseSchema, Out = T['_Out'], In = T['_In']> 
   // 可以改变数据类型
   static transform<S extends BaseSchema, Next = S['_Out']>(
     schema: S,
-    handler: (value: S['_Out'], context: Context) => Next | Promise<Next>
+    handler: (value: S['_Out'], context: Omit<Context, 'issue'>) => Next | Promise<Next>
   ) {
     return new EffectSchema(schema, { type: 'transform', handler })
   }
@@ -625,7 +628,8 @@ export class EffectSchema<T extends BaseSchema, Out = T['_Out'], In = T['_In']> 
       // 先校验 后转换
       const ret = await this.schema._validate(value, context)
       if (ret.status === 'invalid') return ret
-      return Valid(await options.handler(value, context))
+      const $value = await options.handler(value, omit(context, ['issue']))
+      return Valid($value)
     }
     if (options.type === 'preprocess') {
       // 先转换 后校验

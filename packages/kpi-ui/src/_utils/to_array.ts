@@ -9,3 +9,6 @@ export default function toArray<T>(candidate?: T | T[] | null, strict = false): 
   if (isArray(candidate)) return candidate
   return strict ? [] : [candidate]
 }
+
+// reactNode 转换成数组
+export function toChildrenArray() {}
