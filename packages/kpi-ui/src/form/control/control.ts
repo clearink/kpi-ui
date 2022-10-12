@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 
+import { MutableRefObject } from 'react'
 import { toArray } from '../../_utils'
 import { deleteIn, getIn, setIn } from '../utils'
 import type { NamePath, PathItem } from '../props'
@@ -168,22 +169,24 @@ export class FormGroupControl<State = any> extends BaseControl<State> {
     return this._controls.get(name)?.control
   }
 
-  register(control: BaseControl, namePath?: NamePath) {
-    const name = BaseControl._getName(namePath)
+  register(ref: MutableRefObject<BaseControl>, path?: NamePath) {
+    const name = BaseControl._getName(path)
     // 如果有同名的，将已注册的控件值赋值给他
-    this._controls.push({ name, control })
+    if (this._controls.has(name)) {
+      ref.current = this._controls.get(name)!.control
+    } else {
+      this._controls.set(name, { path: path!, control: ref.current })
+    }
     return (preserve?: boolean) => {
       const $preserve = preserve ?? this._preserve
-      if (!$preserve) this.deleteIn(namePath)
-      this._controls = this._controls.filter((item) => {
-        return item.control !== control
-      })
+      if (!$preserve) this.deleteIn(path)
+      this._controls.delete(name)
     }
   }
 
   override validate(value: any) {
     // 1. 遍历 _controls
-    const list = this._controls.map(({ name, control }) => {
+    const list = [...this._controls.values()].map(({ name, control }) => {
       const $value = this.getIn(name)
       return control.validate($value)
     })
