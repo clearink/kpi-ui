@@ -1,7 +1,7 @@
 // form 内部类型声明
 
 import type { ArrowFunction } from '../_types'
-import type FormGroupControl from './control/form_group'
+import type { FormGroupControl } from './control/control'
 import type { NamePath, PathItem } from './props'
 
 export interface InternalFormInstance<S = any> {
@@ -18,7 +18,7 @@ export interface InternalFormInstance<S = any> {
   /**
    * @zh 提交事件 自动调用 validate 方法
    */
-  submit: (onFinish: ArrowFunction, onFailed: ArrowFunction) => void
+  submit: (onFinish?: ArrowFunction, onFailed?: ArrowFunction) => void
 
   /**
    * @zh 重置一组字段到 `initialValues`
@@ -30,6 +30,12 @@ export interface InternalFormInstance<S = any> {
    * @zh 内部方法，外部禁止使用
    */
   getInternalHooks: (secret: string) => FormGroupControl<S> | undefined
+
+  /**
+   * @private
+   * @zh 设置字段删除时是否保留数据
+   */
+  setPreserve: (preserve?: boolean) => void
 }
 
 export type GetIn<State extends any, Path extends PathItem[]> = Path extends [infer P, ...infer R]

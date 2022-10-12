@@ -11,11 +11,11 @@ export interface FormProps<S = any>
   /**
    * @zh 校验成功后的回调
    */
-  onFinish: (values: S) => void
+  onFinish?: (values: S) => void
   /**
    * @zh 校验失败后的回调
    */
-  onFailed: (values: S, errors: any) => void
+  onFailed?: (values: S, errors: any) => void
   /**
    * @zh 表单重置回调
    */
@@ -40,7 +40,10 @@ export interface FormProps<S = any>
 }
 
 /** useForm 向外暴露的实例 */
-export type FormInstance<S = any> = Omit<InternalFormInstance<S>, 'getInternalHooks'>
+export type FormInstance<S = any> = Omit<
+  InternalFormInstance<S>,
+  'getInternalHooks' | 'setPreserve'
+>
 
 export type Forms = Record<string, FormInstance>
 
@@ -111,7 +114,7 @@ export interface FormItemProps<State = any> {
   /**
    * @zh 校验状态，如不设置，则会根据校验规则自动生成，可选：'success' 'warning' 'error' 'validating'
    */
-  validateStatus: 'success' | 'warning' | 'error' | 'validating'
+  validateStatus?: 'success' | 'warning' | 'error' | 'validating'
 
   /**
    * @zh 设置字段校验的时机

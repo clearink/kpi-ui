@@ -2,8 +2,8 @@ import { useEffect, useRef, Fragment, useReducer, useLayoutEffect } from 'react'
 
 import { withDefaultProps } from '../../_hocs'
 import { FieldContext } from '../../_context'
-import FormFieldControl from '../control/form_field'
-import { HOOK_MARK } from '../control/form_control'
+import { FormFieldControl, HOOK_MARK } from '../control/control'
+
 import useFieldStatus from '../hooks/use_field_status'
 import useInjectField from '../hooks/use_inject_field'
 import type { FormItemProps } from '../props'
@@ -23,7 +23,7 @@ function FormItem(props: FormItemProps) {
   // 父级表单
   const parent = FieldContext.useState()?.getInternalHooks(HOOK_MARK)
   const control = useRef(new FormFieldControl(forceUpdate))
-
+  console.log('parent', parent)
   // 注册子字段 销毁时移除该字段
   const unregister = parent?.register(control.current, name)
   const handleUnregister = useEvent(() => unregister?.(preserve))
@@ -31,8 +31,8 @@ function FormItem(props: FormItemProps) {
 
   // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
   // 销毁时同步删除监听
-  const unwatch = control.current.watch(dependencies)
-  useEffect(() => control.current.listen(dependencies), [dependencies])
+  // const unwatch = control.current.watch(dependencies)
+  // useEffect(() => control.current.listen(dependencies), [dependencies])
 
   const $children = useInjectField(props)
 

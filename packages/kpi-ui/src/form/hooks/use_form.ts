@@ -1,5 +1,5 @@
 import { useReducer, useRef } from 'react'
-import FormGroupControl from '../control/form_group'
+import { FormGroupControl } from '../control/control'
 import { FormInstance } from '../props'
 
 export default function useForm<State = any>(form?: FormInstance<State>) {
