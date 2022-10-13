@@ -17,10 +17,8 @@ export default function useInjectField<State = any>(
   // 2. 注入 trigger 同名事件
   // const childrenArray = toChildrenArray(children)
 
-  const mounted = useMounted()
-  // 初始化默认值 不用 useEffect 可以减少一次 rerender
-  !mounted.current && parent?.ensureFieldInitial(name, initialValue)
-  // TODO: name 变更后也要执行这个东西,可能是register执行的逻辑
+  // 设置默认值
+  parent?.ensureFieldInitial(name, initialValue)
 
   if (isValidElement(children)) {
     const $props = children.props

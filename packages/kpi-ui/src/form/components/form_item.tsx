@@ -10,7 +10,7 @@ import type { FormItemProps } from '../props'
 import { useMounted } from '../../_hooks'
 
 function FormItem(props: FormItemProps) {
-  const { name, rule, dependencies, shouldUpdate, preserve } = props
+  const { name, rule, dependencies, shouldUpdate, initialValue, preserve } = props
   // 重置次数
   const [resetCount, updateCount] = useReducer((count) => count + 1, 0)
 

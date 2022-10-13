@@ -132,7 +132,8 @@ export class FormGroupControl<State = any> extends BaseControl {
 
   // 设置字段初始值
   ensureFieldInitial(name: NamePath | undefined, initialValue: any) {
-    if (!name || this.getFieldValue(name) !== undefined) return
+    // name 不存在 或者 已存在该值就不设置了
+    if (!BaseControl._getName(name) || this.getFieldValue(name) !== undefined) return
     const topInitial = this.getInitial(name)
     const $initialValue = isUndefined(topInitial) ? initialValue : topInitial
     logger.warn(
