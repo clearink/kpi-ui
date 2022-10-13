@@ -61,6 +61,7 @@ export default function common(mode: 'development' | 'production', constant: Con
                 ].filter(Boolean),
                 plugins: [
                   require.resolve('@babel/plugin-transform-runtime'),
+                  [require.resolve('@babel/plugin-proposal-decorators'), { legacy: true }],
                   isDev && require.resolve('react-refresh/babel'),
                 ].filter(Boolean),
                 cacheDirectory: true,

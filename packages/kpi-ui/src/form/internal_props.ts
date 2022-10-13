@@ -49,3 +49,9 @@ export type GetIn<State extends any, Path extends PathItem[]> = Path extends [in
   : undefined
 
 export type FormControlStatus = 'VALID' | 'INVALID' | 'WARNING' | 'PENDING' | 'DISABLED'
+// public getIn<N extends PathItem>(name: N): GetIn<State, [N]>
+// public getIn<N extends PathItem, M extends [N, ...N[]]>(name: M): GetIn<State, M>
+// public getIn<N extends Readonly<PathItem[]>>(name: N): GetIn<State, Writable<N>>
+// public getIn<N extends PathItem | PathItem[]>(name: N) {
+//   return getIn(this._state, toArray(name))
+// }
