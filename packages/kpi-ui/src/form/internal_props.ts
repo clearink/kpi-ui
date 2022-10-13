@@ -8,7 +8,7 @@ export interface InternalFormInstance<S = any> {
   /**
    * @zh 表单收集的数据
    */
-  state: S
+  getFieldsValue: () => S
 
   /**
    * @zh 参数校验

@@ -1,28 +1,35 @@
 import {
-  FormEvent,
+  type FormEvent,
   ForwardedRef,
   forwardRef,
   Fragment,
-  useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useMemo,
 } from 'react'
 import { FieldContext, FormContext } from '../../_context'
-import { useEvent } from '../../_hooks'
+import { useEvent, useMounted } from '../../_hooks'
 import { isFunction } from '../../_utils'
+import { HOOK_MARK } from '../control/control'
 import useForm from '../hooks/use_form'
 import { InternalFormInstance } from '../internal_props'
 import type { FormInstance, FormProps } from '../props'
 
 function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance>) {
-  const { name, as, form, children, onFinish, onFailed, onReset } = props
+  const { name, as, form, children, onFinish, onFailed, onReset, preserve, initialValues } = props
 
   const instance = useForm(form) as InternalFormInstance // form 实例
   useImperativeHandle(ref, () => instance)
 
+  const groupControl = instance.getInternalHooks(HOOK_MARK)
+  useLayoutEffect(() => groupControl?.setPreserve(preserve), [groupControl, preserve])
+
+  const mounted = useMounted()
+  groupControl?.setInitial(initialValues, mounted.current)
+
   // 用于多表单联动
   const parent = FormContext.useState()
-  useEffect(() => parent.register(instance, name), [instance, name, parent])
+  useLayoutEffect(() => parent.register(instance, name), [instance, name, parent])
 
   // 事件处理
   const handleSubmit = useEvent((e: FormEvent) => {
@@ -43,7 +50,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   }, [as])
 
   let NODE = children
-  if (isFunction(children)) NODE = children(instance.state, instance)
+  if (isFunction(children)) NODE = children(instance.getFieldsValue(), instance)
 
   return (
     <Root

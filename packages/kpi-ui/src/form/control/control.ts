@@ -2,15 +2,21 @@
 /* eslint-disable max-classes-per-file */
 
 import { MutableRefObject } from 'react'
-import { toArray } from '../../_utils'
+import { isUndefined, toArray } from '../../_utils'
 import { deleteIn, getIn, setIn } from '../utils'
 import type { NamePath } from '../props'
 import type { GetIn, InternalFormInstance } from '../internal_props'
 import type { ArrowFunction, Writable } from '../../_types'
 import { BaseSchema } from '../../_utils/form_schema/schema'
+import logger from '../../_utils/logger'
 
 export class BaseControl {
-  constructor(public forceUpdate: () => void) {}
+  forceUpdate = () => {}
+
+  constructor(_forceUpdate: () => void, mounted: MutableRefObject<boolean>) {
+    // 必须在组件挂载时调用
+    this.forceUpdate = () => mounted.current && _forceUpdate()
+  }
 
   // 获取名称字符串
   static _getName(name?: NamePath) {
@@ -56,7 +62,7 @@ export class FormFieldControl extends BaseControl {
       // 1. 找到对应的control
       const target = this._parent?.get(name)
       // 2. 向listeners添加数据
-      target && cancel.push(target._listen(this))
+      target?.forEach((control) => cancel.push(control._listen(this)))
     }
     return () => {
       cancel.forEach((handler) => handler())
@@ -85,8 +91,9 @@ export class FormFieldControl extends BaseControl {
 export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
 export class FormGroupControl<State = any> extends BaseControl {
   get inject(): InternalFormInstance<State> {
+    // 向外暴露函数 避免内部数据被更改
     return {
-      state: this.state,
+      getFieldsValue: () => this.getFieldsValue(),
       validate: () => Promise.resolve(),
       submit: () => {},
       resetFields: () => {},
@@ -96,21 +103,43 @@ export class FormGroupControl<State = any> extends BaseControl {
     }
   }
 
-  // 默认值
-  private _initial = {} as State
+  private getFieldsValue() {
+    let values = {} as State
+    this._controls.forEach(({ path }) => {
+      const $path = toArray(path)
+      const value = getIn(this._state, $path)
+      values = setIn(values, $path, value)
+    })
+    return values
+  }
 
-  setInitial(name: NamePath | undefined, value: any) {
-    const paths = toArray(name)
-    if (!paths.length) return
-    this._initial = setIn(this._initial, paths, value)
+  // 默认值
+  private _initial = {} as Partial<State>
+
+  // TODO: 待完善
+  setInitial(initial: Partial<State> | undefined, mounted: boolean) {
+    this._initial = initial || {}
+    if (!mounted) {
+      // 组件尚未挂载， 将初始值同步到store中去
+      // merge value
+      // const nextState = setIn({}, )
+    }
   }
 
   getInitial(name: NamePath | undefined) {
     return getIn(this._initial, toArray(name))
   }
 
-  get state() {
-    return {} as State
+  // 设置字段初始值
+  ensureFieldInitial(name: NamePath | undefined, initialValue: any) {
+    if (!name || this.getFieldValue(name) !== undefined) return
+    const topInitial = this.getInitial(name)
+    const $initialValue = isUndefined(topInitial) ? initialValue : topInitial
+    logger.warn(
+      !isUndefined(topInitial) && !isUndefined(initialValue),
+      "form has initialValues, don't set field initialValue"
+    )
+    if (!isUndefined($initialValue)) this.setFieldValue(name, $initialValue)
   }
 
   // store
@@ -120,7 +149,8 @@ export class FormGroupControl<State = any> extends BaseControl {
     const paths = toArray(name)
     if (!paths.length) return
     this._state = setIn(this._state, paths, value)
-    this.get(name)?.forceUpdate() // 更新视图
+    // 更新视图
+    this.get(name)?.forEach((control) => control.forceUpdate())
   }
 
   getFieldValue(name: NamePath | undefined) {
@@ -131,13 +161,13 @@ export class FormGroupControl<State = any> extends BaseControl {
     this._state = deleteIn(this._state, toArray(name))
   }
 
-  _preserve = true
+  private _preserve = true
 
   setPreserve(preserve = true) {
     this._preserve = preserve
   }
 
-  _controls = new Map<string, { path: NamePath; control: FormFieldControl }>()
+  _controls = new Map<string, { path: NamePath; control: Set<FormFieldControl> }>()
 
   // 获取 control
   get(namePath?: NamePath) {
@@ -148,18 +178,21 @@ export class FormGroupControl<State = any> extends BaseControl {
   /**
    * 同名 schema 会有问题 校验时无法正确拿到对应的rule 是否需要外部处理呢？
    */
-  register(ref: MutableRefObject<FormFieldControl>, path?: NamePath) {
+  register(control: FormFieldControl, path?: NamePath) {
     const name = BaseControl._getName(path)
 
     const cache = this._controls.get(name)
-    // 如果有同名的，将已注册的控件值赋值给他
-    if (name && cache) ref.current = cache.control
-    else if (path) this._controls.set(name, { path, control: ref.current })
+    if (cache) cache.control.add(control)
+    else if (name) this._controls.set(name, { path: path!, control: new Set([control]) })
 
     return (preserve?: boolean) => {
       const $preserve = preserve ?? this._preserve
       if (!$preserve) this.deleteFieldValue(path)
-      this._controls.delete(name)
+      const controls = this._controls.get(name)?.control
+      if (!controls) return
+      controls.delete(control)
+      // 清除空的字段集合
+      controls.size === 0 && this._controls.delete(name)
     }
   }
 
@@ -183,7 +216,7 @@ export class FormArrayControl extends FormFieldControl {
   }
 
   // 注册子控件
-  register(control: MutableRefObject<FormFieldControl>, namePath?: NamePath) {
+  register(control: FormFieldControl, namePath?: NamePath) {
     if (!this._parent || !(this._parent instanceof FormGroupControl)) {
       // logger.warn('无法正确注册')
       // 父级不存在或者父级不是FormGroupControl

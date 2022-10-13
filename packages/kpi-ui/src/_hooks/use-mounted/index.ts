@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 
 export default function useMounted() {
   const ref = useRef(false)
-  useEffect(() => {
+  useLayoutEffect(() => {
     ref.current = true
     return () => {
       ref.current = false

@@ -36,6 +36,11 @@ export interface FormProps<S = any>
    */
   preserve?: boolean
 
+  /**
+   * @zh 字段初始化值，仅在字段挂载时生效
+   */
+  initialValues?: Partial<S>
+
   children?: ReactNode
 }
 

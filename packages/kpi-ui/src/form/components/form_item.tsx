@@ -7,6 +7,7 @@ import { FormFieldControl, HOOK_MARK } from '../control/control'
 import useFieldStatus from '../hooks/use_field_status'
 import useInjectField from '../hooks/use_inject_field'
 import type { FormItemProps } from '../props'
+import { useMounted } from '../../_hooks'
 
 function FormItem(props: FormItemProps) {
   const { name, rule, dependencies, shouldUpdate, preserve } = props
@@ -20,14 +21,15 @@ function FormItem(props: FormItemProps) {
   const fieldStatus = useFieldStatus(props, forceUpdate)
 
   // 父级表单
+  const mounted = useMounted()
   const parent = FieldContext.useState()?.getInternalHooks(HOOK_MARK)
-  const control = useRef(new FormFieldControl(forceUpdate))
+  const control = useRef(new FormFieldControl(forceUpdate, mounted))
 
   console.log(parent)
 
   // 注册子字段 销毁时移除该字段
   useLayoutEffect(() => {
-    const cancel = parent?.register(control, name)
+    const cancel = parent?.register(control.current, name)
     return () => cancel?.(preserve)
   }, [name, parent, preserve])
 
@@ -35,8 +37,7 @@ function FormItem(props: FormItemProps) {
   useLayoutEffect(() => control.current.subscribe(dependencies), [dependencies])
 
   // 字段校验
-  // TODO: 解决同名字段冲突问题
-  // useLayoutEffect(() => control.current.setRule(rule), [rule])
+  // useEffect(() => control.current.setRule(rule), [rule])
 
   const $children = useInjectField(props, parent)
 

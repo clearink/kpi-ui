@@ -1,11 +1,12 @@
 // 向 Form.Item 包裹的组件内部注入数据
 
-import { isValidElement, cloneElement, useLayoutEffect, ReactElement } from 'react'
-import { FormItemProps, PathItem } from '../props'
+import { isValidElement, cloneElement, ReactElement, useLayoutEffect } from 'react'
+import { FormItemProps } from '../props'
 import { toChildrenArray } from '../../_utils/to_array'
-import { useEvent } from '../../_hooks'
-import type { FormFieldControl, FormGroupControl } from '../control/control'
+import { useEvent, useMounted } from '../../_hooks'
+import type { FormGroupControl } from '../control/control'
 import { isUndefined } from '../../_utils'
+import logger from '../../_utils/logger'
 
 export default function useInjectField<State = any>(
   props: FormItemProps,
@@ -16,17 +17,10 @@ export default function useInjectField<State = any>(
   // 2. 注入 trigger 同名事件
   // const childrenArray = toChildrenArray(children)
 
-  // 默认值
-  const handleSetInitialValue = useEvent(() => {
-    if (!parent || !name) return
-    const topInitial = parent.getFieldValue(name)
-
-    const $initialValue = isUndefined(topInitial) ? initialValue : topInitial
-    // TODO: 这里还要判断值是否相等 做下优化
-    if (!isUndefined($initialValue)) parent.setFieldValue(name, $initialValue)
-  })
-  // initialValue 仅在组件挂载时生效一次
-  useLayoutEffect(handleSetInitialValue, [handleSetInitialValue])
+  const mounted = useMounted()
+  // 初始化默认值 不用 useEffect 可以减少一次 rerender
+  !mounted.current && parent?.ensureFieldInitial(name, initialValue)
+  // TODO: name 变更后也要执行这个东西,可能是register执行的逻辑
 
   if (isValidElement(children)) {
     const $props = children.props
@@ -42,4 +36,9 @@ export default function useInjectField<State = any>(
     return cloneElement(children as ReactElement, { onChange: handleChange, value })
   }
   return children
+}
+
+function useBeforeMount(handler: () => void) {
+  const mounted = useMounted()
+  if (!mounted.current) handler()
 }
