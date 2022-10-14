@@ -1,6 +1,6 @@
 import type { ComponentType, FormEvent, FormHTMLAttributes, ReactNode } from 'react'
+import { ArrowFunction } from '../_types'
 import type { BaseSchema } from '../_utils/form_schema/schema'
-import type { InternalFormInstance } from './internal_props'
 
 export interface FormProps<S = any>
   extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'children'> {
@@ -45,15 +45,32 @@ export interface FormProps<S = any>
 }
 
 /** useForm 向外暴露的实例 */
-export type FormInstance<S = any> = Omit<
-  InternalFormInstance<S>,
-  'getInternalHooks' | 'setPreserve'
->
+
+export interface FormInstance<S = any> {
+  /**
+   * @zh 表单收集的数据
+   */
+  getFieldsValue: () => S
+
+  /**
+   * @zh 参数校验
+   */
+  validate: () => Promise<void>
+
+  /**
+   * @zh 提交事件 自动调用 validate 方法
+   */
+  submit: (onFinish?: ArrowFunction, onFailed?: ArrowFunction) => void
+
+  /**
+   * @zh 重置一组字段到 `initialValues`
+   */
+  resetFields: (fields?: NamePath[]) => void
+}
 
 export type Forms = Record<string, FormInstance>
 
-export type PathItem = string | number
-export type NamePath = PathItem | PathItem[]
+export type NamePath = string | number | (string | number)[]
 
 export interface FormItemProps<State = any> {
   /**

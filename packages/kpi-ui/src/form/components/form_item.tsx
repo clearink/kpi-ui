@@ -1,4 +1,4 @@
-import { useRef, Fragment, useReducer, useLayoutEffect } from 'react'
+import { useRef, Fragment, useReducer, useEffect, useMemo } from 'react'
 
 import { withDefaultProps } from '../../_hocs'
 import { FieldContext } from '../../_context'
@@ -21,23 +21,26 @@ function FormItem(props: FormItemProps) {
   const fieldStatus = useFieldStatus(props, forceUpdate)
 
   // 父级表单
-  const mounted = useMounted()
   const parent = FieldContext.useState()?.getInternalHooks(HOOK_MARK)
-  const control = useRef(new FormFieldControl(forceUpdate, mounted))
+  const control = useRef(new FormFieldControl(forceUpdate, useMounted()))
 
   console.log(parent)
 
-  // 注册子字段 销毁时移除该字段
-  useLayoutEffect(() => {
-    const cancel = parent?.register(control.current, name)
+  // 注册子字段 销毁时移除该字段(done)
+  useEffect(() => {
+    const cancel = parent?.registerField(control.current, name)
     return () => cancel?.(preserve)
   }, [name, parent, preserve])
 
-  // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
-  useLayoutEffect(() => control.current.subscribe(dependencies), [dependencies])
+  // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数(done)
+  useEffect(() => parent?.subscribe(name, dependencies), [dependencies, name, parent])
 
-  // 字段校验
-  // useEffect(() => control.current.setRule(rule), [rule])
+  // 同步参数校验
+  useEffect(() => control.current.setValidator(rule), [rule])
+
+  const isRequired = useMemo(() => {
+    // 计算是否为必填
+  }, [rule])
 
   const $children = useInjectField(props, parent)
 

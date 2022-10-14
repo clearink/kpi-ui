@@ -1,6 +1,6 @@
 // 向 Form.Item 包裹的组件内部注入数据
 
-import { isValidElement, cloneElement, ReactElement, useLayoutEffect } from 'react'
+import { isValidElement, cloneElement, ReactElement } from 'react'
 import { FormItemProps } from '../props'
 import { toChildrenArray } from '../../_utils/to_array'
 import { useEvent, useMounted } from '../../_hooks'
@@ -34,9 +34,4 @@ export default function useInjectField<State = any>(
     return cloneElement(children as ReactElement, { onChange: handleChange, value })
   }
   return children
-}
-
-function useBeforeMount(handler: () => void) {
-  const mounted = useMounted()
-  if (!mounted.current) handler()
 }

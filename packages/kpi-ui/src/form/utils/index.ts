@@ -1,9 +1,9 @@
 import { isNumber, isArray, isObject, isNullish } from '../../_utils'
-import { PathItem } from '../props'
+import { InternalNamePath } from '../internal_props'
 
 function internalSet<V = any>(
   source: V,
-  paths: PathItem[],
+  paths: InternalNamePath,
   value: any,
   removeUndefined = false
 ): V {
@@ -24,11 +24,13 @@ function internalSet<V = any>(
   return attr
 }
 
-export function setIn<V = any>(source: V, paths: PathItem[], value: any): V {
+export function setIn<V = any>(source: V, paths: InternalNamePath, value: any): V {
+  // 源数据不是对象
+  if (!isObject(source)) return source
   return internalSet(source, paths, value)
 }
 
-export function getIn<V = any>(values: V, paths: PathItem[]): any {
+export function getIn<V = any>(values: V, paths: InternalNamePath): any {
   for (let i = 0; i < paths.length; i++) {
     if (isNullish(values)) return undefined
     values = values[paths[i]]
@@ -37,6 +39,8 @@ export function getIn<V = any>(values: V, paths: PathItem[]): any {
   return paths.length ? values : undefined
 }
 
-export function deleteIn<V = any>(source: V, paths: PathItem[]): any {
+export function deleteIn<V = any>(source: V, paths: InternalNamePath): any {
+  // 源数据不是对象
+  if (!isObject(source)) return source
   return internalSet(source, paths, undefined, true)
 }

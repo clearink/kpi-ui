@@ -5,10 +5,12 @@ import { MutableRefObject } from 'react'
 import { isUndefined, toArray } from '../../_utils'
 import { deleteIn, getIn, setIn } from '../utils'
 import type { NamePath } from '../props'
-import type { GetIn, InternalFormInstance } from '../internal_props'
-import type { ArrowFunction, Writable } from '../../_types'
+import type { InternalFormInstance, WatchCallBack } from '../internal_props'
+import type { ArrowFunction } from '../../_types'
 import { BaseSchema } from '../../_utils/form_schema/schema'
 import logger from '../../_utils/logger'
+
+export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
 
 export class BaseControl {
   forceUpdate = () => {}
@@ -19,8 +21,8 @@ export class BaseControl {
   }
 
   // 获取名称字符串
-  static _getName(name?: NamePath) {
-    const paths = toArray(name)
+  static _getName(namePath?: NamePath) {
+    const paths = toArray(namePath)
     const separator = '_$_KPI_FORM_CONTROL_$_'
     return paths.map((item) => `${typeof item}:${item}`).join(separator)
   }
@@ -33,40 +35,10 @@ export class BaseControl {
 /** ===================================================== */
 
 export class FormFieldControl extends BaseControl {
-  _parent: FormGroupControl | undefined = undefined
+  protected _parent: FormGroupControl | undefined = undefined
 
-  setParent(parent?: this['_parent']) {
+  setParent(parent?: FormGroupControl) {
     this._parent = parent
-  }
-
-  // 字段依赖事件
-  // 每个字段都可以被多个依赖
-  // 当数据变更时就会向其发送事
-  _listeners: FormFieldControl[] = []
-
-  // 监听
-  private _listen(control: FormFieldControl) {
-    this._listeners.push(control)
-    return () => {
-      this._listeners = this._listeners.filter((_control) => {
-        return _control !== control
-      })
-    }
-  }
-
-  // 订阅对应的 control 变更 通知
-  subscribe(dependencies: NamePath[] = []) {
-    const cancel: ArrowFunction[] = []
-    for (const path of dependencies) {
-      const name = BaseControl._getName(path)
-      // 1. 找到对应的control
-      const target = this._parent?.get(name)
-      // 2. 向listeners添加数据
-      target?.forEach((control) => cancel.push(control._listen(this)))
-    }
-    return () => {
-      cancel.forEach((handler) => handler())
-    }
   }
 
   // rule 改变时 是否需要重新校验呢？
@@ -74,8 +46,16 @@ export class FormFieldControl extends BaseControl {
     // this.validate = handler
   }
 
+  _validator: BaseSchema | undefined = undefined
+
+  setValidator(validator?: BaseSchema) {
+    if (!(validator instanceof BaseSchema)) return
+    this._validator = validator
+  }
+
   // TODO: 字段校验
   async validate(value: any) {
+    console.log('validate', value)
     // if (!this._rule) return value
     // return this._rule.validate(value)
     // 设置字段状态值
@@ -88,29 +68,28 @@ export class FormFieldControl extends BaseControl {
 /** ===================================================== */
 /** ===================================================== */
 
-export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
 export class FormGroupControl<State = any> extends BaseControl {
-  get inject(): InternalFormInstance<State> {
+  injectForm(): InternalFormInstance<State> {
     // 向外暴露函数 避免内部数据被更改
     return {
-      getFieldsValue: () => this.getFieldsValue(),
+      getFieldsValue: this.getFieldsValue,
       validate: () => Promise.resolve(),
       submit: () => {},
       resetFields: () => {},
+      // TODO: 优化返回值，仅仅返回一些必要的属性
       getInternalHooks: (secret: string) => (secret === HOOK_MARK ? this : undefined),
       // eslint-disable-next-line no-return-assign
       setPreserve: (preserve = true) => (this._preserve = preserve),
     }
   }
 
+  // 收集当前表单的数据
   private getFieldsValue() {
-    let values = {} as State
-    this._controls.forEach(({ path }) => {
-      const $path = toArray(path)
-      const value = getIn(this._state, $path)
-      values = setIn(values, $path, value)
-    })
-    return values
+    return [...this._controls].reduce((values, [, { namePath }]) => {
+      const paths = toArray(namePath)
+      const value = getIn(this._state, paths)
+      return setIn(values ?? ({} as State), paths, value)
+    }, {} as State)
   }
 
   // 默认值
@@ -119,11 +98,12 @@ export class FormGroupControl<State = any> extends BaseControl {
   // TODO: 待完善
   setInitial(initial: Partial<State> | undefined, mounted: boolean) {
     this._initial = initial || {}
-    if (!mounted) {
-      // 组件尚未挂载， 将初始值同步到store中去
-      // merge value
-      // const nextState = setIn({}, )
-    }
+    if (mounted) return
+    const nextState = setIn
+    // merge _initial to _state
+    // 组件尚未挂载， 将初始值同步到store中去
+    // merge value
+    // const nextState = setIn({}, )
   }
 
   getInitial(name: NamePath | undefined) {
@@ -131,35 +111,52 @@ export class FormGroupControl<State = any> extends BaseControl {
   }
 
   // 设置字段初始值
-  ensureFieldInitial(name: NamePath | undefined, initialValue: any) {
+  ensureFieldInitial(namePath: NamePath | undefined, initialValue: any) {
     // name 不存在 或者 已存在该值就不设置了
-    if (!BaseControl._getName(name) || this.getFieldValue(name) !== undefined) return
-    const topInitial = this.getInitial(name)
+    if (!BaseControl._getName(namePath) || this.getFieldValue(namePath) !== undefined) return
+    const topInitial = this.getInitial(namePath)
     const $initialValue = isUndefined(topInitial) ? initialValue : topInitial
     logger.warn(
       !isUndefined(topInitial) && !isUndefined(initialValue),
       "form has initialValues, don't set field initialValue"
     )
-    if (!isUndefined($initialValue)) this.setFieldValue(name, $initialValue)
+    if (!isUndefined($initialValue)) this.setFieldValue(namePath, $initialValue)
   }
 
   // store
   private _state = {} as State
 
-  setFieldValue(name: NamePath | undefined, value: any) {
-    const paths = toArray(name)
-    if (!paths.length) return
-    this._state = setIn(this._state, paths, value)
-    // 更新视图
-    this.get(name)?.forEach((control) => control.forceUpdate())
+  setFieldValue(namePath: NamePath | undefined, value: any) {
+    const fieldName = BaseControl._getName(namePath)
+    if (!fieldName || !namePath) return
+    this._state = setIn(this._state, toArray(namePath), value)
+    const controls = this.get(namePath)
+    if (!controls || !controls.size) return
+
+    // TODO: 移到组件中处理比较好点，可以做一些优化项。更新视图
+    // TODO: 父级使用 render props 时不在此更新视图
+    controls.forEach((control) => control.forceUpdate())
+
+    // // 运行订阅事件（目标状态为dirty 时才订阅）
+    // const listeners = this._listeners.get(fieldName)
+    // listeners?.forEach((controlName) => {
+    //   this.get(controlName)?.forEach((control) => {
+    //     const controlValue = this.getFieldValue(controlName)
+    //     control.validate(controlValue)
+    //   })
+    // })
+    // 这里是否要执行 watchList ?
   }
 
-  getFieldValue(name: NamePath | undefined) {
+  getFieldValue(name?: NamePath) {
     return getIn(this._state, toArray(name))
   }
 
-  deleteFieldValue(name?: NamePath) {
-    this._state = deleteIn(this._state, toArray(name))
+  deleteFieldValue(namePath?: NamePath) {
+    const paths = toArray(namePath)
+    // 路径为空代表删除整个对象，得到 undefined，故此处重置为空对象
+    if (paths.length === 0) this._state = {} as State
+    else this._state = deleteIn(this._state, paths)
   }
 
   private _preserve = true
@@ -168,7 +165,7 @@ export class FormGroupControl<State = any> extends BaseControl {
     this._preserve = preserve
   }
 
-  _controls = new Map<string, { path: NamePath; control: Set<FormFieldControl> }>()
+  _controls = new Map<string, { namePath: NamePath; control: Set<FormFieldControl> }>()
 
   // 获取 control
   get(namePath?: NamePath) {
@@ -176,24 +173,57 @@ export class FormGroupControl<State = any> extends BaseControl {
     return this._controls.get(name)?.control
   }
 
-  /**
-   * 同名 schema 会有问题 校验时无法正确拿到对应的rule 是否需要外部处理呢？
-   */
-  register(control: FormFieldControl, path?: NamePath) {
-    const name = BaseControl._getName(path)
+  // 注册字段
+  registerField(control: FormFieldControl, namePath?: NamePath) {
+    const name = BaseControl._getName(namePath)
+    if (!name || !namePath) return () => {}
 
-    const cache = this._controls.get(name)
-    if (cache) cache.control.add(control)
-    else if (name) this._controls.set(name, { path: path!, control: new Set([control]) })
+    control.setParent(this)
+    const cached = this._controls.get(name)
+    if (cached) cached.control.add(control)
+    else this._controls.set(name, { namePath, control: new Set([control]) })
 
+    // 字段删除时处理一些副作用
     return (preserve?: boolean) => {
       const $preserve = preserve ?? this._preserve
-      if (!$preserve) this.deleteFieldValue(path)
+      if (!$preserve) this.deleteFieldValue()
       const controls = this._controls.get(name)?.control
-      if (!controls) return
-      controls.delete(control)
-      // 清除空的字段集合
-      controls.size === 0 && this._controls.delete(name)
+      controls?.delete(control)
+      if (controls && !controls.size) this._controls.delete(name)
+    }
+  }
+
+  // 字段依赖 当数据变更时就会重新校验相应的字段
+  _dependencies = new Map<string, Map<string, NamePath>>()
+
+  // 订阅对应的字段变更，并通知相应的 control
+  subscribe(namePath?: NamePath, dependencies: NamePath[] = []) {
+    const fieldName = BaseControl._getName(namePath)
+    if (!fieldName || !namePath) return () => {} // 为空不进行操作
+
+    const cancels = dependencies.map((dependency) => {
+      // 被依赖项
+      const depName = BaseControl._getName(dependency)
+      if (!depName || fieldName === depName) return () => {}
+
+      const cached = this._dependencies.get(depName) ?? new Map<string, NamePath>()
+      this._dependencies.set(depName, cached.set(fieldName, namePath))
+      return () => {
+        const current = this._dependencies.get(depName)
+        current?.delete(fieldName)
+        current && !current.size && this._dependencies.delete(depName)
+      }
+    })
+    return () => cancels.forEach((cancel) => cancel())
+  }
+
+  // 实现 useWatch 功能
+  private _watchList: { namePath?: NamePath; callback: WatchCallBack<State> }[] = []
+
+  registerWatch(namePath: NamePath | undefined, callback: (value: any, state: State) => void) {
+    this._watchList.push({ namePath, callback })
+    return () => {
+      this._watchList = this._watchList.filter(({ callback: fn }) => fn !== callback)
     }
   }
 
@@ -209,21 +239,16 @@ export class FormGroupControl<State = any> extends BaseControl {
 /** FormArray(特殊的FormField)                             */
 /** ===================================================== */
 /** ===================================================== */
+
 export class FormArrayControl extends FormFieldControl {
-  _parent: FormGroupControl | undefined = undefined
-
-  setParent(parent: this['_parent']) {
-    this._parent = parent
-  }
-
   // 注册子控件
-  register(control: FormFieldControl, namePath?: NamePath) {
+  registerField(control: FormFieldControl, namePath?: NamePath) {
     if (!this._parent || !(this._parent instanceof FormGroupControl)) {
       // logger.warn('无法正确注册')
       // 父级不存在或者父级不是FormGroupControl
       return () => {}
     }
-    return this._parent.register(control, namePath)
+    return this._parent.registerField(control, namePath)
   }
 
   /** ===================================================== */
@@ -239,13 +264,53 @@ export class FormArrayControl extends FormFieldControl {
 }
 
 /**
- * QA:
- * 1. 字段注册
- * FormGroup 可以注册
- * FormArray 可以注册
- * FormField 不能注册
- *
- * 2. 同名字段（正常运行，二者需要同步数据，那么就不能使用map了，需要用数组去存储） 当数据更改时需要调用forceUpdate更新视图
- *
- * 3. 没有名称的字段（不进行注册操作）
+ * 
+ * private setFields = (fields: FieldData[]) => {
+    this.warningUnhooked();
+
+    const prevStore = this.store;
+
+    const namePathList: InternalNamePath[] = [];
+
+    fields.forEach((fieldData: FieldData) => {
+      const { name, errors, ...data } = fieldData;
+      const namePath = getNamePath(name);
+      namePathList.push(namePath);
+
+      // Value
+      if ('value' in data) {
+        this.updateStore(setValue(this.store, namePath, data.value));
+      }
+
+      this.notifyObservers(prevStore, [namePath], {
+        type: 'setField',
+        data: fieldData,
+      });
+    });
+
+    this.notifyWatch(namePathList);
+  };
+
+
+    private notifyObservers = (
+    prevStore: Store,
+    namePathList: InternalNamePath[] | null,
+    info: NotifyInfo,
+  ) => {
+    if (this.subscribable) {
+      const mergedInfo: ValuedNotifyInfo = {
+        ...info,
+        store: this.getFieldsValue(true),
+      };
+      this.getFieldEntities().forEach(({ onStoreChange }) => {
+        onStoreChange(prevStore, namePathList, mergedInfo);
+      });
+    } else {
+      this.forceRootUpdate();
+    }
+  };
+
+   Not use subscribe when using render props
+   useSubscribe(!childrenRenderProps);
+  
  */

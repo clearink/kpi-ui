@@ -1,30 +1,9 @@
 // form 内部类型声明
 
-import type { ArrowFunction } from '../_types'
 import type { FormGroupControl } from './control/control'
-import type { NamePath, PathItem } from './props'
+import type { FormInstance } from './props'
 
-export interface InternalFormInstance<S = any> {
-  /**
-   * @zh 表单收集的数据
-   */
-  getFieldsValue: () => S
-
-  /**
-   * @zh 参数校验
-   */
-  validate: () => Promise<void>
-
-  /**
-   * @zh 提交事件 自动调用 validate 方法
-   */
-  submit: (onFinish?: ArrowFunction, onFailed?: ArrowFunction) => void
-
-  /**
-   * @zh 重置一组字段到 `initialValues`
-   */
-  resetFields: (fields?: NamePath[]) => void
-
+export interface InternalFormInstance<S = any> extends FormInstance<S> {
   /**
    * @private
    * @zh 内部方法，外部禁止使用
@@ -38,15 +17,18 @@ export interface InternalFormInstance<S = any> {
   setPreserve: (preserve?: boolean) => void
 }
 
-export type GetIn<State extends any, Path extends PathItem[]> = Path extends [infer P, ...infer R]
-  ? P extends keyof State
-    ? R extends [any, ...any[]]
-      ? State[P] extends any
-        ? GetIn<State[P], R>
-        : undefined
-      : State[P]
-    : undefined
-  : undefined
+export type InternalNamePath = (string | number)[]
+export type WatchCallBack<S = any> = (value: any, state: S) => void
+
+// export type GetIn<State extends any, Path extends PathItem[]> = Path extends [infer P, ...infer R]
+//   ? P extends keyof State
+//     ? R extends [any, ...any[]]
+//       ? State[P] extends any
+//         ? GetIn<State[P], R>
+//         : undefined
+//       : State[P]
+//     : undefined
+//   : undefined
 
 export type FormControlStatus = 'VALID' | 'INVALID' | 'WARNING' | 'PENDING' | 'DISABLED'
 // public getIn<N extends PathItem>(name: N): GetIn<State, [N]>

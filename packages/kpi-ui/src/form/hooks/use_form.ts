@@ -9,7 +9,7 @@ export default function useForm<State = any>(form?: FormInstance<State>) {
   const [, forceUpdate] = useReducer((count) => count + 1, 0)
   if (ref.current === undefined) {
     if (form) ref.current = form
-    else ref.current = new FormGroupControl(forceUpdate, mounted).inject as any
+    else ref.current = new FormGroupControl(forceUpdate, mounted).injectForm()
   }
   return ref.current!
 }

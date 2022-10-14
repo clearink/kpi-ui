@@ -4,7 +4,7 @@ import {
   forwardRef,
   Fragment,
   useImperativeHandle,
-  useLayoutEffect,
+  useEffect,
   useMemo,
 } from 'react'
 import { FieldContext, FormContext } from '../../_context'
@@ -22,14 +22,17 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   useImperativeHandle(ref, () => instance)
 
   const groupControl = instance.getInternalHooks(HOOK_MARK)
-  useLayoutEffect(() => groupControl?.setPreserve(preserve), [groupControl, preserve])
 
+  groupControl?.setPreserve(preserve)
+  // 如果form是 render props 不要主动更新视图
+  // groupControl?.useRenderProps()
   const mounted = useMounted()
+  // 设置初始值, 仅在挂载前设置一次
   groupControl?.setInitial(initialValues, mounted.current)
 
   // 用于多表单联动
   const parent = FormContext.useState()
-  useLayoutEffect(() => parent.register(instance, name), [instance, name, parent])
+  useEffect(() => parent.register(instance, name), [instance, name, parent])
 
   // 事件处理
   const handleSubmit = useEvent((e: FormEvent) => {
