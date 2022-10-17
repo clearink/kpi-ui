@@ -21,15 +21,14 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   const instance = useForm(form) as InternalFormInstance // form 实例
   useImperativeHandle(ref, () => instance)
 
-  const groupControl = instance.getInternalHooks(HOOK_MARK)
+  const groupControl = instance.getInternalHooks(HOOK_MARK)!
 
-  groupControl?.setPreserve(preserve)
+  groupControl.setPreserve(preserve)
   // 如果form是 render props 不要主动更新视图
-  // groupControl?.useRenderProps()
+
   const mounted = useMounted()
   // 设置初始值, 仅在挂载前设置一次
   groupControl?.setInitial(initialValues, mounted.current)
-
   // 用于多表单联动
   const parent = FormContext.useState()
   useEffect(() => parent.register(instance, name), [instance, name, parent])

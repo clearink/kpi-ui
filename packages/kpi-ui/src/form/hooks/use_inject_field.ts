@@ -1,15 +1,14 @@
 // 向 Form.Item 包裹的组件内部注入数据
 
-import { isValidElement, cloneElement, ReactElement } from 'react'
-import { FormItemProps } from '../props'
+import { isValidElement, cloneElement, ReactElement, useEffect, ReactNode } from 'react'
+import { useEvent } from '../../_hooks'
 import { toChildrenArray } from '../../_utils/to_array'
-import { useEvent, useMounted } from '../../_hooks'
+import type { FormFieldProps } from '../props'
 import type { FormGroupControl } from '../control/control'
-import { isUndefined } from '../../_utils'
-import logger from '../../_utils/logger'
+import { isFunction } from '../../_utils'
 
 export default function useInjectField<State = any>(
-  props: FormItemProps,
+  props: FormFieldProps,
   parent?: FormGroupControl<State>
 ) {
   const { children, name, initialValue } = props
@@ -18,20 +17,38 @@ export default function useInjectField<State = any>(
   // const childrenArray = toChildrenArray(children)
 
   // 设置默认值
-  parent?.ensureFieldInitial(name, initialValue)
+  useEffect(() => {
+    parent?.ensureFieldInitial(name, initialValue)
+  }, [initialValue, name, parent])
 
-  if (isValidElement(children)) {
-    const $props = children.props
-    const handleChange = (event: Event) => {
-      // 向parent中 setIns
-      // 同步内部值
-      const val = (event.target as HTMLInputElement).value
-      parent?.setFieldValue(name, val)
-      $props.onChange?.(event)
-    }
+  // 处理 children
+  // const handler = useEvent((_children: ReactNode) => {
+  //   if (isFunction(_children)) {
+  //     // render props 方式
+  //     return {
+  //       functional: true,
+  //       ...handler(_children()),
+  //     }
+  //   }
+  //   const childList = toChildrenArray(_children)
+  //   if (chilnList.length !== 1 || !isValidElement(childList[0])) {
+  //     return { child: childList, functional: false }
+  //   }
+  //   return { child: childList[0], functional: false }
+  // })
 
-    const value = parent?.getFieldValue(name)
-    return cloneElement(children as ReactElement, { onChange: handleChange, value })
+  if (!isValidElement(children)) return children
+
+  // NEXT: 处理这里
+  const $props = children.props
+  const handleChange = (event: Event) => {
+    // 同步内部值
+    const val = (event.target as HTMLInputElement).value
+    parent?.setFieldValue(name, val)
+    parent?.get(name)?.forEach(($control) => $control.validate(val))
+    $props.onChange?.(event)
   }
-  return children
+
+  const value = parent?.getFieldValue(name)
+  return cloneElement(children as ReactElement, { onChange: handleChange, value })
 }

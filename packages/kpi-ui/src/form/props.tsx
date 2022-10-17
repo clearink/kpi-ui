@@ -72,7 +72,7 @@ export type Forms = Record<string, FormInstance>
 
 export type NamePath = string | number | (string | number)[]
 
-export interface FormItemProps<State = any> {
+export interface FormFieldProps<State = any> {
   /**
    * @zh 字段路径
    */

@@ -1,9 +1,10 @@
-import { useMemo, Children } from 'react'
+import { useMemo, Children, Fragment } from 'react'
 import { withDefaultProps } from '../_hocs'
 import { useFlexGapSupport, usePrefix } from '../_hooks'
 import useSpaceGutter from './hooks/use_space_gutter'
 import useClass from './hooks/use_class'
 import { SpaceProps } from './props'
+import { toChildrenArray } from '../_utils'
 
 function Space(props: SpaceProps) {
   const { children: $children, size, style: $style, direction, wrap, split, ...rest } = props
@@ -28,14 +29,14 @@ function Space(props: SpaceProps) {
 
   // 处理 children
   const children = useMemo(() => {
-    const count = Children.count($children)
-    return Children.map($children, (child, index) => {
-      const isEndItem = count - index === 1
+    return toChildrenArray($children, true).map((child, index, childList) => {
+      const isEndItem = childList.length - index === 1
       const marginRight = isEndItem || vertical ? undefined : hGutter
       const paddingBottom = wrap || vertical ? vGutter : undefined
       const gapStyle = gapSupport ? undefined : { marginRight, paddingBottom }
+      const key = child?.key || index
       return (
-        <>
+        <Fragment key={key}>
           <div
             className={`${name}-item`}
             style={gapStyle}
@@ -50,10 +51,10 @@ function Space(props: SpaceProps) {
               {split}
             </span>
           )}
-        </>
+        </Fragment>
       )
     })
-  }, [$children, hGutter, vGutter, gapSupport, name, vertical, wrap, split])
+  }, [$children, gapSupport, hGutter, name, split, vGutter, vertical, wrap])
 
   return (
     <div

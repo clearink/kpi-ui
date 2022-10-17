@@ -6,4 +6,8 @@ export interface RowContextState {
   hGutter: number
   vGutter: number
 }
-export default CtxHelper<RowContextState>()
+export default CtxHelper<RowContextState>({
+  gapSupport: false,
+  hGutter: 0,
+  vGutter: 0,
+})

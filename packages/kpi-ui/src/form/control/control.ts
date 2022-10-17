@@ -4,11 +4,10 @@
 import { MutableRefObject } from 'react'
 import { isUndefined, toArray } from '../../_utils'
 import { deleteIn, getIn, setIn } from '../utils'
-import type { NamePath } from '../props'
-import type { InternalFormInstance, WatchCallBack } from '../internal_props'
-import type { ArrowFunction } from '../../_types'
 import { BaseSchema } from '../../_utils/form_schema/schema'
 import logger from '../../_utils/logger'
+import type { NamePath } from '../props'
+import type { InternalFormInstance, WatchCallBack } from '../internal_props'
 
 export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
 
@@ -41,11 +40,6 @@ export class FormFieldControl extends BaseControl {
     this._parent = parent
   }
 
-  // rule 改变时 是否需要重新校验呢？
-  registerValidation(handler: () => void) {
-    // this.validate = handler
-  }
-
   _validator: BaseSchema | undefined = undefined
 
   setValidator(validator?: BaseSchema) {
@@ -56,9 +50,8 @@ export class FormFieldControl extends BaseControl {
   // TODO: 字段校验
   async validate(value: any) {
     console.log('validate', value)
-    // if (!this._rule) return value
-    // return this._rule.validate(value)
-    // 设置字段状态值
+    if (!this._validator) return value
+    return this._validator.validate(value)
   }
 }
 
@@ -69,18 +62,27 @@ export class FormFieldControl extends BaseControl {
 /** ===================================================== */
 
 export class FormGroupControl<State = any> extends BaseControl {
-  injectForm(): InternalFormInstance<State> {
+  injectForm = (): InternalFormInstance<State> => {
     // 向外暴露函数 避免内部数据被更改
     return {
       getFieldsValue: this.getFieldsValue,
       validate: () => Promise.resolve(),
       submit: () => {},
       resetFields: () => {},
-      // TODO: 优化返回值，仅仅返回一些必要的属性
-      getInternalHooks: (secret: string) => (secret === HOOK_MARK ? this : undefined),
+      getInternalHooks: this._getInternalHooks.bind(this),
       // eslint-disable-next-line no-return-assign
       setPreserve: (preserve = true) => (this._preserve = preserve),
     }
+  }
+
+  // TODO: 优化返回值，仅仅返回一些必要的属性
+  private _getInternalHooks(secret: string) {
+    const matched = secret === HOOK_MARK
+
+    logger.warn(!matched, '`getInternalHooks` is internal usage. Should not call directly.')
+    if (!matched) return undefined
+
+    return this
   }
 
   // 收集当前表单的数据
@@ -114,6 +116,7 @@ export class FormGroupControl<State = any> extends BaseControl {
   ensureFieldInitial(namePath: NamePath | undefined, initialValue: any) {
     // name 不存在 或者 已存在该值就不设置了
     if (!BaseControl._getName(namePath) || this.getFieldValue(namePath) !== undefined) return
+
     const topInitial = this.getInitial(namePath)
     const $initialValue = isUndefined(topInitial) ? initialValue : topInitial
     logger.warn(
@@ -130,6 +133,8 @@ export class FormGroupControl<State = any> extends BaseControl {
     const fieldName = BaseControl._getName(namePath)
     if (!fieldName || !namePath) return
     this._state = setIn(this._state, toArray(namePath), value)
+
+    // 那么要如何才能通知到视图呢？
     const controls = this.get(namePath)
     if (!controls || !controls.size) return
 

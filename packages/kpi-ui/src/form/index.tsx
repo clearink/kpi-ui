@@ -1,11 +1,11 @@
 import InternalForm from './components/form'
-import FormItem from './components/form_item'
+import InternalFormField from './components/form_field'
 
 type InternalFormType = typeof InternalForm
 interface FormType extends InternalFormType {
-  Item: typeof FormItem
+  Field: typeof InternalFormField
 }
 const Form = InternalForm as FormType
-Form.Item = FormItem
+Form.Field = InternalFormField
 
 export default Form

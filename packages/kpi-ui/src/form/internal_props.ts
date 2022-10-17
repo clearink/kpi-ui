@@ -1,7 +1,8 @@
 // form 内部类型声明
 
-import type { FormGroupControl } from './control/control'
-import type { FormInstance } from './props'
+import { Equal } from '../_types'
+import type { FormGroupControl, HOOK_MARK } from './control/control'
+import type { FormInstance, FormFieldProps } from './props'
 
 export interface InternalFormInstance<S = any> extends FormInstance<S> {
   /**
@@ -15,9 +16,18 @@ export interface InternalFormInstance<S = any> extends FormInstance<S> {
    * @zh 设置字段删除时是否保留数据
    */
   setPreserve: (preserve?: boolean) => void
+
+  /**
+   * @private
+   * @zh FormList 使用 TOD: 是否要额外增加一个 context 呢？
+   */
+  parentNamePath?: InternalNamePath
 }
 
 export type InternalNamePath = (string | number)[]
+export interface InternalFormFieldProps<S = any> extends Omit<FormFieldProps<S>, 'name'> {
+  name: InternalNamePath
+}
 export type WatchCallBack<S = any> = (value: any, state: S) => void
 
 // export type GetIn<State extends any, Path extends PathItem[]> = Path extends [infer P, ...infer R]

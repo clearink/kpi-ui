@@ -9,6 +9,7 @@ export const string = {
   min: '{#path} must be at least {#min} characters',
   max: '{#path} must be at most {#max} characters',
   length: '{#path} must be exactly {#length} characters',
+  range: '{#path} length be between {#min} and {#max}',
   regex: '{#path} must match the following: "{#regex}"',
   email: '{#path} must be a valid email',
   url: '{#path} must be a valid URL',

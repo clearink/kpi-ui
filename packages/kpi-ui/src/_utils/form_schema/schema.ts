@@ -182,6 +182,11 @@ export class StringSchema extends BaseSchema<string> {
     return this._refine('length', { rule, message, params: { length } })
   }
 
+  range(min: number, max: number, message: Message = string.range) {
+    const rule = (value: string) => value.length >= min && value.length <= max
+    return this._refine('range', { rule, message, params: { min, max } })
+  }
+
   regex(regex: RegExp, message: Message = string.regex) {
     const rule = (value: string) => regex.test(value)
     return this._refine('regex', { rule, message, params: { regex } })
@@ -700,4 +705,16 @@ export class NullableSchema<
   unwrap() {
     return this.schema
   }
+}
+
+export const isRequiredSchema = (schema: BaseSchema | null | undefined = undefined) => {
+  // 侦测是否含有 schema 字段 如果有则递归
+  if (!schema) return false
+  while (schema && (schema as any).schema) {
+    if (schema instanceof OptionalSchema || schema instanceof NullableSchema) {
+      return false
+    }
+    schema = (schema as any).schema
+  }
+  return true
 }
