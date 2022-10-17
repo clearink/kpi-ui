@@ -1,10 +1,10 @@
-import { useMemo, Children, Fragment } from 'react'
+import { useMemo, Children, Fragment, ReactElement } from 'react'
 import { withDefaultProps } from '../_hocs'
 import { useFlexGapSupport, usePrefix } from '../_hooks'
 import useSpaceGutter from './hooks/use_space_gutter'
 import useClass from './hooks/use_class'
 import { SpaceProps } from './props'
-import { toChildrenArray } from '../_utils'
+import { flattenChildren } from '../_utils'
 
 function Space(props: SpaceProps) {
   const { children: $children, size, style: $style, direction, wrap, split, ...rest } = props
@@ -29,12 +29,12 @@ function Space(props: SpaceProps) {
 
   // 处理 children
   const children = useMemo(() => {
-    return toChildrenArray($children, true).map((child, index, childList) => {
+    return flattenChildren($children).map((child, index, childList) => {
       const isEndItem = childList.length - index === 1
       const marginRight = isEndItem || vertical ? undefined : hGutter
       const paddingBottom = wrap || vertical ? vGutter : undefined
       const gapStyle = gapSupport ? undefined : { marginRight, paddingBottom }
-      const key = child?.key || index
+      const key = (child as ReactElement)?.key || index
       return (
         <Fragment key={key}>
           <div

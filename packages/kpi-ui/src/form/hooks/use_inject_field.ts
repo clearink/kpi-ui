@@ -1,11 +1,17 @@
 // 向 Form.Item 包裹的组件内部注入数据
 
-import { isValidElement, cloneElement, ReactElement, useEffect, ReactNode } from 'react'
+import {
+  isValidElement,
+  cloneElement,
+  ReactElement,
+  useEffect,
+  useCallback,
+  ReactNode,
+} from 'react'
 import { useEvent } from '../../_hooks'
-import { toChildrenArray } from '../../_utils/to_array'
+import { flattenChildren, isFunction } from '../../_utils'
 import type { FormFieldProps } from '../props'
 import type { FormGroupControl } from '../control/control'
-import { isFunction } from '../../_utils'
 
 export default function useInjectField<State = any>(
   props: FormFieldProps,
@@ -20,6 +26,23 @@ export default function useInjectField<State = any>(
   useEffect(() => {
     parent?.ensureFieldInitial(name, initialValue)
   }, [initialValue, name, parent])
+
+  const handler = useCallback((_children: ReactNode) => {
+    // render props 方式
+    if (isFunction(_children)) {
+      return {
+        functional: true,
+        // todo
+        ...handler(_children(getInjectProps, getMeta, context)),
+      }
+    }
+    const childList = flattenChildren(_children)
+    // 多个元素 或者 第一个元素不是 reactElement
+    if (childList.length !== 1 || !isValidElement(childList[0])) {
+      return { child: childList, functional: false }
+    }
+    return { child: childList[0], functional: false }
+  }, [])
 
   // 处理 children
   // const handler = useEvent((_children: ReactNode) => {

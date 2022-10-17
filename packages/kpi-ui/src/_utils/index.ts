@@ -1,4 +1,5 @@
 export * from './value'
 export * from './is'
 export { default as capitalize } from './capitalize'
-export { default as toArray, toChildrenArray } from './to_array'
+export { default as toArray } from './to_array'
+export { default as flattenChildren } from './flatten_children'
