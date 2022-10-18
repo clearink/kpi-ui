@@ -90,5 +90,9 @@ export interface InternalHookReturn<State = any> {
    * @private
    * @zh 设置字段初始值
    */
-  ensureInitialized: (namePath: NamePath | undefined, initialValue: any) => void
+  ensureInitialized: (
+    mounted: boolean,
+    initialValue: any,
+    namePath?: NamePath
+  ) => FormFieldControl[] | undefined
 }

@@ -21,15 +21,15 @@ export default function useInjectField(
 ) {
   const { children: $children, name, initialValue } = props
 
-  // 设置默认值 仅挂载时有效
-
   const mounted = useMounted()
-  // 仅设置field 不更新
-  !mounted.current && internalHook?.ensureInitialized(name, initialValue)
-  // useEffect(() => {
-  //   // 获得全部controls 然后更新，前提是需要检查 state 是否有同名的值
-  //   internalHook?.ensureInitialized(name, initialValue)
-  // }, [initialValue, internalHook, name])
+  // 设置默认值 仅挂载时有效
+  const shouldUpdateControl = internalHook?.ensureInitialized(mounted.current, initialValue, name)
+  // TODO: 还要判断下是否全相等, 不相等才需要 forceUpdate
+  useEffect(() => {
+    shouldUpdateControl?.forEach((_control) => {
+      if (_control !== control) _control.forceUpdate()
+    })
+  }, [control, shouldUpdateControl])
 
   // 收集注册到子组件的数据
   const collect = collectInjectProps(props, context, control)

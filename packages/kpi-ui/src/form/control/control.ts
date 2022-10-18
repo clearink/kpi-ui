@@ -182,9 +182,10 @@ export class FormGroupControl<State = any> extends BaseControl {
   }
 
   // 设置字段初始值
-  ensureInitialized(namePath?: NamePath, $initialValue: any = undefined) {
+  ensureInitialized(mounted: boolean, $initialValue: any, namePath?: NamePath) {
     // name 不存在 或者 已存在该值就不设置了
-    if (!BaseControl._getName(namePath) || this.getFieldValue(namePath) !== undefined) return
+    if (!BaseControl._getName(namePath) || mounted) return
+    if (this.getFieldValue(namePath) !== undefined) return
 
     const topInitial = this.getInitialValue(namePath)
     const initialValue = isUndefined(topInitial) ? $initialValue : topInitial
@@ -194,13 +195,11 @@ export class FormGroupControl<State = any> extends BaseControl {
     )
     if (isUndefined(initialValue)) return
     this._state = setIn(this._state, toArray(namePath), initialValue)
-    // this.setFieldValue(namePath, initialValue)
-    // TODO: 要专门写一个方法用于更新相关的 control
 
+    // 那么要如何才能通知到视图呢？
     const controls = this.get(namePath)
     if (!controls || !controls.size) return
-    console.log('controls', new Set(controls))
-    // controls.forEach((control) => control.forceUpdate())
+    return [...controls]
   }
 
   // store
