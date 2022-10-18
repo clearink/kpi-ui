@@ -11,10 +11,11 @@ export function useWatchValue(namePath?: NamePath, form?: FormInstance) {
   const [value, setValue] = useState()
   const context = FieldContext.useState()
   const instance = (form ?? context) as InternalFormInstance | undefined
-  const parent = instance?.getInternalHooks(HOOK_MARK)
+  const formGroup = instance?.getInternalHooks(HOOK_MARK)
+
   useEffect(() => {
-    parent?.registerWatch(namePath, () => {})
-  }, [namePath, parent])
+    formGroup?.registerWatch(namePath, () => {})
+  }, [namePath, formGroup])
   return value
 }
 

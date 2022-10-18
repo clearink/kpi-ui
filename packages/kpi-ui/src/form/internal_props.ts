@@ -1,32 +1,39 @@
 // form 内部类型声明
 
-import { Equal } from '../_types'
-import type { FormGroupControl, HOOK_MARK } from './control/control'
-import type { FormInstance, FormFieldProps } from './props'
+import type { FormFieldControl } from './control/control'
+import type { FormInstance, FormFieldProps, NamePath } from './props'
 
 export interface InternalFormInstance<S = any> extends FormInstance<S> {
   /**
    * @private
    * @zh 内部方法，外部禁止使用
    */
-  getInternalHooks: (secret: string) => FormGroupControl<S> | undefined
-
-  /**
-   * @private
-   * @zh 设置字段删除时是否保留数据
-   */
-  setPreserve: (preserve?: boolean) => void
+  getInternalHooks: (secret: string) => InternalHookReturn | undefined
 
   /**
    * @private
    * @zh FormList 使用 TOD: 是否要额外增加一个 context 呢？
    */
   parentNamePath?: InternalNamePath
+
+  /**
+   * @private
+   * @zh 设置字段校验时的时机
+   */
+  validateTrigger?: string | string[] | false
 }
 
 export type InternalNamePath = (string | number)[]
 export interface InternalFormFieldProps<S = any> extends Omit<FormFieldProps<S>, 'name'> {
+  /**
+   * @zh 字段路径
+   */
   name: InternalNamePath
+
+  /**
+   *
+   */
+  onStatusChange?: () => void
 }
 export type WatchCallBack<S = any> = (value: any, state: S) => void
 
@@ -47,3 +54,41 @@ export type FormControlStatus = 'VALID' | 'INVALID' | 'WARNING' | 'PENDING' | 'D
 // public getIn<N extends PathItem | PathItem[]>(name: N) {
 //   return getIn(this._state, toArray(name))
 // }
+
+export interface InternalHookReturn<State = any> {
+  /**
+   * @private
+   * @zh 设置字段删除时是否保留数据
+   */
+  setPreserve: (preserve?: boolean) => void
+
+  /**
+   * @private
+   * @zh 设置默认值
+   */
+  setInitialValues: (initial: Partial<State> | undefined, mounted: boolean) => void
+
+  /**
+   * @private
+   * @zh 注册字段
+   */
+  registerField: (control: FormFieldControl, namePath?: NamePath) => (preserve?: boolean) => void
+  /**
+   * @private
+   * @zh 注册监听事件
+   */
+  registerWatch: (namePath: NamePath | undefined, callback: WatchCallBack) => () => void
+
+  /**
+   * @private
+   * @zh 订阅依赖字段
+   */
+
+  subscribe: (namePath?: NamePath, dependencies?: NamePath[]) => () => void
+
+  /**
+   * @private
+   * @zh 设置字段初始值
+   */
+  ensureInitialized: (namePath: NamePath | undefined, initialValue: any) => void
+}

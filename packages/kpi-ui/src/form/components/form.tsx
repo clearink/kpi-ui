@@ -6,29 +6,44 @@ import {
   useImperativeHandle,
   useEffect,
   useMemo,
+  Ref,
+  ReactElement,
 } from 'react'
 import { FieldContext, FormContext } from '../../_context'
+import { withDefaultProps } from '../../_hocs'
 import { useEvent, useMounted } from '../../_hooks'
 import { isFunction } from '../../_utils'
 import { HOOK_MARK } from '../control/control'
 import useForm from '../hooks/use_form'
-import { InternalFormInstance } from '../internal_props'
+import type { InternalFormInstance } from '../internal_props'
 import type { FormInstance, FormProps } from '../props'
 
 function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance>) {
-  const { name, as, form, children, onFinish, onFailed, onReset, preserve, initialValues } = props
+  const {
+    name,
+    as,
+    form,
+    children,
+    onFinish,
+    onFailed,
+    onReset,
+    preserve,
+    initialValues,
+    validateTrigger,
+  } = props
 
   const instance = useForm(form) as InternalFormInstance // form 实例
   useImperativeHandle(ref, () => instance)
 
-  const groupControl = instance.getInternalHooks(HOOK_MARK)!
+  const internalHook = useMemo(() => instance.getInternalHooks(HOOK_MARK), [instance])
 
-  groupControl.setPreserve(preserve)
+  internalHook?.setPreserve(preserve)
   // 如果form是 render props 不要主动更新视图
 
   const mounted = useMounted()
+
   // 设置初始值, 仅在挂载前设置一次
-  groupControl?.setInitial(initialValues, mounted.current)
+  internalHook?.setInitialValues(initialValues, mounted.current)
   // 用于多表单联动
   const parent = FormContext.useState()
   useEffect(() => parent.register(instance, name), [instance, name, parent])
@@ -51,6 +66,10 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     return as === null ? Fragment : 'form'
   }, [as])
 
+  const fieldContextValue = useMemo(() => {
+    return { ...instance, validateTrigger }
+  }, [instance, validateTrigger])
+
   let NODE = children
   if (isFunction(children)) NODE = children(instance.getFieldsValue(), instance)
 
@@ -59,12 +78,14 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
       onSubmit={handleSubmit}
       onReset={handleReset}
     >
-      <FieldContext.Provider value={instance}>{NODE}</FieldContext.Provider>
+      <FieldContext.Provider value={fieldContextValue}>{NODE}</FieldContext.Provider>
     </Root>
   )
 }
 
-export default forwardRef<FormInstance, FormProps>(Form)
+export default forwardRef<FormInstance, FormProps>(Form) as <State = any>(
+  props: FormProps<State> & { ref?: Ref<FormInstance<State>> }
+) => ReactElement
 
 // // Form 的初步使用方式
 // function App() {

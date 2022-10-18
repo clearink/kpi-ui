@@ -1,5 +1,5 @@
 import { isNumber, isArray, isObject, isNullish } from '../../_utils'
-import { InternalNamePath } from '../internal_props'
+import type { InternalNamePath } from '../internal_props'
 
 function internalSet<V = any>(
   source: V,

@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
-/* eslint-disable func-names */
-/* eslint-disable class-methods-use-this */
+/* eslint-disable class-methods-use-this, func-names, no-console */
 function isDev(): MethodDecorator {
   return function (_, __, descriptor: TypedPropertyDescriptor<any>) {
     const { value } = descriptor

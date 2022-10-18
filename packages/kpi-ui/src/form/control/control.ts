@@ -3,11 +3,16 @@
 
 import { MutableRefObject } from 'react'
 import { isUndefined, toArray } from '../../_utils'
-import { deleteIn, getIn, setIn } from '../utils'
+import { deleteIn, getIn, setIn } from '../utils/value'
 import { BaseSchema } from '../../_utils/form_schema/schema'
 import logger from '../../_utils/logger'
 import type { NamePath } from '../props'
-import type { InternalFormInstance, WatchCallBack } from '../internal_props'
+import type {
+  FormControlStatus,
+  InternalFormInstance,
+  InternalHookReturn,
+  WatchCallBack,
+} from '../internal_props'
 
 export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
 
@@ -34,7 +39,8 @@ export class BaseControl {
 /** ===================================================== */
 
 export class FormFieldControl extends BaseControl {
-  protected _parent: FormGroupControl | undefined = undefined
+  _parent: FormGroupControl | undefined = undefined
+  // protected _parent: FormGroupControl | undefined = undefined
 
   setParent(parent?: FormGroupControl) {
     this._parent = parent
@@ -45,6 +51,61 @@ export class FormFieldControl extends BaseControl {
   setValidator(validator?: BaseSchema) {
     if (!(validator instanceof BaseSchema)) return
     this._validator = validator
+  }
+
+  // 校验状态 交给 Form.Field 维护
+  protected _status: FormControlStatus = 'VALID'
+
+  get valid() {
+    return this._status === 'VALID'
+  }
+
+  get invalid() {
+    return this._status === 'INVALID'
+  }
+
+  get warning() {
+    return this._status === 'WARNING'
+  }
+
+  get pending() {
+    return this._status === 'PENDING'
+  }
+
+  get disabled() {
+    return this._status === 'DISABLED'
+  }
+
+  get enabled() {
+    return this._status !== 'DISABLED'
+  }
+
+  protected _touched = false // 以是否触发 blur 事件为准
+
+  get touched() {
+    return this._touched
+  }
+
+  get untouched() {
+    return !this._touched
+  }
+
+  setTouched(touched: boolean) {
+    this._touched = touched
+  }
+
+  protected _pristine = true // 未被更改值则为 true
+
+  get pristine() {
+    return this._pristine
+  }
+
+  get dirty() {
+    return !this._pristine
+  }
+
+  setPristine(pristine: boolean) {
+    this._pristine = pristine
   }
 
   // TODO: 字段校验
@@ -65,24 +126,32 @@ export class FormGroupControl<State = any> extends BaseControl {
   injectForm = (): InternalFormInstance<State> => {
     // 向外暴露函数 避免内部数据被更改
     return {
-      getFieldsValue: this.getFieldsValue,
+      getFieldValue: this.getFieldValue.bind(this),
+      getFieldsValue: this.getFieldsValue.bind(this),
+      setFieldValue: this.setFieldValue.bind(this),
       validate: () => Promise.resolve(),
       submit: () => {},
       resetFields: () => {},
       getInternalHooks: this._getInternalHooks.bind(this),
-      // eslint-disable-next-line no-return-assign
-      setPreserve: (preserve = true) => (this._preserve = preserve),
     }
   }
 
   // TODO: 优化返回值，仅仅返回一些必要的属性
-  private _getInternalHooks(secret: string) {
+  private _getInternalHooks(secret: string): InternalHookReturn | undefined {
     const matched = secret === HOOK_MARK
 
     logger.warn(!matched, '`getInternalHooks` is internal usage. Should not call directly.')
     if (!matched) return undefined
 
-    return this
+    return {
+      setInitialValues: this.setInitialValues.bind(this),
+      registerField: this.registerField.bind(this),
+      registerWatch: this.registerWatch.bind(this),
+      subscribe: this.subscribe.bind(this),
+      ensureInitialized: this.ensureInitialized.bind(this),
+      // eslint-disable-next-line no-return-assign
+      setPreserve: (preserve = true) => (this._preserve = preserve),
+    }
   }
 
   // 收集当前表单的数据
@@ -98,7 +167,7 @@ export class FormGroupControl<State = any> extends BaseControl {
   private _initial = {} as Partial<State>
 
   // TODO: 待完善
-  setInitial(initial: Partial<State> | undefined, mounted: boolean) {
+  private setInitialValues(initial?: Partial<State>, mounted = true) {
     this._initial = initial || {}
     if (mounted) return
     const nextState = setIn
@@ -108,28 +177,36 @@ export class FormGroupControl<State = any> extends BaseControl {
     // const nextState = setIn({}, )
   }
 
-  getInitial(name: NamePath | undefined) {
+  private getInitialValue(name?: NamePath) {
     return getIn(this._initial, toArray(name))
   }
 
   // 设置字段初始值
-  ensureFieldInitial(namePath: NamePath | undefined, initialValue: any) {
+  ensureInitialized(namePath?: NamePath, $initialValue: any = undefined) {
     // name 不存在 或者 已存在该值就不设置了
     if (!BaseControl._getName(namePath) || this.getFieldValue(namePath) !== undefined) return
 
-    const topInitial = this.getInitial(namePath)
-    const $initialValue = isUndefined(topInitial) ? initialValue : topInitial
+    const topInitial = this.getInitialValue(namePath)
+    const initialValue = isUndefined(topInitial) ? $initialValue : topInitial
     logger.warn(
       !isUndefined(topInitial) && !isUndefined(initialValue),
       "form has initialValues, don't set field initialValue"
     )
-    if (!isUndefined($initialValue)) this.setFieldValue(namePath, $initialValue)
+    if (isUndefined(initialValue)) return
+    this._state = setIn(this._state, toArray(namePath), initialValue)
+    // this.setFieldValue(namePath, initialValue)
+    // TODO: 要专门写一个方法用于更新相关的 control
+
+    const controls = this.get(namePath)
+    if (!controls || !controls.size) return
+    console.log('controls', new Set(controls))
+    // controls.forEach((control) => control.forceUpdate())
   }
 
   // store
   private _state = {} as State
 
-  setFieldValue(namePath: NamePath | undefined, value: any) {
+  setFieldValue(namePath?: NamePath, value: any = undefined) {
     const fieldName = BaseControl._getName(namePath)
     if (!fieldName || !namePath) return
     this._state = setIn(this._state, toArray(namePath), value)
@@ -165,10 +242,6 @@ export class FormGroupControl<State = any> extends BaseControl {
   }
 
   private _preserve = true
-
-  setPreserve(preserve = true) {
-    this._preserve = preserve
-  }
 
   _controls = new Map<string, { namePath: NamePath; control: Set<FormFieldControl> }>()
 
@@ -225,7 +298,7 @@ export class FormGroupControl<State = any> extends BaseControl {
   // 实现 useWatch 功能
   private _watchList: { namePath?: NamePath; callback: WatchCallBack<State> }[] = []
 
-  registerWatch(namePath: NamePath | undefined, callback: (value: any, state: State) => void) {
+  registerWatch(namePath: NamePath | undefined, callback: WatchCallBack) {
     this._watchList.push({ namePath, callback })
     return () => {
       this._watchList = this._watchList.filter(({ callback: fn }) => fn !== callback)

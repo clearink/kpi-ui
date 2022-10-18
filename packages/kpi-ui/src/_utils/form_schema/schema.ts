@@ -1,5 +1,4 @@
-/* eslint-disable max-classes-per-file */
-/* eslint-disable class-methods-use-this */
+/* eslint-disable class-methods-use-this, max-classes-per-file */
 import SchemaContext from './context'
 import * as REGEX from './utils/regex'
 import { Valid, Invalid, makeRule } from './utils/make_rule'

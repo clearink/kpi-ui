@@ -24,29 +24,33 @@ function InternalFormField(props: InternalFormFieldProps) {
   const fieldStatus = useFieldStatus(props, forceUpdate)
 
   // 父级表单
-  const { getInternalHooks } = FieldContext.useState()
-  const parent = getInternalHooks(HOOK_MARK)
+  const context = FieldContext.useState()
+  const internalHook = useMemo(() => context.getInternalHooks(HOOK_MARK), [context])
   // TODO：是否还要注册某些回调？
   const control = useRef(new FormFieldControl(forceUpdate, useMounted()))
 
   // 同步参数校验
   useEffect(() => control.current.setValidator(rule), [rule])
 
+  // console.log('internalHook', internalHook)
+  console.log('internalHook', internalHook)
+
   // 简单判断下是否为必填项
   const isRequired = useMemo(() => required ?? isRequiredSchema(rule), [required, rule])
 
-  console.log(parent)
-
   // 注册子字段 销毁时移除该字段(done)
   useEffect(() => {
-    const cancel = parent?.registerField(control.current, name)
+    const cancel = internalHook?.registerField(control.current, name)
     return () => cancel?.(preserve)
-  }, [name, parent, preserve])
+  }, [name, internalHook, preserve])
 
   // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数(done)
-  useEffect(() => parent?.subscribe(name, dependencies), [dependencies, name, parent])
+  useEffect(() => {
+    const unsubscribe = internalHook?.subscribe(name, dependencies)
+    return unsubscribe
+  }, [dependencies, name, internalHook])
 
-  const $children = useInjectField(props, parent)
+  const $children = useInjectField(props, context, control.current, internalHook)
 
   return <Fragment key={resetCount}>{$children}</Fragment>
 }
@@ -64,6 +68,8 @@ function WrapperFormField(props: FormFieldProps) {
 
   const $props = { key, name: namePath, ...rest }
 
+  // 由于这里根据 name 设置了 key
+  // name 改变会重新渲染一个新的组件， 不需要在 InternalFormField 监听 name 了
   return <InternalFormField {...$props} />
 }
 

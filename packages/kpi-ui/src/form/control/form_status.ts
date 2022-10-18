@@ -3,7 +3,7 @@ import type { FormControlStatus } from '../internal_props'
 export default class FormStatus {
   constructor(private forceUpdate: () => void) {}
 
-  // 校验状态 交给Form.Item维护
+  // 校验状态 交给 Form.Field 维护
   protected _status: FormControlStatus = 'VALID'
 
   get valid() {
