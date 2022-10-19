@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useIsomorphicEffect } from '..'
 import detectFlexGap from './detect_flex_gap'
 
 // 是否支持 flex gap 属性
 export default function useFlexGapSupport() {
   const [support, setSupport] = useState(() => detectFlexGap())
-  useEffect(() => {
+  useIsomorphicEffect(() => {
     setSupport(detectFlexGap())
   }, [])
   return support

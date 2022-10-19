@@ -2,17 +2,19 @@
 /* eslint-disable max-classes-per-file */
 
 import { MutableRefObject } from 'react'
-import { isUndefined, toArray } from '../../_utils'
-import { deleteIn, getIn, setIn } from '../utils/value'
-import { BaseSchema } from '../../_utils/form_schema/schema'
-import logger from '../../_utils/logger'
-import type { NamePath } from '../props'
+import { isUndefined, logger, toArray } from '../_utils'
+import { deleteIn, getIn, setIn } from './utils/value'
+import { BaseSchema } from '../_utils/form_schema/schema'
+import type { NamePath } from './props'
 import type {
   FormControlStatus,
+  InternalFieldMeta,
   InternalFormInstance,
   InternalHookReturn,
+  InternalNamePath,
+  UpdateFilterCallback,
   WatchCallBack,
-} from '../internal_props'
+} from './internal_props'
 
 export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
 
@@ -25,7 +27,7 @@ export class BaseControl {
   }
 
   // 获取名称字符串
-  static _getName(namePath?: NamePath) {
+  static _getName(namePath: NamePath) {
     const paths = toArray(namePath)
     const separator = '_$_KPI_FORM_CONTROL_$_'
     return paths.map((item) => `${typeof item}:${item}`).join(separator)
@@ -39,6 +41,14 @@ export class BaseControl {
 /** ===================================================== */
 
 export class FormFieldControl extends BaseControl {
+  constructor(
+    private _name: InternalNamePath, // 记录 name
+    _forceUpdate: () => void,
+    mounted: MutableRefObject<boolean>
+  ) {
+    super(_forceUpdate, mounted)
+  }
+
   _parent: FormGroupControl | undefined = undefined
   // protected _parent: FormGroupControl | undefined = undefined
 
@@ -107,6 +117,21 @@ export class FormFieldControl extends BaseControl {
   setPristine(pristine: boolean) {
     this._pristine = pristine
   }
+
+  getFieldMeta(): InternalFieldMeta<any> {
+    return {
+      value: this._parent?.getFieldValue(this._name),
+      dirty: this.dirty,
+      touched: this.touched,
+      pending: this.pending,
+      errors: this._errors,
+      warnings: [],
+      name: this._name,
+    }
+  }
+
+  // 保存错误信息
+  private _errors: string[] = []
 
   // TODO: 字段校验
   async validate(value: any) {
@@ -177,37 +202,42 @@ export class FormGroupControl<State = any> extends BaseControl {
     // const nextState = setIn({}, )
   }
 
-  private getInitialValue(name?: NamePath) {
+  getInitialValue(name: NamePath) {
     return getIn(this._initial, toArray(name))
   }
 
   // 设置字段初始值
-  ensureInitialized(mounted: boolean, $initialValue: any, namePath?: NamePath) {
+  private ensureInitialized(namePath: NamePath, $initialValue?: any) {
     // name 不存在 或者 已存在该值就不设置了
-    if (!BaseControl._getName(namePath) || mounted) return
-    if (this.getFieldValue(namePath) !== undefined) return
+    if (!BaseControl._getName(namePath) || this.getFieldValue(namePath) !== undefined) return
 
     const topInitial = this.getInitialValue(namePath)
     const initialValue = isUndefined(topInitial) ? $initialValue : topInitial
     logger.warn(
-      !isUndefined(topInitial) && !isUndefined(initialValue),
+      !isUndefined(topInitial) && !isUndefined($initialValue),
       "form has initialValues, don't set field initialValue"
     )
-    if (isUndefined(initialValue)) return
-    this._state = setIn(this._state, toArray(namePath), initialValue)
+    if (!isUndefined(initialValue)) this.setFieldValue(namePath, initialValue)
+  }
 
-    // 那么要如何才能通知到视图呢？
+  // TODO: 确定是否要删除
+  private updateControl(namePath: NamePath, filter: UpdateFilterCallback | boolean = true) {
     const controls = this.get(namePath)
     if (!controls || !controls.size) return
-    return [...controls]
+    controls.forEach((control) => {
+      // TODO: 如果值相等 且不是强制更新 就不进行更新
+      // if (isFunction(filter) && !filter(control)) return
+      // 如果值相等 且不是强制更新 就不进行更新
+      // if(isBoolean(filter) && filter && diff)
+      control.forceUpdate()
+    })
   }
 
   // store
   private _state = {} as State
 
-  setFieldValue(namePath?: NamePath, value: any = undefined) {
-    const fieldName = BaseControl._getName(namePath)
-    if (!fieldName || !namePath) return
+  private setFieldValue(namePath: NamePath, value?: any) {
+    if (!BaseControl._getName(namePath)) return
     this._state = setIn(this._state, toArray(namePath), value)
 
     // 那么要如何才能通知到视图呢？
@@ -229,11 +259,11 @@ export class FormGroupControl<State = any> extends BaseControl {
     // 这里是否要执行 watchList ?
   }
 
-  getFieldValue(name?: NamePath) {
-    return getIn(this._state, toArray(name))
+  getFieldValue(namePath: NamePath) {
+    return getIn(this._state, toArray(namePath))
   }
 
-  deleteFieldValue(namePath?: NamePath) {
+  private deleteFieldValue(namePath: NamePath) {
     const paths = toArray(namePath)
     // 路径为空代表删除整个对象，得到 undefined，故此处重置为空对象
     if (paths.length === 0) this._state = {} as State
@@ -242,18 +272,18 @@ export class FormGroupControl<State = any> extends BaseControl {
 
   private _preserve = true
 
-  _controls = new Map<string, { namePath: NamePath; control: Set<FormFieldControl> }>()
+  private _controls = new Map<string, { namePath: NamePath; control: Set<FormFieldControl> }>()
 
   // 获取 control
-  get(namePath?: NamePath) {
+  private get(namePath: NamePath) {
     const name = BaseControl._getName(namePath)
     return this._controls.get(name)?.control
   }
 
   // 注册字段
-  registerField(control: FormFieldControl, namePath?: NamePath) {
+  registerField(namePath: NamePath, control: FormFieldControl) {
     const name = BaseControl._getName(namePath)
-    if (!name || !namePath) return () => {}
+    if (!name) return () => {}
 
     control.setParent(this)
     const cached = this._controls.get(name)
@@ -261,22 +291,23 @@ export class FormGroupControl<State = any> extends BaseControl {
     else this._controls.set(name, { namePath, control: new Set([control]) })
 
     // 字段删除时处理一些副作用
-    return (preserve?: boolean) => {
-      const $preserve = preserve ?? this._preserve
-      if (!$preserve) this.deleteFieldValue()
+    return ($preserve?: boolean) => {
+      const preserve = $preserve ?? this._preserve
       const controls = this._controls.get(name)?.control
       controls?.delete(control)
-      if (controls && !controls.size) this._controls.delete(name)
+      if (controls?.size !== 0) return
+      this._controls.delete(name) // 清空空字段
+      !preserve && this.deleteFieldValue(namePath) // 没有同名字段且不保留数据
     }
   }
 
   // 字段依赖 当数据变更时就会重新校验相应的字段
-  _dependencies = new Map<string, Map<string, NamePath>>()
+  private _dependencies = new Map<string, Map<string, NamePath>>()
 
   // 订阅对应的字段变更，并通知相应的 control
-  subscribe(namePath?: NamePath, dependencies: NamePath[] = []) {
+  private subscribe(namePath: NamePath, dependencies: NamePath[] = []) {
     const fieldName = BaseControl._getName(namePath)
-    if (!fieldName || !namePath) return () => {} // 为空不进行操作
+    if (!fieldName) return () => {} // 为空不进行操作
 
     const cancels = dependencies.map((dependency) => {
       // 被依赖项
@@ -288,16 +319,16 @@ export class FormGroupControl<State = any> extends BaseControl {
       return () => {
         const current = this._dependencies.get(depName)
         current?.delete(fieldName)
-        current && !current.size && this._dependencies.delete(depName)
+        current?.size === 0 && this._dependencies.delete(depName)
       }
     })
     return () => cancels.forEach((cancel) => cancel())
   }
 
   // 实现 useWatch 功能
-  private _watchList: { namePath?: NamePath; callback: WatchCallBack<State> }[] = []
+  private _watchList: { namePath: NamePath; callback: WatchCallBack<State> }[] = []
 
-  registerWatch(namePath: NamePath | undefined, callback: WatchCallBack) {
+  private registerWatch(namePath: NamePath, callback: WatchCallBack) {
     this._watchList.push({ namePath, callback })
     return () => {
       this._watchList = this._watchList.filter(({ callback: fn }) => fn !== callback)
@@ -319,13 +350,13 @@ export class FormGroupControl<State = any> extends BaseControl {
 
 export class FormArrayControl extends FormFieldControl {
   // 注册子控件
-  registerField(control: FormFieldControl, namePath?: NamePath) {
+  registerField(namePath: NamePath, control: FormFieldControl) {
     if (!this._parent || !(this._parent instanceof FormGroupControl)) {
       // logger.warn('无法正确注册')
       // 父级不存在或者父级不是FormGroupControl
       return () => {}
     }
-    return this._parent.registerField(control, namePath)
+    return this._parent.registerField(namePath, control)
   }
 
   /** ===================================================== */
@@ -339,55 +370,3 @@ export class FormArrayControl extends FormFieldControl {
   // remove() {}
   // 可以直接操作 root._state
 }
-
-/**
- * 
- * private setFields = (fields: FieldData[]) => {
-    this.warningUnhooked();
-
-    const prevStore = this.store;
-
-    const namePathList: InternalNamePath[] = [];
-
-    fields.forEach((fieldData: FieldData) => {
-      const { name, errors, ...data } = fieldData;
-      const namePath = getNamePath(name);
-      namePathList.push(namePath);
-
-      // Value
-      if ('value' in data) {
-        this.updateStore(setValue(this.store, namePath, data.value));
-      }
-
-      this.notifyObservers(prevStore, [namePath], {
-        type: 'setField',
-        data: fieldData,
-      });
-    });
-
-    this.notifyWatch(namePathList);
-  };
-
-
-    private notifyObservers = (
-    prevStore: Store,
-    namePathList: InternalNamePath[] | null,
-    info: NotifyInfo,
-  ) => {
-    if (this.subscribable) {
-      const mergedInfo: ValuedNotifyInfo = {
-        ...info,
-        store: this.getFieldsValue(true),
-      };
-      this.getFieldEntities().forEach(({ onStoreChange }) => {
-        onStoreChange(prevStore, namePathList, mergedInfo);
-      });
-    } else {
-      this.forceRootUpdate();
-    }
-  };
-
-   Not use subscribe when using render props
-   useSubscribe(!childrenRenderProps);
-  
- */

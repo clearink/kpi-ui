@@ -1,7 +1,7 @@
 import CtxHelper from './helper'
+import { logger } from '../_utils'
 import type { FormInstance } from '../form/props'
 import type { InternalFormInstance } from '../form/internal_props'
-import logger from '../_utils/logger'
 
 // TODO: 目前还不确定
 interface FormContextState {

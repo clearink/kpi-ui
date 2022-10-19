@@ -560,12 +560,12 @@ export class ObjectSchema<T extends ObjectShape, Out = MakePartial<T>> extends B
     return this.inner
   }
 
-  // TODO: 舍弃不存在的属性
-  strict(message: Message = object.unknown) {
-    const rule = (value: AnyObject) => true
-    // 这个params要如何传进去呢? 只能在执行的时候通过context传递了
-    return this
-  }
+  // // TODO: 舍弃不存在的属性
+  // strict(message: Message = object.unknown) {
+  //   // const rule = (value: AnyObject) => true
+  //   // 这个params要如何传进去呢? 只能在执行的时候通过context传递了
+  //   return this
+  // }
 
   // TODO: 保留不存在的属性
   passthrough() {

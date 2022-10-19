@@ -1,7 +1,7 @@
-import type { AnyObject } from '../../_types'
 import { hasOwn, isObjectLike, toArray } from '../../_utils'
-import { FormFieldControl } from '../control/control'
-import { InternalFormFieldProps, InternalFormInstance } from '../internal_props'
+import type { AnyObject } from '../../_types'
+import type { FormFieldControl } from '../control'
+import type { InternalFormFieldProps, InternalFormInstance } from '../internal_props'
 
 // 从event中获取字段值函数
 function defaultGetValueFromEvent(valuePropName: string) {
@@ -28,6 +28,7 @@ export default function collectInjectProps(
     getValueFromEvent = defaultGetValueFromEvent(valuePropName!),
     normalize = defaultNormalize,
     getValueProps: $getValueProps,
+    onMetaChange,
   } = props
   return (childProps: AnyObject = {}) => {
     const value = context.getFieldValue(name)
@@ -44,10 +45,13 @@ export default function collectInjectProps(
         // dirty = true
         control.setTouched(true)
         control.setPristine(false)
+
         // triggerMetaEvent onMetaChange 字段各种状态变更后通知外部
 
         const nextValue = normalize(getValueFromEvent(...args), value, context.getFieldsValue())
         context.setFieldValue(name, nextValue)
+
+        onMetaChange?.(control.getFieldMeta()) // 更改 meta 属性
 
         // originTrigger
         childProps[trigger!]?.(...args)

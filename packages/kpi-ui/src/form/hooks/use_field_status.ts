@@ -1,5 +1,4 @@
 import { useRef } from 'react'
-import FormStatus from '../control/form_status'
 import type { FormFieldProps } from '../props'
 
 /**
@@ -9,7 +8,7 @@ import type { FormFieldProps } from '../props'
  * 3. touched
  */
 export default function useFieldStatus(props: FormFieldProps, forceUpdate: () => void) {
-  const ref = useRef(new FormStatus(forceUpdate))
+  const ref = useRef(null)
   // 解析 props 分别设置对应属性
   return ref.current
 }

@@ -1,5 +1,6 @@
 import { isNumber, isArray, isObject, isNullish } from '../../_utils'
 import type { InternalNamePath } from '../internal_props'
+// TODO: 模拟 lodash-es/toPath 去解析 name string 生成 数组 不用自己去解析
 
 function internalSet<V = any>(
   source: V,

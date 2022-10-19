@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useIsomorphicEffect } from '..'
 import { INIT_MATCHES, ScreenMatch } from '../../_constant/breakpoint'
 import { isUndefined } from '../../_utils'
 import useRefCallback from '../use-event'
@@ -15,7 +16,7 @@ export default function useBreakpoint(shouldUpdate?: ShouldUpdateHandler) {
     }
   })
 
-  useEffect(() => {
+  useIsomorphicEffect(() => {
     const observer = new MediaObserver(subscribe)
     return () => observer.unsubscribe()
   }, [subscribe])

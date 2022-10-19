@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
+import { useIsomorphicEffect } from '..'
 import Wave from './wave'
 
 export default function useWave<H extends HTMLElement>() {
   const ref = useRef<H>(null)
-  useEffect(() => {
+  useIsomorphicEffect(() => {
     const dom = ref.current
     if (!dom) return
     const wave = new Wave(dom)

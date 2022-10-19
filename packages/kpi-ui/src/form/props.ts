@@ -1,6 +1,7 @@
 import type { ComponentType, ReactElement, FormEvent, FormHTMLAttributes, ReactNode } from 'react'
-import { AnyObject, ArrowFunction } from '../_types'
+import type { AnyObject, ArrowFunction } from '../_types'
 import type { BaseSchema } from '../_utils/form_schema/schema'
+import type { InternalFieldMeta } from './internal_props'
 
 export interface FormProps<S = any>
   extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'children'> {
@@ -69,12 +70,12 @@ export interface FormInstance<S = any> {
   /**
    * @zh 表单收集的数据
    */
-  getFieldValue: (namePath?: NamePath) => any
+  getFieldValue: (namePath: NamePath) => any
 
   /**
    * @zh 设置表单字段数据
    */
-  setFieldValue: (namePath: NamePath | undefined, value: any) => void
+  setFieldValue: (namePath: NamePath, value: any) => void
 
   /**
    * @zh 参数校验
@@ -109,7 +110,11 @@ export interface FormFieldProps<State = any> {
 
   children?:
     | ReactElement
-    | ((control: AnyObject, meta: AnyObject, form: FormInstance<State>) => React.ReactNode)
+    | ((
+        control: AnyObject,
+        meta: InternalFieldMeta<any>,
+        formInstance: FormInstance<State>
+      ) => React.ReactNode)
 
   /**
    * @zh 为 `true` 时不带样式，作为纯字段控件使用
@@ -189,4 +194,9 @@ export interface FormFieldProps<State = any> {
    * @zh 组件获取值后进行转换，再放入 Form 中。不支持异步
    */
   normalize?: (next: any, prev: any, values: State) => any
+
+  /**
+   * @zh 字段状态变更通知
+   */
+  onMetaChange?: (meta: InternalFieldMeta<any>) => void
 }

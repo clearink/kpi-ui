@@ -2,6 +2,7 @@ import { isValidElement, type ReactElement, type ReactNode } from 'react'
 import { flattenChildren, isFunction } from '../../_utils'
 import type { InternalFormFieldProps, InternalFormInstance } from '../internal_props'
 import type { AnyObject } from '../../_types'
+import type { FormFieldControl } from '../control'
 
 export interface InnerReturn {
   functional?: true
@@ -12,12 +13,12 @@ export interface InnerReturn {
 /** 格式化 Form.Field children */
 export default function normalizeChildren(
   injectProps: AnyObject,
-  fieldStatus: AnyObject,
-  context: InternalFormInstance
+  context: InternalFormInstance,
+  control: FormFieldControl
 ) {
   return function normalizeInner(_children: InternalFormFieldProps['children']): InnerReturn {
     if (isFunction(_children)) {
-      const renderProps = _children(injectProps, fieldStatus, context) as ReactElement
+      const renderProps = _children(injectProps, control.getFieldMeta(), context) as ReactElement
       return { ...normalizeInner(renderProps), functional: true }
     }
 

@@ -1,6 +1,6 @@
 import { useReducer, useRef } from 'react'
 import { useMounted } from '../../_hooks'
-import { FormGroupControl } from '../control/control'
+import { FormGroupControl } from '../control'
 import { FormInstance } from '../props'
 
 export default function useForm<State = any>(form?: FormInstance<State>) {

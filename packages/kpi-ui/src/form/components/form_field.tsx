@@ -1,54 +1,53 @@
-import { useRef, Fragment, useReducer, useEffect, useMemo } from 'react'
+import { useRef, Fragment, useReducer, useMemo } from 'react'
 
 import { withDefaultProps } from '../../_hocs'
 import { FieldContext } from '../../_context'
-import { FormFieldControl, HOOK_MARK } from '../control/control'
+import { FormFieldControl, HOOK_MARK } from '../control'
 
-import useFieldStatus from '../hooks/use_field_status'
 import useInjectField from '../hooks/use_inject_field'
-import { useMounted } from '../../_hooks'
+import { useEvent, useIsomorphicEffect, useMounted } from '../../_hooks'
 import { isRequiredSchema } from '../../_utils/form_schema/schema'
 import { isUndefined, toArray } from '../../_utils'
 import type { FormFieldProps } from '../props'
 import type { InternalFormFieldProps } from '../internal_props'
 
 function InternalFormField(props: InternalFormFieldProps) {
-  const { name, rule, dependencies, required, shouldUpdate, initialValue, preserve } = props
+  const { name, rule, dependencies, required, shouldUpdate, preserve } = props
   // 重置次数
   const [resetCount, updateCount] = useReducer((count) => count + 1, 0)
 
   // 强制更新视图
   const [, forceUpdate] = useReducer((count) => count + 1, 0)
 
-  // 字段各种状态
-  const fieldStatus = useFieldStatus(props, forceUpdate)
-
   // 父级表单
   const context = FieldContext.useState()
   const internalHook = useMemo(() => context.getInternalHooks(HOOK_MARK), [context])
   // TODO：是否还要注册某些回调？
-  const control = useRef(new FormFieldControl(forceUpdate, useMounted()))
+  const control = useRef(new FormFieldControl(name, forceUpdate, useMounted()))
 
-  // 同步参数校验
-  useEffect(() => control.current.setValidator(rule), [rule])
+  // 设置参数校验属性
+  useIsomorphicEffect(() => control.current.setValidator(rule), [rule])
 
-  // console.log('internalHook', internalHook)
   console.log('internalHook', internalHook)
 
   // 简单判断下是否为必填项
   const isRequired = useMemo(() => required ?? isRequiredSchema(rule), [required, rule])
 
-  // 注册子字段 销毁时移除该字段(done)
-  useEffect(() => {
-    const cancel = internalHook?.registerField(control.current, name)
+  // 注册子字段 销毁时移除该字段
+  // name 是数组会导致额外的 rerender 所以使用了useEvent
+  const registerField = useEvent(() => {
+    const cancel = internalHook?.registerField(name, control.current)
     return () => cancel?.(preserve)
-  }, [name, internalHook, preserve])
+  })
+  useIsomorphicEffect(registerField, [registerField])
 
-  // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数(done)
-  useEffect(() => {
+  // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
+  // name 是数组会导致额外的 rerender 所以使用了useEvent
+  const subscribe = useEvent(() => {
     const unsubscribe = internalHook?.subscribe(name, dependencies)
     return unsubscribe
-  }, [dependencies, name, internalHook])
+  })
+  useIsomorphicEffect(subscribe, [subscribe])
 
   const $children = useInjectField(props, context, control.current, internalHook)
 
@@ -69,7 +68,7 @@ function WrapperFormField(props: FormFieldProps) {
   const $props = { key, name: namePath, ...rest }
 
   // 由于这里根据 name 设置了 key
-  // name 改变会重新渲染一个新的组件， 不需要在 InternalFormField 监听 name 了
+  // name 改变会重新渲染一个新的组件，不需要在 InternalFormField 监听 name 了
   return <InternalFormField {...$props} />
 }
 
