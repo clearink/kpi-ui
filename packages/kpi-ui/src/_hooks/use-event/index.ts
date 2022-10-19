@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react'
-import { useIsomorphicEffect } from '..'
+import useIsomorphicEffect from '../use-isomorphic-effect'
 import { ArrowFunction } from '../../_types'
 
 // 使用 ref 获得一个memoized 函数 该函数 引用不会变 但是永远会得到最新的数据

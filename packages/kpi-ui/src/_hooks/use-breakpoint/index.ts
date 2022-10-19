@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useIsomorphicEffect } from '..'
+import useIsomorphicEffect from '../use-isomorphic-effect'
 import { INIT_MATCHES, ScreenMatch } from '../../_constant/breakpoint'
 import { isUndefined } from '../../_utils'
 import useRefCallback from '../use-event'

@@ -1,4 +1,5 @@
 // components
+import * as kfc from './_utils/form_schema'
 
 export { default as Button } from './button'
 export { default as Typography } from './typography'
@@ -11,3 +12,10 @@ export { default as Pagination } from './pagination'
 export { default as BackTop } from './back-top'
 export { default as Form } from './form'
 export * as kfc from './_utils/form_schema'
+
+const rule = kfc.object({
+  username: kfc.string(),
+  age: kfc.number(),
+  email: kfc.string().email().optional(),
+})
+type FormValues = kfc.Infer<typeof rule>

@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { useIsomorphicEffect } from '..'
+import useIsomorphicEffect from '../use-isomorphic-effect'
 
 export default function useMounted() {
   const ref = useRef(false)

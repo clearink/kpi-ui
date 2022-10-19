@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useIsomorphicEffect } from '..'
+import useIsomorphicEffect from '../use-isomorphic-effect'
 import detectFlexGap from './detect_flex_gap'
 
 // 是否支持 flex gap 属性

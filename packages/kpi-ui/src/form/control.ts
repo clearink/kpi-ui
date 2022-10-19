@@ -118,6 +118,7 @@ export class FormFieldControl extends BaseControl {
     this._pristine = pristine
   }
 
+  // 后续的逻辑就参考 formik
   getFieldMeta(): InternalFieldMeta<any> {
     return {
       value: this._parent?.getFieldValue(this._name),
@@ -132,6 +133,7 @@ export class FormFieldControl extends BaseControl {
 
   // 保存错误信息
   private _errors: string[] = []
+  // 要不要来个 getFieldError ?
 
   // TODO: 字段校验
   async validate(value: any) {
