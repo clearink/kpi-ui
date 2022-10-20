@@ -5,7 +5,9 @@ export type Name = string | number
 export interface Context {
   path: Name[]
   issue: SchemaContext
+  abortEarly?: boolean
 }
+export type Options = Partial<Omit<Context, 'issue'>>
 
 export interface SchemaIssue {
   message: string
@@ -18,24 +20,18 @@ export type ValidType<T> = { status: 'valid'; value: T }
 export type InValidType = { status: 'invalid' }
 
 export type RuleReturn<T = any> = ValidType<T> | InValidType
-export type MakeRuleReturn<T = any> = (value: T, context?: Context) => RuleReturn<T>
+export type MakeRuleReturn<T = any> = (value: T, context: Context) => Promise<RuleReturn<T>>
 export type ValidateReturn<T> = RuleReturn<T> | Promise<RuleReturn<T>>
-
-export interface RuleOptions<T = any> {
-  rule: (value: T) => boolean
-  message: Message
-  params?: any
-}
 
 export type EffectOptions<Prev, Next = Prev> =
   | {
       type: 'transform'
       // 暂时只能获取path属性
-      handler: (value: Prev, context: Omit<Context, 'issue'>) => Next | Promise<Next>
+      handler: (value: Prev, options: Options) => Next | Promise<Next>
     }
   | {
       type: 'refinement'
-      handler: (value: Prev, context: Context) => RuleReturn<Prev> | Promise<RuleReturn<Prev>>
+      handler: (value: Prev, context: Context) => Promise<RuleReturn<Prev>>
     }
   | {
       type: 'preprocess'

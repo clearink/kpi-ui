@@ -10,9 +10,10 @@ const pathToString = (path: Name[] = []) => {
 }
 
 export default class SchemaContext extends TypeError {
-  static ensure(ctx?: Context, name?: Name | Name[]): Context {
+  static ensure(ctx?: Partial<Context>, name?: Name | Name[]): Context {
     const path = ctx?.path || []
     return {
+      abortEarly: ctx?.abortEarly ?? false,
       path: isNullish(name) ? path : path.concat(name),
       issue: ctx?.issue ?? new SchemaContext(),
     }
