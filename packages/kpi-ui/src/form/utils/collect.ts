@@ -44,16 +44,19 @@ export default function collectInjectProps(
     const injectProps = {
       ...childProps,
       ...getValueProps(value),
+      onBlur: (...args: any[]) => {
+        // 触发 blur 事件后才设置 touched
+        internalHook?.setFieldMeta(name, { touched: true })(onMetaChange)
+        childProps.onBlur?.(...args)
+      },
       // 触发条件
       [trigger!]: (...args: any[]) => {
         // 设置所有所有同名字段的 meta 属性
-        internalHook?.setFieldMeta(name, { touched: true, dirty: true })
 
         const nextValue = normalize(getValueFromEvent(...args), value, context.getFieldsValue())
         context.setFieldValue(name, nextValue)
 
-        // triggerMetaEvent onMetaChange 字段各种状态变更后通知外部
-        onMetaChange?.(control.getFieldMeta()) // 更改 meta 属性
+        internalHook?.setFieldMeta(name, { dirty: true })(onMetaChange)
 
         // originTrigger
         childProps[trigger!]?.(...args)

@@ -22,7 +22,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     name,
     as,
     form,
-    children,
+    children: $children,
     onFinish,
     onFailed,
     onReset,
@@ -48,15 +48,18 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   useIsomorphicEffect(() => parent.register(instance, name), [instance, name, parent])
 
   // 事件处理
-  const handleSubmit = useEvent((e: FormEvent) => {
-    e?.preventDefault?.()
-    e?.stopPropagation?.()
+  const handleSubmit = useEvent((e?: FormEvent) => {
+    isFunction(e?.preventDefault) && e?.preventDefault()
+    isFunction(e?.stopPropagation) && e?.stopPropagation()
     instance.submitForm(onFinish, onFailed)
   })
 
   const handleReset = useEvent((e: FormEvent) => {
-    e?.preventDefault?.()
+    isFunction(e?.preventDefault) && e?.preventDefault()
+    isFunction(e?.stopPropagation) && e?.stopPropagation()
+
     instance.resetForm()
+
     onReset?.(e)
   })
 
@@ -69,15 +72,17 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     return { ...instance, validateTrigger }
   }, [instance, validateTrigger])
 
-  let NODE = children
-  if (isFunction(children)) NODE = children(instance.getFieldsValue(), instance)
+  const children = useMemo(() => {
+    if (!isFunction($children)) return $children
+    return $children(instance.getFieldsValue(), instance)
+  }, [$children, instance])
 
   return (
     <Root
       onSubmit={handleSubmit}
       onReset={handleReset}
     >
-      <FieldContext.Provider value={fieldContextValue}>{NODE}</FieldContext.Provider>
+      <FieldContext.Provider value={fieldContextValue}>{children}</FieldContext.Provider>
     </Root>
   )
 }

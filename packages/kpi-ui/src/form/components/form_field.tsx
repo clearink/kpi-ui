@@ -1,4 +1,4 @@
-import { useRef, Fragment, useReducer, useMemo } from 'react'
+import { useRef, Fragment, useReducer, useMemo, memo } from 'react'
 
 import { withDefaultProps } from '../../_hocs'
 import { FieldContext } from '../../_context'

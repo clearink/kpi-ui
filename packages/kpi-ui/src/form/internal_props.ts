@@ -84,7 +84,10 @@ export interface InternalHookReturn<State = any> {
    * @private
    * @zh 根据名称设置 fieldMeta 属性
    */
-  setFieldMeta: (namePath: NamePath, meta: Partial<InternalFieldMeta>) => void
+  setFieldMeta: (
+    namePath: NamePath,
+    meta: Partial<InternalFieldMeta>
+  ) => (onMetaChange: InternalFormFieldProps['onMetaChange']) => void
 
   /**
    * @private

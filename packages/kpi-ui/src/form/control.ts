@@ -1,7 +1,7 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable max-classes-per-file */
+/* eslint-disable max-classes-per-file, class-methods-use-this */
 
 import { MutableRefObject } from 'react'
+import isEqual from 'react-fast-compare'
 import { isNullish, isUndefined, logger, toArray } from '../_utils'
 import { deleteIn, getIn, setIn } from './utils/value'
 import { BaseSchema } from '../_utils/form_schema/schema'
@@ -9,6 +9,7 @@ import type { NamePath } from './props'
 import type {
   FormControlStatus,
   InternalFieldMeta,
+  InternalFormFieldProps,
   InternalFormInstance,
   InternalHookReturn,
   InternalNamePath,
@@ -105,15 +106,12 @@ export class FormFieldControl extends BaseControl {
     return this._touched
   }
 
-  get untouched() {
-    return !this._touched
-  }
-
   setTouched(touched: boolean) {
     this._touched = touched
   }
 
-  protected _dirty = false // 未被更改值则为 true
+  // 未触发 onChange 为 false
+  protected _dirty = false
 
   get dirty() {
     return this._dirty
@@ -319,10 +317,6 @@ export class FormGroupControl<State = any> extends BaseControl {
       if (controls?.size !== 0) return
       this._controls.delete(name) // 清空空字段
       !preserve && this.deleteFieldValue(namePath) // 没有同名字段且不保留数据
-      // 清除 touched ？
-      // 清除 errors
-      // 清除 dirty
-      // 清除 warnings （暂不考虑） 同名 touched 属性 是否要共用呢？
     }
   }
 
@@ -363,12 +357,18 @@ export class FormGroupControl<State = any> extends BaseControl {
   // 设置 FormField 的 meta 属性
   private setFieldMeta(namePath: NamePath, meta: Partial<InternalFieldMeta>) {
     const controls = this.getControl(namePath)
-    if (!controls || !controls.size) return
+    if (!controls || !controls.size) return () => {}
+    const prev = [...controls][0].getFieldMeta()
+    // 同步全部
     controls.forEach((control) => {
       !isNullish(meta.dirty) && control.setDirty(meta.dirty)
-      !isNullish(meta.touched) && control.setDirty(meta.touched)
+      !isNullish(meta.touched) && control.setTouched(meta.touched)
       !isNullish(meta.errors) && control.setErrors(meta.errors)
     })
+    const current = [...controls][0].getFieldMeta()
+    return (onMetaChange: InternalFormFieldProps['onMetaChange']) => {
+      !isEqual(prev, current) && onMetaChange?.(current)
+    }
   }
 
   validate(value: any) {
