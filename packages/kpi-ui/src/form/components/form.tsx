@@ -51,12 +51,12 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   const handleSubmit = useEvent((e: FormEvent) => {
     e?.preventDefault?.()
     e?.stopPropagation?.()
-    instance.submit(onFinish, onFailed)
+    instance.submitForm(onFinish, onFailed)
   })
 
   const handleReset = useEvent((e: FormEvent) => {
     e?.preventDefault?.()
-    instance.resetFields()
+    instance.resetForm()
     onReset?.(e)
   })
 

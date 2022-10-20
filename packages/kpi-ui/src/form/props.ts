@@ -37,7 +37,7 @@ export interface FormProps<S = any>
   /**
    * @zh 数据校验规则，根据字段名分配给不同的 field
    */
-  schema?: BaseSchema<S>
+  validationSchema?: BaseSchema<S>
 
   /**
    * @zh 字段删除时仍然保留数据
@@ -78,19 +78,24 @@ export interface FormInstance<S = any> {
   setFieldValue: (namePath: NamePath, value: any) => void
 
   /**
+   * @zh 字段参数校验
+   */
+  validateField: () => Promise<void>
+
+  /**
    * @zh 参数校验
    */
-  validate: () => Promise<void>
+  validateForm: () => Promise<void>
 
   /**
    * @zh 提交事件 自动调用 validate 方法
    */
-  submit: (onFinish?: ArrowFunction, onFailed?: ArrowFunction) => void
+  submitForm: (onFinish?: ArrowFunction, onFailed?: ArrowFunction) => void
 
   /**
    * @zh 重置一组字段到 `initialValues`
    */
-  resetFields: (fields?: NamePath[]) => void
+  resetForm: (fields?: NamePath[]) => void
 }
 
 export type Forms = Record<string, FormInstance>
@@ -112,7 +117,7 @@ export interface FormFieldProps<State = any> {
     | ReactElement
     | ((
         control: AnyObject,
-        meta: InternalFieldMeta<any>,
+        meta: InternalFieldMeta,
         formInstance: FormInstance<State>
       ) => React.ReactNode)
 
@@ -198,5 +203,5 @@ export interface FormFieldProps<State = any> {
   /**
    * @zh 字段状态变更通知
    */
-  onMetaChange?: (meta: InternalFieldMeta<any>) => void
+  onMetaChange?: (meta: InternalFieldMeta) => void
 }

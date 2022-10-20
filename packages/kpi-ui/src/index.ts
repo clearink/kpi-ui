@@ -19,19 +19,10 @@ const rule = kfc.object({
   email: kfc.string().email().optional(),
 })
 type FormValues = kfc.Infer<typeof rule>
-
 rule
-  .validate(
-    {
-      username: 1,
-      age: '2',
-      email: '2',
-    },
-    { abortEarly: !true }
-  )
-  .then((value) => {
-    console.log(value)
+  .validate({
+    username: 'a',
   })
   .catch((err) => {
-    console.log(err)
+    console.log({ ...err })
   })

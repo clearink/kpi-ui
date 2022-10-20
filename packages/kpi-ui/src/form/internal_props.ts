@@ -8,14 +8,12 @@ export type FormControlStatus = 'VALID' | 'INVALID' | 'WARNING' | 'PENDING' | 'D
 export type WatchCallBack<S = any> = (value: any, state: S) => void
 export type UpdateFilterCallback = (control: FormFieldControl) => boolean
 
-export type InternalFieldMeta<Value> = {
-  value: Value
+export type InternalFieldMeta = {
   dirty: boolean
   touched: boolean
-  pending: boolean
+  pending: boolean // 字段级别的校验
   errors: string[]
   warnings: string[]
-  name: InternalNamePath
 }
 
 export interface InternalFormFieldProps<S = any> extends Omit<FormFieldProps<S>, 'name'> {
@@ -81,6 +79,12 @@ export interface InternalHookReturn<State = any> {
    * @zh 设置字段初始值
    */
   ensureInitialized: (namePath: NamePath, initialValue: any) => void
+
+  /**
+   * @private
+   * @zh 根据名称设置 fieldMeta 属性
+   */
+  setFieldMeta: (namePath: NamePath, meta: Partial<InternalFieldMeta>) => void
 
   /**
    * @private

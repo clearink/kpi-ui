@@ -1,7 +1,11 @@
 import { hasOwn, isObjectLike, toArray } from '../../_utils'
 import type { AnyObject } from '../../_types'
 import type { FormFieldControl } from '../control'
-import type { InternalFormFieldProps, InternalFormInstance } from '../internal_props'
+import type {
+  InternalFormFieldProps,
+  InternalFormInstance,
+  InternalHookReturn,
+} from '../internal_props'
 
 // 从event中获取字段值函数
 function defaultGetValueFromEvent(valuePropName: string) {
@@ -14,11 +18,12 @@ function defaultGetValueFromEvent(valuePropName: string) {
 // 数据转换函数
 const defaultNormalize = (val: any) => val
 
-/** 收集注入到Form.Field children 的数据 */
+/** 收集注入到Form.Field children 的属性 */
 export default function collectInjectProps(
   props: InternalFormFieldProps,
   context: InternalFormInstance,
-  control: FormFieldControl
+  control: FormFieldControl,
+  internalHook?: InternalHookReturn
 ) {
   const {
     name,
@@ -41,16 +46,13 @@ export default function collectInjectProps(
       ...getValueProps(value),
       // 触发条件
       [trigger!]: (...args: any[]) => {
-        // touched = true
-        // dirty = true
-        control.setTouched(true)
-        control.setPristine(false)
-
-        // triggerMetaEvent onMetaChange 字段各种状态变更后通知外部
+        // 设置所有所有同名字段的 meta 属性
+        internalHook?.setFieldMeta(name, { touched: true, dirty: true })
 
         const nextValue = normalize(getValueFromEvent(...args), value, context.getFieldsValue())
         context.setFieldValue(name, nextValue)
 
+        // triggerMetaEvent onMetaChange 字段各种状态变更后通知外部
         onMetaChange?.(control.getFieldMeta()) // 更改 meta 属性
 
         // originTrigger
@@ -64,6 +66,9 @@ export default function collectInjectProps(
         // 执行原始值
         injectProps[triggerName]?.(...args)
         // TODO: validateField
+        // validateFieldLevelValidations
+        // 不光是校验自身
+        console.log('validateFieldLevelValidations')
       }
       return { ...res, [triggerName]: handler }
     }, injectProps)

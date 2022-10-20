@@ -2,7 +2,7 @@
 /* eslint-disable max-classes-per-file */
 
 import { MutableRefObject } from 'react'
-import { isUndefined, logger, toArray } from '../_utils'
+import { isNullish, isUndefined, logger, toArray } from '../_utils'
 import { deleteIn, getIn, setIn } from './utils/value'
 import { BaseSchema } from '../_utils/form_schema/schema'
 import type { NamePath } from './props'
@@ -17,6 +17,14 @@ import type {
 } from './internal_props'
 
 export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
+
+const EmptyFieldMeta = (): InternalFieldMeta => ({
+  dirty: false,
+  touched: false,
+  pending: false,
+  errors: [],
+  warnings: [],
+})
 
 export class BaseControl {
   forceUpdate = () => {}
@@ -42,7 +50,7 @@ export class BaseControl {
 
 export class FormFieldControl extends BaseControl {
   constructor(
-    private _name: InternalNamePath, // 记录 name
+    public _name: InternalNamePath, // 记录 name
     _forceUpdate: () => void,
     mounted: MutableRefObject<boolean>
   ) {
@@ -64,6 +72,7 @@ export class FormFieldControl extends BaseControl {
   }
 
   // 校验状态 交给 Form.Field 维护
+  // 同样的 由于同名字段的影响 不能只更新当前视图
   protected _status: FormControlStatus = 'VALID'
 
   get valid() {
@@ -104,36 +113,34 @@ export class FormFieldControl extends BaseControl {
     this._touched = touched
   }
 
-  protected _pristine = true // 未被更改值则为 true
-
-  get pristine() {
-    return this._pristine
-  }
+  protected _dirty = false // 未被更改值则为 true
 
   get dirty() {
-    return !this._pristine
+    return this._dirty
   }
 
-  setPristine(pristine: boolean) {
-    this._pristine = pristine
+  setDirty(dirty: boolean) {
+    this._dirty = dirty
   }
 
   // 后续的逻辑就参考 formik
-  getFieldMeta(): InternalFieldMeta<any> {
+  getFieldMeta(): InternalFieldMeta {
     return {
-      value: this._parent?.getFieldValue(this._name),
-      dirty: this.dirty,
+      dirty: this._dirty,
       touched: this.touched,
       pending: this.pending,
       errors: this._errors,
       warnings: [],
-      name: this._name,
     }
   }
 
   // 保存错误信息
   private _errors: string[] = []
   // 要不要来个 getFieldError ?
+
+  setErrors(errors: string[]) {
+    this._errors = errors
+  }
 
   // TODO: 字段校验
   async validate(value: any) {
@@ -153,12 +160,19 @@ export class FormGroupControl<State = any> extends BaseControl {
   injectForm = (): InternalFormInstance<State> => {
     // 向外暴露函数 避免内部数据被更改
     return {
-      getFieldValue: this.getFieldValue.bind(this),
-      getFieldsValue: this.getFieldsValue.bind(this),
       setFieldValue: this.setFieldValue.bind(this),
-      validate: () => Promise.resolve(),
-      submit: () => {},
-      resetFields: () => {},
+      getFieldValue: this.getFieldValue.bind(this),
+
+      // setFieldsValue: this.setFieldsValue.bind(this),
+      getFieldsValue: this.getFieldsValue.bind(this),
+
+      validateField: () => Promise.resolve(),
+      validateForm: () => Promise.resolve(),
+
+      submitForm: () => {},
+      resetForm: () => {},
+
+      /** @private */
       getInternalHooks: this._getInternalHooks.bind(this),
     }
   }
@@ -176,6 +190,7 @@ export class FormGroupControl<State = any> extends BaseControl {
       registerWatch: this.registerWatch.bind(this),
       subscribe: this.subscribe.bind(this),
       ensureInitialized: this.ensureInitialized.bind(this),
+      setFieldMeta: this.setFieldMeta.bind(this),
       // eslint-disable-next-line no-return-assign
       setPreserve: (preserve = true) => (this._preserve = preserve),
     }
@@ -183,8 +198,9 @@ export class FormGroupControl<State = any> extends BaseControl {
 
   // 收集当前表单的数据
   private getFieldsValue() {
-    return [...this._controls].reduce((values, [, { namePath }]) => {
-      const paths = toArray(namePath)
+    return [...this._controls.values()].reduce((values, controls) => {
+      if (controls.size === 0) return values
+      const paths = toArray([...controls][0]._name)
       const value = getIn(this._state, paths)
       return setIn(values ?? ({} as State), paths, value)
     }, {} as State)
@@ -195,8 +211,8 @@ export class FormGroupControl<State = any> extends BaseControl {
 
   // TODO: 待完善
   private setInitialValues(initial?: Partial<State>, mounted = true) {
-    this._initial = initial || {}
     if (mounted) return
+    this._initial = initial || {}
     const nextState = setIn
     // merge _initial to _state
     // 组件尚未挂载， 将初始值同步到store中去
@@ -224,7 +240,7 @@ export class FormGroupControl<State = any> extends BaseControl {
 
   // TODO: 确定是否要删除
   private updateControl(namePath: NamePath, filter: UpdateFilterCallback | boolean = true) {
-    const controls = this.get(namePath)
+    const controls = this.getControl(namePath)
     if (!controls || !controls.size) return
     controls.forEach((control) => {
       // TODO: 如果值相等 且不是强制更新 就不进行更新
@@ -243,7 +259,7 @@ export class FormGroupControl<State = any> extends BaseControl {
     this._state = setIn(this._state, toArray(namePath), value)
 
     // 那么要如何才能通知到视图呢？
-    const controls = this.get(namePath)
+    const controls = this.getControl(namePath)
     if (!controls || !controls.size) return
 
     // TODO: 移到组件中处理比较好点，可以做一些优化项。更新视图
@@ -274,12 +290,12 @@ export class FormGroupControl<State = any> extends BaseControl {
 
   private _preserve = true
 
-  private _controls = new Map<string, { namePath: NamePath; control: Set<FormFieldControl> }>()
+  private _controls = new Map<string, Set<FormFieldControl>>()
 
   // 获取 control
-  private get(namePath: NamePath) {
+  private getControl(namePath: NamePath) {
     const name = BaseControl._getName(namePath)
-    return this._controls.get(name)?.control
+    return this._controls.get(name)
   }
 
   // 注册字段
@@ -288,18 +304,25 @@ export class FormGroupControl<State = any> extends BaseControl {
     if (!name) return () => {}
 
     control.setParent(this)
-    const cached = this._controls.get(name)
-    if (cached) cached.control.add(control)
-    else this._controls.set(name, { namePath, control: new Set([control]) })
+    const cached = this._controls.get(name) ?? new Set<FormFieldControl>()
+    logger.warn(
+      cached.size > 0,
+      `the name=${JSON.stringify(namePath)} is not unique. Try to ensure name is unique`
+    )
+    this._controls.set(name, cached.add(control))
 
-    // 字段删除时处理一些副作用
+    // 取消注册， 清除副作用
     return ($preserve?: boolean) => {
       const preserve = $preserve ?? this._preserve
-      const controls = this._controls.get(name)?.control
+      const controls = this._controls.get(name)
       controls?.delete(control)
       if (controls?.size !== 0) return
       this._controls.delete(name) // 清空空字段
       !preserve && this.deleteFieldValue(namePath) // 没有同名字段且不保留数据
+      // 清除 touched ？
+      // 清除 errors
+      // 清除 dirty
+      // 清除 warnings （暂不考虑） 同名 touched 属性 是否要共用呢？
     }
   }
 
@@ -335,6 +358,17 @@ export class FormGroupControl<State = any> extends BaseControl {
     return () => {
       this._watchList = this._watchList.filter(({ callback: fn }) => fn !== callback)
     }
+  }
+
+  // 设置 FormField 的 meta 属性
+  private setFieldMeta(namePath: NamePath, meta: Partial<InternalFieldMeta>) {
+    const controls = this.getControl(namePath)
+    if (!controls || !controls.size) return
+    controls.forEach((control) => {
+      !isNullish(meta.dirty) && control.setDirty(meta.dirty)
+      !isNullish(meta.touched) && control.setDirty(meta.touched)
+      !isNullish(meta.errors) && control.setErrors(meta.errors)
+    })
   }
 
   validate(value: any) {

@@ -29,7 +29,7 @@ export default function useInjectField(
   useIsomorphicEffect(ensureInitialized, [ensureInitialized])
 
   // 收集注册到子组件的数据
-  const collect = collectInjectProps(props, context, control)
+  const collect = collectInjectProps(props, context, control, internalHook)
 
   // 处理 children
   const handlerNormalize = normalizeChildren(collect(), context, control)
@@ -43,3 +43,15 @@ export default function useInjectField(
   const injectProps = collect((children as ReactElement).props)
   return cloneElement(children as ReactElement, injectProps)
 }
+
+/**
+ * QA
+ * Q: 校验应该是字段级的，这样能够提高性能
+ * A: kfc 实现 validateAt 功能
+ *
+ * Q: meta 属性究竟要怎么维护？
+ * A: 放到 formGroup 里还是各个 control 自己独立维护呢？
+ * touched 是否触摸过 以是否触发过 blur 事件为准
+ * errors 错误信息
+ * dirty 是否修改过值 以是否与源数据相对为准
+ */
