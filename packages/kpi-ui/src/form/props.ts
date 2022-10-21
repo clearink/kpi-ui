@@ -75,7 +75,7 @@ export interface FormInstance<S = any> {
   /**
    * @zh 设置表单字段数据
    */
-  setFieldValue: (namePath: NamePath, value: any) => void
+  setFieldValue: (namePath: NamePath, value: any, shouldValidate?: boolean) => void
 
   /**
    * @zh 字段参数校验

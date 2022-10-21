@@ -1,4 +1,4 @@
-import { useMemo, Children, Fragment, ReactElement } from 'react'
+import { useMemo, Fragment, ReactElement } from 'react'
 import { withDefaultProps } from '../_hocs'
 import { useFlexGapSupport, usePrefix } from '../_hooks'
 import useSpaceGutter from './hooks/use_space_gutter'

@@ -252,7 +252,7 @@ export class FormGroupControl<State = any> extends BaseControl {
   // store
   private _state = {} as State
 
-  private setFieldValue(namePath: NamePath, value?: any) {
+  private setFieldValue(namePath: NamePath, value: any, shouldValidate = false) {
     if (!BaseControl._getName(namePath)) return
     this._state = setIn(this._state, toArray(namePath), value)
 
@@ -262,7 +262,11 @@ export class FormGroupControl<State = any> extends BaseControl {
 
     // TODO: 移到组件中处理比较好点，可以做一些优化项。更新视图
     // TODO: 父级使用 render props 时不在此更新视图
+    // if (shouldValidate) {
+    //   controls.forEach((control) => control.validate())
+    // } else {
     controls.forEach((control) => control.forceUpdate())
+    // }
 
     // // 运行订阅事件（目标状态为dirty 时才订阅）
     // const listeners = this._listeners.get(fieldName)
