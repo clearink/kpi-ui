@@ -22,7 +22,6 @@ const defaultNormalize = (val: any) => val
 export default function collectInjectProps(
   props: InternalFormFieldProps,
   context: InternalFormInstance,
-  control: FormFieldControl,
   internalHook?: InternalHookReturn
 ) {
   const {
@@ -33,7 +32,6 @@ export default function collectInjectProps(
     getValueFromEvent = defaultGetValueFromEvent(valuePropName!),
     normalize = defaultNormalize,
     getValueProps: $getValueProps,
-    onMetaChange,
   } = props
   return (childProps: AnyObject = {}) => {
     const value = context.getFieldValue(name)
@@ -46,21 +44,21 @@ export default function collectInjectProps(
       ...getValueProps(value),
       onBlur: (...args: any[]) => {
         // 触发 blur 事件后才设置 touched
-        internalHook?.setFieldMeta(name, { touched: true })(onMetaChange)
+        internalHook?.setFieldMeta(name, { touched: true })
         childProps.onBlur?.(...args)
       },
-      // 触发条件
-      [trigger!]: (...args: any[]) => {
-        // 设置所有所有同名字段的 meta 属性
+    }
+    // 触发条件
+    injectProps[trigger!] = (...args: any[]) => {
+      // 设置所有所有同名字段的 meta 属性
 
-        const nextValue = normalize(getValueFromEvent(...args), value, context.getFieldsValue())
-        context.setFieldValue(name, nextValue)
+      const nextValue = normalize(getValueFromEvent(...args), value, context.getFieldsValue())
+      context.setFieldValue(name, nextValue)
 
-        internalHook?.setFieldMeta(name, { dirty: true })(onMetaChange)
+      internalHook?.setFieldMeta(name, { dirty: true })
 
-        // originTrigger
-        childProps[trigger!]?.(...args)
-      },
+      // originTrigger
+      childProps[trigger!]?.(...args)
     }
     // 校验触发时机
     const triggerList = toArray((validateTrigger ?? context.validateTrigger) || [])
@@ -68,10 +66,7 @@ export default function collectInjectProps(
       const handler = (...args: any[]) => {
         // 执行原始值
         injectProps[triggerName]?.(...args)
-        // TODO: validateField
-        // validateFieldLevelValidations
-        // 不光是校验自身
-        console.log('validateFieldLevelValidations')
+        context.validateField(name)
       }
       return { ...res, [triggerName]: handler }
     }, injectProps)

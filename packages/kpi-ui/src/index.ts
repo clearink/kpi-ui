@@ -1,3 +1,5 @@
+import * as kfc from './_utils/form_schema'
+
 export * as kfc from './_utils/form_schema'
 
 // components

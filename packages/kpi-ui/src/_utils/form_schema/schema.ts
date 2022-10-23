@@ -2,7 +2,7 @@
 import SchemaContext from './context'
 import * as REGEX from './utils/regex'
 import { Valid, Invalid, makeRule } from './utils/make_rule'
-import { base, string, number, boolean, object, date, array, enums } from './locales/default'
+import { base, string, number, boolean, object, date, array, enums, union } from './locales/default'
 import {
   isArray,
   isBoolean,
@@ -22,6 +22,8 @@ import type {
   MakeRuleReturn,
   Context,
   Options,
+  InValidType,
+  RuleReturn,
 } from './interface'
 
 /** ========================================================================== */
@@ -85,6 +87,15 @@ export abstract class BaseSchema<Out = any, In = Out> {
   // 可以传 undefined, null
   nullish() {
     return this.optional().nullable()
+  }
+
+  /** alias or */
+  union<U extends BaseSchema>(schema: U): UnionSchema<[this, U]> {
+    return UnionSchema.create([this, schema])
+  }
+
+  or<U extends BaseSchema>(schema: U): UnionSchema<[this, U]> {
+    return UnionSchema.create([this, schema])
   }
 
   // refine 自定义验证
@@ -574,9 +585,66 @@ export class ObjectSchema<T extends ObjectShape, Out = MakePartial<T>> extends B
 /** UnionSchema                                                               */
 /** ========================================================================== */
 /** ========================================================================== */
-// TODO: 是否要添加union呢?
-// 两个或者多个都不通过才是 invalid 需要参考下别人的设计
-// export class UnionSchema<>
+
+/** types ==================================================================== */
+export type UnionInput = readonly [BaseSchema, BaseSchema, ...BaseSchema[]]
+export type UnionInnerReturn<T> = (readonly [Context, RuleReturn<T>])[]
+
+/** schema =================================================================== */
+export class UnionSchema<
+  T extends UnionInput,
+  Out = T[number]['_Out'],
+  In = T[number]['_In']
+> extends BaseSchema<Out, In> {
+  static create<U extends UnionInput>(inner: U) {
+    return new UnionSchema(inner)
+  }
+
+  constructor(private inner: T) {
+    super()
+  }
+
+  /** ==================================================== */
+  /** validate                                             */
+  /** ==================================================== */
+
+  async _validate(value: Out, context: Context) {
+    const results: UnionInnerReturn<Out> = await Promise.all(
+      this.inner.map(async (schema) => {
+        const ctx = SchemaContext.ensure(omit(context, ['issue']))
+        try {
+          return [ctx, await schema._validate(value, ctx)]
+        } catch (error) {
+          return [ctx, error as InValidType]
+        }
+      })
+    )
+
+    // 存在合法的就返回
+    for (const [, result] of results) {
+      if (result.status === 'valid') return result
+    }
+
+    // TODO: 需要手段检测是否为 invalid_type 错误
+    for (const [, result] of results) {
+      if (result.status === 'invalid') {
+        // 存在不是 invalid_type 的错误
+        return result
+      }
+    }
+
+    // 如果 results 都是 invalid_type 就联合成一个 invalid_type
+    // if(isAllInvalidType) return Invalid(xxx)
+
+    // // TODO: 合并所有的错误信息,如何去除错误的类型判断呢?
+    // const innerIssues = results.reduce((res, [ctx]) => {
+    //   return res.concat(ctx.issue.issues)
+    // }, [] as SchemaIssue[])
+
+    // context.issue.issues.push(...innerIssues)
+    return Invalid(context)(union.invalid)
+  }
+}
 
 /** ========================================================================== */
 /** ========================================================================== */
@@ -584,10 +652,11 @@ export class ObjectSchema<T extends ObjectShape, Out = MakePartial<T>> extends B
 /** ========================================================================== */
 /** ========================================================================== */
 
-export class EffectSchema<T extends BaseSchema, Out = T['_Out'], In = T['_In']> extends BaseSchema<
-  Out,
-  In
-> {
+export class EffectSchema<
+  T extends BaseSchema<any>,
+  Out = T['_Out'],
+  In = T['_In']
+> extends BaseSchema<Out, In> {
   // 数据转换 <NewOut>(value:Out) => NewOut | Promise<NewOut>
   // 可以改变数据类型
   static transform<S extends BaseSchema, Next = S['_Out']>(

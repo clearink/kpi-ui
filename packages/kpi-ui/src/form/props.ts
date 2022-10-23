@@ -80,7 +80,7 @@ export interface FormInstance<S = any> {
   /**
    * @zh 字段参数校验
    */
-  validateField: () => Promise<void>
+  validateField: (namePath: NamePath) => void
 
   /**
    * @zh 参数校验

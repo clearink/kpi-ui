@@ -2,14 +2,15 @@
 
 import { MutableRefObject } from 'react'
 import isEqual from 'react-fast-compare'
-import { isNullish, isUndefined, logger, toArray } from '../_utils'
+import { isFunction, isNullish, isObjectLike, isUndefined, logger, toArray } from '../_utils'
 import { deleteIn, getIn, setIn } from './utils/value'
 import { BaseSchema } from '../_utils/form_schema/schema'
+import type { SchemaIssue } from '../_utils/form_schema/interface'
 import type { NamePath } from './props'
 import type {
+  FieldHandlers,
   FormControlStatus,
   InternalFieldMeta,
-  InternalFormFieldProps,
   InternalFormInstance,
   InternalHookReturn,
   InternalNamePath,
@@ -18,14 +19,6 @@ import type {
 } from './internal_props'
 
 export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
-
-const EmptyFieldMeta = (): InternalFieldMeta => ({
-  dirty: false,
-  touched: false,
-  pending: false,
-  errors: [],
-  warnings: [],
-})
 
 export class BaseControl {
   forceUpdate = () => {}
@@ -58,53 +51,46 @@ export class FormFieldControl extends BaseControl {
     super(_forceUpdate, mounted)
   }
 
+  // 是否被隐式依赖,形如 ['username'] 与 ['username', 'a', 'b']
+  isImplicate(namePath: NamePath) {
+    const path = toArray(namePath)
+    const len = Math.min(path.length, this._name.length)
+    for (let i = 0; i < len; i++) {
+      if (path[i] !== this._name[i]) return false
+    }
+    // 没有name 时的逻辑?
+    return path.length > 0
+  }
+
+  // 是否应该更新该 control
+  shouldUpdate(namePath: NamePath) {
+    if (this.isImplicate(namePath)) return true
+    const { shouldUpdate } = this._fieldHandlers
+    if (shouldUpdate === true) return true
+    // TODO: 如何拿到之前的 state ?
+    // if (isFunction(shouldUpdate)) return shouldUpdate(prev, current)
+  }
+
   _parent: FormGroupControl | undefined = undefined
-  // protected _parent: FormGroupControl | undefined = undefined
 
   setParent(parent?: FormGroupControl) {
     this._parent = parent
+    return this
   }
 
-  _validator: BaseSchema | undefined = undefined
+  _fieldHandlers: FieldHandlers = {}
 
-  setValidator(validator?: BaseSchema) {
-    if (!(validator instanceof BaseSchema)) return
-    this._validator = validator
+  provideHandlers(fieldHandlers: FieldHandlers) {
+    this._fieldHandlers = isObjectLike(fieldHandlers) ? fieldHandlers : {}
   }
 
-  // 校验状态 交给 Form.Field 维护
-  // 同样的 由于同名字段的影响 不能只更新当前视图
-  protected _status: FormControlStatus = 'VALID'
+  private _pending = false
 
-  get valid() {
-    return this._status === 'VALID'
-  }
-
-  get invalid() {
-    return this._status === 'INVALID'
-  }
-
-  get warning() {
-    return this._status === 'WARNING'
-  }
-
-  get pending() {
-    return this._status === 'PENDING'
-  }
-
-  get disabled() {
-    return this._status === 'DISABLED'
-  }
-
-  get enabled() {
-    return this._status !== 'DISABLED'
+  setPending(pending: boolean) {
+    this._pending = pending
   }
 
   protected _touched = false // 以是否触发 blur 事件为准
-
-  get touched() {
-    return this._touched
-  }
 
   setTouched(touched: boolean) {
     this._touched = touched
@@ -113,20 +99,28 @@ export class FormFieldControl extends BaseControl {
   // 未触发 onChange 为 false
   protected _dirty = false
 
-  get dirty() {
-    return this._dirty
-  }
-
   setDirty(dirty: boolean) {
     this._dirty = dirty
+  }
+
+  setFieldMeta(meta: Partial<InternalFieldMeta>) {
+    // 自动触发 onMetaChange 事件
+    const prev = this.getFieldMeta()
+    // 同步全部
+    !isNullish(meta.dirty) && this.setDirty(meta.dirty)
+    !isNullish(meta.pending) && this.setPending(meta.pending)
+    !isNullish(meta.touched) && this.setTouched(meta.touched)
+    !isNullish(meta.errors) && this.setErrors(meta.errors)
+    const current = this.getFieldMeta()
+    if (!isEqual(prev, current)) this._fieldHandlers.onMetaChange?.(current)
   }
 
   // 后续的逻辑就参考 formik
   getFieldMeta(): InternalFieldMeta {
     return {
       dirty: this._dirty,
-      touched: this.touched,
-      pending: this.pending,
+      touched: this._touched,
+      pending: this._pending,
       errors: this._errors,
       warnings: [],
     }
@@ -140,11 +134,20 @@ export class FormFieldControl extends BaseControl {
     this._errors = errors
   }
 
-  // TODO: 字段校验
   async validate(value: any) {
-    console.log('validate', value)
-    if (!this._validator) return value
-    return this._validator.validate(value)
+    const { rule: validator } = this._fieldHandlers
+    if (!(validator instanceof BaseSchema)) return
+    try {
+      this.setFieldMeta({ pending: true })
+      await validator.validate(value)
+      this.setFieldMeta({ pending: false })
+    } catch (error) {
+      const { issues = [] } = error as { issues: SchemaIssue[] }
+      const errors = issues.map((issue) => issue.message)
+      this.setFieldMeta({ pending: false, errors })
+    } finally {
+      this.forceUpdate()
+    }
   }
 }
 
@@ -164,7 +167,7 @@ export class FormGroupControl<State = any> extends BaseControl {
       // setFieldsValue: this.setFieldsValue.bind(this),
       getFieldsValue: this.getFieldsValue.bind(this),
 
-      validateField: () => Promise.resolve(),
+      validateField: this.validateField.bind(this),
       validateForm: () => Promise.resolve(),
 
       submitForm: () => {},
@@ -175,7 +178,9 @@ export class FormGroupControl<State = any> extends BaseControl {
     }
   }
 
-  // TODO: 优化返回值，仅仅返回一些必要的属性
+  private _preserve = true
+
+  // 内部属性
   private _getInternalHooks(secret: string): InternalHookReturn | undefined {
     const matched = secret === HOOK_MARK
 
@@ -207,15 +212,8 @@ export class FormGroupControl<State = any> extends BaseControl {
   // 默认值
   private _initial = {} as Partial<State>
 
-  // TODO: 待完善
-  private setInitialValues(initial?: Partial<State>, mounted = true) {
-    if (mounted) return
+  private setInitialValues(initial?: Partial<State>) {
     this._initial = initial || {}
-    const nextState = setIn
-    // merge _initial to _state
-    // 组件尚未挂载， 将初始值同步到store中去
-    // merge value
-    // const nextState = setIn({}, )
   }
 
   getInitialValue(name: NamePath) {
@@ -236,17 +234,11 @@ export class FormGroupControl<State = any> extends BaseControl {
     if (!isUndefined(initialValue)) this.setFieldValue(namePath, initialValue)
   }
 
-  // TODO: 确定是否要删除
-  private updateControl(namePath: NamePath, filter: UpdateFilterCallback | boolean = true) {
-    const controls = this.getControl(namePath)
-    if (!controls || !controls.size) return
-    controls.forEach((control) => {
-      // TODO: 如果值相等 且不是强制更新 就不进行更新
-      // if (isFunction(filter) && !filter(control)) return
-      // 如果值相等 且不是强制更新 就不进行更新
-      // if(isBoolean(filter) && filter && diff)
+  private updateControl(namePath: NamePath) {
+    for (const control of this.controls) {
+      if (!control.shouldUpdate(namePath)) continue
       control.forceUpdate()
-    })
+    }
   }
 
   // store
@@ -256,27 +248,7 @@ export class FormGroupControl<State = any> extends BaseControl {
     if (!BaseControl._getName(namePath)) return
     this._state = setIn(this._state, toArray(namePath), value)
 
-    // 那么要如何才能通知到视图呢？
-    const controls = this.getControl(namePath)
-    if (!controls || !controls.size) return
-
-    // TODO: 移到组件中处理比较好点，可以做一些优化项。更新视图
-    // TODO: 父级使用 render props 时不在此更新视图
-    // if (shouldValidate) {
-    //   controls.forEach((control) => control.validate())
-    // } else {
-    controls.forEach((control) => control.forceUpdate())
-    // }
-
-    // // 运行订阅事件（目标状态为dirty 时才订阅）
-    // const listeners = this._listeners.get(fieldName)
-    // listeners?.forEach((controlName) => {
-    //   this.get(controlName)?.forEach((control) => {
-    //     const controlValue = this.getFieldValue(controlName)
-    //     control.validate(controlValue)
-    //   })
-    // })
-    // 这里是否要执行 watchList ?
+    this.updateControl(namePath)
   }
 
   getFieldValue(namePath: NamePath) {
@@ -290,9 +262,14 @@ export class FormGroupControl<State = any> extends BaseControl {
     else this._state = deleteIn(this._state, paths)
   }
 
-  private _preserve = true
-
   private _controls = new Map<string, Set<FormFieldControl>>()
+
+  get controls() {
+    return [...this._controls.values()].reduce(
+      (res, set) => res.concat([...set.values()]),
+      [] as FormFieldControl[]
+    )
+  }
 
   // 获取 control
   private getControl(namePath: NamePath) {
@@ -300,18 +277,14 @@ export class FormGroupControl<State = any> extends BaseControl {
     return this._controls.get(name)
   }
 
-  // 注册字段
+  // 注册字段 // 同名字段是个很恶心的东西
   registerField(namePath: NamePath, control: FormFieldControl) {
     const name = BaseControl._getName(namePath)
     if (!name) return () => {}
 
-    control.setParent(this)
     const cached = this._controls.get(name) ?? new Set<FormFieldControl>()
-    logger.warn(
-      cached.size > 0,
-      `the name=${JSON.stringify(namePath)} is not unique. Try to ensure name is unique`
-    )
-    this._controls.set(name, cached.add(control))
+    logger.error(cached.size > 0, `the name=${JSON.stringify(namePath)} field has existed.`)
+    this._controls.set(name, cached.add(control.setParent(this)))
 
     // 取消注册， 清除副作用
     return ($preserve?: boolean) => {
@@ -360,18 +333,9 @@ export class FormGroupControl<State = any> extends BaseControl {
 
   // 设置 FormField 的 meta 属性
   private setFieldMeta(namePath: NamePath, meta: Partial<InternalFieldMeta>) {
-    const controls = this.getControl(namePath)
-    if (!controls || !controls.size) return () => {}
-    const prev = [...controls][0].getFieldMeta()
-    // 同步全部
-    controls.forEach((control) => {
-      !isNullish(meta.dirty) && control.setDirty(meta.dirty)
-      !isNullish(meta.touched) && control.setTouched(meta.touched)
-      !isNullish(meta.errors) && control.setErrors(meta.errors)
-    })
-    const current = [...controls][0].getFieldMeta()
-    return (onMetaChange: InternalFormFieldProps['onMetaChange']) => {
-      !isEqual(prev, current) && onMetaChange?.(current)
+    for (const control of this.controls) {
+      if (!control.isImplicate(namePath)) continue
+      control.setFieldMeta(meta)
     }
   }
 
@@ -379,6 +343,16 @@ export class FormGroupControl<State = any> extends BaseControl {
     // 1. 遍历 _controls
     const list = [...this._controls.values()]
     return Promise.all(list).then(() => true)
+  }
+
+  // 校验指定字段
+  validateField(namePath: NamePath) {
+    for (const control of this.controls) {
+      // 隐式包含也要校验
+      if (!control.isImplicate(namePath)) continue
+      const value = this.getFieldValue(namePath)
+      control.validate(value)
+    }
   }
 }
 

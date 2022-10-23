@@ -59,3 +59,7 @@ export const array = {
 export const enums = {
   invalid: '{#path} must be include {#enums}',
 }
+
+export const union = {
+  invalid: '{#path} is invalid union type',
+}

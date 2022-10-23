@@ -1,18 +1,18 @@
-import { useRef, Fragment, useReducer, useMemo, memo } from 'react'
+import { useRef, Fragment, useReducer, useMemo } from 'react'
 
 import { withDefaultProps } from '../../_hocs'
 import { FieldContext } from '../../_context'
-import { FormFieldControl, HOOK_MARK } from '../control'
+import { BaseControl, FormFieldControl, HOOK_MARK } from '../control'
 
 import useInjectField from '../hooks/use_inject_field'
 import { useEvent, useIsomorphicEffect, useMounted } from '../../_hooks'
 import { isRequiredSchema } from '../../_utils/form_schema/schema'
-import { isUndefined, toArray } from '../../_utils'
+import { isUndefined, logger, toArray } from '../../_utils'
 import type { FormFieldProps } from '../props'
 import type { InternalFormFieldProps } from '../internal_props'
 
 function InternalFormField(props: InternalFormFieldProps) {
-  const { name, rule, dependencies, required, shouldUpdate, preserve } = props
+  const { name, rule, dependencies, required, shouldUpdate, preserve, onMetaChange } = props
   // 重置次数
   const [resetCount, updateCount] = useReducer((count) => count + 1, 0)
 
@@ -24,11 +24,6 @@ function InternalFormField(props: InternalFormFieldProps) {
   const internalHook = useMemo(() => context.getInternalHooks(HOOK_MARK), [context])
   // TODO：是否还要注册某些回调？
   const control = useRef(new FormFieldControl(name, forceUpdate, useMounted()))
-
-  // 设置参数校验属性
-  useIsomorphicEffect(() => control.current.setValidator(rule), [rule])
-
-  console.log('internalHook', internalHook)
 
   // 简单判断下是否为必填项
   const isRequired = useMemo(() => required ?? isRequiredSchema(rule), [required, rule])
@@ -49,6 +44,11 @@ function InternalFormField(props: InternalFormFieldProps) {
   })
   useIsomorphicEffect(subscribe, [subscribe])
 
+  // 同步props中的某些属性到 fieldControl
+  useIsomorphicEffect(() => {
+    control.current.provideHandlers({ rule, shouldUpdate, onMetaChange })
+  }, [rule, shouldUpdate, onMetaChange])
+
   const $children = useInjectField(props, context, control.current, internalHook)
 
   return <Fragment key={resetCount}>{$children}</Fragment>
@@ -62,7 +62,7 @@ function WrapperFormField(props: FormFieldProps) {
   // 预处理一下 name 字段
   const [namePath, key] = useMemo(() => {
     const path = isUndefined(name) ? [] : [...parentNamePath, ...toArray(name)]
-    return [path, `_${(path || []).join('_$_')}`] as const
+    return [path, `_${BaseControl._getName(path)}`] as const
   }, [name, parentNamePath])
 
   const $props = { key, name: namePath, ...rest }

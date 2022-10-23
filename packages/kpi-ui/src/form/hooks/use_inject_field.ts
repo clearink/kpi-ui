@@ -29,7 +29,7 @@ export default function useInjectField(
   useIsomorphicEffect(ensureInitialized, [ensureInitialized])
 
   // 收集注册到子组件的数据
-  const collect = collectInjectProps(props, context, control, internalHook)
+  const collect = collectInjectProps(props, context, internalHook)
 
   // 处理 children
   const handlerNormalize = normalizeChildren(collect(), context, control)
@@ -37,7 +37,7 @@ export default function useInjectField(
 
   // 不符合规范 要么 render props 要么只有一个合法的 ReactElement
   logger.warn(!valid && !functional, '`children` of Field is not validate ReactElement.')
-
+  // 当name 为空时也要这样吗?
   if (functional || !valid) return children
 
   const injectProps = collect((children as ReactElement).props)

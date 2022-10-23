@@ -42,7 +42,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   const mounted = useMounted()
 
   // 设置初始值, 仅在挂载前设置一次
-  internalHook?.setInitialValues(initialValues, mounted.current)
+  !mounted.current && internalHook?.setInitialValues(initialValues)
   // 用于多表单联动
   const parent = FormContext.useState()
   useIsomorphicEffect(() => parent.register(instance, name), [instance, name, parent])

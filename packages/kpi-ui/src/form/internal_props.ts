@@ -7,7 +7,7 @@ export type InternalNamePath = (string | number)[]
 export type FormControlStatus = 'VALID' | 'INVALID' | 'WARNING' | 'PENDING' | 'DISABLED'
 export type WatchCallBack<S = any> = (value: any, state: S) => void
 export type UpdateFilterCallback = (control: FormFieldControl) => boolean
-
+export type FieldHandlers = Pick<InternalFormFieldProps, 'rule' | 'shouldUpdate' | 'onMetaChange'>
 export type InternalFieldMeta = {
   dirty: boolean
   touched: boolean
@@ -54,7 +54,7 @@ export interface InternalHookReturn<State = any> {
    * @private
    * @zh 设置默认值
    */
-  setInitialValues: (initial: Partial<State> | undefined, mounted: boolean) => void
+  setInitialValues: (initial: Partial<State> | undefined) => void
 
   /**
    * @private
@@ -84,10 +84,7 @@ export interface InternalHookReturn<State = any> {
    * @private
    * @zh 根据名称设置 fieldMeta 属性
    */
-  setFieldMeta: (
-    namePath: NamePath,
-    meta: Partial<InternalFieldMeta>
-  ) => (onMetaChange: InternalFormFieldProps['onMetaChange']) => void
+  setFieldMeta: (namePath: NamePath, meta: Partial<InternalFieldMeta>) => void
 
   /**
    * @private

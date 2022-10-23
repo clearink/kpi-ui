@@ -14,5 +14,6 @@ export const enums = Schema.EnumSchema.create
 export const date = Schema.DateSchema.create
 export const optional = Schema.OptionalSchema.create
 export const nullable = Schema.NullableSchema.create
+export const union = Schema.UnionSchema.create
 export const refine = Schema.EffectSchema.refinement
 export const { transform, preprocess } = Schema.EffectSchema
