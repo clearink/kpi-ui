@@ -38,6 +38,8 @@ export default function useInjectField(
   logger.warn(!valid && !functional, '`children` of Field is not validate ReactElement.')
   // 当name 为空时也要这样吗?
   if (functional || !valid) return children
+  //  `children` of render props only work with `shouldUpdate` or `dependencies`.
+  // if(functional && (shouldUpdate === undefined || dependencies === undefined))
 
   const injectProps = collect((children as ReactElement).props)
   return cloneElement(children as ReactElement, injectProps)

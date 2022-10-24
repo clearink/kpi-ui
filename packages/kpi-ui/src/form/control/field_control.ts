@@ -34,9 +34,8 @@ export default class FormFieldControl extends BaseControl {
   shouldUpdate(namePath: NamePath) {
     if (this.isImplicate(namePath)) return true // 被隐式依赖
 
-    const { shouldUpdate, children } = this._props
-    // 没有 name 且使用了 render props 方式
-    if (!this._key && isFunction(children)) return true
+    const { shouldUpdate } = this._props
+
     if (shouldUpdate === true) return true // shouldUpdate = true
     // TODO: 如何拿到之前的 state ?
     // if (isFunction(shouldUpdate)) return shouldUpdate(prev, current)
