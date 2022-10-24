@@ -735,6 +735,11 @@ export class OptionalSchema<
 
   _validate(value: Out | undefined, context: Context) {
     if (isUndefined(value)) return Valid(value)
+    // 修饰 string 且 为空字符串 认为符合要求
+    if (this.schema instanceof StringSchema) {
+      if (isString(value) && !value.length) return Valid(value)
+    }
+
     return this.schema._validate(value, context)
   }
 

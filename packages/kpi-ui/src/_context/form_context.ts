@@ -20,10 +20,13 @@ export const FieldContext = CtxHelper<InternalFormInstance>({
   getFieldValue: notFoundContext,
   getFieldsValue: notFoundContext,
   setFieldValue: notFoundContext,
-  validateForm: notFoundContext,
+  setFieldsValue: notFoundContext,
+  validateFields: notFoundContext,
   validateField: notFoundContext,
   submitForm: notFoundContext,
   resetForm: notFoundContext,
+  isFieldTouched: notFoundContext,
+  isFieldsTouched: notFoundContext,
   getInternalHooks: () => {
     return {
       setPreserve: notFoundContext,

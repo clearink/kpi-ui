@@ -4,10 +4,8 @@ import type { FormFieldControl } from './control'
 import type { FormInstance, FormFieldProps, NamePath } from './props'
 
 export type InternalNamePath = (string | number)[]
-export type FormControlStatus = 'VALID' | 'INVALID' | 'WARNING' | 'PENDING' | 'DISABLED'
 export type WatchCallBack<S = any> = (value: any, state: S) => void
-export type UpdateFilterCallback = (control: FormFieldControl) => boolean
-export type FieldHandlers = Pick<InternalFormFieldProps, 'rule' | 'shouldUpdate' | 'onMetaChange'>
+
 export type InternalFieldMeta = {
   dirty: boolean
   touched: boolean
@@ -60,7 +58,7 @@ export interface InternalHookReturn<State = any> {
    * @private
    * @zh 注册字段
    */
-  registerField: (namePath: NamePath, control: FormFieldControl) => (preserve?: boolean) => void
+  registerField: (control: FormFieldControl) => (preserve?: boolean) => void
   /**
    * @private
    * @zh 注册监听事件

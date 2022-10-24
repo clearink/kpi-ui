@@ -2,7 +2,7 @@ import { useRef, Fragment, useReducer, useMemo } from 'react'
 
 import { withDefaultProps } from '../../_hocs'
 import { FieldContext } from '../../_context'
-import { BaseControl, FormFieldControl, HOOK_MARK } from '../control'
+import { FormFieldControl, HOOK_MARK } from '../control'
 
 import useInjectField from '../hooks/use_inject_field'
 import { useEvent, useIsomorphicEffect, useMounted } from '../../_hooks'
@@ -12,7 +12,7 @@ import type { FormFieldProps } from '../props'
 import type { InternalFormFieldProps } from '../internal_props'
 
 function InternalFormField(props: InternalFormFieldProps) {
-  const { name, rule, dependencies, required, shouldUpdate, preserve, onMetaChange } = props
+  const { name, rule, dependencies, required, preserve } = props
   // 重置次数
   const [resetCount, updateCount] = useReducer((count) => count + 1, 0)
 
@@ -22,8 +22,9 @@ function InternalFormField(props: InternalFormFieldProps) {
   // 父级表单
   const context = FieldContext.useState()
   const internalHook = useMemo(() => context.getInternalHooks(HOOK_MARK), [context])
-  // TODO：是否还要注册某些回调？
+
   const control = useRef(new FormFieldControl(name, forceUpdate, useMounted()))
+  control.current.provideProps(props) // 同步props性到 fieldControl
 
   // 简单判断下是否为必填项
   const isRequired = useMemo(() => required ?? isRequiredSchema(rule), [required, rule])
@@ -31,7 +32,9 @@ function InternalFormField(props: InternalFormFieldProps) {
   // 注册子字段 销毁时移除该字段
   // name 是数组会导致额外的 rerender 所以使用了useEvent
   const registerField = useEvent(() => {
-    const cancel = internalHook?.registerField(name, control.current)
+    const cancel = internalHook?.registerField(control.current)
+    // 确保 render props 里面拿到最新的数据
+    if (control.current.shouldUpdate([], true)) forceUpdate()
     return () => cancel?.(preserve)
   })
   useIsomorphicEffect(registerField, [registerField])
@@ -44,32 +47,27 @@ function InternalFormField(props: InternalFormFieldProps) {
   })
   useIsomorphicEffect(subscribe, [subscribe])
 
-  // 同步props中的某些属性到 fieldControl
-  useIsomorphicEffect(() => {
-    control.current.provideHandlers({ rule, shouldUpdate, onMetaChange })
-  }, [rule, shouldUpdate, onMetaChange])
-
   const $children = useInjectField(props, context, control.current, internalHook)
 
   return <Fragment key={resetCount}>{$children}</Fragment>
 }
 
-function WrapperFormField(props: FormFieldProps) {
-  const { name, ...rest } = props
+function WrapperFormField($props: FormFieldProps) {
+  const { name, ...rest } = $props
   // 用于 Form.List 组件
   const { parentNamePath = [] } = FieldContext.useState()
 
   // 预处理一下 name 字段
   const [namePath, key] = useMemo(() => {
     const path = isUndefined(name) ? [] : [...parentNamePath, ...toArray(name)]
-    return [path, `_${BaseControl._getName(path)}`] as const
+    return [path, `_${FormFieldControl._getName(path)}`] as const
   }, [name, parentNamePath])
 
-  const $props = { key, name: namePath, ...rest }
+  const props = { key, name: namePath, ...rest }
 
   // 由于这里根据 name 设置了 key
   // name 改变会重新渲染一个新的组件，不需要在 InternalFormField 监听 name 了
-  return <InternalFormField {...$props} />
+  return <InternalFormField {...props} />
 }
 
 export default withDefaultProps(WrapperFormField, {

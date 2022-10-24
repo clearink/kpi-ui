@@ -1,6 +1,5 @@
 import { hasOwn, isObjectLike, toArray } from '../../_utils'
 import type { AnyObject } from '../../_types'
-import type { FormFieldControl } from '../control'
 import type {
   InternalFormFieldProps,
   InternalFormInstance,
@@ -42,24 +41,21 @@ export default function collectInjectProps(
     const injectProps = {
       ...childProps,
       ...getValueProps(value),
-      onBlur: (...args: any[]) => {
-        // 触发 blur 事件后才设置 touched
-        internalHook?.setFieldMeta(name, { touched: true })
-        childProps.onBlur?.(...args)
+      // 触发条件
+      [trigger!]: (...args: any[]) => {
+        // 设置所有所有同名字段的 meta 属性
+
+        const nextValue = normalize(getValueFromEvent(...args), value, context.getFieldsValue())
+
+        context.setFieldValue(name, nextValue)
+
+        internalHook?.setFieldMeta(name, { touched: true, dirty: true })
+
+        // originTrigger
+        childProps[trigger!]?.(...args)
       },
     }
-    // 触发条件
-    injectProps[trigger!] = (...args: any[]) => {
-      // 设置所有所有同名字段的 meta 属性
 
-      const nextValue = normalize(getValueFromEvent(...args), value, context.getFieldsValue())
-      context.setFieldValue(name, nextValue)
-
-      internalHook?.setFieldMeta(name, { dirty: true })
-
-      // originTrigger
-      childProps[trigger!]?.(...args)
-    }
     // 校验触发时机
     const triggerList = toArray((validateTrigger ?? context.validateTrigger) || [])
     return triggerList.reduce((res, triggerName) => {

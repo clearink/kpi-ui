@@ -78,6 +78,11 @@ export interface FormInstance<S = any> {
   setFieldValue: (namePath: NamePath, value: any, shouldValidate?: boolean) => void
 
   /**
+   * @zh 设置表单数据
+   */
+  setFieldsValue: (value: Partial<S>, shouldValidate?: boolean) => void
+
+  /**
    * @zh 字段参数校验
    */
   validateField: (namePath: NamePath) => void
@@ -85,17 +90,23 @@ export interface FormInstance<S = any> {
   /**
    * @zh 参数校验
    */
-  validateForm: () => Promise<void>
+  validateFields: (namePath?: NamePath[]) => Promise<S>
 
   /**
    * @zh 提交事件 自动调用 validate 方法
    */
-  submitForm: (onFinish?: ArrowFunction, onFailed?: ArrowFunction) => void
+  submitForm: (onFinish?: (values: S) => void, onFailed?: ArrowFunction) => void
 
   /**
    * @zh 重置一组字段到 `initialValues`
    */
   resetForm: (fields?: NamePath[]) => void
+
+  /**
+   * @zh 字段是否都 touched 了
+   */
+  isFieldTouched: (namePath: NamePath) => boolean
+  isFieldsTouched: (namePath?: NamePath[]) => boolean
 }
 
 export type Forms = Record<string, FormInstance>
