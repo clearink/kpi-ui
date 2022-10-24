@@ -109,6 +109,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
   // store
   private _state = {} as State
 
+  // TODO: 值相等时也要更新吗?
   private setFieldValue(namePath: NamePath, value: any, shouldValidate = false) {
     if (!FormGroupControl._getName(namePath)) return // 无效字段路径 不处理
     this._state = setIn(this._state, toArray(namePath), value)
@@ -141,13 +142,10 @@ export default class FormGroupControl<State = any> extends BaseControl {
 
   // 注册字段
   // 同名字段是个很恶心的东西
-  // 没有 name shouldUpdate !== undefined 的 字段 的逻辑
   registerField(control: FormFieldControl) {
     const { _key: key, _name: name } = control
 
     const cached = this._controls.get(key) ?? new Set<FormFieldControl>()
-
-    logger.error(cached.size > 0 && !!key, `the name=${JSON.stringify(name)} field has existed.`)
 
     this._controls.set(key, cached.add(control.setParent(this)))
 

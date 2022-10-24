@@ -132,10 +132,10 @@ export interface FormFieldProps<State = any> {
         formInstance: FormInstance<State>
       ) => React.ReactNode)
 
-  /**
-   * @zh 为 `true` 时不带样式，作为纯字段控件使用
-   */
-  noStyle?: boolean
+  // /**
+  //  * @zh 为 `true` 时不带样式，作为纯字段控件使用
+  //  */
+  // noStyle?: boolean
   /**
    * @zh 自定义字段更新逻辑，说明[见下](#shouldUpdate)
    * @default false
@@ -168,11 +168,11 @@ export interface FormFieldProps<State = any> {
    */
   trigger?: string
 
-  /**
-   * @zh 必填样式设置。如不设置，则会根据校验规则自动生成
-   * @default false
-   */
-  required?: boolean
+  // /**
+  //  * @zh 必填样式设置。如不设置，则会根据校验规则自动生成
+  //  * @default false
+  //  */
+  // required?: boolean
 
   /**
    * @zh 当某一规则校验不通过时，是否停止剩下的规则的校验
@@ -209,7 +209,7 @@ export interface FormFieldProps<State = any> {
   /**
    * @zh 组件获取值后进行转换，再放入 Form 中。不支持异步
    */
-  normalize?: (next: any, prev: any, values: State) => any
+  formatter?: (next: any, prev: any, values: State) => any
 
   /**
    * @zh 字段状态变更通知

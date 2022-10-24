@@ -31,16 +31,16 @@ export default class FormFieldControl extends BaseControl {
   }
 
   // 是否应该更新自己
-  shouldUpdate(namePath: NamePath, init = false) {
+  shouldUpdate(namePath: NamePath) {
     if (this.isImplicate(namePath)) return true // 被隐式依赖
-    const { shouldUpdate, children } = this._props
 
+    const { shouldUpdate, children } = this._props
     // 没有 name 且使用了 render props 方式
     if (!this._key && isFunction(children)) return true
     if (shouldUpdate === true) return true // shouldUpdate = true
-    if (!init) return false // 初始化时不比较 prev, current
     // TODO: 如何拿到之前的 state ?
     // if (isFunction(shouldUpdate)) return shouldUpdate(prev, current)
+    return false
   }
 
   _parent: FormGroupControl | undefined = undefined
@@ -52,7 +52,7 @@ export default class FormFieldControl extends BaseControl {
 
   _props: Partial<InternalFormFieldProps> = {}
 
-  provideProps(props: Partial<InternalFormFieldProps>) {
+  setFieldProps(props: Partial<InternalFormFieldProps>) {
     this._props = isObjectLike(props) ? props : {}
   }
 

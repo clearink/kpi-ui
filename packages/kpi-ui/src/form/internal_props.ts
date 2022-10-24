@@ -83,12 +83,6 @@ export interface InternalHookReturn<State = any> {
    * @zh 根据名称设置 fieldMeta 属性
    */
   setFieldMeta: (namePath: NamePath, meta: Partial<InternalFieldMeta>) => void
-
-  /**
-   * @private
-   * @zh 更新 FormFieldControl
-   */
-  // updateControl: (namePath?: NamePath, filter?: UpdateFilterCallback | boolean) => void
 }
 
 // export type GetIn<State extends any, Path extends PathItem[]> = Path extends [infer P, ...infer R]

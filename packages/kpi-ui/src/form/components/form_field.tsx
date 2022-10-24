@@ -12,7 +12,7 @@ import type { FormFieldProps } from '../props'
 import type { InternalFormFieldProps } from '../internal_props'
 
 function InternalFormField(props: InternalFormFieldProps) {
-  const { name, rule, dependencies, required, preserve } = props
+  const { name, rule, dependencies, preserve, shouldUpdate } = props
   // 重置次数
   const [resetCount, updateCount] = useReducer((count) => count + 1, 0)
 
@@ -24,17 +24,17 @@ function InternalFormField(props: InternalFormFieldProps) {
   const internalHook = useMemo(() => context.getInternalHooks(HOOK_MARK), [context])
 
   const control = useRef(new FormFieldControl(name, forceUpdate, useMounted()))
-  control.current.provideProps(props) // 同步props性到 fieldControl
+  control.current.setFieldProps(props) // 同步props性到 fieldControl
 
   // 简单判断下是否为必填项
-  const isRequired = useMemo(() => required ?? isRequiredSchema(rule), [required, rule])
+  // const isRequired = useMemo(() => required ?? isRequiredSchema(rule), [required, rule])
 
   // 注册子字段 销毁时移除该字段
   // name 是数组会导致额外的 rerender 所以使用了useEvent
   const registerField = useEvent(() => {
     const cancel = internalHook?.registerField(control.current)
-    // 确保 render props 里面拿到最新的数据
-    if (control.current.shouldUpdate([], true)) forceUpdate()
+    // 确保拿到最新的数据
+    if (shouldUpdate === true) forceUpdate()
     return () => cancel?.(preserve)
   })
   useIsomorphicEffect(registerField, [registerField])
