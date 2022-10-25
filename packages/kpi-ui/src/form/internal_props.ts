@@ -39,6 +39,12 @@ export interface InternalFormInstance<S = any> extends FormInstance<S> {
    * @zh 设置字段校验时的时机
    */
   validateTrigger?: string | string[] | false
+
+  /**
+   * @private
+   * @zh 表单名称，用于区分不同的表单
+   */
+  formName?: string
 }
 
 export interface InternalHookReturn<State = any> {

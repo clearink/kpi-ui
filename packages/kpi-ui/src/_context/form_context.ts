@@ -24,7 +24,7 @@ export const FieldContext = CtxHelper<InternalFormInstance>({
   validateFields: notFoundContext,
   validateField: notFoundContext,
   submitForm: notFoundContext,
-  resetForm: notFoundContext,
+  resetFields: notFoundContext,
   isFieldTouched: notFoundContext,
   isFieldsTouched: notFoundContext,
   getInternalHooks: () => {

@@ -1,6 +1,6 @@
-import { isNumber, isArray, isObject, isNullish } from '../../_utils'
+import { isNumber, isArray, isObject, isNullish, hasOwn, isObjectLike } from '../../_utils'
+
 import type { InternalNamePath } from '../internal_props'
-// TODO: 模拟 lodash-es/toPath 去解析 name string 生成 数组 不用自己去解析
 
 function internalSet<V = any>(
   source: V,
@@ -44,4 +44,21 @@ export function deleteIn<V = any>(source: V, paths: InternalNamePath): any {
   // 源数据不是对象
   if (!isObject(source)) return source
   return internalSet(source, paths, undefined, true)
+}
+
+// 合并数据且要获得全部的数据路径
+export function mergeValue<V = any>(target: V, ...source: any[]): V {
+  return target
+}
+
+// 获取 source 的全部路径
+export function getPaths(source: any, parent: InternalNamePath = []): InternalNamePath[] {
+  if (!isObject(source) && !isArray(source)) return []
+  const isAnArray = isArray(source)
+  if (isAnArray && source.length === 0) return [parent]
+  return Object.entries(source).reduce((res, [key, value], index) => {
+    const current = parent.concat(isAnArray ? index : key)
+    if (isObject(value) || isArray(value)) return res.concat(getPaths(value, current))
+    return res.concat([current])
+  }, [] as InternalNamePath[])
 }

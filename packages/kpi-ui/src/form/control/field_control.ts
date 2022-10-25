@@ -20,7 +20,13 @@ export default class FormFieldControl extends BaseControl {
     this._key = FormFieldControl._getName(_name)
   }
 
-  // 是否被隐式依赖,形如 ['username'] 与 ['username', 'a', 'b']
+  // 生成 DOM 唯一标识
+  _getId(parentName?: string) {
+    return [parentName, ...this._name].filter(Boolean).join('_')
+  }
+
+  // 是否被隐式依赖，形如 ['username'] 与 ['username', 'a', 'b']
+  // name 不合法返回 false
   isImplicate(namePath: NamePath) {
     const path = toArray(namePath)
     const len = Math.min(path.length, this._name.length)
@@ -31,14 +37,16 @@ export default class FormFieldControl extends BaseControl {
   }
 
   // 是否应该更新自己
-  shouldUpdate(namePath: NamePath) {
-    if (this.isImplicate(namePath)) return true // 被隐式依赖
+  shouldUpdate(namePath: NamePath, prev: any, current: any) {
+    if (this.isImplicate(namePath)) return true // 被隐式依赖或自身
+
+    if (this._key) return false // name 优先级高于 shouldUpdate, 非隐式依赖就不用更新了
 
     const { shouldUpdate } = this._props
 
     if (shouldUpdate === true) return true // shouldUpdate = true
     // TODO: 如何拿到之前的 state ?
-    // if (isFunction(shouldUpdate)) return shouldUpdate(prev, current)
+    if (isFunction(shouldUpdate)) return shouldUpdate(prev, current)
     return false
   }
 

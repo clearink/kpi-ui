@@ -1,10 +1,9 @@
-// 向 Form.Field 包裹的组件内部注入数据
-
 import { cloneElement, type ReactElement } from 'react'
 import { useEvent, useIsomorphicEffect } from '../../_hooks'
 import { logger } from '../../_utils'
-import normalizeChildren from '../utils/children'
+import normalizeChildren, { isInvalidUsage } from '../utils/children'
 import collectInjectProps from '../utils/collect'
+
 import type {
   InternalFormFieldProps,
   InternalFormInstance,
@@ -12,13 +11,15 @@ import type {
 } from '../internal_props'
 import type { FormFieldControl } from '../control'
 
+// 向 Form.Field 包裹的组件内部注入数据
+
 export default function useInjectField(
   props: InternalFormFieldProps,
   context: InternalFormInstance,
   control: FormFieldControl,
   internalHook?: InternalHookReturn
 ) {
-  const { children: $children, name, initialValue } = props
+  const { children: $children, name, initialValue, shouldUpdate, dependencies } = props
 
   // 设置默认值
   // name 是数组会导致额外的 rerender 所以使用了useEvent
@@ -34,25 +35,15 @@ export default function useInjectField(
   const handlerNormalize = normalizeChildren(collect(), context, control)
   const { functional, children, valid } = handlerNormalize($children)
 
-  // 不符合规范 要么 render props 要么只有一个合法的 ReactElement
-  logger.warn(!valid && !functional, '`children` of Field is not validate ReactElement.')
-  // 当name 为空时也要这样吗?
-  if (functional || !valid) return children
-  //  `children` of render props only work with `shouldUpdate` or `dependencies`.
-  // if(functional && (shouldUpdate === undefined || dependencies === undefined))
+  // 不规范的用法
+  if (isInvalidUsage(control, functional, shouldUpdate, dependencies)) {
+    return null
+  }
 
+  logger.error(!functional && !valid, 'Form.Field `children` is not valid element.')
+  if (functional || !valid) return children
+
+  // 注入数据
   const injectProps = collect((children as ReactElement).props)
   return cloneElement(children as ReactElement, injectProps)
 }
-
-/**
- * QA
- * Q: 校验应该是字段级的，这样能够提高性能
- * A: kfc 实现 validateAt 功能
- *
- * Q: meta 属性究竟要怎么维护？
- * A: 放到 formGroup 里还是各个 control 自己独立维护呢？
- * touched 是否触摸过 以是否触发过 blur 事件为准
- * errors 错误信息
- * dirty 是否修改过值 以是否与源数据相对为准
- */

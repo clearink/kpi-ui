@@ -1,4 +1,5 @@
 import { hasOwn, isObjectLike, toArray } from '../../_utils'
+
 import type { AnyObject } from '../../_types'
 import type { FormFieldControl } from '../control'
 import type {
@@ -46,7 +47,8 @@ export default function collectInjectProps(
     const injectProps = {
       ...childProps,
       ...getValueProps(value),
-      id: control._key, // scrollError ? 不知道有啥用
+      // id 不知道有啥用 难不成用来 scrollError ?
+      id: control._getId(context.formName),
       // 触发条件
       [trigger!]: (...args: any[]) => {
         // 设置所有所有同名字段的 meta 属性

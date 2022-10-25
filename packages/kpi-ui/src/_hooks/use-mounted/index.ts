@@ -12,10 +12,10 @@ export default function useMounted() {
   return ref
 }
 
-// /** @private 仅仅是为了减少一次 rerender 平时尽量不要使用 */
-// export function useConstructor(callback: () => void) {
-//   const used = useRef(false)
-//   if (used.current) return
-//   callback()
-//   used.current = true
-// }
+/** @private 仅仅是为了减少一次 rerender 平时尽量不要使用 */
+export function useConstructor(callback: () => void) {
+  const used = useRef(false)
+  if (used.current) return
+  callback()
+  used.current = true
+}

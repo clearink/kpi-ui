@@ -100,7 +100,7 @@ export interface FormInstance<S = any> {
   /**
    * @zh 重置一组字段到 `initialValues`
    */
-  resetForm: (fields?: NamePath[]) => void
+  resetFields: (fields?: NamePath[]) => void
 
   /**
    * @zh 字段是否都 touched 了

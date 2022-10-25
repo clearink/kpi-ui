@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import BaseControl from './base_control'
 import { isUndefined, logger, toArray } from '../../_utils'
-import { setIn, getIn, deleteIn } from '../utils/value'
+import { setIn, getIn, deleteIn, mergeValue, getPaths } from '../utils/value'
 import type {
   InternalFieldMeta,
   InternalFormInstance,
@@ -27,7 +27,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
       validateFields: this.validateFields.bind(this),
 
       submitForm: this.submitForm.bind(this),
-      resetForm: this.resetForm.bind(this),
+      resetFields: this.resetFields.bind(this),
 
       isFieldTouched: this.isFieldTouched.bind(this),
       isFieldsTouched: this.isFieldsTouched.bind(this),
@@ -98,10 +98,10 @@ export default class FormGroupControl<State = any> extends BaseControl {
     if (!isUndefined(initialValue)) this.setFieldValue(namePath, initialValue)
   }
 
-  // 更新字段
-  private updateControl(namePath: NamePath) {
+  // TODO: 获取需要更新的字段逻辑还需要优化
+  private updateControl(namePath: NamePath, prev: State, current: State) {
     for (const control of this.controls) {
-      if (!control.shouldUpdate(namePath)) continue
+      if (!control.shouldUpdate(namePath, prev, current)) continue
       control.forceUpdate()
     }
   }
@@ -109,16 +109,26 @@ export default class FormGroupControl<State = any> extends BaseControl {
   // store
   private _state = {} as State
 
-  // TODO: 值相等时也要更新吗?
+  // TODO: 值相等时不更新当前 control，但是隐式依赖的字段呢？
   private setFieldValue(namePath: NamePath, value: any, shouldValidate = false) {
     if (!FormGroupControl._getName(namePath)) return // 无效字段路径 不处理
-    this._state = setIn(this._state, toArray(namePath), value)
-    this.updateControl(namePath)
+    this.setFieldsValue(setIn({}, toArray(namePath), value))
   }
 
-  // TODO
+  // 只有字段值变更了才需要刷新视图， meta 变化仅仅调用 onMetaChange 事件即可
+  // TODO: 增加相关逻辑
   private setFieldsValue(state: Partial<State>) {
+    const prev = this._state
+    // 获取 prev 里面的全部属性并组成 path 然后调用 control.shouldUpdate() ，最后去重
+    this._state = mergeValue(this._state, state)
+    const paths = getPaths(state)
+    console.log(paths)
+    this.updateControl([], prev, this._state)
     // 与现有的 state 进行 merge
+    /**
+     * Copy values into store and return a new values object
+     * ({ a: 1, b: { c: 2 } }, { a: 4, b: { d: 5 } }) => { a: 4, b: { c: 2, d: 5 } }
+     */
   }
 
   private getFieldValue(namePath: NamePath) {
@@ -201,12 +211,10 @@ export default class FormGroupControl<State = any> extends BaseControl {
       if (!control.isImplicate(namePath)) continue
       control.setFieldMeta(meta)
     }
-    // 设置后需要同步更新 render props 与 shouldUpdate
-    this.updateControl(namePath)
   }
 
   // 检查全部字段是否没有 errors
-  isValid() {
+  private isFormValid() {
     const invalidFields = this.controls.filter((control) => {
       const { errors = [] } = control.getFieldMeta()
       return errors.length > 0
@@ -215,7 +223,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
   }
 
   // 检查全部字段是否都触发过 onBlur
-  isFieldsTouched(fields: NamePath[] = []) {
+  private isFieldsTouched(fields: NamePath[] = []) {
     const untouchedFields = this.controls.filter((control) => {
       if (fields.length === 0) return false
       const { touched } = control.getFieldMeta()
@@ -225,12 +233,12 @@ export default class FormGroupControl<State = any> extends BaseControl {
     return untouchedFields.length === 0
   }
 
-  isFieldTouched(namePath: NamePath) {
+  private isFieldTouched(namePath: NamePath) {
     return this.isFieldsTouched([namePath])
   }
 
   // 检查全部字段是否都触发过 onChange 事件
-  isFieldsDirty(fields: NamePath[] = []) {
+  private isFieldsDirty(fields: NamePath[] = []) {
     const pristineFields = this.controls.filter((control) => {
       if (fields.length === 0) return false
       const { dirty } = control.getFieldMeta()
@@ -240,12 +248,12 @@ export default class FormGroupControl<State = any> extends BaseControl {
     return pristineFields.length === 0
   }
 
-  isFieldDirty(namePath: NamePath) {
+  private isFieldDirty(namePath: NamePath) {
     return this.isFieldsDirty([namePath])
   }
 
   // 检查全部字段是否有正在校验的字段
-  isFieldsPending(fields: NamePath[] = []) {
+  private isFieldsPending(fields: NamePath[] = []) {
     const pendingFields = this.controls.filter((control) => {
       if (fields.length === 0) return false
       const { pending } = control.getFieldMeta()
@@ -255,7 +263,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
     return pendingFields.length > 0
   }
 
-  isFieldPending(namePath: NamePath) {
+  private isFieldPending(namePath: NamePath) {
     return this.isFieldsPending([namePath])
   }
 
@@ -274,7 +282,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
   }
 
   // 校验指定字段
-  validateField(namePath: NamePath) {
+  private validateField(namePath: NamePath) {
     this.validateFields([namePath])
   }
 
@@ -290,7 +298,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
   }
 
   // 重置表单
-  private resetForm(fields: NamePath[] = []) {
+  private resetFields(fields: NamePath[] = []) {
     const controls = this.controls.filter((control) => {
       if (fields.length === 0) return true
       return fields.some((namePath) => control.isImplicate(namePath))
@@ -301,3 +309,77 @@ export default class FormGroupControl<State = any> extends BaseControl {
 // 校验时不能只更新当前字段， 要调用 upDateControl 函数
 // setFields 需要比较与 prev 是否相等才 updateControl
 // TODO: 完成 this.controls 的剩余逻辑
+
+/**
+ * import React, { useState } from 'react'
+import { Form, kfc, Space } from '../../../src'
+import useForm from '../../../src/form/hooks/use_form'
+import '../../../src/pagination/style'
+import './style.css'
+
+
+function Input(props: any) {
+  let value
+  if ('value' in props) value = props.value || 0
+  return (
+    <input
+      {...props}
+      value={value}
+    />
+  )
+}
+
+export default function App() {
+  const form = useForm()
+  const [key, set] = useState(0)
+  return (
+    <div className="app-wrap">
+      <button onClick={() => set(key + 1)}>set k</button>
+      <Form
+        form={form}
+        key={key}
+        name="basic"
+      >
+        <label>username</label>
+        <label>age</label>
+
+        <Form.Field name="username">
+          <Input />
+        </Form.Field>
+        <Form.Field name={['username', 'a']}>
+          <Input />
+        </Form.Field>
+
+        <Form.Field shouldUpdate>
+          <Input />
+        </Form.Field>
+
+        {/* <Form.Field>
+          <InputNumber />
+        </Form.Field> */}
+        {/* 此二种 我觉得是不管什么都要更新的 */}
+        <Form.Field shouldUpdate>
+          {() => {
+            return (
+              <button
+                onClick={() => {
+                  form.setFieldValue(['username', 'a'], undefined)
+                }}
+              >
+                submit
+              </button>
+            )
+          }}
+        </Form.Field>
+      </Form>
+    </div>
+  )
+}
+/**
+ * listeners = Map<{
+ * username: age, pwd
+ * ['a', 'd']: pwd
+ * }>
+ */
+
+ */

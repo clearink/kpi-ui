@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { FieldContext, FormContext } from '../../_context'
 import { withDefaultProps } from '../../_hocs'
-import { useEvent, useIsomorphicEffect, useMounted } from '../../_hooks'
+import { useConstructor, useEvent, useIsomorphicEffect } from '../../_hooks'
 import { isFunction } from '../../_utils'
 import { HOOK_MARK } from '../control'
 import useForm from '../hooks/use_form'
@@ -39,10 +39,9 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   internalHook?.setPreserve(preserve)
   // 如果form是 render props 不要主动更新视图
 
-  const mounted = useMounted()
-
   // 设置初始值, 仅在挂载前设置一次
-  !mounted.current && internalHook?.setInitialValues(initialValues)
+  useConstructor(() => internalHook?.setInitialValues(initialValues))
+
   // 用于多表单联动
   const parent = FormContext.useState()
   useIsomorphicEffect(() => parent.register(instance, name), [instance, name, parent])
@@ -58,7 +57,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     isFunction(e?.preventDefault) && e?.preventDefault()
     isFunction(e?.stopPropagation) && e?.stopPropagation()
 
-    instance.resetForm()
+    instance.resetFields()
 
     onReset?.(e)
   })
@@ -69,8 +68,8 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   }, [as])
 
   const fieldContextValue = useMemo(() => {
-    return { ...instance, validateTrigger }
-  }, [instance, validateTrigger])
+    return { ...instance, validateTrigger, formName: name }
+  }, [instance, validateTrigger, name])
 
   const children = useMemo(() => {
     if (!isFunction($children)) return $children
