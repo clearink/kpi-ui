@@ -7,6 +7,7 @@ import type FormGroupControl from './group_control'
 import type { InternalFormFieldProps, InternalFieldMeta, InternalNamePath } from '../internal_props'
 import type { NamePath } from '../props'
 import type { SchemaIssue } from '../../_utils/form_schema/interface'
+import { getIn } from '../utils/value'
 
 export default class FormFieldControl extends BaseControl {
   _key: string // 唯一标识
@@ -39,10 +40,9 @@ export default class FormFieldControl extends BaseControl {
   }
 
   // 是否应该更新自己
-  shouldUpdate(namePath: NamePath, prev: any, current: any) {
-    if (this.isImplicate(namePath)) return true // 被隐式依赖或自身
-
-    if (this._key) return false // name 优先级高于 shouldUpdate, 非隐式依赖就不用更新了
+  shouldUpdate(prev: any, current: any) {
+    // name 优先级高于 shouldUpdate, 非隐式依赖就不用更新了
+    if (this._key) return getIn(prev, this._name) !== getIn(current, this._name)
 
     const { shouldUpdate } = this._props
 

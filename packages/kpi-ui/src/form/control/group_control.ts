@@ -1,12 +1,11 @@
 /* eslint-disable class-methods-use-this */
 import BaseControl from './base_control'
 import { isUndefined, logger, toArray } from '../../_utils'
-import { setIn, getIn, deleteIn, mergeAndGetPaths, existIn } from '../utils/value'
+import { setIn, getIn, deleteIn, mergeValue } from '../utils/value'
 import type {
   InternalFieldMeta,
   InternalFormInstance,
   InternalHookReturn,
-  InternalNamePath,
   WatchCallBack,
 } from '../internal_props'
 import type { NamePath } from '../props'
@@ -62,16 +61,16 @@ export default class FormGroupControl<State = any> extends BaseControl {
 
   // 收集当前表单的数据
   private getFieldsValue(fields: NamePath[] = []) {
-    return this.controls
-      .filter((control) => {
-        if (!control._key) return false // 去除name无效的 field
-        if (fields.length === 0) return true
-        return fields.some((field) => control.isImplicate(field))
-      })
-      .reduce((values, control) => {
-        const value = getIn(this._state, control._name)
-        return setIn(values ?? ({} as State), control._name, value)
-      }, {} as State)
+    const uniqueControls = this.controls.filter((control) => {
+      if (!control._key) return false // 去除name无效的 field
+      if (fields.length === 0) return true
+      return fields.some((field) => control.isImplicate(field))
+    })
+
+    return uniqueControls.reduce((values, control) => {
+      const value = getIn(this._state, control._name)
+      return setIn(values ?? ({} as State), control._name, value)
+    }, {} as State)
   }
 
   // 默认值
@@ -100,30 +99,13 @@ export default class FormGroupControl<State = any> extends BaseControl {
   }
 
   // 更新字段
-  private updateControl(updatePaths: InternalNamePath[], prev: State, current: State) {
-    // 获取需要更新的路径
-    const optimizedPaths = updatePaths.reduce((res, path) => {
-      const preVal = getIn(prev, path)
-      const curVal = getIn(current, path)
-      // 之前不存在该值，直接 push
-      if (preVal !== curVal) return res.concat([path])
-
-      const noLast = path.slice(0, -1)
-      if (!noLast.length || existIn(prev, noLast)) return res
-      // 嵌套路径 且之前的值不存在
-      return res.concat([noLast])
-    }, [] as InternalNamePath[])
-
+  private updateControl(prev: State, current: State) {
     // 获取需要更新的 control
-    const uniqueControls = optimizedPaths.reduce((set, path) => {
-      for (const control of this.controls) {
-        if (set.has(control)) continue
-        if (!control.shouldUpdate(path, prev, current)) continue
-        set.add(control)
-      }
+    const uniqueControls = this.controls.reduce((set, control) => {
+      if (control.shouldUpdate(prev, current)) set.add(control)
       return set
     }, new Set<FormFieldControl>())
-
+    // 强制更新 control
     uniqueControls.forEach((control) => control.forceUpdate())
   }
 
@@ -134,15 +116,16 @@ export default class FormGroupControl<State = any> extends BaseControl {
   private setFieldValue(namePath: NamePath, value: any) {
     // 无效字段路径 不处理
     if (!FormGroupControl._getName(namePath)) return
-
-    this.setFieldsValue(setIn({}, toArray(namePath), value))
+    const prev = this._state
+    this._state = setIn(this._state, toArray(namePath), value)
+    this.updateControl(prev, this._state)
   }
 
   private setFieldsValue(state: Partial<State>) {
     const prev = this._state
     // 与现有的 state 进行 merge
-    const [updatePaths, current] = mergeAndGetPaths(this._state, state)
-    this.updateControl(updatePaths, prev, (this._state = current))
+    this._state = mergeValue(this._state, state)
+    this.updateControl(prev, this._state)
   }
 
   private getFieldValue(namePath: NamePath) {
@@ -289,7 +272,8 @@ export default class FormGroupControl<State = any> extends BaseControl {
         const value = this.getFieldValue(control._name)
         return control.validate(value)
       })
-    return Promise.all(list).then(() => this.getFieldsValue(fields))
+    // TODO: 确定逻辑
+    return Promise.all(list).then(() => this._state)
   }
 
   // 校验指定字段

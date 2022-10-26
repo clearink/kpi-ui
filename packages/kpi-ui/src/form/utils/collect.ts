@@ -1,4 +1,4 @@
-import { hasOwn, isObjectLike, toArray } from '../../_utils'
+import { hasOwn, isFunction, isObjectLike, toArray } from '../../_utils'
 
 import type { AnyObject } from '../../_types'
 import type { FormFieldControl } from '../control'
@@ -16,8 +16,6 @@ function defaultGetValueFromEvent(valuePropName: string) {
     return (event.target as HTMLInputElement)[valuePropName]
   }
 }
-// 数据转换函数
-const defaultFormatter = (val: any) => val
 
 /** 收集注入到Form.Field children 的属性 */
 export default function collectInjectProps(
@@ -32,7 +30,7 @@ export default function collectInjectProps(
     validateTrigger,
     valuePropName,
     getValueFromEvent = defaultGetValueFromEvent(valuePropName!),
-    formatter = defaultFormatter,
+    formatter,
     getValueProps: $getValueProps,
   } = props
   return (childProps: AnyObject = {}) => {
@@ -52,8 +50,11 @@ export default function collectInjectProps(
       // 触发条件
       [trigger!]: (...args: any[]) => {
         // 设置所有所有同名字段的 meta 属性
-
-        const nextValue = formatter(getValueFromEvent(...args), value, context.getFieldsValue())
+        const nextValue = (() => {
+          const next = getValueFromEvent(...args)
+          if (!isFunction(formatter)) return next
+          return formatter(next, value, context.getFieldsValue())
+        })()
 
         context.setFieldValue(name, nextValue)
 
