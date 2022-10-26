@@ -26,14 +26,16 @@ export default class FormFieldControl extends BaseControl {
   }
 
   // 是否被隐式依赖，形如 ['username'] 与 ['username', 'a', 'b']
-  // name 不合法返回 false
+  // ['username', 'a'] 会影响 ['username']
+  // ['username'] 不会影响 ['username', 'a'] ?
   isImplicate(namePath: NamePath) {
     const path = toArray(namePath)
     const len = Math.min(path.length, this._name.length)
     for (let i = 0; i < len; i++) {
       if (path[i] !== this._name[i]) return false
     }
-    return len > 0 // [] 与 ['a'] 不是隐式依赖
+    // name 不合法也返回 false
+    return len > 0 && this._name.length <= path.length
   }
 
   // 是否应该更新自己

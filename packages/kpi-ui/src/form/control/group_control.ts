@@ -1,11 +1,12 @@
 /* eslint-disable class-methods-use-this */
 import BaseControl from './base_control'
 import { isUndefined, logger, toArray } from '../../_utils'
-import { setIn, getIn, deleteIn, mergeValue, getPaths } from '../utils/value'
+import { setIn, getIn, deleteIn, mergeAndGetPaths, existIn } from '../utils/value'
 import type {
   InternalFieldMeta,
   InternalFormInstance,
   InternalHookReturn,
+  InternalNamePath,
   WatchCallBack,
 } from '../internal_props'
 import type { NamePath } from '../props'
@@ -98,37 +99,50 @@ export default class FormGroupControl<State = any> extends BaseControl {
     if (!isUndefined(initialValue)) this.setFieldValue(namePath, initialValue)
   }
 
-  // TODO: 获取需要更新的字段逻辑还需要优化
-  private updateControl(namePath: NamePath, prev: State, current: State) {
-    for (const control of this.controls) {
-      if (!control.shouldUpdate(namePath, prev, current)) continue
-      control.forceUpdate()
-    }
+  // 更新字段
+  private updateControl(updatePaths: InternalNamePath[], prev: State, current: State) {
+    // 获取需要更新的路径
+    const optimizedPaths = updatePaths.reduce((res, path) => {
+      const preVal = getIn(prev, path)
+      const curVal = getIn(current, path)
+      // 之前不存在该值，直接 push
+      if (preVal !== curVal) return res.concat([path])
+
+      const noLast = path.slice(0, -1)
+      if (!noLast.length || existIn(prev, noLast)) return res
+      // 嵌套路径 且之前的值不存在
+      return res.concat([noLast])
+    }, [] as InternalNamePath[])
+
+    // 获取需要更新的 control
+    const uniqueControls = optimizedPaths.reduce((set, path) => {
+      for (const control of this.controls) {
+        if (set.has(control)) continue
+        if (!control.shouldUpdate(path, prev, current)) continue
+        set.add(control)
+      }
+      return set
+    }, new Set<FormFieldControl>())
+
+    uniqueControls.forEach((control) => control.forceUpdate())
   }
 
   // store
   private _state = {} as State
 
   // TODO: 值相等时不更新当前 control，但是隐式依赖的字段呢？
-  private setFieldValue(namePath: NamePath, value: any, shouldValidate = false) {
-    if (!FormGroupControl._getName(namePath)) return // 无效字段路径 不处理
+  private setFieldValue(namePath: NamePath, value: any) {
+    // 无效字段路径 不处理
+    if (!FormGroupControl._getName(namePath)) return
+
     this.setFieldsValue(setIn({}, toArray(namePath), value))
   }
 
-  // 只有字段值变更了才需要刷新视图， meta 变化仅仅调用 onMetaChange 事件即可
-  // TODO: 增加相关逻辑
   private setFieldsValue(state: Partial<State>) {
     const prev = this._state
-    // 获取 prev 里面的全部属性并组成 path 然后调用 control.shouldUpdate() ，最后去重
-    this._state = mergeValue(this._state, state)
-    const paths = getPaths(state)
-    console.log(paths)
-    this.updateControl([], prev, this._state)
     // 与现有的 state 进行 merge
-    /**
-     * Copy values into store and return a new values object
-     * ({ a: 1, b: { c: 2 } }, { a: 4, b: { d: 5 } }) => { a: 4, b: { c: 2, d: 5 } }
-     */
+    const [updatePaths, current] = mergeAndGetPaths(this._state, state)
+    this.updateControl(updatePaths, prev, (this._state = current))
   }
 
   private getFieldValue(namePath: NamePath) {
@@ -142,12 +156,10 @@ export default class FormGroupControl<State = any> extends BaseControl {
     else this._state = deleteIn(this._state, paths)
   }
 
-  private _controls = new Map<string, Set<FormFieldControl>>()
+  private _controls = new Set<FormFieldControl>()
 
   get controls() {
-    return [...this._controls.values()].reduce((res, set) => {
-      return res.concat([...set.values()])
-    }, [] as FormFieldControl[])
+    return [...this._controls.values()]
   }
 
   // 注册字段
@@ -155,19 +167,18 @@ export default class FormGroupControl<State = any> extends BaseControl {
   registerField(control: FormFieldControl) {
     const { _key: key, _name: name } = control
 
-    const cached = this._controls.get(key) ?? new Set<FormFieldControl>()
-
-    this._controls.set(key, cached.add(control.setParent(this)))
+    this._controls.add(control.setParent(this))
 
     // 取消注册， 清除副作用
     return ($preserve?: boolean) => {
       const preserve = $preserve ?? this._preserve
-      const controls = this._controls.get(key)
-      controls?.delete(control)
-      if (controls?.size !== 0) return
-      this._controls.delete(key) // 清空空字段
-      // 没有同名字段且 name 合法不保留数据
-      !preserve && key && this.deleteFieldValue(name)
+      this._controls.delete(control) // 清空空字段
+
+      const hasSameField = this.controls.find(({ _key }) => _key === key)
+      // 不保留数据 && name 合法 && 没有同名字段
+      if (!preserve && key && !hasSameField) {
+        this.deleteFieldValue(name)
+      }
     }
   }
 
@@ -305,81 +316,3 @@ export default class FormGroupControl<State = any> extends BaseControl {
     })
   }
 }
-
-// 校验时不能只更新当前字段， 要调用 upDateControl 函数
-// setFields 需要比较与 prev 是否相等才 updateControl
-// TODO: 完成 this.controls 的剩余逻辑
-
-/**
- * import React, { useState } from 'react'
-import { Form, kfc, Space } from '../../../src'
-import useForm from '../../../src/form/hooks/use_form'
-import '../../../src/pagination/style'
-import './style.css'
-
-
-function Input(props: any) {
-  let value
-  if ('value' in props) value = props.value || 0
-  return (
-    <input
-      {...props}
-      value={value}
-    />
-  )
-}
-
-export default function App() {
-  const form = useForm()
-  const [key, set] = useState(0)
-  return (
-    <div className="app-wrap">
-      <button onClick={() => set(key + 1)}>set k</button>
-      <Form
-        form={form}
-        key={key}
-        name="basic"
-      >
-        <label>username</label>
-        <label>age</label>
-
-        <Form.Field name="username">
-          <Input />
-        </Form.Field>
-        <Form.Field name={['username', 'a']}>
-          <Input />
-        </Form.Field>
-
-        <Form.Field shouldUpdate>
-          <Input />
-        </Form.Field>
-
-        {/* <Form.Field>
-          <InputNumber />
-        </Form.Field> */}
-        {/* 此二种 我觉得是不管什么都要更新的 */}
-        <Form.Field shouldUpdate>
-          {() => {
-            return (
-              <button
-                onClick={() => {
-                  form.setFieldValue(['username', 'a'], undefined)
-                }}
-              >
-                submit
-              </button>
-            )
-          }}
-        </Form.Field>
-      </Form>
-    </div>
-  )
-}
-/**
- * listeners = Map<{
- * username: age, pwd
- * ['a', 'd']: pwd
- * }>
- */
-
- */
