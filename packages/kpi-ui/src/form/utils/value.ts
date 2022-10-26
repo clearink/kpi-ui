@@ -102,6 +102,7 @@ function internalMerge(
   }
 
   // 数组和对象
+  // TODO: 数组是直接覆盖还是需要合并呢？
   if (isObject(target) || isArray(target)) {
     const isAnArray = isArray(target)
     const newTarget = isAnArray ? [...target] : { ...target }
@@ -126,20 +127,24 @@ export function mergeAndGetPaths<V = any>(target: V, ...sources: any[]) {
   }
 
   const updateMap = (data: any, namePath: InternalNamePath) => {
-    /**
-     * TODO: 当 data 是字符串时要如何解析呢？
-     */
     if (!isObjectLike(data)) setPath(namePath)
     else getPaths(data, namePath).forEach((path) => setPath(path))
   }
   const next = sources.reduce((res, item) => {
     return internalMerge(res, item, updateMap)
   }, target)
+  console.log('next', next)
   return [[...updatePaths.values()], next] as [InternalNamePath[], V]
 }
 
 /**
- * function Input(props: any) {
+ * import React, { useState } from 'react'
+import { Form, kfc, Space } from '../../../src'
+import useForm from '../../../src/form/hooks/use_form'
+import '../../../src/pagination/style'
+import './style.css'
+
+function Input(props: any) {
   let value
   if ('value' in props) value = props.value || ''
   return (
@@ -160,8 +165,16 @@ export default function App() {
         form={form}
         key={key}
         name="basic"
+        onFinish={console.log}
       >
-        <Form.Field name={['username']}>
+        <Form.Field name={['username', 0]}>
+          <Input />
+        </Form.Field>
+
+        <Form.Field name={['username', 1]}>
+          <Input />
+        </Form.Field>
+        <Form.Field name={['username', 2]}>
           <Input />
         </Form.Field>
 
@@ -177,8 +190,10 @@ export default function App() {
           {() => {
             return (
               <button
+                type="button"
                 onClick={() => {
-                  form.setFieldValue(['username', 'a'], undefined)
+                  console.log('onClick={() => {')
+                  form.setFieldValue(['username'], [1,2])
                 }}
               >
                 submit
@@ -186,18 +201,9 @@ export default function App() {
             )
           }}
         </Form.Field>
-        {Array.from({ length: 100 }, (_, i) => {
-          return (
-            <Form.Field
-              key={i}
-              name={['username', i]}
-            >
-              <Input />
-            </Form.Field>
-          )
-        })}
       </Form>
     </div>
   )
 }
+
  */
