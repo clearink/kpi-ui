@@ -50,11 +50,12 @@ export default function collectInjectProps(
       // 触发条件
       [trigger!]: (...args: any[]) => {
         // 设置所有所有同名字段的 meta 属性
-        const nextValue = (() => {
-          const next = getValueFromEvent(...args)
-          if (!isFunction(formatter)) return next
-          return formatter(next, value, context.getFieldsValue())
-        })()
+
+        let nextValue = getValueFromEvent(...args)
+        if (isFunction(formatter)) {
+          const formValues = context.getFieldsValue()
+          nextValue = formatter(nextValue, value, formValues)
+        }
 
         context.setFieldValue(name, nextValue)
 

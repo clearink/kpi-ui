@@ -14,7 +14,7 @@ import type { InternalFormFieldProps } from '../internal_props'
 function InternalFormField(props: InternalFormFieldProps) {
   const { name, dependencies, preserve, shouldUpdate } = props
   // 重置次数
-  const [resetCount, updateCount] = useReducer((count) => count + 1, 0)
+  const [resetCount, resetField] = useReducer((count) => count + 1, 0)
 
   // 强制更新视图
   const [, forceUpdate] = useReducer((count) => count + 1, 0)

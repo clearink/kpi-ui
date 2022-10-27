@@ -26,7 +26,7 @@ export interface InternalFormInstance<S = any> extends FormInstance<S> {
    * @private
    * @zh 内部方法，外部禁止使用
    */
-  getInternalHooks: (secret: string) => InternalHookReturn | undefined
+  getInternalHooks: (secret: symbol) => InternalHookReturn | undefined
 
   /**
    * @private
@@ -53,6 +53,12 @@ export interface InternalHookReturn<State = any> {
    * @zh 设置字段删除时是否保留数据
    */
   setPreserve: (preserve?: boolean) => void
+
+  /**
+   * @private
+   * @zh 设置字段删除时是否保留数据
+   */
+  setFormName: (name?: string) => void
 
   /**
    * @private

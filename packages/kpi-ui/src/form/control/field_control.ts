@@ -23,7 +23,7 @@ export default class FormFieldControl extends BaseControl {
 
   // 生成 DOM 唯一标识
   _getId(parentName?: string) {
-    return [parentName, ...this._name].filter(Boolean).join('_')
+    return [parentName, ...this._name].filter((item) => item !== undefined).join('_')
   }
 
   // 是否被隐式依赖，形如 ['username'] 与 ['username', 'a', 'b']
@@ -40,14 +40,10 @@ export default class FormFieldControl extends BaseControl {
   }
 
   // 是否应该更新自己
-  shouldUpdate(namePath: NamePath, prev: any, current: any) {
-    // 非隐式依赖就不用更新了
-    // const key = FormFieldControl._getName(namePath)
-    // // setFieldValue 方法调用
-    // if (key) return this.isImplicate(namePath)
-
+  shouldUpdate(prev: any, current: any) {
     // name 优先级高于 shouldUpdate
-    if (this._key) return getIn(prev, this._name) !== getIn(current, this._name)
+    const { _key: key, _name: name } = this
+    if (key) return getIn(prev, name) !== getIn(current, name)
 
     const { shouldUpdate } = this._props
 

@@ -1,7 +1,15 @@
 /* eslint-disable class-methods-use-this */
 import BaseControl from './base_control'
 import { isUndefined, logger, toArray } from '../../_utils'
-import { setIn, getIn, deleteIn, mergeValue, cloneDeep } from '../utils/value'
+import {
+  setIn,
+  getIn,
+  deleteIn,
+  mergeValue,
+  cloneDeep,
+  cloneWithPath,
+  getPaths,
+} from '../utils/value'
 import type {
   InternalFieldMeta,
   InternalFormInstance,
@@ -11,7 +19,7 @@ import type {
 import type { NamePath } from '../props'
 import type FormFieldControl from './field_control'
 
-export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
+export const HOOK_MARK = Symbol('_$_KPI_FORM_HOOK_MARK_$_')
 
 export default class FormGroupControl<State = any> extends BaseControl {
   // 向外暴露的函数
@@ -32,6 +40,8 @@ export default class FormGroupControl<State = any> extends BaseControl {
       isFieldTouched: this.isFieldTouched.bind(this),
       isFieldsTouched: this.isFieldsTouched.bind(this),
 
+      scrollToField: this.scrollToField.bind(this),
+
       /** @private */
       getInternalHooks: this._getInternalHooks.bind(this),
     }
@@ -40,8 +50,11 @@ export default class FormGroupControl<State = any> extends BaseControl {
   // 字段删除时是否保存属性
   private _preserve = true
 
+  // 表单名称
+  private _name: string | undefined = undefined
+
   // 内部属性
-  private _getInternalHooks(secret: string): InternalHookReturn | undefined {
+  private _getInternalHooks(secret: symbol): InternalHookReturn | undefined {
     const matched = secret === HOOK_MARK
 
     logger.warn(!matched, '`getInternalHooks` is internal usage. Should not call directly.')
@@ -56,6 +69,8 @@ export default class FormGroupControl<State = any> extends BaseControl {
       setFieldMeta: this.setFieldMeta.bind(this),
       // eslint-disable-next-line no-return-assign
       setPreserve: (preserve = true) => (this._preserve = preserve),
+      // eslint-disable-next-line no-return-assign
+      setFormName: (name?: string) => (this._name = name),
     }
   }
 
@@ -66,9 +81,10 @@ export default class FormGroupControl<State = any> extends BaseControl {
       if (fields.length === 0) return true
       return fields.some((field) => control.isImplicate(field))
     })
-
+    // 深拷贝原始值防止 setIn 时被错误覆盖
+    const cloned = cloneDeep(this._state)
     return uniqueControls.reduce((values, control) => {
-      const value = getIn(this._state, control._name)
+      const value = getIn(cloned, control._name)
       return setIn(values ?? ({} as State), control._name, value)
     }, {} as State)
   }
@@ -100,10 +116,10 @@ export default class FormGroupControl<State = any> extends BaseControl {
   }
 
   // 更新字段
-  private updateControl(namePath: NamePath, prev: State, current: State) {
+  private updateControl(prev: State, current: State) {
     // 获取需要更新的 control
     const uniqueControls = this.controls.reduce((set, control) => {
-      if (control.shouldUpdate(namePath, prev, current)) set.add(control)
+      if (control.shouldUpdate(prev, current)) set.add(control)
       return set
     }, new Set<FormFieldControl>())
     // 强制更新 control
@@ -113,20 +129,29 @@ export default class FormGroupControl<State = any> extends BaseControl {
   // store
   private _state = {} as State
 
-  // TODO: 值相等时不更新当前 control，但是隐式依赖的字段呢？
+  // 设置字段值
   private setFieldValue(namePath: NamePath, value: any) {
     // 无效字段路径 不处理
     if (!FormGroupControl._getName(namePath)) return
-    const prev = this._state
-    this._state = setIn(this._state, toArray(namePath), value)
-    this.updateControl(namePath, prev, this._state)
+    const paths = toArray(namePath)
+    // 仅浅拷贝相关路径
+    const prev = cloneWithPath(this._state, paths)
+    const current = setIn(this._state, paths, value)
+
+    // 嵌套路径 或 值不相等
+    const shouldUpdate = paths.length > 1 || getIn(prev, paths) !== getIn(current, paths)
+    shouldUpdate && this.updateControl(prev, current)
   }
 
+  // 设置多个字段值
   private setFieldsValue(state: Partial<State>) {
-    const prev = this._state
+    // 仅浅拷贝相关路径
+    const prev = getPaths(state).reduce((res, paths) => {
+      return cloneWithPath(res, paths)
+    }, this._state)
     // 与现有的 state 进行 merge
     this._state = mergeValue(this._state, state)
-    this.updateControl([], prev, this._state)
+    this.updateControl(prev, this._state)
   }
 
   private getFieldValue(namePath: NamePath) {
@@ -161,9 +186,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
 
       const hasSameField = this.controls.find(({ _key }) => _key === key)
       // 不保留数据 && name 合法 && 没有同名字段
-      if (!preserve && key && !hasSameField) {
-        this.deleteFieldValue(name)
-      }
+      if (!preserve && key && !hasSameField) this.deleteFieldValue(name)
     }
   }
 
@@ -275,7 +298,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
         return control.validate(value)
       })
     // TODO: 确定逻辑
-    return Promise.all(list).then(() => this._state)
+    return Promise.all(list).then(() => this.getFieldsValue())
   }
 
   // 校验指定字段
@@ -286,7 +309,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
   // 提交表单
   private async submitForm(onFinish, onFailed) {
     try {
-      const values = this.validateFields()
+      const values = await this.validateFields()
       onFinish?.(values)
     } catch (error) {
       logger.error(true, error)
@@ -300,5 +323,16 @@ export default class FormGroupControl<State = any> extends BaseControl {
       if (fields.length === 0) return true
       return fields.some((namePath) => control.isImplicate(namePath))
     })
+  }
+
+  // 滚动到对应位置
+  private scrollToField(namePath: NamePath = []) {
+    const key = FormGroupControl._getName(namePath)
+    if (!key) return
+    const control = this.controls.find(({ _key }) => _key === key)
+    const fieldId = control?._getId(this._name)
+    if (fieldId === undefined) return
+    const dom = document.querySelector(`#${fieldId}`)
+    dom?.scrollIntoView({ behavior: 'smooth' })
   }
 }

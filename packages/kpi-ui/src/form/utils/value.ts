@@ -26,31 +26,6 @@ function internalSet<V = any>(
   return attr
 }
 
-// 浅拷贝 且 仅拷贝某条路径下的值
-function cloneWithPath<V>(source: V, paths: InternalNamePath) {
-  if (!isObjectLike(source) || !paths.length) return source
-  if (isObject(source) || isArray(source)) {
-  }
-  // 其他类型暂时不处理
-  return source
-}
-
-// 深拷贝 数组与对象
-export function cloneDeep(source: any, seen = new WeakSet()) {
-  if (seen.has(source)) return source
-  if (!isObjectLike(source)) return source
-  seen.add(source)
-  if (isObject(source) || isArray(source)) {
-    const init = isArray(source) ? [] : {}
-    return Object.entries(source).reduce((res, [key, value]) => {
-      res[key] = cloneDeep(value, seen)
-      return res
-    }, init)
-  }
-  // 其他类型暂不需要
-  return source
-}
-
 export function setIn<V = any>(source: V, paths: InternalNamePath, value: any): V {
   // 源数据不是对象
   if (!isObject(source)) return source
@@ -74,24 +49,60 @@ export function deleteIn<V = any>(source: V, paths: InternalNamePath): any {
   return internalSet(source, paths, undefined, true)
 }
 
-// 合并对象(数组直接覆盖)
+// 深拷贝 数组与对象
+function internalCloneDeep(source: any, seen = new WeakSet()) {
+  if (seen.has(source)) return source
+  if (!isObjectLike(source)) return source
+
+  seen.add(source)
+
+  if (isObject(source) || isArray(source)) {
+    const init = isArray(source) ? [] : {}
+    return Object.entries(source).reduce((res, [key, value]) => {
+      res[key] = internalCloneDeep(value, seen)
+      return res
+    }, init)
+  }
+  // 其他类型暂不需要
+  return source
+}
+
+export function cloneDeep<V>(source: V) {
+  return internalCloneDeep(source) as V
+}
+
+// 浅拷贝 且 仅拷贝某条路径下的值
+export function cloneWithPath<V>(source: V, paths: InternalNamePath) {
+  if (!isObjectLike(source) || !paths.length) return source
+  const [path, ...rest] = paths
+  if (isObject(source) || isArray(source)) {
+    const init = isArray(source) ? [...source] : { ...source }
+    init[path] = cloneWithPath(init[path], rest)
+    return init as V
+  }
+  // 其他类型暂时不处理
+  return source
+}
+
+// 合并对象
 function internalMerge(target: any, source: any) {
-  const targetType = rawType(target)
-  const sourceType = rawType(source)
+  const [targetType, sourceType] = [rawType(target), rawType(source)]
 
   if (targetType !== sourceType) return source
 
   // 为基本类型
   if (!isObjectLike(target)) return source
 
-  // 数组和对象
-  if (isObject(target) || isArray(target)) {
+  // 数组直接覆盖
+  if (isArray(target)) return source
+
+  // 对象才需要合并
+  if (isObject(target)) {
     return Object.entries(source).reduce((res, [key, value]) => {
       res[key] = internalMerge(res[key], value)
       return res
     }, target)
   }
-
   // 其他非基础类型数据
   return target
 }
@@ -101,4 +112,17 @@ export function mergeValue<V = any>(target: V, ...sources: any[]) {
   return sources.reduce((res, item) => {
     return internalMerge(res, item)
   }, target)
+}
+
+// 获取 source 的全部路径
+export function getPaths(source: any, parent: InternalNamePath = []): InternalNamePath[] {
+  // 不是对象或数组
+  if (!isObject(source) && !isArray(source)) return [parent]
+  const isAnArray = isArray(source)
+  // 空数组
+  if (isAnArray && source.length === 0) return [parent]
+  return Object.entries(source).reduce((res, [key, value]) => {
+    const current = parent.concat(isAnArray ? Number(key) : key)
+    return res.concat(getPaths(value, current))
+  }, [] as InternalNamePath[])
 }

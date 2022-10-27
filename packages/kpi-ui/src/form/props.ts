@@ -106,7 +106,13 @@ export interface FormInstance<S = any> {
    * @zh 字段是否都 touched 了
    */
   isFieldTouched: (namePath: NamePath) => boolean
+
   isFieldsTouched: (namePath?: NamePath[]) => boolean
+
+  /**
+   * @zh 滚动到对应字段
+   */
+  scrollToField: (NamePath?: NamePath) => void
 }
 
 export type Forms = Record<string, FormInstance>

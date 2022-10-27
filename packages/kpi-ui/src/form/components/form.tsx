@@ -38,6 +38,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
 
   internalHook?.setPreserve(preserve)
   // 如果form是 render props 不要主动更新视图
+  internalHook?.setFormName(name) // 同步formName
 
   // 设置初始值, 仅在挂载前设置一次
   useConstructor(() => internalHook?.setInitialValues(initialValues))

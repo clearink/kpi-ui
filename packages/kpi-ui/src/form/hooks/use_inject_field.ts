@@ -24,7 +24,8 @@ export default function useInjectField(
   // 设置默认值
   // name 是数组会导致额外的 rerender 所以使用了useEvent
   const ensureInitialized = useEvent(() => {
-    internalHook?.ensureInitialized(name, initialValue)
+    // setTimeout 为了拿到所有的 controls
+    setTimeout(() => internalHook?.ensureInitialized(name, initialValue))
   })
   useIsomorphicEffect(ensureInitialized, [ensureInitialized])
 
