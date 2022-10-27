@@ -14,10 +14,10 @@ type ValueType =
   | 'Promise'
 
 export function rawType(obj: any) {
-  return Object.prototype.toString.call(obj).slice(8, -1)
+  return Object.prototype.toString.call(obj)
 }
 
-export const validateType = (obj: any, type: ValueType) => rawType(obj) === type
+export const validateType = (obj: any, type: ValueType) => rawType(obj) === `[object ${type}]`
 
 export const isNull = (obj: any): obj is null => obj === null
 

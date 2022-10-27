@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import BaseControl from './base_control'
 import { isUndefined, logger, toArray } from '../../_utils'
-import { setIn, getIn, deleteIn, mergeValue } from '../utils/value'
+import { setIn, getIn, deleteIn, mergeValue, cloneDeep } from '../utils/value'
 import type {
   InternalFieldMeta,
   InternalFormInstance,
@@ -81,7 +81,8 @@ export default class FormGroupControl<State = any> extends BaseControl {
   }
 
   private getInitialValue(name: NamePath) {
-    return getIn(this._initial, toArray(name))
+    const value = getIn(this._initial, toArray(name))
+    return cloneDeep(value)
   }
 
   // 设置字段初始值
@@ -99,10 +100,10 @@ export default class FormGroupControl<State = any> extends BaseControl {
   }
 
   // 更新字段
-  private updateControl(prev: State, current: State) {
+  private updateControl(namePath: NamePath, prev: State, current: State) {
     // 获取需要更新的 control
     const uniqueControls = this.controls.reduce((set, control) => {
-      if (control.shouldUpdate(prev, current)) set.add(control)
+      if (control.shouldUpdate(namePath, prev, current)) set.add(control)
       return set
     }, new Set<FormFieldControl>())
     // 强制更新 control
@@ -118,25 +119,26 @@ export default class FormGroupControl<State = any> extends BaseControl {
     if (!FormGroupControl._getName(namePath)) return
     const prev = this._state
     this._state = setIn(this._state, toArray(namePath), value)
-    this.updateControl(prev, this._state)
+    this.updateControl(namePath, prev, this._state)
   }
 
   private setFieldsValue(state: Partial<State>) {
     const prev = this._state
     // 与现有的 state 进行 merge
     this._state = mergeValue(this._state, state)
-    this.updateControl(prev, this._state)
+    this.updateControl([], prev, this._state)
   }
 
   private getFieldValue(namePath: NamePath) {
-    return getIn(this._state, toArray(namePath))
+    const value = getIn(this._state, toArray(namePath))
+    return cloneDeep(value)
   }
 
   private deleteFieldValue(namePath: NamePath) {
     const paths = toArray(namePath)
     // 路径为空代表删除整个对象，得到 undefined，故此处重置为空对象
     if (paths.length === 0) this._state = {} as State
-    else this._state = deleteIn(this._state, paths)
+    else deleteIn(this._state, paths)
   }
 
   private _controls = new Set<FormFieldControl>()

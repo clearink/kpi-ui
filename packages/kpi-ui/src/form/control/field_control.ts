@@ -40,8 +40,13 @@ export default class FormFieldControl extends BaseControl {
   }
 
   // 是否应该更新自己
-  shouldUpdate(prev: any, current: any) {
-    // name 优先级高于 shouldUpdate, 非隐式依赖就不用更新了
+  shouldUpdate(namePath: NamePath, prev: any, current: any) {
+    // 非隐式依赖就不用更新了
+    // const key = FormFieldControl._getName(namePath)
+    // // setFieldValue 方法调用
+    // if (key) return this.isImplicate(namePath)
+
+    // name 优先级高于 shouldUpdate
     if (this._key) return getIn(prev, this._name) !== getIn(current, this._name)
 
     const { shouldUpdate } = this._props
