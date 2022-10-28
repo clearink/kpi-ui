@@ -1,7 +1,7 @@
 import isEqual from 'react-fast-compare'
 import type { MutableRefObject } from 'react'
 import BaseControl from './base_control'
-import { isFunction, isNullish, isObjectLike, toArray } from '../../_utils'
+import { isFunction, isNullish, isObjectLike, isUndefined, toArray } from '../../_utils'
 import { BaseSchema } from '../../_utils/form_schema/schema'
 import type FormGroupControl from './group_control'
 import type { InternalFormFieldProps, InternalFieldMeta, InternalNamePath } from '../internal_props'
@@ -28,7 +28,7 @@ export default class FormFieldControl extends BaseControl {
 
   // 是否被隐式依赖，形如 ['username'] 与 ['username', 'a', 'b']
   // ['username', 'a'] 会影响 ['username']
-  // ['username'] 不会影响 ['username', 'a'] ?
+  // ['username'] 不会影响 ['username', 'a']
   isImplicate(namePath: NamePath) {
     const path = toArray(namePath)
     const len = Math.min(path.length, this._name.length)
@@ -41,14 +41,14 @@ export default class FormFieldControl extends BaseControl {
 
   // 是否应该更新自己
   shouldUpdate(prev: any, current: any) {
-    // name 优先级高于 shouldUpdate
     const { _key: key, _name: name } = this
-    if (key) return getIn(prev, name) !== getIn(current, name)
-
+    // shouldUpdate 优先级高于 name
     const { shouldUpdate } = this._props
+    if (!shouldUpdate && key) {
+      return getIn(prev, name) !== getIn(current, name)
+    }
+    if (shouldUpdate === true) return true
 
-    if (shouldUpdate === true) return true // shouldUpdate = true
-    // TODO: 如何拿到之前的 state ?
     if (isFunction(shouldUpdate)) return shouldUpdate(prev, current)
     return false
   }

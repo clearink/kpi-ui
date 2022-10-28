@@ -3,7 +3,7 @@ import { isNumber, isArray, isObject, isNullish, isObjectLike, rawType, hasOwn }
 import type { InternalNamePath } from '../internal_props'
 
 // 不改变原始值
-function internalSet<V = any>(
+function internalSetIn<V = any>(
   source: V,
   paths: InternalNamePath,
   value: any,
@@ -19,7 +19,7 @@ function internalSet<V = any>(
   // source为基础类型时舍弃
   else if (isNumber(path)) attr = [] as unknown as V
 
-  const $value = internalSet(attr[path], rest, value, removeUndefined)
+  const $value = internalSetIn(attr[path], rest, value, removeUndefined)
   if ($value === undefined && removeUndefined) delete attr[path]
   else attr[path] = $value
 
@@ -29,7 +29,7 @@ function internalSet<V = any>(
 export function setIn<V = any>(source: V, paths: InternalNamePath, value: any): V {
   // 源数据不是对象
   if (!isObject(source)) return source
-  return internalSet(source, paths, value)
+  return internalSetIn(source, paths, value)
 }
 
 // 不改变原始值
@@ -46,7 +46,7 @@ export function getIn<V = any>(values: V, paths: InternalNamePath): any {
 export function deleteIn<V = any>(source: V, paths: InternalNamePath): any {
   // 源数据不是对象
   if (!isObject(source)) return source
-  return internalSet(source, paths, undefined, true)
+  return internalSetIn(source, paths, undefined, true)
 }
 
 // 深拷贝 数组与对象
