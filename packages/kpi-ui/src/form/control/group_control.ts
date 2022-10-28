@@ -14,6 +14,7 @@ import type {
   InternalFieldMeta,
   InternalFormInstance,
   InternalHookReturn,
+  UpdateControlInfo,
   WatchCallBack,
 } from '../internal_props'
 import type { NamePath } from '../props'
@@ -116,7 +117,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
   }
 
   // 更新字段
-  private updateControl(prev: State, current: State) {
+  private updateControl(prev: State, current: State, info: UpdateControlInfo) {
     // 获取需要更新的 control
     const uniqueControls = this.controls.reduce((set, control) => {
       if (control.shouldUpdate(prev, current)) set.add(control)
@@ -138,7 +139,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
     const prev = cloneWithPath(this._state, paths)
     const current = setIn(this._state, paths, value)
 
-    this.updateControl(prev, current)
+    this.updateControl(prev, current, { type: 'setFieldValue' })
   }
 
   // 设置多个字段值
@@ -149,7 +150,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
     }, this._state)
     // 与现有的 state 进行 merge
     this._state = mergeValue(this._state, state)
-    this.updateControl(prev, this._state)
+    this.updateControl(prev, this._state, { type: 'setFieldsValue' })
   }
 
   private getFieldValue(namePath: NamePath) {

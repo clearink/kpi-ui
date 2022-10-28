@@ -6,6 +6,9 @@ import type { FormInstance, FormFieldProps, NamePath } from './props'
 export type InternalNamePath = (string | number)[]
 export type WatchCallBack<S = any> = (value: any, state: S) => void
 
+export type UpdateControlInfo = {
+  type: 'setFieldValue' | 'setFieldsValue' | 'resetFieldValue' | 'resetFieldsValue'
+}
 export type InternalFieldMeta = {
   dirty: boolean
   touched: boolean
