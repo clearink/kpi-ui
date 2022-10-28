@@ -1,4 +1,4 @@
-import { isNumber, isArray, isObject, isNullish, isObjectLike, rawType } from '../../_utils'
+import { isNumber, isArray, isObject, isNullish, isObjectLike, rawType, hasOwn } from '../../_utils'
 
 import type { InternalNamePath } from '../internal_props'
 
@@ -49,6 +49,16 @@ export function deleteIn<V = any>(source: V, paths: InternalNamePath): any {
   return internalSet(source, paths, undefined, true)
 }
 
+// 是否存在路径
+export function existIn(source: any, paths: InternalNamePath) {
+  for (let i = 0; i < paths.length; i++) {
+    if (!isObjectLike(source)) return false
+    if (!hasOwn(source, paths[i])) return false
+    source = source[paths[i]]
+  }
+  return paths.length > 0
+}
+
 // 深拷贝 数组与对象
 function internalCloneDeep(source: any, seen = new WeakSet()) {
   if (seen.has(source)) return source
@@ -77,6 +87,8 @@ export function cloneWithPath<V>(source: V, paths: InternalNamePath) {
   const [path, ...rest] = paths
   if (isObject(source) || isArray(source)) {
     const init = isArray(source) ? [...source] : { ...source }
+    // 不存在该值
+    if (!hasOwn(init, path)) return init as V
     init[path] = cloneWithPath(init[path], rest)
     return init as V
   }

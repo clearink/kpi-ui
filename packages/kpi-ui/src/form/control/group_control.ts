@@ -5,6 +5,7 @@ import {
   setIn,
   getIn,
   deleteIn,
+  existIn,
   mergeValue,
   cloneDeep,
   cloneWithPath,
@@ -138,8 +139,10 @@ export default class FormGroupControl<State = any> extends BaseControl {
     const prev = cloneWithPath(this._state, paths)
     const current = setIn(this._state, paths, value)
 
-    // 嵌套路径 或 值不相等
-    const shouldUpdate = paths.length > 1 || getIn(prev, paths) !== getIn(current, paths)
+    // 嵌套路径 && 父级路径不存在
+    const isNested = paths.length > 1 && !existIn(prev, paths.slice(0, -1))
+    // 值不相等
+    const shouldUpdate = isNested || getIn(prev, paths) !== getIn(current, paths)
     shouldUpdate && this.updateControl(prev, current)
   }
 
