@@ -68,7 +68,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     return as === null ? Fragment : 'form'
   }, [as])
 
-  const fieldContextValue = useMemo(() => {
+  const fieldContext = useMemo(() => {
     return { ...instance, validateTrigger, formName: name }
   }, [instance, validateTrigger, name])
 
@@ -82,7 +82,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
       onSubmit={handleSubmit}
       onReset={handleReset}
     >
-      <FieldContext.Provider value={fieldContextValue}>{children}</FieldContext.Provider>
+      <FieldContext.Provider value={fieldContext}>{children}</FieldContext.Provider>
     </Root>
   )
 }

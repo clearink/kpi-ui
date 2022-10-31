@@ -33,7 +33,7 @@ export interface InternalFormInstance<S = any> extends FormInstance<S> {
 
   /**
    * @private
-   * @zh FormList 使用 TOD: 是否要额外增加一个 context 呢？
+   * @zh FormList 使用 TODO: 是否要额外增加一个 context 呢？
    */
   parentNamePath?: InternalNamePath
 

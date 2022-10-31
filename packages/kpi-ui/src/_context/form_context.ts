@@ -42,3 +42,5 @@ export const FieldContext = CtxHelper<InternalFormInstance>({
     }
   },
 })
+
+export const FieldListContext = CtxHelper<null>(null)
