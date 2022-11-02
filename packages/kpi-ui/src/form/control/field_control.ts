@@ -1,13 +1,17 @@
 import isEqual from 'react-fast-compare'
 import type { MutableRefObject } from 'react'
 import BaseControl from './base_control'
-import { isFunction, isNullish, isObjectLike, isUndefined, toArray } from '../../_utils'
+import { isFunction, isNullish, isObjectLike } from '../../_utils'
 import { BaseSchema } from '../../_utils/form_schema/schema'
-import type FormGroupControl from './group_control'
-import type { InternalFormFieldProps, InternalFieldMeta, InternalNamePath } from '../internal_props'
-import type { NamePath } from '../props'
-import type { SchemaIssue } from '../../_utils/form_schema/interface'
 import { getIn } from '../utils/value'
+import type FormGroupControl from './group_control'
+import type {
+  InternalFormFieldProps,
+  FieldMeta,
+  InternalNamePath,
+  UpdateFieldAction,
+} from '../internal_props'
+import type { SchemaIssue } from '../../_utils/form_schema/interface'
 
 export default class FormFieldControl extends BaseControl {
   _key: string // 唯一标识
@@ -26,31 +30,17 @@ export default class FormFieldControl extends BaseControl {
     return [parentName, ...this._name].filter((item) => item !== undefined).join('_')
   }
 
-  // 是否被隐式依赖，形如 ['username'] 与 ['username', 'a', 'b']
-  // ['username', 'a'] 会影响 ['username']
-  // ['username'] 不会影响 ['username', 'a']
-  isImplicate(namePath: NamePath) {
-    const path = toArray(namePath)
-    const len = Math.min(path.length, this._name.length)
-    for (let i = 0; i < len; i++) {
-      if (path[i] !== this._name[i]) return false
-    }
-    // name 不合法也返回 false
-    return len > 0 && this._name.length <= path.length
-  }
-
   // 是否应该更新自己
-  shouldUpdate(prev: any, current: any) {
+  shouldUpdate(prev: any, next: any, action: UpdateFieldAction) {
     const { _key: key, _name: name } = this
     // shouldUpdate 优先级高于 name
-    const { shouldUpdate } = this._props
-    if (!shouldUpdate && key) {
-      return getIn(prev, name) !== getIn(current, name)
+    const { shouldUpdate: handler } = this._props
+    if (!handler && key) {
+      return getIn(prev, name) !== getIn(next, name)
     }
-    if (shouldUpdate === true) return true
+    if (handler === true) return true
 
-    if (isFunction(shouldUpdate)) return shouldUpdate(prev, current)
-    return false
+    return isFunction(handler) ? handler(prev, next, action) : false
   }
 
   _parent: FormGroupControl | undefined = undefined
@@ -74,7 +64,7 @@ export default class FormFieldControl extends BaseControl {
 
   private _errors: string[] = []
 
-  getFieldMeta(): InternalFieldMeta {
+  getFieldMeta(): FieldMeta {
     return {
       dirty: this._dirty,
       touched: this._touched,
@@ -84,7 +74,7 @@ export default class FormFieldControl extends BaseControl {
     }
   }
 
-  setFieldMeta(meta: Partial<InternalFieldMeta>) {
+  setFieldMeta(meta: Partial<FieldMeta>) {
     // 自动触发 onMetaChange 事件
     const prev = this.getFieldMeta()
     // 同步全部

@@ -1,7 +1,7 @@
 import type { ComponentType, ReactElement, FormEvent, FormHTMLAttributes, ReactNode } from 'react'
 import type { AnyObject, ArrowFunction } from '../_types'
 import type { BaseSchema } from '../_utils/form_schema/schema'
-import type { InternalFieldMeta } from './internal_props'
+import type { FieldMeta, UpdateFieldAction } from './internal_props'
 
 export interface FormProps<S = any>
   extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'children'> {
@@ -132,11 +132,7 @@ export interface FormFieldProps<State = any> {
 
   children?:
     | ReactElement
-    | ((
-        control: AnyObject,
-        meta: InternalFieldMeta,
-        formInstance: FormInstance<State>
-      ) => React.ReactNode)
+    | ((control: AnyObject, meta: FieldMeta, formInstance: FormInstance<State>) => React.ReactNode)
 
   // /**
   //  * @zh 为 `true` 时不带样式，作为纯字段控件使用
@@ -146,7 +142,7 @@ export interface FormFieldProps<State = any> {
    * @zh 自定义字段更新逻辑，说明[见下](#shouldUpdate)
    * @default false
    */
-  shouldUpdate?: boolean | ((prev: State, current: State) => boolean)
+  shouldUpdate?: boolean | ((prev: State, next: State, action: UpdateFieldAction) => boolean)
 
   /**
    * @zh 校验规则，设置字段的校验逻辑
@@ -220,5 +216,32 @@ export interface FormFieldProps<State = any> {
   /**
    * @zh 字段状态变更通知
    */
-  onMetaChange?: (meta: InternalFieldMeta) => void
+  onMetaChange?: (meta: FieldMeta) => void
+}
+
+export interface ListField {
+  name: number
+  key: number
+}
+export interface FormListProps {
+  name: NamePath
+  children?: (
+    fields: ListField[],
+    operations: any,
+    meta: FieldMeta
+  ) => JSX.Element | React.ReactNode
+  /**
+   * @zh 校验规则，设置字段的校验逻辑
+   */
+  rule?: BaseSchema
+  /**
+   * @zh 设置字段校验的时机
+   * @default onChange
+   */
+  validateTrigger?: string | string[] | false
+
+  /**
+   * @zh 设置子元素默认值，如果与 Form 的 initialValues 冲突则以 Form 为准
+   */
+  initialValue?: any[]
 }

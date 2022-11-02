@@ -49,28 +49,6 @@ export function deleteIn<V = any>(source: V, paths: InternalNamePath): any {
   return internalSetIn(source, paths, undefined, true)
 }
 
-// 深拷贝 数组与对象
-function internalCloneDeep(source: any, seen = new WeakSet()) {
-  if (seen.has(source)) return source
-  if (!isObjectLike(source)) return source
-
-  seen.add(source)
-
-  if (isObject(source) || isArray(source)) {
-    const init = isArray(source) ? [] : {}
-    return Object.entries(source).reduce((res, [key, value]) => {
-      res[key] = internalCloneDeep(value, seen)
-      return res
-    }, init)
-  }
-  // 其他类型暂不需要
-  return source
-}
-
-export function cloneDeep<V>(source: V) {
-  return internalCloneDeep(source) as V
-}
-
 // 浅拷贝 且 仅拷贝某条路径下的值
 export function cloneWithPath<V>(source: V, paths: InternalNamePath) {
   if (!isObjectLike(source) || !paths.length) return source
@@ -114,17 +92,4 @@ export function mergeValue<V = any>(target: V, ...sources: any[]) {
   return sources.reduce((res, item) => {
     return internalMerge(res, item)
   }, target)
-}
-
-// 获取 source 的全部路径
-export function getPaths(source: any, parent: InternalNamePath = []): InternalNamePath[] {
-  // 不是对象或数组
-  if (!isObject(source) && !isArray(source)) return [parent]
-  const isAnArray = isArray(source)
-  // 空数组
-  if (isAnArray && source.length === 0) return [parent]
-  return Object.entries(source).reduce((res, [key, value]) => {
-    const current = parent.concat(isAnArray ? Number(key) : key)
-    return res.concat(getPaths(value, current))
-  }, [] as InternalNamePath[])
 }

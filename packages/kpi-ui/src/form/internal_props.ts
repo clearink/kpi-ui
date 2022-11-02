@@ -6,10 +6,34 @@ import type { FormInstance, FormFieldProps, NamePath } from './props'
 export type InternalNamePath = (string | number)[]
 export type WatchCallBack<S = any> = (value: any, state: S) => void
 
-export type UpdateControlInfo = {
-  type: 'setFieldValue' | 'setFieldsValue' | 'resetFieldValue' | 'resetFieldsValue'
-}
-export type InternalFieldMeta = {
+export type UpdateFieldAction =
+  | {
+      type: 'fieldEvent' // 用户调用事件主动触发
+      name: InternalNamePath
+      value: any
+    }
+  | {
+      type: 'setField' // setFieldValue setFieldsValue ?
+      name: InternalNamePath
+      value?: any
+    }
+  | {
+      type: 'valueUpdate' // setFieldValue setFieldsValue ?
+      name: InternalNamePath
+    }
+  | {
+      type: 'removeField' // 卸载字段时触发
+      name: InternalNamePath
+    }
+  | {
+      type: 'resetField'
+      name: InternalNamePath
+    }
+  | {
+      type: 'dependentField' // 字段依赖
+    }
+
+export type FieldMeta = {
   dirty: boolean
   touched: boolean
   pending: boolean // 字段级别的校验
@@ -97,7 +121,13 @@ export interface InternalHookReturn<State = any> {
    * @private
    * @zh 根据名称设置 fieldMeta 属性
    */
-  setFieldMeta: (namePath: NamePath, meta: Partial<InternalFieldMeta>) => void
+  setFieldMeta: (namePath: NamePath, meta: Partial<FieldMeta>) => void
+
+  /**
+   * @private
+   * @zh 字段需要更新时需要发布的事件
+   */
+  dispatch: (action: UpdateFieldAction) => void
 }
 
 // export type GetIn<State extends any, Path extends PathItem[]> = Path extends [infer P, ...infer R]

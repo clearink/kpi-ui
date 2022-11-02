@@ -2,7 +2,7 @@ import { cloneElement, type ReactElement } from 'react'
 import { useEvent, useIsomorphicEffect } from '../../_hooks'
 import { logger } from '../../_utils'
 import normalizeChildren, { isInvalidUsage } from '../utils/children'
-import collectInjectProps from '../utils/collect'
+import { collectFieldInjectProps } from '../utils/collect'
 
 import type {
   InternalFormFieldProps,
@@ -30,7 +30,7 @@ export default function useInjectField(
   useIsomorphicEffect(ensureInitialized, [ensureInitialized])
 
   // 收集注册到子组件的数据
-  const collect = collectInjectProps(props, context, control, internalHook)
+  const collect = collectFieldInjectProps(props, context, control, internalHook)
 
   // 处理 children
   const handlerNormalize = normalizeChildren(collect(), context, control)

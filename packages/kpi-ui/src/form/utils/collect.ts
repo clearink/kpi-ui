@@ -1,12 +1,17 @@
-import { hasOwn, isFunction, isObjectLike, toArray } from '../../_utils'
+/* eslint-disable react/function-component-definition */
+/* eslint-disable func-names */
+import { hasOwn, isArray, isFunction, isObjectLike, logger, toArray } from '../../_utils'
 
 import type { AnyObject } from '../../_types'
-import type { FormFieldControl } from '../control'
+import type { FormArrayControl, FormFieldControl } from '../control'
 import type {
+  FieldMeta,
   InternalFormFieldProps,
   InternalFormInstance,
   InternalHookReturn,
+  InternalNamePath,
 } from '../internal_props'
+import type { FormInstance, FormListProps, ListField } from '../props'
 
 // 从event中获取字段值函数
 function defaultGetValueFromEvent(valuePropName: string) {
@@ -18,7 +23,7 @@ function defaultGetValueFromEvent(valuePropName: string) {
 }
 
 /** 收集注入到Form.Field children 的属性 */
-export default function collectInjectProps(
+export function collectFieldInjectProps(
   props: InternalFormFieldProps,
   context: InternalFormInstance,
   control: FormFieldControl,
@@ -57,7 +62,11 @@ export default function collectInjectProps(
           nextValue = formatter(nextValue, value, formValues)
         }
 
-        context.setFieldValue(name, nextValue)
+        internalHook?.dispatch({
+          name,
+          value: nextValue,
+          type: 'fieldEvent',
+        })
 
         internalHook?.setFieldMeta(name, { touched: true, dirty: true })
 
@@ -76,5 +85,35 @@ export default function collectInjectProps(
       }
       return { ...res, [triggerName]: handler }
     }, injectProps)
+  }
+}
+
+/** 收集注入到Form.List children 的属性 */
+export function collectListInjectProps(
+  props: FormListProps,
+  listPath: InternalNamePath,
+  control: FormArrayControl
+) {
+  const { children } = props
+  if (!isFunction(children)) {
+    logger.error(true, 'Form.List only accepts function as children.')
+    return () => null
+  }
+
+  const operations = {}
+  return (_, meta: FieldMeta, form: FormInstance) => {
+    const value = form.getFieldValue(listPath) || []
+    if (!isArray(value)) {
+      logger.error(true, `Current value of '${listPath.join(' > ')}' is not an array type.`)
+      return children([], operations, meta)
+    }
+    const listValue: ListField[] = value.map((item, index) => {
+      return {
+        key: control.ensureFieldKey(index),
+        name: index,
+        isListField: true,
+      }
+    })
+    return children(listValue, operations, meta)
   }
 }

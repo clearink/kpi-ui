@@ -1,24 +1,18 @@
 /* eslint-disable class-methods-use-this */
+import cloneDeep from 'lodash.clonedeep'
 import BaseControl from './base_control'
 import { isUndefined, logger, toArray } from '../../_utils'
-import {
-  setIn,
-  getIn,
-  deleteIn,
-  mergeValue,
-  cloneDeep,
-  cloneWithPath,
-  getPaths,
-} from '../utils/value'
+import { setIn, getIn, deleteIn, mergeValue, cloneWithPath } from '../utils/value'
 import type {
-  InternalFieldMeta,
+  UpdateFieldAction as Action,
+  FieldMeta,
   InternalFormInstance,
   InternalHookReturn,
-  UpdateControlInfo,
   WatchCallBack,
 } from '../internal_props'
 import type { NamePath } from '../props'
 import type FormFieldControl from './field_control'
+import { getPaths, isDependent } from '../utils/path'
 
 export const HOOK_MARK = Symbol('_$_KPI_FORM_HOOK_MARK_$_')
 
@@ -68,6 +62,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
       subscribe: this.subscribe.bind(this),
       ensureInitialized: this.ensureInitialized.bind(this),
       setFieldMeta: this.setFieldMeta.bind(this),
+      dispatch: this.dispatch.bind(this),
       // eslint-disable-next-line no-return-assign
       setPreserve: (preserve = true) => (this._preserve = preserve),
       // eslint-disable-next-line no-return-assign
@@ -80,7 +75,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
     const uniqueControls = this.controls.filter((control) => {
       if (!control._key) return false // 去除name无效的 field
       if (fields.length === 0) return true
-      return fields.some((field) => control.isImplicate(field))
+      return fields.some((field) => isDependent(control._name, field))
     })
     // 深拷贝原始值防止 setIn 时被错误覆盖
     const cloned = cloneDeep(this._state)
@@ -117,14 +112,28 @@ export default class FormGroupControl<State = any> extends BaseControl {
   }
 
   // 更新字段
-  private updateControl(prev: State, current: State, info: UpdateControlInfo) {
+  private updateControl(prev: State, next: State, action: Action) {
     // 获取需要更新的 control
     const uniqueControls = this.controls.reduce((set, control) => {
-      if (control.shouldUpdate(prev, current)) set.add(control)
+      if (control.shouldUpdate(prev, next, action)) set.add(control)
       return set
     }, new Set<FormFieldControl>())
     // 强制更新 control
     uniqueControls.forEach((control) => control.forceUpdate())
+  }
+
+  private dispatch(action: Action) {
+    // 用户事件触发
+    if (action.type === 'fieldEvent') {
+      const { name, value } = action
+      if (!FormGroupControl._getName(name)) return
+      const namePath = toArray(name)
+      // 仅浅拷贝相关路径
+      const prev = cloneWithPath(this._state, namePath)
+      const next = setIn(this._state, namePath, value)
+      this.updateControl(prev, next, action)
+    }
+    // this.updateControl(prev, current, { type: 'fieldEvent' })
   }
 
   // store
@@ -137,9 +146,8 @@ export default class FormGroupControl<State = any> extends BaseControl {
     const paths = toArray(namePath)
     // 仅浅拷贝相关路径
     const prev = cloneWithPath(this._state, paths)
-    const current = setIn(this._state, paths, value)
-
-    this.updateControl(prev, current, { type: 'setFieldValue' })
+    const next = setIn(this._state, paths, value)
+    this.updateControl(prev, next, { type: 'setField', name: paths })
   }
 
   // 设置多个字段值
@@ -150,7 +158,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
     }, this._state)
     // 与现有的 state 进行 merge
     this._state = mergeValue(this._state, state)
-    this.updateControl(prev, this._state, { type: 'setFieldsValue' })
+    this.updateControl(prev, this._state, { type: 'valueUpdate', name: [] })
   }
 
   private getFieldValue(namePath: NamePath) {
@@ -224,9 +232,9 @@ export default class FormGroupControl<State = any> extends BaseControl {
   }
 
   // 设置 FormField 的 meta 属性
-  private setFieldMeta(namePath: NamePath, meta: Partial<InternalFieldMeta>) {
+  private setFieldMeta(namePath: NamePath, meta: Partial<FieldMeta>) {
     for (const control of this.controls) {
-      if (!control.isImplicate(namePath)) continue
+      if (!isDependent(control._name, namePath)) continue
       control.setFieldMeta(meta)
     }
   }
@@ -245,7 +253,9 @@ export default class FormGroupControl<State = any> extends BaseControl {
     const untouchedFields = this.controls.filter((control) => {
       if (fields.length === 0) return false
       const { touched } = control.getFieldMeta()
-      const implicate = fields.some((fieldName) => control.isImplicate(fieldName))
+      const implicate = fields.some((fieldName) => {
+        return isDependent(control._name, fieldName)
+      })
       return implicate && !touched
     })
     return untouchedFields.length === 0
@@ -260,7 +270,9 @@ export default class FormGroupControl<State = any> extends BaseControl {
     const pristineFields = this.controls.filter((control) => {
       if (fields.length === 0) return false
       const { dirty } = control.getFieldMeta()
-      const implicate = fields.some((fieldName) => control.isImplicate(fieldName))
+      const implicate = fields.some((fieldName) => {
+        return isDependent(control._name, fieldName)
+      })
       return implicate && !dirty
     })
     return pristineFields.length === 0
@@ -275,7 +287,9 @@ export default class FormGroupControl<State = any> extends BaseControl {
     const pendingFields = this.controls.filter((control) => {
       if (fields.length === 0) return false
       const { pending } = control.getFieldMeta()
-      const implicate = fields.some((fieldName) => control.isImplicate(fieldName))
+      const implicate = fields.some((fieldName) => {
+        return isDependent(control._name, fieldName)
+      })
       return implicate && !!pending
     })
     return pendingFields.length > 0
@@ -290,7 +304,9 @@ export default class FormGroupControl<State = any> extends BaseControl {
       .filter((control) => {
         // 空数组视为校验全部字段
         if (fields.length === 0) return true
-        return fields.some((namePath) => control.isImplicate(namePath))
+        return fields.some((namePath) => {
+          return isDependent(control._name, namePath)
+        })
       })
       .map((control) => {
         const value = this.getFieldValue(control._name)
@@ -320,7 +336,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
   private resetFields(fields: NamePath[] = []) {
     const controls = this.controls.filter((control) => {
       if (fields.length === 0) return true
-      return fields.some((namePath) => control.isImplicate(namePath))
+      return fields.some((namePath) => isDependent(control._name, namePath))
     })
   }
 
