@@ -40,7 +40,7 @@ export default function normalizeChildren(
  * 3. render props && !(shouldUpdate || dependencies) // render props 只能与 shouldUpdate ，dependencies 一起使用
  * 4. 使用 dependencies 时必须设置 name 或者使用 render props
  */
-/** 用法是否不合法 */
+/** 用法是否不合法 上层封装时使用 */
 export function isInvalidUsage(
   control: FormFieldControl,
   functional: boolean | undefined,

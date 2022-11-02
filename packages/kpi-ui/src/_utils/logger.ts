@@ -1,36 +1,35 @@
-/* eslint-disable class-methods-use-this, func-names, no-console */
-function isDev(): MethodDecorator {
-  return function (_, __, descriptor: TypedPropertyDescriptor<any>) {
-    const { value } = descriptor
-    descriptor.value = function (this: any, ...args: any[]) {
-      if (process.env.NODE_ENV !== 'production') {
-        return value?.apply(this, args)
-      }
-    }
-    return descriptor
-  }
-}
+/* eslint-disable no-console, class-methods-use-this */
 
-// 日志记录
+import type { ArrowFunction } from '../_types'
+
+const isDev = process.env.NODE_ENV !== 'production'
+// 日志记录 仅提示一次
 class Logger {
-  @isDev()
+  private cache = new Set<string>()
+
+  private wrapper(condition: boolean, data: any[], callback: ArrowFunction) {
+    if (!isDev) return
+    const key = JSON.stringify(data)
+    const exist = this.cache.has(key)
+    if (exist || !condition) return
+    this.cache.add(key)
+    callback.call(null, ...data)
+  }
+
   public info(condition: boolean, ...data: any[]) {
-    condition && console.info(...data)
+    this.wrapper(condition, data, console.info)
   }
 
-  @isDev()
   public log(condition: boolean, ...data: any[]) {
-    condition && console.log(...data)
+    this.wrapper(condition, data, console.log)
   }
 
-  @isDev()
   public warn(condition: boolean, ...data: any[]) {
-    condition && console.warn(...data)
+    this.wrapper(condition, data, console.warn)
   }
 
-  @isDev()
   public error(condition: boolean, ...data: any[]) {
-    condition && console.error(...data)
+    this.wrapper(condition, data, console.error)
   }
 }
 

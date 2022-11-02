@@ -11,7 +11,7 @@ import type {
   InternalHookReturn,
   InternalNamePath,
 } from '../internal_props'
-import type { FormInstance, FormListProps, ListField } from '../props'
+import type { FormInstance, FormArrayHelpers, FormListProps, ListField } from '../props'
 
 // 从event中获取字段值函数
 function defaultGetValueFromEvent(valuePropName: string) {
@@ -56,17 +56,13 @@ export function collectFieldInjectProps(
       [trigger!]: (...args: any[]) => {
         // 设置所有所有同名字段的 meta 属性
 
-        let nextValue = getValueFromEvent(...args)
+        let next = getValueFromEvent(...args)
         if (isFunction(formatter)) {
           const formValues = context.getFieldsValue()
-          nextValue = formatter(nextValue, value, formValues)
+          next = formatter(next, value, formValues)
         }
 
-        internalHook?.dispatch({
-          name,
-          value: nextValue,
-          type: 'fieldEvent',
-        })
+        internalHook?.dispatch({ name, value: next, type: 'fieldEvent' })
 
         internalHook?.setFieldMeta(name, { touched: true, dirty: true })
 
@@ -92,7 +88,8 @@ export function collectFieldInjectProps(
 export function collectListInjectProps(
   props: FormListProps,
   listPath: InternalNamePath,
-  control: FormArrayControl
+  control: FormArrayControl,
+  operations: FormArrayHelpers
 ) {
   const { children } = props
   if (!isFunction(children)) {
@@ -100,8 +97,7 @@ export function collectListInjectProps(
     return () => null
   }
 
-  const operations = {}
-  return (_, meta: FieldMeta, form: FormInstance) => {
+  return (_: any, meta: FieldMeta, form: FormInstance) => {
     const value = form.getFieldValue(listPath) || []
     if (!isArray(value)) {
       logger.error(true, `Current value of '${listPath.join(' > ')}' is not an array type.`)
@@ -111,7 +107,7 @@ export function collectListInjectProps(
       return {
         key: control.ensureFieldKey(index),
         name: index,
-        isListField: true,
+        isListItem: true,
       }
     })
     return children(listValue, operations, meta)

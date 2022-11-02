@@ -1,9 +1,11 @@
 /* eslint-disable class-methods-use-this */
 
 import { HOOK_MARK } from '.'
-import { isUndefined, logger } from '../../_utils'
+import { isArray, isUndefined, toArray } from '../../_utils'
+import { isValidIndex } from '../utils/path'
 
-import type { InternalFormInstance, InternalNamePath, UpdateFieldAction } from '../internal_props'
+import type { InternalFormInstance, InternalNamePath } from '../internal_props'
+import type { FormArrayHelpers } from '../props'
 
 // FormArray 管理 key
 export default class FormArrayControl {
@@ -20,75 +22,25 @@ export default class FormArrayControl {
     return this._context?.getInternalHooks(HOOK_MARK)
   }
 
-  private getListState(): any[] {
-    return this._context?.getFieldValue(this._listPath) ?? []
-  }
-
-  private dispatch(action: UpdateFieldAction) {
-    this._internalHook?.dispatch(action)
-  }
-
-  /** ===================================================== */
-  /** features                                              */
-  /** ===================================================== */
-  append(defaultValue: any) {
-    const list = this.getListState()
-    this._keys = [...this._keys, this._id]
-    this.dispatch({
-      type: 'setField',
-      name: [...this._listPath, list.length],
-      value: defaultValue,
-    })
-    this._id += 1
-  }
-
-  prepend(defaultValue: any) {
-    const list = this.getListState()
-  }
-
-  // append, prepend, remove, swap, move, insert
-  insert(defaultValue: any, index: number) {}
-
-  // 添加数据，
-  add(defaultValue: any, $index?: number) {
-    // 当前保存的数据
-    const list: any[] = this._context?.getFieldValue(this._listPath) || []
-    const index = $index ?? list.length
-    logger.warn(
-      index < 0 || index > list.length,
-      'The `index` parameter  should be a valid positive number.'
-    )
-    if (index >= 0 && index <= list.length) {
-      // insert
-      this._keys = [...this._keys.slice(0, index), this._id, ...this._keys.slice(index)]
-      this._internalHook?.dispatch({
-        type: 'fieldEvent',
-        name: [...this._listPath, index],
-        value: [...list.slice(0, index), defaultValue, ...list.slice(index)],
-      })
-    } else if (index < 0 || index > list.length) {
-      // invalid
-      this._keys = [...this._keys, this._id]
-      this._internalHook?.dispatch({
-        type: 'fieldEvent',
-        name: [...this._listPath, index],
-        value: defaultValue,
-      })
+  ensureFieldKey(index: number) {
+    const origin = this._keys[index]
+    if (isUndefined(origin)) {
+      this._keys[index] = this._id
+      this._id += 1 // 补齐
     }
-
-    this._id += 1
+    return this._keys[index]
   }
-
-  remove() {}
-
-  move() {}
 
   // 可以直接操作 root._state
-  _getFeatures() {
+  _getFeatures(): FormArrayHelpers {
     return {
-      add: this.add.bind(this),
+      append: this.append.bind(this),
+      prepend: this.prepend.bind(this),
       remove: this.remove.bind(this),
+      swap: this.swap.bind(this),
       move: this.move.bind(this),
+      replace: this.replace.bind(this),
+      insert: this.insert.bind(this),
     }
   }
 
@@ -97,12 +49,74 @@ export default class FormArrayControl {
     this._listPath = listPath
   }
 
-  ensureFieldKey(index: number) {
-    const origin = this._keys[index]
-    if (isUndefined(origin)) {
-      this._keys[index] = index
-      this._id += 1 // 补齐
+  private getFieldList(): any[] {
+    const array = this._context?.getFieldValue(this._listPath)
+    return isArray(array) ? array : []
+  }
+
+  private dispatchEvent(value: any[]) {
+    this._internalHook?.dispatch({
+      type: 'setField',
+      name: this._listPath,
+      value,
+    })
+  }
+
+  /** ===================================================== */
+  /** features                                              */
+  /** ===================================================== */
+  private append(value?: any) {
+    this._keys = [...this._keys, this._id]
+    this.dispatchEvent([...this.getFieldList(), value])
+    this._id += 1
+  }
+
+  private prepend(value?: any) {
+    this._keys = [this._id, ...this._keys]
+    this.dispatchEvent([value, ...this.getFieldList()])
+    this._id += 1
+  }
+
+  // append, prepend, remove, swap, move, insert, replace
+  remove(index?: number | number[]) {
+    const positions = new Set(toArray(index))
+    const filter = (_, i) => {
+      if (positions.size === 0) return false
+      return !positions.has(i)
     }
-    return this._keys[index]
+    const list = this.getFieldList()
+    this._keys = this._keys.filter(filter)
+    this.dispatchEvent(list.filter(filter))
+  }
+
+  swap(from: number, to: number) {
+    const list = this.getFieldList()
+    ;[list[from], list[to]] = [list[to], list[from]]
+    const keys = this._keys
+    ;[this._keys[from], this._keys[to]] = [keys[to], keys[from]]
+    this.dispatchEvent(list)
+  }
+
+  move(from: number, to: number) {
+    const list = this.getFieldList().concat()
+    if (!isValidIndex(list, from, to)) return
+
+    list.splice(to, 0, list.splice(from, 1)[0])
+    this._keys.splice(to, 0, this._keys.splice(from, 1)[0])
+    this.dispatchEvent(list)
+  }
+
+  replace(index: number, value: any) {
+    const list = this.getFieldList()
+    list[index] = value
+    this.dispatchEvent(list)
+  }
+
+  insert(index: number, value: any) {
+    const list = this.getFieldList().concat()
+    list.splice(index, 0, value)
+    this._keys.splice(index, 0, this._id)
+    this.dispatchEvent(list)
+    this._id += 1
   }
 }

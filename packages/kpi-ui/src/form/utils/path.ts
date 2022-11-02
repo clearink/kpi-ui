@@ -34,18 +34,6 @@ export function getPaths(source: any, parent: InternalNamePath = []): InternalNa
   }, [] as InternalNamePath[])
 }
 
-// FormList 处理数组位置
-
-export function push() {}
-export function swap() {}
-export function move() {}
-// 插入
-export function insert(list: any[], index: number) {
-  const len = list.length
-  // 失效时默认插入尾部吧
-  const isValid = index >= 0 && index < len
+export function isValidIndex(array: any[], ...positions: number[]) {
+  return positions.every((position) => position >= 0 && position < array.length)
 }
-export function replace() {}
-export function unshift() {}
-export function remove() {}
-export function pop() {}

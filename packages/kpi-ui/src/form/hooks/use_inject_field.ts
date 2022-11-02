@@ -1,7 +1,7 @@
 import { cloneElement, type ReactElement } from 'react'
-import { useEvent, useIsomorphicEffect } from '../../_hooks'
+import { useConstructor, useEvent, useIsomorphicEffect } from '../../_hooks'
 import { logger } from '../../_utils'
-import normalizeChildren, { isInvalidUsage } from '../utils/children'
+import normalizeChildren from '../utils/children'
 import { collectFieldInjectProps } from '../utils/collect'
 
 import type {
@@ -19,15 +19,10 @@ export default function useInjectField(
   control: FormFieldControl,
   internalHook?: InternalHookReturn
 ) {
-  const { children: $children, name, initialValue, shouldUpdate, dependencies } = props
+  const { children: $children, name, initialValue } = props
 
-  // 设置默认值
-  // name 是数组会导致额外的 rerender 所以使用了useEvent
-  const ensureInitialized = useEvent(() => {
-    // setTimeout 为了拿到所有的 controls
-    setTimeout(() => internalHook?.ensureInitialized(name, initialValue))
-  })
-  useIsomorphicEffect(ensureInitialized, [ensureInitialized])
+  // 设置默认值, 仅初始化时调用一次
+  useConstructor(() => internalHook?.ensureInitialized(name, initialValue))
 
   // 收集注册到子组件的数据
   const collect = collectFieldInjectProps(props, context, control, internalHook)
@@ -36,10 +31,10 @@ export default function useInjectField(
   const handlerNormalize = normalizeChildren(collect(), context, control)
   const { functional, children, valid } = handlerNormalize($children)
 
-  // 不规范的用法
-  if (isInvalidUsage(control, functional, shouldUpdate, dependencies)) {
-    return null
-  }
+  // // 不规范的用法 上层封装时使用
+  // if (isInvalidUsage(control, functional, shouldUpdate, dependencies)) {
+  //   return null
+  // }
 
   logger.error(!functional && !valid, 'Form.Field `children` is not valid element.')
   if (functional || !valid) return children

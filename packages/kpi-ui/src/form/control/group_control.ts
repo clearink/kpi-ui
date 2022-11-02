@@ -20,7 +20,8 @@ export default class FormGroupControl<State = any> extends BaseControl {
   // 向外暴露的函数
   injectForm = (): InternalFormInstance<State> => {
     return {
-      setFieldValue: this.setFieldValue.bind(this),
+      setFieldValue: (namePath: NamePath, value: any) =>
+        this.setFieldValue(namePath, value, 'setField'),
       setFieldsValue: this.setFieldsValue.bind(this),
 
       getFieldValue: this.getFieldValue.bind(this),
@@ -108,7 +109,9 @@ export default class FormGroupControl<State = any> extends BaseControl {
       !isUndefined(topInitial) && !isUndefined($initialValue),
       "form has initialValues, don't set field initialValue"
     )
-    if (!isUndefined(initialValue)) this.setFieldValue(namePath, initialValue)
+
+    if (isUndefined(initialValue)) return
+    setIn(this._state, toArray(namePath), initialValue)
   }
 
   // 更新字段
@@ -124,14 +127,9 @@ export default class FormGroupControl<State = any> extends BaseControl {
 
   private dispatch(action: Action) {
     // 用户事件触发
-    if (action.type === 'fieldEvent') {
-      const { name, value } = action
-      if (!FormGroupControl._getName(name)) return
-      const namePath = toArray(name)
-      // 仅浅拷贝相关路径
-      const prev = cloneWithPath(this._state, namePath)
-      const next = setIn(this._state, namePath, value)
-      this.updateControl(prev, next, action)
+    if (action.type === 'fieldEvent' || action.type === 'setField') {
+      const { name, value, type } = action
+      this.setFieldValue(name, value, type)
     }
     // this.updateControl(prev, current, { type: 'fieldEvent' })
   }
@@ -139,15 +137,17 @@ export default class FormGroupControl<State = any> extends BaseControl {
   // store
   private _state = {} as State
 
+  private setValueByEvent() {}
+
   // 设置字段值
-  private setFieldValue(namePath: NamePath, value: any) {
+  private setFieldValue(namePath: NamePath, value: any, type: 'setField' | 'fieldEvent') {
     // 无效字段路径 不处理
     if (!FormGroupControl._getName(namePath)) return
     const paths = toArray(namePath)
     // 仅浅拷贝相关路径
     const prev = cloneWithPath(this._state, paths)
     const next = setIn(this._state, paths, value)
-    this.updateControl(prev, next, { type: 'setField', name: paths })
+    this.updateControl(prev, next, { type, name: paths, value })
   }
 
   // 设置多个字段值
@@ -185,6 +185,10 @@ export default class FormGroupControl<State = any> extends BaseControl {
     const { _key: key, _name: name } = control
 
     this._controls.add(control.setParent(this))
+
+    if (!isUndefined(control._props.initialValue)) {
+      console.log('resetWithFieldInitialValue', console.log(control._name))
+    }
 
     // 取消注册， 清除副作用
     return ($preserve?: boolean) => {

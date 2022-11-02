@@ -35,16 +35,15 @@ function FormList(props: FormListProps) {
 
   const shouldUpdate = useEvent((prev: any, next: any, action: Action) => {
     const path = toArray(name)
-    const prevList: any[] = getIn(prev, path)
-    const nextList: any[] = getIn(prev, next)
-    // 用户主动触发的默认不更新 只做容错处理
-    // 或者 setFieldValue
+    const prevList = getIn(prev, path) as any[]
+    const nextList = getIn(next, path) as any[]
+    // 用户主动触发的默认不更新 或者 setFieldValue
     if (action.type === 'setField' || action.type === 'fieldEvent') {
       const listChanged = isDependent(name, action.name)
       return listChanged && prevList?.length !== nextList?.length
     }
 
-    return getIn(prev, path) !== getIn(next, path)
+    return prevList !== nextList
   })
   const operations = useMemo(() => control.current._getFeatures(), [])
 
@@ -52,12 +51,13 @@ function FormList(props: FormListProps) {
     <FieldListContext.Provider value={fieldListContext}>
       <FieldContext.Provider value={fieldContext}>
         <Field
+          name={[]}
           rule={rule}
           validateTrigger={validateTrigger}
           initialValue={initialValue}
           shouldUpdate={shouldUpdate}
         >
-          {collectListInjectProps(props, listPath, control.current)}
+          {collectListInjectProps(props, listPath, control.current, operations)}
         </Field>
       </FieldContext.Provider>
     </FieldListContext.Provider>

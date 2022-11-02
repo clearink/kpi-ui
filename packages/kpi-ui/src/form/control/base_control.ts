@@ -3,6 +3,7 @@ import type { MutableRefObject } from 'react'
 import { toArray } from '../../_utils'
 import type { NamePath } from '../props'
 
+const SEPARATOR = '_$_KPI_FORM_CONTROL_$_'
 export default class BaseControl {
   forceUpdate = () => {}
 
@@ -14,7 +15,6 @@ export default class BaseControl {
   // 获取名称字符串
   static _getName(namePath: NamePath) {
     const paths = toArray(namePath)
-    const separator = '_$_KPI_FORM_CONTROL_$_'
-    return paths.map((item) => `${typeof item}:${item}`).join(separator)
+    return paths.map((item) => `${typeof item}:${item}`).join(SEPARATOR)
   }
 }

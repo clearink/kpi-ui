@@ -222,12 +222,22 @@ export interface FormFieldProps<State = any> {
 export interface ListField {
   name: number
   key: number
+  isListItem: boolean
+}
+export interface FormArrayHelpers {
+  append: (value?: any) => void
+  prepend: (value?: any) => void
+  remove: (index?: number | number[]) => void
+  swap: (from: number, to: number) => void
+  move: (from: number, to: number) => void
+  replace: (index: number, value: any) => void
+  insert: (index: number, value: any) => void
 }
 export interface FormListProps {
   name: NamePath
   children?: (
     fields: ListField[],
-    operations: any,
+    arrayHelpers: FormArrayHelpers,
     meta: FieldMeta
   ) => JSX.Element | React.ReactNode
   /**
