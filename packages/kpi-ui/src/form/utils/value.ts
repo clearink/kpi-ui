@@ -54,7 +54,7 @@ export function cloneWithPath<V>(source: V, paths: InternalNamePath) {
   if (!isObjectLike(source) || !paths.length) return source
   const [path, ...rest] = paths
   if (isObject(source) || isArray(source)) {
-    const init = isArray(source) ? [...source] : { ...source }
+    const init = isArray(source) ? source.slice() : { ...source }
     // 不存在该值
     if (!hasOwn(init, path)) return init as V
     init[path] = cloneWithPath(init[path], rest)

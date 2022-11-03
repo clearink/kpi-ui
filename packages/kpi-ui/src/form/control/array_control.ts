@@ -51,7 +51,7 @@ export default class FormArrayControl {
 
   private getFieldList(): any[] {
     const array = this._context?.getFieldValue(this._listPath)
-    return isArray(array) ? array : []
+    return toArray(array, true)
   }
 
   private dispatchEvent(value: any[]) {
@@ -66,14 +66,14 @@ export default class FormArrayControl {
   /** features                                              */
   /** ===================================================== */
   private append(value?: any) {
-    this._keys = [...this._keys, this._id]
-    this.dispatchEvent([...this.getFieldList(), value])
+    this._keys = this._keys.concat(this._id)
+    this.dispatchEvent(this.getFieldList().concat(value))
     this._id += 1
   }
 
   private prepend(value?: any) {
     this._keys = [this._id, ...this._keys]
-    this.dispatchEvent([value, ...this.getFieldList()])
+    this.dispatchEvent([value].concat(this.getFieldList()))
     this._id += 1
   }
 

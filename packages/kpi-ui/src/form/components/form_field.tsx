@@ -66,7 +66,7 @@ function WrapperFormField($props: FormFieldProps) {
 
   // 预处理一下 name 字段
   const [namePath, key] = useDeepMemo(() => {
-    const path = isUndefined(name) ? [] : [...parentNamePath, ...toArray(name)]
+    const path = isUndefined(name) ? [] : parentNamePath.concat(toArray(name))
     return [path, `_${FormFieldControl._getName(path)}`] as const
   }, [name, parentNamePath])
 

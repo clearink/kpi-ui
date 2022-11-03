@@ -20,7 +20,7 @@ function FormList(props: FormListProps) {
   // 同步 context 供内部调用
 
   const listPath = useDeepMemo(() => {
-    return [...toArray(context.parentNamePath), ...toArray(name)]
+    return toArray(context.parentNamePath).concat(toArray(name))
   }, [context.parentNamePath, name])
 
   const fieldContext = useMemo(() => {

@@ -78,11 +78,10 @@ export default class FormGroupControl<State = any> extends BaseControl {
       if (fields.length === 0) return true
       return fields.some((field) => isDependent(control._name, field))
     })
-    // 深拷贝原始值防止 setIn 时被错误覆盖
+    // 深拷贝原始值, 不影响原始数据
     const cloned = cloneDeep(this._state)
-    return uniqueControls.reduce((values, control) => {
-      const value = getIn(cloned, control._name)
-      return setIn(values ?? ({} as State), control._name, value)
+    return uniqueControls.reduce((values, { _name: name }) => {
+      return setIn(values, name, getIn(cloned, name))
     }, {} as State)
   }
 
