@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+/* eslint-disable class-methods-use-this, max-classes-per-file */
 import cloneDeep from 'lodash.clonedeep'
 import BaseControl from './base_control'
 import { isUndefined, logger, toArray } from '../../_utils'
@@ -351,5 +351,135 @@ export default class FormGroupControl<State = any> extends BaseControl {
     if (fieldId === undefined) return
     const dom = document.querySelector(`#${fieldId}`)
     dom?.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+
+// 字段更新
+class FieldUpdateControl extends BaseControl {}
+
+// 发送事件
+class FieldDispatchControl extends FieldUpdateControl {}
+
+// 字段管理
+class FieldManagerControl extends FieldDispatchControl {
+  // 字段删除时是否保存属性
+  protected _preserve = true
+
+  protected _controls = new Set<FormFieldControl>()
+
+  public get controls() {
+    return Array.from(this._controls.values())
+  }
+
+  // 注册字段
+  protected registerField(control: FormFieldControl) {
+    const { _key: key, _name: name } = control
+
+    this._controls.add(control)
+
+    if (!isUndefined(control._props.initialValue)) {
+      console.log('resetWithFieldInitialValue', console.log(control._name))
+    }
+
+    // 取消注册， 清除副作用
+    return ($preserve?: boolean) => {
+      const preserve = $preserve ?? this._preserve
+      this._controls.delete(control) // 清空空字段
+
+      const hasSameField = this.controls.find(({ _key }) => _key === key)
+      // 不保留数据 && name 合法 && 没有同名字段
+      if (!preserve && key && !hasSameField) this.deleteFieldValue(name)
+    }
+  }
+
+  protected validateField() {}
+
+  protected validateFields() {}
+
+  protected submitForm() {}
+
+  protected resetFields() {}
+
+  public isFieldTouched() {}
+
+  public isFieldsTouched() {}
+
+  // 滚动到对应位置
+  protected scrollToField(namePath: NamePath = []) {
+    const key = FormGroupControl._getName(namePath)
+    if (!key) return
+    const control = this.controls.find(({ _key }) => _key === key)
+    const fieldId = control?._getId(this._name)
+    if (fieldId === undefined) return
+    const dom = document.querySelector(`#${fieldId}`)
+    dom?.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+
+// 字段值
+class FieldStateControl<State = any> extends FieldManagerControl {
+  protected _state = {} as State
+
+  // 表单名称
+  protected _name: string | undefined = undefined
+
+  protected setFieldValue() {}
+
+  protected getFieldValue() {}
+
+  protected getFieldsValue() {}
+
+  protected setFieldsValue() {}
+
+  // 默认值
+  protected _initial = {} as Partial<State>
+}
+
+class A<State = any> extends FieldStateControl<State> {
+  // 向外暴露的函数
+  public injectForm(): InternalFormInstance<State> {
+    return {
+      setFieldValue: (namePath: NamePath, value: any) =>
+        this.setFieldValue(namePath, value, 'setField'),
+      setFieldsValue: this.setFieldsValue.bind(this),
+
+      getFieldValue: this.getFieldValue.bind(this),
+      getFieldsValue: this.getFieldsValue.bind(this),
+
+      validateField: this.validateField.bind(this),
+      validateFields: this.validateFields.bind(this),
+
+      submitForm: this.submitForm.bind(this),
+      resetFields: this.resetFields.bind(this),
+
+      isFieldTouched: this.isFieldTouched.bind(this),
+      isFieldsTouched: this.isFieldsTouched.bind(this),
+
+      scrollToField: this.scrollToField.bind(this),
+
+      /** @private */
+      getInternalHooks: this._getInternalHooks.bind(this),
+    }
+  }
+
+  // 内部属性
+  private _getInternalHooks(secret: symbol): InternalHookReturn | undefined {
+    const matched = secret === HOOK_MARK
+    logger.warn(!matched, '`getInternalHooks` is internal usage. Should not call directly.')
+    if (!matched) return undefined
+
+    return {
+      setInitialValues: this.setInitialValues.bind(this),
+      registerField: this.registerField.bind(this),
+      registerWatch: this.registerWatch.bind(this),
+      subscribe: this.subscribe.bind(this),
+      ensureInitialized: this.ensureInitialized.bind(this),
+      setFieldMeta: this.setFieldMeta.bind(this),
+      dispatch: this.dispatch.bind(this),
+      // eslint-disable-next-line no-return-assign
+      setPreserve: (preserve = true) => (this._preserve = preserve),
+      // eslint-disable-next-line no-return-assign
+      setFormName: (name?: string) => (this._name = name),
+    }
   }
 }

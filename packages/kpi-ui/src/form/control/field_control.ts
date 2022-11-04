@@ -4,7 +4,7 @@ import BaseControl from './base_control'
 import { isFunction, isNullish, isObjectLike } from '../../_utils'
 import { BaseSchema } from '../../_utils/form_schema/schema'
 import { getIn } from '../utils/value'
-import type FormGroupControl from './group_control'
+
 import type {
   InternalFormFieldProps,
   FieldMeta,
@@ -41,13 +41,6 @@ export default class FormFieldControl extends BaseControl {
     if (handler === true) return true
 
     return isFunction(handler) ? handler(prev, next, action) : false
-  }
-
-  _parent: FormGroupControl | undefined = undefined
-
-  setParent(parent?: FormGroupControl) {
-    this._parent = parent
-    return this
   }
 
   _props: Partial<InternalFormFieldProps> = {}
