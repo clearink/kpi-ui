@@ -14,11 +14,11 @@ import type { NamePath } from '../props'
 import type FormFieldControl from './field_control'
 import { getPaths, isDependent } from '../utils/path'
 
-export const HOOK_MARK = Symbol('_$_KPI_FORM_HOOK_MARK_$_')
+export const HOOK_MARK = Symbol.for('_$_KPI_FORM_HOOK_MARK_$_')
 
 export default class FormGroupControl<State = any> extends BaseControl {
   // 向外暴露的函数
-  injectForm = (): InternalFormInstance<State> => {
+  injectForm(): InternalFormInstance<State> {
     return {
       setFieldValue: (namePath: NamePath, value: any) =>
         this.setFieldValue(namePath, value, 'setField'),
@@ -52,7 +52,6 @@ export default class FormGroupControl<State = any> extends BaseControl {
   // 内部属性
   private _getInternalHooks(secret: symbol): InternalHookReturn | undefined {
     const matched = secret === HOOK_MARK
-
     logger.warn(!matched, '`getInternalHooks` is internal usage. Should not call directly.')
     if (!matched) return undefined
 

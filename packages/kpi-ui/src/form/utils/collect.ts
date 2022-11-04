@@ -3,7 +3,7 @@
 import { hasOwn, isArray, isFunction, isObjectLike, logger, toArray } from '../../_utils'
 
 import type { AnyObject } from '../../_types'
-import type { FormArrayControl, FormFieldControl } from '../control'
+import { FormArrayControl, FormFieldControl } from '../control'
 import type {
   FieldMeta,
   InternalFormFieldProps,

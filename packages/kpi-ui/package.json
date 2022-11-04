@@ -25,11 +25,11 @@
     "lint": "npx eslint --fix ./src --ext .ts,.tsx"
   },
   "dependencies": {
-    "@react-spring/web": "^9.4.5",
     "classnames": "^2.3.1",
     "lodash.clonedeep": "^4.5.0",
     "react-fast-compare": "^3.2.0",
-    "react-is": "^18.2.0"
+    "react-is": "^18.2.0",
+    "react-transition-group": "^4.4.5"
   },
   "devDependencies": {
     "@kpi/cli": "^0.0.1",
