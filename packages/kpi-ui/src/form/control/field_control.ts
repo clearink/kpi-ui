@@ -6,10 +6,10 @@ import { BaseSchema } from '../../_utils/form_schema/schema'
 import { getIn } from '../utils/value'
 
 import type {
+  UpdateFieldActionType as ActionType,
   InternalFormFieldProps,
   FieldMeta,
   InternalNamePath,
-  UpdateFieldAction,
 } from '../internal_props'
 import type { SchemaIssue } from '../../_utils/form_schema/interface'
 
@@ -31,16 +31,18 @@ export default class FormFieldControl extends BaseControl {
   }
 
   // 是否应该更新自己
-  shouldUpdate(prev: any, next: any, action: UpdateFieldAction) {
-    const { _key: key, _name: name } = this
-    // shouldUpdate 优先级高于 name
-    const { shouldUpdate: handler } = this._props
+  shouldUpdate(prev: any, next: any, type: ActionType) {
+    const {
+      _key: key,
+      _name: name,
+      _props: { shouldUpdate: handler },
+    } = this
     if (!handler && key) {
       return getIn(prev, name) !== getIn(next, name)
     }
     if (handler === true) return true
 
-    return isFunction(handler) ? handler(prev, next, action) : false
+    return isFunction(handler) ? handler(prev, next, type) : false
   }
 
   _props: Partial<InternalFormFieldProps> = {}

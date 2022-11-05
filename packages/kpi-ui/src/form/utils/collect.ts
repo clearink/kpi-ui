@@ -107,7 +107,7 @@ export function collectListInjectProps(
       return {
         key: control.ensureFieldKey(index),
         name: index,
-        isListItem: true,
+        isListField: true,
       }
     })
     return children(listValue, operations, meta)

@@ -32,6 +32,7 @@ export type UpdateFieldAction =
   | {
       type: 'dependentField' // 字段依赖
     }
+export type UpdateFieldActionType = UpdateFieldAction['type']
 
 export type FieldMeta = {
   dirty: boolean
@@ -46,6 +47,11 @@ export interface InternalFormFieldProps<S = any> extends Omit<FormFieldProps<S>,
    * @zh 字段路径
    */
   name: InternalNamePath
+
+  /**
+   * @zh 是否为列表项字段
+   */
+  isListField?: boolean
 }
 
 export interface InternalFormInstance<S = any> extends FormInstance<S> {
@@ -110,12 +116,6 @@ export interface InternalHookReturn<State = any> {
    */
 
   subscribe: (namePath: NamePath, dependencies?: NamePath[]) => () => void
-
-  /**
-   * @private
-   * @zh 设置字段初始值
-   */
-  ensureInitialized: (namePath: NamePath, initialValue: any) => void
 
   /**
    * @private

@@ -4,13 +4,12 @@ import { FieldContext, FieldListContext } from '../../_context'
 import { withDefaultProps } from '../../_hocs'
 import { useDeepMemo, useEvent } from '../../_hooks'
 import { toArray } from '../../_utils'
-import { isDependent } from '../utils/path'
 import { getIn } from '../utils/value'
 import { FormArrayControl } from '../control'
 import { collectListInjectProps } from '../utils/collect'
 
 import type { FormListProps } from '../props'
-import type { UpdateFieldAction as Action } from '../internal_props'
+import type { UpdateFieldActionType as ActionType } from '../internal_props'
 
 // 应该时继承 InternalFormFieldProps
 function FormList(props: FormListProps) {
@@ -33,14 +32,13 @@ function FormList(props: FormListProps) {
     return null
   }, [])
 
-  const shouldUpdate = useEvent((prev: any, next: any, action: Action) => {
+  const shouldUpdate = useEvent((prev: any, next: any, type: ActionType) => {
     const path = toArray(name)
     const prevList = getIn(prev, path) as any[]
     const nextList = getIn(next, path) as any[]
     // 用户主动触发的默认不更新 或者 setFieldValue
-    if (action.type === 'setField' || action.type === 'fieldEvent') {
-      const listChanged = isDependent(name, action.name)
-      return listChanged && prevList?.length !== nextList?.length
+    if (type === 'setField' || type === 'fieldEvent') {
+      return prevList?.length !== nextList?.length
     }
 
     return prevList !== nextList

@@ -1,5 +1,4 @@
 import { cloneElement, type ReactElement } from 'react'
-import { useConstructor, useEvent, useIsomorphicEffect } from '../../_hooks'
 import { logger } from '../../_utils'
 import normalizeChildren from '../utils/children'
 import { collectFieldInjectProps } from '../utils/collect'
@@ -19,10 +18,7 @@ export default function useInjectField(
   control: FormFieldControl,
   internalHook?: InternalHookReturn
 ) {
-  const { children: $children, name, initialValue } = props
-
-  // 设置默认值, 仅初始化时调用一次
-  useConstructor(() => internalHook?.ensureInitialized(name, initialValue))
+  const { children: $children } = props
 
   // 收集注册到子组件的数据
   const collect = collectFieldInjectProps(props, context, control, internalHook)

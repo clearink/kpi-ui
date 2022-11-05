@@ -1,7 +1,7 @@
 import type { ComponentType, ReactElement, FormEvent, FormHTMLAttributes, ReactNode } from 'react'
 import type { AnyObject, ArrowFunction } from '../_types'
 import type { BaseSchema } from '../_utils/form_schema/schema'
-import type { FieldMeta, UpdateFieldAction } from './internal_props'
+import type { FieldMeta, UpdateFieldActionType as ActionType } from './internal_props'
 
 export interface FormProps<S = any>
   extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'children'> {
@@ -142,7 +142,7 @@ export interface FormFieldProps<State = any> {
    * @zh 自定义字段更新逻辑，说明[见下](#shouldUpdate)
    * @default false
    */
-  shouldUpdate?: boolean | ((prev: State, next: State, action: UpdateFieldAction) => boolean)
+  shouldUpdate?: boolean | ((prev: State, next: State, action: ActionType) => boolean)
 
   /**
    * @zh 校验规则，设置字段的校验逻辑
@@ -222,7 +222,7 @@ export interface FormFieldProps<State = any> {
 export interface ListField {
   name: number
   key: number
-  isListItem: boolean
+  isListField: boolean
 }
 export interface FormArrayHelpers {
   append: (value?: any) => void

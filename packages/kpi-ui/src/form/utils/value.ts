@@ -88,7 +88,7 @@ function internalMerge(target: any, source: any) {
 }
 
 // 合并数据 不改变原始值
-export function mergeValue<V = any>(target: V, ...sources: any[]) {
+export function mergeValue<V = any>(target: V, ...sources: any[]): V {
   return sources.reduce((res, item) => {
     return internalMerge(res, item)
   }, target)

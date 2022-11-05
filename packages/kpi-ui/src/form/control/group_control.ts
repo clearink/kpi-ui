@@ -5,6 +5,7 @@ import { isUndefined, logger, toArray } from '../../_utils'
 import { setIn, getIn, deleteIn, mergeValue, cloneWithPath } from '../utils/value'
 import type {
   UpdateFieldAction as Action,
+  UpdateFieldActionType as ActionType,
   FieldMeta,
   InternalFormInstance,
   InternalHookReturn,
@@ -60,7 +61,6 @@ export default class FormGroupControl<State = any> extends BaseControl {
       registerField: this.registerField.bind(this),
       registerWatch: this.registerWatch.bind(this),
       subscribe: this.subscribe.bind(this),
-      ensureInitialized: this.ensureInitialized.bind(this),
       setFieldMeta: this.setFieldMeta.bind(this),
       dispatch: this.dispatch.bind(this),
       // eslint-disable-next-line no-return-assign
@@ -75,11 +75,13 @@ export default class FormGroupControl<State = any> extends BaseControl {
     const uniqueControls = this.controls.filter((control) => {
       if (!control._key) return false // 去除name无效的 field
       if (fields.length === 0) return true
-      return fields.some((field) => isDependent(control._name, field))
+      return fields.some((field) => isDependent(control._name, field, true))
     })
     // 深拷贝原始值, 不影响原始数据
     const cloned = cloneDeep(this._state)
-    return uniqueControls.reduce((values, { _name: name }) => {
+    return uniqueControls.reduce((values, { _name: name, _props: props }) => {
+      // 不用获取列表项， 可以减小一些开销
+      if (props.isListField) return values
       return setIn(values, name, getIn(cloned, name))
     }, {} as State)
   }
@@ -97,7 +99,9 @@ export default class FormGroupControl<State = any> extends BaseControl {
   }
 
   // 设置字段初始值
-  private ensureInitialized(namePath: NamePath, $initialValue?: any) {
+  private ensureInitialized(control: FormFieldControl) {
+    const namePath = control._name
+    const $initialValue = control._props.initialValue
     if (!FormGroupControl._getName(namePath)) return // name 无效
     if (this.getFieldValue(namePath) !== undefined) return // 该字段值不为 undefined
 
@@ -110,13 +114,18 @@ export default class FormGroupControl<State = any> extends BaseControl {
 
     if (isUndefined(initialValue)) return
     setIn(this._state, toArray(namePath), initialValue)
+    const controls = this.controls.filter((_control) => {
+      return _control._key && isDependent(_control._name, control._name, true)
+    })
+
+    controls.forEach((field) => field.forceUpdate())
   }
 
   // 更新字段
-  private updateControl(prev: State, next: State, action: Action) {
+  private updateControl(prev: State, next: State, type: ActionType) {
     // 获取需要更新的 control
     const uniqueControls = this.controls.reduce((set, control) => {
-      if (control.shouldUpdate(prev, next, action)) set.add(control)
+      if (control.shouldUpdate(prev, next, type)) set.add(control)
       return set
     }, new Set<FormFieldControl>())
     // 强制更新 control
@@ -145,7 +154,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
     // 仅浅拷贝相关路径
     const prev = cloneWithPath(this._state, paths)
     const next = setIn(this._state, paths, value)
-    this.updateControl(prev, next, { type, name: paths, value })
+    this.updateControl(prev, next, type)
   }
 
   // 设置多个字段值
@@ -156,7 +165,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
     }, this._state)
     // 与现有的 state 进行 merge
     this._state = mergeValue(this._state, state)
-    this.updateControl(prev, this._state, { type: 'valueUpdate', name: [] })
+    this.updateControl(prev, this._state, 'valueUpdate')
   }
 
   private getFieldValue(namePath: NamePath) {
@@ -182,11 +191,10 @@ export default class FormGroupControl<State = any> extends BaseControl {
   registerField(control: FormFieldControl) {
     const { _key: key, _name: name } = control
 
-    this._controls.add(control.setParent(this))
+    this._controls.add(control)
 
-    if (!isUndefined(control._props.initialValue)) {
-      console.log('resetWithFieldInitialValue', console.log(control._name))
-    }
+    // TODO:
+    this.ensureInitialized(control)
 
     // 取消注册， 清除副作用
     return ($preserve?: boolean) => {
@@ -351,135 +359,5 @@ export default class FormGroupControl<State = any> extends BaseControl {
     if (fieldId === undefined) return
     const dom = document.querySelector(`#${fieldId}`)
     dom?.scrollIntoView({ behavior: 'smooth' })
-  }
-}
-
-// 字段更新
-class FieldUpdateControl extends BaseControl {}
-
-// 发送事件
-class FieldDispatchControl extends FieldUpdateControl {}
-
-// 字段管理
-class FieldManagerControl extends FieldDispatchControl {
-  // 字段删除时是否保存属性
-  protected _preserve = true
-
-  protected _controls = new Set<FormFieldControl>()
-
-  public get controls() {
-    return Array.from(this._controls.values())
-  }
-
-  // 注册字段
-  protected registerField(control: FormFieldControl) {
-    const { _key: key, _name: name } = control
-
-    this._controls.add(control)
-
-    if (!isUndefined(control._props.initialValue)) {
-      console.log('resetWithFieldInitialValue', console.log(control._name))
-    }
-
-    // 取消注册， 清除副作用
-    return ($preserve?: boolean) => {
-      const preserve = $preserve ?? this._preserve
-      this._controls.delete(control) // 清空空字段
-
-      const hasSameField = this.controls.find(({ _key }) => _key === key)
-      // 不保留数据 && name 合法 && 没有同名字段
-      if (!preserve && key && !hasSameField) this.deleteFieldValue(name)
-    }
-  }
-
-  protected validateField() {}
-
-  protected validateFields() {}
-
-  protected submitForm() {}
-
-  protected resetFields() {}
-
-  public isFieldTouched() {}
-
-  public isFieldsTouched() {}
-
-  // 滚动到对应位置
-  protected scrollToField(namePath: NamePath = []) {
-    const key = FormGroupControl._getName(namePath)
-    if (!key) return
-    const control = this.controls.find(({ _key }) => _key === key)
-    const fieldId = control?._getId(this._name)
-    if (fieldId === undefined) return
-    const dom = document.querySelector(`#${fieldId}`)
-    dom?.scrollIntoView({ behavior: 'smooth' })
-  }
-}
-
-// 字段值
-class FieldStateControl<State = any> extends FieldManagerControl {
-  protected _state = {} as State
-
-  // 表单名称
-  protected _name: string | undefined = undefined
-
-  protected setFieldValue() {}
-
-  protected getFieldValue() {}
-
-  protected getFieldsValue() {}
-
-  protected setFieldsValue() {}
-
-  // 默认值
-  protected _initial = {} as Partial<State>
-}
-
-class A<State = any> extends FieldStateControl<State> {
-  // 向外暴露的函数
-  public injectForm(): InternalFormInstance<State> {
-    return {
-      setFieldValue: (namePath: NamePath, value: any) =>
-        this.setFieldValue(namePath, value, 'setField'),
-      setFieldsValue: this.setFieldsValue.bind(this),
-
-      getFieldValue: this.getFieldValue.bind(this),
-      getFieldsValue: this.getFieldsValue.bind(this),
-
-      validateField: this.validateField.bind(this),
-      validateFields: this.validateFields.bind(this),
-
-      submitForm: this.submitForm.bind(this),
-      resetFields: this.resetFields.bind(this),
-
-      isFieldTouched: this.isFieldTouched.bind(this),
-      isFieldsTouched: this.isFieldsTouched.bind(this),
-
-      scrollToField: this.scrollToField.bind(this),
-
-      /** @private */
-      getInternalHooks: this._getInternalHooks.bind(this),
-    }
-  }
-
-  // 内部属性
-  private _getInternalHooks(secret: symbol): InternalHookReturn | undefined {
-    const matched = secret === HOOK_MARK
-    logger.warn(!matched, '`getInternalHooks` is internal usage. Should not call directly.')
-    if (!matched) return undefined
-
-    return {
-      setInitialValues: this.setInitialValues.bind(this),
-      registerField: this.registerField.bind(this),
-      registerWatch: this.registerWatch.bind(this),
-      subscribe: this.subscribe.bind(this),
-      ensureInitialized: this.ensureInitialized.bind(this),
-      setFieldMeta: this.setFieldMeta.bind(this),
-      dispatch: this.dispatch.bind(this),
-      // eslint-disable-next-line no-return-assign
-      setPreserve: (preserve = true) => (this._preserve = preserve),
-      // eslint-disable-next-line no-return-assign
-      setFormName: (name?: string) => (this._name = name),
-    }
   }
 }
