@@ -2,7 +2,6 @@ import { isNumber, isArray, isObject, isNullish, isObjectLike, rawType, hasOwn }
 
 import type { InternalNamePath } from '../internal_props'
 
-// 不改变原始值
 function internalSetIn<V = any>(
   source: V,
   paths: InternalNamePath,
@@ -14,8 +13,8 @@ function internalSetIn<V = any>(
   const [path, ...rest] = paths
 
   let attr = {} as V
-  // 浅拷贝在大数据量场景下会有性能问题
-  if (isArray(source) || isObject(source)) attr = source
+  if (isObject(source)) attr = { ...source }
+  else if (isArray(source)) attr = source.slice() as unknown as V
   // source为基础类型时舍弃
   else if (isNumber(path)) attr = [] as unknown as V
 
@@ -32,7 +31,6 @@ export function setIn<V = any>(source: V, paths: InternalNamePath, value: any): 
   return internalSetIn(source, paths, value)
 }
 
-// 不改变原始值
 export function getIn<V = any>(values: V, paths: InternalNamePath): any {
   for (let i = 0; i < paths.length; i++) {
     if (isNullish(values)) return undefined
@@ -47,21 +45,6 @@ export function deleteIn<V = any>(source: V, paths: InternalNamePath): any {
   // 源数据不是对象
   if (!isObject(source)) return source
   return internalSetIn(source, paths, undefined, true)
-}
-
-// 浅拷贝 且 仅拷贝某条路径下的值
-export function cloneWithPath<V>(source: V, paths: InternalNamePath) {
-  if (!isObjectLike(source) || !paths.length) return source
-  const [path, ...rest] = paths
-  if (isObject(source) || isArray(source)) {
-    const init = isArray(source) ? source.slice() : { ...source }
-    // 不存在该值
-    if (!hasOwn(init, path)) return init as V
-    init[path] = cloneWithPath(init[path], rest)
-    return init as V
-  }
-  // 其他类型暂时不处理
-  return source
 }
 
 // 合并对象
@@ -87,9 +70,25 @@ function internalMerge(target: any, source: any) {
   return target
 }
 
-// 合并数据 不改变原始值
+// 合并数据
 export function mergeValue<V = any>(target: V, ...sources: any[]): V {
+  const init = isArray(target) ? target.slice() : { ...target }
   return sources.reduce((res, item) => {
     return internalMerge(res, item)
-  }, target)
+  }, init)
+}
+
+// 浅拷贝 且 仅拷贝某条路径下的值
+export function cloneWithPath<V>(source: V, paths: InternalNamePath) {
+  if (!isObjectLike(source) || !paths.length) return source
+  const [path, ...rest] = paths
+  if (isObject(source) || isArray(source)) {
+    const init = isArray(source) ? source.slice() : { ...source }
+    // 不存在该值
+    if (!hasOwn(init, path)) return init as V
+    init[path] = cloneWithPath(init[path], rest)
+    return init as V
+  }
+  // 其他类型暂时不处理
+  return source
 }

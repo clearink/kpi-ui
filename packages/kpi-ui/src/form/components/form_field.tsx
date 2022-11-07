@@ -5,13 +5,7 @@ import { FieldContext } from '../../_context'
 import { FormFieldControl, HOOK_MARK } from '../control'
 
 import useInjectField from '../hooks/use_inject_field'
-import {
-  useConstructor,
-  useDeepMemo,
-  useEvent,
-  useIsomorphicEffect,
-  useMounted,
-} from '../../_hooks'
+import { useDeepMemo, useEvent, useIsomorphicEffect, useMounted } from '../../_hooks'
 import { isUndefined, toArray } from '../../_utils'
 
 import type { FormFieldProps } from '../props'
@@ -48,7 +42,7 @@ function InternalFormField(props: InternalFormFieldProps) {
   // dependencies 进行深度比较
   const memorized = useDeepMemo(() => dependencies, [dependencies])
   const subscribe = useEvent(() => {
-    const unsubscribe = internalHook?.subscribe(name, memorized)
+    const unsubscribe = internalHook?.subscribe(control.current, memorized)
     return unsubscribe
   })
   useIsomorphicEffect(subscribe, [subscribe, memorized])

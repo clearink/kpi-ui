@@ -14,9 +14,9 @@ import type {
 import type { SchemaIssue } from '../../_utils/form_schema/interface'
 
 export default class FormFieldControl extends BaseControl {
-  _key: string // 唯一标识
+  public _key: string // 唯一标识
 
-  constructor(
+  public constructor(
     public _name: InternalNamePath, // 记录 name
     _forceUpdate: () => void,
     mounted: MutableRefObject<boolean>
@@ -26,17 +26,15 @@ export default class FormFieldControl extends BaseControl {
   }
 
   // 生成 DOM 唯一标识
-  _getId(parentName?: string) {
+  public _getId(parentName?: string) {
     return [parentName, ...this._name].filter((item) => item !== undefined).join('_')
   }
 
   // 是否应该更新自己
-  shouldUpdate(prev: any, next: any, type: ActionType) {
-    const {
-      _key: key,
-      _name: name,
-      _props: { shouldUpdate: handler },
-    } = this
+  public shouldUpdate(prev: any, next: any, type: ActionType) {
+    const { _key: key, _name: name } = this
+    const handler = this._props.shouldUpdate
+
     if (!handler && key) {
       return getIn(prev, name) !== getIn(next, name)
     }
@@ -45,9 +43,9 @@ export default class FormFieldControl extends BaseControl {
     return isFunction(handler) ? handler(prev, next, type) : false
   }
 
-  _props: Partial<InternalFormFieldProps> = {}
+  public _props: Partial<InternalFormFieldProps> = {}
 
-  setFieldProps(props: Partial<InternalFormFieldProps>) {
+  public setFieldProps(props: Partial<InternalFormFieldProps>) {
     this._props = isObjectLike(props) ? props : {}
   }
 
@@ -59,7 +57,7 @@ export default class FormFieldControl extends BaseControl {
 
   private _errors: string[] = []
 
-  getFieldMeta(): FieldMeta {
+  public getFieldMeta(): FieldMeta {
     return {
       dirty: this._dirty,
       touched: this._touched,
@@ -69,7 +67,7 @@ export default class FormFieldControl extends BaseControl {
     }
   }
 
-  setFieldMeta(meta: Partial<FieldMeta>) {
+  public setFieldMeta(meta: Partial<FieldMeta>) {
     // 自动触发 onMetaChange 事件
     const prev = this.getFieldMeta()
     // 同步全部
@@ -82,7 +80,7 @@ export default class FormFieldControl extends BaseControl {
   }
 
   // 字段级别校验
-  async validate(value: any) {
+  public async validate(value: any) {
     const { rule: validator } = this._props
     if (!(validator instanceof BaseSchema)) return
     try {
@@ -93,9 +91,6 @@ export default class FormFieldControl extends BaseControl {
       const { issues = [] } = error as { issues: SchemaIssue[] }
       const errors = issues.map((issue) => issue.message)
       this.setFieldMeta({ pending: false, errors })
-    } finally {
-      // TODO: 仅校验自身 ?
-      this.forceUpdate()
     }
   }
 }

@@ -50,16 +50,13 @@ export function collectFieldInjectProps(
     const injectProps = {
       ...childProps,
       ...getValueProps(value),
-      // id 不知道有啥用 难不成用来 scrollError ?
       id: control._getId(context.formName),
       // 触发条件
       [trigger!]: (...args: any[]) => {
-        // 设置所有所有同名字段的 meta 属性
-
         let next = getValueFromEvent(...args)
         if (isFunction(formatter)) {
-          const formValues = context.getFieldsValue()
-          next = formatter(next, value, formValues)
+          const values = context.getFieldsValue()
+          next = formatter(next, value, values)
         }
 
         internalHook?.dispatch({ name, value: next, type: 'fieldEvent' })

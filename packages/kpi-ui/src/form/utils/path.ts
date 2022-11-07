@@ -21,19 +21,6 @@ export function isDependent($path: NamePath, $other: NamePath, equal = false) {
   return path.length <= other.length
 }
 
-// 获取 source 的全部路径
-export function getPaths(source: any, parent: InternalNamePath = []): InternalNamePath[] {
-  // 不是对象或数组
-  if (!isObject(source) && !isArray(source)) return [parent]
-  const isAnArray = isArray(source)
-  // 空数组
-  if (isAnArray && source.length === 0) return [parent]
-  return Object.entries(source).reduce((res, [key, value]) => {
-    const current = parent.concat(isAnArray ? Number(key) : key)
-    return res.concat(getPaths(value, current))
-  }, [] as InternalNamePath[])
-}
-
 export function isValidIndex(array: any[], ...positions: number[]) {
   return positions.every((position) => position >= 0 && position < array.length)
 }

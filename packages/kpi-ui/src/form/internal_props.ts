@@ -1,7 +1,7 @@
 // form 内部类型声明
 
 import type { FormFieldControl } from './control'
-import type { FormInstance, FormFieldProps, NamePath } from './props'
+import type { FormInstance, FormFieldProps, NamePath, FieldData } from './props'
 
 export type InternalNamePath = (string | number)[]
 export type WatchCallBack<S = any> = (value: any, state: S) => void
@@ -13,13 +13,12 @@ export type UpdateFieldAction =
       value: any
     }
   | {
-      type: 'setField' // setFieldValue setFieldsValue ?
-      name: InternalNamePath
-      value?: any
+      type: 'setField' // setFieldValue, setFields
+      fields: FieldData[]
     }
   | {
-      type: 'valueUpdate' // setFieldValue setFieldsValue ?
-      name: InternalNamePath
+      type: 'setFieldsValue' // setFieldsValue
+      state: any
     }
   | {
       type: 'removeField' // 卸载字段时触发
@@ -34,7 +33,7 @@ export type UpdateFieldAction =
     }
 export type UpdateFieldActionType = UpdateFieldAction['type']
 
-export type FieldMeta = {
+export interface FieldMeta {
   dirty: boolean
   touched: boolean
   pending: boolean // 字段级别的校验
@@ -42,6 +41,10 @@ export type FieldMeta = {
   warnings: string[]
 }
 
+export interface InternalFieldData extends FieldMeta {
+  name: InternalNamePath
+  value: any
+}
 export interface InternalFormFieldProps<S = any> extends Omit<FormFieldProps<S>, 'name'> {
   /**
    * @zh 字段路径
@@ -115,7 +118,7 @@ export interface InternalHookReturn<State = any> {
    * @zh 订阅依赖字段
    */
 
-  subscribe: (namePath: NamePath, dependencies?: NamePath[]) => () => void
+  subscribe: (control: FormFieldControl, dependencies?: NamePath[]) => () => void
 
   /**
    * @private

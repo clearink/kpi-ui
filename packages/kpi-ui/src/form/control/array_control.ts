@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
-import { HOOK_MARK } from '.'
+import { HOOK_MARK } from './group_control'
 import { isUndefined, toArray } from '../../_utils'
 import { isValidIndex } from '../utils/path'
 
@@ -57,8 +57,7 @@ export default class FormArrayControl {
   private dispatchEvent(value: any[]) {
     this._internalHook?.dispatch({
       type: 'setField',
-      name: this._listPath,
-      value,
+      fields: [{ name: this._listPath, value }],
     })
   }
 

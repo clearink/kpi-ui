@@ -48,7 +48,7 @@ export function isInvalidUsage(
   dependencies: InternalFormFieldProps['dependencies'] = []
 ) {
   if (control._key && functional) {
-    // render props 时不能设置 name
+    // render props 时不能设置 name, Form.List 除外
     logger.error(
       true,
       'Form.Field',

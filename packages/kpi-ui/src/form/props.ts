@@ -1,8 +1,15 @@
 import type { ComponentType, ReactElement, FormEvent, FormHTMLAttributes, ReactNode } from 'react'
 import type { AnyObject, ArrowFunction } from '../_types'
 import type { BaseSchema } from '../_utils/form_schema/schema'
-import type { FieldMeta, UpdateFieldActionType as ActionType } from './internal_props'
+import type {
+  InternalFieldData,
+  FieldMeta,
+  UpdateFieldActionType as ActionType,
+} from './internal_props'
 
+export interface FieldData extends Partial<Omit<InternalFieldData, 'name'>> {
+  name: NamePath
+}
 export interface FormProps<S = any>
   extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'children'> {
   /**
@@ -57,6 +64,16 @@ export interface FormProps<S = any>
    * @default onChange
    */
   validateTrigger?: string | string[] | false
+
+  /**
+   * @zh 通过状态管理（如 redux）控制表单字段，如非强需求不推荐使用
+   */
+  fields?: FieldData[]
+
+  /**
+   * @zh 字段变更时的回调
+   */
+  onFieldsChange?: () => void
 }
 
 /** useForm 向外暴露的实例 */
