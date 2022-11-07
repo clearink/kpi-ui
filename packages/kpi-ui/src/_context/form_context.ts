@@ -38,7 +38,7 @@ export const FieldContext = CtxHelper<InternalFormInstance>({
       ensureInitialized: notFoundContext,
       getControl: notFoundContext,
       setFieldMeta: notFoundContext,
-      setFormName: notFoundContext,
+      setFormProps: notFoundContext,
       dispatch: notFoundContext,
     }
   },

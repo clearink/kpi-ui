@@ -56,7 +56,7 @@ export default class FormArrayControl {
 
   private dispatchEvent(value: any[]) {
     this._internalHook?.dispatch({
-      type: 'setField',
+      type: 'setFields',
       fields: [{ name: this._listPath, value }],
     })
   }

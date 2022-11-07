@@ -1,7 +1,7 @@
 // form 内部类型声明
 
 import type { FormFieldControl } from './control'
-import type { FormInstance, FormFieldProps, NamePath, FieldData } from './props'
+import type { FormInstance, FormFieldProps, NamePath, FieldData, FormProps } from './props'
 
 export type InternalNamePath = (string | number)[]
 export type WatchCallBack<S = any> = (value: any, state: S) => void
@@ -13,7 +13,7 @@ export type UpdateFieldAction =
       value: any
     }
   | {
-      type: 'setField' // setFieldValue, setFields
+      type: 'setFields' //  setFields
       fields: FieldData[]
     }
   | {
@@ -86,15 +86,9 @@ export interface InternalFormInstance<S = any> extends FormInstance<S> {
 export interface InternalHookReturn<State = any> {
   /**
    * @private
-   * @zh 设置字段删除时是否保留数据
+   * @zh 同步 form 参数
    */
-  setPreserve: (preserve?: boolean) => void
-
-  /**
-   * @private
-   * @zh 设置字段删除时是否保留数据
-   */
-  setFormName: (name?: string) => void
+  setFormProps: (props: FormProps) => void
 
   /**
    * @private

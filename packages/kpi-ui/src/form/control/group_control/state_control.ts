@@ -3,12 +3,12 @@ import cloneDeep from 'lodash.clonedeep'
 import BaseControl from '../base_control'
 import { hasOwn, toArray } from '../../../_utils'
 import { setIn, getIn, deleteIn, mergeValue } from '../../utils/value'
+import { isDependent } from '../../utils/path'
 
 import type { FieldData, NamePath } from '../../props'
 import type FormFieldControl from '../field_control'
 import type { InternalNamePath, WatchCallBack } from '../../internal_props'
 import type FormDispatchControl from './dispatch_control'
-import { isDependent } from '../../utils/path'
 
 // 仅负责存储信息(具体逻辑由 FormDispatchControl 实现)
 export default class FormStateControl<State = any> {

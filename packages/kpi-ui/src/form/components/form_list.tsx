@@ -37,7 +37,7 @@ function FormList(props: FormListProps) {
     const prevList = getIn(prev, path) as any[]
     const nextList = getIn(next, path) as any[]
     // 用户主动触发的默认不更新 或者 setFieldValue
-    if (type === 'setField' || type === 'fieldEvent') {
+    if (type === 'setFields' || type === 'fieldEvent') {
       return prevList?.length !== nextList?.length
     }
 

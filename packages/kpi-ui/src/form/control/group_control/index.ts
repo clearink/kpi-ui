@@ -1,22 +1,27 @@
 /* eslint-disable class-methods-use-this */
-import { logger } from '../../../_utils'
+import { isObjectLike, logger } from '../../../_utils'
 import BaseControl from '../base_control'
 import FormDispatchControl from './dispatch_control'
 import FormStateControl from './state_control'
 
-import type { NamePath } from '../../props'
+import type { FormProps, NamePath } from '../../props'
 import type { InternalFormInstance, InternalHookReturn } from '../../internal_props'
 
 export const HOOK_MARK = Symbol.for('_$_KPI_FORM_HOOK_MARK_$_')
 
 // 部分逻辑耦合太多 ，现在拆开
 export default class FormGroupControl<State = any> extends BaseControl {
-  // 表单名称
-  public _name: string | undefined = undefined
-
   public $state = new FormStateControl<State>()
 
   public $dispatch = new FormDispatchControl<State>(this.$state)
+
+  // 表单名称
+  public _props: Partial<FormProps> = {}
+
+  public setFormProps(props: Partial<FormProps>) {
+    this._props = isObjectLike(props) ? props : {}
+    this.$state._preserve = props.preserve ?? true
+  }
 
   // 向外暴露的函数
   public injectForm(): InternalFormInstance<State> {
@@ -59,10 +64,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
       subscribe: $state.subscribe.bind($state),
       setFieldMeta: $dispatch.setFieldMeta.bind($dispatch),
       dispatch: $dispatch.dispatch.bind($dispatch),
-      // eslint-disable-next-line no-return-assign
-      setPreserve: (preserve = true) => ($state._preserve = preserve),
-      // eslint-disable-next-line no-return-assign
-      setFormName: (name?: string) => (this._name = name),
+      setFormProps: this.setFormProps.bind(this),
     }
   }
 
@@ -75,7 +77,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
     const key = FormGroupControl._getName(namePath)
     if (!key) return
     const control = this.$state.controls(true).find(({ _key }) => _key === key)
-    const fieldId = control?._getId(this._name)
+    const fieldId = control?._getId(this._props.name)
     if (fieldId === undefined) return
     const dom = document.querySelector(`#${fieldId}`)
     // TODO: 这里是否要换其他方式呢？

@@ -1,9 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import FormStateControl from './state_control'
-import BaseControl from '../base_control'
 import { isDependent } from '../../utils/path'
-import { setIn } from '../../utils/value'
-import { hasOwn, isUndefined, logger, toArray } from '../../../_utils'
+import { isUndefined, logger } from '../../../_utils'
 
 import type { FieldData, NamePath } from '../../props'
 import type FormFieldControl from '../field_control'
@@ -82,7 +80,7 @@ export default class FormDispatchControl<State = any> {
     }
 
     // 调用 setFieldValue, setFields 方法
-    if (action.type === 'setField') {
+    if (action.type === 'setFields') {
       const { fields } = action
       // 更新字段 meta 属性
       fields.forEach((field) => this.setFieldMeta(field.name, field))
@@ -117,12 +115,12 @@ export default class FormDispatchControl<State = any> {
 
   // 设置一组字段状态
   public setFields(fields: FieldData[]) {
-    this.dispatch({ type: 'setField', fields })
+    this.dispatch({ type: 'setFields', fields })
   }
 
   // 设置字段值
   public setFieldValue(name: NamePath, value: any) {
-    this.dispatch({ type: 'setField', fields: [{ name, value }] })
+    this.dispatch({ type: 'setFields', fields: [{ name, value }] })
   }
 
   // 设置多个字段值
@@ -198,4 +196,9 @@ export default class FormDispatchControl<State = any> {
     })
     return untouchedFields.length === 0
   }
+
+  // TODO
+  public triggerOnFieldsChange() {}
+
+  public triggerOnValuesChange() {}
 }
