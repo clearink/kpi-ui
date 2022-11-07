@@ -122,14 +122,13 @@ export default class FormStateControl<State = any> {
   /** Dependencies                                         */
   /** ==================================================== */
   // 字段依赖 当数据变更时就会重新校验相应的字段
-  private _dependencies = new Map<string, Map<string, NamePath>>()
+  private _dependencies = new Map<string, Set<string>>()
 
-  public getDependencies(key: string) {
+  public findImplicates(key: string) {
     const init = [] as FormFieldControl[]
-    const map = this._dependencies.get(key)
-    console.log(key, this._dependencies)
-    if (!map) return init
-    return [...map.keys()].reduce((res, fieldKey) => {
+    const dependencies = this._dependencies.get(key)
+    if (!dependencies) return init
+    return [...dependencies.keys()].reduce((res, fieldKey) => {
       const controls = this._controls.get(fieldKey)
       if (!controls) return res
       return res.concat([...controls.values()])
@@ -146,8 +145,8 @@ export default class FormStateControl<State = any> {
       const depKey = BaseControl._getName(dependency)
       if (!depKey || fieldKey === depKey) return () => {}
 
-      const cached = this._dependencies.get(depKey) ?? new Map<string, NamePath>()
-      this._dependencies.set(depKey, cached.set(fieldKey, control._name))
+      const cached = this._dependencies.get(depKey) ?? new Set<string>()
+      this._dependencies.set(depKey, cached.add(fieldKey))
       return () => {
         const current = this._dependencies.get(depKey)
         current?.delete(fieldKey)

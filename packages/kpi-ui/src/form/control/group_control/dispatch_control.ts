@@ -51,21 +51,21 @@ export default class FormDispatchControl<State = any> {
     return this.$state.registerField(control, this)
   }
 
-  // 用于valueUpdate
+  // 更新视图
   public updateControl(prev: State, next: State, type: ActionType) {
     // 获取需要更新的 control
     const init = [new Set<FormFieldControl>(), new Set<FormFieldControl>()] as const
-    const [controls, dependence] = this.controls().reduce((res, control) => {
+    const [controls, dependencies] = this.controls().reduce((res, control) => {
       if (!control.shouldUpdate(prev, next, type)) return res
       // ... 找出依赖当前 control 的其他 controls
-      const dependent = this.$state.getDependencies(control._key)
-      dependent.forEach((c) => res[1].add(c))
+      const implicates = this.$state.findImplicates(control._key)
+      implicates.forEach((c) => res[1].add(c))
       return [res[0].add(control), res[1]]
     }, init)
     // 更新 control
     controls.forEach((control) => control.forceUpdate())
     // 校验依赖字段
-    dependence.forEach((control) => {
+    dependencies.forEach((control) => {
       const value = this.$state.getFieldValue(control._name)
       control.validate(value)
     })
