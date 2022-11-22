@@ -78,15 +78,15 @@ export function mergeValue<V = any>(target: V, ...sources: any[]): V {
   }, init)
 }
 
-// 浅拷贝 且 仅拷贝某条路径下的值
+// 仅复制路径下的值
 export function cloneWithPath<V>(source: V, paths: InternalNamePath) {
   if (!isObjectLike(source) || !paths.length) return source
   const [path, ...rest] = paths
   if (isObject(source) || isArray(source)) {
-    const init = isArray(source) ? source.slice() : { ...source }
+    const init = isArray(source) ? [] : {}
     // 不存在该值
-    if (!hasOwn(init, path)) return init as V
-    init[path] = cloneWithPath(init[path], rest)
+    if (!hasOwn(source, path)) return init as V
+    init[path] = cloneWithPath(source[path], rest)
     return init as V
   }
   // 其他类型暂时不处理

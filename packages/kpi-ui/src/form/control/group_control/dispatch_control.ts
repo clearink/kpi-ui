@@ -1,7 +1,8 @@
 /* eslint-disable class-methods-use-this */
 import FormStateControl from './state_control'
 import { isDependent } from '../../utils/path'
-import { isUndefined, logger } from '../../../_utils'
+import { cloneWithPath } from '../../utils/value'
+import { isFunction, isUndefined, logger } from '../../../_utils'
 
 import type { FieldData, NamePath } from '../../props'
 import type FormFieldControl from '../field_control'
@@ -53,15 +54,20 @@ export default class FormDispatchControl<State = any> {
   public updateControl(prev: State, next: State, type: ActionType) {
     // 获取需要更新的 control
     const init = [new Set<FormFieldControl>(), new Set<FormFieldControl>()] as const
+
     const [controls, dependencies] = this.controls().reduce((res, control) => {
       if (!control.shouldUpdate(prev, next, type)) return res
+
       // ... 找出依赖当前 control 的其他 controls
       const implicates = this.$state.findImplicates(control._key)
       implicates.forEach((c) => res[1].add(c))
+
       return [res[0].add(control), res[1]]
     }, init)
+
     // 更新 control
     controls.forEach((control) => control.forceUpdate())
+
     // 校验依赖字段
     dependencies.forEach((control) => {
       const value = this.$state.getFieldValue(control._name)
@@ -76,7 +82,15 @@ export default class FormDispatchControl<State = any> {
     // 由用户事件主动触发
     if (action.type === 'fieldEvent') {
       const [prev, next] = $state.setFieldValue(action.name, action.value)
-      return this.updateControl(prev, next, action.type)
+      this.updateControl(prev, next, action.type)
+
+      const changedValues = cloneWithPath(next, action.name)
+      const allValues = this.$state.getFieldsValue()
+      const { onValuesChange } = this.$state._props
+
+      if (isFunction(onValuesChange)) onValuesChange(changedValues, allValues)
+
+      return
     }
 
     // 调用 setFieldValue, setFields 方法
@@ -131,16 +145,16 @@ export default class FormDispatchControl<State = any> {
   // 获取字段以及meta
   private getFields() {
     return this.controls(true).map((control) => {
-      const meta = control.getFieldMeta()
       const name = control._name
       const value = this.$state.getFieldValue(control._name)
       // TODO: 验证 fields 与 onFieldsChange 一起使用时 errors 是否一直为空
-      return { ...meta, name, value }
+      return { ...control.getFieldMeta(), name, value }
     })
   }
 
   // 设置 FormField 的 meta 属性
   public setFieldMeta(namePath: NamePath, meta: Partial<FieldMeta>) {
+    // 由于设计到隐式依赖，所以此处需要遍历全部 controls
     for (const control of this.controls(true)) {
       if (!isDependent(control._name, namePath)) continue
       control.setFieldMeta(meta)
@@ -174,6 +188,8 @@ export default class FormDispatchControl<State = any> {
       })
       .map((control) => {
         const value = this.$state.getFieldValue(control._name)
+        // 主动改成 touched
+        control.setFieldMeta({ touched: true })
         return control.validate(value)
       })
     // TODO: 确定逻辑

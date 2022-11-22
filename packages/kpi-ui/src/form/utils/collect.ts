@@ -54,14 +54,12 @@ export function collectFieldInjectProps(
       // 触发条件
       [trigger!]: (...args: any[]) => {
         let next = getValueFromEvent(...args)
-        if (isFunction(formatter)) {
-          const values = context.getFieldsValue()
-          next = formatter(next, value, values)
-        }
 
-        internalHook?.dispatch({ name, value: next, type: 'fieldEvent' })
+        if (isFunction(formatter)) next = formatter(next, value, context.getFieldsValue())
 
         internalHook?.setFieldMeta(name, { touched: true, dirty: true })
+
+        internalHook?.dispatch({ name, value: next, type: 'fieldEvent' })
 
         // originTrigger
         childProps[trigger!]?.(...args)
@@ -70,6 +68,7 @@ export function collectFieldInjectProps(
 
     // 校验触发时机
     const triggerList = toArray((validateTrigger ?? context.validateTrigger) || [])
+
     return triggerList.reduce((res, triggerName) => {
       const handler = (...args: any[]) => {
         // 执行原始值

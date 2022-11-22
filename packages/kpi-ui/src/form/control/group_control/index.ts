@@ -1,10 +1,10 @@
 /* eslint-disable class-methods-use-this */
-import { isObjectLike, logger } from '../../../_utils'
+import { logger } from '../../../_utils'
 import BaseControl from '../base_control'
 import FormDispatchControl from './dispatch_control'
 import FormStateControl from './state_control'
 
-import type { FormProps, NamePath } from '../../props'
+import type { NamePath } from '../../props'
 import type { InternalFormInstance, InternalHookReturn } from '../../internal_props'
 
 export const HOOK_MARK = Symbol.for('_$_KPI_FORM_HOOK_MARK_$_')
@@ -14,14 +14,6 @@ export default class FormGroupControl<State = any> extends BaseControl {
   public $state = new FormStateControl<State>()
 
   public $dispatch = new FormDispatchControl<State>(this.$state)
-
-  // 表单名称
-  public _props: Partial<FormProps> = {}
-
-  public setFormProps(props: Partial<FormProps>) {
-    this._props = isObjectLike(props) ? props : {}
-    this.$state._preserve = props.preserve ?? true
-  }
 
   // 向外暴露的函数
   public injectForm(): InternalFormInstance<State> {
@@ -54,6 +46,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
     const matched = secret === HOOK_MARK
 
     logger.warn(!matched, '`getInternalHooks` is internal usage. Should not call directly.')
+
     if (!matched) return undefined
 
     const { $dispatch, $state } = this
@@ -64,7 +57,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
       subscribe: $state.subscribe.bind($state),
       setFieldMeta: $dispatch.setFieldMeta.bind($dispatch),
       dispatch: $dispatch.dispatch.bind($dispatch),
-      setFormProps: this.setFormProps.bind(this),
+      setFormProps: $state.setFormProps.bind($state),
     }
   }
 
@@ -75,10 +68,16 @@ export default class FormGroupControl<State = any> extends BaseControl {
   // 滚动到对应位置
   public scrollToField(namePath: NamePath = []) {
     const key = FormGroupControl._getName(namePath)
+
     if (!key) return
+
     const control = this.$state.controls(true).find(({ _key }) => _key === key)
-    const fieldId = control?._getId(this._props.name)
+
+    const formName = this.$state._props.name
+    const fieldId = control?._getId(formName)
+
     if (fieldId === undefined) return
+
     const dom = document.querySelector(`#${fieldId}`)
     // TODO: 这里是否要换其他方式呢？
     dom?.scrollIntoView({ behavior: 'smooth' })

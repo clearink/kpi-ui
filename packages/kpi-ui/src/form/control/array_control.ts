@@ -22,7 +22,7 @@ export default class FormArrayControl {
     return this._context?.getInternalHooks(HOOK_MARK)
   }
 
-  ensureFieldKey(index: number) {
+  public ensureFieldKey(index: number) {
     const origin = this._keys[index]
     if (isUndefined(origin)) {
       this._keys[index] = this._id
@@ -31,8 +31,7 @@ export default class FormArrayControl {
     return this._keys[index]
   }
 
-  // 可以直接操作 root._state
-  _getFeatures(): FormArrayHelpers {
+  public _getFeatures(): FormArrayHelpers {
     return {
       append: this.append.bind(this),
       prepend: this.prepend.bind(this),
@@ -44,7 +43,7 @@ export default class FormArrayControl {
     }
   }
 
-  setFormContext(context: InternalFormInstance, listPath: InternalNamePath) {
+  public setFormInstance(context: InternalFormInstance, listPath: InternalNamePath) {
     this._context = context
     this._listPath = listPath
   }
@@ -77,7 +76,7 @@ export default class FormArrayControl {
   }
 
   // append, prepend, remove, swap, move, insert, replace
-  remove(index?: number | number[]) {
+  private remove(index?: number | number[]) {
     const positions = new Set(toArray(index))
     const filter = (_, i) => {
       if (positions.size === 0) return false
@@ -88,7 +87,7 @@ export default class FormArrayControl {
     this.dispatchEvent(list.filter(filter))
   }
 
-  swap(from: number, to: number) {
+  private swap(from: number, to: number) {
     const list = this.getFieldList()
     ;[list[from], list[to]] = [list[to], list[from]]
     const keys = this._keys
@@ -96,7 +95,7 @@ export default class FormArrayControl {
     this.dispatchEvent(list)
   }
 
-  move(from: number, to: number) {
+  private move(from: number, to: number) {
     const list = this.getFieldList().concat()
     if (!isValidIndex(list, from, to)) return
 
@@ -105,13 +104,13 @@ export default class FormArrayControl {
     this.dispatchEvent(list)
   }
 
-  replace(index: number, value: any) {
+  private replace(index: number, value: any) {
     const list = this.getFieldList()
     list[index] = value
     this.dispatchEvent(list)
   }
 
-  insert(index: number, value: any) {
+  private insert(index: number, value: any) {
     const list = this.getFieldList().concat()
     list.splice(index, 0, value)
     this._keys.splice(index, 0, this._id)

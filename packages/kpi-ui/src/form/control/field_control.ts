@@ -2,7 +2,6 @@ import isEqual from 'react-fast-compare'
 import type { MutableRefObject } from 'react'
 import BaseControl from './base_control'
 import { isFunction, isNullish, isObjectLike } from '../../_utils'
-import { BaseSchema } from '../../_utils/form_schema/schema'
 import { getIn } from '../utils/value'
 
 import type {
@@ -79,12 +78,15 @@ export default class FormFieldControl extends BaseControl {
     if (!isEqual(prev, current)) this._props.onMetaChange?.(current)
   }
 
-  // 字段级别校验
+  // 字段校验
   public async validate(value: any) {
     const { rule: validator } = this._props
-    if (!(validator instanceof BaseSchema)) return
+
+    // 没有操作过的字段不能校验, 没有校验规则的也不用校验
+    if (!this._touched || !validator) return
+
     try {
-      this.setFieldMeta({ pending: true, touched: true })
+      this.setFieldMeta({ pending: true })
       await validator.validate(value)
       this.setFieldMeta({ pending: false, errors: [] })
     } catch (error) {

@@ -26,7 +26,7 @@ function FormList(props: FormListProps) {
     return { ...context, parentNamePath: listPath }
   }, [context, listPath])
 
-  control.current.setFormContext(context, listPath)
+  control.current.setFormInstance(context, listPath)
 
   const fieldListContext = useMemo(() => {
     return null

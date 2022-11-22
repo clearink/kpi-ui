@@ -74,6 +74,11 @@ export interface FormProps<S = any>
    * @zh 字段变更时的回调
    */
   onFieldsChange?: () => void
+
+  /**
+   * @zh 字段值更时的回调
+   */
+  onValuesChange?: (changedValues: any, allValues: any) => void
 }
 
 /** useForm 向外暴露的实例 */
@@ -82,7 +87,7 @@ export interface FormInstance<S = any> {
   /**
    * @zh 表单收集的数据
    */
-  getFieldsValue: () => S
+  getFieldsValue: (fields?: NamePath[]) => S
 
   /**
    * @zh 表单收集的数据
