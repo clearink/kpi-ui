@@ -1,4 +1,4 @@
-import { isNumber, isArray, isObject, isNullish, isObjectLike, rawType, hasOwn } from '../../_utils'
+import { isNumber, isArray, isObject, isNullish, isObjectLike, rawType } from '../../_utils'
 
 import type { InternalNamePath } from '../internal_props'
 
@@ -84,9 +84,8 @@ export function cloneWithPath<V>(source: V, paths: InternalNamePath) {
   const [path, ...rest] = paths
   if (isObject(source) || isArray(source)) {
     const init = isArray(source) ? [] : {}
-    // 不存在该值
-    if (!hasOwn(source, path)) return init as V
     init[path] = cloneWithPath(source[path], rest)
+
     return init as V
   }
   // 其他类型暂时不处理
