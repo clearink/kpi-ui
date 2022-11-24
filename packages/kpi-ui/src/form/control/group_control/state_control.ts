@@ -2,7 +2,7 @@
 import cloneDeep from 'lodash.clonedeep'
 import { hasOwn, toArray } from '../../../_utils'
 import { setIn, getIn, deleteIn, mergeValue } from '../../utils/value'
-import { isDependent, _getName } from '../../utils/path'
+import { _getName } from '../../utils/path'
 
 import type { FieldData, FormProps, NamePath } from '../../props'
 import type FormFieldControl from '../field_control'
@@ -65,11 +65,7 @@ export default class FormStateControl<State = any> {
   }
 
   public getFieldsValue(fields: NamePath[] = []) {
-    const controls = this.controls(true).filter((control) => {
-      if (fields.length === 0) return true
-
-      return fields.some((field) => isDependent(control._name, field, true))
-    })
+    const controls = this.getControlsByName(fields)
 
     return controls.reduce((values, { _name: name, _props: props }) => {
       // 不用获取列表项， 可以减小一些开销
@@ -80,13 +76,7 @@ export default class FormStateControl<State = any> {
   }
 
   public getFields(nameList: NamePath[] = []) {
-    let controls = this.controls(true)
-    if (nameList.length) {
-      controls = controls.filter((control) => {
-        return nameList.some((name) => isDependent(control._name, name, true))
-      })
-    }
-    return controls.map((control) => {
+    return this.getControlsByName(nameList).map((control) => {
       const name = control._name
       const value = this.getFieldValue(name)
       // TODO: 验证 fields 与 onFieldsChange 一起使用时 errors 是否一直为空
@@ -119,9 +109,9 @@ export default class FormStateControl<State = any> {
   /** ==================================================== */
   /** FormFieldControls                                    */
   /** ==================================================== */
-  public _controls = new Map<string, Set<FormFieldControl>>()
+  private _controls = new Map<string, Set<FormFieldControl>>()
 
-  public controls(pure = false) {
+  public getControls(pure = false) {
     const controls = [...this._controls.values()].reduce(
       (res, set) => res.concat([...set.values()]),
       [] as FormFieldControl[]
@@ -130,6 +120,20 @@ export default class FormStateControl<State = any> {
     if (!pure) return controls
 
     return controls.filter((control) => control._key)
+  }
+
+  public getControlsByName(nameList: NamePath[]) {
+    if (nameList.length === 0) return this.getControls(true)
+
+    return nameList.reduce((res, path) => {
+      const key = _getName(path)
+
+      if (!key || !this._controls.has(key)) return res
+
+      const controls = this._controls.get(key)!
+
+      return res.concat(...controls.values())
+    }, [] as FormFieldControl[])
   }
 
   // 注册字段

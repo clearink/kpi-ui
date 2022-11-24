@@ -2,7 +2,7 @@
 import FormStateControl from './state_control'
 import { isDependent } from '../../utils/path'
 import { cloneWithPath } from '../../utils/value'
-import { isFunction, isUndefined, logger } from '../../../_utils'
+import { isBoolean, isFunction, isUndefined, logger } from '../../../_utils'
 
 import type { FieldData, NamePath } from '../../props'
 import type FormFieldControl from '../field_control'
@@ -19,8 +19,10 @@ export const HOOK_MARK = Symbol.for('_$_KPI_FORM_HOOK_MARK_$_')
 export default class FormDispatchControl<State = any> {
   public constructor(private $state: FormStateControl<State>) {}
 
-  private controls(pure = false) {
-    return this.$state.controls(pure)
+  private controls(args: boolean | NamePath[] = false) {
+    if (isBoolean(args)) return this.$state.getControls(args)
+
+    return this.$state.getControlsByName(args)
   }
 
   // 确保设置了字段初始值(registerField 调用)
@@ -40,9 +42,7 @@ export default class FormDispatchControl<State = any> {
     if (isUndefined(initialValue)) return
     $state.setFieldValue(namePath, initialValue)
     // 更新同名字段
-    const controls = this.controls(true).filter(({ _name: name }) => {
-      return isDependent(name, namePath, true)
-    })
+    const controls = this.controls([namePath])
     controls.forEach((field) => field.forceUpdate())
   }
 
