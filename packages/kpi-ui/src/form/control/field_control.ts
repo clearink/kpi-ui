@@ -3,6 +3,7 @@ import type { MutableRefObject } from 'react'
 import BaseControl from './base_control'
 import { isFunction, isNullish, isObjectLike } from '../../_utils'
 import { getIn } from '../utils/value'
+import { _getName } from '../utils/path'
 
 import type {
   UpdateFieldActionType as ActionType,
@@ -21,7 +22,7 @@ export default class FormFieldControl extends BaseControl {
     mounted: MutableRefObject<boolean>
   ) {
     super(_forceUpdate, mounted)
-    this._key = FormFieldControl._getName(_name)
+    this._key = _getName(_name)
   }
 
   // 生成 DOM 唯一标识
@@ -67,14 +68,15 @@ export default class FormFieldControl extends BaseControl {
   }
 
   public setFieldMeta(meta: Partial<FieldMeta>) {
-    // 自动触发 onMetaChange 事件
     const prev = this.getFieldMeta()
     // 同步全部
     !isNullish(meta.dirty) && (this._dirty = meta.dirty)
     !isNullish(meta.pending) && (this._pending = meta.pending)
     !isNullish(meta.touched) && (this._touched = meta.touched)
     !isNullish(meta.errors) && (this._errors = meta.errors)
+
     const current = this.getFieldMeta()
+
     if (!isEqual(prev, current)) this._props.onMetaChange?.(current)
   }
 

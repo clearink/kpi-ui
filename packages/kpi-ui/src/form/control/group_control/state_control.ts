@@ -1,9 +1,8 @@
 /* eslint-disable class-methods-use-this */
 import cloneDeep from 'lodash.clonedeep'
-import BaseControl from '../base_control'
 import { hasOwn, toArray } from '../../../_utils'
 import { setIn, getIn, deleteIn, mergeValue } from '../../utils/value'
-import { isDependent } from '../../utils/path'
+import { isDependent, _getName } from '../../utils/path'
 
 import type { FieldData, FormProps, NamePath } from '../../props'
 import type FormFieldControl from '../field_control'
@@ -25,31 +24,31 @@ export default class FormStateControl<State = any> {
   /** ==================================================== */
   /** State                                                */
   /** ==================================================== */
-  public _state = {} as State
+  private _state = {} as State
 
   public setFieldValue(namePath: InternalNamePath, value: any) {
     const prev = this._state
 
     // namePath 不合法
-    if (!BaseControl._getName(namePath)) return [prev, prev] as const
+    if (!_getName(namePath)) return [prev, prev] as const
 
     this._state = setIn(this._state, namePath, value)
     return [prev, this._state] as const
   }
 
   // 设置多个字段值
-  public setBatchValue(fields: FieldData[]) {
+  public setFieldsData(fields: FieldData[]) {
     const prev = this._state
 
-    const next = fields.reduce((res, field) => {
-      if (!BaseControl._getName(field.name)) return res
+    this._state = fields.reduce((res, field) => {
+      if (!_getName(field.name) || !hasOwn(field, 'value')) {
+        return res
+      }
 
-      if (!hasOwn(field, 'value')) return res
-
-      return this.setFieldValue(toArray(field.name), field.value)[1]
+      return setIn(res, toArray(field.name), field.value)
     }, this._state)
 
-    return [prev, next] as const
+    return [prev, this._state] as const
   }
 
   public getFieldValue(namePath: NamePath) {
@@ -78,6 +77,15 @@ export default class FormStateControl<State = any> {
 
       return setIn(values, name, getIn(this._state, name))
     }, {} as State)
+  }
+
+  public getFields() {
+    return this.controls(true).map((control) => {
+      const name = control._name
+      const value = this.getFieldValue(name)
+      // TODO: 验证 fields 与 onFieldsChange 一起使用时 errors 是否一直为空
+      return { ...control.getFieldMeta(), name, value }
+    })
   }
 
   private deleteFieldValue(namePath: NamePath) {
@@ -170,7 +178,7 @@ export default class FormStateControl<State = any> {
 
     const cancels = dependencies.map((dependency) => {
       // 被依赖项
-      const depKey = BaseControl._getName(dependency)
+      const depKey = _getName(dependency)
 
       if (!depKey || fieldKey === depKey) return () => {}
 

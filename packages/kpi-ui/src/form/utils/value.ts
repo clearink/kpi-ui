@@ -73,21 +73,17 @@ function internalMerge(target: any, source: any) {
 // 合并数据
 export function mergeValue<V = any>(target: V, ...sources: any[]): V {
   const init = isArray(target) ? target.slice() : { ...target }
-  return sources.reduce((res, item) => {
-    return internalMerge(res, item)
-  }, init)
+
+  return sources.reduce((res, item) => internalMerge(res, item), init)
 }
 
 // 仅复制路径下的值
 export function cloneWithPath<V>(source: V, paths: InternalNamePath) {
   if (!isObjectLike(source) || !paths.length) return source
   const [path, ...rest] = paths
-  if (isObject(source) || isArray(source)) {
-    const init = isArray(source) ? [] : {}
-    init[path] = cloneWithPath(source[path], rest)
 
-    return init as V
-  }
-  // 其他类型暂时不处理
-  return source
+  const init = isArray(source) ? [] : {}
+  init[path] = cloneWithPath(source[path], rest)
+
+  return init as V
 }

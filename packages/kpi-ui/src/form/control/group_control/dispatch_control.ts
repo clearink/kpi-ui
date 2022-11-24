@@ -10,6 +10,7 @@ import type {
   UpdateFieldAction as Action,
   UpdateFieldActionType as ActionType,
   FieldMeta,
+  InternalNamePath,
 } from '../../internal_props'
 
 export const HOOK_MARK = Symbol.for('_$_KPI_FORM_HOOK_MARK_$_')
@@ -82,13 +83,12 @@ export default class FormDispatchControl<State = any> {
     // 由用户事件主动触发
     if (action.type === 'fieldEvent') {
       const [prev, next] = $state.setFieldValue(action.name, action.value)
+      // 更新字段
       this.updateControl(prev, next, action.type)
-
-      const changedValues = cloneWithPath(next, action.name)
-      const allValues = this.$state.getFieldsValue()
-      const { onValuesChange } = this.$state._props
-
-      if (isFunction(onValuesChange)) onValuesChange(changedValues, allValues)
+      // 触发回调
+      this.triggerOnValuesChange(action.name, next)
+      // 触发回调
+      this.triggerOnFieldsChange()
 
       return
     }
@@ -99,14 +99,18 @@ export default class FormDispatchControl<State = any> {
       // 更新字段 meta 属性
       fields.forEach((field) => this.setFieldMeta(field.name, field))
       // 获得更新数据
-      const [prev, next] = $state.setBatchValue(fields)
-      return this.updateControl(prev, next, action.type)
+      const [prev, next] = $state.setFieldsData(fields)
+      this.updateControl(prev, next, action.type)
+
+      return
     }
 
     // 调用 setFieldsValue 方法
     if (action.type === 'setFieldsValue') {
       const [prev, next] = $state.setFieldsValue(action.state)
-      return this.updateControl(prev, next, action.type)
+      this.updateControl(prev, next, action.type)
+
+      return
     }
 
     // ...删除字段，主要时通知 dependence
@@ -142,21 +146,12 @@ export default class FormDispatchControl<State = any> {
     this.dispatch({ type: 'setFieldsValue', state })
   }
 
-  // 获取字段以及meta
-  private getFields() {
-    return this.controls(true).map((control) => {
-      const name = control._name
-      const value = this.$state.getFieldValue(control._name)
-      // TODO: 验证 fields 与 onFieldsChange 一起使用时 errors 是否一直为空
-      return { ...control.getFieldMeta(), name, value }
-    })
-  }
-
   // 设置 FormField 的 meta 属性
   public setFieldMeta(namePath: NamePath, meta: Partial<FieldMeta>) {
-    // 由于设计到隐式依赖，所以此处需要遍历全部 controls
+    // 由于涉及到隐式依赖，所以此处需要遍历全部 controls
     for (const control of this.controls(true)) {
       if (!isDependent(control._name, namePath)) continue
+
       control.setFieldMeta(meta)
     }
   }
@@ -178,22 +173,25 @@ export default class FormDispatchControl<State = any> {
 
   // 校验多个字段, 不传默认校验全部
   public validateFields(fields: NamePath[] = []) {
-    const list = this.controls(true)
-      .filter((control) => {
-        // 空数组视为校验全部字段
-        if (fields.length === 0) return true
-        return fields.some((namePath) => {
-          return isDependent(control._name, namePath)
-        })
+    let controls = this.controls(true)
+    if (fields.length) {
+      controls = controls.filter((control) => {
+        return fields.some((namePath) => isDependent(control._name, namePath))
       })
-      .map((control) => {
-        const value = this.$state.getFieldValue(control._name)
-        // 主动改成 touched
-        control.setFieldMeta({ touched: true })
-        return control.validate(value)
-      })
+    }
+
+    const validateList = controls.map((control) => {
+      const value = this.$state.getFieldValue(control._name)
+      // 主动改成 touched
+      control.setFieldMeta({ touched: true })
+      return control.validate(value)
+    })
+
     // TODO: 确定逻辑
-    return Promise.all(list).then(() => this.$state.getFieldsValue(fields))
+    return Promise.all(validateList).then(() => {
+      // this.triggerOnFieldsChange()
+      return this.$state.getFieldsValue(fields)
+    })
   }
 
   public isFieldTouched(namePath: NamePath) {
@@ -213,8 +211,27 @@ export default class FormDispatchControl<State = any> {
     return untouchedFields.length === 0
   }
 
-  // TODO
-  public triggerOnFieldsChange() {}
+  // 触发 onValuesChange 回调
+  public triggerOnValuesChange(namePath: InternalNamePath, nextState: State) {
+    const { onValuesChange } = this.$state._props
 
-  public triggerOnValuesChange() {}
+    if (!isFunction(onValuesChange)) return
+
+    const changedValues = cloneWithPath(nextState, namePath)
+    const allValues = this.$state.getFieldsValue()
+
+    onValuesChange(changedValues, allValues)
+  }
+
+  // 触发 onFieldsChange 回调
+  public triggerOnFieldsChange() {
+    const { onFieldsChange } = this.$state._props
+
+    if (!isFunction(onFieldsChange)) return
+
+    const changedFields = []
+    const allFields = this.$state.getFields()
+
+    onFieldsChange(changedFields, allFields)
+  }
 }

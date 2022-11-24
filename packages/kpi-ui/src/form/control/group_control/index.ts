@@ -6,6 +6,7 @@ import FormStateControl from './state_control'
 
 import type { NamePath } from '../../props'
 import type { InternalFormInstance, InternalHookReturn } from '../../internal_props'
+import { _getName } from '../../utils/path'
 
 export const HOOK_MARK = Symbol.for('_$_KPI_FORM_HOOK_MARK_$_')
 
@@ -18,6 +19,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
   // 向外暴露的函数
   public injectForm(): InternalFormInstance<State> {
     const { $dispatch, $state } = this
+
     return {
       setFieldValue: $dispatch.setFieldValue.bind($dispatch),
       getFieldValue: $state.getFieldValue.bind($state),
@@ -50,6 +52,7 @@ export default class FormGroupControl<State = any> extends BaseControl {
     if (!matched) return undefined
 
     const { $dispatch, $state } = this
+
     return {
       setInitialValues: $state.setInitialValues.bind($state),
       registerField: $dispatch.registerField.bind($dispatch),
@@ -67,11 +70,11 @@ export default class FormGroupControl<State = any> extends BaseControl {
 
   // 滚动到对应位置
   public scrollToField(namePath: NamePath = []) {
-    const key = FormGroupControl._getName(namePath)
+    const key = _getName(namePath)
 
     if (!key) return
 
-    const control = this.$state.controls(true).find(({ _key }) => _key === key)
+    const control = this.$state.controls().find(({ _key }) => _key === key)
 
     const formName = this.$state._props.name
     const fieldId = control?._getId(formName)

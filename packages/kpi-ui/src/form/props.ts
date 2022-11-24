@@ -73,7 +73,7 @@ export interface FormProps<S = any>
   /**
    * @zh 字段变更时的回调
    */
-  onFieldsChange?: () => void
+  onFieldsChange?: (changedFields: FieldData[], allFields: FieldData[]) => void
 
   /**
    * @zh 字段值更时的回调

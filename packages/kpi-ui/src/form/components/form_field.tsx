@@ -7,6 +7,7 @@ import { FormFieldControl, HOOK_MARK } from '../control'
 import useInjectField from '../hooks/use_inject_field'
 import { useDeepMemo, useEvent, useIsomorphicEffect, useMounted } from '../../_hooks'
 import { isUndefined, toArray } from '../../_utils'
+import { _getName } from '../utils/path'
 
 import type { FormFieldProps } from '../props'
 import type { InternalFormFieldProps } from '../internal_props'
@@ -61,7 +62,7 @@ function WrapperFormField($props: FormFieldProps) {
   // 预处理一下 name 字段
   const [namePath, key] = useDeepMemo(() => {
     const path = isUndefined(name) ? [] : parentNamePath.concat(toArray(name))
-    return [path, `_${FormFieldControl._getName(path)}`] as const
+    return [path, `_${_getName(path)}`] as const
   }, [name, parentNamePath])
 
   const props = { key, name: namePath, ...rest }
