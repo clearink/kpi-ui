@@ -88,7 +88,7 @@ export default class FormDispatchControl<State = any> {
       // 触发回调
       this.triggerOnValuesChange(action.name, next)
       // 触发回调
-      this.triggerOnFieldsChange()
+      this.triggerOnFieldsChange(action.name)
 
       return
     }
@@ -224,12 +224,12 @@ export default class FormDispatchControl<State = any> {
   }
 
   // 触发 onFieldsChange 回调
-  public triggerOnFieldsChange() {
+  public triggerOnFieldsChange(namePath: InternalNamePath) {
     const { onFieldsChange } = this.$state._props
 
     if (!isFunction(onFieldsChange)) return
 
-    const changedFields = []
+    const changedFields = this.$state.getFields([namePath])
     const allFields = this.$state.getFields()
 
     onFieldsChange(changedFields, allFields)

@@ -79,8 +79,14 @@ export default class FormStateControl<State = any> {
     }, {} as State)
   }
 
-  public getFields() {
-    return this.controls(true).map((control) => {
+  public getFields(nameList: NamePath[] = []) {
+    let controls = this.controls(true)
+    if (nameList.length) {
+      controls = controls.filter((control) => {
+        return nameList.some((name) => isDependent(control._name, name, true))
+      })
+    }
+    return controls.map((control) => {
       const name = control._name
       const value = this.getFieldValue(name)
       // TODO: 验证 fields 与 onFieldsChange 一起使用时 errors 是否一直为空
