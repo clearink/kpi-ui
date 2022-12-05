@@ -14,13 +14,13 @@ export interface InnerReturn {
 /** 格式化 Form.Field children */
 export default function normalizeChildren(
   injectProps: AnyObject,
-  context: InternalFormInstance,
+  formInstance: InternalFormInstance,
   control: FormFieldControl
 ) {
   return function normalizeInner(_children: InternalFormFieldProps['children']): InnerReturn {
     if (isFunction(_children)) {
-      const renderProps = _children(injectProps, control.getFieldMeta(), context) as ReactElement
-      return { ...normalizeInner(renderProps), functional: true }
+      const renderProps = _children(injectProps, control.getFieldMeta(), formInstance)
+      return { ...normalizeInner(renderProps as ReactElement), functional: true }
     }
 
     // 去除 fragment，nullish 后

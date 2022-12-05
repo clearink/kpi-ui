@@ -17,6 +17,8 @@ export const FormContext = CtxHelper<FormContextState>({
 const notFoundContext: any = () =>
   logger.error(true, 'Can not find FormContext. Please make sure you wrap Field under Form.')
 export const FieldContext = CtxHelper<InternalFormInstance>({
+  getFieldError: notFoundContext,
+  getFieldsError: notFoundContext,
   getFieldValue: notFoundContext,
   getFieldsValue: notFoundContext,
   setFieldValue: notFoundContext,
@@ -33,6 +35,7 @@ export const FieldContext = CtxHelper<InternalFormInstance>({
       setPreserve: notFoundContext,
       setInitialValues: notFoundContext,
       registerField: notFoundContext,
+      setFields: notFoundContext,
       registerWatch: notFoundContext,
       subscribe: notFoundContext,
       ensureInitialized: notFoundContext,

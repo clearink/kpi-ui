@@ -1,13 +1,8 @@
-import { isNumber, isArray, isObject, isNullish, isObjectLike, rawType } from '../../_utils'
+import { isNumber, isArray, isObject, isNullish, isObjectLike, rawType, hasOwn } from '../../_utils'
 
 import type { InternalNamePath } from '../internal_props'
 
-function internalSetIn<V = any>(
-  source: V,
-  paths: InternalNamePath,
-  value: any,
-  removeUndefined = false
-): V {
+function internalSetIn<V = any>(source: V, paths: InternalNamePath, value: any): V {
   if (paths.length === 0) return value
 
   const [path, ...rest] = paths
@@ -18,9 +13,7 @@ function internalSetIn<V = any>(
   // source为基础类型时舍弃
   else if (isNumber(path)) attr = [] as unknown as V
 
-  const $value = internalSetIn(attr[path], rest, value, removeUndefined)
-  if ($value === undefined && removeUndefined) delete attr[path]
-  else attr[path] = $value
+  attr[path] = internalSetIn(attr[path], rest, value)
 
   return attr
 }
@@ -40,16 +33,34 @@ export function getIn<V = any>(values: V, paths: InternalNamePath): any {
   return paths.length ? values : undefined
 }
 
-// source 引用不变
+function internalDeleteIn<V = any>(source: V, paths: InternalNamePath): V {
+  if (paths.length === 0) return source
+
+  // 帝国进行下一层
+  const [attr, ...rest] = paths
+
+  // source 不存在该属性, 不继续操作
+  if (!hasOwn(source, attr)) return source
+
+  // 需要删除了
+  if (rest.length === 0) delete source[attr]
+  else internalDeleteIn(source[attr], rest)
+
+  return source
+}
+
+// 删除指定字段
 export function deleteIn<V = any>(source: V, paths: InternalNamePath): any {
   // 源数据不是对象
   if (!isObject(source)) return source
-  return internalSetIn(source, paths, undefined, true)
+
+  return internalDeleteIn(source, paths)
 }
 
 // 合并对象
 function internalMerge(target: any, source: any) {
-  const [targetType, sourceType] = [rawType(target), rawType(source)]
+  const targetType = rawType(target)
+  const sourceType = rawType(source)
 
   if (targetType !== sourceType) return source
 
@@ -62,8 +73,7 @@ function internalMerge(target: any, source: any) {
   // 对象才需要合并
   if (isObject(target)) {
     return Object.entries(source).reduce((res, [key, value]) => {
-      res[key] = internalMerge(res[key], value)
-      return res
+      return { ...res, [key]: internalMerge(res[key], value) }
     }, target)
   }
   // 其他非基础类型数据
@@ -74,7 +84,7 @@ function internalMerge(target: any, source: any) {
 export function mergeValue<V = any>(target: V, ...sources: any[]): V {
   const init = isArray(target) ? target.slice() : { ...target }
 
-  return sources.reduce((res, item) => internalMerge(res, item), init)
+  return sources.reduce(internalMerge, init)
 }
 
 // 仅复制路径下的值

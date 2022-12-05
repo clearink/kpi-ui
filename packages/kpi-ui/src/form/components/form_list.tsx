@@ -14,19 +14,19 @@ import type { UpdateFieldActionType as ActionType } from '../internal_props'
 // 应该时继承 InternalFormFieldProps
 function FormList(props: FormListProps) {
   const { name, rule, validateTrigger, initialValue } = props
-  const context = FieldContext.useState()
+  const formInstance = FieldContext.useState()
   const control = useRef(new FormArrayControl())
   // 同步 context 供内部调用
 
   const listPath = useDeepMemo(() => {
-    return toArray(context.parentNamePath).concat(toArray(name))
-  }, [context.parentNamePath, name])
+    return toArray(formInstance.parentNamePath).concat(toArray(name))
+  }, [formInstance.parentNamePath, name])
 
   const fieldContext = useMemo(() => {
-    return { ...context, parentNamePath: listPath }
-  }, [context, listPath])
+    return { ...formInstance, parentNamePath: listPath }
+  }, [formInstance, listPath])
 
-  control.current.setFormInstance(context, listPath)
+  control.current.setFormInstance(formInstance, listPath)
 
   const fieldListContext = useMemo(() => {
     return null

@@ -25,7 +25,7 @@ function defaultGetValueFromEvent(valuePropName: string) {
 /** 收集注入到Form.Field children 的属性 */
 export function collectFieldInjectProps(
   props: InternalFormFieldProps,
-  context: InternalFormInstance,
+  formInstance: InternalFormInstance,
   control: FormFieldControl,
   internalHook?: InternalHookReturn
 ) {
@@ -42,7 +42,7 @@ export function collectFieldInjectProps(
     // name 不合法不应该提供下列数据
     if (!control._key) return childProps
 
-    const value = context.getFieldValue(name)
+    const value = formInstance.getFieldValue(name)
 
     // 获取 event value 字段函数 getValueProps 与 valuePropName 互斥
     const getValueProps = $getValueProps || ((val: AnyObject) => ({ [valuePropName!]: val }))
@@ -50,12 +50,12 @@ export function collectFieldInjectProps(
     const injectProps = {
       ...childProps,
       ...getValueProps(value),
-      id: control._getId(context.formName),
+      id: control._getId(formInstance.formName),
       // 触发条件
       [trigger!]: (...args: any[]) => {
         let next = getValueFromEvent(...args)
 
-        if (isFunction(formatter)) next = formatter(next, value, context.getFieldsValue())
+        if (isFunction(formatter)) next = formatter(next, value, formInstance.getFieldsValue())
 
         internalHook?.setFieldMeta(name, { touched: true, dirty: true })
 
@@ -67,13 +67,13 @@ export function collectFieldInjectProps(
     }
 
     // 校验触发时机
-    const triggerList = toArray((validateTrigger ?? context.validateTrigger) || [])
+    const triggerList = toArray((validateTrigger ?? formInstance.validateTrigger) || [])
 
     return triggerList.reduce((res, triggerName) => {
       const handler = (...args: any[]) => {
         // 执行原始值
         injectProps[triggerName]?.(...args)
-        context.validateField(name)
+        formInstance.validateField(name)
       }
       return { ...res, [triggerName]: handler }
     }, injectProps)

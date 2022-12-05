@@ -14,17 +14,17 @@ import type { FormFieldControl } from '../control'
 
 export default function useInjectField(
   props: InternalFormFieldProps,
-  context: InternalFormInstance,
+  formInstance: InternalFormInstance,
   control: FormFieldControl,
   internalHook?: InternalHookReturn
 ) {
   const { children: $children } = props
 
   // 收集注册到子组件的数据
-  const collect = collectFieldInjectProps(props, context, control, internalHook)
+  const collect = collectFieldInjectProps(props, formInstance, control, internalHook)
 
   // 处理 children
-  const handlerNormalize = normalizeChildren(collect(), context, control)
+  const handlerNormalize = normalizeChildren(collect(), formInstance, control)
   const { functional, children, valid } = handlerNormalize($children)
 
   // // 不规范的用法 上层封装时使用

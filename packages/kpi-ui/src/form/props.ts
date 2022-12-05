@@ -16,10 +16,7 @@ export interface FormProps<S = any>
    * @zh 设置 Form 渲染元素，为 null 则不创建 DOM 节点
    * @default form
    */
-  as?:
-    | keyof Omit<HTMLElementTagNameMap, 'dir' | 'font' | 'frameset' | 'frame' | 'marquee'>
-    | null
-    | ComponentType
+  as?: string | null | ComponentType
 
   /**
    * @zh 校验成功后的回调
@@ -29,7 +26,7 @@ export interface FormProps<S = any>
   /**
    * @zh 校验失败后的回调
    */
-  onFailed?: (values: S, errors: any) => void
+  onFailed?: (errors: any) => void
 
   /**
    * @zh 表单重置回调
@@ -71,12 +68,12 @@ export interface FormProps<S = any>
   fields?: FieldData[]
 
   /**
-   * @zh 字段变更时的回调
+   * @zh 字段变更时的回调, 仅在用户操作表单项时触发
    */
   onFieldsChange?: (changedFields: FieldData[], allFields: FieldData[]) => void
 
   /**
-   * @zh 字段值更时的回调
+   * @zh 字段值更时的回调, 仅在用户操作表单时触发
    */
   onValuesChange?: (changedValues: any, allValues: any) => void
 }
@@ -87,7 +84,7 @@ export interface FormInstance<S = any> {
   /**
    * @zh 表单收集的数据
    */
-  getFieldsValue: (fields?: NamePath[]) => S
+  getFieldsValue: (fields?: NamePath[] | true) => S
 
   /**
    * @zh 表单收集的数据
@@ -117,7 +114,7 @@ export interface FormInstance<S = any> {
   /**
    * @zh 提交事件 自动调用 validate 方法
    */
-  submitForm: (onFinish?: (values: S) => void, onFailed?: ArrowFunction) => void
+  submitForm: () => void
 
   /**
    * @zh 重置一组字段到 `initialValues`
@@ -130,6 +127,12 @@ export interface FormInstance<S = any> {
   isFieldTouched: (namePath: NamePath) => boolean
 
   isFieldsTouched: (namePath?: NamePath[]) => boolean
+
+  getFieldError: (namePath: NamePath) => string[]
+
+  getFieldsError: (
+    nameList?: NamePath[]
+  ) => Pick<InternalFieldData, 'errors' | 'name' | 'warnings'>[]
 
   /**
    * @zh 滚动到对应字段

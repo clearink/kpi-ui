@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { toArray } from '../../_utils'
+
 import type { NamePath } from '../props'
 
 // 字段是否被隐式依赖，形如 ['username'] 与 ['username', 'a', 'b']
@@ -21,14 +22,28 @@ export function isDependent($path: NamePath, $other: NamePath, equal = false) {
   return path.length <= other.length
 }
 
-export function isValidIndex(array: any[], ...positions: number[]) {
-  return positions.every((position) => position >= 0 && position < array.length)
-}
-
 const SEPARATOR = '_$_KPI_FORM_CONTROL_$_'
 // 获取名称字符串
 export function _getName(namePath: NamePath) {
   const paths = toArray(namePath)
 
   return paths.map((item) => `${typeof item}:${item}`).join(SEPARATOR)
+}
+
+export function isValidIndex(array: any[], ...positions: number[]) {
+  return positions.every((position) => position >= 0 && position < array.length)
+}
+
+// 数组之间是否存在交集
+export function hasIntersection(oneList: string[], twoList: string[]) {
+  return !![...new Set(oneList)].find((item) => twoList.includes(item))
+}
+
+// 获取格式化的路径列表(转成string)
+export function getNormalizePathList(nameList: NamePath[]) {
+  return nameList.reduce((res: string[], namePath) => {
+    const key = _getName(namePath)
+    if (key) res.push(key)
+    return res
+  }, [])
 }

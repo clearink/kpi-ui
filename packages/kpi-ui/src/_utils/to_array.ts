@@ -6,6 +6,8 @@ import { isArray, isNullish } from './is'
  */
 export default function toArray<T>(candidate?: T | T[] | null, strict = false): T[] {
   if (isNullish(candidate)) return []
+
   if (isArray(candidate)) return candidate
+
   return strict ? [] : [candidate]
 }

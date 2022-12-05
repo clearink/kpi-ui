@@ -7,33 +7,28 @@ import {
   useMemo,
   Ref,
   ReactElement,
+  useRef,
 } from 'react'
+import isEqual from 'react-fast-compare'
 import { FieldContext, FormContext } from '../../_context'
 import { withDefaultProps } from '../../_hocs'
 import { useConstructor, useEvent, useIsomorphicEffect } from '../../_hooks'
-import { isFunction } from '../../_utils'
+import { isFunction, toArray } from '../../_utils'
 import { HOOK_MARK } from '../control'
 import useForm from '../hooks/use_form'
+
 import type { InternalFormInstance } from '../internal_props'
 import type { FormInstance, FormProps } from '../props'
 
 function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance>) {
-  const {
-    name,
-    as,
-    form,
-    children: $children,
-    onFinish,
-    onFailed,
-    onReset,
-    initialValues,
-    validateTrigger,
-  } = props
+  const { name, as, form, children: $children, onReset, initialValues, validateTrigger } = props
 
-  const instance = useForm(form) as InternalFormInstance // form 实例
-  useImperativeHandle(ref, () => instance)
+  const formInstance = useForm(form) as InternalFormInstance // form 实例
+  useImperativeHandle(ref, () => formInstance)
 
-  const internalHook = useMemo(() => instance.getInternalHooks(HOOK_MARK), [instance])
+  const internalHook = useMemo(() => {
+    return formInstance.getInternalHooks(HOOK_MARK)
+  }, [formInstance])
 
   internalHook?.setFormProps(props)
   // 如果form是 render props 不要主动更新视图
@@ -43,37 +38,50 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
 
   // 用于多表单联动
   const parent = FormContext.useState()
-  useIsomorphicEffect(() => parent.register(instance, name), [instance, name, parent])
+  useIsomorphicEffect(() => {
+    return parent.register(formInstance, name)
+  }, [formInstance, name, parent])
 
   // 事件处理
   const handleSubmit = useEvent((e?: FormEvent) => {
     isFunction(e?.preventDefault) && e?.preventDefault()
     isFunction(e?.stopPropagation) && e?.stopPropagation()
-    instance.submitForm(onFinish, onFailed)
+
+    formInstance.submitForm()
   })
 
   const handleReset = useEvent((e: FormEvent) => {
     isFunction(e?.preventDefault) && e?.preventDefault()
     isFunction(e?.stopPropagation) && e?.stopPropagation()
 
-    instance.resetFields()
-
+    formInstance.resetFields()
     onReset?.(e)
   })
 
-  const Root = useMemo(() => {
+  const Root = useMemo<any>(() => {
     if (as) return as
     return as === null ? Fragment : 'form'
   }, [as])
 
   const fieldContext = useMemo(() => {
-    return { ...instance, validateTrigger, formName: name }
-  }, [instance, validateTrigger, name])
+    return { ...formInstance, validateTrigger, formName: name }
+  }, [formInstance, validateTrigger, name])
 
   const children = useMemo(() => {
     if (!isFunction($children)) return $children
-    return $children(instance.getFieldsValue(), instance)
-  }, [$children, instance])
+    return $children(formInstance.getFieldsValue(true), formInstance)
+  }, [$children, formInstance])
+
+  // 同步 fields 字段
+  const prevFields = useRef<FormProps['fields']>()
+  useIsomorphicEffect(() => {
+    const fields = toArray(props.fields, true)
+    // TODO: 此处是否需要深比较呢?
+    if (!isEqual(toArray(prevFields.current, true), fields)) {
+      internalHook?.setFields(fields)
+    }
+    prevFields.current = fields
+  }, [internalHook, props.fields])
 
   return (
     <Root

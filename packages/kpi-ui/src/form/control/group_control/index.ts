@@ -8,7 +8,7 @@ import type { NamePath } from '../../props'
 import type { InternalFormInstance, InternalHookReturn } from '../../internal_props'
 import { _getName } from '../../utils/path'
 
-export const HOOK_MARK = Symbol.for('_$_KPI_FORM_HOOK_MARK_$_')
+export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
 
 // 部分逻辑耦合太多 ，现在拆开
 export default class FormGroupControl<State = any> extends BaseControl {
@@ -17,34 +17,37 @@ export default class FormGroupControl<State = any> extends BaseControl {
   public $dispatch = new FormDispatchControl<State>(this.$state)
 
   // 向外暴露的函数
-  public injectForm(): InternalFormInstance<State> {
+  public injectForm = (): InternalFormInstance<State> => {
     const { $dispatch, $state } = this
 
     return {
-      setFieldValue: $dispatch.setFieldValue.bind($dispatch),
-      getFieldValue: $state.getFieldValue.bind($state),
+      getFieldError: $state.getFieldError,
+      getFieldsError: $state.getFieldsError,
 
-      setFieldsValue: $dispatch.setFieldsValue.bind($dispatch),
-      getFieldsValue: $state.getFieldsValue.bind($state),
+      setFieldValue: $dispatch.setFieldValue,
+      getFieldValue: $state.getFieldValue,
 
-      validateField: $dispatch.validateField.bind($dispatch),
-      validateFields: $dispatch.validateFields.bind($dispatch),
+      setFieldsValue: $dispatch.setFieldsValue,
+      getFieldsValue: $state.getFieldsValue,
 
-      submitForm: $dispatch.submitForm.bind($dispatch),
-      resetFields: $dispatch.resetFields.bind($dispatch),
+      validateField: $dispatch.validateField,
+      validateFields: $dispatch.validateFields,
 
-      isFieldTouched: $dispatch.isFieldTouched.bind($dispatch),
-      isFieldsTouched: $dispatch.isFieldsTouched.bind($dispatch),
+      submitForm: $dispatch.submitForm,
+      resetFields: $dispatch.resetFields,
 
-      scrollToField: this.scrollToField.bind(this),
+      isFieldTouched: $dispatch.isFieldTouched,
+      isFieldsTouched: $dispatch.isFieldsTouched,
+
+      scrollToField: this.scrollToField,
 
       /** @public */
-      getInternalHooks: this._getInternalHooks.bind(this),
+      getInternalHooks: this._getInternalHooks,
     }
   }
 
   // 内部属性
-  public _getInternalHooks(secret: symbol): InternalHookReturn | undefined {
+  public _getInternalHooks = (secret: string): InternalHookReturn | undefined => {
     const matched = secret === HOOK_MARK
 
     logger.warn(!matched, '`getInternalHooks` is internal usage. Should not call directly.')
@@ -54,13 +57,13 @@ export default class FormGroupControl<State = any> extends BaseControl {
     const { $dispatch, $state } = this
 
     return {
-      setInitialValues: $state.setInitialValues.bind($state),
-      registerField: $dispatch.registerField.bind($dispatch),
-      registerWatch: $state.registerWatch.bind($state),
-      subscribe: $state.subscribe.bind($state),
-      setFieldMeta: $dispatch.setFieldMeta.bind($dispatch),
-      dispatch: $dispatch.dispatch.bind($dispatch),
-      setFormProps: $state.setFormProps.bind($state),
+      setInitialValues: $state.setInitialValues,
+      registerField: $dispatch.registerField,
+      registerWatch: $state.registerWatch,
+      setFieldMeta: $state.setFieldMeta,
+      setFields: $dispatch.setFields,
+      dispatch: $dispatch.dispatch,
+      setFormProps: $state.setFormProps,
     }
   }
 
@@ -69,12 +72,12 @@ export default class FormGroupControl<State = any> extends BaseControl {
   /** ==================================================== */
 
   // 滚动到对应位置
-  public scrollToField(namePath: NamePath = []) {
+  public scrollToField = (namePath: NamePath = []) => {
     const key = _getName(namePath)
 
     if (!key) return
 
-    const control = this.$state.controls().find(({ _key }) => _key === key)
+    const control = this.$state.getControls().find(({ _key }) => _key === key)
 
     const formName = this.$state._props.name
     const fieldId = control?._getId(formName)

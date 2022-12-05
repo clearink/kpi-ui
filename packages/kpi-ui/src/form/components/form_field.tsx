@@ -13,7 +13,7 @@ import type { FormFieldProps } from '../props'
 import type { InternalFormFieldProps } from '../internal_props'
 
 function InternalFormField(props: InternalFormFieldProps) {
-  const { name, dependencies, preserve, shouldUpdate } = props
+  const { name } = props
   // 重置次数
   const [resetCount, resetField] = useReducer((count) => count + 1, 0)
 
@@ -21,35 +21,24 @@ function InternalFormField(props: InternalFormFieldProps) {
   const [, forceUpdate] = useReducer((count) => count + 1, 0)
 
   // 父级表单
-  const context = FieldContext.useState()
-  const internalHook = useMemo(() => context.getInternalHooks(HOOK_MARK), [context])
+  const formInstance = FieldContext.useState()
+  const internalHook = useMemo(() => {
+    return formInstance.getInternalHooks(HOOK_MARK)
+  }, [formInstance])
 
-  const control = useRef(new FormFieldControl(name, forceUpdate, useMounted()))
+  const control = useRef(new FormFieldControl(name, forceUpdate, resetField, useMounted()))
   // 同步props性到 fieldControl
   control.current.setFieldProps(props)
 
   // 注册子字段 销毁时移除该字段
   // name 是数组会导致额外的 rerender 所以使用了useEvent
   const registerField = useEvent(() => {
-    const cancel = internalHook?.registerField(control.current)
-    // 确保拿到最新的数据
-    if (shouldUpdate === true) forceUpdate()
-    return () => cancel?.(preserve)
+    return internalHook?.registerField(control.current)
   })
   useIsomorphicEffect(registerField, [registerField])
 
-  // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
-  // name 是数组会导致额外的 rerender 所以使用了useEvent
-  // dependencies 进行深度比较
-  const memorized = useDeepMemo(() => dependencies, [dependencies])
-  const subscribe = useEvent(() => {
-    const unsubscribe = internalHook?.subscribe(control.current, memorized)
-    return unsubscribe
-  })
-  useIsomorphicEffect(subscribe, [subscribe, memorized])
-
   // 数据注入
-  const $children = useInjectField(props, context, control.current, internalHook)
+  const $children = useInjectField(props, formInstance, control.current, internalHook)
 
   return <Fragment key={resetCount}>{$children}</Fragment>
 }

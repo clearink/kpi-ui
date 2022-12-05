@@ -18,11 +18,7 @@ export default class FormArrayControl {
 
   private _id: number = 0 // 类似数据库自增id 添加字段时会被调用
 
-  private get _internalHook() {
-    return this._context?.getInternalHooks(HOOK_MARK)
-  }
-
-  public ensureFieldKey(index: number) {
+  public ensureFieldKey = (index: number) => {
     const origin = this._keys[index]
     if (isUndefined(origin)) {
       this._keys[index] = this._id
@@ -31,30 +27,32 @@ export default class FormArrayControl {
     return this._keys[index]
   }
 
-  public _getFeatures(): FormArrayHelpers {
+  public _getFeatures = (): FormArrayHelpers => {
     return {
-      append: this.append.bind(this),
-      prepend: this.prepend.bind(this),
-      remove: this.remove.bind(this),
-      swap: this.swap.bind(this),
-      move: this.move.bind(this),
-      replace: this.replace.bind(this),
-      insert: this.insert.bind(this),
+      append: this.append,
+      prepend: this.prepend,
+      remove: this.remove,
+      swap: this.swap,
+      move: this.move,
+      replace: this.replace,
+      insert: this.insert,
     }
   }
 
-  public setFormInstance(context: InternalFormInstance, listPath: InternalNamePath) {
+  public setFormInstance = (context: InternalFormInstance, listPath: InternalNamePath) => {
     this._context = context
     this._listPath = listPath
   }
 
-  private getFieldList(): any[] {
+  private getFieldList = (): any[] => {
     const array = this._context?.getFieldValue(this._listPath)
     return toArray(array, true)
   }
 
-  private dispatchEvent(value: any[]) {
-    this._internalHook?.dispatch({
+  private dispatchEvent = (value: any[]) => {
+    const internalHook = this._context?.getInternalHooks(HOOK_MARK)
+
+    internalHook?.dispatch({
       type: 'setFields',
       fields: [{ name: this._listPath, value }],
     })
@@ -63,20 +61,19 @@ export default class FormArrayControl {
   /** ===================================================== */
   /** features                                              */
   /** ===================================================== */
-  private append(value?: any) {
+  private append = (value?: any) => {
     this._keys = this._keys.concat(this._id)
     this.dispatchEvent(this.getFieldList().concat(value))
     this._id += 1
   }
 
-  private prepend(value?: any) {
+  private prepend = (value?: any) => {
     this._keys = [this._id, ...this._keys]
     this.dispatchEvent([value].concat(this.getFieldList()))
     this._id += 1
   }
 
-  // append, prepend, remove, swap, move, insert, replace
-  private remove(index?: number | number[]) {
+  private remove = (index?: number | number[]) => {
     const positions = new Set(toArray(index))
     const filter = (_, i) => {
       if (positions.size === 0) return false
@@ -87,7 +84,7 @@ export default class FormArrayControl {
     this.dispatchEvent(list.filter(filter))
   }
 
-  private swap(from: number, to: number) {
+  private swap = (from: number, to: number) => {
     const list = this.getFieldList()
     ;[list[from], list[to]] = [list[to], list[from]]
     const keys = this._keys
@@ -95,7 +92,7 @@ export default class FormArrayControl {
     this.dispatchEvent(list)
   }
 
-  private move(from: number, to: number) {
+  private move = (from: number, to: number) => {
     const list = this.getFieldList().concat()
     if (!isValidIndex(list, from, to)) return
 
@@ -104,13 +101,13 @@ export default class FormArrayControl {
     this.dispatchEvent(list)
   }
 
-  private replace(index: number, value: any) {
+  private replace = (index: number, value: any) => {
     const list = this.getFieldList()
     list[index] = value
     this.dispatchEvent(list)
   }
 
-  private insert(index: number, value: any) {
+  private insert = (index: number, value: any) => {
     const list = this.getFieldList().concat()
     list.splice(index, 0, value)
     this._keys.splice(index, 0, this._id)

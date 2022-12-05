@@ -1,10 +1,14 @@
 // form 内部类型声明
 
-import type { FormFieldControl } from './control'
+import type { FormFieldControl, InvalidField } from './control'
+
 import type { FormInstance, FormFieldProps, NamePath, FieldData, FormProps } from './props'
 
 export type InternalNamePath = (string | number)[]
 export type WatchCallBack<S = any> = (value: any, state: S) => void
+export type ControlsByNameReturn<R extends boolean> = R extends true
+  ? FormFieldControl[]
+  : (FormFieldControl | InvalidField)[]
 
 export type UpdateFieldAction =
   | {
@@ -25,12 +29,14 @@ export type UpdateFieldAction =
       name: InternalNamePath
     }
   | {
-      type: 'resetField'
-      name: InternalNamePath
+      type: 'registerField'
+      control: FormFieldControl
     }
   | {
-      type: 'dependentField' // 字段依赖
+      type: 'resetFields'
+      nameList?: NamePath[]
     }
+
 export type UpdateFieldActionType = UpdateFieldAction['type']
 
 export interface FieldMeta {
@@ -62,11 +68,11 @@ export interface InternalFormInstance<S = any> extends FormInstance<S> {
    * @private
    * @zh 内部方法，外部禁止使用
    */
-  getInternalHooks: (secret: symbol) => InternalHookReturn | undefined
+  getInternalHooks: (secret: string) => InternalHookReturn | undefined
 
   /**
    * @private
-   * @zh FormList 使用 TODO: 是否要额外增加一个 context 呢？
+   * @zh FormList 使用
    */
   parentNamePath?: InternalNamePath
 
@@ -109,16 +115,15 @@ export interface InternalHookReturn<State = any> {
 
   /**
    * @private
-   * @zh 订阅依赖字段
-   */
-
-  subscribe: (control: FormFieldControl, dependencies?: NamePath[]) => () => void
-
-  /**
-   * @private
    * @zh 根据名称设置 fieldMeta 属性
    */
   setFieldMeta: (namePath: NamePath, meta: Partial<FieldMeta>) => void
+
+  /**
+   * @private
+   * @zh 设置字段状态
+   */
+  setFields: (fields: FieldData[]) => void
 
   /**
    * @private

@@ -1,7 +1,9 @@
+/* eslint-disable max-classes-per-file, class-methods-use-this */
+
 import isEqual from 'react-fast-compare'
 import type { MutableRefObject } from 'react'
 import BaseControl from './base_control'
-import { isFunction, isNullish, isObjectLike } from '../../_utils'
+import { isFunction, isNullish, isObjectLike, isUndefined, toArray } from '../../_utils'
 import { getIn } from '../utils/value'
 import { _getName } from '../utils/path'
 
@@ -12,6 +14,7 @@ import type {
   InternalNamePath,
 } from '../internal_props'
 import type { SchemaIssue } from '../../_utils/form_schema/interface'
+import type FormStateControl from './group_control/state_control'
 
 export default class FormFieldControl extends BaseControl {
   public _key: string // 唯一标识
@@ -19,25 +22,27 @@ export default class FormFieldControl extends BaseControl {
   public constructor(
     public _name: InternalNamePath, // 记录 name
     _forceUpdate: () => void,
-    mounted: MutableRefObject<boolean>
+    private _resetField: () => void,
+    private mounted: MutableRefObject<boolean>
   ) {
     super(_forceUpdate, mounted)
     this._key = _getName(_name)
   }
 
   // 生成 DOM 唯一标识
-  public _getId(parentName?: string) {
+  public _getId = (parentName?: string) => {
     return [parentName, ...this._name].filter((item) => item !== undefined).join('_')
   }
 
   // 是否应该更新自己
-  public shouldUpdate(prev: any, next: any, type: ActionType) {
+  public shouldUpdate = (prev: any, next: any, type: ActionType) => {
     const { _key: key, _name: name } = this
     const handler = this._props.shouldUpdate
 
     if (!handler && key) {
       return getIn(prev, name) !== getIn(next, name)
     }
+
     if (handler === true) return true
 
     return isFunction(handler) ? handler(prev, next, type) : false
@@ -45,21 +50,41 @@ export default class FormFieldControl extends BaseControl {
 
   public _props: Partial<InternalFormFieldProps> = {}
 
-  public setFieldProps(props: Partial<InternalFormFieldProps>) {
+  public setFieldProps = (props: Partial<InternalFormFieldProps>) => {
     this._props = isObjectLike(props) ? props : {}
   }
 
-  private _touched = false
+  public _parent: FormStateControl | null = null
 
-  private _dirty = false
+  public setParent = (parent: FormStateControl) => {
+    this._parent = parent
+    return this
+  }
 
-  private _pending = false
+  public _touched = false
 
-  private _errors: string[] = []
+  public _dirty = false
 
-  public getFieldMeta(): FieldMeta {
+  public _pending = false
+
+  public _errors: string[] = []
+
+  public _warnings: string[] = []
+
+  public resetField = () => {
+    this.setFieldMeta({
+      dirty: false,
+      touched: false,
+      errors: [],
+      warnings: [],
+      pending: false,
+    })
+    this.mounted.current && this._resetField()
+  }
+
+  public getFieldMeta = (): FieldMeta => {
     return {
-      dirty: this._dirty,
+      dirty: this.isDirty(),
       touched: this._touched,
       pending: this._pending,
       errors: this._errors,
@@ -67,13 +92,30 @@ export default class FormFieldControl extends BaseControl {
     }
   }
 
-  public setFieldMeta(meta: Partial<FieldMeta>) {
+  // 字段是否改变过
+  public isDirty = () => {
+    if (this._dirty || !isUndefined(this._props.initialValue)) {
+      return true
+    }
+
+    if (!this._parent) return false
+
+    return !isUndefined(this._parent.getInitialValue(this._name))
+  }
+
+  // 字段是否 touch 过
+  public isTouched = () => {
+    return this._touched
+  }
+
+  public setFieldMeta = (meta: Partial<FieldMeta>) => {
     const prev = this.getFieldMeta()
     // 同步全部
     !isNullish(meta.dirty) && (this._dirty = meta.dirty)
     !isNullish(meta.pending) && (this._pending = meta.pending)
     !isNullish(meta.touched) && (this._touched = meta.touched)
     !isNullish(meta.errors) && (this._errors = meta.errors)
+    !isNullish(meta.warnings) && (this._warnings = meta.warnings)
 
     const current = this.getFieldMeta()
 
@@ -81,7 +123,7 @@ export default class FormFieldControl extends BaseControl {
   }
 
   // 字段校验
-  public async validate(value: any) {
+  public validate = async (value: any) => {
     const { rule: validator } = this._props
 
     // 没有操作过的字段不能校验, 没有校验规则的也不用校验
@@ -97,4 +139,13 @@ export default class FormFieldControl extends BaseControl {
       this.setFieldMeta({ pending: false, errors })
     }
   }
+}
+
+// 不合法的字段
+export class InvalidField {
+  static isInvalid(field: FormFieldControl | InvalidField): field is InvalidField {
+    return field instanceof InvalidField
+  }
+
+  constructor(public name: InternalNamePath) {}
 }
