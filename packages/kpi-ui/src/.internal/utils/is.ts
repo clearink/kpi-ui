@@ -1,4 +1,4 @@
-import { AnyObject } from '../_types'
+import { AnyObject } from '../types'
 
 type ValueType =
   | 'Object'

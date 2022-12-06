@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import useIsomorphicEffect from '../use-isomorphic-effect'
-import { INIT_MATCHES, ScreenMatch } from '../../_constant/breakpoint'
-import { isUndefined } from '../../_utils'
+import { INIT_MATCHES, ScreenMatch } from '../../constant/breakpoint'
+import { isUndefined } from '../../utils'
 import useEvent from '../use-event'
 import MediaObserver from './media_observer'
 

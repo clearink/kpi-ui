@@ -1,7 +1,7 @@
 import CtxHelper from './helper'
-import { logger } from '../_utils'
-import type { FormInstance } from '../form/props'
-import type { InternalFormInstance } from '../form/internal_props'
+import { logger } from '../utils'
+import type { FormInstance } from '../../form/props'
+import type { InternalFormInstance } from '../../form/internal_props'
 
 // TODO: 目前还不确定
 interface FormContextState {
@@ -43,6 +43,7 @@ export const FieldContext = CtxHelper<InternalFormInstance>({
       setFieldMeta: notFoundContext,
       setFormProps: notFoundContext,
       dispatch: notFoundContext,
+      registerSubscribe: notFoundContext,
     }
   },
 })

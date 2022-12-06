@@ -1,9 +1,9 @@
 import { useMemo, useRef } from 'react'
 import Field from './form_field'
-import { FieldContext, FieldListContext } from '../../_context'
-import { withDefaultProps } from '../../_hocs'
-import { useDeepMemo, useEvent } from '../../_hooks'
-import { toArray } from '../../_utils'
+import { FieldContext, FieldListContext } from '../../.internal/context'
+import { withDefaultProps } from '../../.internal/hocs'
+import { useDeepMemo, useEvent } from '../../.internal/hooks'
+import { toArray } from '../../.internal/utils'
 import { getIn } from '../utils/value'
 import { FormArrayControl } from '../control'
 import { collectListInjectProps } from '../utils/collect'
@@ -11,9 +11,8 @@ import { collectListInjectProps } from '../utils/collect'
 import type { FormListProps } from '../props'
 import type { UpdateFieldActionType as ActionType } from '../internal_props'
 
-// 应该时继承 InternalFormFieldProps
 function FormList(props: FormListProps) {
-  const { name, rule, validateTrigger, initialValue } = props
+  const { name, rule, validateTrigger, initialValue, preserve } = props
   const formInstance = FieldContext.useState()
   const control = useRef(new FormArrayControl())
   // 同步 context 供内部调用
@@ -54,6 +53,7 @@ function FormList(props: FormListProps) {
           validateTrigger={validateTrigger}
           initialValue={initialValue}
           shouldUpdate={shouldUpdate}
+          preserve={preserve}
         >
           {collectListInjectProps(props, listPath, control.current, operations)}
         </Field>
@@ -61,5 +61,5 @@ function FormList(props: FormListProps) {
     </FieldListContext.Provider>
   )
 }
-
-export default withDefaultProps(FormList, {} as const)
+// 默认卸载时不保留数据,可手动开启
+export default withDefaultProps(FormList, { preserve: false } as const)

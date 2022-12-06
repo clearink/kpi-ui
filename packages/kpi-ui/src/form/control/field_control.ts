@@ -3,18 +3,18 @@
 import isEqual from 'react-fast-compare'
 import type { MutableRefObject } from 'react'
 import BaseControl from './base_control'
-import { isFunction, isNullish, isObjectLike, isUndefined, toArray } from '../../_utils'
+import { isFunction, isNullish, isObjectLike, isUndefined } from '../../.internal/utils'
 import { getIn } from '../utils/value'
 import { _getName } from '../utils/path'
 
+import type { FormStateControl } from './group_control'
 import type {
   UpdateFieldActionType as ActionType,
   InternalFormFieldProps,
   FieldMeta,
   InternalNamePath,
 } from '../internal_props'
-import type { SchemaIssue } from '../../_utils/form_schema/interface'
-import type FormStateControl from './group_control/state_control'
+import type { SchemaIssue } from '../../.internal/utils/form_schema/interface'
 
 export default class FormFieldControl extends BaseControl {
   public _key: string // 唯一标识
@@ -65,7 +65,7 @@ export default class FormFieldControl extends BaseControl {
 
   public _dirty = false
 
-  public _pending = false
+  public _validating = false
 
   public _errors: string[] = []
 
@@ -77,7 +77,7 @@ export default class FormFieldControl extends BaseControl {
       touched: false,
       errors: [],
       warnings: [],
-      pending: false,
+      validating: false,
     })
     this.mounted.current && this._resetField()
   }
@@ -85,8 +85,8 @@ export default class FormFieldControl extends BaseControl {
   public getFieldMeta = (): FieldMeta => {
     return {
       dirty: this.isDirty(),
-      touched: this._touched,
-      pending: this._pending,
+      touched: this.isTouched(),
+      validating: this._validating,
       errors: this._errors,
       warnings: [], // TODO: 后续加上
     }
@@ -112,7 +112,7 @@ export default class FormFieldControl extends BaseControl {
     const prev = this.getFieldMeta()
     // 同步全部
     !isNullish(meta.dirty) && (this._dirty = meta.dirty)
-    !isNullish(meta.pending) && (this._pending = meta.pending)
+    !isNullish(meta.validating) && (this._validating = meta.validating)
     !isNullish(meta.touched) && (this._touched = meta.touched)
     !isNullish(meta.errors) && (this._errors = meta.errors)
     !isNullish(meta.warnings) && (this._warnings = meta.warnings)
@@ -130,13 +130,13 @@ export default class FormFieldControl extends BaseControl {
     if (!this._touched || !validator) return
 
     try {
-      this.setFieldMeta({ pending: true })
+      this.setFieldMeta({ validating: true })
       await validator.validate(value)
-      this.setFieldMeta({ pending: false, errors: [] })
+      this.setFieldMeta({ validating: false, errors: [] })
     } catch (error) {
       const { issues = [] } = error as { issues: SchemaIssue[] }
       const errors = issues.map((issue) => issue.message)
-      this.setFieldMeta({ pending: false, errors })
+      this.setFieldMeta({ validating: false, errors })
     }
   }
 }

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { toArray } from '../../_utils'
+import { toArray } from '../../.internal/utils'
 
 import type { NamePath } from '../props'
 
@@ -32,18 +32,4 @@ export function _getName(namePath: NamePath) {
 
 export function isValidIndex(array: any[], ...positions: number[]) {
   return positions.every((position) => position >= 0 && position < array.length)
-}
-
-// 数组之间是否存在交集
-export function hasIntersection(oneList: string[], twoList: string[]) {
-  return !![...new Set(oneList)].find((item) => twoList.includes(item))
-}
-
-// 获取格式化的路径列表(转成string)
-export function getNormalizePathList(nameList: NamePath[]) {
-  return nameList.reduce((res: string[], namePath) => {
-    const key = _getName(namePath)
-    if (key) res.push(key)
-    return res
-  }, [])
 }

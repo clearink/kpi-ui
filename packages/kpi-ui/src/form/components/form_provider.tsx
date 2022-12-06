@@ -1,7 +1,7 @@
 import { ReactNode, useMemo, useRef } from 'react'
-import { FormContext } from '../../_context'
-import { useEvent } from '../../_hooks'
-import { omit } from '../../_utils'
+import { FormContext } from '../../.internal/context'
+import { useEvent } from '../../.internal/hooks'
+import { omit } from '../../.internal/utils'
 import type { FormInstance, Forms } from '../props'
 
 export default function FormProvider(props: { children: ReactNode }) {

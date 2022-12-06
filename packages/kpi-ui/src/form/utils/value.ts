@@ -1,4 +1,12 @@
-import { isNumber, isArray, isObject, isNullish, isObjectLike, rawType, hasOwn } from '../../_utils'
+import {
+  isNumber,
+  isArray,
+  isObject,
+  isNullish,
+  isObjectLike,
+  rawType,
+  hasOwn,
+} from '../../.internal/utils'
 
 import type { InternalNamePath } from '../internal_props'
 

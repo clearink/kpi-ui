@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 import { HOOK_MARK } from './group_control'
-import { isUndefined, toArray } from '../../_utils'
+import { isUndefined, toArray } from '../../.internal/utils'
 import { isValidIndex } from '../utils/path'
 
 import type { InternalFormInstance, InternalNamePath } from '../internal_props'

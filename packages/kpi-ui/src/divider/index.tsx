@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { withDefaultProps } from '../_hocs'
-import { usePrefix } from '../_hooks'
-import { capitalize, omit } from '../_utils'
+import { withDefaultProps } from '../.internal/hocs'
+import { usePrefix } from '../.internal/hooks'
+import { capitalize, omit } from '../.internal/utils'
 import useClass from './hooks/use_class'
 import { DividerProps } from './props'
 

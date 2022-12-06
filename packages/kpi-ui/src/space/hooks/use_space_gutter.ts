@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { isArray, isString } from '../../_utils'
+import { isArray, isString } from '../../.internal/utils'
 import { SPACE_SIZE } from '../assets/constant'
 import { SpaceProps } from '../props'
 

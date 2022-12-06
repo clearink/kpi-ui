@@ -1,19 +1,19 @@
 import { useRef, Fragment, useReducer, useMemo } from 'react'
 
-import { withDefaultProps } from '../../_hocs'
-import { FieldContext } from '../../_context'
+import { withDefaultProps } from '../../.internal/hocs'
+import { FieldContext } from '../../.internal/context'
 import { FormFieldControl, HOOK_MARK } from '../control'
 
 import useInjectField from '../hooks/use_inject_field'
-import { useDeepMemo, useEvent, useIsomorphicEffect, useMounted } from '../../_hooks'
-import { isUndefined, toArray } from '../../_utils'
+import { useDeepMemo, useEvent, useIsomorphicEffect, useMounted } from '../../.internal/hooks'
+import { isUndefined, toArray } from '../../.internal/utils'
 import { _getName } from '../utils/path'
 
 import type { FormFieldProps } from '../props'
 import type { InternalFormFieldProps } from '../internal_props'
 
 function InternalFormField(props: InternalFormFieldProps) {
-  const { name } = props
+  const { name, dependencies } = props
   // 重置次数
   const [resetCount, resetField] = useReducer((count) => count + 1, 0)
 
@@ -36,6 +36,16 @@ function InternalFormField(props: InternalFormFieldProps) {
     return internalHook?.registerField(control.current)
   })
   useIsomorphicEffect(registerField, [registerField])
+
+  // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
+  // name 是数组会导致额外的 rerender 所以使用了useEvent
+  // dependencies 进行深度比较
+  const memorized = useDeepMemo(() => dependencies, [dependencies])
+  const subscribe = useEvent(() => {
+    const unsubscribe = internalHook?.registerSubscribe(control.current)
+    return unsubscribe
+  })
+  useIsomorphicEffect(subscribe, [subscribe, memorized])
 
   // 数据注入
   const $children = useInjectField(props, formInstance, control.current, internalHook)

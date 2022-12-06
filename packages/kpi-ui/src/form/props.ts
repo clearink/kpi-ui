@@ -1,6 +1,6 @@
 import type { ComponentType, ReactElement, FormEvent, FormHTMLAttributes, ReactNode } from 'react'
-import type { AnyObject, ArrowFunction } from '../_types'
-import type { BaseSchema } from '../_utils/form_schema/schema'
+import type { AnyObject } from '../.internal/types'
+import type { BaseSchema } from '../.internal/utils/form_schema/schema'
 import type {
   InternalFieldData,
   FieldMeta,
@@ -54,7 +54,7 @@ export interface FormProps<S = any>
    */
   initialValues?: Partial<S>
 
-  children?: ReactNode
+  children?: ReactNode | ((values: S, form: FormInstance) => JSX.Element | ReactNode)
 
   /**
    * @zh 统一设置字段触发验证的时机
@@ -258,22 +258,14 @@ export interface FormArrayHelpers {
   replace: (index: number, value: any) => void
   insert: (index: number, value: any) => void
 }
-export interface FormListProps {
+export interface FormListProps
+  extends Pick<FormFieldProps, 'validateTrigger' | 'rule' | 'preserve'> {
   name: NamePath
   children?: (
     fields: ListField[],
     arrayHelpers: FormArrayHelpers,
     meta: FieldMeta
   ) => JSX.Element | React.ReactNode
-  /**
-   * @zh 校验规则，设置字段的校验逻辑
-   */
-  rule?: BaseSchema
-  /**
-   * @zh 设置字段校验的时机
-   * @default onChange
-   */
-  validateTrigger?: string | string[] | false
 
   /**
    * @zh 设置子元素默认值，如果与 Form 的 initialValues 冲突则以 Form 为准

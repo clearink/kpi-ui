@@ -1,8 +1,8 @@
 import cls from 'classnames'
 import { ColProps } from '../props'
-import { BREAKPOINT_NAME } from '../../_constant/breakpoint'
-import { isNumber } from '../../_utils'
-import { usePrefix } from '../../_hooks'
+import { BREAKPOINT_NAME } from '../../.internal/constant/breakpoint'
+import { isNumber } from '../../.internal/utils'
+import { usePrefix } from '../../.internal/hooks'
 
 export default function useClass(props: ColProps) {
   const { className, span, offset, pull, push, order } = props

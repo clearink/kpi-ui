@@ -1,5 +1,5 @@
 import { useMemo, useRef } from 'react'
-import { isObject } from '../../_utils/is'
+import { isObject } from '../../utils/is'
 /**
  * @description
  * 首先该hook的使用场景:

@@ -5,7 +5,7 @@ import type { FormFieldControl, InvalidField } from './control'
 import type { FormInstance, FormFieldProps, NamePath, FieldData, FormProps } from './props'
 
 export type InternalNamePath = (string | number)[]
-export type WatchCallBack<S = any> = (value: any, state: S) => void
+export type WatchCallBack = (value: any) => void
 export type ControlsByNameReturn<R extends boolean> = R extends true
   ? FormFieldControl[]
   : (FormFieldControl | InvalidField)[]
@@ -26,7 +26,8 @@ export type UpdateFieldAction =
     }
   | {
       type: 'removeField' // 卸载字段时触发
-      name: InternalNamePath
+      control: FormFieldControl
+      cleanup: boolean
     }
   | {
       type: 'registerField'
@@ -42,7 +43,7 @@ export type UpdateFieldActionType = UpdateFieldAction['type']
 export interface FieldMeta {
   dirty: boolean
   touched: boolean
-  pending: boolean // 字段级别的校验
+  validating: boolean // 字段级别的校验
   errors: string[]
   warnings: string[]
 }
@@ -118,6 +119,13 @@ export interface InternalHookReturn<State = any> {
    * @zh 根据名称设置 fieldMeta 属性
    */
   setFieldMeta: (namePath: NamePath, meta: Partial<FieldMeta>) => void
+
+  /**
+   * @private
+   * @zh 订阅依赖字段
+   */
+
+  registerSubscribe: (control: FormFieldControl) => () => void
 
   /**
    * @private

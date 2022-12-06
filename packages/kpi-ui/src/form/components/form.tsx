@@ -10,10 +10,10 @@ import {
   useRef,
 } from 'react'
 import isEqual from 'react-fast-compare'
-import { FieldContext, FormContext } from '../../_context'
-import { withDefaultProps } from '../../_hocs'
-import { useConstructor, useEvent, useIsomorphicEffect } from '../../_hooks'
-import { isFunction, toArray } from '../../_utils'
+import { FieldContext, FormContext } from '../../.internal/context'
+import { withDefaultProps } from '../../.internal/hocs'
+import { useConstructor, useEvent, useIsomorphicEffect } from '../../.internal/hooks'
+import { isFunction, toArray } from '../../.internal/utils'
 import { HOOK_MARK } from '../control'
 import useForm from '../hooks/use_form'
 
@@ -75,12 +75,12 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   // 同步 fields 字段
   const prevFields = useRef<FormProps['fields']>()
   useIsomorphicEffect(() => {
-    const fields = toArray(props.fields, true)
-    // TODO: 此处是否需要深比较呢?
-    if (!isEqual(toArray(prevFields.current, true), fields)) {
-      internalHook?.setFields(fields)
+    const prev = toArray(prevFields.current, true)
+    const next = toArray(props.fields, true)
+    if (!isEqual(prev, next)) {
+      internalHook?.setFields(next)
     }
-    prevFields.current = fields
+    prevFields.current = next
   }, [internalHook, props.fields])
 
   return (
@@ -99,43 +99,3 @@ export default withDefaultProps(forwardRef<FormInstance, FormProps>(Form), {
 } as const) as <State = any>(
   props: FormProps<State> & { ref?: Ref<FormInstance<State>> }
 ) => ReactElement
-
-// // Form 的初步使用方式
-// function App() {
-//   const schema = useMemo(() => {
-//     return k.object({
-//       name: k.number().range(10, 20),
-//       // 以 name 字段去匹配 schema
-//       age: k.string().email(),
-//     })
-//   }, [])
-//   const schema1 = useEvent((form: FormInstance) => {
-//     return k.object({
-//       name: k.number().range(10, 20),
-//       // 以 name 字段去匹配 schema
-//       age: k.string().email(),
-//     })
-//   }, [])
-//   return (
-//     // schema 自身也可以传入一个函数用于获取 formInstance
-//     <Form schema={schema}>
-//       <Form.Item name="name">
-//         <Input />
-//       </Form.Item>
-//       <Form.Item name="age">
-//         <InputNumber />
-//       </Form.Item>
-//       <Form.Item name={['some', 1]}>
-//         <InputNumber />
-//       </Form.Item>
-//       {/* 字段本身的校验可以覆盖顶层 */}
-//       {/* rule 自身也可以传入一个函数用于获取 formInstance */}
-//       <Form.Item
-//         name={['some', 2]}
-//         rule={k.string().email()}
-//       >
-//         <InputNumber />
-//       </Form.Item>
-//     </Form>
-//   )
-// }

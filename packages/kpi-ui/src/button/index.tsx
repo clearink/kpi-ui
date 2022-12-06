@@ -1,8 +1,8 @@
-import { omit } from '../_utils'
-import { useWave } from '../_hooks'
+import { omit } from '../.internal/utils'
+import { useWave } from '../.internal/hooks'
 import useClass from './hooks/use_class'
 import { ButtonProps } from './props'
-import { withDefaultProps } from '../_hocs'
+import { withDefaultProps } from '../.internal/hocs'
 
 function Button(props: ButtonProps) {
   const { children, htmlType, type, ...rest } = props

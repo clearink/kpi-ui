@@ -1,7 +1,5 @@
-import * as kfc from './_utils/form_schema'
-
 // utils
-export * as kfc from './_utils/form_schema'
+export * as kfc from './.internal/utils/form_schema'
 
 // components
 

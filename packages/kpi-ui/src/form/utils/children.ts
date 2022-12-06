@@ -1,8 +1,8 @@
 import { isValidElement, type ReactElement, type ReactNode } from 'react'
-import { flattenChildren, isFunction, logger } from '../../_utils'
+import { flattenChildren, isFunction, logger } from '../../.internal/utils'
 
 import type { InternalFormFieldProps, InternalFormInstance } from '../internal_props'
-import type { AnyObject } from '../../_types'
+import type { AnyObject } from '../../.internal/types'
 import type { FormFieldControl } from '../control'
 
 export interface InnerReturn {

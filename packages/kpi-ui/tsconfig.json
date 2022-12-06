@@ -19,7 +19,7 @@
     "downlevelIteration": true,
     // 忽略 string 不能当索引
     "suppressImplicitAnyIndexErrors": true,
-    "noImplicitAny": false, // 不用显式返回 any
+    "noImplicitAny": false // 不用显式返回 any
   },
   "include": ["src"],
   "exclude": ["node_modules"]

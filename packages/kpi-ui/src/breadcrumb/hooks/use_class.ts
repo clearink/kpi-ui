@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import cls from 'classnames'
-import { usePrefix } from '../../_hooks'
+import { usePrefix } from '../../.internal/hooks'
 // import { BreadcrumbProps } from '../props';
 
 export default function useClass() {

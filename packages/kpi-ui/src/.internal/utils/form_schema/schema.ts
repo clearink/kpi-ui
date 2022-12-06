@@ -14,7 +14,7 @@ import {
   isUndefined,
 } from '../is'
 import { omit } from '../value'
-import type { AnyObject, Full, MayBe, NonUndefined, Writable } from '../../_types'
+import type { AnyObject, Full, MayBe, NonUndefined, Writable } from '../../types'
 import type {
   Message,
   EffectOptions,

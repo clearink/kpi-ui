@@ -1,10 +1,10 @@
 import { useMemo, Fragment, ReactElement } from 'react'
-import { withDefaultProps } from '../_hocs'
-import { useFlexGapSupport, usePrefix } from '../_hooks'
+import { withDefaultProps } from '../.internal/hocs'
+import { useFlexGapSupport, usePrefix } from '../.internal/hooks'
 import useSpaceGutter from './hooks/use_space_gutter'
 import useClass from './hooks/use_class'
 import { SpaceProps } from './props'
-import { flattenChildren } from '../_utils'
+import { flattenChildren } from '../.internal/utils'
 
 function Space(props: SpaceProps) {
   const { children: $children, size, style: $style, direction, wrap, split, ...rest } = props

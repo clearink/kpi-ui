@@ -1,6 +1,6 @@
 /* eslint-disable no-console, class-methods-use-this */
 
-import type { ArrowFunction } from '../_types'
+import type { ArrowFunction } from '../types'
 
 const isDev = process.env.NODE_ENV !== 'production'
 // 日志记录 仅提示一次
