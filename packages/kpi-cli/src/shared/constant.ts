@@ -89,5 +89,16 @@ export default function KPI_CONST(preview: boolean) {
           return useTs || !ext.includes('ts')
         })
       },
+      ALIAS_PATHS: () => {
+        return {
+          '@utils': resolve(_.SRC_DIR, '_internal/utils/index.ts'),
+          '@components': resolve(_.SRC_DIR, '_internal/components'),
+          '@context': resolve(_.SRC_DIR, '_internal/context/index.ts'),
+          '@hocs': resolve(_.SRC_DIR, '_internal/hocs/index.ts'),
+          '@hooks': resolve(_.SRC_DIR, '_internal/hooks/index.ts'),
+          '@types': resolve(_.SRC_DIR, '_internal/types/index.ts'),
+          '@constant': resolve(_.SRC_DIR, '_internal/constant/index.ts'),
+        }
+      },
     }))
 }

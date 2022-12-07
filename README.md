@@ -2,10 +2,6 @@
 
 ## TODO
 
-1. 增加组件
-- 待优化`useBreakpoint`
-- 新增`useMediaQuery`
-
-2. 完善 #`kpi-cli`
-
-- 完善`compiler`指令
+1. 完善`Form`组件
+2. 完善文档生成工具
+3. 打包工具切换为rollup

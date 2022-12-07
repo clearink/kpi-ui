@@ -34,6 +34,7 @@ export default function common(mode: 'development' | 'production', constant: Con
     resolve: {
       modules: ['node_modules', constant.NODE_MODULES],
       extensions: constant.RESOLVE_EXTENSIONS(),
+      alias: constant.ALIAS_PATHS(),
     },
     module: {
       parser: {

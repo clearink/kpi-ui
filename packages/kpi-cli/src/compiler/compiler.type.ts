@@ -7,11 +7,13 @@ import { CompileProps } from '../command/compile'
 
 export default function compileType(options: CompileProps) {
   const { force } = options
-  const { APP_DIR, TYPE_DIR_NAME } = KPI_CONST(false)
+  const { APP_DIR, TYPE_DIR_NAME, TS_CONFIG } = KPI_CONST(false)
   force && remove(resolve(APP_DIR, TYPE_DIR_NAME))
 
   const args = [
     require.resolve('typescript/bin/tsc'),
+    '--project',
+    TS_CONFIG,
     '--outDir',
     TYPE_DIR_NAME,
     '--removeComments', // 移除注释

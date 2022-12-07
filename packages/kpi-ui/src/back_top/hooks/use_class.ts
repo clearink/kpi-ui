@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import cls from 'classnames'
+import { usePrefix } from '@hooks'
 import { BackTopProps } from '../props'
-import { usePrefix } from '../../_internal/hooks'
 
 export default function useClass(props: BackTopProps) {
   const { className } = props

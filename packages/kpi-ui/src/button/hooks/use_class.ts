@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import cls from 'classnames'
+import { usePrefix } from '@hooks'
 import { ButtonProps } from '../props'
-import { usePrefix } from '../../_internal/hooks'
 
 export default function useClass(props: ButtonProps) {
   const { className, type, block, danger, shape, size, ghost, loading } = props

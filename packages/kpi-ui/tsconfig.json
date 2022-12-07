@@ -19,7 +19,18 @@
     "downlevelIteration": true,
     // 忽略 string 不能当索引
     "suppressImplicitAnyIndexErrors": true,
-    "noImplicitAny": false // 不用显式返回 any
+    // 不用显式返回 any
+    "noImplicitAny": false,
+    "baseUrl": "./",
+    "paths": {
+      "@utils": ["src/_internal/utils/index.ts"],
+      "@components/*": ["src/_internal/components/*"],
+      "@context": ["src/_internal/context/index.ts"],
+      "@hocs": ["src/_internal/hocs/index.ts"],
+      "@hooks": ["src/_internal/hooks/index.ts"],
+      "@types": ["src/_internal/types/index.ts"],
+      "@constant": ["src/_internal/constant/index.ts"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules"]
