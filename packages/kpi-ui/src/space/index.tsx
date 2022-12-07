@@ -37,17 +37,11 @@ function Space(props: SpaceProps) {
       const key = (child as ReactElement)?.key || index
       return (
         <Fragment key={key}>
-          <div
-            className={`${name}-item`}
-            style={gapStyle}
-          >
+          <div className={`${name}-item`} style={gapStyle}>
             {child}
           </div>
           {split && !isEndItem && (
-            <span
-              className={`${name}-item-split`}
-              style={gapStyle}
-            >
+            <span className={`${name}-item-split`} style={gapStyle}>
               {split}
             </span>
           )}
@@ -57,11 +51,7 @@ function Space(props: SpaceProps) {
   }, [$children, gapSupport, hGutter, name, split, vGutter, vertical, wrap])
 
   return (
-    <div
-      className={className}
-      style={style}
-      {...rest}
-    >
+    <div className={className} style={style} {...rest}>
       {children}
     </div>
   )

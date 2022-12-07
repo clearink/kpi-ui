@@ -3,6 +3,5 @@
   "singleQuote": true,
   "semi": false,
   "endOfLine": "auto",
-  "tabWidth": 2,
-  "singleAttributePerLine": true
+  "tabWidth": 2
 }

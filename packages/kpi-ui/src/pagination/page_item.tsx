@@ -16,12 +16,7 @@ export default function PageItem(props: PagerProps) {
   const title = useMemo(() => (showHtmlTitle ? `${page}` : undefined), [page, showHtmlTitle])
 
   return (
-    <li
-      className={classes}
-      title={title}
-      tabIndex={disabled ? -1 : 0}
-      {...rest}
-    >
+    <li className={classes} title={title} tabIndex={disabled ? -1 : 0} {...rest}>
       {itemRender(page, 'page', <a rel="nofollow">{page}</a>)}
     </li>
   )

@@ -1,5 +1,4 @@
 /* eslint-disable class-methods-use-this */
-
 import { HOOK_MARK } from './group_control'
 import { isUndefined, toArray } from '../../../utils'
 import { isValidIndex } from '../utils/path'

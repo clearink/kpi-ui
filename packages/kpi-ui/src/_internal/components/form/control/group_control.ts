@@ -4,9 +4,7 @@ import cloneDeep from 'lodash.clonedeep'
 import type { MutableRefObject } from 'react'
 import { isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '../../../utils'
 import BaseControl from './base_control'
-
 import { isDependent, _getName } from '../utils/path'
-
 import { setIn, getIn, deleteIn, mergeValue, cloneWithPath } from '../utils/value'
 import { InvalidField } from './field_control'
 

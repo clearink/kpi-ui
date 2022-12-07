@@ -84,10 +84,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   }, [internalHook, props.fields])
 
   return (
-    <Root
-      onSubmit={handleSubmit}
-      onReset={handleReset}
-    >
+    <Root onSubmit={handleSubmit} onReset={handleReset}>
       <FieldContext.Provider value={fieldContext}>{children}</FieldContext.Provider>
     </Root>
   )
