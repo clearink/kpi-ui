@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { useBreakpoint } from '../../.internal/hooks'
-import { handleMatchPoint } from '../../.internal/hooks/use-breakpoint/media_observer'
-import { isArray, isNumber, isObject } from '../../.internal/utils'
+import { useBreakpoint } from '../../_internal/hooks'
+import { handleMatchPoint } from '../../_internal/hooks/use-breakpoint/media_observer'
+import { isArray, isNumber, isObject } from '../../_internal/utils'
 import { RowProps } from '../props'
 
 export default function useRowGutter(gutter: RowProps['gutter']) {

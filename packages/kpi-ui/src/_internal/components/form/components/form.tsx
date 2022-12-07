@@ -10,10 +10,10 @@ import {
   useRef,
 } from 'react'
 import isEqual from 'react-fast-compare'
-import { FieldContext, FormContext } from '../../.internal/context'
-import { withDefaultProps } from '../../.internal/hocs'
-import { useConstructor, useEvent, useIsomorphicEffect } from '../../.internal/hooks'
-import { isFunction, toArray } from '../../.internal/utils'
+import { FieldContext, FormContext } from '../../../context'
+import { withDefaultProps } from '../../../hocs'
+import { useConstructor, useEvent, useIsomorphicEffect } from '../../../hooks'
+import { isFunction, toArray } from '../../../utils'
 import { HOOK_MARK } from '../control'
 import useForm from '../hooks/use_form'
 

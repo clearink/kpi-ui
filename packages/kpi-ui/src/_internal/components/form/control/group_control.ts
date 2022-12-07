@@ -2,7 +2,7 @@
 import isEqual from 'react-fast-compare'
 import cloneDeep from 'lodash.clonedeep'
 import type { MutableRefObject } from 'react'
-import { isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '../../.internal/utils'
+import { isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '../../../utils'
 import BaseControl from './base_control'
 
 import { isDependent, _getName } from '../utils/path'

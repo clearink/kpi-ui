@@ -6,7 +6,7 @@ import {
   isObjectLike,
   rawType,
   hasOwn,
-} from '../../.internal/utils'
+} from '../../../utils'
 
 import type { InternalNamePath } from '../internal_props'
 

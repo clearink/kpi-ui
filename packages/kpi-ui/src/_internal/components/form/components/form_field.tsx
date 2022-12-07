@@ -1,12 +1,12 @@
 import { useRef, Fragment, useReducer, useMemo } from 'react'
 
-import { withDefaultProps } from '../../.internal/hocs'
-import { FieldContext } from '../../.internal/context'
+import { withDefaultProps } from '../../../hocs'
+import { FieldContext } from '../../../context'
 import { FormFieldControl, HOOK_MARK } from '../control'
 
 import useInjectField from '../hooks/use_inject_field'
-import { useDeepMemo, useEvent, useIsomorphicEffect, useMounted } from '../../.internal/hooks'
-import { isUndefined, toArray } from '../../.internal/utils'
+import { useDeepMemo, useEvent, useIsomorphicEffect, useMounted } from '../../../hooks'
+import { isUndefined, toArray } from '../../../utils'
 import { _getName } from '../utils/path'
 
 import type { FormFieldProps } from '../props'

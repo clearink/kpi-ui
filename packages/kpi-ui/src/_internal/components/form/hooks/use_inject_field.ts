@@ -1,5 +1,5 @@
 import { cloneElement, type ReactElement } from 'react'
-import { logger } from '../../.internal/utils'
+import { logger } from '../../../utils'
 import normalizeChildren from '../utils/children'
 import { collectFieldInjectProps } from '../utils/collect'
 

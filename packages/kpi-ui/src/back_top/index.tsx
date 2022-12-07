@@ -1,4 +1,4 @@
-import { withDefaultProps } from '../.internal/hocs'
+import { withDefaultProps } from '../_internal/hocs'
 import useClass from './hooks/use_class'
 import { BackTopProps } from './props'
 

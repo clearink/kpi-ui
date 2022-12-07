@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { toArray } from '../../.internal/utils'
+import { toArray } from '../../../utils'
 
 import type { NamePath } from '../props'
 

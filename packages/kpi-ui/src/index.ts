@@ -1,5 +1,5 @@
 // utils
-export * as kfc from './.internal/utils/form_schema'
+export * as kfc from './_internal/utils/form_schema'
 
 // components
 
@@ -12,4 +12,4 @@ export { default as Row } from './row'
 export { default as Col } from './col'
 export { default as Pagination } from './pagination'
 export { default as BackTop } from './back_top'
-export { default as Form } from './form'
+export { default as Form } from './_internal/components/form'

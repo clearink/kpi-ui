@@ -3,7 +3,7 @@
 import isEqual from 'react-fast-compare'
 import type { MutableRefObject } from 'react'
 import BaseControl from './base_control'
-import { isFunction, isNullish, isObjectLike, isUndefined } from '../../.internal/utils'
+import { isFunction, isNullish, isObjectLike, isUndefined } from '../../../utils'
 import { getIn } from '../utils/value'
 import { _getName } from '../utils/path'
 
@@ -14,7 +14,7 @@ import type {
   FieldMeta,
   InternalNamePath,
 } from '../internal_props'
-import type { SchemaIssue } from '../../.internal/utils/form_schema/interface'
+import type { SchemaIssue } from '../../../utils/form_schema/interface'
 
 export default class FormFieldControl extends BaseControl {
   public _key: string // 唯一标识

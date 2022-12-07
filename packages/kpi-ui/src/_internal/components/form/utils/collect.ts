@@ -1,8 +1,8 @@
 /* eslint-disable react/function-component-definition */
 /* eslint-disable func-names */
-import { hasOwn, isArray, isFunction, isObjectLike, logger, toArray } from '../../.internal/utils'
+import { hasOwn, isArray, isFunction, isObjectLike, logger, toArray } from '../../../utils'
 
-import type { AnyObject } from '../../.internal/types'
+import type { AnyObject } from '../../../types'
 import { FormArrayControl, FormFieldControl } from '../control'
 import type {
   FieldMeta,

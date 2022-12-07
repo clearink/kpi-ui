@@ -1,5 +1,5 @@
 import { useReducer, useRef } from 'react'
-import { useMounted } from '../../.internal/hooks'
+import { useMounted } from '../../../hooks'
 import { FormGroupControl } from '../control'
 import { FormInstance } from '../props'
 
