@@ -50,9 +50,11 @@ export function collectFieldInjectProps(
     const injectProps = {
       ...childProps,
       ...getValueProps(value),
+      //  这个放到 外部
       id: control._getId(formInstance.formName),
       // 触发条件
       [trigger!]: (...args: any[]) => {
+        ;(window as any).start = performance.now()
         let next = getValueFromEvent(...args)
 
         if (isFunction(formatter)) next = formatter(next, value, formInstance.getFieldsValue())

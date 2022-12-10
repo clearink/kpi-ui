@@ -1,7 +1,7 @@
 import cls from 'classnames'
-import { BREAKPOINT_NAME } from '@constant'
-import { isNumber } from '@utils'
-import { usePrefix } from '@hooks'
+import { usePrefix } from '../../_internal/hooks'
+import { isNumber } from '../../_internal/utils'
+import { BREAKPOINT_NAME } from '../../_internal/constant'
 import { ColProps } from '../props'
 
 export default function useClass(props: ColProps) {

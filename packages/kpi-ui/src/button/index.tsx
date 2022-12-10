@@ -1,6 +1,6 @@
-import { omit } from '@utils'
-import { useWave } from '@hooks'
-import { withDefaultProps } from '@hocs'
+import { useWave } from '../_internal/hooks'
+import { withDefaultProps } from '../_internal/hocs'
+import { omit } from '../_internal/utils'
 import useClass from './hooks/use_class'
 import { ButtonProps } from './props'
 

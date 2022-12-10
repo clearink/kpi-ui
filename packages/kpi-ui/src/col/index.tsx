@@ -1,8 +1,8 @@
 import { CSSProperties, useMemo } from 'react'
-import { RowContext } from '@context'
-import { BREAKPOINT_NAME, COL_FLEX_REG } from '@constant'
-import { isNumber, omit } from '@utils'
-import { withDefaultProps } from '@hocs'
+import { RowContext } from '../_internal/context'
+import { BREAKPOINT_NAME, COL_FLEX_REG } from '../_internal/constant'
+import { isNumber, omit } from '../_internal/utils'
+import { withDefaultProps } from '../_internal/hocs'
 import useClass from './hooks/use_class'
 import { ColProps } from './props'
 

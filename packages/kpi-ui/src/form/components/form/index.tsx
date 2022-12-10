@@ -1,6 +1,12 @@
-import InternalForm from '@components/form/components/form'
-import type { FormProps } from '../../props'
+import type { ReactElement, Ref } from 'react'
+import InternalForm from '../../../_internal/components/form'
 
-export default function Form(props: FormProps) {
+import type { FormInstance, FormProps } from '../../props'
+
+function Form(props: FormProps) {
   return <InternalForm {...props} />
 }
+
+export default Form as <State = any>(
+  props: FormProps<State> & { ref?: Ref<FormInstance<State>> }
+) => ReactElement

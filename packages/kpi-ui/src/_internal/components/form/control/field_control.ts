@@ -7,7 +7,7 @@ import { isFunction, isNullish, isObjectLike, isUndefined } from '../../../utils
 import { getIn } from '../utils/value'
 import { _getName } from '../utils/path'
 
-import type { FormStateControl } from './group_control'
+import type { FormInitialControl } from './group_control'
 import type {
   UpdateFieldActionType as ActionType,
   InternalFormFieldProps,
@@ -54,9 +54,9 @@ export default class FormFieldControl extends BaseControl {
     this._props = isObjectLike(props) ? props : {}
   }
 
-  public _parent: FormStateControl | null = null
+  public _parent: FormInitialControl | null = null
 
-  public setParent = (parent: FormStateControl) => {
+  public setParent = (parent: FormInitialControl) => {
     this._parent = parent
     return this
   }
