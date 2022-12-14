@@ -8,3 +8,9 @@ export declare type MayBe<T> = T | null | undefined
 export declare type Writable<T> = { -readonly [P in keyof T]: T[P] }
 export declare type Full<T> = T extends {} ? { [K in keyof T]: T[K] } : T
 export declare type Equal<T, U> = T extends U ? (U extends T ? true : false) : false
+
+// config-provider
+export declare type SizeType = 'small' | 'middle' | 'large' | undefined
+export declare type DisabledType = true | false | undefined
+
+export declare type Size = SizeType | number

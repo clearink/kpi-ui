@@ -1,6 +1,6 @@
 import { useMemo, Fragment, ReactElement } from 'react'
 import { withDefaultProps } from '../_internal/hocs'
-import { useFlexGapSupport, usePrefix } from '../_internal/hooks'
+import { useFlexGapSupport, usePrefixCls } from '../_internal/hooks'
 import { flattenChildren } from '../_internal/utils'
 import useSpaceGutter from './hooks/use_space_gutter'
 import useClass from './hooks/use_class'
@@ -12,7 +12,7 @@ function Space(props: SpaceProps) {
   // 是否支持 gap 属性
   const gapSupport = useFlexGapSupport()
 
-  const name = usePrefix('space')
+  const name = usePrefixCls('space')
   const className = useClass(name, props)
   // 水平 垂直 间距
   const [hGutter, vGutter] = useSpaceGutter(size, !!split)

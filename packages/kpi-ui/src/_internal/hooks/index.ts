@@ -1,4 +1,4 @@
-export { default as usePrefix } from './use-prefix'
+export { default as usePrefixCls } from './use-prefix'
 export { default as useFlexGapSupport } from './use-flex-gap-support'
 export { default as useEvent } from './use-event'
 export { default as useWave } from './use-wave'

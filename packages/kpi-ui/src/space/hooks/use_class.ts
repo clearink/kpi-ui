@@ -10,14 +10,12 @@ export default function useClass(name: string, props: SpaceProps) {
     return useDefault ? 'center' : $align
   }, [$align, direction])
 
-  return useMemo(
-    () =>
-      cls(name, {
-        [`${name}--${direction}`]: direction,
-        [`${name}--align-${align}`]: align,
-        [`${name}--wrap`]: wrap,
-        [className!]: !!className,
-      }),
-    [name, className, direction, align, wrap]
-  )
+  return useMemo(() => {
+    return cls(name, {
+      [`${name}--${direction}`]: direction,
+      [`${name}--align-${align}`]: align,
+      [`${name}--wrap`]: wrap,
+      [className!]: className,
+    })
+  }, [name, className, direction, align, wrap])
 }

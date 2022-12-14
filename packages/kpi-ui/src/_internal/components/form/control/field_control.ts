@@ -3,7 +3,7 @@
 import isEqual from 'react-fast-compare'
 import type { MutableRefObject } from 'react'
 import BaseControl from './base_control'
-import { isFunction, isNullish, isObjectLike, isUndefined } from '../../../utils'
+import { isFunction, isNullish, isUndefined } from '../../../utils'
 import { getIn } from '../utils/value'
 import { _getName } from '../utils/path'
 
@@ -29,12 +29,6 @@ export default class FormFieldControl extends BaseControl {
     this._key = _getName(_name)
   }
 
-  // 生成 DOM 唯一标识
-  public _getId = (parentName?: string) => {
-    return [parentName, ...this._name].filter((item) => item !== undefined).join('_')
-  }
-
-  // 是否应该更新自己
   public shouldUpdate = (prev: any, next: any, type: ActionType) => {
     const { _key: key, _name: name } = this
     const handler = this._props.shouldUpdate
@@ -51,7 +45,7 @@ export default class FormFieldControl extends BaseControl {
   public _props: Partial<InternalFormFieldProps> = {}
 
   public setFieldProps = (props: Partial<InternalFormFieldProps>) => {
-    this._props = isObjectLike(props) ? props : {}
+    this._props = props
   }
 
   public _parent: FormInitialControl | null = null
@@ -84,6 +78,7 @@ export default class FormFieldControl extends BaseControl {
 
   public getFieldMeta = (): FieldMeta => {
     return {
+      name: this._name,
       dirty: this.isDirty(),
       touched: this.isTouched(),
       validating: this._validating,

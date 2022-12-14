@@ -122,22 +122,27 @@ export interface FormInstance<S = any> {
   resetFields: (fields?: NamePath[]) => void
 
   /**
-   * @zh 字段是否都 touched 了
+   * @zh 字段是否 touched 了
    */
   isFieldTouched: (namePath: NamePath) => boolean
 
+  /**
+   * @zh 字段是否都 touched 了
+   */
   isFieldsTouched: (namePath?: NamePath[]) => boolean
 
+  /**
+   * @zh 获取字段错误信息
+   *
+   */
   getFieldError: (namePath: NamePath) => string[]
 
+  /**
+   * @zh 获取一组字段错误信息
+   */
   getFieldsError: (
     nameList?: NamePath[]
   ) => Pick<InternalFieldData, 'errors' | 'name' | 'warnings'>[]
-
-  /**
-   * @zh 滚动到对应字段
-   */
-  scrollToField: (NamePath?: NamePath) => void
 }
 
 export type Forms = Record<string, FormInstance>
@@ -150,19 +155,10 @@ export interface FormFieldProps<State = any> {
    */
   name?: NamePath
 
-  /**
-   * @zh `label` 标签的文本
-   */
-  label?: ReactNode
-
   children?:
     | ReactElement
     | ((control: AnyObject, meta: FieldMeta, formInstance: FormInstance<State>) => React.ReactNode)
 
-  // /**
-  //  * @zh 为 `true` 时不带样式，作为纯字段控件使用
-  //  */
-  // noStyle?: boolean
   /**
    * @zh 自定义字段更新逻辑，说明[见下](#shouldUpdate)
    * @default false
@@ -189,28 +185,18 @@ export interface FormFieldProps<State = any> {
    * @default value
    */
   valuePropName?: string
+
   /**
    * @zh 收集字段时机
    * @default onChange
    */
   trigger?: string
 
-  // /**
-  //  * @zh 必填样式设置。如不设置，则会根据校验规则自动生成
-  //  * @default false
-  //  */
-  // required?: boolean
-
   /**
    * @zh 当某一规则校验不通过时，是否停止剩下的规则的校验
    * @default false
    */
   validateFirst?: boolean
-
-  /**
-   * @zh 校验状态，如不设置，则会根据校验规则自动生成，可选：'success' 'warning' 'error' 'validating'
-   */
-  validateStatus?: 'success' | 'warning' | 'error' | 'validating'
 
   /**
    * @zh 设置字段校验的时机
@@ -264,7 +250,7 @@ export interface FormListProps
   children?: (
     fields: ListField[],
     arrayHelpers: FormArrayHelpers,
-    meta: FieldMeta
+    meta: FieldData
   ) => JSX.Element | React.ReactNode
 
   /**

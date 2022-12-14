@@ -44,9 +44,9 @@ export default class FormGroupControl<State = any> {
 
     this.$dispatch = new FormDispatchControl({
       $props: this.$props,
-      $initial: this.$initial,
-      $state: this.$state,
       $controls: this.$controls,
+      $state: this.$state,
+      $initial: this.$initial,
     })
   }
 
@@ -70,10 +70,8 @@ export default class FormGroupControl<State = any> {
       submitForm: $dispatch.submitForm,
       resetFields: $dispatch.resetFields,
 
-      isFieldTouched: $dispatch.isFieldTouched,
-      isFieldsTouched: $dispatch.isFieldsTouched,
-
-      scrollToField: this.scrollToField,
+      isFieldTouched: $controls.isFieldTouched,
+      isFieldsTouched: $controls.isFieldsTouched,
 
       /** @private */
       getInternalHooks: this._getInternalHooks,
@@ -93,7 +91,6 @@ export default class FormGroupControl<State = any> {
     return {
       setFormProps: $props.setFormProps,
       setInitialValues: $initial.setInitialValues,
-      // TODO: 待优化
       registerField: $dispatch.registerField,
       registerWatch: $dispatch.$watch.registerWatch,
       setFieldMeta: $controls.setFieldMeta,
@@ -101,29 +98,6 @@ export default class FormGroupControl<State = any> {
       dispatch: $dispatch.dispatch,
       registerSubscribe: $dispatch.$dependencies.registerSubscribe,
     }
-  }
-
-  /** ==================================================== */
-  /** Features                                             */
-  /** ==================================================== */
-
-  // TODO: 不属于该处的功能. 因为有可能没有dom
-  // 滚动到对应位置
-  scrollToField = (namePath: NamePath = []) => {
-    const key = _getName(namePath)
-
-    if (!key) return
-
-    const control = this.$controls.getControls().find(({ _key }) => _key === key)
-
-    const formName = this.$props.props.name
-    const fieldId = control?._getId(formName)
-
-    if (fieldId === undefined) return
-
-    const dom = document.querySelector(`#${fieldId}`)
-
-    dom?.scrollIntoView({ behavior: 'smooth' })
   }
 }
 
@@ -402,6 +376,20 @@ export class FormControlsControl {
       }
     })
   }
+
+  // TODO: 优化逻辑
+  isFieldTouched = (namePath: NamePath) => {
+    return this.isFieldsTouched([namePath])
+  }
+
+  // 检查全部字段是否都被触摸过
+  // TODO: 优化逻辑
+  isFieldsTouched = (nameList?: NamePath[]) => {
+    const allFields = this.getControlsByName(true, nameList)
+    const untouchedFields = allFields.filter((control) => !control.isTouched())
+
+    return untouchedFields.length === 0
+  }
 }
 
 /** ==================================================== */
@@ -517,15 +505,11 @@ export class FormDispatchControl<State = any> {
   constructor(
     private $inject: {
       $props: FormPropsControl
-      $initial: FormInitialControl
-      $state: FormStateControl<State>
       $controls: FormControlsControl
+      $state: FormStateControl<State>
+      $initial: FormInitialControl
     }
   ) {}
-
-  private get $state() {
-    return this.$inject.$state
-  }
 
   private get $props() {
     return this.$inject.$props
@@ -533,6 +517,10 @@ export class FormDispatchControl<State = any> {
 
   private get $controls() {
     return this.$inject.$controls
+  }
+
+  private get $state() {
+    return this.$inject.$state
   }
 
   get $initial() {
@@ -561,8 +549,10 @@ export class FormDispatchControl<State = any> {
       const updateControls = controls.concat(dependencies)
       updateControls.forEach((control) => control.forceUpdate())
     }
+
     // 通知监听事件
     this.$watch.publishWatch(prev, next)
+
     return [controls, dependencies] as const
   }
 
@@ -589,7 +579,7 @@ export class FormDispatchControl<State = any> {
     if (action.type === 'setFields') {
       const { fields } = action
       // 更新字段 meta 属性
-      fields.forEach((field) => $controls.setFieldMeta(field.name, field))
+      fields.forEach((field) => $controls.setFieldMeta(field.name, field as FieldMeta))
       // 获得更新数据
       const [prev, next] = $state.setFieldsData(fields)
       // 更新字段
@@ -706,24 +696,6 @@ export class FormDispatchControl<State = any> {
     return returnPromise
   }
 
-  isFieldTouched = (namePath: NamePath) => {
-    return this.isFieldsTouched([namePath])
-  }
-
-  // 检查全部字段是否都触发过 onBlur
-  isFieldsTouched = (fields?: NamePath[]) => {
-    const untouchedFields = this.$controls.getControls(true).filter((control) => {
-      if (!fields) return false
-
-      const { touched } = control.getFieldMeta()
-      const implicate = fields.some((fieldName) => {
-        return isDependent(control._name, fieldName)
-      })
-      return implicate && !touched
-    })
-    return untouchedFields.length === 0
-  }
-
   // 通知依赖字段
   publishDependentControl = (controls: FormFieldControl[]) => {
     const dependencies = this.$dependencies.findDependencies(controls)
@@ -746,7 +718,7 @@ export class FormDispatchControl<State = any> {
   triggerOnValuesChange = (changedValues: Partial<State>) => {
     const { onValuesChange } = this.$props.props
 
-    if (!isFunction(onValuesChange)) return
+    if (!onValuesChange) return
 
     onValuesChange(changedValues, this.$state.getFieldsValue())
   }
@@ -755,7 +727,7 @@ export class FormDispatchControl<State = any> {
   triggerOnFieldsChange = (nameList: NamePath[]) => {
     const { onFieldsChange } = this.$props.props
 
-    if (!isFunction(onFieldsChange)) return
+    if (!onFieldsChange) return
 
     const changedFields = this.$state.getFields(nameList)
     const allFields = this.$state.getFields()
@@ -766,7 +738,7 @@ export class FormDispatchControl<State = any> {
   // 触发 onFinish 回调
   triggerOnFinish = (values: State) => {
     const { onFinish } = this.$props.props
-    if (!isFunction(onFinish)) return
+    if (!onFinish) return
 
     try {
       onFinish(values)
@@ -780,7 +752,9 @@ export class FormDispatchControl<State = any> {
   // 触发 onFailed 回调
   triggerOnFailed = (errors: any) => {
     const { onFailed } = this.$props.props
-    if (!isFunction(onFailed)) return
+
+    if (!onFailed) return
+
     onFailed(errors)
   }
 }

@@ -1,0 +1,91 @@
+import { isValidElement } from 'react'
+import { isString, logger, toArray } from '../../_internal/utils'
+
+import type { FormContextState } from '../../_internal/context'
+import type { FormItemLabelProps, FormItemProps } from '../props'
+
+// 格式化 FormItemLabel
+export function normalizeLabelChildren(
+  props: FormItemLabelProps,
+  formContextState: FormContextState
+) {
+  const { colon, label, requiredMark, required, tooltip } = props
+  const { vertical } = formContextState
+  const hasColon = !vertical && colon
+
+  let labelNode = label
+
+  if (hasColon && isString(labelNode) && labelNode.trim()) {
+    // 去除用户输入的 colon
+    labelNode = labelNode.replace(/[:|：]\s*$/, '')
+  }
+  // TODO: optional mark
+  if (requiredMark === 'optional' && !required) {
+    //
+  }
+  // TODO: tooltip
+  if (tooltip) {
+    //
+  }
+
+  return labelNode
+}
+
+/**
+ * 1. shouldUpdate 与 dependencies // 同时存在 "`shouldUpdate` and `dependencies` shouldn't be used together."
+ * 2. render props && _key 使用 // render props 不应该成为一个 field(name 不应该和 render props 一起使用)
+ * 3. render props && !(shouldUpdate || dependencies) // render props 只能与 shouldUpdate ，dependencies 一起使用
+ * 4. 使用 dependencies 时必须设置 name 或者使用 render props
+ */
+// 用法是否不合法
+export function isInvalidUsage(props: FormItemProps, functional: boolean) {
+  const { name, shouldUpdate, children, dependencies = [] } = props
+
+  const hasName = toArray(name).length
+
+  if (hasName && functional) {
+    // render props 时不能设置 name, Form.List 除外
+    logger.error(
+      true,
+      'Form.Item',
+      "Do not use `name` with `children` of render props since it's not a field."
+    )
+    return true
+  }
+
+  if (shouldUpdate && dependencies.length) {
+    logger.error(true, 'Form.Item', "`shouldUpdate` and `dependencies` shouldn't be used together.")
+    return true
+  }
+
+  if (functional && !(shouldUpdate || dependencies.length)) {
+    // render props 时必须设置 shouldUpdate， dependencies 中的一个
+    logger.error(
+      true,
+      'Form.Item',
+      '`children` of render props only work with `shouldUpdate` or `dependencies`.'
+    )
+    return true
+  }
+
+  if (dependencies.length && !(functional || hasName)) {
+    // dependencies 仅在 render props 或者 name 合法时使用
+    logger.error(
+      true,
+      'Form.Item',
+      'Must set `name` or use render props when `dependencies` is set.'
+    )
+    return true
+  }
+
+  if (hasName && !functional && !isValidElement(children)) {
+    logger.error(
+      true,
+      'Form.Item',
+      '`name` is only used for validate React element. If you are using Form.Item as layout display, please remove `name` instead. '
+    )
+    // 仅提示
+    return false
+  }
+  return false
+}

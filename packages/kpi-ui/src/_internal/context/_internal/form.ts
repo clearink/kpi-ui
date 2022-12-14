@@ -1,7 +1,7 @@
-import CtxHelper from './helper'
-import { logger } from '../utils'
-import type { FormInstance } from '../components/form/props'
-import type { InternalFormInstance } from '../components/form/internal_props'
+import CtxHelper from '../helper'
+import { logger } from '../../utils'
+import type { FormInstance } from '../../components/form/props'
+import type { InternalFormInstance } from '../../components/form/internal_props'
 
 // TODO: 目前还不确定
 interface FormContextState {
@@ -16,6 +16,7 @@ export const FormContext = CtxHelper<FormContextState>({
 // 将formControl实例传递给field组件
 const notFoundContext: any = () =>
   logger.error(true, 'Can not find FormContext. Please make sure you wrap Field under Form.')
+
 export const FieldContext = CtxHelper<InternalFormInstance>({
   getFieldError: notFoundContext,
   getFieldsError: notFoundContext,
@@ -29,7 +30,6 @@ export const FieldContext = CtxHelper<InternalFormInstance>({
   resetFields: notFoundContext,
   isFieldTouched: notFoundContext,
   isFieldsTouched: notFoundContext,
-  scrollToField: notFoundContext,
   getInternalHooks: () => {
     return {
       setPreserve: notFoundContext,

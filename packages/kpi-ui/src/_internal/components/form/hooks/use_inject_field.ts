@@ -11,7 +11,6 @@ import type {
 import type { FormFieldControl } from '../control'
 
 // 向 Form.Field 包裹的组件内部注入数据
-
 export default function useInjectField(
   props: InternalFormFieldProps,
   formInstance: InternalFormInstance,
@@ -24,15 +23,10 @@ export default function useInjectField(
   const collect = collectFieldInjectProps(props, formInstance, control, internalHook)
 
   // 处理 children
-  const handlerNormalize = normalizeChildren(collect(), formInstance, control)
-  const { functional, children, valid } = handlerNormalize($children)
+  const handleNormalize = normalizeChildren(collect(), formInstance, control)
+  const { functional, children, valid } = handleNormalize($children)
 
-  // // 不规范的用法 上层封装时使用
-  // if (isInvalidUsage(control, functional, shouldUpdate, dependencies)) {
-  //   return null
-  // }
-
-  logger.error(!functional && !valid, 'Form.Field `children` is not valid element.')
+  logger.error(!functional && !valid, 'Form.Field `children` is not valid react element.')
   if (functional || !valid) return children
 
   // 注入数据

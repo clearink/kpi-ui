@@ -9,7 +9,7 @@ export default function PageItem(props: PagerProps) {
     return cls(`${prefix}-item`, {
       [`${prefix}-item--active`]: active,
       [`${prefix}-item--disabled`]: disabled,
-      [className!]: !!className,
+      [className!]: className,
     })
   }, [active, className, disabled, prefix])
 

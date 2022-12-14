@@ -1,6 +1,6 @@
 import { useMemo, useRef } from 'react'
 import Field from './form_field'
-import { FieldContext, FieldListContext } from '../../../context'
+import { FieldContext, FieldListContext } from '../../../context/_internal'
 import { withDefaultProps } from '../../../hocs'
 import { useDeepMemo, useEvent } from '../../../hooks'
 import { toArray } from '../../../utils'

@@ -5,13 +5,12 @@ import { FormArrayControl, FormFieldControl } from '../control'
 
 import type { AnyObject } from '../../../types'
 import type {
-  FieldMeta,
   InternalFormFieldProps,
   InternalFormInstance,
   InternalHookReturn,
   InternalNamePath,
 } from '../internal_props'
-import type { FormInstance, FormArrayHelpers, FormListProps, ListField } from '../props'
+import type { FormInstance, FormArrayHelpers, FormListProps, ListField, FieldData } from '../props'
 
 // 从event中获取字段值函数
 function defaultGetValueFromEvent(valuePropName: string) {
@@ -50,11 +49,10 @@ export function collectFieldInjectProps(
     const injectProps = {
       ...childProps,
       ...getValueProps(value),
-      //  这个放到 外部
-      id: control._getId(formInstance.formName),
       // 触发条件
       [trigger!]: (...args: any[]) => {
         ;(window as any).start = performance.now()
+
         let next = getValueFromEvent(...args)
 
         if (isFunction(formatter)) next = formatter(next, value, formInstance.getFieldsValue())
@@ -95,7 +93,7 @@ export function collectListInjectProps(
     return () => null
   }
 
-  return (_: any, meta: FieldMeta, form: FormInstance) => {
+  return (_: any, meta: FieldData, form: FormInstance) => {
     const value = form.getFieldValue(listPath) || []
     if (!isArray(value)) {
       logger.error(true, `Current value of '${listPath.join(' > ')}' is not an array type.`)

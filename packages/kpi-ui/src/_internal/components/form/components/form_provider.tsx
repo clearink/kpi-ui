@@ -1,5 +1,5 @@
 import { ReactNode, useMemo, useRef } from 'react'
-import { FormContext } from '../../../context'
+import { FormContext } from '../../../context/_internal'
 import { useEvent } from '../../../hooks'
 import { omit } from '../../../utils'
 import type { FormInstance, Forms } from '../props'

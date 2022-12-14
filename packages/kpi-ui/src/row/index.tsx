@@ -1,7 +1,7 @@
 import { CSSProperties, useMemo } from 'react'
 import { RowContext } from '../_internal/context'
 import { withDefaultProps } from '../_internal/hocs'
-import { useFlexGapSupport, usePrefix } from '../_internal/hooks'
+import { useFlexGapSupport, usePrefixCls } from '../_internal/hooks'
 import { omit } from '../_internal/utils'
 import useClass from './hooks/use_class'
 import useRowGutter from './hooks/use_row_gutter'
@@ -9,7 +9,7 @@ import { RowProps } from './props'
 
 function Row(props: RowProps) {
   const { children, style: $style, gutter, ...rest } = props
-  const name = usePrefix('row')
+  const name = usePrefixCls('row')
   const className = useClass(name, props)
   const gapSupport = useFlexGapSupport()
   const [hGutter, vGutter] = useRowGutter(gutter)

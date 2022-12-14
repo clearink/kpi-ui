@@ -1,12 +1,45 @@
 import { useMemo } from 'react'
 import { useForm as useInternalForm } from '../../_internal/components/form'
+import type { NamePath } from '../../_internal/components/form/props'
 
 import type { FormInstance } from '../props'
 
 export default function useForm<State = any>(form?: FormInstance<State>) {
   const internalForm = useInternalForm<State>()
 
-  return useMemo(() => {
-    return form ?? internalForm
+  return useMemo<FormInstance>(() => {
+    return (
+      form ?? {
+        ...internalForm,
+        scrollToField: (name: NamePath) => {},
+      }
+    )
   }, [internalForm, form])
 }
+/** ==================================================== */
+/** Features                                             */
+/** ==================================================== */
+
+// // TODO: 不属于该处的功能. 因为有可能没有dom
+// // 滚动到对应位置
+// scrollToField = (namePath: NamePath = []) => {
+//   const key = _getName(namePath)
+
+//   if (!key) return
+
+//   const control = this.$controls.getControls().find(({ _key }) => _key === key)
+
+//   const formName = this.$props.props.name
+//   const fieldId = control?._getId(formName)
+//   /**
+//    *   public _getId = (parentName?: string) => {
+//   return [parentName, ...this._name].filter((item) => item !== undefined).join('_')
+// }
+//    */
+
+//   if (fieldId === undefined) return
+
+//   const dom = document.querySelector(`#${fieldId}`)
+
+//   dom?.scrollIntoView({ behavior: 'smooth' })
+// }

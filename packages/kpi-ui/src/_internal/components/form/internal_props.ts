@@ -1,5 +1,6 @@
 // form 内部类型声明
 
+import type { ReactNode } from 'react'
 import type { FormFieldControl, InvalidField } from './control'
 
 import type { FormInstance, FormFieldProps, NamePath, FieldData, FormProps } from './props'
@@ -9,6 +10,12 @@ export type WatchCallBack = (value: any) => void
 export type ControlsByNameReturn<R extends boolean> = R extends true
   ? FormFieldControl[]
   : (FormFieldControl | InvalidField)[]
+
+export interface InnerReturn {
+  functional?: true
+  valid?: boolean
+  children: ReactNode
+}
 
 export type UpdateFieldAction =
   | {
@@ -41,6 +48,7 @@ export type UpdateFieldAction =
 export type UpdateFieldActionType = UpdateFieldAction['type']
 
 export interface FieldMeta {
+  name: InternalNamePath
   dirty: boolean
   touched: boolean
   validating: boolean // 字段级别的校验
@@ -49,7 +57,6 @@ export interface FieldMeta {
 }
 
 export interface InternalFieldData extends FieldMeta {
-  name: InternalNamePath
   value: any
 }
 export interface InternalFormFieldProps<S = any> extends Omit<FormFieldProps<S>, 'name'> {
@@ -82,12 +89,6 @@ export interface InternalFormInstance<S = any> extends FormInstance<S> {
    * @zh 设置字段校验时的时机
    */
   validateTrigger?: string | string[] | false
-
-  /**
-   * @private
-   * @zh 表单名称，用于区分不同的表单
-   */
-  formName?: string
 }
 
 export interface InternalHookReturn<State = any> {
@@ -139,20 +140,3 @@ export interface InternalHookReturn<State = any> {
    */
   dispatch: (action: UpdateFieldAction) => void
 }
-
-// export type GetIn<State extends any, Path extends PathItem[]> = Path extends [infer P, ...infer R]
-//   ? P extends keyof State
-//     ? R extends [any, ...any[]]
-//       ? State[P] extends any
-//         ? GetIn<State[P], R>
-//         : undefined
-//       : State[P]
-//     : undefined
-//   : undefined
-
-// public getIn<N extends PathItem>(name: N): GetIn<State, [N]>
-// public getIn<N extends PathItem, M extends [N, ...N[]]>(name: M): GetIn<State, M>
-// public getIn<N extends Readonly<PathItem[]>>(name: N): GetIn<State, Writable<N>>
-// public getIn<N extends PathItem | PathItem[]>(name: N) {
-//   return getIn(this._state, toArray(name))
-// }

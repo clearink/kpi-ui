@@ -1,4 +1,6 @@
-export default function usePrefix(name: string) {
-  const prefix = 'kpi' // 将来可能会从 ConfigProvider 中获取
-  return name ? `${prefix}-${name}` : prefix
+import { ConfigContext } from '../../context/config'
+
+export default function usePrefixCls(name?: string) {
+  const { prefixCls = 'kpi' } = ConfigContext.useState()
+  return name ? `${prefixCls}-${name}` : prefixCls
 }

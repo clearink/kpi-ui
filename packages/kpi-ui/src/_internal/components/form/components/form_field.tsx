@@ -1,7 +1,7 @@
 import { useRef, Fragment, useReducer, useMemo } from 'react'
 
 import { withDefaultProps } from '../../../hocs'
-import { FieldContext } from '../../../context'
+import { FieldContext } from '../../../context/_internal'
 import { FormFieldControl, HOOK_MARK } from '../control'
 
 import useInjectField from '../hooks/use_inject_field'

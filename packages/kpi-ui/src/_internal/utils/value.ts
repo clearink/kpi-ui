@@ -1,4 +1,4 @@
-export function omit<T, K extends keyof T>(obj: T, keys: Array<K>): Omit<T, K> {
+export function omit<T, K extends keyof T>(obj: T, keys: readonly K[]): Omit<T, K> {
   const result = { ...obj }
   for (let i = 0; i < keys.length; i += 1) {
     const key = keys[i]
@@ -6,10 +6,9 @@ export function omit<T, K extends keyof T>(obj: T, keys: Array<K>): Omit<T, K> {
   }
   return result
 }
-
 export function pick<T, K extends keyof T>(
   obj: T,
-  keys: Array<K>,
+  keys: readonly K[],
   allowUndefined = false
 ): Pick<T, K> {
   const result = {} as T

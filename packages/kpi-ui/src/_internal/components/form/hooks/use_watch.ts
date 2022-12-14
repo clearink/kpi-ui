@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FieldContext } from '../../../context'
+import { FieldContext } from '../../../context/_internal'
 import { useIsomorphicEffect } from '../../../hooks'
 import { isUndefined, logger } from '../../../utils'
 import { HOOK_MARK } from '../control'

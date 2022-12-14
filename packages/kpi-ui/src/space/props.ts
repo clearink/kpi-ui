@@ -1,7 +1,6 @@
 import { HTMLAttributes, ReactNode } from 'react'
-import { SizeType } from './assets/constant'
+import { Size } from '../_internal/types'
 
-type Size = SizeType | number
 export interface SpaceProps extends HTMLAttributes<HTMLDivElement> {
   align?: 'start' | 'end' | 'center' | 'baseline'
   direction?: 'vertical' | 'horizontal'

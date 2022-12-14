@@ -1,12 +1,12 @@
 import cls from 'classnames'
-import { usePrefix } from '../../_internal/hooks'
-import { isNumber } from '../../_internal/utils'
+import { usePrefixCls } from '../../_internal/hooks'
+import { isNumber, isUndefined } from '../../_internal/utils'
 import { BREAKPOINT_NAME } from '../../_internal/constant'
 import { ColProps } from '../props'
 
 export default function useClass(props: ColProps) {
   const { className, span, offset, pull, push, order } = props
-  const name = usePrefix('col')
+  const name = usePrefixCls('col')
   const extraClass = BREAKPOINT_NAME.reduce((res, size) => {
     const breakpoint = props[size] ?? {}
     const config = isNumber(breakpoint) ? { span: breakpoint } : breakpoint
@@ -20,12 +20,12 @@ export default function useClass(props: ColProps) {
     }
   }, {})
   return cls(name, {
-    [`${name}-${span}`]: true,
+    [`${name}-${span}`]: !isUndefined(span),
     [`${name}-offset-${offset}`]: !!offset,
     [`${name}-pull-${pull}`]: !!pull,
     [`${name}-push-${push}`]: !!push,
     [`${name}-order-${order}`]: !!order,
     ...extraClass,
-    [className!]: !!className,
+    [className!]: className,
   })
 }

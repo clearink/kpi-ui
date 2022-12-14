@@ -4,11 +4,5 @@ import { PaginationProps } from '../props'
 
 export default function useClass(name: string, props: PaginationProps) {
   const { className } = props
-  return useMemo(
-    () =>
-      cls(name, {
-        [`${className!}`]: !!className,
-      }),
-    [name, className]
-  )
+  return useMemo(() => cls(name, className), [name, className])
 }

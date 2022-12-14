@@ -10,10 +10,10 @@ import {
   useRef,
 } from 'react'
 import isEqual from 'react-fast-compare'
-import { FieldContext, FormContext } from '../../../context'
+import { FieldContext, FormContext } from '../../../context/_internal'
 import { withDefaultProps } from '../../../hocs'
 import { useConstructor, useEvent, useIsomorphicEffect } from '../../../hooks'
-import { isFunction, toArray } from '../../../utils'
+import { isFunction, omit, toArray } from '../../../utils'
 import { HOOK_MARK } from '../control'
 import useForm from '../hooks/use_form'
 
@@ -21,17 +21,37 @@ import type { InternalFormInstance } from '../internal_props'
 import type { FormInstance, FormProps } from '../props'
 
 function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance>) {
-  const { name, as, form, children: $children, onReset, initialValues, validateTrigger } = props
+  const {
+    name,
+    as,
+    form,
+    children: $children,
+    onReset,
+    initialValues,
+    validateTrigger,
+    ...restProps
+  } = props
 
-  const formInstance = useForm(form) as InternalFormInstance // form 实例
+  // 表单剩余字段
+  const formProps = omit(restProps, [
+    'preserve',
+    'validationSchema',
+    'fields',
+    'onFinish',
+    'onFieldsChange',
+    'onValuesChange',
+    'onFailed',
+  ])
+
+  const formInstance = useForm(form) as InternalFormInstance
   useImperativeHandle(ref, () => formInstance)
 
   const internalHook = useMemo(() => {
     return formInstance.getInternalHooks(HOOK_MARK)
   }, [formInstance])
 
+  // TODO: 实现表单联动功能
   internalHook?.setFormProps(props)
-  // 如果form是 render props 不要主动更新视图
 
   // 设置初始值, 仅在挂载前设置一次
   useConstructor(() => internalHook?.setInitialValues(initialValues))
@@ -84,13 +104,13 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   }, [internalHook, props.fields])
 
   return (
-    <Root onSubmit={handleSubmit} onReset={handleReset}>
+    <Root {...formProps} onSubmit={handleSubmit} onReset={handleReset}>
       <FieldContext.Provider value={fieldContext}>{children}</FieldContext.Provider>
     </Root>
   )
 }
 
-export default withDefaultProps(forwardRef<FormInstance, FormProps>(Form), {
+export default withDefaultProps(forwardRef(Form), {
   preserve: true,
   validateTrigger: 'onChange',
 } as const) as <State = any>(

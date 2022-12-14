@@ -10,17 +10,15 @@ export default function useClass(name: string, props: DividerProps) {
     () => ['left', 'right'].includes(orientation) && orientationMargin !== undefined,
     [orientation, orientationMargin]
   )
-  return useMemo(
-    () =>
-      cls(name, {
-        [`${name}--${type}`]: type,
-        [`${name}--dashed`]: dashed,
-        [`${name}--plain`]: plain,
-        [`${name}--with-text`]: children,
-        [`${name}--text-${orientation}`]: orientation,
-        [`${name}--custom-margin`]: customMargin,
-        [className!]: !!className,
-      }),
-    [name, className, type, dashed, children, customMargin, plain, orientation]
-  )
+  return useMemo(() => {
+    return cls(name, {
+      [`${name}--${type}`]: type,
+      [`${name}--dashed`]: dashed,
+      [`${name}--plain`]: plain,
+      [`${name}--with-text`]: children,
+      [`${name}--text-${orientation}`]: orientation,
+      [`${name}--custom-margin`]: customMargin,
+      [className!]: className,
+    })
+  }, [name, className, type, dashed, children, customMargin, plain, orientation])
 }
