@@ -152,13 +152,16 @@ export class FormDependenciesControl {
 
   findDependencies = (updateControls: FormFieldControl[]) => {
     if (!updateControls.length) return [] as FormFieldControl[]
-
+    // 只获取 touched 与 dirty 字段
     const dependentControls = updateControls.reduce((res, control) => {
-      const controls = this._dependencies.get(control._key)
-      controls?.forEach((field) => res.add(field))
-
+      this._dependencies.get(control._key)?.forEach((field) => {
+        if (field.isDirty() || field.isTouched()) res.add(field)
+      })
       return res
     }, new Set<FormFieldControl>())
+
+    const nextControls = this.findDependencies([...dependentControls.keys()])
+    nextControls.forEach((control) => dependentControls.add(control))
 
     return [...dependentControls.keys()]
   }
@@ -311,9 +314,9 @@ export class FormControlsControl {
     const pureControls = this.getControls(true)
 
     const controls = pureControls.reduce((set, control) => {
-      nameList.some((name) => {
-        return isDependent(control._name, name)
-      }) && set.add(control)
+      const dependent = nameList.some((name) => isDependent(control._name, name))
+
+      if (dependent) set.add(control)
 
       return set
     }, new Set<FormFieldControl>())
@@ -700,10 +703,7 @@ export class FormDispatchControl<State = any> {
   publishDependentControl = (controls: FormFieldControl[]) => {
     const dependencies = this.$dependencies.findDependencies(controls)
 
-    // 仅需要校验 dirty 与 touched 字段
-    const nameList = dependencies
-      .filter((control) => control.isDirty() || control.isTouched())
-      .map(({ _name }) => _name)
+    const nameList = dependencies.map(({ _name }) => _name)
 
     nameList.length && this.validateFields(nameList)
 

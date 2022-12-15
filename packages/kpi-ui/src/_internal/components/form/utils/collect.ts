@@ -51,8 +51,6 @@ export function collectFieldInjectProps(
       ...getValueProps(value),
       // 触发条件
       [trigger!]: (...args: any[]) => {
-        ;(window as any).start = performance.now()
-
         let next = getValueFromEvent(...args)
 
         if (isFunction(formatter)) next = formatter(next, value, formInstance.getFieldsValue())

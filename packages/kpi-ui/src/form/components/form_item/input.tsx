@@ -24,6 +24,8 @@ export default function FormItemInput(props: FormItemInputProps & FormItemInputE
 
   const formItemInputContext = useMemo(() => ({}), [])
 
+  // 这里实现errorList validateStatus 等逻辑
+
   return (
     <FormItemContext.Provider value={formItemContext}>
       {/* 设置noStyle 后的数据 */}

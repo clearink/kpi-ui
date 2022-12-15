@@ -1,8 +1,8 @@
-import { isValidElement } from 'react'
-import { isString, logger, toArray } from '../../_internal/utils'
+import { cloneElement, isValidElement } from 'react'
+import { isFunction, isString, logger, toArray } from '../../_internal/utils'
 
 import type { FormContextState } from '../../_internal/context'
-import type { FormItemLabelProps, FormItemProps } from '../props'
+import type { FormInstance, FormItemLabelProps, FormItemProps } from '../props'
 
 // 格式化 FormItemLabel
 export function normalizeLabelChildren(
@@ -31,6 +31,31 @@ export function normalizeLabelChildren(
   return labelNode
 }
 
+// 格式化 FormItem.Children
+export function normalizeItemChildren(
+  props: FormItemProps,
+  formInstance: FormInstance,
+  formItemId?: string
+) {
+  const { children } = props
+
+  const functional = isFunction(children)
+
+  if (isInvalidUsage(props, functional)) {
+    return () => undefined
+  }
+
+  if (isValidElement<HTMLInputElement>(children)) {
+    const originId = children.props.id
+    return cloneElement(children, { id: originId ?? formItemId })
+  }
+
+  if (functional) {
+    return () => children(formInstance)
+  }
+
+  return () => children
+}
 /**
  * 1. shouldUpdate 与 dependencies // 同时存在 "`shouldUpdate` and `dependencies` shouldn't be used together."
  * 2. render props && _key 使用 // render props 不应该成为一个 field(name 不应该和 render props 一起使用)

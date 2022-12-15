@@ -1,12 +1,10 @@
 import { useMemo } from 'react'
-import { FormContext } from '../../_internal/context'
 import { isUndefined, toArray } from '../../_internal/utils'
 
 import type { FormItemProps } from '../props'
 
-export default function useFormItemId(name: FormItemProps['name']) {
-  const { formName } = FormContext.useState()
-
+// 唯一id
+export default function useFormItemId(name: FormItemProps['name'], formName?: string) {
   return useMemo(() => {
     const namePath = toArray(name)
     if (!namePath.length) return undefined
