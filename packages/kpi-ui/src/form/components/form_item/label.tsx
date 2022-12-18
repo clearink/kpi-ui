@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import Col from '../../../col'
 import { FormContext } from '../../../_internal/context'
 import { isString, mergeSameNameProps } from '../../../_internal/utils'
@@ -6,7 +7,7 @@ import { normalizeLabelChildren } from '../../utils/children'
 
 import type { FormItemLabelExtraProps, FormItemLabelProps } from '../../props'
 
-export default function FormItemLabel(props: FormItemLabelProps & FormItemLabelExtraProps) {
+function FormItemLabel(props: FormItemLabelProps & FormItemLabelExtraProps) {
   // context state
   const formContextState = FormContext.useState()
 
@@ -27,3 +28,4 @@ export default function FormItemLabel(props: FormItemLabelProps & FormItemLabelE
     </Col>
   )
 }
+export default memo(FormItemLabel)

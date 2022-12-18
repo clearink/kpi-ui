@@ -10,6 +10,8 @@ import type {
   FormItemProps,
   FormProps,
   RequiredMark,
+  FormItemInputExtraProps,
+  ValidateStatus,
 } from '../props'
 
 export function useFormClass(
@@ -31,15 +33,26 @@ export function useFormClass(
   }, [className, layout, name, requiredMark, size])
 }
 
-export function useFormItemClass(props: FormItemProps, prefixCls: string) {
+export function useFormItemClass(
+  props: FormItemProps,
+  validateStatus: ValidateStatus,
+  prefixCls: string
+) {
   const { hidden, className } = props
 
   return useMemo(() => {
     return cls(prefixCls, {
       [`${prefixCls}--hidden`]: hidden,
+
+      // Status
+      // [`${prefixCls}--has-feedback`]: validateStatus && hasFeedback,
+      [`${prefixCls}--has-success`]: validateStatus === 'success',
+      [`${prefixCls}--has-warning`]: validateStatus === 'warning',
+      [`${prefixCls}--has-error`]: validateStatus === 'error',
+      [`${prefixCls}--is-validating`]: validateStatus === 'validating',
       [className!]: !!className,
     })
-  }, [className, hidden, prefixCls])
+  }, [className, hidden, prefixCls, validateStatus])
 }
 
 export default function useFormItemLabelClass(

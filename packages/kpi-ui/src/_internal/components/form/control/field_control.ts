@@ -117,6 +117,8 @@ export default class FormFieldControl extends BaseControl {
     if (!isEqual(prev, current)) this._props.onMetaChange?.(current)
   }
 
+  private lastValidate: null | Promise<any> = null
+
   // 字段校验
   public validate = async (value: any) => {
     const { rule: validator } = this._props
@@ -124,15 +126,22 @@ export default class FormFieldControl extends BaseControl {
     // 没有操作过的字段不能校验, 没有校验规则的也不用校验
     if (!this._touched || !validator) return
 
-    try {
-      this.setFieldMeta({ validating: true })
-      await validator.validate(value)
-      this.setFieldMeta({ validating: false, errors: [] })
-    } catch (error) {
-      const { issues = [] } = error as { issues: SchemaIssue[] }
-      const errors = issues.map((issue) => issue.message)
-      this.setFieldMeta({ validating: false, errors })
-    }
+    const promise = validator.validate(value)
+
+    this.lastValidate = promise
+
+    promise
+      .then(() => undefined)
+      .catch((e) => e)
+      .then((error = {}) => {
+        if (this.lastValidate !== promise) return
+
+        const { issues = [] } = error as { issues: SchemaIssue[] }
+
+        const errors = issues.map((issue) => issue.message) as string[]
+
+        this.setFieldMeta({ validating: false, errors })
+      })
   }
 }
 

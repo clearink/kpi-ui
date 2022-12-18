@@ -5,7 +5,14 @@ export type {
   FormItemContextState,
   NoStyleContextState,
   FormItemInputContextState,
+  FormErrorListContextState,
 } from './form'
-export { FormContext, FormItemContext, NoStyleContext, FormItemInputContext } from './form'
+export {
+  FormContext,
+  FormItemContext,
+  NoStyleContext,
+  FormItemInputContext,
+  FormErrorListContext,
+} from './form'
 
 export { SizeContext, DisabledContext } from './config'

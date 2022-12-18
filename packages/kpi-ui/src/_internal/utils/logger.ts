@@ -9,9 +9,12 @@ class Logger {
 
   private wrapper(condition: boolean, data: any[], callback: ArrowFunction) {
     if (!isDev) return
+
     const key = JSON.stringify(data)
     const exist = this.cache.has(key)
+
     if (exist || !condition) return
+
     this.cache.add(key)
     callback.call(null, ...data)
   }

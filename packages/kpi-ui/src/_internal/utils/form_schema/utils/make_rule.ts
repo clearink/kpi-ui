@@ -22,6 +22,6 @@ export function makeRule<T = any>(
   return async (value: T, context: Context): Promise<RuleReturn<T>> => {
     const res = await handler(value, context)
     if (res) return Valid(value)
-    return Invalid(context)(message, params)
+    return Invalid(context)(message, { value, ...params })
   }
 }

@@ -1,4 +1,6 @@
+import { isValidElement } from 'react'
 import { isFunction, isNullish, isNumber } from '../is'
+
 import type { Context, Message, Name, SchemaIssue } from './interface'
 
 const pathToString = (path: Name[] = []) => {
@@ -22,6 +24,9 @@ export default class SchemaContext extends TypeError {
   static format(message: Message, path: Name[] = []) {
     return (params: any = {}) => {
       if (isFunction(message)) return message({ ...params, path })
+
+      if (isValidElement(message)) return message
+
       const $params = { ...params, path: pathToString(path) || 'this' }
       return Object.entries($params).reduce((msg, [k, v]) => {
         const reg = new RegExp(`{#${k}}`, 'g')
@@ -48,7 +53,11 @@ export default class SchemaContext extends TypeError {
   }
 
   get message() {
-    const issues = this.issues.map((issue) => issue.message)
+    const issues = this.issues.map((issue) => {
+      if (!isValidElement(issue.message)) return issue.message
+      return `error can not stringify`
+    })
+
     return JSON.stringify(issues, null, 2)
   }
 }

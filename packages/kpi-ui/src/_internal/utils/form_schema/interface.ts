@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react'
+import type { AnyObject } from '../../types'
 import type SchemaContext from './context'
 
 export type Name = string | number
@@ -10,11 +12,11 @@ export interface Context {
 export type Options = Partial<Omit<Context, 'issue'>>
 
 export interface SchemaIssue {
-  message: string
+  message: string | ReactElement
   path: Name[]
 }
 
-export type Message = string | ((params: any) => string)
+export type Message = SchemaIssue['message'] | ((params: AnyObject) => SchemaIssue['message'])
 
 export type ValidType<T> = { status: 'valid'; value: T }
 export type InValidType = { status: 'invalid' }

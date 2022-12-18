@@ -7,7 +7,7 @@ import KPI_CONST from '../shared/constant'
 
 export default async function create(name: string, config: { force: boolean }) {
   const uiName = camelCase(name, true)
-  const GEN_CONST = KPI_CONST('development')
+  const GEN_CONST = KPI_CONST(true)
   const tsxTemplate = `\
 import { ${uiName}Props } from './${GEN_CONST.PROPS_DIR_NAME}'
 

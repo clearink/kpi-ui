@@ -21,10 +21,11 @@ export const FormContext = CtxHelper<FormContextState>({
 })
 
 export interface FormItemContextState {
-  status?: ValidateStatus
+  validateStatus?: ValidateStatus
 }
 export const FormItemContext = CtxHelper<FormItemContextState>({})
 
+// 收集子字段的 errors 与 warnings
 export interface NoStyleContextState {
   change?: () => void
 }
@@ -36,3 +37,10 @@ export interface FormItemInputContextState {
 }
 
 export const FormItemInputContext = CtxHelper<FormItemInputContextState>({})
+
+export interface FormErrorListContextState {
+  prefixCls: string
+}
+export const FormErrorListContext = CtxHelper<FormErrorListContextState>({
+  prefixCls: '',
+})

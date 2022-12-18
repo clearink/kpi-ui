@@ -4,14 +4,18 @@ import type {
   FormInstance as $FormInstance,
   FormProps as $FormProps,
   FormFieldProps as $FormFieldProps,
+  FormListProps as $FormListProps,
   NamePath as $NamePath,
+  ListField as $ListField,
+  FormArrayHelpers as $FormArrayHelpers,
+  FieldData as $FieldData,
 } from '../_internal/components/form/props'
 import { SizeType } from '../_internal/types'
 
 export type NamePath = $NamePath
 
 export type FormLabelAlign = 'left' | 'right'
-export type ValidateStatus = 'success' | 'warning' | 'error' | 'validating'
+export type ValidateStatus = 'success' | 'warning' | 'error' | 'validating' | ''
 export type RequiredMark = boolean | 'optional'
 export type FormLayout = 'horizontal' | 'inline' | 'vertical'
 
@@ -110,9 +114,36 @@ export interface FormItemInputProps {
 
 export interface FormItemInputExtraProps {
   prefixCls: string
+  validateStatus?: ValidateStatus
   children?: ReactNode
+  errors?: ReactNode[]
+  warnings?: ReactNode[]
+}
+
+export interface FormListProps extends Omit<$FormListProps, 'children'> {
+  children: (
+    fields: $ListField[],
+    arrayHelpers: $FormArrayHelpers,
+    meta: Pick<$FieldData, 'errors' | 'warnings'>
+  ) => ReactNode
+  // name: string | number | (string | number)[];
+  // rules?: ValidatorRule[];
+  // initialValue?: any[];
+  // children: (
+  //   fields: FormListFieldData[],
+  //   operation: FormListOperation,
+  //   meta: { errors: React.ReactNode[]; warnings: React.ReactNode[] },
+  // ) => React.ReactNode;
 }
 
 export interface FormInstance<State = any> extends $FormInstance<State> {
   scrollToField: (namePath: NamePath) => void
+}
+
+export interface ErrorListProps {
+  errors?: ReactNode[]
+  warnings?: ReactNode[]
+  help?: ReactNode
+  helpStatus?: ValidateStatus
+  className?: string
 }

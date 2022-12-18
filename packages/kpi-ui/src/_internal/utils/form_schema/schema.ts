@@ -3,6 +3,7 @@ import SchemaContext from './context'
 import * as REGEX from './utils/regex'
 import { Valid, Invalid, makeRule } from './utils/make_rule'
 import { base, string, number, boolean, object, date, array, enums, union } from './locales/default'
+import { omit } from '../value'
 import {
   isArray,
   isBoolean,
@@ -13,7 +14,7 @@ import {
   isString,
   isUndefined,
 } from '../is'
-import { omit } from '../value'
+
 import type { AnyObject, Full, MayBe, NonUndefined, Writable } from '../../types'
 import type {
   Message,

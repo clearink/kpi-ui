@@ -665,26 +665,33 @@ export class FormDispatchControl<State = any> {
     return this.validateFields([namePath])
   }
 
+  private lastValidate: null | Promise<void[]> = null
+
   // 校验多个字段, 不传默认校验全部
   validateFields = (fields?: NamePath[]) => {
     const controls = this.$controls.getValidateControls(fields)
 
     const validateList = controls.map((control) => {
       const value = this.$state.getFieldValue(control._name)
-      // 主动改成 touched
       control.setFieldMeta({ touched: true })
       return control.validate(value)
     })
 
-    const returnPromise = Promise.all(validateList).then(() => {
-      const nameList = controls.map(({ _name }) => _name)
+    const promiseList = Promise.all(validateList)
+
+    this.lastValidate = promiseList
+
+    const returnPromise = promiseList.then(() => {
+      if (promiseList !== this.lastValidate) return
+
       const validateErrors = this.$controls
-        .getFieldsError(nameList)
+        .getFieldsError(fields)
         .filter(({ errors }) => errors.length)
       // 触发 OnFieldsChange 回调事件
       this.triggerOnFieldsChange(controls.map(({ _name }) => _name))
 
       const values = this.$state.getFieldsValue(fields)
+
       if (validateErrors.length) {
         // 这里少个 outOfDate 目前不知道有啥用
         // eslint-disable-next-line prefer-promise-reject-errors
@@ -696,7 +703,7 @@ export class FormDispatchControl<State = any> {
     // 控制台不展示错误信息
     returnPromise.catch((e) => e)
 
-    return returnPromise
+    return returnPromise as Promise<State>
   }
 
   // 通知依赖字段
@@ -737,6 +744,7 @@ export class FormDispatchControl<State = any> {
 
   // 触发 onFinish 回调
   triggerOnFinish = (values: State) => {
+    console.log('triggerOnFinish')
     const { onFinish } = this.$props.props
     if (!onFinish) return
 
@@ -751,6 +759,7 @@ export class FormDispatchControl<State = any> {
 
   // 触发 onFailed 回调
   triggerOnFailed = (errors: any) => {
+    console.log('triggerOnFailed')
     const { onFailed } = this.$props.props
 
     if (!onFailed) return
