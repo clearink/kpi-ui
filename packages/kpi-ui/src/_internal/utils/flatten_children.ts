@@ -6,7 +6,6 @@ import { isNullish } from './is'
 
 /**
  * @desc 去除 nullish, 去除 fragment， 拍平 children
- * TODO: 暂时没有遇到 isArray(child) 和 需要 keepEmpty 的情况
  */
 type ReactChild = ReactElement | string | number
 export default function flattenChildren(children: ReactNode, keys: Key[] = []) {

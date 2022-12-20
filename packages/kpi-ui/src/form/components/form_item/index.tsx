@@ -36,6 +36,7 @@ function InternalFormItem<State = any>(props: FormItemProps<State>) {
     'required',
     'requiredMark',
     'tooltip',
+    'rule',
   ])
 
   const inputProps = pick(props, ['wrapperCol', 'extra', 'help'])

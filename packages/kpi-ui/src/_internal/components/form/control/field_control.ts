@@ -120,17 +120,19 @@ export default class FormFieldControl extends BaseControl {
   private lastValidate: null | Promise<any> = null
 
   // 字段校验
-  public validate = async (value: any) => {
+  public validate = (value: any) => {
     const { rule: validator } = this._props
 
     // 没有操作过的字段不能校验, 没有校验规则的也不用校验
     if (!this._touched || !validator) return
 
+    this.setFieldMeta({ validating: true, errors: [], warnings: [] })
+
     const promise = validator.validate(value)
 
     this.lastValidate = promise
 
-    promise
+    return promise
       .then(() => undefined)
       .catch((e) => e)
       .then((error = {}) => {

@@ -240,7 +240,8 @@ export class FormInitialControl<State = any> {
     const initialValue = isUndefined(topInitial) ? $initialValue : topInitial
 
     const invalid = !isUndefined(topInitial) && !isUndefined($initialValue)
-    logger.warn(invalid, "form has initialValues, don't set field initialValue")
+    logger.error(invalid, "form has initialValues, don't set field initialValue")
+
     if (isUndefined(initialValue)) return [prev, prev]
 
     return this.setFieldValue(namePath, initialValue)
@@ -380,13 +381,11 @@ export class FormControlsControl {
     })
   }
 
-  // TODO: 优化逻辑
   isFieldTouched = (namePath: NamePath) => {
     return this.isFieldsTouched([namePath])
   }
 
   // 检查全部字段是否都被触摸过
-  // TODO: 优化逻辑
   isFieldsTouched = (nameList?: NamePath[]) => {
     const allFields = this.getControlsByName(true, nameList)
     const untouchedFields = allFields.filter((control) => !control.isTouched())
@@ -744,7 +743,6 @@ export class FormDispatchControl<State = any> {
 
   // 触发 onFinish 回调
   triggerOnFinish = (values: State) => {
-    console.log('triggerOnFinish')
     const { onFinish } = this.$props.props
     if (!onFinish) return
 
@@ -759,7 +757,6 @@ export class FormDispatchControl<State = any> {
 
   // 触发 onFailed 回调
   triggerOnFailed = (errors: any) => {
-    console.log('triggerOnFailed')
     const { onFailed } = this.$props.props
 
     if (!onFailed) return

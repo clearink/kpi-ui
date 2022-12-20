@@ -15,13 +15,13 @@ export const Invalid = (context: Context) => {
 
 // 生成校验函数
 export function makeRule<T = any>(
-  handler: (value: T, context: Context) => boolean | Promise<boolean>,
+  handler: (value: T) => boolean | Promise<boolean>,
   message: Message,
   params?: any
 ) {
   return async (value: T, context: Context): Promise<RuleReturn<T>> => {
-    const res = await handler(value, context)
-    if (res) return Valid(value)
+    const res = await handler(value!)
+    if (res) return Valid(value!)
     return Invalid(context)(message, { value, ...params })
   }
 }

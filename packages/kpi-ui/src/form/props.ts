@@ -104,6 +104,7 @@ export interface FormItemLabelProps {
 
 export interface FormItemLabelExtraProps {
   prefixCls: string
+  rule?: FormItemProps['rule']
 }
 
 export interface FormItemInputProps {

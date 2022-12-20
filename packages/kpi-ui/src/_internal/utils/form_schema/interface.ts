@@ -28,8 +28,7 @@ export type ValidateReturn<T> = RuleReturn<T> | Promise<RuleReturn<T>>
 export type EffectOptions<Prev, Next = Prev> =
   | {
       type: 'transform'
-      // 暂时只能获取path属性
-      handler: (value: Prev, options: Options) => Next | Promise<Next>
+      handler: (value: Prev) => Next | Promise<Next>
     }
   | {
       type: 'refinement'

@@ -5,7 +5,7 @@ import FormItem from './components/form_item'
 import FormList from './components/form_list'
 import useForm from './hooks/use_form'
 import useFormInstance from './hooks/use_instance'
-import { useWatchValue } from '../_internal/components/form'
+import { useWatch } from '../_internal/components/form'
 
 type CompoundedComponent = typeof InternalForm & {
   Item: typeof FormItem
@@ -13,7 +13,7 @@ type CompoundedComponent = typeof InternalForm & {
   ErrorList: typeof ErrorList
   useForm: typeof useForm
   useFormInstance: typeof useFormInstance
-  useWatchValue: typeof useWatchValue
+  useWatch: typeof useWatch
 }
 
 const Form = InternalForm as CompoundedComponent
@@ -23,6 +23,6 @@ Form.List = FormList
 Form.ErrorList = ErrorList
 Form.useForm = useForm
 Form.useFormInstance = useFormInstance
-Form.useWatchValue = useWatchValue
+Form.useWatch = useWatch
 
 export default Form

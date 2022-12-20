@@ -6,7 +6,7 @@ import { HOOK_MARK } from '../control'
 import type { InternalFormInstance } from '../internal_props'
 import type { FormInstance, NamePath } from '../props'
 
-export function useWatchValue(namePath?: NamePath, form?: FormInstance) {
+export default function useWatchValue(namePath?: NamePath, form?: FormInstance) {
   const [value, setValue] = useState()
   const formInstance = FieldContext.useState()
   const instance = (form ?? formInstance) as InternalFormInstance | undefined
@@ -23,8 +23,3 @@ export function useWatchValue(namePath?: NamePath, form?: FormInstance) {
   }, [namePath, formGroup])
   return value
 }
-
-/**
- * TODO: 监听字段校验状态 Form.Item.useWatchStatus
- */
-export function useWatchStatus() {}
