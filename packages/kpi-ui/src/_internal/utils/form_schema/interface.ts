@@ -38,6 +38,13 @@ export type EffectOptions<Prev, Next = Prev> =
       type: 'preprocess'
       handler: (value: Prev) => Next | Promise<Next>
     }
+  | {
+      type: 'nullable'
+    }
+  | {
+      type: 'required'
+      handler: (value: Prev, context: Context) => Promise<RuleReturn<Prev>>
+    }
 
 export interface ValidateOptions {
   /**

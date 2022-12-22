@@ -124,25 +124,33 @@ export interface FormInstance<S = any> {
   /**
    * @zh 字段是否 touched 了
    */
-  isFieldTouched: (namePath: NamePath) => boolean
+  isFieldTouched: (field: NamePath) => boolean
 
   /**
    * @zh 字段是否都 touched 了
    */
-  isFieldsTouched: (namePath?: NamePath[]) => boolean
+  isFieldsTouched: (fields?: NamePath[]) => boolean
+
+  /**
+   * @zh 字段是否处于校验中
+   */
+  isFieldValidating: (field: NamePath) => boolean
+
+  /**
+   * @zh 字段是否都处于校验中
+   */
+  isFieldsValidating: (fields?: NamePath[]) => boolean
 
   /**
    * @zh 获取字段错误信息
    *
    */
-  getFieldError: (namePath: NamePath) => string[]
+  getFieldError: (field: NamePath) => string[]
 
   /**
    * @zh 获取一组字段错误信息
    */
-  getFieldsError: (
-    nameList?: NamePath[]
-  ) => Pick<InternalFieldData, 'errors' | 'name' | 'warnings'>[]
+  getFieldsError: (fields?: NamePath[]) => Pick<InternalFieldData, 'errors' | 'name' | 'warnings'>[]
 }
 
 export type Forms = Record<string, FormInstance>

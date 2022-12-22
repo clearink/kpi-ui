@@ -73,10 +73,11 @@ export default function useFormItemLabelClass(
   }, [prefixCls, labelAlign, colon, labelCol?.className])
 
   const labelCls = useMemo(() => {
-    return cls(prefixCls, {
-      [`${prefixCls}--required`]: isRequiredItem,
-      [`${prefixCls}--required-optional`]: requiredMark === 'optional',
-      [`${prefixCls}--has-colon`]: colon && !vertical,
+    const baseClassName = `${prefixCls}__label`
+    return cls({
+      [`${baseClassName}--required`]: isRequiredItem,
+      [`${baseClassName}--required-optional`]: requiredMark === 'optional',
+      [`${baseClassName}--has-colon`]: colon && !vertical,
     })
   }, [prefixCls, isRequiredItem, requiredMark, colon, vertical])
 

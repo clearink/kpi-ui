@@ -73,6 +73,9 @@ export default class FormGroupControl<State = any> {
       isFieldTouched: $controls.isFieldTouched,
       isFieldsTouched: $controls.isFieldsTouched,
 
+      isFieldValidating: $controls.isFieldValidating,
+      isFieldsValidating: $controls.isFieldsValidating,
+
       /** @private */
       getInternalHooks: this._getInternalHooks,
     }
@@ -392,6 +395,17 @@ export class FormControlsControl {
 
     return untouchedFields.length === 0
   }
+
+  isFieldValidating = (namePath: NamePath) => {
+    return this.isFieldsValidating([namePath])
+  }
+
+  isFieldsValidating = (nameList?: NamePath[]) => {
+    const allFields = this.getControlsByName(true, nameList)
+    const unValidatingFields = allFields.filter((control) => !control.isValidating())
+
+    return unValidatingFields.length === 0
+  }
 }
 
 /** ==================================================== */
@@ -670,18 +684,19 @@ export class FormDispatchControl<State = any> {
   validateFields = (fields?: NamePath[]) => {
     const controls = this.$controls.getValidateControls(fields)
 
-    const validateList = controls.map((control) => {
-      const value = this.$state.getFieldValue(control._name)
-      control.setFieldMeta({ touched: true })
-      return control.validate(value)
-    })
+    const validateList = controls
+      .filter((control) => !!control._props.rule)
+      .map((control) => {
+        const value = this.$state.getFieldValue(control._name)
+        control.setFieldMeta({ touched: true })
+        return control.validate(value, { path: control._name })
+      })
 
     const promiseList = Promise.all(validateList)
 
     this.lastValidate = promiseList
-
     const returnPromise = promiseList.then(() => {
-      if (promiseList !== this.lastValidate) return
+      if (promiseList !== this.lastValidate) return 'abandon-validate'
 
       const validateErrors = this.$controls
         .getFieldsError(fields)
@@ -742,9 +757,9 @@ export class FormDispatchControl<State = any> {
   }
 
   // 触发 onFinish 回调
-  triggerOnFinish = (values: State) => {
+  triggerOnFinish = (values: State | 'abandon-validate') => {
     const { onFinish } = this.$props.props
-    if (!onFinish) return
+    if (!onFinish || values === 'abandon-validate') return
 
     try {
       onFinish(values)

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { Field as InternalFormField } from '../../_internal/components/form'
 import { normalizeItemChildren } from '../utils/children'
-import { isUndefined, pick } from '../../_internal/utils'
+import { isUndefined, omit, pick } from '../../_internal/utils'
 import { useDebounceState } from '../../_internal/hooks'
 import { FormContext } from '../../_internal/context'
 import isInvalidUsage from '../utils/usage'
@@ -9,10 +9,8 @@ import isInvalidUsage from '../utils/usage'
 import type { FormItemProps, ValidateStatus } from '../props'
 import type { FieldMeta } from '../../_internal/components/form/internal_props'
 
-function makeEmptyMeta(): FieldMeta {
+function makeEmptyMeta(): Omit<FieldMeta, 'name' | 'dirty'> {
   return {
-    name: [],
-    dirty: false,
     touched: false,
     validating: false,
     errors: [],
@@ -40,10 +38,10 @@ export default function useInjectChildren(props: FormItemProps, formItemId?: str
 
   const [meta, setMeta] = useDebounceState(10, makeEmptyMeta)
 
-  const handleMetaChange = useCallback((next: FieldMeta) => {
-    setMeta(next)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const handleMetaChange = useCallback(
+    (next: FieldMeta) => setMeta(omit(next, ['name', 'dirty'])),
+    [setMeta]
+  )
 
   const errorInfo = useMemo(() => {
     const metaInfo = pick(meta, ['errors', 'warnings'])

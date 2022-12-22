@@ -88,6 +88,7 @@ function Form(props: FormProps, ref: ForwardedRef<FormInstance>) {
 export default withDefaultProps(forwardRef(Form), {
   layout: 'horizontal',
   requiredMark: true,
+  colon: true,
 } as const) as <State = any>(
   props: FormProps<State> & { ref?: Ref<FormInstance<State>> }
 ) => ReactElement

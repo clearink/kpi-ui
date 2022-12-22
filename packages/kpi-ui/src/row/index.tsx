@@ -13,7 +13,7 @@ function Row(props: RowProps) {
   const className = useClass(name, props)
   const gapSupport = useFlexGapSupport()
   const [hGutter, vGutter] = useRowGutter(gutter)
-  const attrs = omit(rest, ['align', 'justify', 'wrap'])
+  const attrs = omit(rest, ['align', 'justify', 'wrap', 'className'])
 
   const style = useMemo(() => {
     const [h, v] = [hGutter / -2, vGutter / -2]
@@ -29,7 +29,7 @@ function Row(props: RowProps) {
   }, [gapSupport, hGutter, vGutter])
 
   return (
-    <div className={className} style={style} {...attrs}>
+    <div {...attrs} className={className} style={style}>
       <RowContext.Provider value={contextState}>{children}</RowContext.Provider>
     </div>
   )

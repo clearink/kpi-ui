@@ -1,0 +1,51 @@
+// 优化打包性能引入除了 preset 的内容
+@import '../../style/core/index.scss'; // 引入 BEM
+@import '../../style/themes/index.scss'; // 引入 变量
+@import './variable';
+@import './mixins';
+
+@include b(form) {
+  @include reset-component();
+
+  @include b(form-item) {
+    @include e(label) {
+      display: inline-block;
+      flex-grow: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-align: right;
+      vertical-align: middle;
+
+      @include m(required) {
+        &::before {
+          content: '*';
+          display: inline-block;
+          margin-right: 4px;
+          color: $form-item-label-required-color;
+          font-size: $form-item-label-font-size;
+          font-family: SimSun, sans-serif;
+          line-height: 1;
+        }
+      }
+
+      @include m(has-colon) {
+        &::after {
+          content: ':';
+          position: relative;
+          top: -0.5px;
+          margin-left: $form-item-label-colon-margin-left;
+          margin-right: $form-item-label-colon-margin-right;
+        }
+      }
+      > label {
+        height: $form-item-label-height;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        max-width: 100%;
+        color: $form-item-label-color;
+        font-size: $form-item-label-font-size;
+      }
+    }
+  }
+}

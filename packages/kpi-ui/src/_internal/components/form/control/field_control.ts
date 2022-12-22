@@ -14,7 +14,7 @@ import type {
   FieldMeta,
   InternalNamePath,
 } from '../internal_props'
-import type { SchemaIssue } from '../../../utils/form_schema/interface'
+import type { Options, SchemaIssue } from '../../../utils/form_schema/interface'
 
 export default class FormFieldControl extends BaseControl {
   public _key: string // 唯一标识
@@ -103,6 +103,10 @@ export default class FormFieldControl extends BaseControl {
     return this._touched
   }
 
+  public isValidating = () => {
+    return this._validating
+  }
+
   public setFieldMeta = (meta: Partial<FieldMeta>) => {
     const prev = this.getFieldMeta()
     // 同步全部
@@ -120,7 +124,7 @@ export default class FormFieldControl extends BaseControl {
   private lastValidate: null | Promise<any> = null
 
   // 字段校验
-  public validate = (value: any) => {
+  public validate = (value: any, options?: Options) => {
     const { rule: validator } = this._props
 
     // 没有操作过的字段不能校验, 没有校验规则的也不用校验
@@ -128,7 +132,7 @@ export default class FormFieldControl extends BaseControl {
 
     this.setFieldMeta({ validating: true, errors: [], warnings: [] })
 
-    const promise = validator.validate(value)
+    const promise = validator.validate(value, options)
 
     this.lastValidate = promise
 

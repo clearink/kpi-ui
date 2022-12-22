@@ -1,4 +1,5 @@
 /* eslint-disable class-methods-use-this, max-classes-per-file */
+// 后续有时间再优化吧 主要是针对错误信息的优化
 import SchemaContext from './context'
 import * as REGEX from './utils/regex'
 import { Valid, Invalid, makeRule } from './utils/make_rule'
@@ -77,19 +78,15 @@ export abstract class BaseSchema<Out = any, In = Out> {
   /** ==================================================== */
 
   // 可以传 undefined
-  required(message: Message = base.required): RequiredSchema<this> {
-    return RequiredSchema.create(this, message) as any
+  required(message: Message = base.required): EffectSchema<this, NonNullable<Out>> {
+    const rule = (value: any) => !(isNullish(value) || value === '')
+    return EffectSchema.required(this, makeRule(rule, message)) as any
   }
 
   // 可以传 null
-  nullable(): NullableSchema<this> {
-    return NullableSchema.create(this) as any
+  nullable(): EffectSchema<this, Out | null> {
+    return EffectSchema.nullable(this) as any
   }
-
-  // // 可以传 undefined, null
-  // nullish() {
-  //   return this.optional().nullable()
-  // }
 
   /** alias or */
   union<U extends BaseSchema>(schema: U): UnionSchema<[this, U]> {
@@ -122,7 +119,7 @@ export abstract class BaseSchema<Out = any, In = Out> {
   }
 
   // 数据预处理
-  preprocess<Next>(handler: (value: Out) => Next | Promise<Next>): EffectSchema<this, Next> {
+  preprocess<Next>(handler: (value: any) => Next | Promise<Next>): EffectSchema<this, Next> {
     return EffectSchema.preprocess(this, handler)
   }
 }
@@ -177,12 +174,6 @@ export class StringSchema extends BaseSchema<string | undefined> {
   /** ==================================================== */
   /** feature                                              */
   /** ==================================================== */
-
-  required(message: Message = base.required) {
-    const rule = (value: string) => value.length > 0
-    this._refine('required', makeRule(rule, message))
-    return super.required(message)
-  }
 
   min(min: number, message: Message = string.min) {
     const rule = (value: string) => value.length >= min
@@ -717,6 +708,23 @@ export class EffectSchema<
     return new EffectSchema(schema, { type: 'preprocess', handler })
   }
 
+  // 必填
+  static required<S extends BaseSchema>(
+    schema: S,
+    handler: (value: S['_Out'], context: Context) => Promise<RuleReturn<S['_Out']>>
+  ) {
+    return new EffectSchema(schema, { type: 'required', handler })
+  }
+
+  // 可传 null
+  static nullable<S extends BaseSchema>(schema: S) {
+    return new EffectSchema(schema, { type: 'nullable' })
+  }
+
+  get _type() {
+    return this.options.type
+  }
+
   constructor(private schema: T, private options: EffectOptions<Out>) {
     super()
   }
@@ -734,72 +742,28 @@ export class EffectSchema<
       const $value = await options.handler(value)
       return Valid($value)
     }
+    // 预处理
     if (options.type === 'preprocess') {
       // 先转换 后校验
       const $value = await options.handler(value)
       return this.schema._validate($value, context)
     }
 
+    if (options.type === 'nullable') {
+      if (isNull(value)) return Valid(value)
+      return this.schema._validate(value, context)
+    }
+
+    if (options.type === 'required') {
+      const ret = await options.handler(value, context)
+      if (ret.status === 'invalid') return ret
+      return this.schema._validate(value, context)
+    }
+
     // 先执行自身校验 后校验 handler
     const ret = await this.schema._validate(value, context)
     if (ret.status === 'invalid') return ret
     return options.handler(value, context)
-  }
-}
-
-/** ========================================================================== */
-/** ========================================================================== */
-/** RequiredSchema                                                             */
-/** ========================================================================== */
-/** ========================================================================== */
-
-export class RequiredSchema<
-  T extends BaseSchema,
-  Out = NonNullable<T['_Out']>,
-  In = NonNullable<['_In']>
-> extends BaseSchema<Out, In> {
-  static create<S extends BaseSchema>(schema: S, message: Message = base.required) {
-    return new RequiredSchema(schema, message)
-  }
-
-  constructor(private schema: T, private message: Message = base.required) {
-    super()
-  }
-
-  _validate(value: this['_Out'], context: Context) {
-    if (isNullish(value)) return Invalid(context)(this.message, { value })
-
-    return this.schema._validate(value, context)
-  }
-
-  unwrap() {
-    return this.schema
-  }
-}
-
-/** ========================================================================== */
-/** ========================================================================== */
-/** NullableSchema                                                             */
-/** ========================================================================== */
-/** ========================================================================== */
-
-export class NullableSchema<
-  T extends BaseSchema,
-  Out = T['_Out'] | null,
-  In = T['_In'] | null
-> extends BaseSchema<Out, In> {
-  static create<S extends BaseSchema>(schema: S) {
-    return new NullableSchema(schema)
-  }
-
-  constructor(private schema: T) {
-    super()
-  }
-
-  _validate(value: this['_Out'], context: Context) {
-    if (isNull(value)) return Valid(value)
-
-    return this.schema._validate(value, context)
   }
 
   unwrap() {
@@ -810,10 +774,15 @@ export class NullableSchema<
 export const isRequiredSchema = (schema: BaseSchema | null | undefined = undefined) => {
   // 侦测是否含有 schema 字段 如果有则递归
   if (!schema) return false
+  const effects: EffectOptions<any>['type'][] = []
   while (schema && (schema as any).schema) {
-    if (schema instanceof NullableSchema) return false
-    if (schema instanceof RequiredSchema) return true
+    if (!(schema instanceof EffectSchema)) continue
+
+    const type = schema._type
+    if (type === 'nullable' || type === 'required') effects.push(type)
+
     schema = (schema as any).schema
   }
-  return true
+
+  return effects[0] === 'required'
 }

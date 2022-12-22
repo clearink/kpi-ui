@@ -1,0 +1,21 @@
+// Form
+$form-vertical-label-padding: 0 0 8px;
+$form-vertical-label-margin: 0;
+
+// Form.Item
+$form-item-label-color: $heading-color;
+
+$form-item-label-colon-margin-left: 2px;
+$form-item-label-colon-margin-right: 8px;
+
+$form-item-label-required-color: $error-color;
+
+$form-item-label-height: $height-base;
+
+$form-item-margin-bottom: 24px;
+$form-item-warning-input-bg: $bg-color-component;
+$form-item-error-input-bg: $bg-color-component;
+
+$form-item-label-font-size: $font-size-base;
+
+$form-item-trailing-colon: true;

@@ -6,7 +6,6 @@ import {
   FormContext,
   FormItemContext,
   NoStyleContext,
-  FormItemInputContext,
   FormErrorListContext,
 } from '../../../_internal/context'
 import { mergeSameNameProps } from '../../../_internal/utils'
@@ -28,30 +27,26 @@ function FormItemInput(props: FormItemInputProps & FormItemInputExtraProps) {
 
   const noStyleContext = useMemo(() => ({}), [])
 
-  const formItemInputContext = useMemo(() => ({}), [])
-
   const formErrorListContext = useMemo(() => ({ prefixCls }), [prefixCls])
 
   return (
     <FormItemContext.Provider value={formItemContext}>
       {/* 设置noStyle 后的数据 */}
       <NoStyleContext.Provider value={noStyleContext}>
-        <FormItemInputContext.Provider value={formItemInputContext}>
-          <Col {...wrapperCol} className={cls(`${prefixCls}__control`, wrapperCol?.className)}>
-            <div className={`${prefixCls}__control-input`}>{props.children}</div>
+        <Col {...wrapperCol} className={cls(`${prefixCls}__control`, wrapperCol?.className)}>
+          <div className={`${prefixCls}__control-input`}>{props.children}</div>
 
-            <FormErrorListContext.Provider value={formErrorListContext}>
-              <ErrorList
-                help={help}
-                errors={errors}
-                warnings={warnings}
-                helpStatus={validateStatus}
-              />
-            </FormErrorListContext.Provider>
+          <FormErrorListContext.Provider value={formErrorListContext}>
+            <ErrorList
+              help={help}
+              errors={errors}
+              warnings={warnings}
+              helpStatus={validateStatus}
+            />
+          </FormErrorListContext.Provider>
 
-            {extra ? <div className={`${prefixCls}__control-extra`}>{extra}</div> : null}
-          </Col>
-        </FormItemInputContext.Provider>
+          {extra ? <div className={`${prefixCls}__control-extra`}>{extra}</div> : null}
+        </Col>
       </NoStyleContext.Provider>
     </FormItemContext.Provider>
   )

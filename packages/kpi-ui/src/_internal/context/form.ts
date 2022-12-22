@@ -29,14 +29,8 @@ export const FormItemContext = CtxHelper<FormItemContextState>({})
 export interface NoStyleContextState {
   change?: () => void
 }
-
+// 收集 noStyle 字段的错误到最近的Form.Item组件上
 export const NoStyleContext = CtxHelper<NoStyleContextState>({})
-
-export interface FormItemInputContextState {
-  change?: () => void
-}
-
-export const FormItemInputContext = CtxHelper<FormItemInputContextState>({})
 
 export interface FormErrorListContextState {
   prefixCls: string
