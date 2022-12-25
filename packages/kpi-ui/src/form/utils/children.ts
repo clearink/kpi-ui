@@ -2,11 +2,16 @@ import { cloneElement, isValidElement } from 'react'
 import { isFunction, isString } from '../../_internal/utils'
 
 import type { FormContextState } from '../../_internal/context'
-import type { FormInstance, FormItemLabelProps, FormItemProps } from '../props'
+import type {
+  FormInstance,
+  FormItemLabelExtraProps,
+  FormItemLabelProps,
+  FormItemProps,
+} from '../props'
 
 // 格式化 FormItemLabel
 export function normalizeLabelChildren(
-  props: FormItemLabelProps,
+  props: FormItemLabelProps & FormItemLabelExtraProps,
   formContextState: FormContextState
 ) {
   const { colon, label, requiredMark, required, tooltip } = props

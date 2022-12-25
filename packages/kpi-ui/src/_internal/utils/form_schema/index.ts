@@ -17,3 +17,18 @@ export const refine = Schema.EffectSchema.refinement
 export const { transform, preprocess } = Schema.EffectSchema
 
 export const isRequired = Schema.isRequiredSchema
+
+export default {
+  string,
+  number,
+  boolean,
+  object,
+  any,
+  array,
+  enums,
+  date,
+  union,
+  refine,
+  transform,
+  preprocess,
+}

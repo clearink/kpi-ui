@@ -79,8 +79,8 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   })
 
   const Root = useMemo<any>(() => {
-    if (as) return as
-    return as === null ? Fragment : 'form'
+    if (as === null) return Fragment
+    return as ?? 'form'
   }, [as])
 
   const fieldContext = useMemo(() => {

@@ -8,6 +8,11 @@
   @include reset-component();
 
   @include b(form-item) {
+    @include reset-component();
+
+    margin-bottom: $form-item-margin-bottom;
+    vertical-align: top;
+
     @include e(label) {
       display: inline-block;
       flex-grow: 0;

@@ -12,7 +12,6 @@ import type {
   RequiredMark,
   ValidateStatus,
 } from '../props'
-import { isRequired } from '../../_internal/utils/form_schema'
 
 export function useFormClass(
   props: FormProps,
@@ -58,10 +57,7 @@ export function useFormItemClass(
 export default function useFormItemLabelClass(
   mergedProps: FormItemLabelProps & FormContextState & FormItemLabelExtraProps
 ) {
-  const { prefixCls, vertical, required, rule, colon, labelAlign, labelCol, requiredMark } =
-    mergedProps
-
-  const isRequiredItem = useMemo(() => required ?? isRequired(rule), [required, rule])
+  const { prefixCls, vertical, required, colon, labelAlign, labelCol, requiredMark } = mergedProps
 
   const colCls = useMemo(() => {
     const baseClassName = `${prefixCls}__label`
@@ -75,11 +71,11 @@ export default function useFormItemLabelClass(
   const labelCls = useMemo(() => {
     const baseClassName = `${prefixCls}__label`
     return cls({
-      [`${baseClassName}--required`]: isRequiredItem,
+      [`${baseClassName}--required`]: required,
       [`${baseClassName}--required-optional`]: requiredMark === 'optional',
       [`${baseClassName}--has-colon`]: colon && !vertical,
     })
-  }, [prefixCls, isRequiredItem, requiredMark, colon, vertical])
+  }, [prefixCls, required, requiredMark, colon, vertical])
 
   return [colCls, labelCls] as const
 }

@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from 'react'
 import { Field as InternalFormField } from '../../_internal/components/form'
+import { isRequired } from '../../_internal/utils/form_schema'
 import { normalizeItemChildren } from '../utils/children'
-import { isUndefined, omit, pick } from '../../_internal/utils'
+import { isUndefined, omit, pick, toArray } from '../../_internal/utils'
 import { useDebounceState } from '../../_internal/hooks'
 import { FormContext } from '../../_internal/context'
 import isInvalidUsage from '../utils/usage'
@@ -21,7 +22,7 @@ function makeEmptyMeta(): Omit<FieldMeta, 'name' | 'dirty'> {
 export default function useInjectChildren(props: FormItemProps, formItemId?: string) {
   const { form: formInstance } = FormContext.useState()
 
-  const { validateStatus } = props
+  const { validateStatus, name, rule } = props
 
   const invalidUsage = isInvalidUsage(props)
 
@@ -57,10 +58,16 @@ export default function useInjectChildren(props: FormItemProps, formItemId?: str
     return { ...metaInfo, validateStatus: status }
   }, [meta, validateStatus])
 
+  const isRequiredItem = useMemo(() => {
+    if (!toArray(name).length) return false
+    return isRequired(rule)
+  }, [name, rule])
+
   return [
     <InternalFormField {...props} onMetaChange={handleMetaChange}>
       {children}
     </InternalFormField>,
     errorInfo,
+    isRequiredItem,
   ] as const
 }

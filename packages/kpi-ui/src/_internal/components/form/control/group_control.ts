@@ -313,14 +313,14 @@ export class FormControlsControl {
 
   // 获取校验字段
   getValidateControls = (nameList?: NamePath[]) => {
-    if (!nameList) return this.getControls()
+    if (!nameList) return this.getControls(true)
 
     const pureControls = this.getControls(true)
 
     const controls = pureControls.reduce((set, control) => {
       const dependent = nameList.some((name) => isDependent(control._name, name))
 
-      if (dependent) set.add(control)
+      if (dependent && !!control._props.rule) set.add(control)
 
       return set
     }, new Set<FormFieldControl>())
@@ -684,13 +684,11 @@ export class FormDispatchControl<State = any> {
   validateFields = (fields?: NamePath[]) => {
     const controls = this.$controls.getValidateControls(fields)
 
-    const validateList = controls
-      .filter((control) => !!control._props.rule)
-      .map((control) => {
-        const value = this.$state.getFieldValue(control._name)
-        control.setFieldMeta({ touched: true })
-        return control.validate(value, { path: control._name })
-      })
+    const validateList = controls.map((control) => {
+      const value = this.$state.getFieldValue(control._name)
+      control.setFieldMeta({ touched: true })
+      return control.validate(value, { path: control._name })
+    })
 
     const promiseList = Promise.all(validateList)
 

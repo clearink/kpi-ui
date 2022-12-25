@@ -77,9 +77,8 @@ export abstract class BaseSchema<Out = any, In = Out> {
   /** operator                                             */
   /** ==================================================== */
 
-  // 可以传 undefined
   required(message: Message = base.required): EffectSchema<this, NonNullable<Out>> {
-    const rule = (value: any) => !(isNullish(value) || value === '')
+    const rule = (value: any) => !isNullish(value)
     return EffectSchema.required(this, makeRule(rule, message)) as any
   }
 
@@ -164,7 +163,7 @@ export class StringSchema extends BaseSchema<string | undefined> {
   /** ==================================================== */
 
   _validate(value: this['_Out'], context: Context) {
-    if (isUndefined(value)) return Valid(value)
+    if (isUndefined(value) || value === '') return Valid(value)
 
     if (!isString(value)) return Invalid(context)(this.message, { value })
 
@@ -174,6 +173,11 @@ export class StringSchema extends BaseSchema<string | undefined> {
   /** ==================================================== */
   /** feature                                              */
   /** ==================================================== */
+
+  required(message: Message = base.required): EffectSchema<this, string> {
+    const rule = (value: any) => !(isNullish(value) || value === '')
+    return EffectSchema.required(this, makeRule(rule, message)) as any
+  }
 
   min(min: number, message: Message = string.min) {
     const rule = (value: string) => value.length >= min

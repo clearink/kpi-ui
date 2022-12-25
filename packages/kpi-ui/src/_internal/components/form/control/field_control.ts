@@ -128,7 +128,7 @@ export default class FormFieldControl extends BaseControl {
     const { rule: validator } = this._props
 
     // 没有操作过的字段不能校验, 没有校验规则的也不用校验
-    if (!this._touched || !validator) return
+    if (!this._touched || !validator || !this._key) return
 
     this.setFieldMeta({ validating: true, errors: [], warnings: [] })
 

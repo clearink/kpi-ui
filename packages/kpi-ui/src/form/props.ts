@@ -96,15 +96,15 @@ export interface FormItemLabelProps {
   label?: React.ReactNode
   labelAlign?: FormLabelAlign
   labelCol?: ColProps
-  required?: boolean
   requiredMark?: RequiredMark
+  labelWrap?: boolean
   // TODO: 待完善
   tooltip?: any
 }
 
 export interface FormItemLabelExtraProps {
   prefixCls: string
-  rule?: FormItemProps['rule']
+  required?: boolean
 }
 
 export interface FormItemInputProps {

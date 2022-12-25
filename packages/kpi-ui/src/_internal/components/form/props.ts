@@ -176,7 +176,7 @@ export interface FormFieldProps<State = any> {
   /**
    * @zh 校验规则，设置字段的校验逻辑
    */
-  rule?: BaseSchema<State>
+  rule?: BaseSchema<any>
 
   /**
    * @zh 字段删除时仍然保留数据
