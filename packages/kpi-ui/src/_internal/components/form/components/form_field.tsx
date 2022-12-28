@@ -46,11 +46,8 @@ function InternalFormField(props: InternalProps) {
   })
   useIsomorphicEffect(subscribe, [subscribe, memorized, key])
 
-  const start = performance.now()
   // 数据注入
   const children = useInjectField(props, formInstance, control.current, internalHook)
-  const end = performance.now()
-  if (end - start > 2) console.log('diff', end - start, props.name)
 
   return <Fragment key={resetCount}>{children}</Fragment>
 }
