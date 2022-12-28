@@ -7,16 +7,15 @@ import type { FormFieldControl } from '../control'
 
 /** 格式化 Form.Field children */
 export default function normalizeChildren(
-  injectProps: AnyObject,
+  collectInject: () => AnyObject,
   formInstance: InternalFormInstance,
   control: FormFieldControl
 ) {
   return function normalizeInner(_children: InternalFormFieldProps['children']): InnerReturn {
     if (isFunction(_children)) {
-      const renderProps = _children(injectProps, control.getFieldMeta(), formInstance)
+      const renderProps = _children(collectInject(), control.getFieldMeta(), formInstance)
       return { ...normalizeInner(renderProps as ReactElement), functional: true }
     }
-
     // 去除 fragment，nullish 后
     const childList = flattenChildren(_children)
 

@@ -3,16 +3,15 @@ import Field from './form_field'
 import { FieldContext } from '../../../context/_internal'
 import { withDefaultProps } from '../../../hocs'
 import { useDeepMemo, useEvent } from '../../../hooks'
-import { rawType, toArray } from '../../../utils'
+import { isArray, isFunction, logger, rawType, toArray } from '../../../utils'
 import { getIn } from '../utils/value'
 import { FormArrayControl } from '../control'
-import { collectListInjectProps } from '../utils/collect'
 
-import type { FormListProps } from '../props'
+import type { FieldData, FormListProps, ListField } from '../props'
 import type { UpdateFieldActionType as ActionType } from '../internal_props'
 
 function FormList(props: FormListProps) {
-  const { name, rule, initialValue, preserve } = props
+  const { name, rule, initialValue, preserve, children } = props
 
   const formInstance = FieldContext.useState()
 
@@ -43,6 +42,13 @@ function FormList(props: FormListProps) {
     return prevList !== nextList
   })
 
+  const helpers = useMemo(() => control.current!._getFeatures(), [])
+
+  if (!isFunction(children)) {
+    logger.error(true, 'Form.List only accepts function as children.')
+    return null
+  }
+
   return (
     <>
       <button type="button" onClick={() => forceUpdate()}>
@@ -56,7 +62,22 @@ function FormList(props: FormListProps) {
           shouldUpdate={shouldUpdate}
           preserve={preserve}
         >
-          {collectListInjectProps(props, listPath, control.current)}
+          {({ value = [] }: any, meta: FieldData) => {
+            if (!isArray(value)) {
+              logger.error(true, `Current value of '${listPath.join(' > ')}' is not an array type.`)
+              return children([], helpers, meta)
+            }
+
+            const listValue: ListField[] = value.map((__, index) => {
+              return {
+                key: control.current!.ensureFieldKey(index),
+                name: index,
+                isListField: true,
+              }
+            })
+
+            return children(listValue, helpers, meta)
+          }}
         </Field>
       </FieldContext.Provider>
     </>

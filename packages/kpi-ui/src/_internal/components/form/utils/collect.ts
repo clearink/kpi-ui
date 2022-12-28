@@ -1,16 +1,12 @@
-/* eslint-disable react/function-component-definition */
-/* eslint-disable func-names */
-import { hasOwn, isArray, isFunction, isObjectLike, logger, toArray } from '../../../utils'
-import { FormArrayControl, FormFieldControl } from '../control'
+import { hasOwn, isFunction, isObjectLike, toArray } from '../../../utils'
+import type { FormFieldControl } from '../control'
 
 import type { AnyObject } from '../../../types'
 import type {
   InternalFormFieldProps,
   InternalFormInstance,
   InternalHookReturn,
-  InternalNamePath,
 } from '../internal_props'
-import type { FormInstance, FormListProps, ListField, FieldData } from '../props'
 
 // 从event中获取字段值函数
 function defaultGetValueFromEvent(valuePropName: string) {
@@ -22,7 +18,7 @@ function defaultGetValueFromEvent(valuePropName: string) {
 }
 
 /** 收集注入到Form.Field children 的属性 */
-export function collectFieldInjectProps(
+export default function collectInjectProps(
   props: InternalFormFieldProps,
   formInstance: InternalFormInstance,
   control: FormFieldControl,
@@ -75,38 +71,5 @@ export function collectFieldInjectProps(
       }
       return { ...res, [triggerName]: handler }
     }, injectProps)
-  }
-}
-
-/** 收集注入到Form.List children 的属性 */
-export function collectListInjectProps(
-  props: FormListProps,
-  listPath: InternalNamePath,
-  control: FormArrayControl
-) {
-  const { children } = props
-  if (!isFunction(children)) {
-    logger.error(true, 'Form.List only accepts function as children.')
-    return () => null
-  }
-
-  return (_, meta: FieldData, form: FormInstance) => {
-    const value = form.getFieldValue(listPath) || []
-    const helpers = control._getFeatures()
-
-    if (!isArray(value)) {
-      logger.error(true, `Current value of '${listPath.join(' > ')}' is not an array type.`)
-      return children([], helpers, meta)
-    }
-
-    const listValue: ListField[] = value.map((__, index) => {
-      return {
-        key: control.ensureFieldKey(index),
-        name: index,
-        isListField: true,
-      }
-    })
-
-    return children(listValue, helpers, meta)
   }
 }

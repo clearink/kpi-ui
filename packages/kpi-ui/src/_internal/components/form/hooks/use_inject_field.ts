@@ -1,7 +1,7 @@
 import { cloneElement, type ReactElement } from 'react'
 import { logger } from '../../../utils'
 import normalizeChildren from '../utils/children'
-import { collectFieldInjectProps } from '../utils/collect'
+import collectInjectProps from '../utils/collect'
 
 import type {
   InternalFormFieldProps,
@@ -20,10 +20,10 @@ export default function useInjectField(
   const { children: $children } = props
 
   // 收集注册到子组件的数据
-  const collect = collectFieldInjectProps(props, formInstance, control, internalHook)
+  const collect = collectInjectProps(props, formInstance, control, internalHook)
 
   // 处理 children
-  const handleNormalize = normalizeChildren(collect(), formInstance, control)
+  const handleNormalize = normalizeChildren(collect, formInstance, control)
   const { functional, children, valid } = handleNormalize($children)
 
   logger.error(!functional && !valid, 'Form.Field `children` is not valid react element.')

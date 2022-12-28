@@ -580,16 +580,6 @@ export class FormDispatchControl<State = any> {
       return this.updateControl(prev, next, action.type)
     }
 
-    // Form.List专用调度
-    if (action.type === 'setFieldList') {
-      const [prev, next] = $state.setFieldValue(action.name, action.value)
-      const controls = this.$controls.getControlsByName(true, [action.name])
-      // console.log(controls)
-      controls.forEach((control) => control.forceUpdate())
-      return
-      // return this.updateControl(prev, next, action.type)
-    }
-
     // 调用 setFieldsValue 方法
     if (action.type === 'setFieldsValue') {
       const [prev, next] = $state.setFieldsValue(action.state)

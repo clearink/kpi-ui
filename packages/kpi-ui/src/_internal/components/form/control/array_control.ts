@@ -59,9 +59,8 @@ export default class FormArrayControl {
     const internalHook = this._context?.getInternalHooks(HOOK_MARK)
 
     internalHook?.dispatch({
-      type: 'setFieldList',
-      name: this._listPath,
-      value,
+      type: 'setFields',
+      fields: [{ name: this._listPath, value }],
     })
 
     this._rule && this._context?.validateFields([this._listPath])
