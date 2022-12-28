@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file, class-methods-use-this */
 
 import isEqual from 'react-fast-compare'
-import type { MutableRefObject } from 'react'
+import { startTransition, type MutableRefObject } from 'react'
 import BaseControl from './base_control'
 import { isFunction, isNullish, isUndefined } from '../../../utils'
 import { getIn } from '../utils/value'
@@ -17,16 +17,20 @@ import type {
 import type { Options, SchemaIssue } from '../../../utils/form_schema/interface'
 
 export default class FormFieldControl extends BaseControl {
-  public _key: string // 唯一标识
+  public get _name() {
+    return this._props.name ?? []
+  }
+
+  public get _key() {
+    return _getName(this._name)
+  }
 
   public constructor(
-    public _name: InternalNamePath, // 记录 name
-    _forceUpdate: () => void,
+    private _forceUpdate: () => void,
     private _resetField: () => void,
     private mounted: MutableRefObject<boolean>
   ) {
     super(_forceUpdate, mounted)
-    this._key = _getName(_name)
   }
 
   public shouldUpdate = (prev: any, next: any, type: ActionType) => {
@@ -73,11 +77,13 @@ export default class FormFieldControl extends BaseControl {
       warnings: [],
       validating: false,
     })
+    this.lastValidate = null
     this.mounted.current && this._resetField()
   }
 
-  public getFieldMeta = (): FieldMeta => {
+  public getFieldMeta = (): FieldMeta & { mounted: boolean } => {
     return {
+      mounted: this.mounted.current,
       name: this._name,
       dirty: this.isDirty(),
       touched: this.isTouched(),
@@ -87,15 +93,19 @@ export default class FormFieldControl extends BaseControl {
     }
   }
 
+  public getInitialValue() {
+    if (!this._parent) return undefined
+
+    return this._parent.getInitialValue(this._name)
+  }
+
   // 字段是否改变过
   public isDirty = () => {
     if (this._dirty || !isUndefined(this._props.initialValue)) {
       return true
     }
 
-    if (!this._parent) return false
-
-    return !isUndefined(this._parent.getInitialValue(this._name))
+    return !isUndefined(this.getInitialValue())
   }
 
   // 字段是否 touch 过
@@ -111,20 +121,26 @@ export default class FormFieldControl extends BaseControl {
     const prev = this.getFieldMeta()
     // 同步全部
     !isNullish(meta.dirty) && (this._dirty = meta.dirty)
-    !isNullish(meta.validating) && (this._validating = meta.validating)
     !isNullish(meta.touched) && (this._touched = meta.touched)
     !isNullish(meta.errors) && (this._errors = meta.errors)
     !isNullish(meta.warnings) && (this._warnings = meta.warnings)
 
+    !isNullish(meta.validating) && (this._validating = meta.validating)
+
+    this.lastValidate = this._validating ? Promise.resolve([]) : null
+
     const current = this.getFieldMeta()
 
-    if (!isEqual(prev, current)) this._props.onMetaChange?.(current)
+    if (isEqual(prev, current)) return
+
+    this._props.onMetaChange?.(current)
+    if (isFunction(this._props.children)) startTransition(this.forceUpdate)
   }
 
   private lastValidate: null | Promise<any> = null
 
   // 字段校验
-  public validate = (value: any, options?: Options) => {
+  public validate = async (value: any, options?: Options) => {
     const { rule: validator } = this._props
 
     // 没有操作过的字段不能校验, 没有校验规则的也不用校验
@@ -133,7 +149,6 @@ export default class FormFieldControl extends BaseControl {
     this.setFieldMeta({ validating: true, errors: [], warnings: [] })
 
     const promise = validator.validate(value, options)
-
     this.lastValidate = promise
 
     return promise
@@ -143,9 +158,7 @@ export default class FormFieldControl extends BaseControl {
         if (this.lastValidate !== promise) return
 
         const { issues = [] } = error as { issues: SchemaIssue[] }
-
         const errors = issues.map((issue) => issue.message) as string[]
-
         this.setFieldMeta({ validating: false, errors })
       })
   }

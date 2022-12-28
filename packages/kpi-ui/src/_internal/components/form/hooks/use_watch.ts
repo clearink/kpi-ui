@@ -10,7 +10,7 @@ export default function useWatchValue(namePath?: NamePath, form?: FormInstance) 
   const [value, setValue] = useState()
   const formInstance = FieldContext.useState()
   const instance = (form ?? formInstance) as InternalFormInstance | undefined
-  const formGroup = instance?.getInternalHooks(HOOK_MARK)
+  const internalHook = instance?.getInternalHooks(HOOK_MARK)
 
   logger.error(
     !instance,
@@ -19,7 +19,7 @@ export default function useWatchValue(namePath?: NamePath, form?: FormInstance) 
 
   useIsomorphicEffect(() => {
     if (isUndefined(namePath)) return
-    formGroup?.registerWatch(namePath, setValue)
-  }, [namePath, formGroup])
+    internalHook?.registerWatch(namePath, setValue)
+  }, [namePath, internalHook])
   return value
 }

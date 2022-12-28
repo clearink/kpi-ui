@@ -1,9 +1,9 @@
-import { useMemo, useRef } from 'react'
+import { useMemo, useReducer, useRef } from 'react'
 import Field from './form_field'
-import { FieldContext, FieldListContext } from '../../../context/_internal'
+import { FieldContext } from '../../../context/_internal'
 import { withDefaultProps } from '../../../hocs'
 import { useDeepMemo, useEvent } from '../../../hooks'
-import { toArray } from '../../../utils'
+import { rawType, toArray } from '../../../utils'
 import { getIn } from '../utils/value'
 import { FormArrayControl } from '../control'
 import { collectListInjectProps } from '../utils/collect'
@@ -12,10 +12,11 @@ import type { FormListProps } from '../props'
 import type { UpdateFieldActionType as ActionType } from '../internal_props'
 
 function FormList(props: FormListProps) {
-  const { name, rule, validateTrigger, initialValue, preserve } = props
+  const { name, rule, initialValue, preserve } = props
+
   const formInstance = FieldContext.useState()
-  const control = useRef(new FormArrayControl())
-  // 同步 context 供内部调用
+
+  const [, forceUpdate] = useReducer((count) => count + 1, 0)
 
   const listPath = useDeepMemo(() => {
     return toArray(formInstance.parentNamePath).concat(toArray(name))
@@ -25,11 +26,10 @@ function FormList(props: FormListProps) {
     return { ...formInstance, parentNamePath: listPath }
   }, [formInstance, listPath])
 
-  control.current.setFormInstance(formInstance, listPath)
+  const control = useRef<FormArrayControl>()
+  if (!control.current) control.current = new FormArrayControl()
 
-  const fieldListContext = useMemo(() => {
-    return null
-  }, [])
+  control.current.setFormInstance(formInstance, listPath, rule)
 
   const shouldUpdate = useEvent((prev: any, next: any, type: ActionType) => {
     const path = toArray(name)
@@ -37,28 +37,29 @@ function FormList(props: FormListProps) {
     const nextList = getIn(next, path) as any[]
     // 用户主动触发的默认不更新 或者 setFieldValue
     if (type === 'setFields' || type === 'fieldEvent') {
-      return prevList?.length !== nextList?.length
+      return rawType(prevList) !== rawType(nextList) || prevList?.length !== nextList?.length
     }
 
     return prevList !== nextList
   })
-  const operations = useMemo(() => control.current._getFeatures(), [])
 
   return (
-    <FieldListContext.Provider value={fieldListContext}>
+    <>
+      <button type="button" onClick={() => forceUpdate()}>
+        forceUpdate
+      </button>
       <FieldContext.Provider value={fieldContext}>
         <Field
           name={[]}
           rule={rule}
-          validateTrigger={validateTrigger}
           initialValue={initialValue}
           shouldUpdate={shouldUpdate}
           preserve={preserve}
         >
-          {collectListInjectProps(props, listPath, control.current, operations)}
+          {collectListInjectProps(props, listPath, control.current)}
         </Field>
       </FieldContext.Provider>
-    </FieldListContext.Provider>
+    </>
   )
 }
 // 默认卸载时不保留数据,可手动开启

@@ -10,7 +10,7 @@ import type {
   InternalHookReturn,
   InternalNamePath,
 } from '../internal_props'
-import type { FormInstance, FormArrayHelpers, FormListProps, ListField, FieldData } from '../props'
+import type { FormInstance, FormListProps, ListField, FieldData } from '../props'
 
 // 从event中获取字段值函数
 function defaultGetValueFromEvent(valuePropName: string) {
@@ -71,7 +71,7 @@ export function collectFieldInjectProps(
       const handler = (...args: any[]) => {
         // 执行原始值
         injectProps[triggerName]?.(...args)
-        formInstance.validateField(name)
+        props.rule && formInstance.validateField(name)
       }
       return { ...res, [triggerName]: handler }
     }, injectProps)
@@ -82,8 +82,7 @@ export function collectFieldInjectProps(
 export function collectListInjectProps(
   props: FormListProps,
   listPath: InternalNamePath,
-  control: FormArrayControl,
-  operations: FormArrayHelpers
+  control: FormArrayControl
 ) {
   const { children } = props
   if (!isFunction(children)) {
@@ -91,19 +90,23 @@ export function collectListInjectProps(
     return () => null
   }
 
-  return (_: any, meta: FieldData, form: FormInstance) => {
+  return (_, meta: FieldData, form: FormInstance) => {
     const value = form.getFieldValue(listPath) || []
+    const helpers = control._getFeatures()
+
     if (!isArray(value)) {
       logger.error(true, `Current value of '${listPath.join(' > ')}' is not an array type.`)
-      return children([], operations, meta)
+      return children([], helpers, meta)
     }
-    const listValue: ListField[] = value.map((item, index) => {
+
+    const listValue: ListField[] = value.map((__, index) => {
       return {
         key: control.ensureFieldKey(index),
         name: index,
         isListField: true,
       }
     })
-    return children(listValue, operations, meta)
+
+    return children(listValue, helpers, meta)
   }
 }

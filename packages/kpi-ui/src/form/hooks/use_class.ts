@@ -63,7 +63,7 @@ export default function useFormItemLabelClass(
     const baseClassName = `${prefixCls}__label`
     return cls(baseClassName, {
       [`${baseClassName}--${labelAlign}`]: labelAlign,
-      [`${baseClassName}--${colon}`]: colon,
+      [`${baseClassName}--colon`]: colon,
       [labelCol?.className!]: labelCol?.className,
     })
   }, [prefixCls, labelAlign, colon, labelCol?.className])

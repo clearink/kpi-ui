@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import useEvent from '../use-event'
 import useMounted from '../use-mounted'
 

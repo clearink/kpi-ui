@@ -1,8 +1,8 @@
-// Form
+// form
 $form-vertical-label-padding: 0 0 8px;
 $form-vertical-label-margin: 0;
 
-// Form.Item
+// form-item
 $form-item-label-color: $heading-color;
 
 $form-item-label-colon-margin-left: 2px;
@@ -19,3 +19,12 @@ $form-item-error-input-bg: $bg-color-component;
 $form-item-label-font-size: $font-size-base;
 
 $form-item-trailing-colon: true;
+
+// form-item-message
+$form-item-message-color: $text-color-secondary;
+$form-item-message-font-size: $font-size-base;
+$form-item-message-line-height: $line-height-base;
+$form-item-message-transition-timing-function: $ease-out;
+$form-item-message-transition-duration: 0.3s;
+$form-item-message-error-color: $error-color;
+$form-item-message-warning-color: $warning-color;

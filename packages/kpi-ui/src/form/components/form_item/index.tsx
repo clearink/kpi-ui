@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import Row from '../../../row'
 import FormItemLabel from './label'
 import FormItemInput from './input'
@@ -13,7 +13,7 @@ import useFormItemStatus from '../../hooks/use_item_status'
 import type { FormItemProps } from '../../props'
 
 function InternalFormItem<State = any>(props: FormItemProps<State>) {
-  const { noStyle, name, label, style } = props
+  const { noStyle, name, label, style, help } = props
 
   const { formName } = FormContext.useState()
 
@@ -25,16 +25,20 @@ function InternalFormItem<State = any>(props: FormItemProps<State>) {
 
   const className = useFormItemClass(props, errorInfo.validateStatus, prefixCls)
 
-  const [marginBottom, setMarginBottom] = useState<number>()
   const ref = useRef<HTMLDivElement>(null)
+  const [marginBottom, setMarginBottom] = useState<number>()
 
-  const hasError = errorInfo.errors.length > 0 || errorInfo.warnings.length > 0
+  const hasError = !!(help || errorInfo.errors.length || errorInfo.warnings.length)
 
   useLayoutEffect(() => {
     if (hasError && ref.current) {
       const styles = getComputedStyle(ref.current)
       setMarginBottom(parseInt(styles.marginBottom, 10))
     }
+  }, [hasError])
+
+  const handleExitComplete = useCallback(() => {
+    !hasError && setMarginBottom(undefined)
   }, [hasError])
 
   // 仅作为渲染组件使用
@@ -65,11 +69,16 @@ function InternalFormItem<State = any>(props: FormItemProps<State>) {
             prefixCls={prefixCls}
           />
         )}
-        <FormItemInput {...inputProps} {...errorInfo} prefixCls={prefixCls}>
+        <FormItemInput
+          {...inputProps}
+          {...errorInfo}
+          prefixCls={prefixCls}
+          marginBottom={marginBottom}
+          onExitComplete={handleExitComplete}
+        >
           {normalizedChildren}
         </FormItemInput>
       </Row>
-      {/* 如何重置?需要监听ErrorList组件里回调函数 */}
       {!!marginBottom && <div style={{ marginBottom: -marginBottom }} />}
     </div>
   )

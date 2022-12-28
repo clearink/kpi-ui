@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import type { ColProps } from '../col/props'
+import type { FieldMeta } from '../_internal/components/form/internal_props'
 import type {
   FormInstance as $FormInstance,
   FormProps as $FormProps,
@@ -10,7 +11,7 @@ import type {
   FormArrayHelpers as $FormArrayHelpers,
   FieldData as $FieldData,
 } from '../_internal/components/form/props'
-import { SizeType } from '../_internal/types'
+import type { SizeType } from '../_internal/types'
 
 export type NamePath = $NamePath
 
@@ -115,10 +116,12 @@ export interface FormItemInputProps {
 
 export interface FormItemInputExtraProps {
   prefixCls: string
+  marginBottom?: number
   validateStatus?: ValidateStatus
   children?: ReactNode
-  errors?: ReactNode[]
-  warnings?: ReactNode[]
+  errors: ReactNode[]
+  warnings: ReactNode[]
+  onExitComplete: () => void
 }
 
 export interface FormListProps extends Omit<$FormListProps, 'children'> {
@@ -127,14 +130,6 @@ export interface FormListProps extends Omit<$FormListProps, 'children'> {
     arrayHelpers: $FormArrayHelpers,
     meta: Pick<$FieldData, 'errors' | 'warnings'>
   ) => ReactNode
-  // name: string | number | (string | number)[];
-  // rules?: ValidatorRule[];
-  // initialValue?: any[];
-  // children: (
-  //   fields: FormListFieldData[],
-  //   operation: FormListOperation,
-  //   meta: { errors: React.ReactNode[]; warnings: React.ReactNode[] },
-  // ) => React.ReactNode;
 }
 
 export interface FormInstance<State = any> extends $FormInstance<State> {
@@ -147,4 +142,5 @@ export interface ErrorListProps {
   help?: ReactNode
   helpStatus?: ValidateStatus
   className?: string
+  onExitComplete?: () => void
 }

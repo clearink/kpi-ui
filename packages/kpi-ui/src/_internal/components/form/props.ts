@@ -236,6 +236,9 @@ export interface FormFieldProps<State = any> {
    * @zh 字段状态变更通知
    */
   onMetaChange?: (meta: FieldMeta) => void
+
+  /** @private 内部使用 */
+  isListField?: boolean
 }
 
 export interface ListField {
@@ -252,8 +255,7 @@ export interface FormArrayHelpers {
   replace: (index: number, value: any) => void
   insert: (index: number, value: any) => void
 }
-export interface FormListProps
-  extends Pick<FormFieldProps, 'validateTrigger' | 'rule' | 'preserve'> {
+export interface FormListProps extends Pick<FormFieldProps, 'rule' | 'preserve'> {
   name: NamePath
   children?: (
     fields: ListField[],

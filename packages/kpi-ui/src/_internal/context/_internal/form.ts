@@ -1,7 +1,7 @@
 import CtxHelper from '../helper'
 import { logger } from '../../utils'
 import type { FormInstance } from '../../components/form/props'
-import type { InternalFormInstance } from '../../components/form/internal_props'
+import type { InternalFormInstance, InternalNamePath } from '../../components/form/internal_props'
 
 // TODO: 目前还不确定
 interface FormContextState {
@@ -49,5 +49,3 @@ export const FieldContext = CtxHelper<InternalFormInstance>({
     }
   },
 })
-
-export const FieldListContext = CtxHelper<null>(null)

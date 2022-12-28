@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file,class-methods-use-this */
 import isEqual from 'react-fast-compare'
 import cloneDeep from 'lodash.clonedeep'
-import type { MutableRefObject } from 'react'
+import { MutableRefObject, startTransition } from 'react'
 import { isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '../../../utils'
 import BaseControl from './base_control'
 import { isDependent, _getName } from '../utils/path'
@@ -270,7 +270,7 @@ export class FormInitialControl<State = any> {
 /** 负责表单字段                                           */
 /** ==================================================== */
 export class FormControlsControl {
-  private _controls = new Map<string, Set<FormFieldControl>>()
+  public _controls = new Set<FormFieldControl>()
 
   private get $props() {
     return this.$inject.$props
@@ -280,10 +280,7 @@ export class FormControlsControl {
 
   // 获取字段,根据参数判断是否需要去除没有name的字段
   getControls = (pure = false) => {
-    const controls = [...this._controls.values()].reduce(
-      (res, set) => res.concat([...set.values()]),
-      [] as FormFieldControl[]
-    )
+    const controls = [...this._controls.values()]
 
     if (!pure) return controls
 
@@ -295,46 +292,36 @@ export class FormControlsControl {
     removeInvalid: R,
     nameList?: NamePath[]
   ): ControlsByNameReturn<R> => {
-    if (!nameList) return this.getControls(true)
+    const controls = this.getControls(true)
+    if (!nameList) return controls
 
     return nameList.reduce((res, path) => {
       const key = _getName(path)
 
-      if (!this._controls.has(key)) {
+      // 未注册
+      if (!controls.find((control) => control._key === key)) {
         if (removeInvalid) return res
         return res.concat(new InvalidField(toArray(path)))
       }
 
-      const controls = this._controls.get(key)!
-
-      return res.concat(...controls.values())
+      return res.concat(controls.filter((control) => control._key === key))
     }, [] as any[])
   }
 
   // 获取校验字段
   getValidateControls = (nameList?: NamePath[]) => {
-    if (!nameList) return this.getControls(true)
-
-    const pureControls = this.getControls(true)
-
-    const controls = pureControls.reduce((set, control) => {
-      const dependent = nameList.some((name) => isDependent(control._name, name))
-
-      if (dependent && !!control._props.rule) set.add(control)
-
-      return set
-    }, new Set<FormFieldControl>())
-
-    return [...controls.keys()]
+    // TODO: 可以选择递归模式 (isDependent)
+    return this.getControlsByName(true, nameList).filter((control) => !!control._props.rule)
   }
 
   // 注册字段
   registerField = (control: FormFieldControl, dispatch: FormDispatchControl) => {
     const key = control._key
 
-    const cached = this._controls.get(key) ?? new Set<FormFieldControl>()
+    // 对于未提供合法name的字段,将不做任何处理
+    if (!key) return () => undefined
 
-    this._controls.set(key, cached.add(control.setParent(dispatch.$initial)))
+    this._controls.add(control.setParent(dispatch.$initial))
 
     dispatch.dispatch({ type: 'registerField', control })
 
@@ -342,27 +329,22 @@ export class FormControlsControl {
     return () => {
       const formPreserve = this.$props.props.preserve
       const preserve = control._props.preserve ?? formPreserve ?? true
+      // 保留数据 不做任何处理
+      this._controls.delete(control)
 
-      cached.delete(control)
-
-      cached.size === 0 && this._controls.delete(key)
+      if (preserve || control._props.isListField) return
 
       // 不保留数据 && name 合法 && 没有同名字段
-      const cleanup = !preserve && !!key && !cached.size
-      dispatch.dispatch({ type: 'removeField', control, cleanup })
+      const cleanup = !this.getControls().find((field) => field._key === key)
+      cleanup && dispatch.dispatch({ type: 'removeField', control })
     }
   }
 
   // 设置 FormField 的 meta 属性
   setFieldMeta = (namePath: NamePath, meta: Partial<FieldMeta>) => {
-    // 由于涉及到隐式依赖，所以此处需要遍历全部 controls
-    const key = _getName(namePath)
-    for (const control of this.getControls(true)) {
-      if (!isDependent(control._name, namePath)) continue
-
-      if (control._key === key) control.setFieldMeta(meta)
-      else control.setFieldMeta({ dirty: meta.dirty, touched: meta.touched })
-    }
+    this.getControlsByName(true, [namePath]).forEach((control) => {
+      control.setFieldMeta(meta)
+    })
   }
 
   getFieldError = (namePath: NamePath) => {
@@ -502,11 +484,9 @@ export class FormStateControl<State = any> {
   }
 
   // 清除字段卸载时的副作用
-  cleanupField = (cleanup: boolean, namePath: NamePath) => {
-    const prev = this._state
-    if (!cleanup) return [prev, prev]
-
-    return this.deleteFieldValue(namePath)
+  cleanupField = (control: FormFieldControl) => {
+    control.setFieldMeta({}) // 触发 mounted.current = false
+    return this.deleteFieldValue(control._name)
   }
 }
 
@@ -559,12 +539,10 @@ export class FormDispatchControl<State = any> {
     // 校验依赖字段
     const dependencies = this.publishDependentControl(controls)
 
-    if (this.$props.useRenderProps) {
-      this.$props.forceUpdate()
-    } else {
-      const updateControls = controls.concat(dependencies)
+    if (!this.$props.useRenderProps) {
+      const updateControls = new Set(controls.concat(dependencies))
       updateControls.forEach((control) => control.forceUpdate())
-    }
+    } else this.$props.forceUpdate()
 
     // 通知监听事件
     this.$watch.publishWatch(prev, next)
@@ -602,6 +580,16 @@ export class FormDispatchControl<State = any> {
       return this.updateControl(prev, next, action.type)
     }
 
+    // Form.List专用调度
+    if (action.type === 'setFieldList') {
+      const [prev, next] = $state.setFieldValue(action.name, action.value)
+      const controls = this.$controls.getControlsByName(true, [action.name])
+      // console.log(controls)
+      controls.forEach((control) => control.forceUpdate())
+      return
+      // return this.updateControl(prev, next, action.type)
+    }
+
     // 调用 setFieldsValue 方法
     if (action.type === 'setFieldsValue') {
       const [prev, next] = $state.setFieldsValue(action.state)
@@ -611,8 +599,7 @@ export class FormDispatchControl<State = any> {
 
     // 删除字段，主要时通知 dependence
     if (action.type === 'removeField') {
-      const { cleanup, control } = action
-      const [prev, next] = $state.cleanupField(cleanup, control._name)
+      const [prev, next] = $state.cleanupField(action.control)
 
       return this.updateControl(prev, next, action.type)
     }
@@ -691,10 +678,10 @@ export class FormDispatchControl<State = any> {
     })
 
     const promiseList = Promise.all(validateList)
-
     this.lastValidate = promiseList
+
     const returnPromise = promiseList.then(() => {
-      if (promiseList !== this.lastValidate) return 'abandon-validate'
+      if (promiseList !== this.lastValidate) return 'invalid-validate'
 
       const validateErrors = this.$controls
         .getFieldsError(fields)
@@ -755,9 +742,9 @@ export class FormDispatchControl<State = any> {
   }
 
   // 触发 onFinish 回调
-  triggerOnFinish = (values: State | 'abandon-validate') => {
+  triggerOnFinish = (values: State | 'invalid-validate') => {
     const { onFinish } = this.$props.props
-    if (!onFinish || values === 'abandon-validate') return
+    if (!onFinish || values === 'invalid-validate') return
 
     try {
       onFinish(values)

@@ -52,5 +52,33 @@
         font-size: $form-item-label-font-size;
       }
     }
+
+    @include e(control-status) {
+      display: flex;
+      flex-wrap: nowrap;
+    }
+
+    @include e(control-extra) {
+      clear: both;
+      overflow: hidden;
+      color: $form-item-message-color;
+      font-size: $form-item-message-font-size;
+      line-height: $form-item-message-line-height;
+      transition: color $form-item-message-transition-duration
+        $form-item-message-transition-timing-function;
+    }
+  }
+}
+
+@include b(form-item-message) {
+  width: 100%;
+  @extend .#{$prefix}-form-item__control-extra;
+
+  @include m(error) {
+    color: $form-item-message-error-color;
+  }
+
+  @include m(warning) {
+    color: $form-item-message-warning-color;
   }
 }

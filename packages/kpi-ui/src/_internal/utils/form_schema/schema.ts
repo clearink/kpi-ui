@@ -435,6 +435,7 @@ export class ArraySchema<
     if (!isArray(value)) return Invalid(context)(array.invalid, { value })
 
     const ret = await super._validate(value, context)
+
     if (ret.status === 'invalid') return ret
     return this._validateInner(value, context)
   }

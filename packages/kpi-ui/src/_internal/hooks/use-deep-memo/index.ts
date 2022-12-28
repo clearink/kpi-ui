@@ -5,11 +5,13 @@ export interface MemoizeCache<T> {
   deps: DependencyList | undefined
   cache: T
 }
+
 export default function useDeepMemo<T>(factory: () => T, deps?: DependencyList): T {
-  const ref = useRef<MemoizeCache<T>>({ deps, cache: factory() })
-  if (!isEqual(ref.current.deps, deps)) {
-    ref.current.cache = factory()
-    ref.current.deps = deps
+  const ref = useRef<MemoizeCache<T> | undefined>()
+
+  if (!ref.current || !isEqual(ref.current.deps, deps)) {
+    ref.current = { cache: factory(), deps }
   }
-  return ref.current.cache
+
+  return ref.current.cache!
 }

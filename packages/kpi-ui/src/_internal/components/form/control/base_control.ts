@@ -6,6 +6,6 @@ export default class BaseControl {
 
   constructor(_forceUpdate: () => void, mounted: MutableRefObject<boolean>) {
     // 必须在组件挂载时调用
-    this.forceUpdate = () => mounted.current && _forceUpdate()
+    this.forceUpdate = () => (mounted.current ? _forceUpdate() : undefined)
   }
 }

@@ -4,13 +4,15 @@ import { isUndefined, toArray } from '../../../utils'
 import { isValidIndex } from '../utils/path'
 
 import type { InternalFormInstance, InternalNamePath } from '../internal_props'
-import type { FormArrayHelpers } from '../props'
+import type { FormArrayHelpers, FormFieldProps } from '../props'
 
 // FormArray 管理 key
 export default class FormArrayControl {
   private _context: InternalFormInstance | null = null
 
   private _listPath: InternalNamePath = []
+
+  private _rule: FormFieldProps['rule'] = undefined
 
   // 记录每一个 field 的唯一标识, 调用 remove 后会被移除
   private _keys: number[] = []
@@ -38,9 +40,14 @@ export default class FormArrayControl {
     }
   }
 
-  public setFormInstance = (context: InternalFormInstance, listPath: InternalNamePath) => {
+  public setFormInstance = (
+    context: InternalFormInstance,
+    listPath: InternalNamePath,
+    rule: FormFieldProps['rule']
+  ) => {
     this._context = context
     this._listPath = listPath
+    this._rule = rule
   }
 
   private getFieldList = (): any[] => {
@@ -52,9 +59,12 @@ export default class FormArrayControl {
     const internalHook = this._context?.getInternalHooks(HOOK_MARK)
 
     internalHook?.dispatch({
-      type: 'setFields',
-      fields: [{ name: this._listPath, value }],
+      type: 'setFieldList',
+      name: this._listPath,
+      value,
     })
+
+    this._rule && this._context?.validateFields([this._listPath])
   }
 
   /** ===================================================== */

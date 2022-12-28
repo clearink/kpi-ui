@@ -2,6 +2,7 @@ import CtxHelper from './helper'
 
 import type { ColProps } from '../../col/props'
 import type { FormInstance, FormLabelAlign, RequiredMark, ValidateStatus } from '../../form/props'
+import { FieldMeta } from '../components/form/internal_props'
 
 export interface FormContextState {
   vertical: boolean
@@ -26,15 +27,6 @@ export interface FormItemContextState {
 export const FormItemContext = CtxHelper<FormItemContextState>({})
 
 // 收集子字段的 errors 与 warnings
-export interface NoStyleContextState {
-  change?: () => void
-}
-// 收集 noStyle 字段的错误到最近的Form.Item组件上
-export const NoStyleContext = CtxHelper<NoStyleContextState>({})
 
-export interface FormErrorListContextState {
-  prefixCls: string
-}
-export const FormErrorListContext = CtxHelper<FormErrorListContextState>({
-  prefixCls: '',
-})
+// 收集 noStyle 字段的错误到最近的Form.Item组件上
+export const NoStyleContext = CtxHelper<null>(null)

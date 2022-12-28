@@ -10,8 +10,10 @@ import isInvalidUsage from '../utils/usage'
 import type { FormItemProps, ValidateStatus } from '../props'
 import type { FieldMeta } from '../../_internal/components/form/internal_props'
 
-function makeEmptyMeta(): Omit<FieldMeta, 'name' | 'dirty'> {
+function makeEmptyMeta(): FieldMeta {
   return {
+    name: [],
+    dirty: false,
     touched: false,
     validating: false,
     errors: [],
@@ -40,7 +42,13 @@ export default function useInjectChildren(props: FormItemProps, formItemId?: str
   const [meta, setMeta] = useDebounceState(10, makeEmptyMeta)
 
   const handleMetaChange = useCallback(
-    (next: FieldMeta) => setMeta(omit(next, ['name', 'dirty'])),
+    (fieldMeta: FieldMeta) => {
+      const next = fieldMeta as FieldMeta & { mounted: boolean }
+
+      setMeta(omit(next, ['mounted']))
+
+      // if(noStyle) // 通知到上层组件
+    },
     [setMeta]
   )
 

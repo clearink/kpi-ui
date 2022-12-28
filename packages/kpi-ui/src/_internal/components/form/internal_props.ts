@@ -32,9 +32,13 @@ export type UpdateFieldAction =
       state: any
     }
   | {
+      type: 'setFieldList'
+      name: InternalNamePath
+      value: any[]
+    }
+  | {
       type: 'removeField' // 卸载字段时触发
       control: FormFieldControl
-      cleanup: boolean
     }
   | {
       type: 'registerField'
@@ -64,11 +68,6 @@ export interface InternalFormFieldProps<S = any> extends Omit<FormFieldProps<S>,
    * @zh 字段路径
    */
   name: InternalNamePath
-
-  /**
-   * @zh 是否为列表项字段
-   */
-  isListField?: boolean
 }
 
 export interface InternalFormInstance<S = any> extends FormInstance<S> {
