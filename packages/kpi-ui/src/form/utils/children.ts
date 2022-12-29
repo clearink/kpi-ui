@@ -1,5 +1,5 @@
 import { cloneElement, isValidElement } from 'react'
-import { isFunction, isString } from '../../_internal/utils'
+import { isFunction, isNullish, isString } from '../../_internal/utils'
 
 import type { FormContextState } from '../../_internal/context'
 import type {
@@ -8,6 +8,7 @@ import type {
   FormItemLabelProps,
   FormItemProps,
 } from '../props'
+import isInvalidUsage from './usage'
 
 // 格式化 FormItemLabel
 export function normalizeLabelChildren(
@@ -38,18 +39,21 @@ export function normalizeLabelChildren(
 
 // 格式化 FormItem.Children
 export function normalizeItemChildren(
-  children: FormItemProps['children'],
+  props: FormItemProps,
   formInstance: FormInstance,
   formItemId?: string
 ) {
+  const { children } = props
+
+  // 用法不合法不渲染数据
+  if (isInvalidUsage(props)) return () => undefined
+
   if (isValidElement<HTMLInputElement>(children)) {
-    const originId = children.props.id
-    return cloneElement(children, { id: originId ?? formItemId })
+    if (!isNullish(children.props.id)) return children
+    return cloneElement(children, { id: formItemId })
   }
 
-  if (isFunction(children)) {
-    return () => children(formInstance)
-  }
+  if (isFunction(children)) return () => children(formInstance)
 
   return () => children
 }

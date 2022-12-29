@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { List as InternalFormList } from '../../../_internal/components/form'
-import { logger, pick } from '../../../_internal/utils'
+import { logger } from '../../../_internal/utils'
 
 import type { FormListProps } from '../../props'
 
@@ -12,7 +12,10 @@ function FormList(props: FormListProps) {
   return (
     <InternalFormList {...props}>
       {(fields, arrayHelpers, meta) => {
-        return children(fields, arrayHelpers, pick(meta, ['errors', 'warnings']))
+        return children(fields, arrayHelpers, {
+          errors: meta.errors,
+          warnings: meta.warnings,
+        })
       }}
     </InternalFormList>
   )

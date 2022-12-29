@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
 import { isString } from '../../_internal/utils'
 
+import type { FieldMeta } from '../../_internal/components/form/internal_props'
+
 import type { ValidateStatus } from '../props'
 
-export default function makeErrorEntity(
+export function makeErrorEntity(
   error: string | ReactNode,
   status: ValidateStatus | undefined,
   type: 'help' | 'error' | 'warning',
@@ -13,5 +15,16 @@ export default function makeErrorEntity(
     key: isString(error) ? error : `${type}__${index}`,
     error,
     status,
+  }
+}
+
+export function makeEmptyMeta(): FieldMeta {
+  return {
+    name: [],
+    dirty: false,
+    touched: false,
+    validating: false,
+    errors: [],
+    warnings: [],
   }
 }
