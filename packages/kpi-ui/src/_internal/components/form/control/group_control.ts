@@ -1,10 +1,10 @@
 /* eslint-disable max-classes-per-file,class-methods-use-this */
 import isEqual from 'react-fast-compare'
 import cloneDeep from 'lodash.clonedeep'
-import { MutableRefObject, startTransition } from 'react'
+import { MutableRefObject } from 'react'
 import { isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '../../../utils'
 import BaseControl from './base_control'
-import { isDependent, _getName } from '../utils/path'
+import { _getName } from '../utils/path'
 import { setIn, getIn, deleteIn, mergeValue, cloneWithPath } from '../utils/value'
 import { InvalidField } from './field_control'
 

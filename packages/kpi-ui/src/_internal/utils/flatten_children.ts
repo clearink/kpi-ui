@@ -1,4 +1,4 @@
-import { Children } from 'react'
+import { Children, cloneElement, isValidElement } from 'react'
 import type { ReactNode, Key, ReactElement } from 'react'
 
 import { isFragment } from 'react-is'

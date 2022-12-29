@@ -17,14 +17,12 @@ export default function useInjectField(
   control: FormFieldControl,
   internalHook?: InternalHookReturn
 ) {
-  const { children: $children } = props
-
   // 收集注册到子组件的数据
   const collect = collectInjectProps(props, formInstance, control, internalHook)
 
   // 处理 children
   const handleNormalize = normalizeChildren(collect, formInstance, control)
-  const { functional, children, valid } = handleNormalize($children)
+  const { functional, children, valid } = handleNormalize(props.children)
 
   logger.error(!functional && !valid, 'Form.Field `children` is not valid react element.')
   if (functional || !valid) return children

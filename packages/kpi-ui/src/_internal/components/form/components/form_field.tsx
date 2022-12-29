@@ -13,7 +13,7 @@ import type { FormFieldProps } from '../props'
 import type { InternalFormFieldProps as InternalProps } from '../internal_props'
 
 function InternalFormField(props: InternalProps) {
-  const { name, dependencies } = props
+  const { dependencies } = props
 
   // 重置次数
   const [resetCount, resetField] = useReducer((count) => count + 1, 0)
@@ -39,12 +39,11 @@ function InternalFormField(props: InternalProps) {
   useIsomorphicEffect(registerField, [registerField])
 
   // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
-  const key = useDeepMemo(() => _getName(name), [name])
   const memorized = useDeepMemo(() => dependencies, [dependencies])
   const subscribe = useEvent(() => {
     return internalHook?.registerSubscribe(control.current!)
   })
-  useIsomorphicEffect(subscribe, [subscribe, memorized, key])
+  useIsomorphicEffect(subscribe, [subscribe, memorized])
 
   // 数据注入
   const children = useInjectField(props, formInstance, control.current, internalHook)
@@ -58,9 +57,14 @@ function WrapperFormField(props: FormFieldProps) {
   const { parentNamePath = [] } = FieldContext.useState()
 
   // 预处理一下 name 字段
-  const namePath = isUndefined(name) ? [] : parentNamePath.concat(toArray(name))
+  const namePath = useDeepMemo(() => {
+    return isUndefined(name) ? [] : parentNamePath.concat(toArray(name))
+  }, [name, parentNamePath])
 
-  const key = rest.isListField ? 'keep' : _getName(namePath)
+  const key = useMemo(
+    () => (rest.isListField ? 'keep' : _getName(namePath)),
+    [namePath, rest.isListField]
+  )
 
   // 由于这里根据 name 设置了 key
   return <InternalFormField key={key} name={namePath} {...rest} />
