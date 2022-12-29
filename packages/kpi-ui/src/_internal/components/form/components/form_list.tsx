@@ -1,4 +1,4 @@
-import { useMemo, useReducer, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import Field from './form_field'
 import { FieldContext } from '../../../context/_internal'
 import { withDefaultProps } from '../../../hocs'
@@ -42,45 +42,38 @@ function FormList(props: FormListProps) {
 
   const helpers = useMemo(() => control.current!._getFeatures(), [])
 
-  const [, forceUpdate] = useReducer((count) => count + 1, 0)
-
   if (!isFunction(children)) {
     logger.error(true, 'Form.List only accepts function as children.')
     return null
   }
 
   return (
-    <>
-      <button type="button" onClick={() => forceUpdate()}>
-        forceUpdate
-      </button>
-      <FieldContext.Provider value={fieldContext}>
-        <Field
-          name={[]}
-          rule={rule}
-          initialValue={initialValue}
-          shouldUpdate={shouldUpdate}
-          preserve={preserve}
-        >
-          {({ value = [] }: any, meta: FieldData) => {
-            if (!isArray(value)) {
-              logger.error(true, `Current value of '${listPath.join(' > ')}' is not an array type.`)
-              return children([], helpers, meta)
+    <FieldContext.Provider value={fieldContext}>
+      <Field
+        name={[]}
+        rule={rule}
+        initialValue={initialValue}
+        shouldUpdate={shouldUpdate}
+        preserve={preserve}
+      >
+        {({ value = [] }: any, meta: FieldData) => {
+          if (!isArray(value)) {
+            logger.error(true, `Current value of '${listPath.join(' > ')}' is not an array type.`)
+            return children([], helpers, meta)
+          }
+
+          const listValue: ListField[] = value.map((__, index) => {
+            return {
+              key: control.current!.ensureFieldKey(index),
+              name: index,
+              isListField: true,
             }
+          })
 
-            const listValue: ListField[] = value.map((__, index) => {
-              return {
-                key: control.current!.ensureFieldKey(index),
-                name: index,
-                isListField: true,
-              }
-            })
-
-            return children(listValue, helpers, meta)
-          }}
-        </Field>
-      </FieldContext.Provider>
-    </>
+          return children(listValue, helpers, meta)
+        }}
+      </Field>
+    </FieldContext.Provider>
   )
 }
 // 默认卸载时不保留数据,可手动开启
