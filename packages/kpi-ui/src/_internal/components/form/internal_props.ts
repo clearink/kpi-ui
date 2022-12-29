@@ -32,11 +32,6 @@ export type UpdateFieldAction =
       state: any
     }
   | {
-      type: 'setFieldList'
-      name: InternalNamePath
-      value: any[]
-    }
-  | {
       type: 'removeField' // 卸载字段时触发
       control: FormFieldControl
     }

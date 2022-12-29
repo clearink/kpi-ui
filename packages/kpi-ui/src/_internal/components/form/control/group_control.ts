@@ -580,13 +580,6 @@ export class FormDispatchControl<State = any> {
       return this.updateControl(prev, next, action.type)
     }
 
-    // 调用 setFieldsValue 方法
-    if (action.type === 'setFieldsValue') {
-      const [prev, next] = $state.setFieldsValue(action.state)
-
-      return this.updateControl(prev, next, action.type)
-    }
-
     // 删除字段，主要时通知 dependence
     if (action.type === 'removeField') {
       const [prev, next] = $state.cleanupField(action.control)
