@@ -1,5 +1,5 @@
 import cls from 'classnames'
-import { memo, useMemo } from 'react'
+import { useMemo } from 'react'
 import { AnimatePresence, domAnimation, LazyMotion, m } from 'framer-motion'
 import { useDebounceValue, usePrefixCls } from '../../../_internal/hooks'
 import type { ErrorListProps } from '../../props'
@@ -46,4 +46,4 @@ function ErrorList(props: ErrorListProps) {
   )
 }
 
-export default memo(ErrorList)
+export default ErrorList

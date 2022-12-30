@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { List as InternalFormList } from '../../../_internal/components/form'
 import { logger } from '../../../_internal/utils'
 
@@ -21,4 +20,4 @@ function FormList(props: FormListProps) {
   )
 }
 
-export default memo(FormList)
+export default FormList

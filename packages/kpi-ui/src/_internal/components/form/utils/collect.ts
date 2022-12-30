@@ -26,10 +26,10 @@ export default function collectInjectProps(
 ) {
   const {
     name,
-    trigger,
+    trigger = 'onChange',
     validateTrigger,
-    valuePropName,
-    getValueFromEvent = defaultGetValueFromEvent(valuePropName!),
+    valuePropName = 'value',
+    getValueFromEvent = defaultGetValueFromEvent(valuePropName),
     formatter,
     getValueProps: $getValueProps,
   } = props
@@ -40,13 +40,13 @@ export default function collectInjectProps(
     const value = formInstance.getFieldValue(name)
 
     // 获取 event value 字段函数 getValueProps 与 valuePropName 互斥
-    const getValueProps = $getValueProps || ((val: AnyObject) => ({ [valuePropName!]: val }))
+    const getValueProps = $getValueProps || ((val: AnyObject) => ({ [valuePropName]: val }))
 
     const injectProps = {
       ...childProps,
       ...getValueProps(value),
       // 触发条件
-      [trigger!]: (...args: any[]) => {
+      [trigger]: (...args: any[]) => {
         let next = getValueFromEvent(...args)
 
         if (isFunction(formatter)) next = formatter(next, value, formInstance.getFieldsValue())

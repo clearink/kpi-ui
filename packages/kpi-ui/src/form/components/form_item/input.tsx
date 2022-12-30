@@ -2,7 +2,6 @@ import { memo, useMemo } from 'react'
 import cls from 'classnames'
 import Col from '../../../col'
 import ErrorList from '../error_list'
-import { useDebounceValue } from '../../../_internal/hooks'
 import { FormContext, FormItemContext } from '../../../_internal/context'
 import { mergeSameNameProps } from '../../../_internal/utils'
 

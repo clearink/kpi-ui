@@ -1,12 +1,10 @@
 import { useRef, Fragment, useReducer, useMemo } from 'react'
 
-import { withDefaultProps } from '../../../hocs'
 import { FieldContext } from '../../../context/_internal'
 import { FormFieldControl, HOOK_MARK } from '../control'
-
 import useInjectField from '../hooks/use_inject_field'
 import { useDeepMemo, useEvent, useIsomorphicEffect, useMounted } from '../../../hooks'
-import { isUndefined, toArray } from '../../../utils'
+import { isFunction, isUndefined, toArray } from '../../../utils'
 import { _getName } from '../utils/path'
 
 import type { FormFieldProps } from '../props'
@@ -58,21 +56,11 @@ function WrapperFormField(props: FormFieldProps) {
   const { parentNamePath = [] } = FieldContext.useState()
 
   // 预处理一下 name 字段
-  const namePath = useDeepMemo(() => {
-    return isUndefined(name) ? [] : parentNamePath.concat(toArray(name))
-  }, [name, parentNamePath])
+  const namePath = isUndefined(name) ? [] : parentNamePath.concat(toArray(name))
 
-  const key = useMemo(
-    () => (rest.isListField ? 'keep' : _getName(namePath)),
-    [namePath, rest.isListField]
-  )
+  const key = rest.isListField ? 'keep' : _getName(namePath)
 
   return <InternalFormField key={key} name={namePath} {...rest} />
 }
 
-export default withDefaultProps(WrapperFormField, {
-  valuePropName: 'value',
-  trigger: 'onChange',
-  shouldUpdate: false,
-  validateFirst: false,
-} as const)
+export default WrapperFormField

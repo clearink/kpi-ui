@@ -37,4 +37,4 @@ function Col(props: ColProps) {
   )
 }
 
-export default withDefaultProps(Col, {})
+export default withDefaultProps(Col)

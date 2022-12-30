@@ -17,11 +17,5 @@ export function withDefaultProps<P extends object, D extends SomeDefault<P> = So
   defaultProps?: D
 ) {
   WrappedComponent.defaultProps = defaultProps
-
-  // 生产环境去除 displayName
-  if (process.env.NODE_ENV !== 'production') {
-    WrappedComponent.displayName = WrappedComponent.name
-  }
-
   return WrappedComponent as ComponentType<UnionProp<P, D>>
 }

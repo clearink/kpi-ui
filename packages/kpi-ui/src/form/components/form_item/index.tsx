@@ -17,9 +17,7 @@ import type { FormItemProps, ValidateStatus } from '../../props'
 import type { FieldMeta } from '../../../_internal/components/form/internal_props'
 
 function InternalFormItem<State = any>(props: FormItemProps<State>) {
-  const { noStyle } = props
-
-  if (noStyle) return <NoStyleFormItem {...props} />
+  if (props.noStyle) return <NoStyleFormItem {...props} />
 
   return <CommonFormItem {...props} />
 }
@@ -32,11 +30,9 @@ function NoStyleFormItem(props: FormItemProps) {
 
   const formItemId = useFormItemId(props.name, formName)
 
-  const children = normalizeItemChildren(props, formInstance!, formItemId)
-
   return (
     <InternalFormField {...props} onMetaChange={topMetaChange}>
-      {children}
+      {normalizeItemChildren(props, formInstance!, formItemId)}
     </InternalFormField>
   )
 }
@@ -49,8 +45,6 @@ function CommonFormItem(props: FormItemProps) {
   const prefixCls = usePrefixCls('form-item')
 
   const formItemId = useFormItemId(name, formName)
-
-  const children = normalizeItemChildren(props, formInstance!, formItemId)
 
   // if (isValidElement(children)) {
   //   // TODO: 检测是否支持 ref 获取 dom 用于实现 scrollToField
@@ -130,21 +124,21 @@ function CommonFormItem(props: FormItemProps) {
           />
         )}
 
-        <NoStyleContext.Provider value={handleSubMetaChange}>
-          <FormItemInput
-            prefixCls={prefixCls}
-            marginBottom={marginBottom}
-            onExitComplete={handleExitComplete}
-            {...inputProps}
-            validateStatus={status}
-            errors={mergedErrors}
-            warnings={mergedWarnings}
-          >
+        <FormItemInput
+          prefixCls={prefixCls}
+          marginBottom={marginBottom}
+          onExitComplete={handleExitComplete}
+          {...inputProps}
+          validateStatus={status}
+          errors={mergedErrors}
+          warnings={mergedWarnings}
+        >
+          <NoStyleContext.Provider value={handleSubMetaChange}>
             <InternalFormField {...props} onMetaChange={handleMetaChange}>
-              {children}
+              {normalizeItemChildren(props, formInstance!, formItemId)}
             </InternalFormField>
-          </FormItemInput>
-        </NoStyleContext.Provider>
+          </NoStyleContext.Provider>
+        </FormItemInput>
       </Row>
       {!!marginBottom && <div style={{ marginBottom: -marginBottom }} />}
     </div>
