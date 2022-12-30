@@ -407,8 +407,8 @@ export class ArraySchema<
     super()
   }
 
-  static create<I extends BaseSchema>(inner: I) {
-    return new ArraySchema(inner)
+  static create<I extends BaseSchema>(inner?: I) {
+    return new ArraySchema(inner ?? AnySchema.create())
   }
 
   /** ==================================================== */
