@@ -4,7 +4,7 @@ import { FieldContext } from '../../../context/_internal'
 import { FormFieldControl, HOOK_MARK } from '../control'
 import useInjectField from '../hooks/use_inject_field'
 import { useDeepMemo, useEvent, useIsomorphicEffect, useMounted } from '../../../hooks'
-import { isFunction, isUndefined, toArray } from '../../../utils'
+import { isUndefined, toArray } from '../../../utils'
 import { _getName } from '../utils/path'
 
 import type { FormFieldProps } from '../props'

@@ -6,8 +6,8 @@ import { HOOK_MARK } from '../control'
 import type { InternalFormInstance } from '../internal_props'
 import type { FormInstance, NamePath } from '../props'
 
-export default function useWatchValue(namePath?: NamePath, form?: FormInstance) {
-  const [value, setValue] = useState()
+export default function useWatchValue<T extends any>(namePath?: NamePath, form?: FormInstance) {
+  const [value, setValue] = useState<T | undefined>()
   const formInstance = FieldContext.useState()
   const instance = (form ?? formInstance) as InternalFormInstance | undefined
   const internalHook = instance?.getInternalHooks(HOOK_MARK)
