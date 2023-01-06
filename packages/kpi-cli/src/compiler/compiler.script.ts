@@ -6,12 +6,12 @@ import KPI_CONST from '../shared/constant'
 
 export default function compileScript(mode: 'cjs' | 'esm', options: CompileProps) {
   const { entry, force } = options
-  const constant = KPI_CONST(false)
-  const { CJS_DIR_NAME, ESM_DIR_NAME, FILE_EXTENSIONS } = constant
-  const { TEST_DIR_NAME, PROPS_FILE_NAME, DOCS_DIR_NAME } = constant
+
+  const { CJS_DIR_NAME, ESM_DIR_NAME, FILE_EXTENSIONS } = KPI_CONST
+  const { TEST_DIR_NAME, PROPS_FILE_NAME, DOCS_DIR_NAME } = KPI_CONST
   // 删除之前编译目录
   const output = mode === 'cjs' ? CJS_DIR_NAME : ESM_DIR_NAME
-  force && remove(resolve(constant.APP_DIR, output))
+  force && remove(resolve(KPI_CONST.APP_DIR, output))
 
   const args: string[] = [
     require.resolve('@babel/cli/bin/babel'),

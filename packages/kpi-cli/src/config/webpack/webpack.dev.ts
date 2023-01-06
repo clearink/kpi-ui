@@ -10,8 +10,7 @@ import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 // 开发环境
 
 export default function dev(preview: boolean) {
-  const constant = KPI_CONST(preview)
-  return merge(common('development', constant), {
+  return merge(common('development', KPI_CONST), {
     mode: 'development',
     devtool: 'cheap-module-source-map',
     output: {
@@ -28,7 +27,7 @@ export default function dev(preview: boolean) {
       new HtmlWebpackPlugin({
         inject: true,
         scriptLoading: 'defer',
-        template: constant.TEMPLATE_HTML_FILE(),
+        template: KPI_CONST.TEMPLATE_HTML_FILE,
       }),
       new ReactRefreshWebpackPlugin({
         exclude: [/node_modules/],
@@ -37,8 +36,7 @@ export default function dev(preview: boolean) {
     ],
     devServer: {
       static: {
-        directory: constant.PUBLIC_DIR,
-        publicPath: [constant.PUBLIC_PATH],
+        directory: KPI_CONST.PREVIEW_PUBLIC_DIR,
       },
       hot: true,
       compress: true,

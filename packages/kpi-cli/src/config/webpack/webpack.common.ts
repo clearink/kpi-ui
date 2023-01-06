@@ -1,32 +1,28 @@
-import webpack, { Configuration } from 'webpack'
+import webpack, { type Configuration } from 'webpack'
 import WebPackBarPlugin from 'webpackbar'
-
-import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import ESLintWebpackPlugin from 'eslint-webpack-plugin'
 
-import { ConstantType } from '../../shared/constant'
-
 import InterpolateHtmlPlugin from '../../plugins/interpolate_html_plugin'
 import { getEnvConstant, getStyleLoader } from '../../shared/utils'
+
+import type { ConstantType } from '../../shared/constant'
 // TODO: 使用 dotenv 获取自定义变量
 const envConstant = getEnvConstant()
 
 export default function common(mode: 'development' | 'production', constant: ConstantType) {
   const isDev = mode === 'development'
 
-  const useTailwind = constant.USE_TAILWIND()
   const useTypeScript = constant.USE_TYPESCRIPT()
 
   return {
     target: ['browserslist'],
     context: constant.APP_DIR,
-    entry: constant.ENTRY_FILE(),
+    entry: constant.ENTRY_FILE(isDev),
     // 不展示性能提示
     performance: false,
     output: {
       path: constant.OUTPUT_PATH,
-      publicPath: constant.PUBLIC_PATH,
     },
     infrastructureLogging: {
       level: 'warn',
@@ -117,7 +113,6 @@ export default function common(mode: 'development' | 'production', constant: Con
           exclude: /\.module\.css$/,
           use: getStyleLoader({
             mode,
-            useTailwind,
             module: false,
             sass: false,
           }),
@@ -127,7 +122,6 @@ export default function common(mode: 'development' | 'production', constant: Con
           include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
           use: getStyleLoader({
             mode,
-            useTailwind,
             module: true,
             sass: false,
           }),
@@ -138,7 +132,6 @@ export default function common(mode: 'development' | 'production', constant: Con
           exclude: /\.module\.s(c|a)ss$/,
           use: getStyleLoader({
             mode,
-            useTailwind,
             module: false,
             sass: true,
           }),
@@ -148,7 +141,6 @@ export default function common(mode: 'development' | 'production', constant: Con
           include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
           use: getStyleLoader({
             mode,
-            useTailwind,
             module: true,
             sass: true,
           }),

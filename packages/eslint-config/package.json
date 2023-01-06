@@ -5,7 +5,7 @@
   "keywords": [
     "eslint config"
   ],
-  "author": "clearink <1561939638@qq.com>",
+  "author": "clearink",
   "homepage": "https://github.com/clearink/kpi-ui#readme",
   "license": "MIT",
   "main": "index.js",

@@ -32,11 +32,10 @@ export function getEnvConstant() {
 interface GetStyleLoaderOptions {
   module: boolean
   sass: boolean
-  useTailwind: boolean
   mode: 'development' | 'production'
 }
 export function getStyleLoader(options: GetStyleLoaderOptions) {
-  const { module, sass, useTailwind, mode } = options
+  const { module, sass, mode } = options
   const isDev = mode === 'development'
   const isProd = mode === 'production'
   return [
@@ -54,11 +53,7 @@ export function getStyleLoader(options: GetStyleLoaderOptions) {
       loader: require.resolve('postcss-loader'),
       options: {
         postcssOptions: {
-          plugins: [
-            useTailwind && require.resolve('tailwindcss'),
-            require.resolve('postcss-preset-env'),
-            !useTailwind && require.resolve('postcss-normalize'),
-          ].filter(Boolean),
+          plugins: [require.resolve('postcss-preset-env')],
         },
       },
     },

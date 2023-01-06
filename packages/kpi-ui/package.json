@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "kpi-ui lib",
   "keywords": [],
-  "author": "clearink <1561939638@qq.com>",
+  "author": "clearink",
   "license": "MIT",
   "main": "lib/index.js",
   "module": "esm/index.js",

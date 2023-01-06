@@ -1,9 +1,5 @@
 {
   "extends": "./tsconfig.json",
-  "include": [
-    "src",
-    ".kpi/src", // TODO: 移除
-    ".eslintrc.js"
-  ],
+  "include": ["src", "_kpi/src", ".eslintrc.js"],
   "exclude": ["node_modules", "lib", "esm", "types"]
 }

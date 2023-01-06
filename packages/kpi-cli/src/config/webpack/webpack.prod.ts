@@ -2,15 +2,14 @@ import { merge } from 'webpack-merge'
 import common from './webpack.common'
 import KPI_CONST from '../../shared/constant'
 
-import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import TerserPlugin from 'terser-webpack-plugin'
 
 // 生产环境
 export default function prod() {
-  const constant = KPI_CONST(false)
-  return merge(common('production', constant), {
+
+  return merge(common('production', KPI_CONST), {
     mode: 'production',
     bail: true,
     output: {
@@ -97,23 +96,6 @@ export default function prod() {
     },
 
     plugins: [
-      new HtmlWebpackPlugin({
-        scriptLoading: 'defer',
-        inject: true,
-        template: constant.TEMPLATE_HTML_FILE(),
-        minify: {
-          removeComments: true,
-          collapseWhitespace: true,
-          removeRedundantAttributes: true,
-          useShortDoctype: true,
-          removeEmptyAttributes: true,
-          removeStyleLinkTypeAttributes: true,
-          keepClosingSlash: true,
-          minifyJS: true,
-          minifyCSS: true,
-          minifyURLs: true,
-        },
-      }),
       new MiniCssExtractPlugin({
         filename: 'css/[name].[contenthash:8].css',
         chunkFilename: 'css/[name].[contenthash:8].chunk.css',
