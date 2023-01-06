@@ -78,10 +78,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     onReset?.(e)
   })
 
-  const Root = useMemo<any>(() => {
-    if (as === null) return Fragment
-    return as ?? 'form'
-  }, [as])
+  const Root: any = as === null ? Fragment : as ?? 'form'
 
   const fieldContext = useMemo(() => {
     return { ...formInstance, validateTrigger, formName: name }

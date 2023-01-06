@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react'
+import { useMemo } from 'react'
 import cls from 'classnames'
 import Col from '../../../col'
 import ErrorList from '../error_list'
@@ -49,4 +49,4 @@ function FormItemInput(props: FormItemInputProps & FormItemInputExtraProps) {
   )
 }
 
-export default memo(FormItemInput)
+export default FormItemInput

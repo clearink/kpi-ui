@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import cls from 'classnames'
 import { usePrefixCls } from '../../_internal/hooks'
 
@@ -22,14 +21,12 @@ export function useFormClass(
 
   const name = usePrefixCls('form')
 
-  return useMemo(() => {
-    return cls(name, {
-      [`${name}--${layout}`]: layout,
-      [`${name}--hide-required-mark`]: requiredMark === false,
-      [`${name}--${size}`]: size,
-      [className!]: className,
-    })
-  }, [className, layout, name, requiredMark, size])
+  return cls(name, {
+    [`${name}--${layout}`]: layout,
+    [`${name}--hide-required-mark`]: requiredMark === false,
+    [`${name}--${size}`]: size,
+    [className!]: className,
+  })
 }
 
 export function useFormItemClass(
@@ -39,19 +36,17 @@ export function useFormItemClass(
 ) {
   const { hidden, className } = props
 
-  return useMemo(() => {
-    return cls(prefixCls, {
-      [`${prefixCls}--hidden`]: hidden,
+  return cls(prefixCls, {
+    [`${prefixCls}--hidden`]: hidden,
 
-      // Status
-      // [`${prefixCls}--has-feedback`]: validateStatus && hasFeedback,
-      [`${prefixCls}--has-success`]: validateStatus === 'success',
-      [`${prefixCls}--has-warning`]: validateStatus === 'warning',
-      [`${prefixCls}--has-error`]: validateStatus === 'error',
-      [`${prefixCls}--is-validating`]: validateStatus === 'validating',
-      [className!]: !!className,
-    })
-  }, [className, hidden, prefixCls, validateStatus])
+    // Status
+    // [`${prefixCls}--has-feedback`]: validateStatus && hasFeedback,
+    [`${prefixCls}--has-success`]: validateStatus === 'success',
+    [`${prefixCls}--has-warning`]: validateStatus === 'warning',
+    [`${prefixCls}--has-error`]: validateStatus === 'error',
+    [`${prefixCls}--is-validating`]: validateStatus === 'validating',
+    [className!]: !!className,
+  })
 }
 
 export default function useFormItemLabelClass(
@@ -59,23 +54,19 @@ export default function useFormItemLabelClass(
 ) {
   const { prefixCls, vertical, required, colon, labelAlign, labelCol, requiredMark } = mergedProps
 
-  const colCls = useMemo(() => {
-    const baseClassName = `${prefixCls}__label`
-    return cls(baseClassName, {
-      [`${baseClassName}--${labelAlign}`]: labelAlign,
-      [`${baseClassName}--colon`]: colon,
-      [labelCol?.className!]: labelCol?.className,
-    })
-  }, [prefixCls, labelAlign, colon, labelCol?.className])
+  const baseClassName = `${prefixCls}__label`
 
-  const labelCls = useMemo(() => {
-    const baseClassName = `${prefixCls}__label`
-    return cls({
-      [`${baseClassName}--required`]: required,
-      [`${baseClassName}--required-optional`]: requiredMark === 'optional',
-      [`${baseClassName}--has-colon`]: colon && !vertical,
-    })
-  }, [prefixCls, required, requiredMark, colon, vertical])
+  const colCls = cls(baseClassName, {
+    [`${baseClassName}--${labelAlign}`]: labelAlign,
+    [`${baseClassName}--colon`]: colon,
+    [labelCol?.className!]: labelCol?.className,
+  })
+
+  const labelCls = cls({
+    [`${baseClassName}--required`]: required,
+    [`${baseClassName}--required-optional`]: requiredMark === 'optional',
+    [`${baseClassName}--has-colon`]: colon && !vertical,
+  })
 
   return [colCls, labelCls] as const
 }

@@ -12,11 +12,9 @@ import isInvalidUsage from './usage'
 
 // 格式化 FormItemLabel
 export function normalizeLabelChildren(
-  props: FormItemLabelProps & FormItemLabelExtraProps,
-  formContextState: FormContextState
+  mergedProps: FormItemLabelProps & FormItemLabelExtraProps & FormContextState
 ) {
-  const { colon, label, requiredMark, required, tooltip } = props
-  const { vertical } = formContextState
+  const { colon, label, requiredMark, required, tooltip, vertical } = mergedProps
   const hasColon = !vertical && colon
 
   let labelNode = label
