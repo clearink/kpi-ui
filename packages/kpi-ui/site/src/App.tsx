@@ -8,6 +8,7 @@ import '../../src/style'
 
 export default function App() {
   const elements = useRenderRoutes(routes)
+
   return (
     <Router>
       <Routes>{elements}</Routes>

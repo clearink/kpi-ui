@@ -1,26 +1,31 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import useEvent from '../use-event'
 import useMounted from '../use-mounted'
 
-import type { ArrowFunction } from '../../types'
+import type { AnyFunction } from '../../types'
 
 // 防抖 函数
-export function debounce<Fn extends Function | ArrowFunction>(fn: Fn, delay = 100) {
-  let timer: null | number = null
-  return function inner(this: unknown, ...args: any[]) {
-    if (timer !== null) clearTimeout(timer)
-    timer = window.setTimeout(() => {
-      ;(fn as Function).apply(this, args)
-      timer = null
-    }, delay)
-  } as Fn
+export function debounce(fn: AnyFunction, delay: number) {
+  let timer: undefined | number
+
+  function inner(this: unknown, ...args: any[]) {
+    clearTimeout(timer)
+    timer = window.setTimeout(() => fn.apply(this, args), delay)
+  }
+
+  return [inner, () => clearTimeout(timer)] as const
 }
 
 // 防抖 hook
-export function useDebounceCallback<Fn extends Function>(delay: number, fn: Fn) {
-  const callback = useEvent(fn as any)
+export function useDebounceCallback<Fn extends AnyFunction>(delay: number, fn: Fn) {
+  const callback = useEvent(fn)
 
-  return useMemo<Fn>(() => debounce(callback, delay), [callback, delay])
+  const [debounced, clear] = useMemo(() => debounce(callback, delay), [callback, delay])
+
+  // 自动清除定时器
+  useEffect(() => clear, [clear])
+
+  return debounced
 }
 
 // 防抖 value

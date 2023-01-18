@@ -1,13 +1,13 @@
 /* eslint-disable no-console, class-methods-use-this */
 
-import type { ArrowFunction } from '../types'
+import type { AnyFunction } from '../types'
 
 const isDev = process.env.NODE_ENV !== 'production'
 // 日志记录 仅提示一次
 class Logger {
   private cache = new Set<string>()
 
-  private wrapper(condition: boolean, data: any[], callback: ArrowFunction) {
+  private wrapper(condition: boolean, data: any[], callback: AnyFunction) {
     if (!isDev) return
 
     const key = JSON.stringify(data)

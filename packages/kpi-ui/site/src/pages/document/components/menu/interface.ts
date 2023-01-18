@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import type { RouteItem } from 'site/src/routes'
+import type { RouteItem } from '../../../../routes'
 
 export interface DocumentMenuProps {
   routes?: RouteItem[]
