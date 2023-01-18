@@ -50,7 +50,7 @@ function InternalFormField(props: InternalProps) {
   return <Fragment key={resetCount}>{children}</Fragment>
 }
 
-function WrapperFormField(props: FormFieldProps) {
+export default function WrapperFormField(props: FormFieldProps) {
   const { name, ...rest } = props
   // 用于 Form.List 组件
   const { parentNamePath = [] } = FieldContext.useState()
@@ -62,5 +62,3 @@ function WrapperFormField(props: FormFieldProps) {
 
   return <InternalFormField key={key} name={namePath} {...rest} />
 }
-
-export default WrapperFormField

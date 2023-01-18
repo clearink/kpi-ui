@@ -1,0 +1,15 @@
+.demo-code {
+  &__title {
+    font-size: 20px;
+    margin: 0;
+    margin-top: 48px;
+  }
+  &__desc {
+    margin-top: 16px;
+  }
+  &__preview {
+    margin-top: 24px;
+    padding: 48px;
+    border: 1px solid #ccc;
+  }
+}

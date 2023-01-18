@@ -2,7 +2,7 @@
 import { resolve } from 'path'
 import { remove } from 'fs-extra'
 import { spawn } from 'child_process'
-import KPI_CONST from '../shared/constant'
+import KPI_CONST from '../constant'
 import { CompileProps } from '../command/compile'
 
 export default function compileType(options: CompileProps) {

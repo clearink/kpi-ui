@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import useEvent from '../use-event'
 import useMounted from '../use-mounted'
 
@@ -39,9 +39,9 @@ export function useDebounceValue<Value = any>(delay: number, value: Value) {
 }
 
 export function useDebounceState<S = undefined>(delay: number, initialState: S | (() => S)) {
-  const [state, setState] = useState(initialState)
+  const [state, set] = useState(initialState)
 
-  const throttledState = useDebounceValue(delay, state)
+  const setState = useDebounceCallback(delay, set)
 
-  return [throttledState, setState] as const
+  return [state, setState] as const
 }

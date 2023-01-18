@@ -47,6 +47,7 @@ export function normalizeItemChildren(
   if (isInvalidUsage(props)) return () => undefined
 
   if (isValidElement<HTMLInputElement>(children)) {
+    if (isNullish(formItemId)) return children
     if (!isNullish(children.props.id)) return children
     return cloneElement(children, { id: formItemId })
   }

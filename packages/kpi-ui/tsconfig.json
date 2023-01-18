@@ -1,5 +1,11 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src", "_kpi/src"],
-  "exclude": ["node_modules", "lib", "esm", "types"]
+  "include": ["src", "site/src"],
+  "exclude": ["node_modules", "lib", "esm", "types"],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
 }

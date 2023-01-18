@@ -1,6 +1,6 @@
 import { merge } from 'webpack-merge'
 import common from './webpack.common'
-import KPI_CONST from '../../shared/constant'
+import KPI_CONST from '../../constant'
 
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'

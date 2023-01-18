@@ -36,7 +36,7 @@ function Form(props: FormProps, ref: ForwardedRef<FormInstance>) {
     disabled = contextDisabled,
     colon = contextFormConfig?.colon,
     requiredMark = contextFormConfig?.requiredMark,
-    ...restFormProps
+    ...rest
   } = props
 
   const className = useFormClass(props, size, requiredMark)
@@ -50,13 +50,14 @@ function Form(props: FormProps, ref: ForwardedRef<FormInstance>) {
       formName: name,
       labelAlign,
       labelWrap,
+      labelCol,
       wrapperCol,
       colon,
       requiredMark,
       form: formInstance,
       vertical: layout === 'vertical',
     }
-  }, [name, labelAlign, labelWrap, wrapperCol, colon, requiredMark, formInstance, layout])
+  }, [name, labelAlign, labelWrap, labelCol, wrapperCol, colon, requiredMark, formInstance, layout])
 
   const onFailedWithEffect = useCallback(
     (errors: any) => {
@@ -73,7 +74,7 @@ function Form(props: FormProps, ref: ForwardedRef<FormInstance>) {
       <SizeContext.Provider value={size}>
         <FormContext.Provider value={formContext}>
           <InternalForm
-            {...restFormProps}
+            {...rest}
             name={name}
             className={className}
             form={formInstance}

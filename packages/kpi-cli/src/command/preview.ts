@@ -1,18 +1,16 @@
-import { copy, existsSync } from 'fs-extra'
-import { resolve } from 'path'
 import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
-import devConfig from '../config/webpack/webpack.dev'
-import KPI_CONST from '../shared/constant'
-import logger from '../shared/logger'
+import dev from '../config/webpack/webpack.dev'
+import KPI_CONST from '../constant'
+import logger from '../utils/logger'
 
 // preview site
 export default async function preview(options: { open: boolean; port: number }) {
   process.env.NODE_ENV = 'development'
-  const config = devConfig(true)
-  const { PREVIEW_DIR, PREVIEW_TEMPLATE_DIR } = KPI_CONST // 预览常量配置
 
-  if (!existsSync(PREVIEW_DIR)) await copy(PREVIEW_TEMPLATE_DIR, PREVIEW_DIR)
+  const config = dev()
+
+  await KPI_CONST.SHOULD_COPY_DEFAULT_TEMPLATE()
 
   try {
     const compiler = webpack(config)
@@ -28,7 +26,7 @@ export default async function preview(options: { open: boolean; port: number }) 
         process.exit()
       })
     })
-  } catch (error) {
+  } catch (error: any) {
     logger.error(error?.message)
     process.exit(1)
   }

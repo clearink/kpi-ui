@@ -1,7 +1,7 @@
 import { Configuration } from 'webpack'
 import { merge } from 'webpack-merge'
 import common from './webpack.common'
-import KPI_CONST from '../../shared/constant'
+import KPI_CONST from '../../constant'
 
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
@@ -9,7 +9,7 @@ import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 // TODO: 使用 dotenv 获取自定义变量
 // 开发环境
 
-export default function dev(preview: boolean) {
+export default function dev() {
   return merge(common('development', KPI_CONST), {
     mode: 'development',
     devtool: 'cheap-module-source-map',

@@ -1,5 +1,8 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react'
+import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
+/**
+ * @desc >支持原生 button 的其他所有属性
+ */
 export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   /** 按钮类型 */
   type?: 'default' | 'primary' | 'dashed' | 'text'

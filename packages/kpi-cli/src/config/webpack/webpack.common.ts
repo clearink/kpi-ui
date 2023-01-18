@@ -3,17 +3,14 @@ import WebPackBarPlugin from 'webpackbar'
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
 import ESLintWebpackPlugin from 'eslint-webpack-plugin'
 
-import InterpolateHtmlPlugin from '../../plugins/interpolate_html_plugin'
-import { getEnvConstant, getStyleLoader } from '../../shared/utils'
+import { getEnv, getStyleLoader } from '../../utils'
 
-import type { ConstantType } from '../../shared/constant'
+import type { ConstantType } from '../../constant'
 // TODO: 使用 dotenv 获取自定义变量
-const envConstant = getEnvConstant()
+const envConstant = getEnv()
 
 export default function common(mode: 'development' | 'production', constant: ConstantType) {
   const isDev = mode === 'development'
-
-  const useTypeScript = constant.USE_TYPESCRIPT()
 
   return {
     target: ['browserslist'],
@@ -30,6 +27,7 @@ export default function common(mode: 'development' | 'production', constant: Con
     resolve: {
       modules: ['node_modules', constant.NODE_MODULES],
       extensions: constant.RESOLVE_EXTENSIONS(),
+      alias: constant.RESOLVE_ALIAS(),
     },
     module: {
       parser: {
@@ -44,26 +42,7 @@ export default function common(mode: 'development' | 'production', constant: Con
           use: [
             {
               loader: require.resolve('babel-loader'),
-              options: {
-                presets: [
-                  require.resolve('@babel/preset-env'),
-                  [
-                    require.resolve('@babel/preset-react'),
-                    {
-                      runtime: constant.JSX_RUNTIME(),
-                    },
-                  ],
-                  useTypeScript && require.resolve('@babel/preset-typescript'),
-                ].filter(Boolean),
-                plugins: [
-                  require.resolve('@babel/plugin-transform-runtime'),
-                  [require.resolve('@babel/plugin-proposal-decorators'), { legacy: true }],
-                  isDev && require.resolve('react-refresh/babel'),
-                ].filter(Boolean),
-                cacheDirectory: true,
-                cacheCompression: false,
-                compact: !isDev,
-              },
+              options: constant.BABEL_LOADER_OPTIONS(isDev),
             },
             require.resolve('thread-loader'),
           ],
@@ -145,12 +124,23 @@ export default function common(mode: 'development' | 'production', constant: Con
             sass: true,
           }),
         },
-      ],
+        isDev && {
+          test: /\.md$/,
+          include: [constant.SRC_DIR, constant.PREVIEW_SRC_DIR],
+          use: [
+            {
+              loader: require.resolve('babel-loader'),
+              options: constant.BABEL_LOADER_OPTIONS(isDev),
+            },
+            require.resolve(constant.MD_LOADER),
+            require.resolve('thread-loader'),
+          ],
+        },
+      ].filter(Boolean),
     },
     plugins: [
       new WebPackBarPlugin(),
       // TODO
-      new InterpolateHtmlPlugin(getEnvConstant().env),
       // new WebpackManifestPlugin({
       //   fileName: 'asset-manifest.json',
       //   publicPath: KPI_CONST.PUBLIC_PATH,
@@ -161,7 +151,7 @@ export default function common(mode: 'development' | 'production', constant: Con
         contextRegExp: /moment$/,
       }),
       // 单独一个进程检查
-      useTypeScript && new ForkTsCheckerWebpackPlugin(),
+      constant.USE_TYPESCRIPT() && new ForkTsCheckerWebpackPlugin(),
       new ESLintWebpackPlugin({
         context: constant.SRC_DIR,
         extensions: constant.RESOLVE_EXTENSIONS(),

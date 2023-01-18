@@ -1,12 +1,11 @@
 #!/usr/bin/env node
-import logger from './shared/logger'
+import logger from './utils/logger'
 import { Command } from 'commander'
+import KPI_CONST from './constant'
 import { gen, preview, compile, lint, dev, build } from './command'
 
-const VERSION = require('../package.json')
-
 const program = new Command('@kpi/cli')
-program.version(`kpi-cli ${VERSION.version || '0.0.1'}`).usage('<command> [options]')
+program.version(`kpi-cli ${KPI_CONST.KPI_VERSION()}`).usage('<command> [options]')
 
 program
   .command('gen <name>')

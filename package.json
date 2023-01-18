@@ -14,7 +14,9 @@
     "bootstrap": "lerna bootstrap",
     "build:cli": "cd ./packages/kpi-cli & npm run build",
     "add:eslint-config": "lerna add eslint-config-kpi-ui --scope=\"@kpi/cli\"",
+    "add:cli": "lerna add @kpi/cli --scope=\"@kpi/ui\"",
     "dev:ui": "cd ./packages/kpi-ui & yarn run dev",
+    "test:ui": "cd ./packages/kpi-ui & yarn run test",
     "create:site": "lerna create kpi-site"
   },
   "husky": {

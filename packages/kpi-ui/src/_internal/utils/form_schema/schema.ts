@@ -779,15 +779,16 @@ export class EffectSchema<
 export const isRequiredSchema = (schema: BaseSchema | null | undefined = undefined) => {
   // 侦测是否含有 schema 字段 如果有则递归
   if (!schema) return false
-  const effects: EffectOptions<any>['type'][] = []
+
   while (schema && (schema as any).schema) {
-    if (!(schema instanceof EffectSchema)) continue
+    if (!(schema instanceof EffectSchema)) break
 
     const type = schema._type
-    if (type === 'nullable' || type === 'required') effects.push(type)
+    if (type === 'required') return true
+    if (type === 'nullable') return false
 
     schema = (schema as any).schema
   }
 
-  return effects[0] === 'required'
+  return false
 }

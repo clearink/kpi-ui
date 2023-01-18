@@ -70,7 +70,7 @@ export interface InternalFormInstance<S = any> extends FormInstance<S> {
    * @private
    * @zh 内部方法，外部禁止使用
    */
-  getInternalHooks: (secret: string) => InternalHookReturn | undefined
+  getInternalHooks: (secret: symbol) => InternalHookReturn | undefined
 
   /**
    * @private

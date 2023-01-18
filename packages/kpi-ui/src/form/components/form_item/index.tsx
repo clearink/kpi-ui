@@ -4,7 +4,7 @@ import Row from '../../../row'
 import FormItemLabel from './label'
 import FormItemInput from './input'
 import { FormContext, NoStyleContext } from '../../../_internal/context'
-import { usePrefixCls } from '../../../_internal/hooks'
+import { useDebounceState, usePrefixCls } from '../../../_internal/hooks'
 import { isUndefined, omit, pick, toArray } from '../../../_internal/utils'
 import { isRequired } from '../../../_internal/utils/form_schema'
 import { useFormItemClass } from '../../hooks/use_class'
@@ -49,14 +49,14 @@ function CommonFormItem(props: FormItemProps) {
   // if (isValidElement(children)) {
   //   // TODO: 检测是否支持 ref 获取 dom 用于实现 scrollToField
   // }
-  const [meta, setMeta] = useState(makeEmptyMeta)
+  const [meta, setMeta] = useDebounceState(10, makeEmptyMeta)
   const handleMetaChange = useCallback((fieldMeta: FieldMeta) => {
     const next = fieldMeta as FieldMeta & { mounted: boolean }
     if (next.mounted) setMeta(omit(next, ['mounted']))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const [subMeta, setSubMeta] = useState(makeEmptyMeta)
+  const [subMeta, setSubMeta] = useDebounceState(10, makeEmptyMeta)
   const handleSubMetaChange = useCallback((fieldMeta: FieldMeta) => {
     const next = fieldMeta as FieldMeta & { mounted: boolean }
     if (next.mounted) setSubMeta(omit(next, ['mounted']))

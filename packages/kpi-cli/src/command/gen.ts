@@ -1,9 +1,9 @@
 import { ensureDir, outputFile, pathExistsSync, removeSync } from 'fs-extra'
 import ora from 'ora'
 import { resolve } from 'path'
-import logger from '../shared/logger'
-import { camelCase } from '../shared/utils'
-import KPI_CONST from '../shared/constant'
+import logger from '../utils/logger'
+import { camelCase } from '../utils'
+import KPI_CONST from '../constant'
 
 export default async function create(name: string, config: { force: boolean }) {
   const uiName = camelCase(name, true)

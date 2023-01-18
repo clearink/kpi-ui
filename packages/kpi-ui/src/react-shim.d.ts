@@ -13,6 +13,10 @@ declare module '*.avif' {
   const src: string
   export default src
 }
+declare module '*.md' {
+  const src: any
+  export default src
+}
 
 declare module '*.bmp' {
   const src: string

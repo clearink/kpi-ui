@@ -20,7 +20,7 @@ import type {
   UpdateFieldActionType as ActionType,
 } from '../internal_props'
 
-export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
+export const HOOK_MARK = Symbol('_$_KPI_FORM_HOOK_MARK_$_')
 
 export default class FormGroupControl<State = any> {
   $props: FormPropsControl
@@ -82,7 +82,7 @@ export default class FormGroupControl<State = any> {
   }
 
   // 内部属性
-  _getInternalHooks = (secret: string): InternalHookReturn | undefined => {
+  _getInternalHooks = (secret: symbol): InternalHookReturn | undefined => {
     const matched = secret === HOOK_MARK
 
     logger.warn(!matched, '`getInternalHooks` is internal usage. Should not call directly.')

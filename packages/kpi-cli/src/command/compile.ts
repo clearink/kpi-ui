@@ -1,5 +1,5 @@
 import ora from 'ora'
-import logger from '../shared/logger'
+import logger from '../utils/logger'
 import compileScript from '../compiler/compiler.script'
 import compileType from '../compiler/compiler.type'
 import compileStyle from '../compiler/compiler.style'
@@ -17,9 +17,6 @@ export default function compile(options: CompileProps) {
   const spinner = ora(logger.info('开始编译组件库', false)).start()
   Promise.all(
     [
-      options.component && compileScript('cjs', options),
-      options.component && compileScript('esm', options),
-      options.component && compileUmd(),
       options.type && compileType(options),
       options.style && compileStyle(options),
     ].filter(Boolean)

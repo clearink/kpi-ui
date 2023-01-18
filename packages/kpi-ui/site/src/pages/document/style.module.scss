@@ -1,0 +1,17 @@
+.app-document {
+  display: flex;
+  min-height: 100vh;
+  &__menu {
+    width: 210px;
+    flex-shrink: 0;
+  }
+  &__content{
+    flex: auto;
+    margin: 16px 32px;
+    min-width: 400px;
+  }
+  &__anchor{
+    width: 180px;
+    flex-shrink: 0;
+  }
+}

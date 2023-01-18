@@ -1,6 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react'
 import type { ColProps } from '../col/props'
-import type { FieldMeta } from '../_internal/components/form/internal_props'
 import type {
   FormInstance as $FormInstance,
   FormProps as $FormProps,
