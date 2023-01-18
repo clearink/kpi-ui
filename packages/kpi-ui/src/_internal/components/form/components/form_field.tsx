@@ -17,7 +17,7 @@ function InternalFormField(props: InternalProps) {
   const [resetCount, resetField] = useReducer((count) => count + 1, 0)
 
   // 强制更新视图
-  const [, forceUpdate] = useReducer((count) => count + 1, 0)
+  const [, forceUpdate] = useReducer(() => ({}), {})
 
   // 父级表单方法
   const formInstance = FieldContext.useState()
