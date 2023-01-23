@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file, class-methods-use-this */
 
 import isEqual from 'react-fast-compare'
-import { startTransition, type MutableRefObject } from 'react'
+import type { MutableRefObject } from 'react'
 import BaseControl from './base_control'
 import { isFunction, isNullish, isUndefined } from '../../../utils'
 import { getIn } from '../utils/value'
@@ -134,7 +134,7 @@ export default class FormFieldControl extends BaseControl {
     if (isEqual(prev, current)) return
 
     this._props.onMetaChange?.(current)
-    if (isFunction(this._props.children)) startTransition(this.forceUpdate)
+    isFunction(this._props.children) && this.forceUpdate()
   }
 
   private lastValidate: null | Promise<any> = null
