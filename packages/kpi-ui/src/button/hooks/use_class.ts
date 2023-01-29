@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import cls from 'classnames'
 import { usePrefixCls } from '../../_internal/hooks'
 import { ButtonProps } from '../props'

@@ -1,8 +1,6 @@
 import { useState } from 'react'
-import useIsomorphicEffect from '../use-isomorphic-effect'
+import { useEvent, useIsomorphicEffect, isUndefined } from '@kpi/shared'
 import { INIT_MATCHES, ScreenMatch } from '../../constant/breakpoint'
-import { isUndefined } from '../../utils'
-import useEvent from '../use-event'
 import MediaObserver from './media_observer'
 
 // 基础响应式断点 hooks

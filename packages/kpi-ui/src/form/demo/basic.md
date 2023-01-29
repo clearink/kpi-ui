@@ -14,7 +14,8 @@ Basic Form data control. Includes layout, initial values, validation and submit.
 
 ```tsx
 import React from 'react';
-import { Button, Form, kfc } from '@kpi/ui';
+import { Button, Form } from '@kpi/ui';
+import kv from '@kpi/validate';
 
 function Input(props){
   return <input {...props} value={props.value || ''} style={{height:32}} />
@@ -41,7 +42,7 @@ const App: React.FC = () => {
       <Form.Item
         label="Username"
         name="username"
-        rule={kfc.string().required('Please input your username!')}
+        rule={kv.string().required('Please input your username!')}
       >
         <Input />
       </Form.Item>
@@ -49,7 +50,7 @@ const App: React.FC = () => {
       <Form.Item
         label="Password"
         name="password"
-        rule={kfc.string().required('Please input your password!')}
+        rule={kv.string().required('Please input your password!')}
       >
         <Input />
       </Form.Item>

@@ -1,12 +1,12 @@
-import CtxHelper from './helper'
+import { contextHelper } from '@kpi/shared'
+import type { DisabledType, SizeType } from '@kpi/shared'
 
-import type { DisabledType, SizeType } from '../types'
 import type { ConfigConsumerProps } from '../../config_provider/props'
 
-export const SizeContext = CtxHelper<SizeType>(undefined)
+export const SizeContext = contextHelper<SizeType>(undefined)
 
-export const DisabledContext = CtxHelper<DisabledType>(undefined)
+export const DisabledContext = contextHelper<DisabledType>(undefined)
 
-export const ConfigContext = CtxHelper<ConfigConsumerProps>({
+export const ConfigContext = contextHelper<ConfigConsumerProps>({
   prefixCls: 'kpi',
 })

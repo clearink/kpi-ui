@@ -1,12 +1,12 @@
-import { List as InternalFormList } from '../../../_internal/components/form'
-import { logger } from '../../../_internal/utils'
+import { List as InternalFormList } from '@kpi/internal/lib/form'
+import { logger } from '@kpi/shared'
 
 import type { FormListProps } from '../../props'
 
 function FormList(props: FormListProps) {
   const { children, name } = props
 
-  logger.error(!name, 'Form.List', 'Miss `name` prop.')
+  logger(!name, 'Form.List', 'Miss `name` prop.')
 
   return (
     <InternalFormList {...props}>

@@ -1,11 +1,11 @@
 // 二次封装 _internal/components/form
+import { useWatch } from '@kpi/internal/lib/form'
 import InternalForm from './components/form'
 import ErrorList from './components/error_list'
 import FormItem from './components/form_item'
 import FormList from './components/form_list'
 import useForm from './hooks/use_form'
 import useFormInstance from './hooks/use_instance'
-import { useWatch } from '../_internal/components/form'
 
 type CompoundedComponent = typeof InternalForm & {
   Item: typeof FormItem

@@ -1,5 +1,4 @@
 import type { CSSProperties, ReactNode } from 'react'
-import type { ColProps } from '../col/props'
 import type {
   FormInstance as $FormInstance,
   FormProps as $FormProps,
@@ -9,8 +8,9 @@ import type {
   ListField as $ListField,
   FormArrayHelpers as $FormArrayHelpers,
   FieldData as $FieldData,
-} from '../_internal/components/form/props'
-import type { SizeType } from '../_internal/types'
+} from '@kpi/internal/lib/form/props'
+import type { SizeType } from '@kpi/shared'
+import type { ColProps } from '../col/props'
 
 export type NamePath = $NamePath
 

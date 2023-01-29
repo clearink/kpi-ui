@@ -1,7 +1,7 @@
 import { CSSProperties, useMemo } from 'react'
+import { isNumber, omit } from '@kpi/shared'
 import { RowContext } from '../_internal/context'
 import { BREAKPOINT_NAME, COL_FLEX_REG } from '../_internal/constant'
-import { isNumber, omit } from '../_internal/utils'
 import { withDefaultProps } from '../_internal/hocs'
 import useClass from './hooks/use_class'
 import { ColProps } from './props'

@@ -1,6 +1,6 @@
 import cls from 'classnames'
+import { isNumber, isUndefined } from '@kpi/shared'
 import { usePrefixCls } from '../../_internal/hooks'
-import { isNumber, isUndefined } from '../../_internal/utils'
 import { BREAKPOINT_NAME } from '../../_internal/constant'
 import { ColProps } from '../props'
 

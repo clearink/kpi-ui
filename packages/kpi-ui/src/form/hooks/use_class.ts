@@ -1,8 +1,8 @@
 import cls from 'classnames'
+import type { SizeType } from '@kpi/shared'
 import { usePrefixCls } from '../../_internal/hooks'
 
 import type { FormContextState } from '../../_internal/context'
-import type { SizeType } from '../../_internal/types'
 import type {
   FormItemLabelProps,
   FormItemLabelExtraProps,

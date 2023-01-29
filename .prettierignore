@@ -1,3 +1,5 @@
-packages/kpi-cli/lib/**
-
+node_modules
 *.md
+packages/**/dist
+packages/**/lib
+packages/**/esm

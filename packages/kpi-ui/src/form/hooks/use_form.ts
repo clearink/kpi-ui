@@ -1,12 +1,11 @@
 import { useMemo } from 'react'
-import { useForm as useInternalForm } from '../../_internal/components/form'
-import type { NamePath } from '../../_internal/components/form/props'
+import { Form as InternalForm } from '@kpi/internal'
 
-import type { FormInstance } from '../props'
+import type { FormInstance, NamePath } from '../props'
 
 // form 示例, TODO: 还需要额外实现 scrollToField
 export default function useForm<State = any>(form?: FormInstance<State>) {
-  const internalForm = useInternalForm<State>()
+  const internalForm = InternalForm.useForm<State>()
 
   return useMemo<FormInstance>(() => {
     return (

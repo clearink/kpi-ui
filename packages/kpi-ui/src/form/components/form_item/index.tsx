@@ -1,12 +1,13 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Field as InternalFormField } from '../../../_internal/components/form'
+import { Field as InternalFormField } from '@kpi/internal/lib/form'
+import { useDebounceState, isUndefined, omit, pick, toArray } from '@kpi/shared'
+import type { FieldMeta } from '@kpi/internal/lib/form/internal_props'
 import Row from '../../../row'
 import FormItemLabel from './label'
 import FormItemInput from './input'
 import { FormContext, NoStyleContext } from '../../../_internal/context'
-import { useDebounceState, usePrefixCls } from '../../../_internal/hooks'
-import { isUndefined, omit, pick, toArray } from '../../../_internal/utils'
-import { isRequired } from '../../../_internal/utils/form_schema'
+import { usePrefixCls } from '../../../_internal/hooks'
+
 import { useFormItemClass } from '../../hooks/use_class'
 import useFormItemId from '../../hooks/use_item_id'
 import { normalizeItemChildren } from '../../utils/children'
@@ -14,7 +15,6 @@ import useFormItemStatus from '../../hooks/use_item_status'
 import { makeEmptyMeta } from '../../utils/error'
 
 import type { FormItemProps, ValidateStatus } from '../../props'
-import type { FieldMeta } from '../../../_internal/components/form/internal_props'
 
 function InternalFormItem<State = any>(props: FormItemProps<State>) {
   if (props.noStyle) return <NoStyleFormItem {...props} />
@@ -110,7 +110,10 @@ function CommonFormItem(props: FormItemProps) {
 
   const inputProps = pick(props, ['wrapperCol', 'extra', 'help'])
 
-  const required = useMemo(() => (!toArray(name).length ? false : isRequired(rule)), [name, rule])
+  const required = useMemo(() => {
+    if (toArray(name).length <= 0) return false
+    return !!rule?.isRequired()
+  }, [name, rule])
 
   return (
     <div className={className} style={style} ref={ref}>

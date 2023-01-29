@@ -1,8 +1,8 @@
-import CtxHelper from './helper'
+import { contextHelper } from '@kpi/shared'
+import type { FieldMeta } from '@kpi/internal/lib/form/internal_props'
 
 import type { ColProps } from '../../col/props'
 import type { FormInstance, FormLabelAlign, RequiredMark, ValidateStatus } from '../../form/props'
-import type { FieldMeta } from '../components/form/internal_props'
 
 export interface FormContextState {
   vertical: boolean
@@ -16,7 +16,7 @@ export interface FormContextState {
   form?: FormInstance
 }
 
-export const FormContext = CtxHelper<FormContextState>({
+export const FormContext = contextHelper<FormContextState>({
   vertical: false,
   labelAlign: 'right',
 })
@@ -24,9 +24,9 @@ export const FormContext = CtxHelper<FormContextState>({
 export interface FormItemContextState {
   validateStatus?: ValidateStatus
 }
-export const FormItemContext = CtxHelper<FormItemContextState>({})
+export const FormItemContext = contextHelper<FormItemContextState>({})
 
 // 收集子字段的 errors 与 warnings
 
 // 收集 noStyle 字段的错误到最近的Form.Item组件上
-export const NoStyleContext = CtxHelper<(meta: FieldMeta) => void>(() => {})
+export const NoStyleContext = contextHelper<(meta: FieldMeta) => void>(() => {})

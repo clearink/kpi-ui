@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import cls from 'classnames'
+import { shallowMerge } from '@kpi/shared'
 import Col from '../../../col'
 import ErrorList from '../error_list'
 import { FormContext, FormItemContext } from '../../../_internal/context'
-import { mergeSameNameProps } from '../../../_internal/utils'
 
 import type { FormItemInputExtraProps, FormItemInputProps } from '../../props'
 import type { FormItemContextState } from '../../../_internal/context'
@@ -19,7 +19,7 @@ function FormItemInput(props: FormItemInputProps & FormItemInputExtraProps) {
     validateStatus,
     marginBottom,
     onExitComplete,
-  } = mergeSameNameProps(props, FormContext.useState())
+  } = shallowMerge(props, FormContext.useState())
 
   const formItemContext = useMemo<FormItemContextState>(
     () => ({ validateStatus }),

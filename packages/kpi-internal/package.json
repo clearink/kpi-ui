@@ -1,0 +1,34 @@
+{
+  "name": "@kpi/internal",
+  "version": "0.0.0",
+  "description": "kpi ui internal components",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "module": "esm/index.js",
+  "unpkg": "dist/index.min.js",
+  "keywords": [
+    "kpi-ui",
+    "internal",
+    "components"
+  ],
+  "author": "clearink",
+  "license": "ISC",
+  "scripts": {
+    "clean": "rimraf dist lib esm types",
+    "build": "yarn clean && rollup -c --bundleConfigAsCjs",
+    "dev": "yarn build -- -w"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "@kpi/shared": "workspace:*",
+    "@kpi/validate": "workspace:*",
+    "lodash.clonedeep": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.27",
+    "rollup": "^3.12.0"
+  }
+}

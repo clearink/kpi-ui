@@ -2,4 +2,4 @@
 
 ## TODO
 
-1. 完善文档生成工具
+去除 framer-motion 改用 react-transition-group

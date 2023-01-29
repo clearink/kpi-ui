@@ -1,5 +1,5 @@
 import { cloneElement, isValidElement } from 'react'
-import { isFunction, isNullish, isString } from '../../_internal/utils'
+import { isFunction, isNullish, isString } from '@kpi/shared'
 
 import type { FormContextState } from '../../_internal/context'
 import type {

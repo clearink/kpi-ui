@@ -1,5 +1,5 @@
+import { hasOwn } from '@kpi/shared'
 import { BREAKPOINT, BREAKPOINT_NAME, INIT_MATCHES, ScreenMatch } from '../../constant/breakpoint'
-import { hasOwn } from '../../utils'
 
 export default class MediaObserver {
   private listeners: MediaQueryList[] = [] // 记录所有的 QueryList 对象

@@ -1,7 +1,7 @@
 import { memo } from 'react'
+import { isString, shallowMerge } from '@kpi/shared'
 import Col from '../../../col'
 import { FormContext } from '../../../_internal/context'
-import { isString, mergeSameNameProps } from '../../../_internal/utils'
 import useFormItemLabelClass from '../../hooks/use_class'
 import { normalizeLabelChildren } from '../../utils/children'
 
@@ -9,7 +9,7 @@ import type { FormItemLabelExtraProps, FormItemLabelProps } from '../../props'
 
 function FormItemLabel(props: FormItemLabelProps & FormItemLabelExtraProps) {
   // 合并同名字段值
-  const mergedProps = mergeSameNameProps(props, FormContext.useState())
+  const mergedProps = shallowMerge(props, FormContext.useState())
 
   const { htmlFor, labelCol, label } = mergedProps
 

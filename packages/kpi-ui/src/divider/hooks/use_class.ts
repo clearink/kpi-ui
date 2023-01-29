@@ -1,5 +1,5 @@
 import cls from 'classnames'
-import { isUndefined } from '../../_internal/utils'
+import { isUndefined } from '@kpi/shared'
 import { DividerProps } from '../props'
 
 export default function useClass(name: string, props: DividerProps) {

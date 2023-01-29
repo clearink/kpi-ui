@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { isUndefined, toArray } from '../../_internal/utils'
+import { isUndefined, toArray } from '@kpi/shared'
 
 import type { FormItemProps } from '../props'
 

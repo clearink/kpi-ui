@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
+import { isArray, isNumber, isObject } from '@kpi/shared'
 import { useBreakpoint, handleMatchPoint } from '../../_internal/hooks'
-import { isArray, isNumber, isObject } from '../../_internal/utils'
 import { RowProps } from '../props'
 
 export default function useRowGutter(gutter: RowProps['gutter']) {

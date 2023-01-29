@@ -1,7 +1,8 @@
 import cls from 'classnames'
 import { useMemo } from 'react'
 import { AnimatePresence, domAnimation, LazyMotion, m } from 'framer-motion'
-import { useDebounceValue, usePrefixCls } from '../../../_internal/hooks'
+import { useDebounceValue } from '@kpi/shared'
+import { usePrefixCls } from '../../../_internal/hooks'
 import type { ErrorListProps } from '../../props'
 import { makeErrorEntity } from '../../utils/error'
 

@@ -8,5 +8,3 @@ packages/*/lib/
 packages/*/esm/
 packages/*/types/
 packages/*/_kpi/
-packages/kpi-ui/esm
-packages/kpi-ui/lib

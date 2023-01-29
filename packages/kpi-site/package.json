@@ -1,0 +1,26 @@
+{
+  "name": "@kpi/site",
+  "version": "0.0.0",
+  "description": "kpi ui website",
+  "keywords": [
+    "kpi-ui",
+    "website"
+  ],
+  "author": "clearink",
+  "license": "ISC",
+  "scripts": {
+    "start": "kpi-cli dev"
+  },
+  "dependencies": {
+    "@kpi/ui": "workspace:*",
+    "@kpi/validate": "workspace:*",
+    "@loadable/component": "^5.15.2",
+    "nanoid": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10"
+  }
+}

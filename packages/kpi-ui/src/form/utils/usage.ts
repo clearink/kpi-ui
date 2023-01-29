@@ -1,5 +1,5 @@
 import { isValidElement } from 'react'
-import { isFunction, logger, toArray } from '../../_internal/utils'
+import { isFunction, logger, toArray } from '@kpi/shared'
 
 import type { FormItemProps } from '../props'
 
@@ -19,7 +19,7 @@ export default function isInvalidUsage(props: FormItemProps) {
 
   if (hasName && functional) {
     // render props 时不能设置 name, Form.List 除外
-    logger.error(
+    logger(
       true,
       'Form.Item',
       "Do not use `name` with `children` of render props since it's not a field."
@@ -28,13 +28,13 @@ export default function isInvalidUsage(props: FormItemProps) {
   }
 
   if (shouldUpdate && dependencies.length) {
-    logger.error(true, 'Form.Item', "`shouldUpdate` and `dependencies` shouldn't be used together.")
+    logger(true, 'Form.Item', "`shouldUpdate` and `dependencies` shouldn't be used together.")
     return true
   }
 
   if (functional && !(shouldUpdate || dependencies.length)) {
     // render props 时必须设置 shouldUpdate， dependencies 中的一个
-    logger.error(
+    logger(
       true,
       'Form.Item',
       '`children` of render props only work with `shouldUpdate` or `dependencies`.'
@@ -44,16 +44,12 @@ export default function isInvalidUsage(props: FormItemProps) {
 
   if (dependencies.length && !(functional || hasName)) {
     // dependencies 仅在 render props 或者 name 合法时使用
-    logger.error(
-      true,
-      'Form.Item',
-      'Must set `name` or use render props when `dependencies` is set.'
-    )
+    logger(true, 'Form.Item', 'Must set `name` or use render props when `dependencies` is set.')
     return true
   }
 
   if (hasName && !functional && !isValidElement(children)) {
-    logger.error(
+    logger(
       true,
       'Form.Item',
       '`name` is only used for validate React element. If you are using Form.Item as layout display, please remove `name` instead. '
