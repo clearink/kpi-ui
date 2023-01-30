@@ -1,7 +1,7 @@
 import { CSSProperties, useMemo } from 'react'
 import { omit } from '@kpi/shared'
+import { withDefaultProps } from '@kpi/internal'
 import { RowContext } from '../_internal/context'
-import { withDefaultProps } from '../_internal/hocs'
 import { useFlexGapSupport, usePrefixCls } from '../_internal/hooks'
 import useClass from './hooks/use_class'
 import useRowGutter from './hooks/use_row_gutter'

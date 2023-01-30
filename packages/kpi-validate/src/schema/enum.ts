@@ -1,9 +1,10 @@
-import { isUndefined, type Writable } from '@kpi/shared'
+import { isUndefined } from '@kpi/shared'
 import BaseSchema from './base'
 import { enums } from '../locales/default'
 import { Invalid, Valid } from '../make_rule'
 
 import type { Context } from '../interface'
+import type { Writable } from '../types'
 
 export type EnumItem = string | number | symbol | boolean
 export type EnumInput = Readonly<[EnumItem, ...EnumItem[]]>

@@ -1,5 +1,4 @@
 import cls from 'classnames'
-import type { SizeType } from '@kpi/shared'
 import { usePrefixCls } from '../../_internal/hooks'
 
 import type { FormContextState } from '../../_internal/context'
@@ -11,6 +10,7 @@ import type {
   RequiredMark,
   ValidateStatus,
 } from '../props'
+import type { SizeType } from '../../types'
 
 export function useFormClass(
   props: FormProps,

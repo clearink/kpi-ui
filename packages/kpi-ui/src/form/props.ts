@@ -9,8 +9,8 @@ import type {
   FormArrayHelpers as $FormArrayHelpers,
   FieldData as $FieldData,
 } from '@kpi/internal/lib/form/props'
-import type { SizeType } from '@kpi/shared'
 import type { ColProps } from '../col/props'
+import type { SizeType } from '../types'
 
 export type NamePath = $NamePath
 

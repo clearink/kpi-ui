@@ -1,17 +1,11 @@
-import {
-  type AnyObject,
-  isObject,
-  isUndefined,
-  type MayBe,
-  type NonUndefined,
-  type Full,
-} from '@kpi/shared'
+import { isObject, isUndefined } from '@kpi/shared'
 import BaseSchema from './base'
 import SchemaContext from '../context'
 import { object } from '../locales/default'
 import { Invalid, Valid } from '../make_rule'
 
 import type { Context } from '../interface'
+import type { AnyObject, MayBe, NonUndefined, Full } from '../types'
 
 export type ObjectShape = Record<string, BaseSchema>
 

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { isArray, isString } from '@kpi/shared'
-import { SPACE_SIZE } from '../assets/constant'
 import { SpaceProps } from '../props'
+import { SPACE_SIZE } from '../../_internal/constant'
 
 export default function useSpaceGutter(size: SpaceProps['size'], hasSplit: boolean) {
   return useMemo(() => {

@@ -1,14 +1,14 @@
 import { ForwardedRef, forwardRef, useImperativeHandle, type MouseEvent } from 'react'
 import { omit } from '@kpi/shared'
+import { withDefaultProps } from '@kpi/internal'
 import { useWave } from '../_internal/hooks'
-import { withDefaultProps } from '../_internal/hocs'
 import useClass from './hooks/use_class'
 import { ButtonProps } from './props'
 
 function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
-  const { children, htmlType, type, onClick, loading, ...rest } = props
+  const { children, htmlType, onClick, loading, ...rest } = props
 
-  const attrs = omit(rest, ['block', 'danger', 'shape', 'size', 'ghost'])
+  const attrs = omit(rest, ['type', 'block', 'danger', 'shape', 'size', 'ghost'])
 
   useImperativeHandle(ref, () => internalRef.current!)
 

@@ -1,28 +1,28 @@
-// 二次封装 _internal/components/form
-import { useWatch } from '@kpi/internal/lib/form'
-import InternalForm from './components/form'
+// // 二次封装 _internal/components/form
+import { Form as InternalForm } from '@kpi/internal'
+import $Form from './components/form'
 import ErrorList from './components/error_list'
 import FormItem from './components/form_item'
 import FormList from './components/form_list'
 import useForm from './hooks/use_form'
 import useFormInstance from './hooks/use_instance'
 
-type CompoundedComponent = typeof InternalForm & {
+type CompoundedComponent = typeof $Form & {
   Item: typeof FormItem
   List: typeof FormList
   ErrorList: typeof ErrorList
   useForm: typeof useForm
   useFormInstance: typeof useFormInstance
-  useWatch: typeof useWatch
+  useWatch: typeof InternalForm.useWatch
 }
 
-const Form = InternalForm as CompoundedComponent
+const Form = $Form as CompoundedComponent
 
 Form.Item = FormItem
 Form.List = FormList
 Form.ErrorList = ErrorList
 Form.useForm = useForm
 Form.useFormInstance = useFormInstance
-Form.useWatch = useWatch
+Form.useWatch = InternalForm.useWatch
 
 export default Form

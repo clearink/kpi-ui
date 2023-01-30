@@ -1,5 +1,5 @@
-import type { AnyObject } from '@kpi/shared'
 import type SchemaContext from './context'
+import type { AnyObject } from './types'
 
 export type Name = string | number
 

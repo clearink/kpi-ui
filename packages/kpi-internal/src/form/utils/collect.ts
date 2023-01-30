@@ -1,7 +1,7 @@
 import { hasOwn, isFunction, isObjectLike, toArray } from '@kpi/shared'
-import type { AnyObject } from '@kpi/shared'
-import type { FormFieldControl } from '../control'
 
+import type { AnyObject } from '../../types'
+import type { FormFieldControl } from '../control'
 import type {
   InternalFormFieldProps,
   InternalFormInstance,

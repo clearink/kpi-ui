@@ -9,7 +9,7 @@ import { FormArrayControl } from '../control'
 import type { FieldData, FormListProps, ListField } from '../props'
 import type { UpdateFieldActionType as ActionType } from '../internal_props'
 
-function FormList(props: FormListProps) {
+export default function FormList(props: FormListProps) {
   const { name, rule, initialValue, preserve = false, children } = props
 
   const formInstance = FieldContext.useState()
@@ -75,4 +75,3 @@ function FormList(props: FormListProps) {
     </FieldContext.Provider>
   )
 }
-export default FormList

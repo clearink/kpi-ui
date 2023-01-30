@@ -1,6 +1,6 @@
 import type { ComponentType, ReactElement, FormEvent, FormHTMLAttributes, ReactNode } from 'react'
-import type { AnyObject } from '@kpi/shared'
 import type BaseSchema from '@kpi/validate/lib/schema/base'
+import type { AnyObject } from '../types'
 import type {
   InternalFieldData,
   FieldMeta,

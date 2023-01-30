@@ -11,6 +11,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   rules: {
     // eslint
+    'no-continue': 'off',
     'no-underscore-dangle': 'off',
     'consistent-return': 'off',
     'no-restricted-syntax': [

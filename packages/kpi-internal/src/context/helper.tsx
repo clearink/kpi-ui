@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 import type { ConsumerProps, ProviderProps } from 'react'
 
-export default function contextHelper<R extends unknown>(init: R) {
+export default function ctxHelper<R extends unknown>(init: R) {
   const Context = createContext(init)
   function Provider(props: ProviderProps<R>) {
     const { children, value } = props

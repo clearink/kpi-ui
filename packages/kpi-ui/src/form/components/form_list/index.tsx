@@ -1,4 +1,4 @@
-import { List as InternalFormList } from '@kpi/internal/lib/form'
+import { Form as InternalForm } from '@kpi/internal'
 import { logger } from '@kpi/shared'
 
 import type { FormListProps } from '../../props'
@@ -9,14 +9,14 @@ function FormList(props: FormListProps) {
   logger(!name, 'Form.List', 'Miss `name` prop.')
 
   return (
-    <InternalFormList {...props}>
+    <InternalForm.List {...props}>
       {(fields, arrayHelpers, meta) => {
         return children(fields, arrayHelpers, {
           errors: meta.errors,
           warnings: meta.warnings,
         })
       }}
-    </InternalFormList>
+    </InternalForm.List>
   )
 }
 

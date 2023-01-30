@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import type { DisabledType, SizeType } from '@kpi/shared'
 import type { RequiredMark } from '../form/props'
+import type { DisabledType, SizeType } from '../types'
 
 export interface ConfigConsumerProps {
   prefixCls?: string

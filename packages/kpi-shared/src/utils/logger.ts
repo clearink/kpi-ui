@@ -13,5 +13,6 @@ export default function logger(condition: boolean, ...message: string[]) {
   cache.size > 10000 && cache.clear()
   cache.add(key)
 
+  // eslint-disable-next-line no-console
   console.error(...message)
 }

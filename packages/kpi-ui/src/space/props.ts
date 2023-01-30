@@ -1,5 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react'
-import type { Size } from '@kpi/shared'
+import type { Size } from '../types'
 
 export interface SpaceProps extends HTMLAttributes<HTMLDivElement> {
   align?: 'start' | 'end' | 'center' | 'baseline'

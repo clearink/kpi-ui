@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Field as InternalFormField } from '@kpi/internal/lib/form'
+import { Form as InternalForm } from '@kpi/internal'
 import { useDebounceState, isUndefined, omit, pick, toArray } from '@kpi/shared'
 import type { FieldMeta } from '@kpi/internal/lib/form/internal_props'
 import Row from '../../../row'
@@ -31,9 +31,9 @@ function NoStyleFormItem(props: FormItemProps) {
   const formItemId = useFormItemId(props.name, formName)
 
   return (
-    <InternalFormField {...props} onMetaChange={topMetaChange}>
+    <InternalForm.Field {...props} onMetaChange={topMetaChange}>
       {normalizeItemChildren(props, formInstance!, formItemId)}
-    </InternalFormField>
+    </InternalForm.Field>
   )
 }
 
@@ -137,9 +137,9 @@ function CommonFormItem(props: FormItemProps) {
           warnings={mergedWarnings}
         >
           <NoStyleContext.Provider value={handleSubMetaChange}>
-            <InternalFormField {...props} onMetaChange={handleMetaChange}>
+            <InternalForm.Field {...props} onMetaChange={handleMetaChange}>
               {normalizeItemChildren(props, formInstance!, formItemId)}
-            </InternalFormField>
+            </InternalForm.Field>
           </NoStyleContext.Provider>
         </FormItemInput>
       </Row>

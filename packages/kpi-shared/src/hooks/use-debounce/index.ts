@@ -5,7 +5,7 @@ import useMounted from '../use-mounted'
 import type { AnyFunction } from '../../types'
 
 // 防抖 函数
-export function debounce(fn: AnyFunction, delay: number) {
+export function debounce(fn: (...args: any[]) => any, delay: number) {
   let timer: undefined | number
 
   function inner(this: unknown, ...args: any[]) {

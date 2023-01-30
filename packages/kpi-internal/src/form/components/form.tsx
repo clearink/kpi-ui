@@ -17,11 +17,9 @@ import {
   useEvent,
   useIsomorphicEffect,
   isEqual,
-  withDefaultProps,
 } from '@kpi/shared'
-
+import withDefaultProps from '../../hocs'
 import { FieldContext, FormContext } from '../../context'
-
 import { HOOK_MARK } from '../control'
 import useForm from '../hooks/use_form'
 

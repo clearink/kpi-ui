@@ -7,10 +7,9 @@ import {
   useImperativeHandle,
   useCallback,
 } from 'react'
-import { Form as InternalForm } from '@kpi/internal'
+import { Form as InternalForm, withDefaultProps } from '@kpi/internal'
 import { DisabledContext, FormContext, SizeContext } from '../../../_internal/context'
 import { ConfigContext } from '../../../_internal/context/config'
-import { withDefaultProps } from '../../../_internal/hocs'
 import { useFormClass } from '../../hooks/use_class'
 import useForm from '../../hooks/use_form'
 

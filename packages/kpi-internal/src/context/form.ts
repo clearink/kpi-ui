@@ -1,4 +1,6 @@
-import { contextHelper, logger } from '@kpi/shared'
+import { logger } from '@kpi/shared'
+import ctxHelper from './helper'
+
 import type { FormInstance } from '../form/props'
 import type { InternalFormInstance } from '../form/internal_props'
 
@@ -8,7 +10,7 @@ interface FormContextState {
 }
 
 // Form 组件传递数据给 Form.Field
-export const FormContext = contextHelper<FormContextState>({
+export const FormContext = ctxHelper<FormContextState>({
   register: () => () => {},
 })
 
@@ -16,7 +18,7 @@ export const FormContext = contextHelper<FormContextState>({
 const notFoundContext: any = () =>
   logger(true, 'Can not find FormContext. Please make sure you wrap Field under Form.')
 
-export const FieldContext = contextHelper<InternalFormInstance>({
+export const FieldContext = ctxHelper<InternalFormInstance>({
   getFieldError: notFoundContext,
   getFieldsError: notFoundContext,
   getFieldValue: notFoundContext,

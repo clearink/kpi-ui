@@ -1,6 +1,6 @@
 import { useMemo, Fragment, ReactElement } from 'react'
 import { flattenChildren } from '@kpi/shared'
-import { withDefaultProps } from '../_internal/hocs'
+import { withDefaultProps } from '@kpi/internal'
 import { useFlexGapSupport, usePrefixCls } from '../_internal/hooks'
 import useSpaceGutter from './hooks/use_space_gutter'
 import useClass from './hooks/use_class'

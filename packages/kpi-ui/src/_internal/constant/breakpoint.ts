@@ -1,6 +1,6 @@
 /* ----------------------------------- 公共类型 ----------------------------------- */
 
-export type Breakpoint = typeof BREAKPOINT_NAME[number]
+export type Breakpoint = (typeof BREAKPOINT_NAME)[number]
 export type ScreenMatch<K extends unknown> = Partial<Record<Breakpoint, K>>
 
 /* ----------------------------------- 公共常量 ----------------------------------- */

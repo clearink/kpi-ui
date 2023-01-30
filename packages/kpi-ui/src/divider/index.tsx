@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 import { capitalize, omit } from '@kpi/shared'
-import { withDefaultProps } from '../_internal/hocs'
+import { withDefaultProps } from '@kpi/internal'
 import { usePrefixCls } from '../_internal/hooks'
 import useClass from './hooks/use_class'
-import { DividerProps } from './props'
+
+import type { DividerProps } from './props'
 
 function Divider(props: DividerProps) {
   const { children, orientation, orientationMargin, ...rest } = props

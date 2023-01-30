@@ -13,7 +13,7 @@
   "author": "clearink",
   "license": "ISC",
   "scripts": {
-    "clean": "rimraf dist lib esm types",
+    "clean": "rimraf dist lib esm",
     "build": "yarn clean && rollup -c --bundleConfigAsCjs",
     "dev": "yarn build -- -w"
   },
