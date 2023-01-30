@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "description": "kpi ui internal components",
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
   "module": "esm/index.js",
+  "types": "types/index.d.ts",
   "unpkg": "dist/index.min.js",
   "keywords": [
     "kpi-ui",
@@ -14,8 +14,8 @@
   "author": "clearink",
   "license": "ISC",
   "scripts": {
-    "clean": "rimraf dist lib esm",
-    "build": "yarn clean && rollup -c --bundleConfigAsCjs",
+    "clean": "rimraf dist lib esm types",
+    "build": "yarn clean && babel src -d lib --extensions \".ts,.tsx\" && tsc -p .",
     "dev": "yarn build -- -w"
   },
   "peerDependencies": {
@@ -23,12 +23,14 @@
     "react-dom": "^18.2.0"
   },
   "dependencies": {
+    "@babel/runtime": "^7.20.13",
     "@kpi/shared": "workspace:*",
     "@kpi/validate": "workspace:*",
     "lodash.clonedeep": "^4.5.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.20.7",
     "@types/react": "^18.0.27",
-    "rollup": "^3.12.0"
+    "typescript": "^4.5.4"
   }
 }

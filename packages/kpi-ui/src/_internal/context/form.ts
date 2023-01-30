@@ -1,6 +1,6 @@
 import { ctxHelper } from '@kpi/internal'
 
-import type { FieldMeta } from '@kpi/internal/lib/form/internal_props'
+import type { FieldMeta } from '@kpi/internal/types/form/internal_props'
 import type { ColProps } from '../../col/props'
 import type { FormInstance, FormLabelAlign, RequiredMark, ValidateStatus } from '../../form/props'
 

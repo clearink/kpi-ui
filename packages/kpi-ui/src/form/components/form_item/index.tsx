@@ -1,7 +1,7 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Form as InternalForm } from '@kpi/internal'
 import { useDebounceState, isUndefined, omit, pick, toArray } from '@kpi/shared'
-import type { FieldMeta } from '@kpi/internal/lib/form/internal_props'
+import type { FieldMeta } from '@kpi/internal/types/form/internal_props'
 import Row from '../../../row'
 import FormItemLabel from './label'
 import FormItemInput from './input'

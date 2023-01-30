@@ -15,6 +15,8 @@
   "dependencies": {
     "@kpi/ui": "workspace:*",
     "@kpi/validate": "workspace:*",
+    "@kpi/shared": "workspace:*",
+    "@kpi/internal": "workspace:*",
     "@loadable/component": "^5.15.2",
     "nanoid": "^4.0.0",
     "react": "^18.2.0",

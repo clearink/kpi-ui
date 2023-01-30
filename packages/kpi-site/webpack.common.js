@@ -29,13 +29,13 @@ module.exports = {
             options: {
               presets: [
                 require.resolve('@babel/preset-env'),
+                require.resolve('@babel/preset-typescript'),
                 [
                   require.resolve('@babel/preset-react'),
                   {
                     runtime: 'automatic',
                   },
                 ],
-                require.resolve('@babel/preset-typescript'),
               ],
               plugins: [
                 require.resolve('@babel/plugin-transform-runtime'),

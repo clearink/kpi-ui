@@ -4,6 +4,7 @@ importers:
 
   .:
     specifiers:
+      '@babel/cli': ^7.20.7
       '@babel/core': ^7.20.12
       '@babel/plugin-transform-runtime': ^7.19.6
       '@babel/preset-env': ^7.20.2
@@ -11,7 +12,6 @@ importers:
       '@babel/preset-typescript': ^7.18.6
       '@rollup/plugin-babel': ^6.0.3
       '@rollup/plugin-commonjs': ^24.0.1
-      '@rollup/plugin-eslint': ^9.0.3
       '@rollup/plugin-node-resolve': ^15.0.1
       '@rollup/plugin-terser': ^0.4.0
       '@types/babel__core': ^7.20.0
@@ -35,10 +35,10 @@ importers:
       react-dom: ^18.2.0
       rimraf: ^4.1.2
       rollup: ^3.12.0
-      rollup-plugin-typescript2: ^0.34.1
       tslib: ^2.5.0
       typescript: ^4.5.4
     devDependencies:
+      '@babel/cli': 7.20.7_@babel+core@7.20.12
       '@babel/core': 7.20.12
       '@babel/plugin-transform-runtime': 7.19.6_@babel+core@7.20.12
       '@babel/preset-env': 7.20.2_@babel+core@7.20.12
@@ -46,7 +46,6 @@ importers:
       '@babel/preset-typescript': 7.18.6_@babel+core@7.20.12
       '@rollup/plugin-babel': 6.0.3_i5aruc6ya6rhsj7gzs5mzr5zem
       '@rollup/plugin-commonjs': 24.0.1_rollup@3.12.0
-      '@rollup/plugin-eslint': 9.0.3_rollup@3.12.0
       '@rollup/plugin-node-resolve': 15.0.1_rollup@3.12.0
       '@rollup/plugin-terser': 0.4.0_rollup@3.12.0
       '@types/babel__core': 7.20.0
@@ -70,7 +69,6 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       rimraf: 4.1.2
       rollup: 3.12.0
-      rollup-plugin-typescript2: 0.34.1_tkwgik6422u3whqaozmypsnvni
       tslib: 2.5.0
       typescript: 4.9.4
 
@@ -82,33 +80,41 @@ importers:
 
   packages/kpi-internal:
     specifiers:
+      '@babel/cli': ^7.20.7
+      '@babel/runtime': ^7.20.13
       '@kpi/shared': workspace:*
       '@kpi/validate': workspace:*
       '@types/react': ^18.0.27
       lodash.clonedeep: ^4.5.0
-      rollup: ^3.12.0
+      typescript: ^4.5.4
     dependencies:
+      '@babel/runtime': 7.20.13
       '@kpi/shared': link:../kpi-shared
       '@kpi/validate': link:../kpi-validate
       lodash.clonedeep: 4.5.0
     devDependencies:
+      '@babel/cli': 7.20.7
       '@types/react': 18.0.27
-      rollup: 3.12.0
+      typescript: 4.9.4
 
   packages/kpi-shared:
     specifiers:
+      '@babel/cli': ^7.20.7
+      '@babel/runtime': ^7.20.13
       '@types/react': ^18.0.27
       '@types/react-is': ^17.0.3
       react-fast-compare: ^3.2.0
       react-is: ^18.2.0
-      rollup: ^3.12.0
+      typescript: ^4.5.4
     dependencies:
+      '@babel/runtime': 7.20.13
       react-fast-compare: 3.2.0
       react-is: 18.2.0
     devDependencies:
+      '@babel/cli': 7.20.7
       '@types/react': 18.0.27
       '@types/react-is': 17.0.3
-      rollup: 3.12.0
+      typescript: 4.9.4
 
   packages/kpi-site:
     specifiers:
@@ -117,6 +123,8 @@ importers:
       '@babel/preset-env': ^7.20.2
       '@babel/preset-react': ^7.18.6
       '@babel/preset-typescript': ^7.18.6
+      '@kpi/internal': workspace:*
+      '@kpi/shared': workspace:*
       '@kpi/ui': workspace:*
       '@kpi/validate': workspace:*
       '@loadable/component': ^5.15.2
@@ -139,6 +147,8 @@ importers:
       webpack-merge: ^5.8.0
       webpackbar: ^5.0.2
     dependencies:
+      '@kpi/internal': link:../kpi-internal
+      '@kpi/shared': link:../kpi-shared
       '@kpi/ui': link:../kpi-ui
       '@kpi/validate': link:../kpi-validate
       '@loadable/component': 5.15.2_react@18.2.0
@@ -169,6 +179,8 @@ importers:
 
   packages/kpi-ui:
     specifiers:
+      '@babel/cli': ^7.20.7
+      '@babel/runtime': ^7.20.13
       '@kpi/internal': workspace:*
       '@kpi/shared': workspace:*
       '@types/react': ^18.0.14
@@ -178,9 +190,9 @@ importers:
       lodash.clonedeep: ^4.5.0
       react: ^18.2.0
       react-transition-group: ^4.4.5
-      rollup: ^3.12.0
       typescript: ^4.5.4
     dependencies:
+      '@babel/runtime': 7.20.13
       '@kpi/internal': link:../kpi-internal
       '@kpi/shared': link:../kpi-shared
       classnames: 2.3.2
@@ -188,20 +200,24 @@ importers:
       lodash.clonedeep: 4.5.0
       react-transition-group: 4.4.5_react@18.2.0
     devDependencies:
+      '@babel/cli': 7.20.7
       '@types/react': 18.0.27
       '@types/react-transition-group': 4.4.5
       react: 18.2.0
-      rollup: 3.12.0
       typescript: 4.9.4
 
   packages/kpi-validate:
     specifiers:
+      '@babel/cli': ^7.20.7
+      '@babel/runtime': ^7.20.13
       '@kpi/shared': workspace:*
-      rollup: ^3.12.0
+      typescript: ^4.5.4
     dependencies:
+      '@babel/runtime': 7.20.13
       '@kpi/shared': link:../kpi-shared
     devDependencies:
-      rollup: 3.12.0
+      '@babel/cli': 7.20.7
+      typescript: 4.9.4
 
 packages:
 
@@ -211,6 +227,45 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.1.1
       '@jridgewell/trace-mapping': 0.3.17
+    dev: true
+
+  /@babel/cli/7.20.7:
+    resolution: {integrity: sha512-WylgcELHB66WwQqItxNILsMlaTd8/SO6SgTTjMp4uCI7P4QyH1r3nqgFmO3BfM4AtfniHgFMH3EpYFj/zynBkQ==}
+    engines: {node: '>=6.9.0'}
+    hasBin: true
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.17
+      commander: 4.1.1
+      convert-source-map: 1.9.0
+      fs-readdir-recursive: 1.1.0
+      glob: 7.2.3
+      make-dir: 2.1.0
+      slash: 2.0.0
+    optionalDependencies:
+      '@nicolo-ribaudo/chokidar-2': 2.1.8-no-fsevents.3
+      chokidar: 3.5.3
+    dev: true
+
+  /@babel/cli/7.20.7_@babel+core@7.20.12:
+    resolution: {integrity: sha512-WylgcELHB66WwQqItxNILsMlaTd8/SO6SgTTjMp4uCI7P4QyH1r3nqgFmO3BfM4AtfniHgFMH3EpYFj/zynBkQ==}
+    engines: {node: '>=6.9.0'}
+    hasBin: true
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.20.12
+      '@jridgewell/trace-mapping': 0.3.17
+      commander: 4.1.1
+      convert-source-map: 1.9.0
+      fs-readdir-recursive: 1.1.0
+      glob: 7.2.3
+      make-dir: 2.1.0
+      slash: 2.0.0
+    optionalDependencies:
+      '@nicolo-ribaudo/chokidar-2': 2.1.8-no-fsevents.3
+      chokidar: 3.5.3
     dev: true
 
   /@babel/code-frame/7.18.6:
@@ -1641,6 +1696,12 @@ packages:
       tslib: 2.5.0
     dev: false
 
+  /@nicolo-ribaudo/chokidar-2/2.1.8-no-fsevents.3:
+    resolution: {integrity: sha512-s88O1aVtXftvp5bCPB7WnmXc5IwOZZ7YPuwNPt+GtOOXpPvad1LfbmjYv+qII7zP6RU2QGnqve27dnLycEnyEQ==}
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -1740,22 +1801,6 @@ packages:
       rollup: 3.12.0
     dev: true
 
-  /@rollup/plugin-eslint/9.0.3_rollup@3.12.0:
-    resolution: {integrity: sha512-iV2m9BhPdsjQzmRVe3Nzovrjxbdq5Slva8bvUSzbM4gSBUaGXAFnFXcHcvO4N4tSuirZoY61mkn8KtV3G6o0iQ==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.0.2_rollup@3.12.0
-      eslint: 8.32.0
-      rollup: 3.12.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /@rollup/plugin-node-resolve/15.0.1_rollup@3.12.0:
     resolution: {integrity: sha512-ReY88T7JhJjeRVbfCyNj+NXAG3IIsVMsX9b5/9jC98dRP8/yxlZdz7mHZbHk5zHr24wZZICS5AcXsFZAXYUQEg==}
     engines: {node: '>=14.0.0'}
@@ -1787,14 +1832,6 @@ packages:
       serialize-javascript: 6.0.1
       smob: 0.0.6
       terser: 5.16.1
-    dev: true
-
-  /@rollup/pluginutils/4.2.1:
-    resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
-    engines: {node: '>= 8.0.0'}
-    dependencies:
-      estree-walker: 2.0.2
-      picomatch: 2.3.1
     dev: true
 
   /@rollup/pluginutils/5.0.2_rollup@3.12.0:
@@ -2743,6 +2780,11 @@ packages:
 
   /commander/2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
+    dev: true
+
+  /commander/4.1.1:
+    resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
+    engines: {node: '>= 6'}
     dev: true
 
   /commander/8.3.0:
@@ -3832,6 +3874,10 @@ packages:
     resolution: {integrity: sha512-cybjIfiiE+pTWicSCLFHSrXZ6EilF30oh91FDP9S2B051prEa7QWfrVTQm10/dDpswBDXZugPa1Ogu8Yh+HV0Q==}
     dev: true
 
+  /fs-readdir-recursive/1.1.0:
+    resolution: {integrity: sha512-GNanXlVr2pf02+sPN40XN8HG+ePaNcvM0q5mZBd668Obwb0yD5GiUbZOFgwn8kGMY6I3mdyDJzieUy3PTYyTRA==}
+    dev: true
+
   /fs.realpath/1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
     dev: true
@@ -4638,6 +4684,14 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
+  /make-dir/2.1.0:
+    resolution: {integrity: sha512-LS9X+dc8KLxXCb8dni79fLIIUA5VyZoyjSMCwTluaXA0o27cCK0bhXkpgw+sTXVpPy/lSO57ilRixqk0vDmtRA==}
+    engines: {node: '>=6'}
+    dependencies:
+      pify: 4.0.1
+      semver: 5.7.1
+    dev: true
+
   /make-dir/3.1.0:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
     engines: {node: '>=8'}
@@ -5047,6 +5101,11 @@ packages:
     engines: {node: '>=8.6'}
     dev: true
 
+  /pify/4.0.1:
+    resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
+    engines: {node: '>=6'}
+    dev: true
+
   /pkg-dir/4.2.0:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
@@ -5358,21 +5417,6 @@ packages:
     hasBin: true
     dev: true
 
-  /rollup-plugin-typescript2/0.34.1_tkwgik6422u3whqaozmypsnvni:
-    resolution: {integrity: sha512-P4cHLtGikESmqi1CA+tdMDUv8WbQV48mzPYt77TSTOPJpERyZ9TXdDgjSDix8Fkqce6soYz3+fa4lrC93IEkcw==}
-    peerDependencies:
-      rollup: '>=1.26.3'
-      typescript: '>=2.4.0'
-    dependencies:
-      '@rollup/pluginutils': 4.2.1
-      find-cache-dir: 3.3.2
-      fs-extra: 10.1.0
-      rollup: 3.12.0
-      semver: 7.3.8
-      tslib: 2.5.0
-      typescript: 4.9.4
-    dev: true
-
   /rollup/3.12.0:
     resolution: {integrity: sha512-4MZ8kA2HNYahIjz63rzrMMRvDqQDeS9LoriJvMuV0V6zIGysP36e9t4yObUfwdT9h/szXoHQideICftcdZklWg==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
@@ -5440,6 +5484,11 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       node-forge: 1.3.1
+    dev: true
+
+  /semver/5.7.1:
+    resolution: {integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==}
+    hasBin: true
     dev: true
 
   /semver/6.3.0:
@@ -5546,6 +5595,11 @@ packages:
 
   /signal-exit/3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
+    dev: true
+
+  /slash/2.0.0:
+    resolution: {integrity: sha512-ZYKh3Wh2z1PpEXWr0MpSBZ0V6mZHAQfYevttO11c51CaWjGTaadiKZ+wVt1PbMlDV5qhMFslpZCemhwOK7C89A==}
+    engines: {node: '>=6'}
     dev: true
 
   /slash/3.0.0:

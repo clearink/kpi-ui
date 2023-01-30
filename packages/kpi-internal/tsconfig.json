@@ -1,5 +1,11 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "declarationDir": "types",
+    "emitDeclarationOnly": true
+  }
 }

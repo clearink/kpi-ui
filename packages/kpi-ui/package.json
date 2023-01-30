@@ -14,10 +14,11 @@
   "license": "ISC",
   "scripts": {
     "clean": "rimraf dist lib esm types",
-    "build": "yarn clean && rollup -c --bundleConfigAsCjs",
+    "build": "yarn clean && babel src -d lib --extensions \".ts,.tsx\" && tsc -p .",
     "dev": "yarn build -- -w"
   },
   "dependencies": {
+    "@babel/runtime": "^7.20.13",
     "@kpi/internal": "workspace:*",
     "@kpi/shared": "workspace:*",
     "classnames": "^2.3.1",
@@ -26,10 +27,10 @@
     "react-transition-group": "^4.4.5"
   },
   "devDependencies": {
+    "@babel/cli": "^7.20.7",
     "@types/react": "^18.0.14",
     "@types/react-transition-group": "^4.4.5",
     "react": "^18.2.0",
-    "rollup": "^3.12.0",
     "typescript": "^4.5.4"
   },
   "peerDependencies": {

@@ -16,13 +16,12 @@
 //     </Router>
 //   )
 // }
-import * as Button from '@kpi/ui'
+import { Button } from '@kpi/ui'
 
 export default function App() {
-  console.log(Button)
   return (
     <div>
-      <Button.Button>123123</Button.Button>
+      <Button>123 app</Button>
     </div>
   )
 }

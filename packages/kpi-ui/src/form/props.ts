@@ -8,7 +8,7 @@ import type {
   ListField as $ListField,
   FormArrayHelpers as $FormArrayHelpers,
   FieldData as $FieldData,
-} from '@kpi/internal/lib/form/props'
+} from '@kpi/internal/types/form/props'
 import type { ColProps } from '../col/props'
 import type { SizeType } from '../types'
 

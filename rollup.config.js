@@ -2,9 +2,8 @@ import { defineConfig } from 'rollup'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 // import terser from '@rollup/plugin-terser'
-import { getBabelInputPlugin, getBabelOutputPlugin } from '@rollup/plugin-babel'
-
-import pkg from './package.json'
+import babel from '@rollup/plugin-babel'
+import pkg from './packages/kpi-internal/package.json'
 
 const extensions = ['.js', '.jsx', '.ts', '.tsx']
 
@@ -18,14 +17,15 @@ export default defineConfig({
   plugins: [
     resolve({ extensions }),
     commonjs(),
-    getBabelInputPlugin({
+    babel({
       extensions,
-      presets: ['@babel/preset-typescript'],
+      presets: [
+        '@babel/preset-env',
+        '@babel/preset-typescript',
+        ['@babel/preset-react', { runtime: 'automatic' }],
+      ],
       plugins: ['@babel/plugin-transform-runtime'],
       babelHelpers: 'runtime',
-    }),
-    getBabelOutputPlugin({
-      presets: ['@babel/preset-env', ['@babel/preset-react', { runtime: 'automatic' }]],
     }),
   ],
   output: [
@@ -33,6 +33,7 @@ export default defineConfig({
       dir: 'esm',
       format: 'esm',
       exports: 'named',
+      preserveModules: true,
     },
     {
       dir: 'lib',

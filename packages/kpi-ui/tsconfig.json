@@ -5,6 +5,7 @@
   "compilerOptions": {
     "noEmit": false,
     "declaration": true,
-    "declarationDir": "types"
+    "declarationDir": "types",
+    "emitDeclarationOnly": true
   }
 }
