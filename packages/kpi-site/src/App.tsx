@@ -17,8 +17,10 @@
 //   )
 // }
 import { Button } from '@kpi/ui'
+import kv from '@kpi/validate'
 
 export default function App() {
+  console.log(kv)
   return (
     <div>
       <Button>123 app</Button>

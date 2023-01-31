@@ -6,7 +6,4 @@ module.exports = {
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,
   },
-  rules: {
-    'import/no-cycle': 'off',
-  },
 }

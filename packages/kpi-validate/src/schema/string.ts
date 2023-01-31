@@ -1,6 +1,5 @@
 import { isNullish, isString, isUndefined } from '@kpi/shared'
-import BaseSchema from './base'
-import EffectSchema from './effect'
+import BaseSchema, { EffectSchema } from './base'
 import { base, string } from '../locales/default'
 import { Invalid, makeRule, Valid } from '../make_rule'
 import * as REGEX from '../utils/regex'

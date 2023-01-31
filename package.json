@@ -8,7 +8,7 @@
   "author": "clearink",
   "license": "ISC",
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.jsx,.tsx ./packages/kpi-validate"
+    "lint": "eslint --ext .js,.ts,.jsx,.tsx ./packages/kpi-validate/src"
   },
   "devDependencies": {
     "@babel/cli": "^7.20.7",
@@ -54,6 +54,6 @@
   },
   "engines": {
     "node": ">=14",
-    "pnpm": ">=3"
+    "pnpm": ">3"
   }
 }
