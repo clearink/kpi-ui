@@ -14,7 +14,9 @@
   "license": "ISC",
   "scripts": {
     "clean": "rimraf dist lib esm types",
-    "build": "yarn clean && babel src -d lib --extensions \".ts,.tsx\" && tsc -p .",
+    "build:code": "node ../../scripts/build.shared.js",
+    "build:types": "tsc -p .",
+    "build": "yarn clean && yarn build:code && yarn build:types",
     "dev": "yarn build -- -w"
   },
   "peerDependencies": {
@@ -29,6 +31,7 @@
     "@babel/cli": "^7.20.7",
     "@types/react": "^18.0.27",
     "@types/react-is": "^17.0.3",
+    "cross-env": "^7.0.3",
     "typescript": "^4.5.4"
   }
 }

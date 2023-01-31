@@ -36,7 +36,6 @@ module.exports = {
     // react
     'react/jsx-props-no-spreading': 'off',
     'react/destructuring-assignment': 'off',
-    'react/button-has-type': 'off',
 
     // import
     'import/extensions': 'off',

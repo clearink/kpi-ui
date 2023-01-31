@@ -1,9 +1,11 @@
+/* eslint-disable react/button-has-type */
 import { ForwardedRef, forwardRef, useImperativeHandle, type MouseEvent } from 'react'
 import { omit } from '@kpi/shared'
 import { withDefaultProps } from '@kpi/internal'
 import { useWave } from '../_internal/hooks'
 import useClass from './hooks/use_class'
-import { ButtonProps } from './props'
+
+import type { ButtonProps } from './props'
 
 function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
   const { children, htmlType, onClick, loading, ...rest } = props

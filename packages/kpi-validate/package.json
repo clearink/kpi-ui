@@ -14,7 +14,9 @@
   "license": "ISC",
   "scripts": {
     "clean": "rimraf dist lib esm types",
-    "build": "yarn clean && babel src -d lib --extensions \".ts,.tsx\" && tsc -p .",
+    "build:code": "node ../../scripts/build.validate.js",
+    "build:types": "tsc -p .",
+    "build": "yarn clean && yarn build:code && yarn build:types",
     "dev": "yarn build -- -w"
   },
   "dependencies": {

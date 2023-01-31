@@ -27,7 +27,7 @@ export type MakePartial<T extends MayBe<ObjectShape>> = T extends AnyObject
 
 /** schema =================================================================== */
 
-export class ObjectSchema<
+export default class ObjectSchema<
   T extends ObjectShape,
   Out = MakePartial<T> | undefined
 > extends BaseSchema<Out> {
