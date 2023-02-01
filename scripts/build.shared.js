@@ -54,14 +54,14 @@ const cjss = list.map((file) => transformFileAsync(resolveApp(file), cjs))
 
 Promise.all(esms).then((outputs) => {
   outputs.map((output, i) => {
-    const file = resolveApp('esm', relative('src', list[i])).replace(/.tsx?$/g, '.js')
+    const file = resolveApp('esm', relative('src', list[i])).replace(/\.tsx?$/g, '.js')
     ensureFileSync(file)
     writeFileSync(file, output?.code, { encoding: 'utf-8' })
   })
 })
 Promise.all(cjss).then((outputs) => {
   outputs.map((output, i) => {
-    const file = resolveApp('lib', relative('src', list[i])).replace(/.tsx?$/g, '.js')
+    const file = resolveApp('lib', relative('src', list[i])).replace(/\.tsx?$/g, '.js')
     ensureFileSync(file)
     writeFileSync(file, output?.code, { encoding: 'utf-8' })
   })
