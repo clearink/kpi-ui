@@ -1,9 +1,9 @@
 // // 二次封装 _internal/components/form
 import { Form as InternalForm } from '@kpi/internal'
 import $Form from './components/form'
-import ErrorList from './components/error_list'
-import FormItem from './components/form_item'
-import FormList from './components/form_list'
+import ErrorList from './components/error-list'
+import FormItem from './components/form-item'
+import FormList from './components/form-list'
 import useForm from './hooks/use_form'
 import useFormInstance from './hooks/use_instance'
 
