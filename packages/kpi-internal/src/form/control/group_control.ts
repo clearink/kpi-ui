@@ -19,7 +19,7 @@ import type {
   UpdateFieldActionType as ActionType,
 } from '../internal_props'
 
-export const HOOK_MARK = Symbol('_$_KPI_FORM_HOOK_MARK_$_')
+export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
 
 export default class FormGroupControl<State = any> {
   $props: FormPropsControl
@@ -81,7 +81,7 @@ export default class FormGroupControl<State = any> {
   }
 
   // 内部属性
-  _getInternalHooks = (secret: symbol): InternalHookReturn | undefined => {
+  _getInternalHooks = (secret: string): InternalHookReturn | undefined => {
     const matched = secret === HOOK_MARK
 
     logger(!matched, '`getInternalHooks` is internal usage. Should not call directly.')
@@ -299,11 +299,14 @@ export class FormControlsControl {
 
       // 未注册
       if (!controls.find((control) => control._key === key)) {
-        if (removeInvalid) return res
-        return res.concat(new InvalidField(toArray(path)))
+        if (!removeInvalid) res.push(new InvalidField(toArray(path)))
+        return res
       }
 
-      return res.concat(controls.filter((control) => control._key === key))
+      const targets = controls.filter((control) => control._key === key)
+      for (let i = 0; i < targets.length; i += 1) res.push(targets[i])
+
+      return res
     }, [] as any[])
   }
 
@@ -530,10 +533,9 @@ export class FormDispatchControl<State = any> {
   // 更新视图
   updateControl = (prev: State, next: State, type: ActionType) => {
     // 获取需要更新的 control
-    const controls = this.$controls.getControls().reduce((res, control) => {
-      if (control.shouldUpdate(prev, next, type)) res.push(control)
-      return res
-    }, [] as FormFieldControl[])
+    const controls = this.$controls
+      .getControls()
+      .filter((control) => control.shouldUpdate(prev, next, type))
 
     // 校验依赖字段
     const dependencies = this.publishDependentControl(controls)
@@ -559,12 +561,10 @@ export class FormDispatchControl<State = any> {
       // 更新字段
       const [, dependencies] = this.updateControl(prev, next, action.type)
       // 触发回调
-      const changedValues = cloneWithPath(next, action.name)
-      this.triggerOnValuesChange(changedValues)
+      this.triggerOnValuesChange(cloneWithPath(next, action.name))
       // 触发回调
       const nameList = [action.name, ...dependencies.map(({ _name }) => _name)]
       this.triggerOnFieldsChange(nameList)
-
       return
     }
 
@@ -600,9 +600,7 @@ export class FormDispatchControl<State = any> {
       const controls = $controls.getControlsByName(true, action.nameList)
 
       // 设置字段初始值
-      const next = controls.reduce((_, control) => {
-        return $initial.ensureInitialized(control)[1]
-      }, init)
+      const next = controls.reduce((_, control) => $initial.ensureInitialized(control)[1], init)
 
       // 重挂载组件以消除副作用
       controls.forEach((control) => control.resetField())

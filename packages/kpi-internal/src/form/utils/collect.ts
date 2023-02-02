@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { hasOwn, isFunction, isObjectLike, toArray } from '@kpi/shared'
 
 import type { AnyObject } from '../../types'
@@ -63,13 +64,16 @@ export default function collectInjectProps(
     // 校验触发时机
     const triggerList = toArray((validateTrigger ?? formInstance.validateTrigger) || [])
 
-    return triggerList.reduce((res, triggerName) => {
+    const init = { ...injectProps }
+
+    return triggerList.reduce((result, triggerName) => {
       const handler = (...args: any[]) => {
-        // 执行原始值
         injectProps[triggerName]?.(...args)
         props.rule && formInstance.validateField(name)
       }
-      return { ...res, [triggerName]: handler }
-    }, injectProps)
+      result[triggerName] = handler
+
+      return result
+    }, init)
   }
 }

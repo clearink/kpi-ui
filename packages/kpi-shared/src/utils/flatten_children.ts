@@ -13,10 +13,10 @@ export default function flattenChildren(children: ReactNode) {
     if (isNullish(child)) return result
 
     if (isFragment(child) && child.props) {
-      return result.concat(flattenChildren(child.props.children))
-    }
+      const kids = flattenChildren(child.props.children)
+      for (let i = 0; i < kids.length; i += 1) result.push(kids[i])
+    } else result.push(child as ReactElement)
 
-    result.push(child as ReactElement)
     return result
   }, [])
 }

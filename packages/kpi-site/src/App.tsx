@@ -16,14 +16,26 @@
 //     </Router>
 //   )
 // }
-import { Button } from '@kpi/ui'
+import { Button, Form } from '@kpi/ui'
 import kv from '@kpi/validate'
+import { Profiler } from 'react'
+
+function Input(props: any) {
+  return <input {...props} value={props.value || ''} />
+}
 
 export default function App() {
-  console.log(kv)
   return (
     <div>
-      <Button>123 app</Button>
+      <Form>
+        {/* <Profiler id="username" onRender={(...args) => console.log(...args)}> */}
+        {Array.from({ length: 3000 }, (_, i) => (
+          <Form.Item noStyle name={['username', i]} key={i}>
+            <Input placeholder="a" />
+          </Form.Item>
+        ))}
+        {/* </Profiler> */}
+      </Form>
     </div>
   )
 }

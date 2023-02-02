@@ -73,9 +73,12 @@ function internalMerge(target: any, source: any) {
 
   // 对象才需要合并
   if (isObject(target)) {
+    const init = { ...target }
     return Object.entries(source).reduce((res, [key, value]) => {
-      return { ...res, [key]: internalMerge(res[key], value) }
-    }, target)
+      res[key] = internalMerge(res[key], value)
+
+      return res
+    }, init)
   }
   // 其他非基础类型数据
   return target

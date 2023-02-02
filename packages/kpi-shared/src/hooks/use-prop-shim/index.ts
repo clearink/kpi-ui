@@ -1,5 +1,6 @@
+/* eslint-disable no-param-reassign */
 import { useMemo, useRef } from 'react'
-import { isObject } from '../../utils'
+import { hasOwn, isArray, isObject } from '../../utils'
 
 /**
  * @description
@@ -17,14 +18,17 @@ function usePropShim<A extends any, D extends Extract<A, object>>(attr: A, $$def
     function assign($default: Partial<D>, target: object) {
       // 唯一不确定的是这里, 是否在外部传入 undefined 时仍然让其为默认值呢?
       if (target === undefined) return $default
+
       if (target === null || !isObject(target)) return target
+
+      const init = { ...target }
+
       return Object.keys($default).reduce((result, key) => {
-        if (key in target) {
-          const current: any = assign($default[key], target[key])
-          return { ...result, [key]: current }
-        }
-        return { ...result, [key]: $default[key] }
-      }, target)
+        if (!hasOwn(target, key)) result[key] = $default[key]
+        else result[key] = assign($default[key], target[key])
+
+        return result
+      }, init)
     }
     return assign(ref.current, attr as A & object) as A
   }, [attr])
