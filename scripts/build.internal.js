@@ -16,7 +16,6 @@ const esm = {
   comments: false,
   configFile: false,
   presets: [
-    ['@babel/preset-react', { runtime: 'automatic' }],
     [
       '@babel/preset-env',
       {
@@ -26,6 +25,7 @@ const esm = {
         },
       },
     ],
+    ['@babel/preset-react', { runtime: 'automatic' }],
     '@babel/preset-typescript',
   ],
   plugins: ['@babel/plugin-transform-runtime'],
@@ -34,7 +34,6 @@ const cjs = {
   comments: false,
   configFile: false,
   presets: [
-    ['@babel/preset-react', { runtime: 'automatic' }],
     [
       '@babel/preset-env',
       {
@@ -43,6 +42,7 @@ const cjs = {
         },
       },
     ],
+    ['@babel/preset-react', { runtime: 'automatic' }],
     '@babel/preset-typescript',
   ],
   plugins: ['@babel/plugin-transform-runtime'],
