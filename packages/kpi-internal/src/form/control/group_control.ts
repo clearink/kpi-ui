@@ -402,8 +402,8 @@ export class FormStateControl<State = any> {
     return this._state
   }
 
-  private get getControlsByName() {
-    return this.$inject.$controls.getControlsByName
+  private get $controls() {
+    return this.$inject.$controls
   }
 
   constructor(private $inject: { $controls: FormControlsControl }) {}
@@ -449,7 +449,7 @@ export class FormStateControl<State = any> {
     if (fields === true) return this._state
 
     const nameList = isBoolean(fields) ? [] : fields
-    const controls = this.getControlsByName(false, nameList)
+    const controls = this.$controls.getControlsByName(false, nameList)
 
     return controls.reduce((values, field) => {
       if (InvalidField.isInvalid(field)) {
@@ -466,7 +466,7 @@ export class FormStateControl<State = any> {
   }
 
   getFields = (nameList?: NamePath[]) => {
-    return this.getControlsByName(true, nameList).map((control) => {
+    return this.$controls.getControlsByName(true, nameList).map((control) => {
       const name = control._name
       const value = this.getFieldValue(name)
       // TODO: 验证 fields 与 onFieldsChange 一起使用时 errors 是否一直为空

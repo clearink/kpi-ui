@@ -16,13 +16,9 @@ import type {
 } from '../internal_props'
 
 export default class FormFieldControl extends BaseControl {
-  public get _name() {
-    return this._props.name ?? []
-  }
+  public _key: string = ''
 
-  public get _key() {
-    return _getName(this._name)
-  }
+  public _name: InternalNamePath = []
 
   public constructor(
     private _forceUpdate: () => void,
@@ -49,6 +45,8 @@ export default class FormFieldControl extends BaseControl {
 
   public setFieldProps = (props: Partial<InternalFormFieldProps>) => {
     this._props = props
+    this._key = _getName(props.name!)
+    this._name = props.name ?? []
   }
 
   public _parent: FormInitialControl | null = null
