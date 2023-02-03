@@ -1,4 +1,3 @@
-const webpack = require('webpack')
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
@@ -7,8 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
 
-module.exports = merge(common, {
-  mode: 'production',
+module.exports = merge(common('production'), {
   bail: true,
   output: {
     path: path.resolve(__dirname, './dist'),
@@ -102,11 +100,6 @@ module.exports = merge(common, {
     new MiniCssExtractPlugin({
       filename: 'css/[name].[contenthash:8].css',
       chunkFilename: 'css/[name].[contenthash:8].chunk.css',
-    }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: `"production"`,
-      },
     }),
   ],
 })

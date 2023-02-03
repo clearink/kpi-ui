@@ -1,12 +1,12 @@
-const webpack = require('webpack')
 const path = require('path')
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const ESLintWebpackPlugin = require('eslint-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
-module.exports = merge(common, {
-  mode: 'development',
+module.exports = merge(common('development'), {
   devtool: 'cheap-module-source-map',
   output: {
     filename: 'js/bundle.js',
@@ -24,14 +24,17 @@ module.exports = merge(common, {
       scriptLoading: 'defer',
       template: path.resolve(__dirname, './public/index.html'),
     }),
+    new ForkTsCheckerWebpackPlugin(),
+    new ESLintWebpackPlugin({
+      context: 'src',
+      extensions: ['.tsx', '.ts', '.js', '.jsx', '.mjs'],
+      eslintPath: require.resolve('eslint'),
+      cache: true,
+      cacheLocation: path.resolve(__dirname, 'node_modules/.cache/.eslintcache'),
+    }),
     new ReactRefreshWebpackPlugin({
       exclude: [/node_modules/],
       overlay: false,
-    }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: `"development"`,
-      },
     }),
   ],
   devServer: {
