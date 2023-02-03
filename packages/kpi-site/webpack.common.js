@@ -1,4 +1,3 @@
-const webpack = require('webpack')
 const path = require('path')
 const WebPackBarPlugin = require('webpackbar')
 const ESLintWebpackPlugin = require('eslint-webpack-plugin')
@@ -8,9 +7,7 @@ module.exports = {
   target: ['browserslist'],
   entry: path.resolve(__dirname, './src/index.tsx'),
   performance: false,
-  output: {
-    path: path.resolve(__dirname, './dist'),
-  },
+
   infrastructureLogging: {
     level: 'warn',
   },
@@ -60,11 +57,6 @@ module.exports = {
       eslintPath: require.resolve('eslint'),
       cache: true,
       cacheLocation: path.resolve(__dirname, 'node_modules/.cache/.eslintcache'),
-    }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: `"development"`,
-      },
     }),
   ],
 }

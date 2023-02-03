@@ -1,9 +1,9 @@
-const { merge } = require('webpack-merge')
+const webpack = require('webpack')
 const path = require('path')
+const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
-const { webpack } = require('webpack')
 
 module.exports = merge(common, {
   mode: 'development',
@@ -27,6 +27,11 @@ module.exports = merge(common, {
     new ReactRefreshWebpackPlugin({
       exclude: [/node_modules/],
       overlay: false,
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: `"development"`,
+      },
     }),
   ],
   devServer: {
