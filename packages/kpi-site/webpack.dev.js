@@ -33,7 +33,7 @@ module.exports = merge(common, {
     static: {
       directory: path.resolve(__dirname, './public'),
     },
-    port: 4000,
+    port: 4001,
     hot: true,
     open: true,
     compress: true,

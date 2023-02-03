@@ -40,7 +40,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "fs-extra": "^11.1.0",
     "glob": "^8.1.0",
-    "lodash.clonedeep": "^4.5.0",
     "prettier": "^2.8.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

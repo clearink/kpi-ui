@@ -33,7 +33,6 @@ importers:
       eslint-plugin-react-hooks: ^4.6.0
       fs-extra: ^11.1.0
       glob: ^8.1.0
-      lodash.clonedeep: ^4.5.0
       prettier: ^2.8.3
       react: ^18.2.0
       react-dom: ^18.2.0
@@ -71,7 +70,6 @@ importers:
       eslint-plugin-react-hooks: 4.6.0_eslint@8.32.0
       fs-extra: 11.1.0
       glob: 8.1.0
-      lodash.clonedeep: 4.5.0
       prettier: 2.8.3
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -4675,6 +4673,7 @@ packages:
 
   /lodash.clonedeep/4.5.0:
     resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
+    dev: false
 
   /lodash.debounce/4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
