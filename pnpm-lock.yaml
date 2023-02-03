@@ -90,13 +90,11 @@ importers:
       '@kpi/shared': workspace:*
       '@kpi/validate': workspace:*
       '@types/react': ^18.0.27
-      lodash.clonedeep: ^4.5.0
       typescript: ^4.5.4
     dependencies:
       '@babel/runtime': 7.20.13
       '@kpi/shared': link:../kpi-shared
       '@kpi/validate': link:../kpi-validate
-      lodash.clonedeep: 4.5.0
     devDependencies:
       '@babel/cli': 7.20.7
       '@types/react': 18.0.27

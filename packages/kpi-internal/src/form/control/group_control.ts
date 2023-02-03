@@ -1,5 +1,4 @@
 /* eslint-disable max-classes-per-file,class-methods-use-this */
-import cloneDeep from 'lodash.clonedeep'
 import { MutableRefObject } from 'react'
 import { isEqual, isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '@kpi/shared'
 import BaseControl from './base_control'
@@ -152,20 +151,20 @@ export class FormDependenciesControl {
     return () => cancels.forEach((cancel) => cancel())
   }
 
-  findDependencies = (updateControls: FormFieldControl[]) => {
-    if (!updateControls.length) return [] as FormFieldControl[]
+  findDependencies = (controls: Set<FormFieldControl>) => {
+    if (!controls.size) return controls
     // 只获取 touched 与 dirty 字段
-    const dependentControls = updateControls.reduce((res, control) => {
+    const res = new Set<FormFieldControl>()
+
+    controls.forEach((control) => {
       this._dependencies.get(control._key)?.forEach((field) => {
         if (field.isDirty() || field.isTouched()) res.add(field)
       })
-      return res
-    }, new Set<FormFieldControl>())
+    })
 
-    const nextControls = this.findDependencies([...dependentControls.keys()])
-    nextControls.forEach((control) => dependentControls.add(control))
+    this.findDependencies(res).forEach((control) => res.add(control))
 
-    return [...dependentControls.keys()]
+    return res
   }
 }
 
@@ -224,9 +223,7 @@ export class FormInitialControl<State = any> {
   }
 
   getInitialValue = (name: NamePath) => {
-    const value = getIn(this._initial, toArray(name))
-
-    return cloneDeep(value)
+    return getIn(this._initial, toArray(name))
   }
 
   // 确保设置了字段初始值
@@ -239,12 +236,12 @@ export class FormInitialControl<State = any> {
     if (!isUndefined(this.getFieldValue(namePath))) return [prev, prev]
 
     const topInitial = this.getInitialValue(namePath)
-    const initialValue = isUndefined(topInitial) ? $initialValue : topInitial
+    const initialValue = topInitial ?? $initialValue
+
+    if (isUndefined(initialValue)) return [prev, prev]
 
     const invalid = !isUndefined(topInitial) && !isUndefined($initialValue)
     logger(invalid, "form has initialValues, don't set field initialValue")
-
-    if (isUndefined(initialValue)) return [prev, prev]
 
     return this.setFieldValue(namePath, initialValue)
   }
@@ -433,9 +430,7 @@ export class FormStateControl<State = any> {
   }
 
   getFieldValue = (namePath: NamePath) => {
-    const value = getIn(this._state, toArray(namePath))
-
-    return cloneDeep(value)
+    return getIn(this._state, toArray(namePath))
   }
 
   setFieldsValue = (state: Partial<State>) => {
@@ -590,7 +585,9 @@ export class FormDispatchControl<State = any> {
     if (action.type === 'registerField') {
       const [prev, next] = $initial.ensureInitialized(action.control)
 
-      return this.updateControl(prev, next, action.type)
+      if (prev !== next) this.updateControl(prev, next, action.type)
+
+      return
     }
 
     // 重置字段
@@ -687,14 +684,15 @@ export class FormDispatchControl<State = any> {
 
   // 通知依赖字段
   publishDependentControl = (controls: FormFieldControl[]) => {
-    const dependencies = this.$dependencies.findDependencies(controls)
+    const dependencies = this.$dependencies.findDependencies(new Set(controls))
+    const updateControls = [...dependencies.values()]
 
-    const nameList = dependencies.map(({ _name }) => _name)
+    const nameList = updateControls.map(({ _name }) => _name)
 
     nameList.length && this.validateFields(nameList)
 
     // 尽量更新所有依赖字段
-    return dependencies
+    return updateControls
   }
 
   /** ==================================================== */
@@ -729,7 +727,6 @@ export class FormDispatchControl<State = any> {
     try {
       onFinish(values)
     } catch (error) {
-      // onFinish失败时需要打印失败原因
       // eslint-disable-next-line no-console
       console.error(error)
     }

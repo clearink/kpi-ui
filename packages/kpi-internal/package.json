@@ -27,8 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.20.13",
     "@kpi/shared": "workspace:*",
-    "@kpi/validate": "workspace:*",
-    "lodash.clonedeep": "^4.5.0"
+    "@kpi/validate": "workspace:*"
   },
   "devDependencies": {
     "@babel/cli": "^7.20.7",

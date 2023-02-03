@@ -1,25 +1,17 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { toArray } from '@kpi/shared'
 
+import type { InternalNamePath } from '../internal_props'
 import type { NamePath } from '../props'
 
-// 字段是否被隐式依赖，形如 ['username'] 与 ['username', 'a', 'b']
-// ['username', 'a'] 会影响 ['username']
-// ['username'] 不会影响 ['username', 'a']
-export function isDependent($path: NamePath, $other: NamePath, equal = false) {
-  const path = toArray($path)
-  const other = toArray($other)
+export function isDependent(path: InternalNamePath, other: InternalNamePath) {
   const len = Math.min(path.length, other.length)
-
-  if (len === 0) return false
 
   for (let i = 0; i < len; i += 1) {
     if (path[i] !== other[i]) return false
   }
 
-  if (equal) return path.length === other.length
-
-  return path.length <= other.length
+  return len > 0
 }
 
 const SEPARATOR = '_$_KPI_FORM_CONTROL_$_'

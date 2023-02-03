@@ -38,17 +38,13 @@ function InternalFormField(props: InternalProps) {
   control.current.setFieldProps(props)
 
   // 注册子字段 销毁时移除该字段
-  const registerField = useEvent(() => {
-    return internalHook?.registerField(control.current!)
-  })
+  const registerField = useEvent(() => internalHook?.registerField(control.current!))
   useIsomorphicEffect(registerField, [registerField])
 
   // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
   const key = useDeepMemo(() => _getName(name), [name])
   const memorized = useDeepMemo(() => dependencies, [dependencies])
-  const subscribe = useEvent(() => {
-    return internalHook?.registerSubscribe(control.current!)
-  })
+  const subscribe = useEvent(() => internalHook?.registerSubscribe(control.current!))
   useIsomorphicEffect(subscribe, [subscribe, memorized, key])
 
   // 数据注入
