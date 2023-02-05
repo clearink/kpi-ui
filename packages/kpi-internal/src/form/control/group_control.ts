@@ -1,6 +1,7 @@
 /* eslint-disable max-classes-per-file,class-methods-use-this */
 import { MutableRefObject } from 'react'
 import { isEqual, isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '@kpi/shared'
+import BaseControl from './base_control'
 import { _getName } from '../utils/path'
 import { setIn, getIn, deleteIn, mergeValue, cloneWithPath } from '../utils/value'
 import { InvalidField } from './field_control'
@@ -104,15 +105,8 @@ export default class FormGroupControl<State = any> {
 /** ==================================================== */
 /** 负责 formProps                                       */
 /** ==================================================== */
-export class FormPropsControl {
-  public forceUpdate = () => {}
-
+export class FormPropsControl extends BaseControl {
   private _props: Partial<FormProps> = {}
-
-  constructor(_forceUpdate: () => void, mounted: MutableRefObject<boolean>) {
-    // 必须在组件挂载时调用
-    this.forceUpdate = () => (mounted.current ? _forceUpdate() : undefined)
-  }
 
   get props() {
     return this._props

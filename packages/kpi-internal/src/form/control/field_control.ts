@@ -3,6 +3,7 @@
 import { isEqual, isFunction, isNullish, isUndefined } from '@kpi/shared'
 import type { MutableRefObject } from 'react'
 import type { Options, SchemaIssue } from '@kpi/validate/types/interface'
+import BaseControl from './base_control'
 import { getIn } from '../utils/value'
 import { _getName } from '../utils/path'
 
@@ -14,9 +15,7 @@ import type {
   InternalNamePath,
 } from '../internal_props'
 
-export default class FormFieldControl {
-  public forceUpdate = () => {}
-
+export default class FormFieldControl extends BaseControl {
   public _key: string = ''
 
   public _name: InternalNamePath = []
@@ -26,7 +25,7 @@ export default class FormFieldControl {
     private _resetField: () => void,
     private mounted: MutableRefObject<boolean>
   ) {
-    this.forceUpdate = () => (mounted.current ? _forceUpdate() : undefined)
+    super(_forceUpdate, mounted)
   }
 
   public shouldUpdate = (prev: any, next: any, type: ActionType) => {

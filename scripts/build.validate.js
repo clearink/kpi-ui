@@ -28,6 +28,14 @@ const esm = {
     '@babel/preset-typescript',
   ],
   plugins: ['@babel/plugin-transform-runtime'],
+  assumptions: {
+    constantReexports: true,
+    ignoreFunctionLength: true,
+    setSpreadProperties: true,
+    constantSuper: true,
+    skipForOfIteratorClosing: true,
+    superIsCallableConstructor: true,
+  },
 }
 const cjs = {
   comments: false,
@@ -44,6 +52,14 @@ const cjs = {
     '@babel/preset-typescript',
   ],
   plugins: ['@babel/plugin-transform-runtime'],
+  assumptions: {
+    constantReexports: true,
+    ignoreFunctionLength: true,
+    setSpreadProperties: true,
+    constantSuper: true,
+    skipForOfIteratorClosing: true,
+    superIsCallableConstructor: true,
+  },
 }
 
 const list = glob.sync('./src/**/*.ts{,x}', {
