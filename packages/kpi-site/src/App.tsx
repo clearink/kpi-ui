@@ -18,24 +18,29 @@
 // }
 import { Button, Form } from '@kpi/ui'
 import kv from '@kpi/validate'
-import { Profiler } from 'react'
+import { Profiler, useEffect, useLayoutEffect } from 'react'
 
 function Input(props: any) {
   return <input {...props} value={props.value || ''} />
 }
 
 export default function App() {
+  const start = performance.now()
+  useLayoutEffect(() => {
+    const end = performance.now()
+    console.log('diff:ms', end - start, start)
+  }, [start])
   return (
     <div>
+      {/* <Profiler id="username" onRender={(...args) => console.log(...args)}> */}
       <Form>
-        {/* <Profiler id="username" onRender={(...args) => console.log(...args)}> */}
-        {Array.from({ length: 3000 }, (_, i) => (
+        {Array.from({ length: 6000 }, (_, i) => (
           <Form.Item noStyle name={['username', i]} key={i}>
             <Input placeholder="a" />
           </Form.Item>
         ))}
-        {/* </Profiler> */}
       </Form>
+      {/* </Profiler> */}
     </div>
   )
 }

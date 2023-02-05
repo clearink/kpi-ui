@@ -7,7 +7,9 @@ import type { FormInstance } from '../props'
 export default function useForm<State = any>(form?: FormInstance<State>) {
   const ref = useRef<FormInstance<State>>()
   const mounted = useMounted()
-  const [, forceUpdate] = useReducer(() => ({}), {})
+
+  // 强制更新视图
+  const [, forceUpdate] = useReducer((count) => count + 1, 0)
 
   if (isUndefined(ref.current)) {
     if (form) ref.current = form
