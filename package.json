@@ -8,7 +8,12 @@
   "author": "clearink",
   "license": "ISC",
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.jsx,.tsx ./packages/kpi-validate/src"
+    "lint": "eslint --ext .js,.ts,.jsx,.tsx ./packages/kpi-validate/src",
+    "build:shared": "cd ./packages/kpi-shared && yarn run build",
+    "build:validate": "cd ./packages/kpi-validate && yarn run build",
+    "build:internal": "cd ./packages/kpi-internal && yarn run build",
+    "build:ui": "cd ./packages/kpi-ui && yarn run build",
+    "build": "yarn run build:shared && yarn run build:validate && yarn run build:internal && yarn run build:ui"
   },
   "devDependencies": {
     "@babel/cli": "^7.20.7",
