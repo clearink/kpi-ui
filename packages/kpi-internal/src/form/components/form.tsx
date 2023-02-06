@@ -2,7 +2,6 @@ import {
   type FormEvent,
   ForwardedRef,
   forwardRef,
-  Fragment,
   useImperativeHandle,
   useMemo,
   Ref,
@@ -84,15 +83,9 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     onReset?.(e)
   })
 
-  const Root: any = as === null ? Fragment : as ?? 'form'
-
   const fieldContext = useMemo(() => {
     return { ...formInstance, validateTrigger, formName: name }
   }, [formInstance, validateTrigger, name])
-
-  const children = isFunction($children)
-    ? $children(formInstance.getFieldsValue(true), formInstance)
-    : $children
 
   // 同步 fields 字段
   const prevFields = useRef<FormProps['fields']>()
@@ -105,10 +98,22 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     prevFields.current = next
   }, [internalHook, props.fields])
 
+  const children = (
+    <FieldContext.Provider value={fieldContext}>
+      {isFunction($children)
+        ? $children(formInstance.getFieldsValue(true), formInstance)
+        : $children}
+    </FieldContext.Provider>
+  )
+
+  if (as === null) return children
+
+  const Component: any = as ?? 'form'
+
   return (
-    <Root {...formProps} onSubmit={handleSubmit} onReset={handleReset}>
-      <FieldContext.Provider value={fieldContext}>{children}</FieldContext.Provider>
-    </Root>
+    <Component {...formProps} onSubmit={handleSubmit} onReset={handleReset}>
+      {children}
+    </Component>
   )
 }
 
