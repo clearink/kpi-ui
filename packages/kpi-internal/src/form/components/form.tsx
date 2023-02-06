@@ -90,10 +90,9 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     return { ...formInstance, validateTrigger, formName: name }
   }, [formInstance, validateTrigger, name])
 
-  const children = useMemo(() => {
-    if (!isFunction($children)) return $children
-    return $children(formInstance.getFieldsValue(true), formInstance)
-  }, [$children, formInstance])
+  const children = isFunction($children)
+    ? $children(formInstance.getFieldsValue(true), formInstance)
+    : $children
 
   // 同步 fields 字段
   const prevFields = useRef<FormProps['fields']>()
