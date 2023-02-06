@@ -1,10 +1,9 @@
-import { useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import { useDeepMemo, useEvent, isArray, isFunction, logger, rawType, toArray } from '@kpi/shared'
-
 import Field from './form_field'
+import { useFormArrayControl } from '../hooks/use_form'
 import { FieldContext } from '../../context'
 import { getIn } from '../utils/value'
-import { FormArrayControl } from '../control'
 
 import type { FieldData, FormListProps, ListField } from '../props'
 import type { UpdateFieldActionType as ActionType } from '../internal_props'
@@ -22,10 +21,9 @@ export default function FormList(props: FormListProps) {
     return { ...formInstance, parentNamePath: listPath }
   }, [formInstance, listPath])
 
-  const control = useRef<FormArrayControl>()
-  if (!control.current) control.current = new FormArrayControl()
+  const control = useFormArrayControl()
 
-  control.current.setFormInstance(formInstance, listPath, rule)
+  control.setFormInstance(formInstance, listPath, rule)
 
   const shouldUpdate = useEvent((prev: any, next: any, type: ActionType) => {
     const path = toArray(name)
@@ -39,7 +37,7 @@ export default function FormList(props: FormListProps) {
     return prevList !== nextList
   })
 
-  const helpers = useMemo(() => control.current!._getFeatures(), [])
+  const helpers = useMemo(() => control._getFeatures(), [control])
 
   if (!isFunction(children)) {
     logger(true, 'Form.List only accepts function as children.')
@@ -63,7 +61,7 @@ export default function FormList(props: FormListProps) {
 
           const listValue: ListField[] = value.map((__, index) => {
             return {
-              key: control.current!.ensureFieldKey(index),
+              key: control.ensureFieldKey(index),
               name: index,
               isListField: true,
             }
