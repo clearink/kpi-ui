@@ -52,7 +52,7 @@ export function useFormItemClass(
 export default function useFormItemLabelClass(
   mergedProps: FormItemLabelProps & FormContextState & FormItemLabelExtraProps
 ) {
-  const { prefixCls, vertical, required, colon, labelAlign, labelCol, requiredMark } = mergedProps
+  const { prefixCls, layout, required, colon, labelAlign, labelCol, requiredMark } = mergedProps
 
   const baseClassName = `${prefixCls}__label`
 
@@ -65,7 +65,7 @@ export default function useFormItemLabelClass(
   const labelCls = cls({
     [`${baseClassName}--required`]: required,
     [`${baseClassName}--required-optional`]: requiredMark === 'optional',
-    [`${baseClassName}--has-colon`]: colon && !vertical,
+    [`${baseClassName}--has-colon`]: colon && layout !== 'vertical',
   })
 
   return [colCls, labelCls] as const

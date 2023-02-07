@@ -2,10 +2,16 @@ import { ctxHelper } from '@kpi/internal'
 
 import type { FieldMeta } from '@kpi/internal/types/form/internal_props'
 import type { ColProps } from '../../col/props'
-import type { FormInstance, FormLabelAlign, RequiredMark, ValidateStatus } from '../../form/props'
+import type {
+  FormInstance,
+  FormLabelAlign,
+  FormLayout,
+  RequiredMark,
+  ValidateStatus,
+} from '../../form/props'
 
 export interface FormContextState {
-  vertical: boolean
+  layout?: FormLayout
   formName?: string
   colon?: boolean
   labelAlign?: FormLabelAlign
@@ -17,7 +23,7 @@ export interface FormContextState {
 }
 
 export const FormContext = ctxHelper<FormContextState>({
-  vertical: false,
+  layout: 'horizontal',
   labelAlign: 'right',
 })
 

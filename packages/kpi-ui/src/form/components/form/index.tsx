@@ -54,7 +54,7 @@ function Form(props: FormProps, ref: ForwardedRef<FormInstance>) {
       colon,
       requiredMark,
       form: formInstance,
-      vertical: layout === 'vertical',
+      layout,
     }
   }, [name, labelAlign, labelWrap, labelCol, wrapperCol, colon, requiredMark, formInstance, layout])
 

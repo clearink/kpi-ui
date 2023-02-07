@@ -33,7 +33,7 @@ export default function App() {
   return (
     <div>
       <Form as="div">
-        {Array.from({ length: 3000 }, (_, i) => (
+        {Array.from({ length: 1000 }, (_, i) => (
           <Form.Item noStyle name={['username', i]} key={i}>
             <Input placeholder={`username-${i}`} />
           </Form.Item>
