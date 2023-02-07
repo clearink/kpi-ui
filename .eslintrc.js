@@ -37,6 +37,14 @@ module.exports = {
     'react/jsx-props-no-spreading': 'off',
     'react/destructuring-assignment': 'off',
 
+    // react-hooks
+    'react-hooks/exhaustive-deps': [
+      'error',
+      {
+        additionalHooks: 'useIsomorphicEffect',
+      },
+    ],
+
     // import
     'import/extensions': 'off',
 

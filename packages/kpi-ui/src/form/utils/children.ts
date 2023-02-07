@@ -14,8 +14,8 @@ import isInvalidUsage from './usage'
 export function normalizeLabelChildren(
   mergedProps: FormItemLabelProps & FormItemLabelExtraProps & FormContextState
 ) {
-  const { colon, label, requiredMark, required, tooltip, vertical } = mergedProps
-  const hasColon = !vertical && colon
+  const { colon, label, requiredMark, required, tooltip, layout } = mergedProps
+  const hasColon = layout !== 'vertical' && colon
 
   let labelNode = label
 
