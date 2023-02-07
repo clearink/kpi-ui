@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 // /* eslint-disable import/no-extraneous-dependencies */
 // import { HashRouter as Router, Routes } from 'react-router-dom'
 
@@ -16,9 +17,8 @@
 //     </Router>
 //   )
 // }
-import { Button, Form } from '@kpi/ui'
-import kv from '@kpi/validate'
-import { Profiler, useEffect, useLayoutEffect } from 'react'
+import { Form } from '@kpi/ui'
+import { useEffect } from 'react'
 
 function Input(props: any) {
   return <input {...props} value={props.value || ''} />
@@ -26,21 +26,19 @@ function Input(props: any) {
 
 export default function App() {
   const start = performance.now()
-  useLayoutEffect(() => {
+  useEffect(() => {
     const end = performance.now()
-    console.log('diff:ms', end - start, start)
+    console.log('diff:ms', end - start)
   }, [start])
   return (
     <div>
-      {/* <Profiler id="username" onRender={(...args) => console.log(...args)}> */}
-      <Form>
-        {Array.from({ length: 6000 }, (_, i) => (
+      <Form as="div">
+        {Array.from({ length: 3000 }, (_, i) => (
           <Form.Item noStyle name={['username', i]} key={i}>
-            <Input placeholder="a" />
+            <Input placeholder={`username-${i}`} />
           </Form.Item>
         ))}
       </Form>
-      {/* </Profiler> */}
     </div>
   )
 }

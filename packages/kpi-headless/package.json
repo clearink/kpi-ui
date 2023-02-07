@@ -1,0 +1,19 @@
+{
+  "name": "@kpi/headless",
+  "version": "0.0.0",
+  "description": "kpi-ui headless components",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "types": "types/index.d.ts",
+  "unpkg": "dist/index.min.js",
+  "keywords": [
+    "kpi-ui",
+    "headless",
+    "components"
+  ],
+  "author": "clearink",
+  "license": "ISC",
+  "dependencies": {
+    "@kpi/shared": "workspace:^0.0.0"
+  }
+}
