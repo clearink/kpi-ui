@@ -559,8 +559,8 @@ export class FormDispatchControl<State = any> {
       this.triggerOnValuesChange(cloneWithPath(next, action.name))
       // 触发回调
       const nameList = [action.name, ...dependencies.map(({ _name }) => _name)]
-      this.triggerOnFieldsChange(nameList)
-      return
+
+      return this.triggerOnFieldsChange(nameList)
     }
 
     // 调用 setFieldValue, setFields 方法
@@ -585,9 +585,9 @@ export class FormDispatchControl<State = any> {
     if (action.type === 'registerField') {
       const [prev, next] = $initial.ensureInitialized(action.control)
 
-      if (prev !== next) this.updateControl(prev, next, action.type)
+      if (prev === next) return
 
-      return
+      return this.updateControl(prev, next, action.type)
     }
 
     // 重置字段
