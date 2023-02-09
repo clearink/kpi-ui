@@ -417,9 +417,10 @@ export class FormStateControl<State = any> {
     const prev = this._state
 
     for (let i = 0; i < fields.length; i += 1) {
-      const { name, value } = fields[i]
+      if (!hasOwn(fields[i], 'value')) continue
 
-      if (hasOwn(fields[i], 'value')) this.setFieldValue(name, value)
+      const { name, value } = fields[i]
+      this.setFieldValue(name, value)
     }
 
     return [prev, this._state] as const
