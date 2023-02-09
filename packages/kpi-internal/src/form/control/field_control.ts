@@ -90,19 +90,17 @@ export default class FormFieldControl extends BaseControl {
     }
   }
 
-  public getInitialValue() {
-    if (!this._parent) return undefined
-
-    return this._parent.getInitialValue(this._name)
-  }
-
   // 字段是否改变过
   public isDirty = () => {
     if (this._dirty || !isUndefined(this._props.initialValue)) {
       return true
     }
 
-    return !isUndefined(this.getInitialValue())
+    if (!this._parent) return false
+
+    const initValue = this._parent.getInitialValue(this._name)
+
+    return !isUndefined(initValue)
   }
 
   // 字段是否 touch 过

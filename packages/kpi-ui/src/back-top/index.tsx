@@ -11,4 +11,4 @@ function BackTop(props: BackTopProps) {
 export default withDefaultProps(BackTop, {
   duration: 200,
   threshold: 400,
-})
+} as const)

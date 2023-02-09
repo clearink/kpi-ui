@@ -14,6 +14,7 @@ import type {
   WatchCallBack,
   InternalFormInstance,
   InternalHookReturn,
+  InternalNamePath,
   UpdateFieldAction as Action,
   UpdateFieldActionType as ActionType,
 } from '../internal_props'
@@ -112,12 +113,12 @@ export class FormPropsControl extends BaseControl {
     return this._props
   }
 
-  setFormProps = (props: Partial<FormProps>) => {
-    this._props = props
-  }
-
   get useRenderProps() {
     return isFunction(this._props.children)
+  }
+
+  setFormProps = (props: Partial<FormProps>) => {
+    this._props = props
   }
 }
 
@@ -172,10 +173,10 @@ export class FormDependenciesControl {
 /** 负责监听事件                                           */
 /** ==================================================== */
 export class FormWatchValueControl<State = any> {
-  private _watchList: { namePath: NamePath; callback: WatchCallBack }[] = []
+  private _watchList: { path: InternalNamePath; callback: WatchCallBack }[] = []
 
-  registerWatch = (namePath: NamePath, callback: WatchCallBack) => {
-    this._watchList.push({ namePath, callback })
+  registerWatch = (name: NamePath, callback: WatchCallBack) => {
+    this._watchList.push({ path: toArray(name), callback })
 
     return () => {
       this._watchList = this._watchList.filter(({ callback: fn }) => fn !== callback)
@@ -184,8 +185,7 @@ export class FormWatchValueControl<State = any> {
 
   // 通知监听字段
   publishWatch = (prev: State, next: State) => {
-    this._watchList.forEach(({ callback, namePath }) => {
-      const path = toArray(namePath)
+    this._watchList.forEach(({ callback, path }) => {
       const prevValue = getIn(prev, path)
       const nextValue = getIn(next, path)
       // 前后两次值不等就执行回调函数, 深比较
@@ -200,6 +200,8 @@ export class FormWatchValueControl<State = any> {
 export class FormInitialControl<State = any> {
   private _initial = {} as Partial<State>
 
+  constructor(private $inject: { $state: FormStateControl<State> }) {}
+
   private get $state() {
     return this.$inject.$state
   }
@@ -212,11 +214,9 @@ export class FormInitialControl<State = any> {
     return this.$state.setFieldValue(namePath, value)
   }
 
-  private deleteFieldValue = (namePath: NamePath) => {
+  private deleteFieldValue = (namePath?: NamePath) => {
     return this.$state.deleteFieldValue(namePath)
   }
-
-  constructor(private $inject: { $state: FormStateControl<State> }) {}
 
   setInitialValues = (initial?: Partial<State>) => {
     this._initial = initial || {}
@@ -248,15 +248,12 @@ export class FormInitialControl<State = any> {
 
   // 初始化表单数据
   initialFieldsValue = (nameList?: NamePath[]) => {
+    // 不传nameList则清空state
+    if (!nameList) return this.deleteFieldValue()
+
     const prev = this.$state.state
 
-    // 不传nameList则清空state
-    if (!nameList) return this.deleteFieldValue([])
-
-    nameList.forEach((name) => {
-      const path = toArray(name)
-      path.length && this.deleteFieldValue(path)
-    })
+    nameList.forEach((name) => this.deleteFieldValue(name))
 
     return [prev, this.$state.state] as const
   }
@@ -268,11 +265,11 @@ export class FormInitialControl<State = any> {
 export class FormControlsControl {
   private _controls = new Set<FormFieldControl>()
 
+  constructor(private $inject: { $props: FormPropsControl }) {}
+
   private get $props() {
     return this.$inject.$props
   }
-
-  constructor(private $inject: { $props: FormPropsControl }) {}
 
   // 获取字段,根据参数判断是否需要去除没有name的字段
   getControls = (pure = false) => {
@@ -309,7 +306,6 @@ export class FormControlsControl {
 
   // 获取校验字段
   getValidateControls = (nameList?: NamePath[]) => {
-    // TODO: 可以选择递归模式 (isDependent)
     return this.getControlsByName(true, nameList).filter((control) => !!control._props.rule)
   }
 
@@ -395,6 +391,8 @@ export class FormControlsControl {
 export class FormStateControl<State = any> {
   private _state = {} as State
 
+  constructor(private $inject: { $controls: FormControlsControl }) {}
+
   get state() {
     return this._state
   }
@@ -402,8 +400,6 @@ export class FormStateControl<State = any> {
   private get $controls() {
     return this.$inject.$controls
   }
-
-  constructor(private $inject: { $controls: FormControlsControl }) {}
 
   setFieldValue = (namePath: NamePath, value: any) => {
     const prev = this._state
@@ -469,13 +465,11 @@ export class FormStateControl<State = any> {
     })
   }
 
-  deleteFieldValue = (namePath: NamePath) => {
+  deleteFieldValue = (namePath?: NamePath) => {
     const prev = this._state
-    const path = toArray(namePath)
 
-    // 路径为空代表删除整个对象，得到 undefined，故此处重置为空对象
-    if (path.length === 0) this._state = {} as State
-    else this._state = deleteIn(this._state, path)
+    if (!namePath) this._state = {} as State
+    else this._state = deleteIn(this._state, toArray(namePath))
 
     return [prev, this._state] as const
   }
@@ -593,16 +587,15 @@ export class FormDispatchControl<State = any> {
     // 重置字段
     if (action.type === 'resetFields') {
       // 重置表单数据
-      const [prev, init] = $initial.initialFieldsValue(action.nameList)
+      const prev = $initial.initialFieldsValue(action.nameList)[0]
+
       const controls = $controls.getControlsByName(true, action.nameList)
-
       // 设置字段初始值
-      const next = controls.reduce((_, control) => $initial.ensureInitialized(control)[1], init)
-
+      controls.forEach((control) => $initial.ensureInitialized(control))
       // 重挂载组件以消除副作用
       controls.forEach((control) => control.resetField())
 
-      return this.updateControl(prev, next, action.type)
+      return this.updateControl(prev, $state.state, action.type)
     }
 
     logger(true, 'invalid action type')

@@ -8,4 +8,4 @@ function Breadcrumb() {
   return <div className={className}>breadcrumb</div>
 }
 
-export default withDefaultProps(Breadcrumb, {})
+export default withDefaultProps(Breadcrumb, {} as const)

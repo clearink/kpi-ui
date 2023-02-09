@@ -20,8 +20,8 @@ function internalSetIn<V = any>(source: V, paths: InternalNamePath, value: any):
 }
 
 export function setIn<V = any>(source: V, paths: InternalNamePath, value: any): V {
-  // 源数据不是对象
   if (!isObject(source)) return source
+
   return internalSetIn(source, paths, value)
 }
 
@@ -37,13 +37,10 @@ export function getIn<V = any>(values: V, paths: InternalNamePath): any {
 function internalDeleteIn<V = any>(source: V, paths: InternalNamePath): V {
   if (paths.length === 0) return source
 
-  // 帝国进行下一层
   const [attr, ...rest] = paths
 
-  // source 不存在该属性, 不继续操作
   if (!hasOwn(source, attr)) return source
 
-  // 需要删除了
   if (rest.length === 0) delete source[attr]
   else internalDeleteIn(source[attr], rest)
 
@@ -59,26 +56,24 @@ export function deleteIn<V = any>(source: V, paths: InternalNamePath): any {
 }
 
 // 合并对象
-function internalMerge(target: any, source: any) {
-  const targetType = rawType(target)
-  const sourceType = rawType(source)
+function internalMerge(target: any, source: any, map = new WeakMap()) {
+  if (rawType(target) !== rawType(source)) return source
 
-  if (targetType !== sourceType) return source
-
-  // 为基本类型
   if (!isObjectLike(target)) return source
+
+  if (map.has(source)) return map.get(source)
+
+  map.set(source, source)
 
   // 数组直接覆盖
   if (isArray(target)) return source
 
-  // 对象才需要合并
   if (isObject(target)) {
-    const init = { ...target }
-    return Object.entries(source).reduce((res, [key, value]) => {
-      res[key] = internalMerge(res[key], value)
-
-      return res
-    }, init)
+    const result = { ...target }
+    for (const [key, value] of Object.entries(source)) {
+      result[key] = internalMerge(result[key], value, map)
+    }
+    return result
   }
   // 其他非基础类型数据
   return target
@@ -88,14 +83,14 @@ function internalMerge(target: any, source: any) {
 export function mergeValue<V = any>(target: V, ...sources: any[]): V {
   const init = isArray(target) ? target.slice() : { ...target }
 
-  return sources.reduce(internalMerge, init)
+  return sources.reduce((result, current) => internalMerge(result, current), init)
 }
 
 // 仅复制路径下的值
 export function cloneWithPath<V>(source: V, paths: InternalNamePath) {
   if (!isObjectLike(source) || !paths.length) return source
-  const [path, ...rest] = paths
 
+  const [path, ...rest] = paths
   const init = isArray(source) ? [] : {}
   init[path] = cloneWithPath(source[path], rest)
 
