@@ -288,19 +288,19 @@ export class FormControlsControl {
     const controls = this.getControls(true)
     if (!nameList) return controls
 
-    return nameList.reduce((res, path) => {
+    return nameList.reduce((result, path) => {
       const key = _getName(path)
 
       // 未注册
       if (!controls.find((control) => control._key === key)) {
-        if (!removeInvalid) res.push(new InvalidField(toArray(path)))
-        return res
+        if (!removeInvalid) result.push(new InvalidField(toArray(path)))
+        return result
       }
 
       const targets = controls.filter((control) => control._key === key)
-      for (let i = 0; i < targets.length; i += 1) res.push(targets[i])
+      targets.forEach((control) => result.push(control))
 
-      return res
+      return result
     }, [] as any[])
   }
 
@@ -416,12 +416,11 @@ export class FormStateControl<State = any> {
   setFieldsData = (fields: FieldData[]) => {
     const prev = this._state
 
-    for (let i = 0; i < fields.length; i += 1) {
-      if (!hasOwn(fields[i], 'value')) continue
+    fields.forEach((field) => {
+      if (!hasOwn(field, 'value')) return
 
-      const { name, value } = fields[i]
-      this.setFieldValue(name, value)
-    }
+      this.setFieldValue(field.name, field.value)
+    })
 
     return [prev, this._state] as const
   }

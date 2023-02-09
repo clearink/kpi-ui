@@ -3,3 +3,4 @@ node_modules
 packages/**/dist
 packages/**/lib
 packages/**/esm
+packages/**/types
