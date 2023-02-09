@@ -353,11 +353,9 @@ export class FormControlsControl {
         const { name } = control
         return { name, errors: [], warnings: [] }
       }
-      return {
-        name: control._name,
-        errors: control._errors,
-        warnings: [],
-      }
+
+      const { _name: name, _errors: errors } = control
+      return { name, errors, warnings: [] }
     })
   }
 
