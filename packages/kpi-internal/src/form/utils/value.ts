@@ -61,22 +61,23 @@ function internalMerge(target: any, source: any, map = new WeakMap()) {
 
   if (!isObjectLike(target)) return source
 
-  if (map.has(source)) return map.get(source)
-
-  map.set(source, source)
+  if (map.has(target)) return map.get(target)
 
   // 数组直接覆盖
   if (isArray(target)) return source
 
-  if (isObject(target)) {
-    const result = { ...target }
-    for (const [key, value] of Object.entries(source)) {
-      result[key] = internalMerge(result[key], value, map)
-    }
-    return result
-  }
   // 其他非基础类型数据
-  return target
+  if (!isObject(target)) return target
+
+  const init = { ...target }
+
+  map.set(target, init)
+
+  return Object.entries(source).reduce((result, [key, value]) => {
+    result[key] = internalMerge(result[key], value, map)
+
+    return result
+  }, init)
 }
 
 // 合并数据
