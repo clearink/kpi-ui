@@ -415,9 +415,7 @@ export class FormStateControl<State = any> {
     const prev = this._state
 
     fields.forEach((field) => {
-      if (!hasOwn(field, 'value')) return
-
-      this.setFieldValue(field.name, field.value)
+      hasOwn(field, 'value') && this.setFieldValue(field.name, field.value)
     })
 
     return [prev, this._state] as const
