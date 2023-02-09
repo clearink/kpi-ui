@@ -266,7 +266,7 @@ export class FormInitialControl<State = any> {
 /** 负责表单字段                                           */
 /** ==================================================== */
 export class FormControlsControl {
-  public _controls = new Set<FormFieldControl>()
+  private _controls = new Set<FormFieldControl>()
 
   private get $props() {
     return this.$inject.$props
@@ -535,10 +535,10 @@ export class FormDispatchControl<State = any> {
     // 校验依赖字段
     const dependencies = this.publishDependentControl(controls)
 
-    if (!this.$props.useRenderProps) {
-      const updateControls = new Set(controls.concat(dependencies))
-      updateControls.forEach((control) => control.forceUpdate())
-    } else this.$props.forceUpdate()
+    const updateControls = new Set(controls.concat(dependencies))
+
+    if (this.$props.useRenderProps) this.$props.forceUpdate()
+    else updateControls.forEach((control) => control.forceUpdate())
 
     // 通知监听事件
     this.$watch.publishWatch(prev, next)
