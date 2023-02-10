@@ -154,16 +154,17 @@ export class FormDependenciesControl {
 
   findDependencies = (controls: Set<FormFieldControl>) => {
     if (!controls.size) return controls
-    // 只获取 touched 与 dirty 字段
+
     const res = new Set<FormFieldControl>()
 
     controls.forEach((control) => {
       this._dependencies.get(control._key)?.forEach((field) => {
+        // 只获取 touched 与 dirty 字段
         if (field.isDirty() || field.isTouched()) res.add(field)
       })
     })
 
-    this.findDependencies(res).forEach((control) => res.add(control))
+    if (res.size) this.findDependencies(res).forEach(res.add)
 
     return res
   }
@@ -253,7 +254,7 @@ export class FormInitialControl<State = any> {
 
     const prev = this.$state.state
 
-    nameList.forEach((name) => this.deleteFieldValue(name))
+    nameList.forEach(this.deleteFieldValue)
 
     return [prev, this.$state.state] as const
   }
@@ -297,8 +298,7 @@ export class FormControlsControl {
         return result
       }
 
-      const targets = controls.filter((control) => control._key === key)
-      targets.forEach((control) => result.push(control))
+      controls.forEach((control) => control._key === key && result.push(control))
 
       return result
     }, [] as any[])
@@ -403,10 +403,10 @@ export class FormStateControl<State = any> {
     const prev = this._state
     const path = toArray(namePath)
 
-    // namePath 不合法
     if (!path.length) return [prev, prev] as const
 
     this._state = setIn(this._state, path, value)
+
     return [prev, this._state] as const
   }
 
@@ -547,7 +547,7 @@ export class FormDispatchControl<State = any> {
       const [, dependencies] = this.updateControl(prev, next, action.type)
       // 触发回调
       this.triggerOnValuesChange(cloneWithPath(next, action.name))
-      // 触发回调
+
       const nameList = [action.name, ...dependencies.map(({ _name }) => _name)]
 
       return this.triggerOnFieldsChange(nameList)
