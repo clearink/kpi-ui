@@ -414,9 +414,7 @@ export class FormStateControl<State = any> {
   setFieldsData = (fields: FieldData[]) => {
     const prev = this._state
 
-    fields.forEach((field) => {
-      hasOwn(field, 'value') && this.setFieldValue(field.name, field.value)
-    })
+    fields.forEach((field) => hasOwn(field, 'value') && this.setFieldValue(field.name, field.value))
 
     return [prev, this._state] as const
   }
@@ -544,7 +542,7 @@ export class FormDispatchControl<State = any> {
     if (action.type === 'fieldEvent') {
       const [prev, next] = $state.setFieldValue(action.name, action.value)
       // 更新字段
-      const [, dependencies] = this.updateControl(prev, next, action.type)
+      const dependencies = this.updateControl(prev, next, action.type)[1]
       // 触发回调
       this.triggerOnValuesChange(cloneWithPath(next, action.name))
 
@@ -587,7 +585,7 @@ export class FormDispatchControl<State = any> {
 
       const controls = $controls.getControlsByName(true, action.nameList)
       // 设置字段初始值
-      controls.forEach((control) => $initial.ensureInitialized(control))
+      controls.forEach($initial.ensureInitialized)
       // 重挂载组件以消除副作用
       controls.forEach((control) => control.resetField())
 
