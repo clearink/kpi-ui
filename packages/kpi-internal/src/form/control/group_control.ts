@@ -520,10 +520,10 @@ export class FormDispatchControl<State = any> {
   updateControl = (prev: State, next: State, action: Action) => {
     // 获取需要更新的 control
     const controls = this.$controls.getControls().filter((control) => {
-      if (action.type === 'registerField') {
-        return control !== action.control && control._key === action.control._key
+      if (action.type !== 'registerField') {
+        return control.shouldUpdate(prev, next, action.type)
       }
-      return control.shouldUpdate(prev, next, action.type)
+      return control !== action.control && control._key === action.control._key
     })
 
     // 校验依赖字段
