@@ -118,7 +118,7 @@ export class FormPropsControl extends BaseControl {
   }
 
   setFormProps = (props: Partial<FormProps>) => {
-    this._props = props
+    this._props = { ...props }
   }
 }
 

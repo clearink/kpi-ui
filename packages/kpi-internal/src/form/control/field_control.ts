@@ -1,5 +1,4 @@
 /* eslint-disable max-classes-per-file, class-methods-use-this */
-
 import { isEqual, isFunction, isNullish, isUndefined } from '@kpi/shared'
 import type { MutableRefObject } from 'react'
 import type { Options, SchemaIssue } from '@kpi/validate/types/interface'
@@ -42,7 +41,7 @@ export default class FormFieldControl extends BaseControl {
   public _props: Partial<InternalFormFieldProps> = {}
 
   public setFieldProps = (props: Partial<InternalFormFieldProps>) => {
-    this._props = props
+    this._props = { ...props }
     this._key = _getName(props.name!)
     this._name = props.name ?? []
   }

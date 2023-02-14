@@ -17,9 +17,9 @@ export function isDependent(path: InternalNamePath, other: InternalNamePath) {
 const SEPARATOR = '_$_KPI_FORM_CONTROL_$_'
 // 获取名称字符串
 export function _getName(namePath: NamePath) {
-  const paths = toArray(namePath)
-
-  return paths.map((item) => `${typeof item}:${item}`).join(SEPARATOR)
+  return toArray(namePath).reduce<string>((result, item, index) => {
+    return `${result}${index > 0 ? SEPARATOR : ''}${typeof item}:${item}`
+  }, '')
 }
 
 export function isValidIndex(array: any[], ...positions: number[]) {
