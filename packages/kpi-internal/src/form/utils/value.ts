@@ -27,7 +27,7 @@ export function setIn<V = any>(source: V, paths: InternalNamePath, value: any): 
 
 export function getIn<V = any>(values: V, paths: InternalNamePath): any {
   for (let i = 0; i < paths.length; i += 1) {
-    if (isNullish(values)) return undefined
+    if (isNullish(values)) return values
     values = values[paths[i]]
   }
   // 空路径也返回 undefined
