@@ -1,5 +1,12 @@
 import { Fragment, useMemo } from 'react'
-import { useDeepMemo, useEvent, useIsomorphicEffect, isUndefined, toArray } from '@kpi/shared'
+import {
+  useDeepMemo,
+  useEvent,
+  useIsomorphicEffect,
+  isUndefined,
+  toArray,
+  useConstructor,
+} from '@kpi/shared'
 import { HOOK_MARK } from '../control'
 import useInjectField from '../hooks/use_inject_field'
 import { useFormFieldControl } from '../hooks/use_form'
@@ -21,6 +28,9 @@ function InternalFormField(props: InternalProps) {
 
   // 同步props性到 fieldControl
   control.setFieldProps(props)
+
+  // 设置初始值,减少一次 re-render
+  useConstructor(() => internalHook?.ensureInitialized(control))
 
   // 注册子字段 销毁时移除该字段
   const registerField = useEvent(() => internalHook?.registerField(control))

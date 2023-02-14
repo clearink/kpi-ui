@@ -9,7 +9,7 @@ import type { FieldData, FormListProps, ListField } from '../props'
 import type { UpdateFieldActionType as ActionType } from '../internal_props'
 
 export default function FormList(props: FormListProps) {
-  const { name, rule, initialValue, preserve = false, children } = props
+  const { name, rule, initialValue, preserve, children } = props
 
   const formInstance = FieldContext.useState()
 

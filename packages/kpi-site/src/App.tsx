@@ -1,24 +1,5 @@
-/* eslint-disable react/jsx-no-useless-fragment */
-// /* eslint-disable import/no-extraneous-dependencies */
-// import { HashRouter as Router, Routes } from 'react-router-dom'
-
-// import routes from './routes'
-// import { useRenderRoutes } from './hooks'
-// import './style.scss'
-
-// import '../../src/style'
-
-// export default function App() {
-//   const elements = useRenderRoutes(routes)
-
-//   return (
-//     <Router>
-//       <Routes>{elements}</Routes>
-//     </Router>
-//   )
-// }
 import { Form } from '@kpi/ui'
-import { useEffect } from 'react'
+import { useEffect, useReducer } from 'react'
 
 function Input(props: any) {
   return <input {...props} value={props.value || ''} />
@@ -27,17 +8,43 @@ function Input(props: any) {
 export default function App() {
   const start = performance.now()
   useEffect(() => {
-    const end = performance.now()
-    console.log('diff:ms', end - start)
+    console.log('diff', performance.now() - start)
   }, [start])
+  const forceUpdate = useReducer((c) => c + 1, 0)[1]
+  const form = Form.useForm()
   return (
     <div>
-      <Form as="div">
-        {Array.from({ length: 1000 }, (_, i) => (
-          <Form.Item noStyle name={['username', i]} key={i}>
-            <Input placeholder={`username-${i}`} />
+      <button
+        type="button"
+        onClick={() => {
+          forceUpdate()
+        }}
+      >
+        forceUpdate
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          console.log(form.getFieldsValue())
+        }}
+      >
+        getFieldsValue
+      </button>
+      <Form as="div" form={form}>
+        {/* {Array.from({ length: 3000 }, (_, i) => (
+          <Form.Item noStyle key={i} name={['name', i]}>
+            <Input placeholder={`name-${i}`} />
           </Form.Item>
-        ))}
+        ))} */}
+        <Form.List name="username" initialValue={Array(3000).fill(1)}>
+          {(fields) => {
+            return fields.map((field) => (
+              <Form.Item noStyle {...field}>
+                <Input placeholder={field.name} />
+              </Form.Item>
+            ))
+          }}
+        </Form.List>
       </Form>
     </div>
   )

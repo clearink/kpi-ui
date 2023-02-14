@@ -32,9 +32,7 @@ export default class FormFieldControl extends BaseControl {
     const { _key: key, _name: name } = this
     const handler = this._props.shouldUpdate
 
-    if (!handler && key) {
-      return getIn(prev, name) !== getIn(next, name)
-    }
+    if (!handler && key) return getIn(prev, name) !== getIn(next, name)
 
     if (handler === true) return true
 

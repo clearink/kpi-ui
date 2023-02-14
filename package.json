@@ -9,6 +9,7 @@
   "license": "ISC",
   "scripts": {
     "lint": "eslint --ext .js,.ts,.jsx,.tsx ./packages/kpi-validate/src",
+    "dev:site": "cd ./packages/kpi-site && yarn run dev",
     "build:shared": "cd ./packages/kpi-shared && yarn run build",
     "build:validate": "cd ./packages/kpi-validate && yarn run build",
     "build:internal": "cd ./packages/kpi-internal && yarn run build",

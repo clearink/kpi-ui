@@ -16,7 +16,6 @@ import type {
   InternalHookReturn,
   InternalNamePath,
   UpdateFieldAction as Action,
-  UpdateFieldActionType as ActionType,
 } from '../internal_props'
 
 export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
@@ -98,6 +97,7 @@ export default class FormGroupControl<State = any> {
       setFieldMeta: $controls.setFieldMeta,
       setFields: $dispatch.setFields,
       dispatch: $dispatch.dispatch,
+      ensureInitialized: $initial.ensureInitialized,
       registerSubscribe: $dispatch.$dependencies.registerSubscribe,
     }
   }
@@ -311,7 +311,8 @@ export class FormControlsControl {
 
   // 注册字段
   registerField = (control: FormFieldControl, dispatch: FormDispatchControl) => {
-    const key = control._key
+    const { _key: key, _name: name, _props: props } = control
+    const { $state, $initial } = dispatch
 
     // 对于未提供合法name的字段,将不做任何处理
     if (!key) return () => undefined
@@ -324,10 +325,12 @@ export class FormControlsControl {
     return () => {
       const formPreserve = this.$props.props.preserve
       const preserve = control._props.preserve ?? formPreserve ?? true
-      // 保留数据 不做任何处理
       this._controls.delete(control)
 
-      if (preserve || control._props.isListField) return
+      // 保留数据 不做任何处理
+      if (preserve || props.isListField) return
+
+      if ($state.getFieldValue(name) === $initial.getInitialValue(name)) return
 
       // 不保留数据 && name 合法 && 没有同名字段
       const cleanup = !this.getControls().find((field) => field._key === key)
@@ -500,7 +503,7 @@ export class FormDispatchControl<State = any> {
     return this.$inject.$controls
   }
 
-  private get $state() {
+  get $state() {
     return this.$inject.$state
   }
 
@@ -514,10 +517,13 @@ export class FormDispatchControl<State = any> {
   }
 
   // 更新视图
-  updateControl = (prev: State, next: State, type: ActionType) => {
+  updateControl = (prev: State, next: State, action: Action) => {
     // 获取需要更新的 control
     const controls = this.$controls.getControls().filter((control) => {
-      return control.shouldUpdate(prev, next, type)
+      if (action.type === 'registerField') {
+        return control !== action.control && control._key === action.control._key
+      }
+      return control.shouldUpdate(prev, next, action.type)
     })
 
     // 校验依赖字段
@@ -542,7 +548,7 @@ export class FormDispatchControl<State = any> {
     if (action.type === 'fieldEvent') {
       const [prev, next] = $state.setFieldValue(action.name, action.value)
       // 更新字段
-      const dependencies = this.updateControl(prev, next, action.type)[1]
+      const dependencies = this.updateControl(prev, next, action)[1]
       // 触发回调
       this.triggerOnValuesChange(cloneWithPath(next, action.name))
 
@@ -559,23 +565,27 @@ export class FormDispatchControl<State = any> {
       // 获得更新数据
       const [prev, next] = $state.setFieldsData(fields)
       // 更新字段
-      return this.updateControl(prev, next, action.type)
+      return this.updateControl(prev, next, action)
     }
 
     // 删除字段，主要时通知 dependence
     if (action.type === 'removeField') {
       const [prev, next] = $state.cleanupField(action.control)
 
-      return this.updateControl(prev, next, action.type)
+      return this.updateControl(prev, next, action)
     }
 
     // 注册字段
     if (action.type === 'registerField') {
+      const { _props: props } = action.control
+
+      if (isUndefined(props.initialValue)) return
+
       const [prev, next] = $initial.ensureInitialized(action.control)
 
       if (prev === next) return
 
-      return this.updateControl(prev, next, action.type)
+      return this.updateControl(prev, next, action)
     }
 
     // 重置字段
@@ -589,7 +599,7 @@ export class FormDispatchControl<State = any> {
       // 重挂载组件以消除副作用
       controls.forEach((control) => control.resetField())
 
-      return this.updateControl(prev, $state.state, action.type)
+      return this.updateControl(prev, $state.state, action)
     }
 
     logger(true, 'invalid action type')

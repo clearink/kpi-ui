@@ -133,4 +133,10 @@ export interface InternalHookReturn<State = any> {
    * @zh 字段需要更新时需要发布的事件
    */
   dispatch: (action: UpdateFieldAction) => void
+
+  /**
+   * @private
+   * @zh 更新字段默认值
+   */
+  ensureInitialized: (control: FormFieldControl) => void
 }
