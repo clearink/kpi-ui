@@ -574,11 +574,16 @@ export class FormDispatchControl<State = any> {
 
     // 注册字段
     if (action.type === 'registerField') {
-      const { _props: props } = action.control
+      const { control } = action
+      const { initialValue } = control._props
 
-      if (isUndefined(props.initialValue)) return
+      // 字段没有初始值
+      if (isUndefined(initialValue)) return
 
-      const [prev, next] = $initial.ensureInitialized(action.control)
+      // 字段初始值不生效
+      if ($state.getFieldValue(control._name) !== initialValue) return
+
+      const [prev, next] = $initial.ensureInitialized(control)
 
       return this.updateControl(prev, next, action)
     }
@@ -638,9 +643,10 @@ export class FormDispatchControl<State = any> {
 
   // 校验多个字段, 不传默认校验全部
   validateFields = (fields?: NamePath[]) => {
-    const controls = this.$controls.getValidateControls(fields)
     const { getFieldValue, getFieldsValue } = this.$state
     const { getFieldsError } = this.$controls
+
+    const controls = this.$controls.getValidateControls(fields)
 
     const validateList = controls.map((control) => {
       const path = control._name
