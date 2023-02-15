@@ -1,6 +1,5 @@
 /* eslint-disable max-classes-per-file, class-methods-use-this */
 import { isEqual, isFunction, isNullish, isUndefined } from '@kpi/shared'
-import type { MutableRefObject } from 'react'
 import type { Options, SchemaIssue } from '@kpi/validate/types/interface'
 import BaseControl from './base_control'
 import { getIn } from '../utils/value'
@@ -22,7 +21,7 @@ export default class FormFieldControl extends BaseControl {
   public constructor(
     _forceUpdate: () => void,
     private _resetField: () => void,
-    private mounted: MutableRefObject<boolean>
+    private mounted: () => boolean
   ) {
     super(_forceUpdate, mounted)
   }
@@ -72,12 +71,12 @@ export default class FormFieldControl extends BaseControl {
       validating: false,
     })
     this.lastValidate = null
-    this.mounted.current && this._resetField()
+    this.mounted() && this._resetField()
   }
 
   public getFieldMeta = (): FieldMeta & { mounted: boolean } => {
     return {
-      mounted: this.mounted.current,
+      mounted: this.mounted(),
       name: this._name,
       dirty: this.isDirty(),
       touched: this.isTouched(),

@@ -35,7 +35,7 @@ export function useDebounceValue<Value = any>(delay: number, value: Value) {
   const mounted = useMounted()
 
   const callback = useDebounceCallback(delay, () => {
-    mounted.current && setState(value)
+    mounted() && setState(value)
   })
 
   useEffect(callback, [callback, value])

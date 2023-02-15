@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import useIsomorphicEffect from '../use-isomorphic-effect'
 
 export default function useMounted() {
@@ -9,7 +9,7 @@ export default function useMounted() {
       ref.current = false
     }
   }, [])
-  return ref
+  return useCallback(() => ref.current, [])
 }
 
 /** @private 仅仅是为了减少一次 rerender 平时尽量不要使用 */

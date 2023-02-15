@@ -6,7 +6,7 @@ import type { FormFieldControl, InvalidField } from './control'
 import type { FormInstance, FormFieldProps, NamePath, FieldData, FormProps } from './props'
 
 export type InternalNamePath = (string | number)[]
-export type WatchCallBack = (value: any) => void
+export type WatchCallBack = (value: any, path: InternalNamePath) => void
 export type ControlsByNameReturn<R extends boolean> = R extends true
   ? FormFieldControl[]
   : (FormFieldControl | InvalidField)[]
@@ -107,7 +107,7 @@ export interface InternalHookReturn<State = any> {
    * @private
    * @zh 注册监听事件
    */
-  registerWatch: (namePath: NamePath, callback: WatchCallBack) => () => void
+  registerWatch: (namePath: InternalNamePath, callback: WatchCallBack) => () => void
 
   /**
    * @private

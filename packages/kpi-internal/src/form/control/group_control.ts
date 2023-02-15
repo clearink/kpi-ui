@@ -1,6 +1,5 @@
 /* eslint-disable max-classes-per-file,class-methods-use-this */
-import { MutableRefObject } from 'react'
-import { isEqual, isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '@kpi/shared'
+import { isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '@kpi/shared'
 import BaseControl from './base_control'
 import { _getName } from '../utils/path'
 import { setIn, getIn, deleteIn, mergeValue, cloneWithPath } from '../utils/value'
@@ -31,7 +30,7 @@ export default class FormGroupControl<State = any> {
 
   $dispatch: FormDispatchControl<State>
 
-  constructor(_forceUpdate: () => void, mounted: MutableRefObject<boolean>) {
+  constructor(_forceUpdate: () => void, mounted: () => boolean) {
     this.$props = new FormPropsControl(_forceUpdate, mounted)
 
     this.$controls = new FormControlsControl({ $props: this.$props })
@@ -88,17 +87,18 @@ export default class FormGroupControl<State = any> {
     if (!matched) return undefined
 
     const { $props, $initial, $dispatch, $controls } = this
+    const { $watch, $dependencies } = $dispatch
 
     return {
       setFormProps: $props.setFormProps,
       setInitialValues: $initial.setInitialValues,
       registerField: $dispatch.registerField,
-      registerWatch: $dispatch.$watch.registerWatch,
+      registerWatch: $watch.registerWatch,
       setFieldMeta: $controls.setFieldMeta,
       setFields: $dispatch.setFields,
       dispatch: $dispatch.dispatch,
       ensureInitialized: $initial.ensureInitialized,
-      registerSubscribe: $dispatch.$dependencies.registerSubscribe,
+      registerSubscribe: $dependencies.registerSubscribe,
     }
   }
 }
@@ -131,13 +131,14 @@ export class FormDependenciesControl {
   // 订阅对应的字段变更
   registerSubscribe = (control: FormFieldControl) => {
     const { dependencies = [] } = control._props
+    const currentKey = control._key
 
     const cancels = dependencies.map((item) => {
       // 被依赖项
       const depKey = _getName(item)
 
       // 去除空白字段与自身
-      if (!depKey || control._key === depKey) return () => {}
+      if (!depKey || currentKey === depKey) return () => {}
 
       const cached = this._dependencies.get(depKey) ?? new Set<FormFieldControl>()
 
@@ -156,9 +157,10 @@ export class FormDependenciesControl {
     if (!controls.size) return controls
 
     const res = new Set<FormFieldControl>()
+    const dependencies = this._dependencies
 
     controls.forEach((control) => {
-      this._dependencies.get(control._key)?.forEach((field) => {
+      dependencies.get(control._key)?.forEach((field) => {
         // 只获取 touched 与 dirty 字段
         if (field.isDirty() || field.isTouched()) res.add(field)
       })
@@ -176,8 +178,8 @@ export class FormDependenciesControl {
 export class FormWatchValueControl<State = any> {
   private _watchList: { path: InternalNamePath; callback: WatchCallBack }[] = []
 
-  registerWatch = (name: NamePath, callback: WatchCallBack) => {
-    this._watchList.push({ path: toArray(name), callback })
+  registerWatch = (path: InternalNamePath, callback: WatchCallBack) => {
+    this._watchList.push({ path, callback })
 
     return () => {
       this._watchList = this._watchList.filter(({ callback: fn }) => fn !== callback)
@@ -185,13 +187,8 @@ export class FormWatchValueControl<State = any> {
   }
 
   // 通知监听字段
-  publishWatch = (prev: State, next: State) => {
-    this._watchList.forEach(({ callback, path }) => {
-      const prevValue = getIn(prev, path)
-      const nextValue = getIn(next, path)
-      // 前后两次值不等就执行回调函数, 深比较
-      !isEqual(prevValue, nextValue) && callback(nextValue)
-    })
+  publishWatch = (next: State) => {
+    this._watchList.forEach(({ callback, path }) => callback(getIn(next, path), path))
   }
 }
 
@@ -311,21 +308,19 @@ export class FormControlsControl {
 
   // 注册字段
   registerField = (control: FormFieldControl, dispatch: FormDispatchControl) => {
-    const { _key: key, _name: name, _props: props } = control
     const { $state, $initial } = dispatch
 
-    // 对于未提供合法name的字段,将不做任何处理
-    if (!key) return () => undefined
-
-    this._controls.add(control.setParent(dispatch.$initial))
+    this._controls.add(control.setParent($initial))
 
     dispatch.dispatch({ type: 'registerField', control })
 
     // 取消注册， 清除副作用
     return () => {
-      const formPreserve = this.$props.props.preserve
-      const preserve = control._props.preserve ?? formPreserve ?? true
+      const { _key: key, _name: name, _props: props } = control
+
       this._controls.delete(control)
+
+      const preserve = props.preserve ?? this.$props.props.preserve ?? true
 
       // 保留数据 不做任何处理
       if (preserve || props.isListField) return
@@ -520,10 +515,12 @@ export class FormDispatchControl<State = any> {
   updateControl = (prev: State, next: State, action: Action) => {
     // 获取需要更新的 control
     const controls = this.$controls.getControls().filter((control) => {
-      if (action.type !== 'registerField') {
-        return control.shouldUpdate(prev, next, action.type)
+      if (action.type === 'registerField') {
+        const current = action.control
+        if (control === current) return false
+        if (control._key === current._key) return true
       }
-      return control !== action.control && control._key === action.control._key
+      return control.shouldUpdate(prev, next, action.type)
     })
 
     // 校验依赖字段
@@ -535,7 +532,7 @@ export class FormDispatchControl<State = any> {
     else updateControls.forEach((control) => control.forceUpdate())
 
     // 通知监听事件
-    this.$watch.publishWatch(prev, next)
+    this.$watch.publishWatch(next)
 
     return [controls, dependencies] as const
   }
@@ -582,8 +579,6 @@ export class FormDispatchControl<State = any> {
       if (isUndefined(props.initialValue)) return
 
       const [prev, next] = $initial.ensureInitialized(action.control)
-
-      if (prev === next) return
 
       return this.updateControl(prev, next, action)
     }
@@ -644,11 +639,13 @@ export class FormDispatchControl<State = any> {
   // 校验多个字段, 不传默认校验全部
   validateFields = (fields?: NamePath[]) => {
     const controls = this.$controls.getValidateControls(fields)
+    const { getFieldValue, getFieldsValue } = this.$state
+    const { getFieldsError } = this.$controls
 
     const validateList = controls.map((control) => {
-      const value = this.$state.getFieldValue(control._name)
+      const path = control._name
       control.setFieldMeta({ touched: true })
-      return control.validate(value, { path: control._name })
+      return control.validate(getFieldValue(path), { path })
     })
 
     const promiseList = Promise.all(validateList)
@@ -657,13 +654,11 @@ export class FormDispatchControl<State = any> {
     const returnPromise = promiseList.then(() => {
       if (promiseList !== this.lastValidate) return 'invalid-validate'
 
-      const validateErrors = this.$controls
-        .getFieldsError(fields)
-        .filter(({ errors }) => errors.length)
+      const validateErrors = getFieldsError(fields).filter(({ errors }) => errors.length)
       // 触发 OnFieldsChange 回调事件
       this.triggerOnFieldsChange(controls.map(({ _name }) => _name))
 
-      const values = this.$state.getFieldsValue(fields)
+      const values = getFieldsValue(fields)
 
       if (validateErrors.length) {
         // 这里少个 outOfDate 目前不知道有啥用
@@ -710,10 +705,9 @@ export class FormDispatchControl<State = any> {
 
     if (!onFieldsChange) return
 
-    const changedFields = this.$state.getFields(nameList)
-    const allFields = this.$state.getFields()
+    const { getFields } = this.$state
 
-    onFieldsChange(changedFields, allFields)
+    onFieldsChange(getFields(nameList), getFields())
   }
 
   // 触发 onFinish 回调

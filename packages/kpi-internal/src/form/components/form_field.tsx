@@ -17,7 +17,7 @@ import type { FormFieldProps } from '../props'
 import type { InternalFormFieldProps as InternalProps } from '../internal_props'
 
 function InternalFormField(props: InternalProps) {
-  const { name, dependencies } = props
+  const { name, dependencies, shouldUpdate } = props
 
   // 父级表单方法
   const formInstance = FieldContext.useState()
@@ -33,7 +33,10 @@ function InternalFormField(props: InternalProps) {
   useConstructor(() => internalHook?.ensureInitialized(control))
 
   // 注册子字段 销毁时移除该字段
-  const registerField = useEvent(() => internalHook?.registerField(control))
+  const registerField = useEvent(() => {
+    if (shouldUpdate === true) control.forceUpdate()
+    return internalHook?.registerField(control)
+  })
   useIsomorphicEffect(registerField, [registerField])
 
   // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
