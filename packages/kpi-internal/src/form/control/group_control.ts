@@ -244,7 +244,7 @@ export class FormInitialControl<State = any> {
   // 初始化表单数据
   initialFieldsValue = (nameList?: NamePath[]) => {
     // 不传nameList则清空state
-    if (!nameList) return this.deleteFieldValue()
+    if (isUndefined(nameList)) return this.deleteFieldValue()
 
     const prev = this.$state.state
 
@@ -281,7 +281,7 @@ export class FormControlsControl {
     nameList?: NamePath[]
   ): ControlsByNameReturn<R> => {
     const controls = this.getControls(true)
-    if (!nameList) return controls
+    if (isUndefined(nameList)) return controls
 
     return nameList.reduce((result, path) => {
       const key = _getName(path)
@@ -427,6 +427,7 @@ export class FormStateControl<State = any> {
 
   getFieldsValue = (fields?: NamePath[] | true) => {
     if (fields === true) return this._state
+    const noFields = isUndefined(fields)
 
     const nameList = isBoolean(fields) ? [] : fields
     const controls = this.$controls.getControlsByName(false, nameList)
@@ -439,7 +440,7 @@ export class FormStateControl<State = any> {
 
       const { _name: name, _props: props } = field
       // 该场景时不用获取列表项，可以减小一些开销
-      if (!fields && props.isListField) return values
+      if (noFields && props.isListField) return values
 
       return setIn(values, name, getIn(this._state, name))
     }, {} as State)
@@ -457,7 +458,7 @@ export class FormStateControl<State = any> {
   deleteFieldValue = (namePath?: NamePath) => {
     const prev = this._state
 
-    if (!namePath) this._state = {} as State
+    if (isUndefined(namePath)) this._state = {} as State
     else this._state = deleteIn(this._state, toArray(namePath))
 
     return [prev, this._state] as const
