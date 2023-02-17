@@ -13,7 +13,6 @@ import type {
   WatchCallBack,
   InternalFormInstance,
   InternalHookReturn,
-  InternalNamePath,
   UpdateFieldAction as Action,
 } from '../internal_props'
 
@@ -176,19 +175,17 @@ export class FormDependenciesControl {
 /** 负责监听事件                                           */
 /** ==================================================== */
 export class FormWatchValueControl<State = any> {
-  private _watchList: { path: InternalNamePath; callback: WatchCallBack }[] = []
+  private _watchList = new Set<WatchCallBack>()
 
-  registerWatch = (path: InternalNamePath, callback: WatchCallBack) => {
-    this._watchList.push({ path, callback })
+  registerWatch = (callback: WatchCallBack) => {
+    this._watchList.add(callback)
 
-    return () => {
-      this._watchList = this._watchList.filter(({ callback: fn }) => fn !== callback)
-    }
+    return () => this._watchList.delete(callback)
   }
 
   // 通知监听字段
-  publishWatch = (next: State) => {
-    this._watchList.forEach(({ callback, path }) => callback(getIn(next, path), path))
+  publishWatch = () => {
+    this._watchList.forEach((callback) => callback())
   }
 }
 
@@ -512,16 +509,9 @@ export class FormDispatchControl<State = any> {
   }
 
   // 更新视图
-  updateControl = (prev: State, next: State, action: Action) => {
+  updateControl = (filter: (control: FormFieldControl) => boolean) => {
     // 获取需要更新的 control
-    const controls = this.$controls.getControls().filter((control) => {
-      if (action.type === 'registerField') {
-        const current = action.control
-        if (control === current) return false
-        if (control._key === current._key) return true
-      }
-      return control.shouldUpdate(prev, next, action.type)
-    })
+    const controls = this.$controls.getControls().filter(filter)
 
     // 校验依赖字段
     const dependencies = this.publishDependentControl(controls)
@@ -532,9 +522,9 @@ export class FormDispatchControl<State = any> {
     else updateControls.forEach((control) => control.forceUpdate())
 
     // 通知监听事件
-    this.$watch.publishWatch(next)
+    this.$watch.publishWatch()
 
-    return [controls, dependencies] as const
+    return dependencies
   }
 
   // 调度方法
@@ -543,11 +533,14 @@ export class FormDispatchControl<State = any> {
 
     // 由用户事件主动触发
     if (action.type === 'fieldEvent') {
-      const [prev, next] = $state.setFieldValue(action.name, action.value)
+      const { name, value, type } = action
+      const [prev, next] = $state.setFieldValue(name, value)
       // 更新字段
-      const dependencies = this.updateControl(prev, next, action)[1]
+      const dependencies = this.updateControl((control) => {
+        return control.shouldUpdate(prev, next, type)
+      })
       // 触发回调
-      this.triggerOnValuesChange(cloneWithPath(next, action.name))
+      this.triggerOnValuesChange(cloneWithPath(next, name))
 
       const nameList = [action.name, ...dependencies.map(({ _name }) => _name)]
 
@@ -556,50 +549,53 @@ export class FormDispatchControl<State = any> {
 
     // 调用 setFieldValue, setFields 方法
     if (action.type === 'setFields') {
-      const { fields } = action
+      const { type, fields } = action
       // 更新字段 meta 属性
       fields.forEach((field) => $controls.setFieldMeta(field.name, field as FieldMeta))
       // 获得更新数据
       const [prev, next] = $state.setFieldsData(fields)
       // 更新字段
-      return this.updateControl(prev, next, action)
-    }
-
-    // 删除字段，主要时通知 dependence
-    if (action.type === 'removeField') {
-      const [prev, next] = $state.cleanupField(action.control)
-
-      return this.updateControl(prev, next, action)
+      return this.updateControl((control) => {
+        return control.shouldUpdate(prev, next, type)
+      })
     }
 
     // 注册字段
     if (action.type === 'registerField') {
-      const { control } = action
-      const { initialValue } = control._props
+      const { type, control: field } = action
+      const { initialValue } = field._props
 
       // 字段没有初始值
       if (isUndefined(initialValue)) return
 
       // 字段初始值不生效
-      if ($state.getFieldValue(control._name) !== initialValue) return
+      if ($state.getFieldValue(field._name) !== initialValue) return
 
-      const [prev, next] = $initial.ensureInitialized(control)
+      const [prev, next] = $initial.ensureInitialized(field)
 
-      return this.updateControl(prev, next, action)
+      return this.updateControl((control) => {
+        if (control === field) return false
+        if (control._key === field._key) return true
+        return control.shouldUpdate(prev, next, type)
+      })
     }
 
     // 重置字段
     if (action.type === 'resetFields') {
+      const { nameList, type } = action
       // 重置表单数据
-      const prev = $initial.initialFieldsValue(action.nameList)[0]
+      const prev = $initial.initialFieldsValue(nameList)[0]
 
-      const controls = $controls.getControlsByName(true, action.nameList)
+      const controls = $controls.getControlsByName(true, nameList)
       // 设置字段初始值
       controls.forEach($initial.ensureInitialized)
       // 重挂载组件以消除副作用
       controls.forEach((control) => control.resetField())
 
-      return this.updateControl(prev, $state.state, action)
+      const next = $state.state
+      return this.updateControl((control) => {
+        return control.shouldUpdate(prev, next, type)
+      })
     }
 
     logger(true, 'invalid action type')

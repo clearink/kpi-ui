@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useIsomorphicEffect, logger, useEvent, isEqual, toArray } from '@kpi/shared'
+import { useIsomorphicEffect, logger, useEvent, isEqual, toArray, useDeepMemo } from '@kpi/shared'
 import { FieldContext } from '../../context'
 import { HOOK_MARK } from '../control'
 
@@ -13,17 +13,18 @@ export default function useWatchValue<T extends any>(namePath?: NamePath, form?:
 
   const instance = (form ?? formInstance) as InternalFormInstance | undefined
   const internalHook = useMemo(() => instance?.getInternalHooks(HOOK_MARK), [instance])
+  const currentPath = useDeepMemo(() => toArray(namePath), [namePath])
 
   logger(!instance, 'useWatch requires a form instance since it can not auto detect from context.')
 
   const registerWatch = useEvent(() => {
-    const currentPath = toArray(namePath)
-    return internalHook?.registerWatch(currentPath, (next, path) => {
-      isEqual(currentPath, path) && !isEqual(value, next) && setValue(next)
+    return internalHook?.registerWatch(() => {
+      const nextValue = instance?.getFieldValue(currentPath)
+      if (!isEqual(nextValue, value)) setValue(nextValue)
     })
   })
 
-  useIsomorphicEffect(registerWatch, [registerWatch, namePath])
+  useIsomorphicEffect(registerWatch, [registerWatch, currentPath])
 
   return value
 }
