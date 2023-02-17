@@ -576,6 +576,7 @@ export class FormDispatchControl<State = any> {
       return this.updateControl((control) => {
         if (control === field) return false
         if (control._key === field._key) return true
+        if (!control._props.shouldUpdate) return false
         return control.shouldUpdate(prev, next, type)
       })
     }
