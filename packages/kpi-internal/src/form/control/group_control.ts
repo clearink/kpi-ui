@@ -427,8 +427,8 @@ export class FormStateControl<State = any> {
 
   getFieldsValue = (fields?: NamePath[] | true) => {
     if (fields === true) return this._state
-    const noFields = isUndefined(fields)
 
+    const noFields = isUndefined(fields)
     const nameList = isBoolean(fields) ? [] : fields
     const controls = this.$controls.getControlsByName(false, nameList)
 
