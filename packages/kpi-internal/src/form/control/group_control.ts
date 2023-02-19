@@ -174,7 +174,7 @@ export class FormDependenciesControl {
 /** ==================================================== */
 /** 负责监听事件                                           */
 /** ==================================================== */
-export class FormWatchValueControl<State = any> {
+export class FormWatchValueControl {
   private _watchList = new Set<WatchCallBack>()
 
   registerWatch = (callback: WatchCallBack) => {

@@ -4,11 +4,9 @@
 @import './core/index';
 
 // normalize
-@import './preset/normalize.css';
+@import './preset/normalize.scss';
 
 // 预设样式
 @import './preset/index';
 // 动画
 @import './animations/index';
-
-@import '../_internal/hooks/use-wave/style.scss';

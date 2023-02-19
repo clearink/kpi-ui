@@ -13,6 +13,9 @@
     margin-bottom: $form-item-margin-bottom;
     vertical-align: top;
 
+    @include e(row) {
+      display: flex;
+    }
     @include e(label) {
       display: inline-block;
       flex-grow: 0;
