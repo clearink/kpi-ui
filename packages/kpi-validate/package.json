@@ -14,17 +14,13 @@
   "license": "ISC",
   "scripts": {
     "clean": "rimraf dist lib esm types",
-    "build:code": "node ../../scripts/build.validate.js",
-    "build:types": "tsc -p .",
-    "build": "yarn clean && yarn build:code && yarn build:types",
-    "dev": "yarn build -- -w"
+    "compile": "node ../../scripts/compile/compile.validate.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.20.13",
     "@kpi/shared": "workspace:*"
   },
   "devDependencies": {
-    "@babel/cli": "^7.20.7",
     "typescript": "^4.5.4"
   }
 }

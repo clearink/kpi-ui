@@ -14,10 +14,7 @@
   "license": "ISC",
   "scripts": {
     "clean": "rimraf dist lib esm types",
-    "build:code": "node ../../scripts/build.ui.js",
-    "build:types": "tsc -p .",
-    "build": "yarn clean && yarn build:code && yarn build:types",
-    "dev": "yarn build -- -w"
+    "compile": "node ../../scripts/compile/compile.ui.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.20.13",
@@ -29,7 +26,6 @@
     "react-transition-group": "^4.4.5"
   },
   "devDependencies": {
-    "@babel/cli": "^7.20.7",
     "@types/react": "^18.0.14",
     "@types/react-transition-group": "^4.4.5",
     "react": "^18.2.0",
