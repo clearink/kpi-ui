@@ -1,6 +1,13 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { Form as InternalForm } from '@kpi/internal'
-import { useDebounceState, isUndefined, omit, pick, toArray } from '@kpi/shared'
+import {
+  useDebounceState,
+  isUndefined,
+  omit,
+  pick,
+  toArray,
+  useIsomorphicEffect,
+} from '@kpi/shared'
 import type { FieldMeta } from '@kpi/internal/types/form/internal_props'
 import Row from '../../../row'
 import FormItemLabel from './label'
@@ -16,7 +23,7 @@ import { makeEmptyMeta } from '../../utils/error'
 
 import type { FormItemProps, ValidateStatus } from '../../props'
 
-const labelExcluded = [
+const labelIncluded = [
   'colon',
   'htmlFor',
   'label',
@@ -27,7 +34,7 @@ const labelExcluded = [
   'requiredMark',
   'tooltip',
 ] as const
-const inputExcluded = ['wrapperCol', 'extra', 'help'] as const
+const inputIncluded = ['wrapperCol', 'extra', 'help'] as const
 
 function InternalFormItem<State = any>(props: FormItemProps<State>) {
   if (props.noStyle) return <NoStyleFormItem {...props} />
@@ -88,38 +95,32 @@ function CommonFormItem(props: FormItemProps) {
 
   const className = useFormItemClass(props, status, prefixCls)
 
-  const mergedErrors = useMemo(
-    () => meta.errors.concat(subMeta.errors),
-    [meta.errors, subMeta.errors]
-  )
-  const mergedWarnings = useMemo(
-    () => meta.warnings.concat(subMeta.warnings),
-    [meta.warnings, subMeta.warnings]
-  )
+  const required = useMemo(() => {
+    if (toArray(name).length <= 0) return false
+    return !!rule?.isRequired()
+  }, [name, rule])
+
+  const mergedErrors = meta.errors.concat(subMeta.errors)
+  const mergedWarnings = meta.warnings.concat(subMeta.warnings)
+  const hasError = !!(help || mergedErrors.length || mergedWarnings.length)
 
   const ref = useRef<HTMLDivElement>(null)
   const [marginBottom, setMarginBottom] = useState<number>()
 
-  const hasError = !!(help || mergedErrors.length || mergedWarnings.length)
-  useLayoutEffect(() => {
+  const handleExitComplete = useCallback(() => {
+    !hasError && setMarginBottom(undefined)
+  }, [hasError])
+
+  useIsomorphicEffect(() => {
     if (hasError && ref.current) {
       const styles = getComputedStyle(ref.current)
       setMarginBottom(parseInt(styles.marginBottom, 10))
     }
   }, [hasError])
 
-  const handleExitComplete = useCallback(() => {
-    !hasError && setMarginBottom(undefined)
-  }, [hasError])
+  const labelProps = pick(props, labelIncluded)
 
-  const labelProps = pick(props, labelExcluded)
-
-  const inputProps = pick(props, inputExcluded)
-
-  const required = useMemo(() => {
-    if (toArray(name).length <= 0) return false
-    return !!rule?.isRequired()
-  }, [name, rule])
+  const inputProps = pick(props, inputIncluded)
 
   return (
     <div className={className} style={style} ref={ref}>

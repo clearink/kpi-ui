@@ -3,8 +3,9 @@ import { useMemo } from 'react'
 import { AnimatePresence, domAnimation, LazyMotion, m } from 'framer-motion'
 import { useDebounceValue } from '@kpi/shared'
 import { usePrefixCls } from '../../../_internal/hooks'
-import type { ErrorListProps } from '../../props'
 import { makeErrorEntity } from '../../utils/error'
+
+import type { ErrorListProps } from '../../props'
 
 function ErrorList(props: ErrorListProps) {
   const { className, onExitComplete, help, helpStatus } = props
