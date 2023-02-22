@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { capitalize, omit } from '@kpi/shared'
 import { withDefaultProps } from '@kpi/internal'
 import { usePrefixCls } from '../_internal/hooks'
@@ -6,17 +5,26 @@ import useClass from './hooks/use_class'
 
 import type { DividerProps } from './props'
 
+const excluded = [
+  'children',
+  'orientation',
+  'orientationMargin',
+  'className',
+  'type',
+  'dashed',
+  'plain',
+] as const
+
 function Divider(props: DividerProps) {
-  const { children, orientation, orientationMargin, ...rest } = props
-  const attrs = omit(rest, ['className', 'type', 'dashed', 'plain'])
+  const { children, orientation, orientationMargin } = props
 
   const name = usePrefixCls('divider')
+
   const className = useClass(name, props)
 
-  const innerStyle = useMemo(() => {
-    const prop = `margin${capitalize(orientation)}`
-    return { [prop]: orientationMargin }
-  }, [orientation, orientationMargin])
+  const innerStyle = { [`margin${capitalize(orientation)}`]: orientationMargin }
+
+  const attrs = omit(props, excluded)
 
   return (
     <div className={className} {...attrs}>

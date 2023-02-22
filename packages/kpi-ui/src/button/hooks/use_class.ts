@@ -1,11 +1,8 @@
 import cls from 'classnames'
-import { usePrefixCls } from '../../_internal/hooks'
 import { ButtonProps } from '../props'
 
-export default function useClass(props: ButtonProps) {
+export default function useClass(name: string, props: ButtonProps) {
   const { className, type, block, danger, shape, size, ghost, loading } = props
-
-  const name = usePrefixCls('button')
 
   return cls(name, {
     [`${name}--${type}`]: type,

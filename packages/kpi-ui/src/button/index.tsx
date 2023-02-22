@@ -2,26 +2,41 @@
 import { ForwardedRef, forwardRef, useImperativeHandle, type MouseEvent } from 'react'
 import { omit } from '@kpi/shared'
 import { withDefaultProps } from '@kpi/internal'
-import { useWave } from '../_internal/hooks'
+import { usePrefixCls, useWave } from '../_internal/hooks'
 import useClass from './hooks/use_class'
 
 import type { ButtonProps } from './props'
 
-function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
-  const { children, htmlType, onClick, loading, ...rest } = props
+const excluded = [
+  'children',
+  'htmlType',
+  'onClick',
+  'loading',
+  'type',
+  'block',
+  'danger',
+  'shape',
+  'size',
+  'ghost',
+] as const
 
-  const attrs = omit(rest, ['type', 'block', 'danger', 'shape', 'size', 'ghost'])
+function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
+  const { children, htmlType, onClick, loading, disabled } = props
+
+  const name = usePrefixCls('button')
+
+  const className = useClass(name, props)
 
   useImperativeHandle(ref, () => internalRef.current!)
 
   const internalRef = useWave<HTMLButtonElement>()
 
-  const className = useClass(props)
-
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-    if (attrs.disabled || loading) e.preventDefault()
+    if (disabled || loading) e.preventDefault()
     else onClick?.(e)
   }
+
+  const attrs = omit(props, excluded)
 
   return (
     <button
