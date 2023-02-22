@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { useIsomorphicEffect, logger, useEvent, isEqual, toArray, useDeepMemo } from '@kpi/shared'
+import { useEffect, useMemo, useState } from 'react'
+import { logger, useEvent, isEqual, toArray, useDeepMemo } from '@kpi/shared'
 import { FieldContext } from '../../context'
 import { HOOK_MARK } from '../control'
 
@@ -24,7 +24,7 @@ export default function useWatchValue<T extends any>(namePath?: NamePath, form?:
     })
   })
 
-  useIsomorphicEffect(registerWatch, [registerWatch, currentPath])
+  useEffect(registerWatch, [registerWatch, currentPath])
 
   return value
 }

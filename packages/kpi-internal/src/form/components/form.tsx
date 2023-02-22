@@ -7,16 +7,9 @@ import {
   Ref,
   ReactElement,
   useRef,
+  useEffect,
 } from 'react'
-import {
-  isFunction,
-  omit,
-  toArray,
-  useConstructor,
-  useEvent,
-  useIsomorphicEffect,
-  isEqual,
-} from '@kpi/shared'
+import { isFunction, omit, toArray, useConstructor, useEvent, isEqual } from '@kpi/shared'
 import withDefaultProps from '../../hocs'
 import { FieldContext, FormContext } from '../../context'
 import { HOOK_MARK } from '../control'
@@ -63,7 +56,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
 
   // 用于多表单联动
   const parent = FormContext.useState()
-  useIsomorphicEffect(() => {
+  useEffect(() => {
     return parent.register(formInstance, name)
   }, [formInstance, name, parent])
 
@@ -89,7 +82,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
 
   // 同步 fields 字段
   const prevFields = useRef<FormProps['fields']>()
-  useIsomorphicEffect(() => {
+  useEffect(() => {
     const prev = toArray(prevFields.current, true)
     const next = toArray(props.fields, true)
     if (!isEqual(prev, next)) {

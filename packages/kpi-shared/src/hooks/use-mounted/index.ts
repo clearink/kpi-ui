@@ -1,9 +1,8 @@
-import { useCallback, useRef } from 'react'
-import useIsomorphicEffect from '../use-isomorphic-effect'
+import { useCallback, useEffect, useRef } from 'react'
 
 export default function useMounted() {
   const ref = useRef(false)
-  useIsomorphicEffect(() => {
+  useEffect(() => {
     ref.current = true
     return () => {
       ref.current = false

@@ -1,5 +1,4 @@
 export { default as useEvent } from './use-event'
-export { default as useBreakpoint } from './use-breakpoint'
 export { default as usePropShim } from './use-prop-shim'
 export { default as useResizeObserver } from './use-resize-observer'
 export { default as useMounted, useConstructor } from './use-mounted'

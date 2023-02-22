@@ -1,11 +1,10 @@
-import { useIsomorphicEffect } from '@kpi/shared'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Wave from './wave'
 
 export default function useWave<H extends HTMLElement>() {
   const ref = useRef<H>(null)
 
-  useIsomorphicEffect(() => {
+  useEffect(() => {
     const dom = ref.current
 
     if (!dom) return

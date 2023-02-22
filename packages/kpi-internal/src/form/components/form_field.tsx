@@ -1,12 +1,5 @@
-import { Fragment, useMemo } from 'react'
-import {
-  useDeepMemo,
-  useEvent,
-  useIsomorphicEffect,
-  isUndefined,
-  toArray,
-  useConstructor,
-} from '@kpi/shared'
+import { Fragment, useMemo, useEffect } from 'react'
+import { useDeepMemo, useEvent, isUndefined, toArray, useConstructor } from '@kpi/shared'
 import { HOOK_MARK } from '../control'
 import useInjectField from '../hooks/use_inject_field'
 import { useFormFieldControl } from '../hooks/use_form'
@@ -37,13 +30,13 @@ function InternalFormField(props: InternalProps) {
     if (shouldUpdate === true) control.forceUpdate()
     return internalHook?.registerField(control)
   })
-  useIsomorphicEffect(registerField, [registerField])
+  useEffect(registerField, [registerField])
 
   // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
   const key = useDeepMemo(() => _getName(name), [name])
   const memorized = useDeepMemo(() => dependencies, [dependencies])
   const subscribe = useEvent(() => internalHook?.registerSubscribe(control))
-  useIsomorphicEffect(subscribe, [subscribe, memorized, key])
+  useEffect(subscribe, [subscribe, memorized, key])
 
   // 数据注入
   const children = useInjectField(props, formInstance, control, internalHook)

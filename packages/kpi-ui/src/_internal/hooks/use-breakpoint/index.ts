@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useEvent, useIsomorphicEffect, isUndefined } from '@kpi/shared'
+import { useEffect, useState } from 'react'
+import { useEvent, isUndefined } from '@kpi/shared'
 import observer from './breakpoint_observer'
 
 import type { ScreenMatch } from '../../constant/breakpoint'
@@ -14,7 +14,7 @@ export default function useBreakpoint(shouldUpdate?: (query: ScreenMatch<boolean
     }
   })
 
-  useIsomorphicEffect(() => observer.subscribe(handler), [handler])
+  useEffect(() => observer.subscribe(handler), [handler])
 
   return matches
 }
