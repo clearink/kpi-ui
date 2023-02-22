@@ -1,31 +1,37 @@
 import cls from 'classnames'
-import { isNumber, isUndefined } from '@kpi/shared'
-import { usePrefixCls } from '../../_internal/hooks'
+import { isObject, isUndefined } from '@kpi/shared'
 import { BREAKPOINT_NAME } from '../../_internal/constant'
-import { ColProps } from '../props'
 
-export default function useClass(props: ColProps) {
+import type { ColProps } from '../props'
+
+export default function useClass(name: string, props: ColProps) {
   const { className, span, offset, pull, push, order } = props
-  const name = usePrefixCls('col')
+
   const extraClass = BREAKPOINT_NAME.reduce((res, size) => {
-    const breakpoint = props[size] ?? {}
-    const config = isNumber(breakpoint) ? { span: breakpoint } : breakpoint
-    return {
-      [`${name}-${size}-${config.span}`]: config.span,
-      [`${name}-${size}-offset-${config.offset}`]: !!config.offset,
-      [`${name}-${size}-pull-${config.pull}`]: !!config.pull,
-      [`${name}-${size}-push-${config.push}`]: !!config.push,
-      [`${name}-${size}-order-${config.order}`]: !!config.order,
-      ...res,
+    const breakpoint = props[size]
+
+    if (isUndefined(breakpoint)) return res
+
+    if (isObject(breakpoint)) {
+      res[`${name}-${size}-${breakpoint.span}`] = breakpoint.span
+      res[`${name}-${size}-${breakpoint.offset}`] = breakpoint.offset
+      res[`${name}-${size}-${breakpoint.pull}`] = breakpoint.pull
+      res[`${name}-${size}-${breakpoint.push}`] = breakpoint.push
+      res[`${name}-${size}-${breakpoint.order}`] = breakpoint.order
+      return res
     }
+
+    res[`${name}-${size}-${breakpoint}`] = breakpoint
+
+    return res
   }, {})
-  return cls(name, {
+
+  return cls(name, extraClass, {
     [`${name}-${span}`]: !isUndefined(span),
-    [`${name}-offset-${offset}`]: !!offset,
-    [`${name}-pull-${pull}`]: !!pull,
-    [`${name}-push-${push}`]: !!push,
-    [`${name}-order-${order}`]: !!order,
-    ...extraClass,
+    [`${name}-offset-${offset}`]: offset,
+    [`${name}-pull-${pull}`]: pull,
+    [`${name}-push-${push}`]: push,
+    [`${name}-order-${order}`]: order,
     [className!]: className,
   })
 }

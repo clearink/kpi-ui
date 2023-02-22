@@ -1,18 +1,25 @@
-import { useMemo } from 'react'
-import { isArray, isNumber, isObject } from '@kpi/shared'
-import { useBreakpoint, handleMatchPoint } from '../../_internal/hooks'
-import { RowProps } from '../props'
+import { isArray, isNumber, isUndefined } from '@kpi/shared'
+import { useBreakpoint, matchBreakpoint } from '../../_internal/hooks'
+
+import type { RowProps } from '../props'
 
 export default function useRowGutter(gutter: RowProps['gutter']) {
-  const $gutter = useMemo(() => (isArray(gutter) ? gutter : [gutter, 0]), [gutter])
-  const needMatch = useMemo(() => $gutter.some(isObject), [$gutter])
+  const $gutter = isArray(gutter) ? gutter : [gutter, 0]
 
-  const matches = useBreakpoint(() => needMatch)
+  const matches = useBreakpoint((query) => {
+    return $gutter.some((gap) => {
+      if (isNumber(gap)) return false
 
-  return useMemo(() => {
-    return $gutter.map((gap) => {
-      if (isNumber(gap)) return gap
-      return handleMatchPoint(matches, gap) ?? 0
+      const oldGap = matchBreakpoint(matches, gap)
+      const newGap = matchBreakpoint(query, gap)
+
+      return oldGap !== newGap
     })
-  }, [$gutter, matches])
+  })
+
+  return $gutter.map((gap) => {
+    if (isUndefined(gap)) return 0
+    if (isNumber(gap)) return gap
+    return matchBreakpoint(matches, gap) ?? 0
+  })
 }

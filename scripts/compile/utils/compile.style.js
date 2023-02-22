@@ -1,33 +1,8 @@
 const { resolve, dirname } = require('path')
-const chokidar = require('chokidar')
 const processor = require('postcss')(require('autoprefixer'))
 const { compileAsync } = require('sass')
 const { existsSync, readFileSync } = require('fs-extra')
-const {
-  removeFile,
-  getOutputPath,
-  replaceExtname,
-  safeWriteFile,
-  safeCopyFile,
-} = require('./index')
-
-function watchSourceStyle(watch, packagePath, watcher) {
-  const copySource = (dir, path) => {
-    const sourcePath = resolve(packagePath, path)
-    const targetPath = getOutputPath(packagePath, dir, 'src', path)
-    safeCopyFile(sourcePath, targetPath)
-  }
-  watcher.on('add', copySource.bind(null, 'esm'))
-  watcher.on('change', copySource.bind(null, 'esm'))
-  watcher.on('unlink', removeFile.bind(null, 'esm'))
-
-  if (!watch) {
-    watcher.on('ready', () => watcher.close())
-    watcher.on('add', copySource.bind(null, 'lib'))
-    watcher.on('change', copySource.bind(null, 'lib'))
-    watcher.on('unlink', removeFile.bind(null, 'lib'))
-  }
-}
+const { removeFile, getOutputPath, replaceExtname, safeWriteFile, safeCopyFile } = require('.')
 
 function generateImportCssFile(path) {
   const entry = path.replace(/\.css$/g, '.js')
@@ -49,24 +24,37 @@ function compileStyle(packagePath, dir, path) {
     .then(({ css }) => processor.process(css, { from: sourcePath }))
     .then(({ css }) => safeWriteFile(outputPath, css))
     .then(() => generateImportCssFile(outputPath))
+    .catch((error) => console.error(error.message))
 }
 
-module.exports = function (watch, packagePath, watcher) {
-  watcher.on('add', compileStyle.bind(null, packagePath, 'esm'))
-  watcher.on('change', compileStyle.bind(null, packagePath, 'esm'))
-  watcher.on('unlink', removeFile.bind(null, packagePath, 'esm'))
+module.exports = {
+  compileStyle: function (watch, packagePath, watcher) {
+    watcher.on('add', compileStyle.bind(null, packagePath, 'esm'))
+    watcher.on('change', compileStyle.bind(null, packagePath, 'esm'))
+    watcher.on('unlink', removeFile.bind(null, packagePath, 'esm'))
 
-  if (!watch) {
-    watcher.on('ready', () => watcher.close())
-    watcher.on('add', compileStyle.bind(null, packagePath, 'lib'))
-    watcher.on('change', compileStyle.bind(null, packagePath, 'lib'))
-    watcher.on('unlink', removeFile.bind(null, packagePath, 'lib'))
-  }
+    if (!watch) {
+      watcher.on('ready', () => watcher.close())
+      watcher.on('add', compileStyle.bind(null, packagePath, 'lib'))
+      watcher.on('change', compileStyle.bind(null, packagePath, 'lib'))
+      watcher.on('unlink', removeFile.bind(null, packagePath, 'lib'))
+    }
+  },
+  copyScssFile: function (watch, packagePath, watcher) {
+    const copySource = (dir, path) => {
+      const sourcePath = resolve(packagePath, path)
+      const targetPath = getOutputPath(packagePath, dir, 'src', path)
+      safeCopyFile(sourcePath, targetPath)
+    }
+    watcher.on('add', copySource.bind(null, 'esm'))
+    watcher.on('change', copySource.bind(null, 'esm'))
+    watcher.on('unlink', removeFile.bind(null, 'esm'))
 
-  // 监听复制原始 scss 文件
-  const copyWatcher = chokidar.watch(['./src/**/*.s[ac]ss'], {
-    cwd: packagePath,
-    ignoreInitial: false,
-  })
-  watchSourceStyle(watch, packagePath, copyWatcher)
+    if (!watch) {
+      watcher.on('ready', () => watcher.close())
+      watcher.on('add', copySource.bind(null, 'lib'))
+      watcher.on('change', copySource.bind(null, 'lib'))
+      watcher.on('unlink', removeFile.bind(null, 'lib'))
+    }
+  },
 }

@@ -14,7 +14,9 @@
   "license": "ISC",
   "scripts": {
     "clean": "rimraf dist lib esm types",
-    "compile": "node ../../scripts/compile/compile.ui.js"
+    "compile:type": "tsc -p .",
+    "compile:code": "node ../../scripts/compile/compile.ui.js",
+    "compile": "yarn run clean && yarn run compile:type && yarn run compile:code"
   },
   "dependencies": {
     "@babel/runtime": "^7.20.13",

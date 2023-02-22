@@ -18,7 +18,17 @@ export const BREAKPOINT = {
   xxl: { size: 1600, mode: 'min' },
 } as const
 
-export const INIT_MATCHES = BREAKPOINT_NAME.reduce(
-  (res, name) => ({ ...res, [name]: false }),
-  {} as ScreenMatch<boolean>
+// 默认断点匹配值
+export const INIT_MATCHES = BREAKPOINT_NAME.reduce((res, name) => {
+  res[name] = true
+  return res
+}, {})
+
+// 方便找到相应的速记值
+export const BREAKPOINT_MAP = Object.entries(BREAKPOINT).reduce(
+  (map, [breakpoint, { size, mode }]) => {
+    const query = `(${mode}-width: ${size}px)`
+    return map.set(query, breakpoint)
+  },
+  new Map<string, string>()
 )

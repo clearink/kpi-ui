@@ -1,23 +1,20 @@
 import { useState } from 'react'
 import { useEvent, useIsomorphicEffect, isUndefined } from '@kpi/shared'
-import { INIT_MATCHES, ScreenMatch } from '../../constant/breakpoint'
-import MediaObserver from './media_observer'
+import observer from './breakpoint_observer'
+
+import type { ScreenMatch } from '../../constant/breakpoint'
 
 // 基础响应式断点 hooks
-export type ShouldUpdateHandler = (query: ScreenMatch<boolean>) => boolean
-export default function useBreakpoint(shouldUpdate?: ShouldUpdateHandler) {
-  const [matches, updateMatches] = useState(() => INIT_MATCHES)
+export default function useBreakpoint(shouldUpdate?: (query: ScreenMatch<boolean>) => boolean) {
+  const [matches, updateMatches] = useState(observer.getCurrentMatches)
 
-  const subscribe = useEvent((query: ScreenMatch<boolean>) => {
+  const handler = useEvent((query: ScreenMatch<boolean>) => {
     if (isUndefined(shouldUpdate) || shouldUpdate(query)) {
       updateMatches(query)
     }
   })
 
-  useIsomorphicEffect(() => {
-    const observer = new MediaObserver(subscribe)
-    return () => observer.unsubscribe()
-  }, [subscribe])
+  useIsomorphicEffect(() => observer.subscribe(handler), [handler])
 
   return matches
 }

@@ -5,12 +5,12 @@ const compileCode = require('./utils/compile.code')
 
 const packagePath = resolveApp('.')
 
-const watcher = chokidar.watch('./src/**/*.ts{,x}', {
+const watch = process.argv.slice(2).some((argv) => /^-{1,2}w(atch)?/g.test(argv))
+
+const codeWatcher = chokidar.watch('./src/**/*.ts{,x}', {
   cwd: packagePath,
   ignoreInitial: false,
   ignored: ['./src/**/*(types|props|interface).ts', './src/style/*'],
 })
 
-const watch = process.argv.slice(2).some((argv) => /^-{1,2}w(atch)?/g.test(argv))
-
-compileCode(watch, packagePath, watcher)
+compileCode(watch, packagePath, codeWatcher)

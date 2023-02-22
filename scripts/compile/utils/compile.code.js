@@ -1,6 +1,6 @@
 const { resolve } = require('path')
 const { transformFileAsync } = require('@babel/core')
-const { removeFile, getOutputPath, replaceExtname, safeWriteFile } = require('./index')
+const { removeFile, getOutputPath, replaceExtname, safeWriteFile } = require('.')
 
 const browserslistConfigFile = resolve(__dirname, '../../../.browserslistrc')
 /**
@@ -24,6 +24,9 @@ function getBabelConfig(useEsm) {
     ],
     plugins: ['@babel/plugin-transform-runtime'],
     assumptions: {
+      ignoreToPrimitiveHint: true,
+      setComputedProperties: true,
+      objectRestNoSymbols: true,
       constantReexports: true,
       ignoreFunctionLength: true,
       setSpreadProperties: true,
@@ -39,12 +42,13 @@ function getBabelConfig(useEsm) {
 function compileCode(config, packagePath, dir, path) {
   const sourcePath = resolve(packagePath, path)
 
-  transformFileAsync(sourcePath, config).then((output) => {
-    let outputPath = getOutputPath(packagePath, dir, 'src', path)
-    outputPath = replaceExtname(outputPath, '.js')
-
-    safeWriteFile(outputPath, output.code)
-  })
+  transformFileAsync(sourcePath, config)
+    .then((output) => {
+      let outputPath = getOutputPath(packagePath, dir, 'src', path)
+      outputPath = replaceExtname(outputPath, '.js')
+      safeWriteFile(outputPath, output.code)
+    })
+    .catch((error) => console.error(error.message))
 }
 
 const compileCodeToEsm = compileCode.bind(null, getBabelConfig(true))

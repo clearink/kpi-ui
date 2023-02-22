@@ -16,6 +16,19 @@ import { makeEmptyMeta } from '../../utils/error'
 
 import type { FormItemProps, ValidateStatus } from '../../props'
 
+const labelExcluded = [
+  'colon',
+  'htmlFor',
+  'label',
+  'labelAlign',
+  'labelCol',
+  'labelWrap',
+  'required',
+  'requiredMark',
+  'tooltip',
+] as const
+const inputExcluded = ['wrapperCol', 'extra', 'help'] as const
+
 function InternalFormItem<State = any>(props: FormItemProps<State>) {
   if (props.noStyle) return <NoStyleFormItem {...props} />
 
@@ -63,12 +76,15 @@ function CommonFormItem(props: FormItemProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  let status: ValidateStatus = ''
-  if (!isUndefined($status)) status = $status
-  else if (meta.validating) status = 'validating'
-  else if (meta.errors.length) status = 'error'
-  else if (meta.warnings.length) status = 'warning'
-  else if (meta.touched) status = 'success'
+  const status = useMemo<ValidateStatus>(() => {
+    let inner: ValidateStatus = ''
+    if (!isUndefined($status)) inner = $status
+    else if (meta.validating) inner = 'validating'
+    else if (meta.errors.length) inner = 'error'
+    else if (meta.warnings.length) inner = 'warning'
+    else if (meta.touched) inner = 'success'
+    return inner
+  }, [meta, $status])
 
   const className = useFormItemClass(props, status, prefixCls)
 
@@ -96,19 +112,9 @@ function CommonFormItem(props: FormItemProps) {
     !hasError && setMarginBottom(undefined)
   }, [hasError])
 
-  const labelProps = pick(props, [
-    'colon',
-    'htmlFor',
-    'label',
-    'labelAlign',
-    'labelCol',
-    'labelWrap',
-    'required',
-    'requiredMark',
-    'tooltip',
-  ])
+  const labelProps = pick(props, labelExcluded)
 
-  const inputProps = pick(props, ['wrapperCol', 'extra', 'help'])
+  const inputProps = pick(props, inputExcluded)
 
   const required = useMemo(() => {
     if (toArray(name).length <= 0) return false
