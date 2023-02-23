@@ -554,11 +554,7 @@ export class FormDispatchControl<State = any> {
   // TODO: cost time 51.6ms
   updateControl = (filter: (control: FormFieldControl) => boolean) => {
     // 获取需要更新的 control
-    window.diff = window.diff ?? []
-    const start = performance.now()
     const controls = this.$controls.getControls().filter(filter)
-    const end = performance.now()
-    window.diff.push(end - start)
 
     // 校验依赖字段
     const dependencies = this.publishDependentControl(controls)
