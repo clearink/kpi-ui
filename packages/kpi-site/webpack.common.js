@@ -85,6 +85,7 @@ module.exports = function common(mode) {
                 cacheCompression: false,
                 compact: false,
                 assumptions: {
+                  pureGetters: true,
                   ignoreToPrimitiveHint: true,
                   setComputedProperties: true,
                   objectRestNoSymbols: true,

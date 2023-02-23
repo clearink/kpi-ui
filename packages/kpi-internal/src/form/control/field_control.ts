@@ -42,7 +42,11 @@ export default class FormFieldControl extends BaseControl {
 
   public setFieldProps = (props: Partial<InternalFormFieldProps>) => {
     this._props = { ...props }
+
+    if (this._name === props.name) return
+
     this._key = _getName(props.name!)
+
     this._name = props.name ?? []
   }
 
