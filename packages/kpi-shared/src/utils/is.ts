@@ -23,7 +23,7 @@ export const isNull = (obj: any): obj is null => obj === null
 
 export const isUndefined = (obj: any): obj is undefined => obj === undefined
 
-export const isNullish = (obj: any): obj is null | undefined => isNull(obj) || isUndefined(obj)
+export const isNullish = (obj: any): obj is null | undefined => obj == null
 
 export const { isArray } = Array
 
