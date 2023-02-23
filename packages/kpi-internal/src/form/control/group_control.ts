@@ -280,6 +280,7 @@ export class FormControlsControl {
     control.setParent($initial)
 
     const controls = this._controls
+
     const { all, pure, map } = controls
 
     all.push(control)
@@ -365,7 +366,7 @@ export class FormControlsControl {
       if ($state.getFieldValue(name) === $initial.getInitialValue(name)) return
 
       // 不保留数据 && name 合法 && 没有同名字段
-      const cleanup = !this.getControls().find((field) => field._key === key)
+      const cleanup = !this._controls.map.get(key)
       cleanup && dispatch.dispatch({ type: 'removeField', control })
     }
   }
@@ -553,7 +554,11 @@ export class FormDispatchControl<State = any> {
   // TODO: cost time 51.6ms
   updateControl = (filter: (control: FormFieldControl) => boolean) => {
     // 获取需要更新的 control
+    window.diff = window.diff ?? []
+    const start = performance.now()
     const controls = this.$controls.getControls().filter(filter)
+    const end = performance.now()
+    window.diff.push(end - start)
 
     // 校验依赖字段
     const dependencies = this.publishDependentControl(controls)

@@ -67,11 +67,10 @@ export default function collectInjectProps(
     const init = { ...injectProps }
 
     return triggerList.reduce((result, triggerName) => {
-      const handler = (...args: any[]) => {
+      result[triggerName] = (...args: any[]) => {
         injectProps[triggerName]?.(...args)
         props.rule && formInstance.validateField(name)
       }
-      result[triggerName] = handler
 
       return result
     }, init)
