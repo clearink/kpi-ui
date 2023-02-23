@@ -1,8 +1,8 @@
-import { CSSProperties, forwardRef, type ForwardedRef } from 'react'
+import { CSSProperties, forwardRef, useMemo, type ForwardedRef } from 'react'
 import { isNumber, isUndefined, omit } from '@kpi/shared'
 import { withDefaultProps } from '@kpi/internal'
 import useClass from './hooks/use_class'
-import { usePrefixCls } from '../_internal/hooks'
+import { useFlexGapSupport, usePrefixCls } from '../_internal/hooks'
 import { RowContext } from '../_internal/context'
 import { BREAKPOINT_NAME, COL_FLEX_REG } from '../_internal/constant'
 
@@ -28,27 +28,35 @@ function Col(props: ColProps, ref: ForwardedRef<HTMLDivElement>) {
 
   const className = useClass(name, props)
 
-  const { gapSupport, hGutter, vGutter } = RowContext.useState()
+  const gapSupport = useFlexGapSupport()
 
-  const [h, v] = [hGutter / 2, vGutter / 2]
+  const { hGutter, vGutter } = RowContext.useState()
 
-  const gapStyle: CSSProperties = {}
+  const gapStyle = useMemo(() => {
+    const [h, v] = [hGutter / 2, vGutter / 2]
 
-  if (h) {
-    gapStyle.paddingLeft = h
-    gapStyle.paddingRight = h
-  }
+    const style: CSSProperties = {}
 
-  if (v && !gapSupport) {
-    gapStyle.paddingTop = v
-    gapStyle.paddingBottom = v
-  }
+    if (h) {
+      gapStyle.paddingLeft = h
+      gapStyle.paddingRight = h
+    }
 
-  let flex: CSSProperties['flex']
+    if (v && !gapSupport) {
+      gapStyle.paddingTop = v
+      gapStyle.paddingBottom = v
+    }
 
-  if (isUndefined($flex)) flex = undefined
-  else if (isNumber($flex)) flex = `${$flex} ${$flex} auto`
-  else if (COL_FLEX_REG.test($flex)) flex = `0 0 ${$flex}`
+    return style
+  }, [gapSupport, hGutter, vGutter])
+
+  const flex = useMemo(() => {
+    if (isUndefined($flex)) return undefined
+
+    if (isNumber($flex)) return `${$flex} ${$flex} auto`
+
+    if (COL_FLEX_REG.test($flex)) return `0 0 ${$flex}`
+  }, [$flex])
 
   const attrs = omit(props, excluded)
 

@@ -1,6 +1,6 @@
 import { isString } from '@kpi/shared'
 import type { ReactNode } from 'react'
-import type { FieldMeta } from '@kpi/internal/types/form/internal_props'
+import type { FieldMeta } from '@kpi/internal/esm/form/internal_props'
 
 import type { ValidateStatus } from '../props'
 

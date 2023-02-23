@@ -24,6 +24,7 @@ function getBabelConfig(useEsm) {
     ],
     plugins: ['@babel/plugin-transform-runtime'],
     assumptions: {
+      pureGetters: true,
       ignoreToPrimitiveHint: true,
       setComputedProperties: true,
       objectRestNoSymbols: true,
@@ -41,6 +42,8 @@ function getBabelConfig(useEsm) {
 /** 使用babel 编译 ts 文件 */
 function compileCode(config, packagePath, dir, path) {
   const sourcePath = resolve(packagePath, path)
+
+  console.log('compile at:', sourcePath)
 
   transformFileAsync(sourcePath, config)
     .then((output) => {

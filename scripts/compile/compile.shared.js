@@ -1,10 +1,13 @@
 const chokidar = require('chokidar')
-const { resolveApp } = require('./utils')
+const { resolveApp, removeCompileDist } = require('./utils')
 const compileCode = require('./utils/compile.code')
+const compileType = require('./utils/compile.type')
 
 const packagePath = resolveApp('.')
 
 const watch = process.argv.slice(2).some((argv) => /^-{1,2}w(atch)?/g.test(argv))
+
+!watch && removeCompileDist(packagePath, 'esm', 'lib')
 
 const codeWatcher = chokidar.watch('./src/**/*.ts{,x}', {
   cwd: packagePath,
@@ -13,3 +16,5 @@ const codeWatcher = chokidar.watch('./src/**/*.ts{,x}', {
 })
 
 compileCode(watch, packagePath, codeWatcher)
+
+compileType(packagePath, watch)

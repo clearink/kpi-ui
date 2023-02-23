@@ -258,7 +258,14 @@ export class FormInitialControl<State = any> {
 /** 负责表单字段                                           */
 /** ==================================================== */
 export class FormControlsControl {
-  private _controls = new Set<FormFieldControl>()
+  private _controls = {
+    // 存放全部
+    all: [] as FormFieldControl[],
+    // 存放有效key
+    pure: [] as FormFieldControl[],
+    // key 映射数据
+    map: new Map<string, FormFieldControl[]>(),
+  }
 
   constructor(private $inject: { $props: FormPropsControl }) {}
 
@@ -266,13 +273,47 @@ export class FormControlsControl {
     return this.$inject.$props
   }
 
+  // 根据条件存放 control 到不同的地方
+  private pushControl = (control, $initial: FormInitialControl) => {
+    const key = control._key
+
+    control.setParent($initial)
+
+    const controls = this._controls
+    const { all, pure, map } = controls
+
+    all.push(control)
+
+    if (key) {
+      const cache = map.get(key) ?? []
+
+      cache.push(control)
+
+      map.set(key, cache)
+      pure.push(control)
+    }
+
+    // popControl
+    return () => {
+      controls.all = controls.all.filter((field) => field !== control)
+
+      if (!key) return
+
+      controls.pure = controls.pure.filter((field) => field !== control)
+
+      const cache = map.get(key)!
+
+      const next = cache.filter((field) => field !== control)
+
+      next.length ? map.set(key, next) : map.delete(key)
+    }
+  }
+
   // 获取字段,根据参数判断是否需要去除没有name的字段
   getControls = (pure = false) => {
-    const controls = [...this._controls.values()]
+    if (pure) return this._controls.pure
 
-    if (!pure) return controls
-
-    return controls.filter((control) => control._key)
+    return this._controls.all
   }
 
   // 获取相同name的字段,不传参数认为获取全部有name的字段
@@ -280,19 +321,18 @@ export class FormControlsControl {
     removeInvalid: R,
     nameList?: NamePath[]
   ): ControlsByNameReturn<R> => {
-    const controls = this.getControls(true)
-    if (isUndefined(nameList)) return controls
+    if (isUndefined(nameList)) return this.getControls(true)
+
+    const controls = this._controls.map
 
     return nameList.reduce((result, path) => {
       const key = _getName(path)
 
-      // 未注册
-      if (!controls.find((control) => control._key === key)) {
-        if (!removeInvalid) result.push(new InvalidField(toArray(path)))
-        return result
-      }
+      const cache = controls.get(key)
 
-      controls.forEach((control) => control._key === key && result.push(control))
+      if (!cache && !removeInvalid) result.push(new InvalidField(path))
+
+      cache?.forEach((control) => result.push(control))
 
       return result
     }, [] as any[])
@@ -307,7 +347,7 @@ export class FormControlsControl {
   registerField = (control: FormFieldControl, dispatch: FormDispatchControl) => {
     const { $state, $initial } = dispatch
 
-    this._controls.add(control.setParent($initial))
+    const popControl = this.pushControl(control, $initial)
 
     dispatch.dispatch({ type: 'registerField', control })
 
@@ -315,7 +355,7 @@ export class FormControlsControl {
     return () => {
       const { _key: key, _name: name, _props: props } = control
 
-      this._controls.delete(control)
+      popControl()
 
       const preserve = props.preserve ?? this.$props.props.preserve ?? true
 
@@ -510,6 +550,7 @@ export class FormDispatchControl<State = any> {
   }
 
   // 更新视图
+  // TODO: cost time 51.6ms
   updateControl = (filter: (control: FormFieldControl) => boolean) => {
     // 获取需要更新的 control
     const controls = this.$controls.getControls().filter(filter)
@@ -642,13 +683,15 @@ export class FormDispatchControl<State = any> {
   // 校验多个字段, 不传默认校验全部
   validateFields = (fields?: NamePath[]) => {
     const { getFieldValue, getFieldsValue } = this.$state
-    const { getFieldsError } = this.$controls
+    const { getFieldsError, getValidateControls } = this.$controls
 
-    const controls = this.$controls.getValidateControls(fields)
+    const controls = getValidateControls(fields)
 
     const validateList = controls.map((control) => {
       const path = control._name
-      control.setFieldMeta({ touched: true })
+
+      !control.isTouched() && control.setFieldMeta({ touched: true })
+
       return control.validate(getFieldValue(path), { path })
     })
 

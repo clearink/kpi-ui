@@ -8,7 +8,7 @@ import {
   toArray,
   useIsomorphicEffect,
 } from '@kpi/shared'
-import type { FieldMeta } from '@kpi/internal/types/form/internal_props'
+import type { FieldMeta } from '@kpi/internal/esm/form/internal_props'
 import Row from '../../../row'
 import FormItemLabel from './label'
 import FormItemInput from './input'
@@ -69,14 +69,14 @@ function CommonFormItem(props: FormItemProps) {
   // if (isValidElement(children)) {
   //   // TODO: 检测是否支持 ref 获取 dom 用于实现 scrollToField
   // }
-  const [meta, setMeta] = useDebounceState(10, makeEmptyMeta)
+  const [meta, setMeta] = useDebounceState(45, makeEmptyMeta)
   const handleMetaChange = useCallback((fieldMeta: FieldMeta) => {
     const next = fieldMeta as FieldMeta & { mounted: boolean }
     if (next.mounted) setMeta(omit(next, ['mounted']))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const [subMeta, setSubMeta] = useDebounceState(10, makeEmptyMeta)
+  const [subMeta, setSubMeta] = useDebounceState(45, makeEmptyMeta)
   const handleSubMetaChange = useCallback((fieldMeta: FieldMeta) => {
     const next = fieldMeta as FieldMeta & { mounted: boolean }
     if (next.mounted) setSubMeta(omit(next, ['mounted']))

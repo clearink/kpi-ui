@@ -1,11 +1,12 @@
 /* eslint-disable max-classes-per-file, class-methods-use-this */
-import { isEqual, isFunction, isNullish, isUndefined } from '@kpi/shared'
-import type { Options, SchemaIssue } from '@kpi/validate/types/interface'
+import { isArray, isBoolean, isEqual, isFunction, isUndefined, toArray } from '@kpi/shared'
+import type { Options, SchemaIssue } from '@kpi/validate/esm/interface'
 import BaseControl from './base_control'
 import { getIn } from '../utils/value'
 import { _getName } from '../utils/path'
 
 import type { FormInitialControl } from './group_control'
+import type { NamePath } from '../props'
 import type {
   UpdateFieldActionType as ActionType,
   InternalFormFieldProps,
@@ -49,7 +50,6 @@ export default class FormFieldControl extends BaseControl {
 
   public setParent = (parent: FormInitialControl) => {
     this._parent = parent
-    return this
   }
 
   public _touched = false
@@ -111,12 +111,12 @@ export default class FormFieldControl extends BaseControl {
   public setFieldMeta = (meta: Partial<FieldMeta>) => {
     const prev = this.getFieldMeta()
     // 同步全部
-    !isNullish(meta.dirty) && (this._dirty = meta.dirty)
-    !isNullish(meta.touched) && (this._touched = meta.touched)
-    !isNullish(meta.errors) && (this._errors = meta.errors)
-    !isNullish(meta.warnings) && (this._warnings = meta.warnings)
+    isBoolean(meta.dirty) && (this._dirty = meta.dirty)
+    isBoolean(meta.touched) && (this._touched = meta.touched)
+    isArray(meta.errors) && (this._errors = meta.errors)
+    isArray(meta.warnings) && (this._warnings = meta.warnings)
 
-    !isNullish(meta.validating) && (this._validating = meta.validating)
+    isBoolean(meta.validating) && (this._validating = meta.validating)
 
     this.lastValidate = this._validating ? Promise.resolve([]) : null
 
@@ -161,5 +161,9 @@ export class InvalidField {
     return field instanceof InvalidField
   }
 
-  constructor(public name: InternalNamePath) {}
+  public name: InternalNamePath
+
+  constructor(name: NamePath) {
+    this.name = toArray(name)
+  }
 }

@@ -28,6 +28,13 @@ function removeFile(packagePath, dir, path) {
   if (existsSync(sourcePath)) removeSync(sourcePath)
 }
 
+function removeCompileDist(packagePath, ...targets) {
+  targets.forEach((dir) => {
+    const fullPath = resolve(packagePath, dir)
+    if (existsSync(fullPath)) removeSync(fullPath)
+  })
+}
+
 function safeWriteFile(path, data) {
   ensureFileSync(path)
   writeFileSync(path, data, { encoding: 'utf-8' })
@@ -45,4 +52,5 @@ module.exports = {
   replaceExtname,
   safeWriteFile,
   safeCopyFile,
+  removeCompileDist,
 }

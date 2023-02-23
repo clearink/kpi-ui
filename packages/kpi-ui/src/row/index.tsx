@@ -20,27 +20,28 @@ function Row(props: RowProps, ref: ForwardedRef<HTMLDivElement>) {
 
   const [hGutter, vGutter] = useRowGutter(gutter)
 
-  const contextState = useMemo(() => {
-    return { gapSupport, hGutter, vGutter }
+  const contextState = useMemo(() => ({ hGutter, vGutter }), [hGutter, vGutter])
+
+  const gapStyle = useMemo(() => {
+    const [h, v] = [hGutter / -2, vGutter / -2]
+
+    const style: CSSProperties = {}
+
+    if (h) {
+      style.marginLeft = h
+      style.marginRight = h
+    }
+    if (v && gapSupport) {
+      style.marginLeft = h
+      style.marginRight = h
+      style.rowGap = vGutter
+    } else if (v) {
+      style.marginTop = v
+      style.marginBottom = v
+    }
+
+    return style
   }, [gapSupport, hGutter, vGutter])
-
-  const [h, v] = [hGutter / -2, vGutter / -2]
-
-  const gapStyle: CSSProperties = {}
-
-  if (h) {
-    gapStyle.marginLeft = h
-    gapStyle.marginRight = h
-  }
-
-  if (v && gapSupport) {
-    gapStyle.marginLeft = h
-    gapStyle.marginRight = h
-    gapStyle.rowGap = vGutter
-  } else if (v) {
-    gapStyle.marginTop = v
-    gapStyle.marginBottom = v
-  }
 
   const attrs = omit(props, excluded)
 

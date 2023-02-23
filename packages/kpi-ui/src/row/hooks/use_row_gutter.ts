@@ -1,4 +1,4 @@
-import { isArray, isNumber, isUndefined } from '@kpi/shared'
+import { isArray, isNumber } from '@kpi/shared'
 import { useBreakpoint, matchBreakpoint } from '../../_internal/hooks'
 
 import type { RowProps } from '../props'
@@ -18,7 +18,6 @@ export default function useRowGutter(gutter: RowProps['gutter']) {
   })
 
   return $gutter.map((gap) => {
-    if (isUndefined(gap)) return 0
     if (isNumber(gap)) return gap
     return matchBreakpoint(matches, gap) ?? 0
   })

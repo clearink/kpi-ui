@@ -2,12 +2,10 @@
 import { ctxHelper } from '@kpi/internal'
 
 export interface RowContextState {
-  gapSupport: boolean
   hGutter: number
   vGutter: number
 }
 export default ctxHelper<RowContextState>({
-  gapSupport: false,
   hGutter: 0,
   vGutter: 0,
 })
