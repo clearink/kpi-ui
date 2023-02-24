@@ -57,12 +57,8 @@ export default class FormFieldControl extends BaseControl {
     this._parent = parent
   }
 
-  private _touched = false
-
   // 字段是否 touch 过
-  public get touched() {
-    return this._touched
-  }
+  public _touched = false
 
   private _dirty = false
 
@@ -77,11 +73,7 @@ export default class FormFieldControl extends BaseControl {
     return !isUndefined(parent.getInitialValue(this._name))
   }
 
-  private _validating = false
-
-  public get validating() {
-    return this._validating
-  }
+  public _validating = false
 
   public _errors: string[] = []
 
@@ -92,7 +84,7 @@ export default class FormFieldControl extends BaseControl {
       mounted: this.mounted(),
       name: this._name,
       dirty: this.dirty,
-      touched: this.touched,
+      touched: this._touched,
       validating: this._validating,
       errors: this._errors,
       warnings: [], // TODO: 后续加上

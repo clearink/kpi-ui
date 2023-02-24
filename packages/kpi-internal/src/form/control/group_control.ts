@@ -33,18 +33,18 @@ export default class FormGroupControl<State = any> {
   constructor(_forceUpdate: () => void, mounted: () => boolean) {
     this.$props = new FormPropsControl(_forceUpdate, mounted)
 
-    this.$controls = new FormControlsControl({ $props: this.$props })
+    this.$controls = new FormControlsControl(this.$props)
 
-    this.$state = new FormStateControl<State>({ $controls: this.$controls })
+    this.$state = new FormStateControl<State>(this.$controls)
 
-    this.$initial = new FormInitialControl<State>({ $state: this.$state })
+    this.$initial = new FormInitialControl<State>(this.$state)
 
-    this.$dispatch = new FormDispatchControl({
-      $props: this.$props,
-      $controls: this.$controls,
-      $state: this.$state,
-      $initial: this.$initial,
-    })
+    this.$dispatch = new FormDispatchControl(
+      this.$props,
+      this.$controls,
+      this.$state,
+      this.$initial
+    )
   }
 
   // 向外暴露的函数
@@ -107,11 +107,7 @@ export default class FormGroupControl<State = any> {
 /** 负责 formProps                                       */
 /** ==================================================== */
 export class FormPropsControl extends BaseControl {
-  private _props: Partial<FormProps> = {}
-
-  get props() {
-    return this._props
-  }
+  _props: Partial<FormProps> = {}
 
   get useRenderProps() {
     return isFunction(this._props.children)
@@ -162,7 +158,7 @@ export class FormDependenciesControl {
     controls.forEach((control) => {
       dependencies.get(control._key)?.forEach((field) => {
         // 只获取 touched 与 dirty 字段
-        if (field.dirty || field.touched) res.add(field)
+        if (field.dirty || field._touched) res.add(field)
       })
     })
 
@@ -196,11 +192,7 @@ export class FormWatchValueControl {
 export class FormInitialControl<State = any> {
   private _initial = {} as Partial<State>
 
-  constructor(private $inject: { $state: FormStateControl<State> }) {}
-
-  private get $state() {
-    return this.$inject.$state
-  }
+  constructor(private $state: FormStateControl<State>) {}
 
   private getFieldValue = (namePath: NamePath) => {
     return this.$state.getFieldValue(namePath)
@@ -268,11 +260,7 @@ export class FormControlsControl {
     map: new Map<string, FormFieldControl[]>(),
   }
 
-  constructor(private $inject: { $props: FormPropsControl }) {}
-
-  private get $props() {
-    return this.$inject.$props
-  }
+  constructor(private $props: FormPropsControl) {}
 
   // 根据条件存放 control 到不同的地方
   private pushControl = (control: FormFieldControl, $initial: FormInitialControl) => {
@@ -359,7 +347,7 @@ export class FormControlsControl {
 
       popControl()
 
-      const preserve = props.preserve ?? this.$props.props.preserve ?? true
+      const preserve = props.preserve ?? this.$props._props.preserve ?? true
 
       // 保留数据 不做任何处理
       if (preserve || props.isListField) return
@@ -405,7 +393,7 @@ export class FormControlsControl {
   isFieldsTouched = (nameList?: NamePath[]) => {
     const allFields = this.getControlsByName(true, nameList)
 
-    return allFields.some((field) => !field.touched)
+    return allFields.some((field) => !field._touched)
   }
 
   isFieldValidating = (namePath: NamePath) => {
@@ -415,7 +403,7 @@ export class FormControlsControl {
   isFieldsValidating = (nameList?: NamePath[]) => {
     const allFields = this.getControlsByName(true, nameList)
 
-    return allFields.some((field) => !field.validating)
+    return allFields.some((field) => !field._validating)
   }
 }
 
@@ -425,14 +413,10 @@ export class FormControlsControl {
 export class FormStateControl<State = any> {
   private _state = {} as State
 
-  constructor(private $inject: { $controls: FormControlsControl }) {}
+  constructor(private $controls: FormControlsControl) {}
 
   get state() {
     return this._state
-  }
-
-  private get $controls() {
-    return this.$inject.$controls
   }
 
   setFieldValue = (namePath: NamePath, value: any) => {
@@ -521,29 +505,11 @@ export class FormDispatchControl<State = any> {
   $watch = new FormWatchValueControl()
 
   constructor(
-    private $inject: {
-      $props: FormPropsControl
-      $controls: FormControlsControl
-      $state: FormStateControl<State>
-      $initial: FormInitialControl
-    }
+    private $props: FormPropsControl,
+    private $controls: FormControlsControl,
+    public $state: FormStateControl<State>,
+    public $initial: FormInitialControl
   ) {}
-
-  private get $props() {
-    return this.$inject.$props
-  }
-
-  private get $controls() {
-    return this.$inject.$controls
-  }
-
-  get $state() {
-    return this.$inject.$state
-  }
-
-  get $initial() {
-    return this.$inject.$initial
-  }
 
   // 注册字段
   registerField = (control: FormFieldControl) => {
@@ -553,7 +519,11 @@ export class FormDispatchControl<State = any> {
   // 更新视图
   updateControl = (filter: (control: FormFieldControl) => boolean) => {
     // 获取需要更新的 control
+    window.diff = window.diff || []
+    const start = performance.now()
     const controls = this.$controls.getControls().filter(filter)
+    const end = performance.now()
+    window.diff.push(end - start)
 
     // 校验依赖字段
     const dependencies = this.publishDependentControl(controls)
@@ -693,7 +663,7 @@ export class FormDispatchControl<State = any> {
     const validateList = controls.map((control) => {
       const path = control._name
 
-      !control.touched && control.metaUpdate({ touched: true })
+      !control._touched && control.metaUpdate({ touched: true })
 
       return control.validate(getFieldValue(path), { path })
     })
@@ -742,7 +712,7 @@ export class FormDispatchControl<State = any> {
   /** ==================================================== */
   // 触发 onValuesChange 回调
   triggerOnValuesChange = (state: State, path: InternalNamePath) => {
-    const { onValuesChange } = this.$props.props
+    const { onValuesChange } = this.$props._props
 
     if (!onValuesChange) return
 
@@ -753,7 +723,7 @@ export class FormDispatchControl<State = any> {
 
   // 触发 onFieldsChange 回调
   triggerOnFieldsChange = (nameList: NamePath[]) => {
-    const { onFieldsChange } = this.$props.props
+    const { onFieldsChange } = this.$props._props
 
     if (!onFieldsChange) return
 
@@ -764,7 +734,8 @@ export class FormDispatchControl<State = any> {
 
   // 触发 onFinish 回调
   triggerOnFinish = (values: State | 'invalid-validate') => {
-    const { onFinish } = this.$props.props
+    const { onFinish } = this.$props._props
+
     if (!onFinish || values === 'invalid-validate') return
 
     try {
@@ -777,7 +748,7 @@ export class FormDispatchControl<State = any> {
 
   // 触发 onFailed 回调
   triggerOnFailed = (errors: any) => {
-    const { onFailed } = this.$props.props
+    const { onFailed } = this.$props._props
 
     if (!onFailed) return
 
