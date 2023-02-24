@@ -10,7 +10,8 @@
   "license": "ISC",
   "scripts": {
     "dev": "webpack serve -c webpack.dev.js",
-    "build": "webpack -c webpack.prod.js"
+    "build": "webpack -c webpack.prod.js",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@kpi/ui": "workspace:*",
@@ -37,6 +38,7 @@
     "eslint": "^8.32.0",
     "eslint-webpack-plugin": "^3.2.0",
     "fork-ts-checker-webpack-plugin": "^7.3.0",
+    "gh-pages": "^5.0.0",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.7.2",
     "postcss": "^8.4.21",

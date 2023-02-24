@@ -32,12 +32,21 @@ export default function App() {
           NoStyle: {noStyle ? 'true' : 'false'}
         </Button>
         <Button type="primary" onClick={() => setNoRule((p) => !p)}>
-          NoRule: {noStyle ? 'true' : 'false'}
+          NoRule: {noRule ? 'true' : 'false'}
         </Button>
         <span>input number</span>
         <Input value={inputNumber} onChange={(e) => setInputNumber(parseInt(e.target.value, 10))} />
       </Space>
-      <Form as="div" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Form
+        as="div"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          width: 600,
+          margin: '0 auto',
+        }}
+      >
         {Array.from({ length: inputNumber }, (_, i) => (
           <Form.Item
             key={i}
