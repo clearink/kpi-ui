@@ -43,7 +43,7 @@ export const FieldContext = ctxHelper<InternalFormInstance>({
       subscribe: notFoundContext,
       ensureInitialized: notFoundContext,
       getControl: notFoundContext,
-      setFieldMeta: notFoundContext,
+      metaUpdate: notFoundContext,
       setFormProps: notFoundContext,
       dispatch: notFoundContext,
       registerSubscribe: notFoundContext,

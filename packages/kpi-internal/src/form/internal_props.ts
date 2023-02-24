@@ -113,7 +113,7 @@ export interface InternalHookReturn<State = any> {
    * @private
    * @zh 根据名称设置 fieldMeta 属性
    */
-  setFieldMeta: (namePath: NamePath, meta: Partial<FieldMeta>) => void
+  metaUpdate: (namePath: NamePath, meta: Partial<FieldMeta>) => void
 
   /**
    * @private

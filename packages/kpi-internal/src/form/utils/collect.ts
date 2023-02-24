@@ -52,7 +52,7 @@ export default function collectInjectProps(
 
         if (isFunction(formatter)) next = formatter(next, value, formInstance.getFieldsValue())
 
-        internalHook?.setFieldMeta(name, { touched: true, dirty: true })
+        internalHook?.metaUpdate(name, { touched: true, dirty: true })
 
         internalHook?.dispatch({ name, value: next, type: 'fieldEvent' })
 

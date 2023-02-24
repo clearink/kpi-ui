@@ -94,7 +94,7 @@ export default class FormGroupControl<State = any> {
       setInitialValues: $initial.setInitialValues,
       registerField: $dispatch.registerField,
       registerWatch: $watch.registerWatch,
-      setFieldMeta: $controls.setFieldMeta,
+      metaUpdate: $controls.metaUpdate,
       setFields: $dispatch.setFields,
       dispatch: $dispatch.dispatch,
       ensureInitialized: $initial.ensureInitialized,
@@ -373,9 +373,9 @@ export class FormControlsControl {
   }
 
   // 设置 FormField 的 meta 属性
-  setFieldMeta = (namePath: NamePath, meta: Partial<FieldMeta>) => {
+  metaUpdate = (namePath: NamePath, meta: Partial<FieldMeta>) => {
     this.getControlsByName(true, [namePath]).forEach((control) => {
-      control.setFieldMeta(meta)
+      control.metaUpdate(meta)
     })
   }
 
@@ -493,7 +493,7 @@ export class FormStateControl<State = any> {
       const name = control._name
       const value = this.getFieldValue(name)
       // TODO: 验证 fields 与 onFieldsChange 一起使用时 errors 是否一直为空
-      return { ...control.getFieldMeta(), name, value }
+      return { ...control.meta, name, value }
     })
   }
 
@@ -508,7 +508,7 @@ export class FormStateControl<State = any> {
 
   // 清除字段卸载时的副作用
   cleanupField = (control: FormFieldControl) => {
-    control.setFieldMeta({}) // 触发 mounted.current = false
+    control.metaUpdate({}) // 触发 mounted.current = false
     return this.deleteFieldValue(control._name)
   }
 }
@@ -594,7 +594,7 @@ export class FormDispatchControl<State = any> {
     if (action.type === 'setFields') {
       const { type, fields } = action
       // 更新字段 meta 属性
-      fields.forEach((field) => $controls.setFieldMeta(field.name, field as FieldMeta))
+      fields.forEach((field) => $controls.metaUpdate(field.name, field as FieldMeta))
       // 获得更新数据
       const [prev, next] = $state.setFieldsData(fields)
       // 更新字段
@@ -637,7 +637,7 @@ export class FormDispatchControl<State = any> {
       // 设置字段初始值
       controls.forEach($initial.ensureInitialized)
       // 重挂载组件以消除副作用
-      controls.forEach((control) => control.resetField())
+      controls.forEach((control) => control.reset())
 
       const next = $state.state
       return this.updateControl((control) => {
@@ -694,7 +694,7 @@ export class FormDispatchControl<State = any> {
     const validateList = controls.map((control) => {
       const path = control._name
 
-      !control.touched && control.setFieldMeta({ touched: true })
+      !control.touched && control.metaUpdate({ touched: true })
 
       return control.validate(getFieldValue(path), { path })
     })

@@ -23,7 +23,7 @@ export default class FormFieldControl extends BaseControl {
 
   public constructor(
     _forceUpdate: () => void,
-    private _resetField: () => void,
+    private _reset: () => void,
     private mounted: () => boolean
   ) {
     super(_forceUpdate, mounted)
@@ -83,19 +83,7 @@ export default class FormFieldControl extends BaseControl {
 
   public _warnings: string[] = []
 
-  public resetField = () => {
-    this.setFieldMeta({
-      dirty: false,
-      touched: false,
-      errors: [],
-      warnings: [],
-      validating: false,
-    })
-    this.lastValidate = null
-    this.mounted() && this._resetField()
-  }
-
-  public getFieldMeta = (): FieldMeta & { mounted: boolean } => {
+  public get meta(): FieldMeta & { mounted: boolean } {
     return {
       mounted: this.mounted(),
       name: this._name,
@@ -107,12 +95,25 @@ export default class FormFieldControl extends BaseControl {
     }
   }
 
+  public reset = () => {
+    this.metaUpdate({
+      dirty: false,
+      touched: false,
+      errors: [],
+      warnings: [],
+      validating: false,
+    })
+
+    this.lastValidate = null
+    this.mounted() && this._reset()
+  }
+
   public isValidating = () => {
     return this._validating
   }
 
-  public setFieldMeta = (meta: Partial<FieldMeta>) => {
-    const prev = this.getFieldMeta()
+  public metaUpdate = (meta: Partial<FieldMeta>) => {
+    const prev = this.meta
     // 同步全部
     !isNullish(meta.dirty) && (this._dirty = meta.dirty)
     !isNullish(meta.touched) && (this._touched = meta.touched)
@@ -123,12 +124,15 @@ export default class FormFieldControl extends BaseControl {
 
     this.lastValidate = this._validating ? Promise.resolve([]) : null
 
-    const current = this.getFieldMeta()
+    const current = this.meta
 
     if (isEqual(prev, current)) return
 
-    this._props.onMetaChange?.(current)
-    isFunction(this._props.children) && this.forceUpdate()
+    const { onMetaChange, children } = this._props
+
+    onMetaChange?.(current)
+
+    isFunction(children) && this.forceUpdate()
   }
 
   private lastValidate: null | Promise<any> = null
@@ -140,7 +144,7 @@ export default class FormFieldControl extends BaseControl {
     // 没有操作过的字段不能校验, 没有校验规则的也不用校验
     if (!this._touched || !validator || !this._key) return
 
-    this.setFieldMeta({ validating: true, errors: [], warnings: [] })
+    this.metaUpdate({ validating: true, errors: [], warnings: [] })
 
     const promise = validator.validate(value, options)
     this.lastValidate = promise
@@ -153,7 +157,7 @@ export default class FormFieldControl extends BaseControl {
 
         const { issues = [] } = error as { issues: SchemaIssue[] }
         const errors = issues.map((issue) => issue.message) as string[]
-        this.setFieldMeta({ validating: false, errors })
+        this.metaUpdate({ validating: false, errors })
       })
   }
 }

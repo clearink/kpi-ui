@@ -13,7 +13,7 @@ export default function normalizeChildren(
 ) {
   return function normalizeInner(_children: InternalFormFieldProps['children']): InnerReturn {
     if (isFunction(_children)) {
-      const renderProps = _children(collectInject(), control.getFieldMeta(), formInstance)
+      const renderProps = _children(collectInject(), control.meta, formInstance)
       return { ...normalizeInner(renderProps as ReactElement), functional: true }
     }
     // 去除 fragment，nullish 后
