@@ -275,7 +275,7 @@ export class FormControlsControl {
   }
 
   // 根据条件存放 control 到不同的地方
-  private pushControl = (control, $initial: FormInitialControl) => {
+  private pushControl = (control: FormFieldControl, $initial: FormInitialControl) => {
     const key = control._key
 
     control.setParent($initial)
@@ -385,13 +385,14 @@ export class FormControlsControl {
   }
 
   getFieldsError = (nameList?: NamePath[]) => {
-    return this.getControlsByName(false, nameList).map((control) => {
-      if (InvalidField.isInvalid(control)) {
-        const { name } = control
-        return { name, errors: [], warnings: [] }
+    const allFields = this.getControlsByName(false, nameList)
+
+    return allFields.map((field) => {
+      if (InvalidField.isInvalid(field)) {
+        return { name: field.name, errors: [], warnings: [] }
       }
 
-      const { _name: name, _errors: errors } = control
+      const { _name: name, _errors: errors } = field
       return { name, errors, warnings: [] }
     })
   }
@@ -403,9 +404,8 @@ export class FormControlsControl {
   // 检查全部字段是否都被触摸过
   isFieldsTouched = (nameList?: NamePath[]) => {
     const allFields = this.getControlsByName(true, nameList)
-    const untouchedFields = allFields.filter((control) => !control.touched)
 
-    return untouchedFields.length === 0
+    return allFields.some((field) => !field.touched)
   }
 
   isFieldValidating = (namePath: NamePath) => {
@@ -414,9 +414,8 @@ export class FormControlsControl {
 
   isFieldsValidating = (nameList?: NamePath[]) => {
     const allFields = this.getControlsByName(true, nameList)
-    const unValidatingFields = allFields.filter((control) => !control.isValidating())
 
-    return unValidatingFields.length === 0
+    return allFields.some((field) => !field.validating)
   }
 }
 

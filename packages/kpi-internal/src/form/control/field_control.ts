@@ -51,20 +51,20 @@ export default class FormFieldControl extends BaseControl {
     this._name = props.name ?? []
   }
 
-  public _parent: FormInitialControl | null = null
+  private _parent: FormInitialControl | null = null
 
   public setParent = (parent: FormInitialControl) => {
     this._parent = parent
   }
 
-  public _touched = false
+  private _touched = false
 
   // 字段是否 touch 过
   public get touched() {
     return this._touched
   }
 
-  public _dirty = false
+  private _dirty = false
 
   // 字段是否改变过
   public get dirty() {
@@ -77,7 +77,11 @@ export default class FormFieldControl extends BaseControl {
     return !isUndefined(parent.getInitialValue(this._name))
   }
 
-  public _validating = false
+  private _validating = false
+
+  public get validating() {
+    return this._validating
+  }
 
   public _errors: string[] = []
 
@@ -106,10 +110,6 @@ export default class FormFieldControl extends BaseControl {
 
     this.lastValidate = null
     this.mounted() && this._reset()
-  }
-
-  public isValidating = () => {
-    return this._validating
   }
 
   public metaUpdate = (meta: Partial<FieldMeta>) => {
