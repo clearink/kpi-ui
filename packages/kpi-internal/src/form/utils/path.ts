@@ -14,7 +14,7 @@ export function isDependent(path: InternalNamePath, other: InternalNamePath) {
   return len > 0
 }
 
-const SEPARATOR = '_$_KPI_FORM_CONTROL_$_'
+const SEPARATOR = '$_$'
 // 获取名称字符串
 export function _getName(namePath: NamePath) {
   return toArray(namePath).reduce<string>((result, item, index) => {

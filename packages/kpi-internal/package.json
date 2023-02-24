@@ -14,7 +14,9 @@
   "author": "clearink",
   "license": "ISC",
   "scripts": {
-    "build": "rollup -c"
+    "build:type": "tsc -p .",
+    "build:code": "node ../../scripts/compile.internal.js",
+    "build": "yarn run build:code && yarn run build:type"
   },
   "peerDependencies": {
     "react": "^18.2.0",

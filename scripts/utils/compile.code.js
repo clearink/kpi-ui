@@ -2,7 +2,8 @@ const { resolve } = require('path')
 const { transformFileAsync } = require('@babel/core')
 const { removeFile, getOutputPath, replaceExtname, safeWriteFile } = require('.')
 
-const browserslistConfigFile = resolve(__dirname, '../../../.browserslistrc')
+const browserslistConfigFile = resolve(__dirname, '../../.browserslistrc')
+
 /**
  * @param {boolean} useEsm
  * @returns object

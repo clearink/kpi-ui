@@ -3,5 +3,14 @@ export { default as ctxHelper } from './context/helper'
 export { default as withDefaultProps } from './hocs'
 
 // types
-export * from './form/internal_props'
-export * from './form/props'
+export type { FieldMeta } from './form/internal_props'
+export type {
+  FormInstance,
+  FormProps,
+  FormFieldProps,
+  FormListProps,
+  NamePath,
+  ListField,
+  FormArrayHelpers,
+  FieldData,
+} from './form/props'

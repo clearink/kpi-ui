@@ -14,9 +14,10 @@ import type {
   InternalFormInstance,
   InternalHookReturn,
   UpdateFieldAction as Action,
+  InternalNamePath,
 } from '../internal_props'
 
-export const HOOK_MARK = '_$_KPI_FORM_HOOK_MARK_$_'
+export const HOOK_MARK = '_$KPI$_'
 
 export default class FormGroupControl<State = any> {
   $props: FormPropsControl
@@ -161,7 +162,7 @@ export class FormDependenciesControl {
     controls.forEach((control) => {
       dependencies.get(control._key)?.forEach((field) => {
         // 只获取 touched 与 dirty 字段
-        if (field.isDirty() || field.isTouched()) res.add(field)
+        if (field.dirty || field.touched) res.add(field)
       })
     })
 
@@ -402,7 +403,7 @@ export class FormControlsControl {
   // 检查全部字段是否都被触摸过
   isFieldsTouched = (nameList?: NamePath[]) => {
     const allFields = this.getControlsByName(true, nameList)
-    const untouchedFields = allFields.filter((control) => !control.isTouched())
+    const untouchedFields = allFields.filter((control) => !control.touched)
 
     return untouchedFields.length === 0
   }
@@ -582,7 +583,7 @@ export class FormDispatchControl<State = any> {
         return control.shouldUpdate(prev, next, type)
       })
       // 触发回调
-      this.triggerOnValuesChange(cloneWithPath(next, name))
+      this.triggerOnValuesChange(next, name)
 
       const nameList = [action.name, ...dependencies.map(({ _name }) => _name)]
 
@@ -617,8 +618,11 @@ export class FormDispatchControl<State = any> {
 
       return this.updateControl((control) => {
         if (control === field) return false
+
         if (control._key === field._key) return true
-        if (!control._props.shouldUpdate) return false
+
+        if (!control._handler) return false
+
         return control.shouldUpdate(prev, next, type)
       })
     }
@@ -690,7 +694,7 @@ export class FormDispatchControl<State = any> {
     const validateList = controls.map((control) => {
       const path = control._name
 
-      !control.isTouched() && control.setFieldMeta({ touched: true })
+      !control.touched && control.setFieldMeta({ touched: true })
 
       return control.validate(getFieldValue(path), { path })
     })
@@ -738,10 +742,12 @@ export class FormDispatchControl<State = any> {
   /** callbacks                                            */
   /** ==================================================== */
   // 触发 onValuesChange 回调
-  triggerOnValuesChange = (changedValues: Partial<State>) => {
+  triggerOnValuesChange = (state: State, path: InternalNamePath) => {
     const { onValuesChange } = this.$props.props
 
     if (!onValuesChange) return
+
+    const changedValues = cloneWithPath(state, path)
 
     onValuesChange(changedValues, this.$state.getFieldsValue())
   }

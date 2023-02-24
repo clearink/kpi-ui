@@ -13,8 +13,9 @@
   "author": "clearink",
   "license": "ISC",
   "scripts": {
-    "build:style": "node ../../scripts/compile.ui.js",
-    "build": "yarn run build:style && rollup -c"
+    "build:type": "tsc -p .",
+    "build:code": "node ../../scripts/compile.ui.js",
+    "build": "yarn run build:code && yarn run build:type"
   },
   "dependencies": {
     "@babel/runtime": "^7.20.13",

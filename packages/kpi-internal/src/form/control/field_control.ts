@@ -19,6 +19,8 @@ export default class FormFieldControl extends BaseControl {
 
   public _name: InternalNamePath = []
 
+  public _handler: InternalFormFieldProps['shouldUpdate']
+
   public constructor(
     _forceUpdate: () => void,
     private _resetField: () => void,
@@ -28,20 +30,19 @@ export default class FormFieldControl extends BaseControl {
   }
 
   public shouldUpdate = (prev: any, next: any, type: ActionType) => {
-    const { _key: key, _name: name } = this
-    const handler = this._props.shouldUpdate
+    const { _key: key, _name: name, _handler: handler } = this
 
     if (!handler && key) return getIn(prev, name) !== getIn(next, name)
 
-    if (handler === true) return true
-
-    return isFunction(handler) ? handler(prev, next, type) : false
+    return isFunction(handler) ? handler(prev, next, type) : !!handler
   }
 
   public _props: Partial<InternalFormFieldProps> = {}
 
   public setFieldProps = (props: Partial<InternalFormFieldProps>) => {
     this._props = { ...props }
+
+    this._handler = props.shouldUpdate
 
     if (this._name === props.name) return
 
@@ -58,7 +59,23 @@ export default class FormFieldControl extends BaseControl {
 
   public _touched = false
 
+  // 字段是否 touch 过
+  public get touched() {
+    return this._touched
+  }
+
   public _dirty = false
+
+  // 字段是否改变过
+  public get dirty() {
+    if (this._dirty || !isUndefined(this._props.initialValue)) return true
+
+    const parent = this._parent
+
+    if (!parent) return false
+
+    return !isUndefined(parent.getInitialValue(this._name))
+  }
 
   public _validating = false
 
@@ -82,32 +99,12 @@ export default class FormFieldControl extends BaseControl {
     return {
       mounted: this.mounted(),
       name: this._name,
-      dirty: this.isDirty(),
-      touched: this.isTouched(),
+      dirty: this.dirty,
+      touched: this.touched,
       validating: this._validating,
       errors: this._errors,
       warnings: [], // TODO: 后续加上
     }
-  }
-
-  // 字段是否改变过
-  public isDirty = () => {
-    if (this._dirty || !isUndefined(this._props.initialValue)) {
-      return true
-    }
-
-    const parent = this._parent
-
-    if (!parent) return false
-
-    const initValue = parent.getInitialValue(this._name)
-
-    return !isUndefined(initValue)
-  }
-
-  // 字段是否 touch 过
-  public isTouched = () => {
-    return this._touched
   }
 
   public isValidating = () => {
