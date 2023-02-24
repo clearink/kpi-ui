@@ -10,7 +10,7 @@ const pkg = require('./package.json')
 
 const sourceFiles = glob
   .sync('./src/**/*.ts{,x}', {
-    ignore: ['./src/**/*(types|interface|props).ts{,x}', './src/**/style/*'],
+    ignore: ['./src/**/*(types|interface|props).ts{,x}', './src/**/style/index.ts{,x}'],
   })
   .reduce((result, file) => {
     let target = path.relative('src', file)

@@ -13,7 +13,8 @@
   "author": "clearink",
   "license": "ISC",
   "scripts": {
-    "build": "rollup -c"
+    "build:style": "node ../../scripts/compile.ui.js",
+    "build": "yarn run build:style && rollup -c"
   },
   "dependencies": {
     "@babel/runtime": "^7.20.13",
