@@ -519,11 +519,7 @@ export class FormDispatchControl<State = any> {
   // 更新视图
   updateControl = (filter: (control: FormFieldControl) => boolean) => {
     // 获取需要更新的 control
-    window.diff = window.diff || []
-    const start = performance.now()
     const controls = this.$controls.getControls().filter(filter)
-    const end = performance.now()
-    window.diff.push(end - start)
 
     // 校验依赖字段
     const dependencies = this.publishDependentControl(controls)
