@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file, class-methods-use-this */
-import { isArray, isBoolean, isEqual, isFunction, isUndefined, toArray } from '@kpi/shared'
+import { isEqual, isFunction, isNullish, isUndefined, toArray } from '@kpi/shared'
 import type { Options, SchemaIssue } from '@kpi/validate/esm/interface'
 import BaseControl from './base_control'
 import { getIn } from '../utils/value'
@@ -96,9 +96,11 @@ export default class FormFieldControl extends BaseControl {
       return true
     }
 
-    if (!this._parent) return false
+    const parent = this._parent
 
-    const initValue = this._parent.getInitialValue(this._name)
+    if (!parent) return false
+
+    const initValue = parent.getInitialValue(this._name)
 
     return !isUndefined(initValue)
   }
@@ -115,12 +117,12 @@ export default class FormFieldControl extends BaseControl {
   public setFieldMeta = (meta: Partial<FieldMeta>) => {
     const prev = this.getFieldMeta()
     // 同步全部
-    isBoolean(meta.dirty) && (this._dirty = meta.dirty)
-    isBoolean(meta.touched) && (this._touched = meta.touched)
-    isArray(meta.errors) && (this._errors = meta.errors)
-    isArray(meta.warnings) && (this._warnings = meta.warnings)
+    !isNullish(meta.dirty) && (this._dirty = meta.dirty)
+    !isNullish(meta.touched) && (this._touched = meta.touched)
+    !isNullish(meta.errors) && (this._errors = meta.errors)
+    !isNullish(meta.warnings) && (this._warnings = meta.warnings)
 
-    isBoolean(meta.validating) && (this._validating = meta.validating)
+    !isNullish(meta.validating) && (this._validating = meta.validating)
 
     this.lastValidate = this._validating ? Promise.resolve([]) : null
 

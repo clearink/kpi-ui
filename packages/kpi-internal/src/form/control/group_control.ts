@@ -551,7 +551,6 @@ export class FormDispatchControl<State = any> {
   }
 
   // 更新视图
-  // TODO: cost time 51.6ms
   updateControl = (filter: (control: FormFieldControl) => boolean) => {
     // 获取需要更新的 control
     const controls = this.$controls.getControls().filter(filter)
