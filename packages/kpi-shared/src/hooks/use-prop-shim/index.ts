@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { useMemo, useRef } from 'react'
-import { hasOwn, isArray, isObject } from '../../utils'
+import { hasOwn, isObject } from '../../utils'
 
 /**
  * @description

@@ -8,7 +8,7 @@ import {
   toArray,
   useIsomorphicEffect,
 } from '@kpi/shared'
-import type { FieldMeta } from '@kpi/internal/esm/form/internal_props'
+import type { FieldMeta } from '@kpi/internal'
 import Row from '../../../row'
 import FormItemLabel from './label'
 import FormItemInput from './input'

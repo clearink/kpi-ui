@@ -49,7 +49,7 @@ export function useFormItemClass(
   })
 }
 
-export default function useFormItemLabelClass(
+export function useFormItemLabelClass(
   mergedProps: FormItemLabelProps & FormContextState & FormItemLabelExtraProps
 ) {
   const { prefixCls, layout, required, colon, labelAlign, labelCol, requiredMark } = mergedProps

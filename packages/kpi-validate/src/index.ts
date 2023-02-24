@@ -10,6 +10,8 @@ import StringSchema from './schema/string'
 
 // types
 export type InferType<T extends BaseSchema> = T['_Out']
+export type { BaseSchema }
+export type { Options, SchemaIssue } from './interface'
 
 // Schema
 export const string = StringSchema.create

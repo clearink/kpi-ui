@@ -13,7 +13,7 @@
   "author": "clearink",
   "license": "ISC",
   "scripts": {
-    "compile": "node ../../scripts/compile/compile.shared.js"
+    "build": "rollup -c"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
@@ -26,6 +26,7 @@
   "devDependencies": {
     "@types/react": "^18.0.27",
     "@types/react-is": "^17.0.3",
+    "rollup": "^3.12.0",
     "typescript": "^4.5.4"
   }
 }

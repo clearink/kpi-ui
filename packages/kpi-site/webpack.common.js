@@ -71,14 +71,14 @@ module.exports = function common(mode) {
                 ],
                 plugins: [
                   require.resolve('@babel/plugin-transform-runtime'),
-                  [
-                    require.resolve('babel-plugin-import'),
-                    {
-                      libraryName: '@kpi/ui',
-                      libraryDirectory: 'esm',
-                      style: true,
-                    },
-                  ],
+                  // [
+                  //   require.resolve('babel-plugin-import'),
+                  //   {
+                  //     libraryName: '@kpi/ui',
+                  //     libraryDirectory: 'esm',
+                  //     style: true,
+                  //   },
+                  // ],
                   isDev && require.resolve('react-refresh/babel'),
                 ].filter(Boolean),
                 cacheDirectory: true,

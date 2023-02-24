@@ -44,5 +44,4 @@ export const isDate = (obj: any): obj is Date => validateType(obj, 'Date')
 export const isSymbol = (obj: any): obj is symbol => validateType(obj, 'Symbol')
 
 export const isPromiseLike = (obj: any): obj is PromiseLike<any> =>
-  validateType(obj, 'Promise') ||
-  (isObjectLike(obj) && isFunction(obj.then) && isFunction(obj.catch))
+  validateType(obj, 'Promise') || (isObjectLike(obj) && isFunction(obj.then))

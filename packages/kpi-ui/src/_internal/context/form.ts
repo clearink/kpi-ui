@@ -1,6 +1,6 @@
 import { ctxHelper } from '@kpi/internal'
 
-import type { FieldMeta } from '@kpi/internal/esm/form/internal_props'
+import type { FieldMeta } from '@kpi/internal'
 import type { ColProps } from '../../col/props'
 import type {
   FormInstance,

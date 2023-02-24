@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { isString, shallowMerge } from '@kpi/shared'
 import Col from '../../../col'
 import { FormContext } from '../../../_internal/context'
-import useFormItemLabelClass from '../../hooks/use_class'
+import { useFormItemLabelClass } from '../../hooks/use_class'
 import { normalizeLabelChildren } from '../../utils/children'
 
 import type { FormItemLabelExtraProps, FormItemLabelProps } from '../../props'

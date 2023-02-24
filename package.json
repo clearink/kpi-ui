@@ -8,13 +8,13 @@
   "author": "clearink",
   "license": "ISC",
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.jsx,.tsx ./packages/kpi-validate/src",
+    "lint": "eslint --ext .js,.ts,.jsx,.tsx ./packages/**/src/*",
     "dev:site": "cd ./packages/kpi-site && yarn run dev",
-    "compile:shared": "cd ./packages/kpi-shared && yarn run compile",
-    "compile:validate": "cd ./packages/kpi-validate && yarn run compile",
-    "compile:internal": "cd ./packages/kpi-internal && yarn run compile",
-    "compile:ui": "cd ./packages/kpi-ui && yarn run compile",
-    "compile": "yarn run compile:shared && yarn run compile:validate && yarn run compile:internal && yarn run compile:ui"
+    "build:shared": "cd ./packages/kpi-shared && yarn run build",
+    "build:validate": "cd ./packages/kpi-validate && yarn run build",
+    "build:internal": "cd ./packages/kpi-internal && yarn run build",
+    "build:ui": "cd ./packages/kpi-ui && yarn run build",
+    "build": "yarn run build:shared && yarn run build:validate && yarn run build:internal && yarn run build:ui"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
@@ -46,12 +46,15 @@
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "fs-extra": "^11.1.0",
+    "glob": "^8.1.0",
     "postcss": "^8.4.21",
     "prettier": "^2.8.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rimraf": "^4.1.2",
     "rollup": "^3.12.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-typescript2": "^0.34.1",
     "sass": "^1.58.3",
     "tslib": "^2.5.0",
     "typescript": "^4.5.4"

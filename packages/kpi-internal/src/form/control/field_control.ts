@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file, class-methods-use-this */
 import { isEqual, isFunction, isNullish, isUndefined, toArray } from '@kpi/shared'
-import type { Options, SchemaIssue } from '@kpi/validate/esm/interface'
+import type { Options, SchemaIssue } from '@kpi/validate'
 import BaseControl from './base_control'
 import { getIn } from '../utils/value'
 import { _getName } from '../utils/path'

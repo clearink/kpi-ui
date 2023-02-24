@@ -2,7 +2,7 @@
 
 ## 如何运行
 ```
-  pnpm install && yarn compile && yarn dev:site
+  pnpm install && yarn build && yarn dev:site
 ```
 ## TODO
 
