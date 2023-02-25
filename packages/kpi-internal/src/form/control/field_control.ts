@@ -79,9 +79,8 @@ export default class FormFieldControl extends BaseControl {
 
   public _warnings: string[] = []
 
-  public get meta(): FieldMeta & { mounted: boolean } {
+  public get meta(): FieldMeta {
     return {
-      mounted: this.mounted(),
       name: this._name,
       dirty: this.dirty,
       touched: this._touched,
@@ -118,11 +117,14 @@ export default class FormFieldControl extends BaseControl {
 
     const current = this.meta
 
-    if (isEqual(prev, current)) return
+    const mounted = this.mounted()
+
+    // meta 属性前后一致且此时组件没有销毁 可以直接返回
+    if (isEqual(prev, current) && mounted) return
 
     const { onMetaChange, children } = this._props
 
-    onMetaChange?.(current)
+    onMetaChange?.({ ...current, mounted } as FieldMeta)
 
     isFunction(children) && this.forceUpdate()
   }
