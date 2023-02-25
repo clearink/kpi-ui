@@ -517,18 +517,14 @@ export class FormDispatchControl<State = any> {
     // 获取需要更新的 control
     const controls = this.$controls.getControls().filter(filter)
 
-    // 校验依赖字段
-    const dependencies = this.publishDependentControl(controls)
-
-    const updateControls = new Set(controls.concat(dependencies))
-
     if (this.$props.useRenderProps) this.$props.forceUpdate()
-    else updateControls.forEach((control) => control.forceUpdate())
+    else controls.forEach((control) => control.forceUpdate())
 
     // 通知监听事件
     this.$watch.publishWatch()
 
-    return dependencies
+    // 校验依赖字段
+    return this.publishDependentControl(controls)
   }
 
   // 调度方法
@@ -653,29 +649,30 @@ export class FormDispatchControl<State = any> {
     const controls = getValidateControls(fields)
 
     const validateList = controls.map((control) => {
-      const path = control._name
+      const { _name: path, _touched: touched } = control
 
-      !control._touched && control.metaUpdate({ touched: true })
+      !touched && control.metaUpdate({ touched: true })
 
       return control.validate(getFieldValue(path), { path })
     })
 
     const promiseList = Promise.all(validateList)
+
     this.lastValidate = promiseList
 
     const returnPromise = promiseList.then(() => {
       if (promiseList !== this.lastValidate) return 'invalid-validate'
 
-      const validateErrors = getFieldsError(fields).filter(({ errors }) => errors.length)
+      const errorFields = getFieldsError(fields).filter(({ errors }) => errors.length)
       // 触发 OnFieldsChange 回调事件
       this.triggerOnFieldsChange(controls.map(({ _name }) => _name))
 
       const values = getFieldsValue(fields)
 
-      if (validateErrors.length) {
+      if (errorFields.length) {
         // 这里少个 outOfDate 目前不知道有啥用
         // eslint-disable-next-line prefer-promise-reject-errors
-        return Promise.reject({ errorFields: validateErrors, values })
+        return Promise.reject({ errorFields, values })
       }
       return values
     })

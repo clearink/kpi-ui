@@ -139,6 +139,7 @@ export default class FormFieldControl extends BaseControl {
     this.metaUpdate({ validating: true, errors: [], warnings: [] })
 
     const promise = validator.validate(value, options)
+
     this.lastValidate = promise
 
     return promise
@@ -149,6 +150,7 @@ export default class FormFieldControl extends BaseControl {
 
         const { issues = [] } = error as { issues: SchemaIssue[] }
         const errors = issues.map((issue) => issue.message) as string[]
+
         this.metaUpdate({ validating: false, errors })
       })
   }
