@@ -3,9 +3,8 @@ import { isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '@kp
 import BaseControl from './base_control'
 import { _getName } from '../utils/path'
 import { setIn, getIn, deleteIn, mergeValue, cloneWithPath } from '../utils/value'
-import { InvalidField } from './field_control'
+import FormFieldControl, { InvalidField } from './field_control'
 
-import type FormFieldControl from './field_control'
 import type { FieldData, FormProps, NamePath } from '../props'
 import type {
   ControlsByNameReturn,
@@ -136,7 +135,7 @@ export class FormDependenciesControl {
       // 去除空白字段与自身
       if (!depKey || currentKey === depKey) return () => {}
 
-      const cached = this._dependencies.get(depKey) ?? new Set<FormFieldControl>()
+      const cached = this._dependencies.get(depKey) || new Set<FormFieldControl>()
 
       this._dependencies.set(depKey, cached.add(control))
 
@@ -149,22 +148,28 @@ export class FormDependenciesControl {
     return () => cancels.forEach((cancel) => cancel())
   }
 
-  findDependencies = (controls: Set<FormFieldControl>) => {
-    if (!controls.size) return controls
+  findDependencies = (controls: FormFieldControl[], unqiueControls: Set<FormFieldControl>) => {
+    if (!controls.length) return
 
-    const res = new Set<FormFieldControl>()
+    const nextControls: FormFieldControl[] = []
+
     const dependencies = this._dependencies
 
     controls.forEach((control) => {
       dependencies.get(control._key)?.forEach((field) => {
         // 只获取 touched 与 dirty 字段
-        if (field.dirty || field._touched) res.add(field)
+        if (!field.dirty && !field._touched) return
+
+        // 避免爆栈
+        if (unqiueControls.has(field)) return
+
+        nextControls.push(field)
+
+        unqiueControls.add(field)
       })
     })
 
-    if (res.size) this.findDependencies(res).forEach(res.add)
-
-    return res
+    this.findDependencies(nextControls, unqiueControls)
   }
 }
 
@@ -252,11 +257,7 @@ export class FormInitialControl<State = any> {
 /** ==================================================== */
 export class FormControlsControl {
   private _controls = {
-    // 存放全部
-    all: [] as FormFieldControl[],
-    // 存放有效key
-    pure: [] as FormFieldControl[],
-    // key 映射数据
+    set: new Set<FormFieldControl>(),
     map: new Map<string, FormFieldControl[]>(),
   }
 
@@ -269,29 +270,21 @@ export class FormControlsControl {
     control.setParent($initial)
 
     const controls = this._controls
+    const { set, map } = controls
 
-    const { all, pure, map } = controls
+    set.add(control)
 
-    all.push(control)
+    if (!key) return () => set.delete(control)
 
-    if (key) {
-      const cache = map.get(key) ?? []
+    const cache = map.get(key) || []
 
-      cache.push(control)
+    cache.push(control)
 
-      map.set(key, cache)
-      pure.push(control)
-    }
+    map.set(key, cache)
 
     // popControl
     return () => {
-      controls.all = controls.all.filter((field) => field !== control)
-
-      if (!key) return
-
-      controls.pure = controls.pure.filter((field) => field !== control)
-
-      const cache = map.get(key)!
+      set.delete(control)
 
       const next = cache.filter((field) => field !== control)
 
@@ -301,9 +294,11 @@ export class FormControlsControl {
 
   // 获取字段,根据参数判断是否需要去除没有name的字段
   getControls = (pure = false) => {
-    if (pure) return this._controls.pure
+    const controls = Array.from(this._controls.set)
 
-    return this._controls.all
+    if (!pure) return controls
+
+    return controls.filter((control) => control._key)
   }
 
   // 获取相同name的字段,不传参数认为获取全部有name的字段
@@ -692,8 +687,11 @@ export class FormDispatchControl<State = any> {
 
   // 通知依赖字段
   publishDependentControl = (controls: FormFieldControl[]) => {
-    const dependencies = this.$dependencies.findDependencies(new Set(controls))
-    const updateControls = [...dependencies.values()]
+    const dependencies = new Set<FormFieldControl>()
+
+    this.$dependencies.findDependencies(controls, dependencies)
+
+    const updateControls = Array.from(dependencies)
 
     const nameList = updateControls.map(({ _name }) => _name)
 
