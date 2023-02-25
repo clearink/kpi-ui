@@ -18,35 +18,31 @@ import useForm from '../hooks/use_form'
 import type { InternalFormInstance } from '../internal_props'
 import type { FormInstance, FormProps } from '../props'
 
-function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance>) {
-  const {
-    name,
-    as,
-    form,
-    children: $children,
-    onReset,
-    initialValues,
-    validateTrigger,
-    ...restProps
-  } = props
+const excluded = [
+  'name',
+  'as',
+  'form',
+  'children',
+  'onReset',
+  'initialValues',
+  'validateTrigger',
+  'preserve',
+  'validationSchema',
+  'fields',
+  'onFinish',
+  'onFieldsChange',
+  'onValuesChange',
+  'onFailed',
+] as const
 
-  // 表单剩余字段
-  const formProps = omit(restProps, [
-    'preserve',
-    'validationSchema',
-    'fields',
-    'onFinish',
-    'onFieldsChange',
-    'onValuesChange',
-    'onFailed',
-  ])
+function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance>) {
+  const { name, as, form, children: $children, onReset, initialValues, validateTrigger } = props
 
   const formInstance = useForm(form) as InternalFormInstance
+
   useImperativeHandle(ref, () => formInstance)
 
-  const internalHook = useMemo(() => {
-    return formInstance.getInternalHooks(HOOK_MARK)
-  }, [formInstance])
+  const internalHook = useMemo(() => formInstance.getInternalHooks(HOOK_MARK), [formInstance])
 
   // TODO: 实现表单联动功能
   internalHook?.setFormProps(props)
@@ -85,9 +81,9 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   useEffect(() => {
     const prev = toArray(prevFields.current, true)
     const next = toArray(props.fields, true)
-    if (!isEqual(prev, next)) {
-      internalHook?.setFields(next)
-    }
+
+    if (!isEqual(prev, next)) internalHook?.setFields(next)
+
     prevFields.current = next
   }, [internalHook, props.fields])
 
@@ -102,6 +98,9 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   if (as === null) return children
 
   const Component: any = as ?? 'form'
+
+  // 表单剩余字段
+  const formProps = omit(props, excluded)
 
   return (
     <Component {...formProps} onSubmit={handleSubmit} onReset={handleReset}>

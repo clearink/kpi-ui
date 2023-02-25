@@ -3,8 +3,9 @@ import { isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '@kp
 import BaseControl from './base_control'
 import { _getName } from '../utils/path'
 import { setIn, getIn, deleteIn, mergeValue, cloneWithPath } from '../utils/value'
-import FormFieldControl, { InvalidField } from './field_control'
+import { InvalidField } from './field_control'
 
+import type FormFieldControl from './field_control'
 import type { FieldData, FormProps, NamePath } from '../props'
 import type {
   ControlsByNameReturn,
@@ -97,7 +98,7 @@ export default class FormGroupControl<State = any> {
       setFields: $dispatch.setFields,
       dispatch: $dispatch.dispatch,
       ensureInitialized: $initial.ensureInitialized,
-      registerSubscribe: $dependencies.registerSubscribe,
+      subscribe: $dependencies.subscribe,
     }
   }
 }
@@ -124,7 +125,7 @@ export class FormDependenciesControl {
   private _dependencies = new Map<string, Set<FormFieldControl>>()
 
   // 订阅对应的字段变更
-  registerSubscribe = (control: FormFieldControl) => {
+  subscribe = (control: FormFieldControl) => {
     const { dependencies = [] } = control._props
     const currentKey = control._key
 
@@ -545,7 +546,7 @@ export class FormDispatchControl<State = any> {
       // 触发回调
       this.triggerOnValuesChange(next, name)
 
-      const nameList = [action.name, ...dependencies.map(({ _name }) => _name)]
+      const nameList = [action.name].concat(dependencies.map(({ _name }) => _name))
 
       return this.triggerOnFieldsChange(nameList)
     }
@@ -554,7 +555,7 @@ export class FormDispatchControl<State = any> {
     if (action.type === 'setFields') {
       const { type, fields } = action
       // 更新字段 meta 属性
-      fields.forEach((field) => $controls.metaUpdate(field.name, field as FieldMeta))
+      fields.forEach((field) => $controls.metaUpdate(field.name, field as any))
       // 获得更新数据
       const [prev, next] = $state.setFieldsData(fields)
       // 更新字段

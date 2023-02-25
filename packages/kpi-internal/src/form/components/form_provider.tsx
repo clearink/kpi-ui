@@ -6,21 +6,24 @@ import type { FormInstance, Forms } from '../props'
 
 export default function FormProvider(props: { children: ReactNode }) {
   const forms = useRef<Forms>({})
-  const parent = FormContext.useState()
+
+  const parentProvider = FormContext.useState()
 
   // 为每一个 FormProvider 注册表单实例 同时返回取消事件
   const register = useEvent((form: FormInstance, name?: string) => {
     if (!name) return () => {}
+
     forms.current[name] = form
-    const unregister = parent.register(form, name)
+
+    const unregister = parentProvider.register(form, name)
+
     return () => {
-      forms.current = omit(forms.current, [name])
+      delete forms.current[name]
       unregister()
     }
   })
 
-  const value = useMemo(() => {
-    return { register }
-  }, [register])
-  return <FormContext.Provider value={value}>{props.children}</FormContext.Provider>
+  const context = useMemo(() => ({ register }), [register])
+
+  return <FormContext.Provider value={context}>{props.children}</FormContext.Provider>
 }

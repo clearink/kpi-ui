@@ -30,6 +30,7 @@ export default function collectInjectProps(
 ) {
   const {
     name,
+    rule,
     trigger = 'onChange',
     validateTrigger,
     valuePropName = 'value',
@@ -54,9 +55,9 @@ export default function collectInjectProps(
 
         if (isFunction(formatter)) next = formatter(next, value, formInstance.getFieldsValue())
 
-        internalHook && internalHook.metaUpdate(name, { touched: true, dirty: true })
+        internalHook?.metaUpdate(name, { touched: true, dirty: true })
 
-        internalHook && internalHook.dispatch({ name, value: next, type: 'fieldEvent' })
+        internalHook?.dispatch({ name, value: next, type: 'fieldEvent' })
 
         // originTrigger
         childProps[trigger!] && childProps[trigger!](...args)
@@ -71,7 +72,7 @@ export default function collectInjectProps(
     return triggerList.reduce((result, triggerName) => {
       result[triggerName] = (...args: any[]) => {
         injectProps[triggerName] && injectProps[triggerName](...args)
-        props.rule && formInstance.validateField(name)
+        rule && formInstance.validateField(name)
       }
 
       return result

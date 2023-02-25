@@ -10,7 +10,7 @@ function internalSetIn<V = any>(source: V, paths: InternalNamePath, value: any):
 
   let attr = {} as V
   if (isObject(source)) attr = { ...source }
-  else if (isArray(source)) attr = source.slice() as unknown as V
+  else if (isArray(source)) attr = source.concat() as unknown as V
   // source为基础类型时舍弃
   else if (isNumber(path)) attr = [] as unknown as V
 
@@ -26,12 +26,15 @@ export function setIn<V = any>(source: V, paths: InternalNamePath, value: any): 
 }
 
 export function getIn<V = any>(values: V, paths: InternalNamePath): any {
+  // 空路径返回 undefined
+  if (!paths.length) return undefined
+
   for (let i = 0; i < paths.length; i += 1) {
     if (isNullish(values)) return values
     values = values[paths[i]]
   }
-  // 空路径也返回 undefined
-  return paths.length ? values : undefined
+
+  return values
 }
 
 function internalDeleteIn<V = any>(source: V, paths: InternalNamePath): V {
@@ -82,7 +85,7 @@ function internalMerge(target: any, source: any, map = new WeakMap()) {
 
 // 合并数据
 export function mergeValue<V = any>(target: V, ...sources: any[]): V {
-  const init = isArray(target) ? target.slice() : { ...target }
+  const init = isArray(target) ? target.concat() : { ...target }
 
   return sources.reduce((result, current) => internalMerge(result, current), init)
 }

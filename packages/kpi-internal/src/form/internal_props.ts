@@ -120,7 +120,7 @@ export interface InternalHookReturn<State = any> {
    * @zh 订阅依赖字段
    */
 
-  registerSubscribe: (control: FormFieldControl) => () => void
+  subscribe: (control: FormFieldControl) => () => void
 
   /**
    * @private

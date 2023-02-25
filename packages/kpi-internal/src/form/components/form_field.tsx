@@ -33,9 +33,9 @@ function InternalFormField(props: InternalProps) {
   useEffect(registerField, [registerField])
 
   // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
-  const key = useDeepMemo(() => _getName(name), [name])
+  const key = useDeepMemo(() => name, [name])
   const memorized = useDeepMemo(() => dependencies, [dependencies])
-  const subscribe = useEvent(() => internalHook?.registerSubscribe(control))
+  const subscribe = useEvent(() => internalHook?.subscribe(control))
   useEffect(subscribe, [subscribe, memorized, key])
 
   // 数据注入
@@ -45,14 +45,14 @@ function InternalFormField(props: InternalProps) {
 }
 
 export default function WrapperFormField(props: FormFieldProps) {
-  const { name, ...rest } = props
+  const { name, isListField } = props
   // 用于 Form.List 组件
   const { parentNamePath = [] } = FieldContext.useState()
 
   // 预处理一下 name 字段
   const namePath = isUndefined(name) ? [] : parentNamePath.concat(toArray(name))
 
-  const key = rest.isListField ? 'keep' : _getName(namePath)
+  const key = isListField ? 'keep' : _getName(namePath)
 
-  return <InternalFormField key={key} name={namePath} {...rest} />
+  return <InternalFormField key={key} {...props} name={namePath} />
 }
