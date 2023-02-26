@@ -1,17 +1,22 @@
 import { logger } from '@kpi/shared'
 import ctxHelper from './helper'
 
-import type { FormInstance } from '../form/props'
+import type { FieldData, FormInstance } from '../form/props'
 import type { InternalFormInstance } from '../form/internal_props'
+import { AnyObject } from '../types'
 
 // TODO: 目前还不确定
-interface FormContextState {
+export interface FormContextState {
   register: (form: FormInstance, name?: string) => () => void
+  triggerFormChange: (name: string, changedFields: FieldData[]) => void
+  triggerFormFinish: (name: string, values: AnyObject) => void
 }
 
 // Form 组件传递数据给 Form.Field
 export const FormContext = ctxHelper<FormContextState>({
   register: () => () => {},
+  triggerFormChange: () => {},
+  triggerFormFinish: () => {},
 })
 
 // 将formControl实例传递给field组件

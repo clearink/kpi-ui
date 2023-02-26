@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react'
 import type { FormFieldControl, InvalidField } from './control'
-
+import type { FormContextState } from '../context'
 import type { FormInstance, FormFieldProps, NamePath, FieldData, FormProps } from './props'
 
 export type InternalNamePath = (string | number)[]
@@ -90,7 +90,7 @@ export interface InternalHookReturn<State = any> {
    * @private
    * @zh 同步 form 参数
    */
-  setFormProps: (props: FormProps) => void
+  setFormProps: (props: FormProps, parent: FormContextState) => void
 
   /**
    * @private

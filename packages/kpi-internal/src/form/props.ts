@@ -70,12 +70,12 @@ export interface FormProps<S = any>
   /**
    * @zh 字段变更时的回调, 仅在用户操作表单项时触发
    */
-  onFieldsChange?: (changedFields: FieldData[], allFields: FieldData[]) => void
+  onFieldsChange?: (changedFields: FieldData[], getAllFields: () => FieldData[]) => void
 
   /**
    * @zh 字段值更时的回调, 仅在用户操作表单时触发
    */
-  onValuesChange?: (changedValues: any, allValues: any) => void
+  onValuesChange?: (changedValues: any, getAllValues: () => S) => void
 }
 
 /** useForm 向外暴露的实例 */

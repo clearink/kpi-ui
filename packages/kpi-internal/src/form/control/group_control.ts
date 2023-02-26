@@ -16,6 +16,7 @@ import type {
   UpdateFieldAction as Action,
   InternalNamePath,
 } from '../internal_props'
+import type { FormContextState } from '../../context'
 
 export const HOOK_MARK = '_$KPI$_'
 
@@ -109,12 +110,15 @@ export default class FormGroupControl<State = any> {
 export class FormPropsControl extends BaseControl {
   _props: Partial<FormProps> = {}
 
+  _parent: FormContextState | undefined
+
   get useRenderProps() {
     return isFunction(this._props.children)
   }
 
-  setFormProps = (props: Partial<FormProps>) => {
+  setFormProps = (props: Partial<FormProps>, parent: FormContextState) => {
     this._props = { ...props }
+    this._parent = parent
   }
 }
 
@@ -129,6 +133,8 @@ export class FormDependenciesControl {
     const { dependencies = [] } = control._props
     const currentKey = control._key
 
+    const subscribeCache = this._dependencies
+
     const cancels = dependencies.map((item) => {
       // 被依赖项
       const depKey = _getName(item)
@@ -136,13 +142,13 @@ export class FormDependenciesControl {
       // 去除空白字段与自身
       if (!depKey || currentKey === depKey) return () => {}
 
-      const cached = this._dependencies.get(depKey) || new Set<FormFieldControl>()
+      const cached = subscribeCache.get(depKey) || new Set()
 
-      this._dependencies.set(depKey, cached.add(control))
+      subscribeCache.set(depKey, cached.add(control))
 
       return () => {
         cached.delete(control)
-        cached.size === 0 && this._dependencies.delete(depKey)
+        cached.size === 0 && subscribeCache.delete(depKey)
       }
     })
 
@@ -707,18 +713,24 @@ export class FormDispatchControl<State = any> {
 
     const changedValues = cloneWithPath(state, path)
 
-    onValuesChange(changedValues, this.$state.getFieldsValue())
+    onValuesChange(changedValues, () => this.$state.getFieldsValue())
   }
 
   // 触发 onFieldsChange 回调
   triggerOnFieldsChange = (nameList: NamePath[]) => {
-    const { onFieldsChange } = this.$props._props
+    const { onFieldsChange, name } = this.$props._props
 
-    if (!onFieldsChange) return
+    const parentForm = this.$props._parent
+
+    if (!onFieldsChange && !parentForm) return
 
     const { getFields } = this.$state
 
-    onFieldsChange(getFields(nameList), getFields())
+    const changedFields = getFields(nameList)
+
+    parentForm?.triggerFormChange(name!, changedFields)
+
+    onFieldsChange?.(changedFields, () => getFields())
   }
 
   // 触发 onFinish 回调

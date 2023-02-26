@@ -44,17 +44,18 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
 
   const internalHook = useMemo(() => formInstance.getInternalHooks(HOOK_MARK), [formInstance])
 
-  // TODO: 实现表单联动功能
-  internalHook?.setFormProps(props)
-
-  // 设置初始值, 仅在挂载前设置一次
-  useConstructor(() => internalHook?.setInitialValues(initialValues))
-
   // 用于多表单联动
   const parent = FormContext.useState()
+
   useEffect(() => {
     return parent.register(formInstance, name)
   }, [formInstance, name, parent])
+
+  // TODO: 实现表单联动功能
+  internalHook?.setFormProps(props, parent)
+
+  // 设置初始值, 仅在挂载前设置一次
+  useConstructor(() => internalHook?.setInitialValues(initialValues))
 
   // 事件处理
   const handleSubmit = useEvent((e?: FormEvent) => {

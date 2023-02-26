@@ -3,6 +3,7 @@ import { useEvent, omit } from '@kpi/shared'
 import { FormContext } from '../../context'
 
 import type { FormInstance, Forms } from '../props'
+import type { FormContextState } from '../../context'
 
 export default function FormProvider(props: { children: ReactNode }) {
   const forms = useRef<Forms>({})
@@ -18,12 +19,22 @@ export default function FormProvider(props: { children: ReactNode }) {
     const unregister = parentProvider.register(form, name)
 
     return () => {
-      delete forms.current[name]
+      forms.current = omit(forms.current, [name])
       unregister()
     }
   })
 
-  const context = useMemo(() => ({ register }), [register])
+  const triggerFormChange = useEvent((formName, changedFields) => {
+    parentProvider.triggerFormChange(formName, changedFields)
+  }) as FormContextState['triggerFormChange']
+
+  const triggerFormFinish = useEvent((formName, values) => {
+    parentProvider.triggerFormFinish(formName, values)
+  }) as FormContextState['triggerFormFinish']
+
+  const context = useMemo(() => {
+    return { register, triggerFormChange, triggerFormFinish }
+  }, [register, triggerFormChange, triggerFormFinish])
 
   return <FormContext.Provider value={context}>{props.children}</FormContext.Provider>
 }
