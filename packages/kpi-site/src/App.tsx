@@ -25,7 +25,7 @@ export default function App() {
   return (
     <div>
       <p style={{ fontSize: 20, textAlign: 'center', marginBottom: 20 }}>
-        测试 3000 个输入框常见下 Form 组件的性能
+        测试 {inputNumber || 0} 个输入框常见下 Form 组件的性能
       </p>
       <Space style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
         <Button type="primary" onClick={() => setNoStyle((p) => !p)}>

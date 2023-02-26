@@ -2,7 +2,7 @@
 import { isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '@kpi/shared'
 import BaseControl from './base_control'
 import { _getName } from '../utils/path'
-import { setIn, getIn, deleteIn, mergeValue, cloneWithPath } from '../utils/value'
+import { setIn, getIn, deleteIn, mergeValue, cloneWithPath, hasOwnWithPath } from '../utils/value'
 import { InvalidField } from './field_control'
 
 import type FormFieldControl from './field_control'
@@ -372,12 +372,9 @@ export class FormControlsControl {
     const allFields = this.getControlsByName(false, nameList)
 
     return allFields.map((field) => {
-      if (InvalidField.isInvalid(field)) {
-        return { name: field.name, errors: [], warnings: [] }
-      }
+      const { _name: name, _errors: errors, _warnings: warnings } = field
 
-      const { _name: name, _errors: errors } = field
-      return { name, errors, warnings: [] }
+      return { name, errors, warnings }
     })
   }
 
@@ -452,18 +449,18 @@ export class FormStateControl<State = any> {
     const noFields = isUndefined(fields)
     const nameList = isBoolean(fields) ? [] : fields
     const controls = this.$controls.getControlsByName(false, nameList)
+    const state = this._state
 
-    return controls.reduce((values, field) => {
-      if (InvalidField.isInvalid(field)) {
-        const { name } = field
-        return setIn(values, name, getIn(this._state, name))
-      }
-
+    return controls.reduceRight((values, field) => {
       const { _name: name, _props: props } = field
+
       // 该场景时不用获取列表项，可以减小一些开销
       if (noFields && props.isListField) return values
 
-      return setIn(values, name, getIn(this._state, name))
+      // 已存在的值也不用再次 set
+      if (hasOwnWithPath(values, name)) return values
+
+      return setIn(values, name, getIn(state, name))
     }, {} as State)
   }
 

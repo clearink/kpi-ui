@@ -28,6 +28,7 @@ function InternalFormField(props: InternalProps) {
   // 注册子字段 销毁时移除该字段
   const registerField = useEvent(() => {
     if (shouldUpdate === true) control.forceUpdate()
+
     return internalHook?.registerField(control)
   })
   useEffect(registerField, [registerField])

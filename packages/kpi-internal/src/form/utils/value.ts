@@ -26,15 +26,13 @@ export function setIn<V = any>(source: V, paths: InternalNamePath, value: any): 
 }
 
 export function getIn<V = any>(values: V, paths: InternalNamePath): any {
-  // 空路径返回 undefined
-  if (!paths.length) return undefined
-
   for (let i = 0; i < paths.length; i += 1) {
     if (isNullish(values)) return values
     values = values[paths[i]]
   }
 
-  return values
+  // 空路径返回 undefined
+  return paths.length ? values : undefined
 }
 
 function internalDeleteIn<V = any>(source: V, paths: InternalNamePath): V {
@@ -99,4 +97,15 @@ export function cloneWithPath<V>(source: V, paths: InternalNamePath) {
   init[path] = cloneWithPath(source[path], rest)
 
   return init as V
+}
+
+export function hasOwnWithPath<V>(source: V, paths: InternalNamePath) {
+  for (let i = 0; i < paths.length; i += 1) {
+    const key = paths[i]
+    if (!hasOwn(source, key)) return false
+
+    source = source[key]
+  }
+
+  return !!paths.length
 }

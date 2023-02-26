@@ -160,13 +160,15 @@ export default class FormFieldControl extends BaseControl {
 
 // 不合法的字段
 export class InvalidField {
-  static isInvalid(field: FormFieldControl | InvalidField): field is InvalidField {
-    return field instanceof InvalidField
-  }
+  public _name: InternalNamePath
 
-  public name: InternalNamePath
+  public _errors: string[] = []
+
+  public _warnings: string[] = []
+
+  public _props: Partial<InternalFormFieldProps> = {}
 
   constructor(name: NamePath) {
-    this.name = toArray(name)
+    this._name = toArray(name)
   }
 }
