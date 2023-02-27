@@ -536,7 +536,10 @@ export class FormDispatchControl<State = any> {
 
     // 由用户事件主动触发
     if (action.type === 'fieldEvent') {
-      const { name, value, type } = action
+      const { control: field, value, type } = action
+
+      const name = field._name
+
       const [prev, next] = $state.setFieldValue(name, value)
       // 更新字段
       const dependencies = this.updateControl((control) => {
@@ -545,11 +548,19 @@ export class FormDispatchControl<State = any> {
       // 触发回调
       this.triggerOnValuesChange(next, name)
 
-      const nameList = [action.name].concat(dependencies.map(({ _name }) => _name))
-
-      return this.triggerOnFieldsChange(nameList)
+      return this.triggerOnFieldsChange([field].concat(dependencies))
     }
 
+    // 调用 setFieldsValue 方法
+    if (action.type === 'setFieldsValue') {
+      const { state, type } = action
+
+      const [prev, next] = $state.setFieldsValue(state)
+      // 更新字段
+      return this.updateControl((control) => {
+        return control.shouldUpdate(prev, next, type)
+      })
+    }
     // 调用 setFieldValue, setFields 方法
     if (action.type === 'setFields') {
       const { type, fields } = action
@@ -558,6 +569,17 @@ export class FormDispatchControl<State = any> {
       // 获得更新数据
       const [prev, next] = $state.setFieldsData(fields)
       // 更新字段
+      return this.updateControl((control) => {
+        return control.shouldUpdate(prev, next, type)
+      })
+    }
+
+    // 删除字段，主要时通知 dependence
+    if (action.type === 'removeField') {
+      const { control: field, type } = action
+
+      const [prev, next] = $state.cleanupField(field)
+
       return this.updateControl((control) => {
         return control.shouldUpdate(prev, next, type)
       })
@@ -668,7 +690,7 @@ export class FormDispatchControl<State = any> {
 
       const errorFields = getFieldsError(fields).filter(({ errors }) => errors.length)
       // 触发 OnFieldsChange 回调事件
-      this.triggerOnFieldsChange(controls.map(({ _name }) => _name))
+      this.triggerOnFieldsChange(controls)
 
       const values = getFieldsValue(fields)
 
@@ -717,7 +739,7 @@ export class FormDispatchControl<State = any> {
   }
 
   // 触发 onFieldsChange 回调
-  triggerOnFieldsChange = (nameList: NamePath[]) => {
+  triggerOnFieldsChange = (controls: FormFieldControl[]) => {
     const { onFieldsChange, name } = this.$props._props
 
     const parentForm = this.$props._parent
@@ -726,9 +748,11 @@ export class FormDispatchControl<State = any> {
 
     const { getFields } = this.$state
 
+    const nameList = controls.map((control) => control._name)
+
     const changedFields = getFields(nameList)
 
-    parentForm?.triggerFormChange(name!, changedFields)
+    !isUndefined(name) && parentForm?.triggerFormChange(name, changedFields)
 
     onFieldsChange?.(changedFields, () => getFields())
   }

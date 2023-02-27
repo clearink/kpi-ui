@@ -57,7 +57,7 @@ export default function collectInjectProps(
 
         internalHook?.metaUpdate(name, { touched: true, dirty: true })
 
-        internalHook?.dispatch({ name, value: next, type: 'fieldEvent' })
+        internalHook?.dispatch({ type: 'fieldEvent', control, value: next })
 
         // originTrigger
         childProps[trigger!] && childProps[trigger!](...args)

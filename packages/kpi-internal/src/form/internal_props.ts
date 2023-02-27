@@ -20,7 +20,7 @@ export interface InnerReturn {
 export type UpdateFieldAction =
   | {
       type: 'fieldEvent' // 用户调用事件主动触发
-      name: InternalNamePath
+      control: FormFieldControl
       value: any
     }
   | {
