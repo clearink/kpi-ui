@@ -32,7 +32,7 @@ export default class FormFieldControl extends BaseControl {
   public shouldUpdate = (prev: any, next: any, type: ActionType) => {
     const { _key: key, _name: name, _handler: handler } = this
 
-    if (!handler && key) return getIn(prev, name) !== getIn(next, name)
+    if (isUndefined(handler) && key) return getIn(prev, name) !== getIn(next, name)
 
     return isFunction(handler) ? handler(prev, next, type) : !!handler
   }
