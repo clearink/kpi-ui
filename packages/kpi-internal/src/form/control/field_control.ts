@@ -138,8 +138,6 @@ export default class FormFieldControl extends BaseControl {
     // 没有操作过的字段不能校验, 没有校验规则的也不用校验
     if (!this._touched || !validator || !this._key) return
 
-    this.metaUpdate({ validating: true, errors: [], warnings: [] })
-
     const promise = validator.validate(value, options)
 
     this.lastValidate = promise

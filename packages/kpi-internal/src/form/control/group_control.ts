@@ -547,7 +547,7 @@ export class FormDispatchControl<State = any> {
       })
       // 触发回调
       this.triggerOnValuesChange(next, name)
-
+      // 触发 value = action.value
       return this.triggerOnFieldsChange([field].concat(dependencies))
     }
 
@@ -676,10 +676,14 @@ export class FormDispatchControl<State = any> {
     const validateList = controls.map((control) => {
       const { _name: path, _touched: touched } = control
 
-      !touched && control.metaUpdate({ touched: true })
+      // 重置字段 meta 属性
+      control.metaUpdate({ touched, validating: true, errors: [], warnings: [] })
 
       return control.validate(getFieldValue(path), { path })
     })
+
+    // 触发 validating === true
+    this.triggerOnFieldsChange(controls)
 
     const promiseList = Promise.all(validateList)
 
@@ -689,7 +693,7 @@ export class FormDispatchControl<State = any> {
       if (promiseList !== this.lastValidate) return 'invalid-validate'
 
       const errorFields = getFieldsError(fields).filter(({ errors }) => errors.length)
-      // 触发 OnFieldsChange 回调事件
+      // 触发 validating === false
       this.triggerOnFieldsChange(controls)
 
       const values = getFieldsValue(fields)
