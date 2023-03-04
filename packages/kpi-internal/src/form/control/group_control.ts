@@ -674,10 +674,15 @@ export class FormDispatchControl<State = any> {
     const controls = getValidateControls(fields)
 
     const validateList = controls.map((control) => {
-      const { _name: path, _touched: touched } = control
+      const path = control._name
 
       // 重置字段 meta 属性
-      control.metaUpdate({ touched, validating: true, errors: [], warnings: [] })
+      control.metaUpdate({
+        touched: true,
+        validating: true,
+        errors: [],
+        warnings: [],
+      })
 
       return control.validate(getFieldValue(path), { path })
     })

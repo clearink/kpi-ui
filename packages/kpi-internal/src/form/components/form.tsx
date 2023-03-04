@@ -9,7 +9,7 @@ import {
   useRef,
   useEffect,
 } from 'react'
-import { isFunction, omit, toArray, useConstructor, useEvent, isEqual } from '@kpi/shared'
+import { isFunction, omit, toArray, useConstant, useEvent, isEqual } from '@kpi/shared'
 import withDefaultProps from '../../hocs'
 import { FieldContext, FormContext } from '../../context'
 import { HOOK_MARK } from '../control'
@@ -55,7 +55,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   internalHook?.setFormProps(props, parent)
 
   // 设置初始值, 仅在挂载前设置一次
-  useConstructor(() => internalHook?.setInitialValues(initialValues))
+  useConstant(() => internalHook?.setInitialValues(initialValues))
 
   // 事件处理
   const handleSubmit = useEvent((e?: FormEvent) => {
