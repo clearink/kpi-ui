@@ -1,18 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { toArray } from '@kpi/shared'
+import { isArray, toArray } from '@kpi/shared'
 
-import type { InternalNamePath } from '../internal_props'
 import type { NamePath } from '../props'
-
-export function isDependent(path: InternalNamePath, other: InternalNamePath) {
-  const len = Math.min(path.length, other.length)
-
-  for (let i = 0; i < len; i += 1) {
-    if (path[i] !== other[i]) return false
-  }
-
-  return len > 0
-}
 
 const SEPARATOR = '$_$'
 // 获取名称字符串
@@ -23,5 +12,18 @@ export function _getName(namePath: NamePath) {
 }
 
 export function isValidIndex(array: any[], ...positions: number[]) {
-  return positions.every((position) => position >= 0 && position < array.length)
+  const len = array.length
+  return positions.every((position) => position < len && position >= 0)
+}
+// TODO: 移动到 @kpi/shared
+export function pushItem<T>(array: T[], items: T | T[]) {
+  if (!isArray(items)) array.push(items)
+  else items.forEach((item) => pushItem(array, item))
+
+  return array
+}
+
+export function removeItem<T>(array: T[], value: T) {
+  const index = array.indexOf(value)
+  index >= 0 && array.splice(index, 1)
 }

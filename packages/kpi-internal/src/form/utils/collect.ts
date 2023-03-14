@@ -55,9 +55,9 @@ export default function collectInjectProps(
 
         if (isFunction(formatter)) next = formatter(next, value, formInstance.getFieldsValue())
 
-        internalHook?.metaUpdate(name, { touched: true, dirty: true })
+        internalHook && internalHook.metaUpdate(name, { touched: true, dirty: true })
 
-        internalHook?.dispatch({ type: 'fieldEvent', control, value: next })
+        internalHook && internalHook.dispatch({ type: 'fieldEvent', control, value: next })
 
         // originTrigger
         childProps[trigger!] && childProps[trigger!](...args)

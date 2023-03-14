@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file,class-methods-use-this */
 import { isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '@kpi/shared'
 import BaseControl from './base_control'
-import { _getName } from '../utils/path'
+import { pushItem, removeItem, _getName } from '../utils/path'
 import { setIn, getIn, deleteIn, mergeValue, cloneWithPath, hasOwnWithPath } from '../utils/value'
 import { InvalidField } from './field_control'
 
@@ -264,7 +264,7 @@ export class FormInitialControl<State = any> {
 /** ==================================================== */
 export class FormControlsControl {
   private _controls = {
-    set: new Set<FormFieldControl>(),
+    list: [] as FormFieldControl[],
     map: new Map<string, FormFieldControl[]>(),
   }
 
@@ -276,32 +276,29 @@ export class FormControlsControl {
 
     control.setParent($initial)
 
-    const controls = this._controls
-    const { set, map } = controls
+    const { list, map } = this._controls
 
-    set.add(control)
+    pushItem(list, control)
 
-    if (!key) return () => set.delete(control)
+    if (!key) return () => removeItem(list, control)
 
-    const cache = map.get(key) || []
+    const cache = map.get(key) ?? []
 
-    cache.push(control)
-
-    map.set(key, cache)
+    map.set(key, pushItem(cache, control))
 
     // popControl
     return () => {
-      set.delete(control)
+      removeItem(list, control)
 
-      const next = cache.filter((field) => field !== control)
+      removeItem(cache, control)
 
-      next.length ? map.set(key, next) : map.delete(key)
+      !cache.length && map.delete(key)
     }
   }
 
   // 获取字段,根据参数判断是否需要去除没有name的字段
   getControls = (pure = false) => {
-    const controls = Array.from(this._controls.set)
+    const controls = this._controls.list
 
     if (!pure) return controls
 
@@ -357,7 +354,7 @@ export class FormControlsControl {
       if ($state.getFieldValue(name) === $initial.getInitialValue(name)) return
 
       // 不保留数据 && name 合法 && 没有同名字段
-      const cleanup = !this._controls.map.get(key)
+      const cleanup = !this._controls.map.has(key)
       cleanup && dispatch.dispatch({ type: 'removeField', control })
     }
   }
