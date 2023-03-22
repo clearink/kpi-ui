@@ -1,5 +1,8 @@
+/* eslint-disable max-classes-per-file */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable class-methods-use-this */
 import { useEffect, useRef, useState } from 'react'
-import { isNumber, useConstant, useEvent } from '@kpi/shared'
+import { isFunction, isNumber, useConstant, useEvent } from '@kpi/shared'
 import { ENTER, ENTERED, ENTERING, EXIT, EXITED, EXITING, UNMOUNTED, noop } from '../../constant'
 
 import type { TransitionStatus } from '../../constant'
@@ -35,6 +38,7 @@ const nextTick = (callback: () => void, timeout = 0) => {
   return () => clearTimeout(id)
 }
 
+// 该值不稳定 需要使用 react 自身的调度方式
 const oneFrame = 16.667
 
 export default function useTransition(open: boolean, options: TransitionOptions) {
@@ -79,6 +83,9 @@ export default function useTransition(open: boolean, options: TransitionOptions)
       const $next = exit ? EXITING : EXITED
       cancel.current = nextTick(() => updateStatus($next, appearing, duration), oneFrame)
     } else if (next === ENTERING) {
+      if (unmountOnExit || mountOnEnter) {
+        // reflow
+      }
       cancel.current = nextTick(() => updateStatus(ENTERED, appearing), duration)
     } else if (next === EXITING) {
       cancel.current = nextTick(() => updateStatus(EXITED, appearing), duration)
@@ -118,4 +125,18 @@ export default function useTransition(open: boolean, options: TransitionOptions)
   useEffect(() => cancel.current, [])
 
   return { status, mounted: status !== UNMOUNTED }
+}
+
+/**
+ * 能否像 framer-motion 与 react-spring 一样呢
+ * 执行动画时不会引起额外的 re-render ？
+ */
+
+export function useTransition2(open: boolean, options: TransitionOptions) {
+  //
+  const { unmountOnExit, mountOnEnter } = options
+  //
+  const [status, setStatus] = useState(() => {
+    return (unmountOnExit || mountOnEnter) && !open
+  })
 }

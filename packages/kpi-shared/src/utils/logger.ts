@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-const __DEV__ = process.env.NODE_ENV !== 'production'
+import noop from './noop'
 
 // 日志记录 仅提示一次
 const cache = new Set<string>()
-export default function logger(condition: boolean, ...message: string[]) {
-  if (!__DEV__) return
-
+function logger(condition: boolean, ...message: string[]) {
   if (!condition) return
 
   const key = JSON.stringify(message)
@@ -18,3 +16,4 @@ export default function logger(condition: boolean, ...message: string[]) {
   // eslint-disable-next-line no-console
   console.error(...message)
 }
+export default process.env.NODE_ENV !== 'production' ? logger : noop

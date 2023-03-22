@@ -1,26 +1,24 @@
+import now from './now'
+
 const defaultTimestep = (1 / 60) * 1000
 
-const getCurrentTime = () => (typeof performance !== 'undefined' ? performance.now() : Date.now())
 const start =
   typeof window !== 'undefined' && typeof window.requestAnimationFrame !== 'undefined'
     ? window.requestAnimationFrame
     : (callback: FrameRequestCallback) =>
-        setTimeout(() => callback(getCurrentTime()), defaultTimestep) as unknown as number
+        setTimeout(() => callback(now()), defaultTimestep) as unknown as number
 const stop =
   typeof window !== 'undefined' && typeof window.cancelAnimationFrame !== 'undefined'
     ? window.cancelAnimationFrame
     : clearTimeout
 
-export default function raf(callback: FrameRequestCallback, timeout = 0) {
+export default function raf(callback: (t: number) => boolean) {
   let id: number
 
-  const init = getCurrentTime()
+  function loop(t: number) {
+    if (!callback(t)) return
 
-  function loop() {
-    const now = getCurrentTime()
-
-    if (now - init > timeout) callback(now)
-    else id = start(loop)
+    id = start(loop)
   }
 
   id = start(loop)
