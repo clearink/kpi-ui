@@ -140,14 +140,17 @@
 //     </div>
 //   )
 // }
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Button } from '@kpi/ui'
 
 import { animateValue } from './motion/animation-new/animate'
+import { motionValue } from './motion/animation-new/motion'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
-
+  useEffect(() => {
+    ;(window as any).a = motionValue(1)
+  }, [])
   return (
     <div className="font-bold w-[762px] text-center">
       <Button

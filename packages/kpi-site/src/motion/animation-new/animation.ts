@@ -1,12 +1,12 @@
 /* eslint-disable class-methods-use-this */
-import { isArray, isFunction, isString, noop } from '@kpi/shared'
-import easing from '../tween/easing'
-import cubicBezier from '../tween/cubic_bezier'
+import { noop } from '@kpi/shared'
 
-import type { MotionValue } from '../motion'
-import type { MotionValueEventCallbacks } from '../motion/motion_event'
+import type { MotionValue } from './motion'
+import type { MotionValueEventCallbacks } from './motion/motion_event'
 import type { Easing } from '../tween/interface'
 import raf from '../utils/raf'
+import MotionValueEvent from './motion/motion_event'
+import clamp from '../utils/clamp'
 
 // function getAnimateEasing(ease: Transition['ease']) {
 //   if (isFunction(ease)) return ease
@@ -69,28 +69,19 @@ const transform = (numbers: number[], strings: string[]) => {
     return `${result}${str}${num}`
   }, '')
 }
+
+// 创建 anime.js 中的  animations 对象, 动画的调度是在 playbackControl 实现的
 export function motionAnimation<V = any>(
   value: MotionValue<V>,
   unResolvedTarget: any,
   options: AnimationOptions = {}
 ): MotionAnimation {
-  const promise = createFinishedPromise()
+  const finishedPromise = createFinishedPromise()
 
-  promise.update()
-
-  // TODO resolve target
-  // ...
+  finishedPromise.update()
 
   // const target = resolvedTarget(value.get(), unResolvedTarget)
   const target = unResolvedTarget
-  // '#000'=>'rgba(255,255,255,1)'
-  // numbers: [255,255,255, 1]
-  // strings: ['rgba(', ',' , ',' , ',' , ')']
-  /* value => strings.reduce((result, str, i)=>{
-    const num = numbers[i]
-    return `${result}${str}${isNumber(num) ? num:''}`
-  }, '')
-  */
 
   const from = value.get()
   const color = 'rgba(255, 255, 255, 1)'
@@ -101,21 +92,40 @@ export function motionAnimation<V = any>(
 
   // const ease = getAnimateEasing(options.ease)
 
-  let time = 0
-  let speed = 1
-  const duration = 300
+  let startTime = 0
+  const lastTime = 0
+  let now = 0
 
-  let stopRaf = noop
+  const speed = 1
+
+  // timings
+  const duration = 300
+  const delay = 0
+  const endDelay = 0
+  let progress = 0
 
   const finish = () => {}
 
+  const setMotionProgress = (t: number): boolean => {
+    const currentTime = t
+    // 进度
+    progress = clamp(currentTime / duration, 0, 1) * 100
+
+    // set current value
+    // value.set()
+
+    // notify event
+    value.notify('update', value.get())
+
+    return true
+  }
+
   const tick = (t: number) => {
-    const finished = state === 'finished'
+    now = t
 
-    options.update?.(value.get())
-    finished && finish()
+    if (!startTime) startTime = now
 
-    return !finished
+    return setMotionProgress((now + (lastTime - startTime)) * speed)
   }
 
   return {
@@ -148,7 +158,7 @@ export function motionAnimation<V = any>(
       state = 'idle'
       // stop raf
       stopRaf()
-      promise.update()
+      finishedPromise.update()
       // updatePromise
       // startTime = cancelTime = null
     },
@@ -157,7 +167,7 @@ export function motionAnimation<V = any>(
       options.complete?.()
     },
     then(onfulfilled, onrejected) {
-      return promise.get().then(onfulfilled, onrejected)
+      return finishedPromise.get().then(onfulfilled, onrejected)
     },
   }
 }
