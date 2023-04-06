@@ -1,92 +1,58 @@
-/* eslint-disable max-classes-per-file */
-/* eslint-disable class-methods-use-this */
+/* eslint-disable max-classes-per-file, class-methods-use-this */
 
-import { isObject } from '@kpi/shared'
-import { motionValueSymbol } from '../utils/symbol'
+import { $id, $type, motionValueSymbol } from '../utils/symbol'
 import MotionValueEvent from './motion_event'
+import defineHidden from '../utils/define_hidden'
+import createUniqueId from '../utils/create_unique_id'
 
-import type { MotionValueEventCallbacks } from './motion_event'
-import type { AnimationPlaybackControls } from '../animation/animate'
-
-type StartAnimation = (onComplete: () => void) => AnimationPlaybackControls
+export type StartAnimation = (onComplete: () => void) => any
+export type MotionAnimation = any
 
 export class MotionValue<V = any> {
-  readonly $type = motionValueSymbol
+  private value: V
 
-  prev: V
+  get = () => this.value
 
-  current: V
+  set = (value: V) => {
+    this.value = value
+  }
 
-  constructor(initial: V) {
-    this.prev = initial
-    this.current = initial
+  constructor(private initial: V) {
+    this.value = this.initial
   }
 
   events = new MotionValueEvent<V>()
 
-  on = <T extends keyof MotionValueEventCallbacks<V>>(
-    type: T,
-    handler: MotionValueEventCallbacks<V>[T]
-  ) => {
-    const ubsubscribe = this.events.on(type, handler)
+  on: MotionValueEvent<V>['on'] = (type, handler) => {
+    const unsubscribe = this.events.on(type, handler)
 
-    if (type !== 'update') return ubsubscribe
+    if (type !== 'update') return unsubscribe
 
     // sync animation frame
     // stop animation
-    return ubsubscribe
-  }
-
-  // 取消动画回调函数
-  cancel: null | AnimationPlaybackControls = null
-
-  get animating() {
-    return !!this.cancel
-  }
-
-  // 是否执行过动画
-  animated = false
-
-  // 开始动画
-  start = (animation: StartAnimation) => {
-    this.stop()
-
-    return new Promise<void>((resolve) => {
-      this.animated = true
-      this.cancel = animation(resolve)
-
-      this.events.notify('start')
-    }).then(() => {
-      this.events.notify('complete')
-
-      this.clear()
-    })
-  }
-
-  // 停止动画
-  stop = () => {
-    this.cancel && this.cancel.stop()
-    this.cancel && this.events.notify('cancel')
-
-    this.clear()
+    return unsubscribe
   }
 
   clear = () => {
-    this.cancel = null
-  }
-
-  destroy = () => {
     this.events.clear()
-    this.stop()
   }
 }
 
-export function isMotionValue(obj: any): obj is MotionValue {
-  return isObject(obj) && (obj as MotionValue).$type === motionValueSymbol
+export function isMotionValue<V>(obj: V | MotionValue<V>): obj is MotionValue<V> {
+  return obj && obj[$type] === motionValueSymbol
 }
+
+const uniqueId = createUniqueId(0)
 
 export function motionValue<V>(initial: V | MotionValue<V>) {
   if (isMotionValue(initial)) return initial
+
+  const value = new MotionValue(initial)
+
+  // 唯一标识
+  defineHidden(value, $id, uniqueId())
+  // 判断类型
+  defineHidden(value, $type, motionValueSymbol)
 
   return new MotionValue(initial)
 }

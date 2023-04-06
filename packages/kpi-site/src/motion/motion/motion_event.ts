@@ -1,10 +1,11 @@
 import SubscriptionManager from '../utils/subscription_manager'
 
-export interface MotionValueEventCallbacks<V> {
-  start: () => void
-  complete: () => void
-  cancel: () => void
-  update: (latestValue: V) => void
+export interface MotionValueEventCallbacks<V = any> {
+  start?: VoidFunction
+  update?: (current: V) => void
+  pause?: VoidFunction
+  cancel?: VoidFunction
+  complete?: VoidFunction
 }
 
 export default class MotionValueEvent<V = any> {
@@ -19,9 +20,9 @@ export default class MotionValueEvent<V = any> {
     return this.events.get(type)!.add(handler)
   }
 
-  notify = (type: keyof MotionValueEventCallbacks<V>) => {
+  notify = (type: keyof MotionValueEventCallbacks<V>, ...args: any[]) => {
     const observer = this.events.get(type)
-    observer && observer.notify()
+    observer && observer.notify(...args)
   }
 
   clear = () => this.events.clear()

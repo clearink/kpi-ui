@@ -9,10 +9,10 @@ export default class SubscriptionManager<Handler extends AnyFunction = any> {
     return this.subscriptions.size
   }
 
-  add(hanlder: Handler): () => void {
-    this.subscriptions.add(hanlder)
+  add(handler: Handler): () => void {
+    this.subscriptions.add(handler)
 
-    return () => this.subscriptions.delete(hanlder)
+    return () => this.subscriptions.delete(handler)
   }
 
   notify(...args: Parameters<Handler>) {

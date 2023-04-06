@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary, no-param-reassign, no-return-assign */
 
 import { easeOutToEaseIn } from './utils/modifiers'
-import generateEasings from './utils/generate'
+import generateEasing from './utils/generate'
 
 import type { EasingFunction } from './interface'
 
@@ -9,27 +9,27 @@ export type EasingDefinition = keyof typeof easing
 
 const linear: EasingFunction = (x) => x
 
-const Sine = generateEasings('Sine', (x) => 1 - Math.cos((x * Math.PI) / 2))
+const Sine = generateEasing('Sine', (x) => 1 - Math.cos((x * Math.PI) / 2))
 
-const Quad = generateEasings('Quad', (x) => x ** 2)
+const Quad = generateEasing('Quad', (x) => x ** 2)
 
-const Cubic = generateEasings('Cubic', (x) => x ** 3)
+const Cubic = generateEasing('Cubic', (x) => x ** 3)
 
-const Quart = generateEasings('Quart', (x) => x ** 4)
+const Quart = generateEasing('Quart', (x) => x ** 4)
 
-const Quint = generateEasings('Quint', (x) => x ** 5)
+const Quint = generateEasing('Quint', (x) => x ** 5)
 
-const Expo = generateEasings('Expo', (x) => x ** 6)
+const Expo = generateEasing('Expo', (x) => x ** 6)
 
-const Circ = generateEasings('Circ', (x) => 1 - Math.sqrt(1 - x ** 2))
+const Circ = generateEasing('Circ', (x) => 1 - Math.sqrt(1 - x ** 2))
 
 const c1 = 1.70158
 const c3 = c1 + 1
-const Back = generateEasings('Back', (x) => c3 * x * x * x - c1 * x * x)
+const Back = generateEasing('Back', (x) => c3 * x * x * x - c1 * x * x)
 
 const n1 = 7.5625
 const d1 = 2.75
-const Bounce = generateEasings(
+const Bounce = generateEasing(
   'Bounce',
   easeOutToEaseIn((x) => {
     if (x < 1 / d1) return n1 * x * x
@@ -40,7 +40,7 @@ const Bounce = generateEasings(
 )
 
 const c4 = (2 * Math.PI) / 3
-const Elastic = generateEasings('Elastic', (x) => {
+const Elastic = generateEasing('Elastic', (x) => {
   return x === 0 ? 0 : x === 1 ? 1 : -(2 ** (10 * x - 10)) * Math.sin((x * 10 - 10.75) * c4)
 })
 

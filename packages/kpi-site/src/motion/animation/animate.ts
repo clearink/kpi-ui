@@ -158,8 +158,6 @@ import { animateElements, animateValue } from './create'
 //   }
 // }
 
-type AnimationOptions<V = any> = any
-
 export interface AnimationPlaybackControls {
   stop: () => void
   animating: () => boolean

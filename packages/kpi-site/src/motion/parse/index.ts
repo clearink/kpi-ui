@@ -5,9 +5,9 @@
 // 0 => auto
 
 import { isNumber, isString } from '@kpi/shared'
-import { clamp } from '../utils'
+import clamp from '../utils/clamp'
 
-const createUnitType = (unit: string) => ({
+export const createUnitType = (unit: string) => ({
   test: (v: string | number) => isString(v) && v.endsWith(unit) && v.split(' ').length === 1,
   parse: parseFloat,
   transform: (v: string | number) => `${v}${unit}`,
@@ -19,18 +19,18 @@ const px = createUnitType('px')
 const vw = createUnitType('vw')
 const vh = createUnitType('vh')
 
-const number = {
+export const number = {
   test: isNumber,
   parse: parseFloat,
   transform: (v: number) => v,
 }
 
-const alpha = {
+export const alpha = {
   ...number,
   transform: (v: number) => clamp(v, 0, 1),
 }
 
-const scale = {
+export const scale = {
   ...number,
   default: 1,
 }

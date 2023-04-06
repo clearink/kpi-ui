@@ -1,7 +1,7 @@
-import { clamp } from '../utils'
 import raf from '../utils/raf'
 
 import type { Easing } from '../tween/interface'
+import clamp from '../utils/clamp'
 
 interface Tween {
   type: 'tween'

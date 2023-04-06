@@ -141,29 +141,26 @@
 //   )
 // }
 import { useRef } from 'react'
-import { animate, motion } from 'framer-motion'
 import { Button } from '@kpi/ui'
-import { useSpring, animated } from '@react-spring/web'
+
+import { animateValue } from './motion/animation-new/animate'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
-  const props = useSpring({
-    from: { translateX: 0 },
-    to: { translateX: 200 },
-  })
+
   return (
     <div className="font-bold w-[762px] text-center">
       <Button
         onClick={() => {
-          animate(
-            ref.current!,
-            { x: 200 },
-            {
-              type: 'tween',
-              ease: 'backIn',
-              duration: 3,
-            }
-          )
+          const a = animateValue(0, 200, {
+            ease: 'easeInBack',
+            duration: 300,
+            update(current) {
+              console.log('update', current)
+            },
+          })
+
+          console.log(a)
         }}
       >
         start
@@ -171,21 +168,6 @@ export default function App() {
       <div
         ref={ref}
         style={{ width: 200, height: 200, borderRadius: '50%', backgroundColor: 'red' }}
-      />
-      <motion.div
-        animate={{
-          x: 200,
-        }}
-        style={{ width: 200, height: 200, borderRadius: '50%', backgroundColor: 'red' }}
-        transition={{
-          type: 'tween',
-          ease: 'backIn',
-          duration: 3,
-        }}
-      />
-
-      <animated.div
-        style={{ width: 200, height: 200, borderRadius: '50%', backgroundColor: 'red', ...props }}
       />
     </div>
   )

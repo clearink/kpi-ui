@@ -35,7 +35,7 @@ export function animateValue<V>(
 ): AnimationPlaybackControls {
   const motionValue = createMotionValue(value)
 
-  motionValue.start(animateMotionValue('', motionValue, keyframes, options))
+  // motionValue.start(animateMotionValue('', motionValue, keyframes, options))
 
-  return motionValue.cancel!
+  return {} as any
 }
