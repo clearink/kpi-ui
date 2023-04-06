@@ -1,5 +1,5 @@
 import { motionAnimation } from './animation'
-import PlaybackControl from './playback_control'
+import playbackControl from './playback_control'
 import { motionValue } from '../motion'
 
 import type { AnimationOptions } from './animation'
@@ -20,21 +20,9 @@ export function animateValue<V>(from: V | MotionValue<V>, to: V, options?: Anima
   const animation = motionAnimation(value, to as any, options)
 
   // create playback control
-  const control = new PlaybackControl([animation])
+  const control = playbackControl([animation])
 
   if (options?.autoplay) control.play()
 
   return control
 }
-
-// const AnimationControls = {}
-
-/*
-想要的效果
-
-const value = motionValue(0)
-
-
-value.start()
-
-*/

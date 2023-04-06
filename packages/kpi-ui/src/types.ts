@@ -1,7 +1,8 @@
 export type AnyFunction<R extends unknown = any> = (...args: any[]) => R
 export type AnyObject = Record<string, any>
 
-export type LiteralUnion<T extends U, U> = T | (U & {})
+interface Nothing {}
+export type LiteralUnion<T, U> = T | (U & Nothing)
 
 export type NonUndefined<T> = T extends undefined ? never : T
 export type MayBe<T> = T | null | undefined

@@ -42,46 +42,64 @@ export interface MotionAnimation {
   then: (onfulfilled: VoidFunction, onrejected?: VoidFunction) => Promise<void>
 }
 
-// 'object' | 'attribute' | 'transform' | 'css'
-type AnimationType = any
+// // 'object' | 'attribute' | 'transform' | 'css'
+// type AnimationType = any
 
-export class MotionAnimation {}
+// 实现 anime.js 的 anime() 的返回值
 
+const createFinishedPromise = () => {
+  const expose = {} as { resolve: VoidFunction; promise: Promise<void> }
+
+  const update = () => {
+    expose.resolve?.()
+    expose.promise = new Promise<void>((resolve) => {
+      expose.resolve = resolve
+    })
+  }
+
+  return { update, get: () => expose.promise }
+}
+
+// handles exponents notation
+const regexNumber = /[+-]?\d*\.?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g
+
+const transform = (numbers: number[], strings: string[]) => {
+  return strings.reduce((result, str, i) => {
+    const num = numbers[i] ?? ''
+    return `${result}${str}${num}`
+  }, '')
+}
 export function motionAnimation<V = any>(
   value: MotionValue<V>,
   unResolvedTarget: any,
   options: AnimationOptions = {}
 ): MotionAnimation {
-  let resolvePromise: VoidFunction
-  let promise: Promise<void>
+  const promise = createFinishedPromise()
 
-  const makePromise = () => {
-    resolvePromise && resolvePromise()
-    promise = new Promise((resolve) => {
-      resolvePromise = resolve
-    })
-  }
+  promise.update()
 
-  makePromise()
-  //  resolve target
+  // TODO resolve target
   // ...
 
-  // return {
-  //   type: 'animationType',
-  //   easing: getAnimateEasing(options.ease),
-  //   from: value.get(),
-  //   to: unResolvedTarget,
-  //   unit: 'px',
-  //   test: () => true,
-  //   parse: parseFloat,
-  //   transform: (v) => `${v}px`,
-  // }
+  // const target = resolvedTarget(value.get(), unResolvedTarget)
+  const target = unResolvedTarget
+  // '#000'=>'rgba(255,255,255,1)'
+  // numbers: [255,255,255, 1]
+  // strings: ['rgba(', ',' , ',' , ',' , ')']
+  /* value => strings.reduce((result, str, i)=>{
+    const num = numbers[i]
+    return `${result}${str}${isNumber(num) ? num:''}`
+  }, '')
+  */
+
+  const from = value.get()
+  const color = 'rgba(255, 255, 255, 1)'
+  const numbers = (color.match(regexNumber) || [0]).map(Number)
+  const strings = color.split(regexNumber)
 
   let state: AnimationPlayState = 'idle'
 
   // const ease = getAnimateEasing(options.ease)
-
-  const target = unResolvedTarget
 
   let time = 0
   let speed = 1
@@ -97,11 +115,10 @@ export function motionAnimation<V = any>(
     options.update?.(value.get())
     finished && finish()
 
-    console.log(finished)
     return !finished
   }
 
-  const control = {
+  return {
     get time() {
       return time
     },
@@ -117,9 +134,6 @@ export function motionAnimation<V = any>(
     get duration() {
       return duration
     },
-    get state() {
-      return state
-    },
     play: () => {
       stopRaf = raf(tick)
     },
@@ -134,7 +148,7 @@ export function motionAnimation<V = any>(
       state = 'idle'
       // stop raf
       stopRaf()
-      makePromise()
+      promise.update()
       // updatePromise
       // startTime = cancelTime = null
     },
@@ -143,9 +157,7 @@ export function motionAnimation<V = any>(
       options.complete?.()
     },
     then(onfulfilled, onrejected) {
-      return promise.then(onfulfilled, onrejected)
+      return promise.get().then(onfulfilled, onrejected)
     },
   }
-
-  return control
 }
