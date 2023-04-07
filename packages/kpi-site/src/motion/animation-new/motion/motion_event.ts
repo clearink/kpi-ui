@@ -1,7 +1,7 @@
 import SubscriptionManager from '../../utils/subscription_manager'
 
 export interface MotionValueEventCallbacks<V = any> {
-  onPlay?: VoidFunction
+  onStart?: VoidFunction
   onUpdate?: (current: V) => void
   onPause?: VoidFunction
   onCancel?: VoidFunction

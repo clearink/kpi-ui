@@ -1,4 +1,4 @@
-import { frameData, measureFrameInterval } from './frame_data'
+import { frameData, measureFrameDelta } from './frame_data'
 import now from './now'
 
 const start =
@@ -11,13 +11,13 @@ const stop =
     ? window.cancelAnimationFrame
     : clearTimeout
 
-export default function raf(callback: (t: number) => boolean) {
+export default function raf(callback: (t: number) => boolean | void) {
   let id: number
 
   function loop(t: number) {
     if (!callback(t)) return
 
-    measureFrameInterval(t)
+    measureFrameDelta(t)
 
     id = start(loop)
   }
@@ -25,4 +25,8 @@ export default function raf(callback: (t: number) => boolean) {
   id = start(loop)
 
   return () => stop(id)
+}
+
+export const nextTick = (callback: VoidFunction) => {
+  start(() => callback())
 }

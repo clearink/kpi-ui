@@ -161,7 +161,7 @@ export default function App() {
       <Button
         onClick={() => {
           const a = animateValue(x, 200, {
-            ease: 'linear',
+            ease: 'easeInBack',
             duration: 1000,
             autoplay: true,
             // onUpdate(current) {

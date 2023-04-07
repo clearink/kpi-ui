@@ -1,7 +1,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
 
-import easing from './easing'
+import easing from './ease'
 
 const subdivisionPrecision = 0.0000001
 const subdivisionMaxIterations = 12

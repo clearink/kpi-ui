@@ -87,19 +87,19 @@ export default function playbackControl<V extends string | number>(
   const tick = (time: number) => {
     if (!startTime) startTime = time
 
+    if (startTime === time) value.notify('onStart')
+
     const current: number[] = []
 
     const { length } = animation.to.numbers
 
-    const elapsed = time - startTime
-
-    const percent = clamp(elapsed / duration, 0, 1)
+    const elapsed = clamp(time - startTime, 0, duration) / duration
 
     for (let i = 0; i < length; i += 1) {
       const from = animation.from.numbers[i]
       const to = animation.to.numbers[i]
 
-      current.push(interpolator(ease(percent), [0, 1], [from, to]))
+      current.push(interpolator(ease(elapsed), [0, 1], [from, to]))
     }
 
     const next = transform(current, animation.to.strings)
@@ -108,8 +108,9 @@ export default function playbackControl<V extends string | number>(
 
     value.set(next as V)
 
-    if (elapsed >= duration) value.notify('onComplete')
-    return elapsed <= duration
+    if (elapsed === 1) value.notify('onComplete')
+
+    return elapsed < 1
   }
 
   const play = () => {

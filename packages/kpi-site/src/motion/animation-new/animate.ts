@@ -38,7 +38,7 @@ export function animateValue<V extends string | number>(
 }
 
 const eventNames: MotionValueEventName[] = [
-  'onPlay',
+  'onStart',
   'onUpdate',
   'onPause',
   'onCancel',
