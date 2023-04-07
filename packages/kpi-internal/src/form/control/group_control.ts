@@ -155,7 +155,7 @@ export class FormDependenciesControl {
     return () => cancels.forEach((cancel) => cancel())
   }
 
-  findDependencies = (controls: FormFieldControl[], unqiueControls: Set<FormFieldControl>) => {
+  findDependencies = (controls: FormFieldControl[], uniqueControls: Set<FormFieldControl>) => {
     if (!controls.length) return
 
     const nextControls: FormFieldControl[] = []
@@ -168,15 +168,15 @@ export class FormDependenciesControl {
         if (!field.dirty && !field._touched) return
 
         // 避免爆栈
-        if (unqiueControls.has(field)) return
+        if (uniqueControls.has(field)) return
 
         nextControls.push(field)
 
-        unqiueControls.add(field)
+        uniqueControls.add(field)
       })
     })
 
-    this.findDependencies(nextControls, unqiueControls)
+    this.findDependencies(nextControls, uniqueControls)
   }
 }
 

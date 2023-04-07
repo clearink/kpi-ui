@@ -41,7 +41,8 @@ export default function simpleAnimate(
     if (!start) start = t
 
     const timestamp = t - start
-    const elapsed = clamp(timestamp, 0, duration) / duration
+
+    const elapsed = clamp(timestamp / duration, 0, 1)
 
     const next = from + type(elapsed) * (to - from)
 

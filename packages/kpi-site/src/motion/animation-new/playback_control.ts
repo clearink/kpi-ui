@@ -1,21 +1,25 @@
 /* eslint-disable no-param-reassign */
 
-import { isFunction } from '@kpi/shared'
+import { isFunction, isArray, isString } from '@kpi/shared'
+import { easing, cubicBezier } from '../tween'
 
+import raf from '../utils/raf'
+import createFinishedPromise from '../utils/create_finished_promise'
+
+import type { MotionValue } from './motion'
 import type { MotionAnimation } from './animation'
+import type { Easing } from '../tween/interface'
+import type { MotionValueEventCallbacks } from './motion/motion_event'
+import clamp from '../utils/clamp'
 
-const accessor = <V extends object>(list: V[]) => {
-  return {
-    get<K extends keyof V>(prop: K) {
-      return list.map((item) => item[prop])
-    },
-    set<K extends keyof V>(prop: K, value: V[K]) {
-      list.forEach((item) => {
-        item[prop] = value
-      })
-    },
-  }
+export interface Transition {
+  ease?: Easing
+  delay?: number
+  duration?: number
+  autoplay?: boolean
 }
+
+export interface AnimationOptions extends Transition, MotionValueEventCallbacks {}
 
 const run = (funcs: VoidFunction[]) => funcs.forEach((func) => isFunction(func) && func())
 
@@ -23,48 +27,128 @@ const max = (list: number[]) => Math.max.apply(null, list)
 
 const sum = (list: number[]) => list.reduce((acc, cur) => acc + cur, 0)
 
-export default function playbackControl(animations: MotionAnimation[]): MotionAnimation {
-  const { get, set } = accessor(animations)
+export interface PlaybackControl {
+  time: number
+  speed: number
+
+  duration: number
+
+  stop: () => void
+  play: () => void
+  pause: () => void
+  complete: () => void
+  cancel: () => void
+  then: (onfulfilled: VoidFunction, onrejected?: VoidFunction) => Promise<void>
+}
+
+// 获取 animate 所需要的时间
+function getAnimateEasing(ease: Transition['ease']) {
+  if (isFunction(ease)) return ease
+
+  if (isArray(ease) && ease.length === 4) return cubicBezier(...ease)
+
+  if (isString(ease) && easing[ease]) return easing[ease]
+
+  return easing.linear
+}
+
+const transform = (numbers: number[], strings: string[]) => {
+  return strings.reduce((result, str, i) => {
+    const num = numbers[i] ?? ''
+    return `${result}${str}${num}`
+  }, '')
+}
+
+// 插值
+const interpolator = (value: number, input: [number, number], output: [number, number]) => {
+  const percent = (value - input[0]) / (input[1] - input[0])
+
+  return output[0] + (output[1] - output[0]) * percent
+}
+
+// 负责调度 motion animations
+export default function playbackControl<V extends string | number>(
+  value: MotionValue<V>,
+  animation: MotionAnimation,
+  options: AnimationOptions = {}
+): PlaybackControl {
+  const finishedPromise = createFinishedPromise()
+
+  finishedPromise.update()
+
+  let speed = 1
+  let playState: AnimationPlayState = 'idle'
+
+  const duration = options.duration ?? 300
+
+  const ease = getAnimateEasing(options.ease)
+
+  let startTime = 0
+  const tick = (time: number) => {
+    if (!startTime) startTime = time
+
+    const current: number[] = []
+
+    const { length } = animation.to.numbers
+
+    const elapsed = time - startTime
+
+    const percent = clamp(elapsed / duration, 0, 1)
+
+    for (let i = 0; i < length; i += 1) {
+      const from = animation.from.numbers[i]
+      const to = animation.to.numbers[i]
+
+      current.push(interpolator(ease(percent), [0, 1], [from, to]))
+    }
+
+    const next = transform(current, animation.to.strings)
+
+    value.notify('onUpdate', next)
+
+    value.set(next as V)
+
+    if (elapsed >= duration) value.notify('onComplete')
+    return elapsed <= duration
+  }
+
+  const play = () => {
+    if (playState === 'running') return
+    playState = 'running'
+
+    raf(tick)
+  }
 
   return {
     get time() {
-      return max(get('time'))
+      return startTime
     },
     set time(t: number) {
-      set('time', t)
+      startTime = t
     },
     get speed() {
-      return get('speed')[0]
+      return speed
     },
-    set speed(speed: number) {
-      set('speed', speed)
+    set speed(s: number) {
+      speed = 1
     },
     get duration() {
-      return max(get('duration'))
-    },
-    play: () => {
-      run(get('play'))
+      return duration
     },
 
-    pause: () => {
-      run(get('pause'))
-    },
+    play,
 
-    stop: () => {
-      run(get('stop'))
-    },
+    pause: () => {},
 
-    complete: () => {
-      run(get('complete'))
-    },
+    stop: () => {},
 
-    cancel: () => {
-      run(get('cancel'))
-    },
+    complete: () => {},
+
+    cancel: () => {},
 
     // thenable
     then(onfulfilled: VoidFunction, onrejected?: VoidFunction) {
-      return Promise.all(animations).then(onfulfilled, onrejected)
+      return finishedPromise.get().then(onfulfilled, onrejected)
     },
   }
 }

@@ -1,11 +1,9 @@
-/* eslint-disable no-nested-ternary, no-param-reassign, no-return-assign */
+/* eslint-disable no-param-reassign, no-return-assign */
 
 import { easeOutToEaseIn } from './utils/modifiers'
 import generateEasing from './utils/generate'
 
 import type { EasingFunction } from './interface'
-
-export type EasingDefinition = keyof typeof easing
 
 const linear: EasingFunction = (x) => x
 
@@ -25,7 +23,7 @@ const Circ = generateEasing('Circ', (x) => 1 - Math.sqrt(1 - x ** 2))
 
 const c1 = 1.70158
 const c3 = c1 + 1
-const Back = generateEasing('Back', (x) => c3 * x * x * x - c1 * x * x)
+const Back = generateEasing('Back', (x) => (x === 1 ? 1 : x * x * (c3 * x - c1)))
 
 const n1 = 7.5625
 const d1 = 2.75
@@ -41,10 +39,10 @@ const Bounce = generateEasing(
 
 const c4 = (2 * Math.PI) / 3
 const Elastic = generateEasing('Elastic', (x) => {
-  return x === 0 ? 0 : x === 1 ? 1 : -(2 ** (10 * x - 10)) * Math.sin((x * 10 - 10.75) * c4)
+  return x === 0 || x === 1 ? x : -(2 ** (10 * x - 10)) * Math.sin((x * 10 - 10.75) * c4)
 })
 
-const easing = {
+export default {
   linear,
   ...Sine,
   ...Quad,
@@ -57,5 +55,3 @@ const easing = {
   ...Bounce,
   ...Elastic,
 }
-
-export default easing

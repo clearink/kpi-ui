@@ -1,12 +1,15 @@
 import SubscriptionManager from '../../utils/subscription_manager'
 
 export interface MotionValueEventCallbacks<V = any> {
-  start?: VoidFunction
-  update?: (current: V) => void
-  pause?: VoidFunction
-  cancel?: VoidFunction
-  complete?: VoidFunction
+  onPlay?: VoidFunction
+  onUpdate?: (current: V) => void
+  onPause?: VoidFunction
+  onCancel?: VoidFunction
+  onStop?: VoidFunction
+  onComplete?: VoidFunction
 }
+
+export type MotionValueEventName = keyof MotionValueEventCallbacks
 
 export default class MotionValueEvent<V = any> {
   events = new Map<string, SubscriptionManager>()

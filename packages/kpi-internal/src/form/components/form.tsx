@@ -51,7 +51,6 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     return parent.register(formInstance, name)
   }, [formInstance, name, parent])
 
-  // TODO: 实现表单联动功能
   internalHook?.setFormProps(props, parent)
 
   // 设置初始值, 仅在挂载前设置一次

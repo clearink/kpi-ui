@@ -6,7 +6,7 @@ import MotionValueEvent from './motion_event'
 import defineHidden from '../../utils/define_hidden'
 import createUniqueId from '../../utils/create_unique_id'
 
-export interface MotionValue<V> extends Pick<MotionValueEvent<V>, 'on' | 'notify' | 'clear'> {
+export interface MotionValue<V = any> extends Pick<MotionValueEvent<V>, 'on' | 'notify' | 'clear'> {
   get: () => V
   set: (value: V) => void
 }
@@ -26,21 +26,21 @@ export function motionValue<V>(initial: V | MotionValue<V>) {
 
   let current = initial
 
-  const motion: MotionValue<V> = {
+  const value: MotionValue<V> = {
     // events
     ...pick(events, ['on', 'notify', 'clear']),
 
     // accessor
     get: () => current,
-    set: (value: V) => {
-      current = value
+    set: (val: V) => {
+      current = val
     },
   }
 
   // 唯一标识
-  defineHidden(motion, $id, uniqueId())
+  defineHidden(value, $id, uniqueId())
   // 判断类型
-  defineHidden(motion, $type, motionValueSymbol)
+  defineHidden(value, $type, motionValueSymbol)
 
-  return motion
+  return value
 }

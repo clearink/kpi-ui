@@ -1,7 +1,5 @@
 type AnyFunction = (...args: any[]) => any
 
-// const noop = <T>(any: T): T => any
-
 export default class SubscriptionManager<Handler extends AnyFunction = any> {
   private subscriptions = new Set<Handler>()
 

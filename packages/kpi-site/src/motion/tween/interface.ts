@@ -1,4 +1,4 @@
-import type { EasingDefinition } from './easing'
+import type { EasingDefinition } from '.'
 
 export type EasingFunction = (x: number) => number
 

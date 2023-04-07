@@ -1,32 +1,58 @@
-import { pick } from '@kpi/shared'
+import { isFunction, noop, pick } from '@kpi/shared'
 import { motionAnimation } from './animation'
 import playbackControl from './playback_control'
 import { motionValue } from './motion'
 
-import type { AnimationOptions } from './animation'
 import type { MotionValue } from './motion'
 import type { ElementOrSelector } from '../utils/resolve_element'
-import MotionValueEvent from './motion/motion_event'
+import type { MotionValueEventName } from './motion/motion_event'
+import type { AnimationOptions } from './playback_control'
 
 export function animate(
   elementOrSelector: ElementOrSelector,
   keyframes: any,
   options: AnimationOptions
-) {}
+) {
+  // animate elements
+  // animate value
+}
 
 // animate value or motionValue
-export function animateValue<V>(from: V | MotionValue<V>, to: V, options?: AnimationOptions) {
+export function animateValue<V extends string | number>(
+  from: V | MotionValue<V>,
+  to: V,
+  options?: AnimationOptions
+) {
+  // TODO: 如何取消之前的 motion ?
   const value = motionValue(from)
 
   // create animation
-  const animation = motionAnimation(value, to as any, options)
+  const animation = motionAnimation(value.get(), to)
 
   // create playback control
-  const control = playbackControl([animation])
+  const control = playbackControl(value, animation, options)
 
   if (options?.autoplay) control.play()
 
   return control
+}
+
+const eventNames: MotionValueEventName[] = [
+  'onPlay',
+  'onUpdate',
+  'onPause',
+  'onCancel',
+  'onStop',
+  'onComplete',
+]
+
+function subscribeMotionEvent(value: MotionValue, options: AnimationOptions = {}) {
+  const picked = pick(options, eventNames)
+
+  return Object.entries(picked).map(([eventName, handler]) => {
+    if (!isFunction(handler)) return noop
+    return value.on(eventName as MotionValueEventName, handler)
+  })
 }
 
 // const a = motionValue(0)

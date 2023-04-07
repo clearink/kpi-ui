@@ -144,25 +144,33 @@ import { useEffect, useRef } from 'react'
 import { Button } from '@kpi/ui'
 
 import { animateValue } from './motion/animation-new/animate'
-import { motionValue } from './motion/animation-new/motion'
+import useMotionValue from './motion/hooks/use_motion_value'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
+  const x = useMotionValue(0)
+
   useEffect(() => {
-    ;(window as any).a = motionValue(1)
-  }, [])
+    return x.on('onUpdate', (current) => {
+      console.log(1)
+      ref.current!.style.transform = `translate3d(${current}px,0,0)`
+    })
+  }, [x])
   return (
     <div className="font-bold w-[762px] text-center">
       <Button
         onClick={() => {
-          const a = animateValue(0, 200, {
-            ease: 'easeInBack',
-            duration: 300,
-            update(current) {
-              console.log('update', current)
-            },
+          const a = animateValue(x, 200, {
+            ease: 'linear',
+            duration: 1000,
+            autoplay: true,
+            // onUpdate(current) {
+            //   ref.current!.style.transform = `translate3d(${current}px,0,0)`
+            //   // ref.current!.style.opacity = current
+            //   // eslint-disable-next-line no-plusplus
+            //   console.log(current, count++)
+            // },
           })
-
           console.log(a)
         }}
       >
@@ -170,7 +178,7 @@ export default function App() {
       </Button>
       <div
         ref={ref}
-        style={{ width: 200, height: 200, borderRadius: '50%', backgroundColor: 'red' }}
+        style={{ width: 100, height: 100, borderRadius: '50%', backgroundColor: 'red' }}
       />
     </div>
   )
