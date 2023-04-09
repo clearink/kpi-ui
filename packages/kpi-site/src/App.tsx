@@ -143,13 +143,12 @@
 import { useEffect, useRef } from 'react'
 import { Button } from '@kpi/ui'
 
-import { animateValue } from './motion/animation-new/animate'
 import useMotionValue from './motion/hooks/use_motion_value'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
   const x = useMotionValue(0)
-
+  console.log(x)
   useEffect(() => {
     return x.on('onUpdate', (current) => {
       console.log(1)
@@ -160,18 +159,31 @@ export default function App() {
     <div className="font-bold w-[762px] text-center">
       <Button
         onClick={() => {
-          const a = animateValue(x, 200, {
-            ease: 'easeInBack',
-            duration: 1000,
-            autoplay: true,
-            // onUpdate(current) {
-            //   ref.current!.style.transform = `translate3d(${current}px,0,0)`
-            //   // ref.current!.style.opacity = current
-            //   // eslint-disable-next-line no-plusplus
-            //   console.log(current, count++)
-            // },
+          const p = x.start(200)
+          console.log(performance.now(), x)
+          p.then(() => {
+            console.log('then p', performance.now())
           })
-          console.log(a)
+          // const a = x.start(200, {
+          //   ease: 'easeInBack',
+          //   duration: 1000,
+          //   // onUpdate(current) {
+          //   //   ref.current!.style.transform = `translate3d(${current}px,0,0)`
+          //   //   // ref.current!.style.opacity = current
+          //   //   // eslint-disable-next-line no-plusplus
+          //   //   console.log(current, count++)
+          //   // },
+          // })
+          // animateValue(x, 200, {
+          //   ease: 'easeInBack',
+          //   duration: 1000,
+          //   // onUpdate(current) {
+          //   //   ref.current!.style.transform = `translate3d(${current}px,0,0)`
+          //   //   // ref.current!.style.opacity = current
+          //   //   // eslint-disable-next-line no-plusplus
+          //   //   console.log(current, count++)
+          //   // },
+          // })
         }}
       >
         start

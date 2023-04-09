@@ -4,7 +4,7 @@ import { isFunction, isArray, isString } from '@kpi/shared'
 import { easing, cubicBezier } from '../tween'
 
 import raf from '../utils/raf'
-import createFinishedPromise from '../utils/create_finished_promise'
+import createFinishedPromise from '../utils/make_controlled_promise'
 
 import type { MotionValue } from './motion'
 import type { MotionAnimation } from './animation'

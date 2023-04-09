@@ -19,8 +19,6 @@
     "skipLibCheck": true,
     "downlevelIteration": true,
     "stripInternal": true,
-    // 忽略 string 不能当索引
-    "suppressImplicitAnyIndexErrors": true,
     // 不用显式返回 any
     "noImplicitAny": false
   }

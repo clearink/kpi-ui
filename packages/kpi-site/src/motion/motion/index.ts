@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file, class-methods-use-this */
 
-import { $id, $type, motionValueSymbol } from '../utils/symbol'
+import { $id, $type, $motion } from '../utils/symbol'
 import MotionValueEvent from './motion_event'
 import defineHidden from '../utils/define_hidden'
 import createUniqueId from '../utils/create_unique_id'
@@ -39,7 +39,7 @@ export class MotionValue<V = any> {
 }
 
 export function isMotionValue<V>(obj: V | MotionValue<V>): obj is MotionValue<V> {
-  return obj && obj[$type] === motionValueSymbol
+  return obj && obj[$type] === $motion
 }
 
 const uniqueId = createUniqueId(0)
@@ -52,7 +52,7 @@ export function motionValue<V>(initial: V | MotionValue<V>) {
   // 唯一标识
   defineHidden(value, $id, uniqueId())
   // 判断类型
-  defineHidden(value, $type, motionValueSymbol)
+  defineHidden(value, $type, $motion)
 
   return new MotionValue(initial)
 }
