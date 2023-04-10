@@ -141,7 +141,6 @@
 //   )
 // }
 import { useEffect, useRef } from 'react'
-import { Button } from '@kpi/ui'
 
 import useMotionValue from './motion/hooks/use_motion_value'
 
@@ -164,12 +163,12 @@ export default function App() {
       <button
         type="button"
         onClick={() => {
-          // const p = x.start(800)
-          const p = ref.current!.animate([{ transform: 'translate3d(800px,0,0)' }], {
-            duration: 1000,
-            easing: 'linear',
-            fill: 'forwards',
-          })
+          const p = x.start(800)
+          // const p = ref.current!.animate([{ transform: 'translate3d(800px,0,0)' }], {
+          //   duration: 1000,
+          //   easing: 'linear',
+          //   fill: 'forwards',
+          // })
 
           // setTimeout(() => {
           //   const p2 = x.start(200)
@@ -178,7 +177,8 @@ export default function App() {
           //   })
           // }, 500)
 
-          p.finished.then(() => {
+          p.then(() => {
+            // p.finished.then(() => {
             console.log('then p', performance.now())
           })
           // const a = x.start(200, {

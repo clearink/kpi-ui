@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import each from '../../utils/each'
 import now from '../../utils/now'
 import raf, { nextTick } from '../../utils/raf'
@@ -9,8 +10,9 @@ export interface Queue<T extends Function = any> {
   flush: (arg?: any) => number
 }
 
-const createQueue = <T extends Function>(): Queue<T> => {
+const makeQueue = <T extends Function>(): Queue<T> => {
   const current = new Set<T>()
+
   return {
     get size() {
       return current.size
@@ -28,32 +30,42 @@ const createQueue = <T extends Function>(): Queue<T> => {
   }
 }
 
-let cancel: null | VoidFunction = null
+export class FrameLoopDriver {
+  private queue = makeQueue()
 
-const update = (queue: Queue) => {
-  cancel = raf((t) => {
-    const done = queue.flush(t) === 0
+  private _stop: null | VoidFunction = null
 
-    if (done) cancel = null
+  private _update = () => {
+    // 删除 raf 改用 nextTick, 且 外部能够自定义 raf 方法
+    this._stop = raf((t) => {
+      const done = this.queue.flush(t) === 0
 
-    return !done
-  })
-}
+      if (done) this._stop = null
 
-const createDriver = () => {
-  const queue = createQueue()
+      return !done
+    })
+  }
 
-  return {
-    start: (fn: Function) => {
-      queue.add(fn)
-      if (!cancel) update(queue)
-    },
-    cancel: (fn: Function) => {
-      queue.delete(fn)
-    },
-    now,
-    nextTick,
+  start = (fn: Function) => {
+    this.queue.add(fn)
+
+    if (!this._stop) this._update()
+  }
+
+  cancel = (fn: Function) => {
+    this.queue.delete(fn)
+  }
+
+  get = () => {
+    return {
+      now,
+
+      nextTick,
+
+      start: this.start,
+
+      cancel: this.cancel,
+    }
   }
 }
-
-export default createDriver()
+export default new FrameLoopDriver().get()

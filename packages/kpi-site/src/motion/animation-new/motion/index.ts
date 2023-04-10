@@ -12,7 +12,7 @@ import clamp from '../../utils/clamp'
 import { easings } from '../../tween'
 import driver from '../frame-loop/driver'
 import MotionAnimation from './motion_animation'
-import { getMotionStatus, motionFinished, motionRunning, setMotionStatus } from './motion_status'
+import { getMotionStatus, motionRunning, setMotionStatus } from './motion_status'
 import interpolator from './interpolator'
 
 export type AsyncResult<V extends any> = Promise<{

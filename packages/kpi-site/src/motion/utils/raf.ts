@@ -28,5 +28,5 @@ export default function raf(callback: (t: number) => boolean | void) {
 }
 
 export const nextTick = (callback: VoidFunction) => {
-  start(() => callback())
+  return start(() => callback())
 }
