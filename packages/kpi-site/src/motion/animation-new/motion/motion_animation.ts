@@ -1,16 +1,16 @@
 /* eslint-disable class-methods-use-this */
 import { noop } from '@kpi/shared'
-import { easing } from '../../tween'
+import { easings } from '../../tween'
 
 import type { MotionValue } from '.'
-import { setMotionStatus } from './moition_status'
+import { setMotionStatus } from './motion_status'
 
 export default class MotionAnimation {
   time = 0
 
   duration = 300
 
-  ease = easing.linear
+  easing = easings.linear
 
   from = 0
 
@@ -19,12 +19,12 @@ export default class MotionAnimation {
   resolve: VoidFunction = noop
 
   constructor(props: any) {
-    const { original, target, duration, ease, resolve } = props
+    const { original, target, duration, easing, resolve } = props
 
     this.from = original
     this.to = target
     this.duration = duration
-    this.ease = ease
+    this.easing = easing
     this.resolve = resolve
   }
 
@@ -42,11 +42,8 @@ export default class MotionAnimation {
     value.notify('onComplete')
     setMotionStatus(value, 'finished')
     // set motion value to target
+    // eslint-disable-next-line no-param-reassign
+    value.animation = null
     this.resolve()
-  }
-
-  onStop = (value: MotionValue) => {
-    this.resolve()
-    value.notify('onStop')
   }
 }

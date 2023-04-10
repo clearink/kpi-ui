@@ -9,10 +9,10 @@ import defineHidden from '../../utils/define_hidden'
 import createUniqueId from '../../utils/create_unique_id'
 import isMotionValue from './is_motion_value'
 import clamp from '../../utils/clamp'
-import { easing } from '../../tween'
+import { easings } from '../../tween'
 import driver from '../frame-loop/driver'
 import MotionAnimation from './motion_animation'
-import { motionFinished, motionRunning, setMotionStatus } from './moition_status'
+import { getMotionStatus, motionFinished, motionRunning, setMotionStatus } from './motion_status'
 import interpolator from './interpolator'
 
 export type AsyncResult<V extends any> = Promise<{
@@ -44,8 +44,12 @@ export class MotionValue<V = any> {
     setMotionStatus(this, 'idle')
   }
 
+  get status() {
+    return getMotionStatus(this)
+  }
+
   // animation ?作用暂时不明,可能与 anime.js 的 animations 差不多
-  private animation: null | MotionAnimation = null
+  animation: null | MotionAnimation = null
 
   // animate tick
   private _update = (t: number) => {
@@ -53,47 +57,23 @@ export class MotionValue<V = any> {
 
     const animation = this.animation!
 
+    // TODO 设置 original 原始值
     if (!animation.time) animation.onStart(t, this)
 
-    const { duration, ease, from, to } = animation
+    const { duration, easing, from, to } = animation
 
     let elapsed = t - animation.time
 
     elapsed = clamp(elapsed, 0, duration) / duration
 
-    const current = interpolator(ease(elapsed), [0, 1], [from, to])
+    const current = interpolator(easing(elapsed), [0, 1], [from, to])
 
     animation.onUpdate(current, this)
 
+    // TODO 设置 target 原始值
     if (elapsed === 1) animation.onComplete(this)
 
     return elapsed < 1
-  }
-
-  private _start(target: any, resolve: VoidFunction) {
-    setMotionStatus(this, 'running')
-
-    const original = this.get() as any
-
-    const duration = 1000 // interpolator(original, [this.initial as any, target], [1000, 0])
-    // console.log('real duration', interpolator(original, [this.initial as any, target], [1000, 0]))
-
-    const ease = easing.linear
-
-    this.animation && this.animation.onStop(this)
-
-    this.animation = new MotionAnimation({
-      original,
-      target,
-      duration,
-      ease,
-      resolve,
-    })
-
-    // 需要保证 animation 的 唯一
-    // 避免在 animation 时多调用
-
-    driver.start(this._update)
   }
 
   // 取消 animate
@@ -121,11 +101,29 @@ export class MotionValue<V = any> {
 
   // playback control
   start = (target: V) => {
-    // 解析 value 与 target 为 [from, to]
     return new Promise<void>((resolve) => {
-      if (motionFinished(this)) return resolve()
+      // 解析 value 与 target 为 [from, to]
+      setMotionStatus(this, 'running')
 
-      this._start(target, resolve)
+      const current = this.get() as any
+
+      const duration = 1000
+
+      // 取消上次未完成的 animation
+      this.animation && driver.cancel(this._update)
+
+      this.animation = new MotionAnimation({
+        original: current,
+        target,
+        duration,
+        easing: easings.linear,
+        resolve,
+      })
+
+      // 需要保证 animation 的 唯一
+      // 避免在 animation 时多调用
+
+      driver.start(this._update)
     })
   }
 }

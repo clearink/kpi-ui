@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import { isFunction, isArray, isString } from '@kpi/shared'
-import { easing, cubicBezier } from '../tween'
+import { easings, cubicBezier } from '../tween'
 
 import raf from '../utils/raf'
 import createFinishedPromise from '../utils/make_controlled_promise'
@@ -47,9 +47,9 @@ function getAnimateEasing(ease: Transition['ease']) {
 
   if (isArray(ease) && ease.length === 4) return cubicBezier(...ease)
 
-  if (isString(ease) && easing[ease]) return easing[ease]
+  if (isString(ease) && easings[ease]) return easings[ease]
 
-  return easing.linear
+  return easings.linear
 }
 
 const transform = (numbers: number[], strings: string[]) => {

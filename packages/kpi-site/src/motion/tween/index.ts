@@ -1,7 +1,7 @@
-import easing from './ease'
+import easings from './eases'
 
 export { default as cubicBezier } from './cubic_bezier'
 export { default as steps } from './steps'
-export { default as easing } from './ease'
+export { default as easings } from './eases'
 
-export type EasingDefinition = keyof typeof easing
+export type EasingDefinition = keyof typeof easings

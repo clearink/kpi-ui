@@ -148,20 +148,37 @@ import useMotionValue from './motion/hooks/use_motion_value'
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
   const x = useMotionValue(0)
-  console.log(x)
   useEffect(() => {
+    x.on('onStart', () => {
+      console.log('p start')
+    })
+    x.on('onCancel', () => {
+      console.log('p cancel')
+    })
     return x.on('onUpdate', (current) => {
-      console.log(1)
       ref.current!.style.transform = `translate3d(${current}px,0,0)`
     })
   }, [x])
   return (
     <div className="font-bold w-[762px] text-center">
-      <Button
+      <button
+        type="button"
         onClick={() => {
-          const p = x.start(200)
-          console.log(performance.now(), x)
-          p.then(() => {
+          // const p = x.start(800)
+          const p = ref.current!.animate([{ transform: 'translate3d(800px,0,0)' }], {
+            duration: 1000,
+            easing: 'linear',
+            fill: 'forwards',
+          })
+
+          // setTimeout(() => {
+          //   const p2 = x.start(200)
+          //   p2.then(() => {
+          //     console.log('then p2', performance.now())
+          //   })
+          // }, 500)
+
+          p.finished.then(() => {
             console.log('then p', performance.now())
           })
           // const a = x.start(200, {
@@ -187,7 +204,7 @@ export default function App() {
         }}
       >
         start
-      </Button>
+      </button>
       <div
         ref={ref}
         style={{ width: 100, height: 100, borderRadius: '50%', backgroundColor: 'red' }}
