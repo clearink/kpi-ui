@@ -9,8 +9,8 @@ export const measureFrameDelta = (() => {
   return (t: number) => {
     if (measured) return
 
-    // eslint-disable-next-line no-return-assign, no-sequences
-    if (!timestamp) return (timestamp = t), undefined
+    // eslint-disable-next-line no-return-assign
+    if (!timestamp) return (timestamp = t)
 
     measured = true
 

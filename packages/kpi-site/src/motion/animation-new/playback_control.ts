@@ -3,7 +3,6 @@
 import { isFunction, isArray, isString } from '@kpi/shared'
 import { easings, cubicBezier } from '../tween'
 
-import raf from '../utils/raf'
 import createFinishedPromise from '../utils/make_controlled_promise'
 
 import type { MotionValue } from './motion'
@@ -116,8 +115,6 @@ export default function playbackControl<V extends string | number>(
   const play = () => {
     if (playState === 'running') return
     playState = 'running'
-
-    raf(tick)
   }
 
   return {

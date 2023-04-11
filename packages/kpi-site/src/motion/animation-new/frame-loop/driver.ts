@@ -1,7 +1,9 @@
 /* eslint-disable max-classes-per-file */
+import { isNull } from '@kpi/shared'
 import each from '../../utils/each'
+import auto, { caf, nextFrame, raf } from '../../utils/raf'
 import now from '../../utils/now'
-import raf, { nextTick } from '../../utils/raf'
+import { measureFrameDelta } from '../../utils/frame_data'
 
 export interface Queue<T extends Function = any> {
   size: number
@@ -35,9 +37,10 @@ export class FrameLoopDriver {
 
   private _stop: null | VoidFunction = null
 
+  private _autoFrame = auto
+
   private _update = () => {
-    // 删除 raf 改用 nextTick, 且 外部能够自定义 raf 方法
-    this._stop = raf((t) => {
+    this._stop = this._autoFrame((t) => {
       const done = this.queue.flush(t) === 0
 
       if (done) this._stop = null
@@ -56,11 +59,15 @@ export class FrameLoopDriver {
     this.queue.delete(fn)
   }
 
+  use = (_raf: typeof raf, _caf: typeof caf) => {
+    this._autoFrame = createAutoFrame(_raf, caf)
+  }
+
   get = () => {
     return {
       now,
 
-      nextTick,
+      nextFrame,
 
       start: this.start,
 

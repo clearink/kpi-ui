@@ -155,7 +155,7 @@ export default function App() {
       console.log('p cancel')
     })
     return x.on('onUpdate', (current) => {
-      console.log(1, current)
+      console.log('1')
       ref.current!.style.transform = `translate3d(${current}px,0,0)`
     })
   }, [x])

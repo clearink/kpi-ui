@@ -1,17 +1,17 @@
 import { frameData, measureFrameDelta } from './frame_data'
 import now from './now'
 
-const start =
+export const raf: (callback: FrameRequestCallback) => number =
   typeof window !== 'undefined' && typeof window.requestAnimationFrame !== 'undefined'
     ? window.requestAnimationFrame
     : (callback: FrameRequestCallback) =>
         setTimeout(() => callback(now()), frameData.delta) as unknown as number
-const stop =
+export const caf: (handle: number) => void =
   typeof window !== 'undefined' && typeof window.cancelAnimationFrame !== 'undefined'
     ? window.cancelAnimationFrame
     : clearTimeout
 
-export default function raf(callback: (t: number) => boolean | void) {
+export default function auto(callback: (t: number) => boolean | void) {
   let id: number
 
   function loop(t: number) {
@@ -19,14 +19,10 @@ export default function raf(callback: (t: number) => boolean | void) {
 
     measureFrameDelta(t)
 
-    id = start(loop)
+    id = raf(loop)
   }
 
-  id = start(loop)
+  id = raf(loop)
 
-  return () => stop(id)
-}
-
-export const nextTick = (callback: VoidFunction) => {
-  return start(() => callback())
+  return () => caf(id)
 }
