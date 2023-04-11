@@ -12,7 +12,7 @@ import clamp from '../../utils/clamp'
 import { easings } from '../../tween'
 import driver from '../frame-loop/driver'
 import MotionAnimation from './motion_animation'
-import { getMotionStatus, motionRunning, setMotionStatus } from './motion_status'
+import { getMotionStatus, motionPaused, motionRunning, setMotionStatus } from './motion_status'
 import interpolator from './interpolator'
 
 export type AsyncResult<V extends any> = Promise<{
@@ -57,18 +57,24 @@ export class MotionValue<V = any> {
 
     const animation = this.animation!
 
-    // TODO 设置 original 原始值
-    if (!animation.time) animation.onStart(t, this)
-
     const { duration, easing, from, to } = animation
 
-    let elapsed = t - animation.time
+    if (animation.resume) {
+      animation.startTime = 0
+      animation.lastTime = animation.motionTime
+      animation.resume = false
+    }
+
+    // TODO 设置 original 原始值
+    if (!animation.startTime) animation.onStart(t, this)
+
+    let elapsed = t + animation.lastTime - animation.startTime
 
     elapsed = clamp(elapsed, 0, duration) / duration
 
     const current = interpolator(easing(elapsed), [0, 1], [from, to])
 
-    animation.onUpdate(current, this)
+    animation.onUpdate(current, this, t)
 
     // TODO 设置 target 原始值
     if (elapsed === 1) animation.onComplete(this)
@@ -87,6 +93,18 @@ export class MotionValue<V = any> {
 
   pause = () => {
     setMotionStatus(this, 'paused')
+
+    driver.cancel(this._update)
+  }
+
+  resume = () => {
+    if (!motionPaused(this)) return
+
+    setMotionStatus(this, 'running')
+
+    if (this.animation) this.animation.resume = true
+
+    driver.start(this._update)
   }
 
   stop = () => {

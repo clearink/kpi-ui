@@ -19,6 +19,10 @@ export function motionFinished(value: MotionValue) {
   return getMotionStatus(value) === 'finished'
 }
 
+export function motionPaused(value) {
+  return getMotionStatus(value) === 'paused'
+}
+
 export function motionAnimated(value: MotionValue) {
   return !!value[$animated]
 }

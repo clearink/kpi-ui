@@ -155,6 +155,7 @@ export default function App() {
       console.log('p cancel')
     })
     return x.on('onUpdate', (current) => {
+      console.log(1, current)
       ref.current!.style.transform = `translate3d(${current}px,0,0)`
     })
   }, [x])
@@ -164,43 +165,16 @@ export default function App() {
         type="button"
         onClick={() => {
           const p = x.start(800)
-          // const p = ref.current!.animate([{ transform: 'translate3d(800px,0,0)' }], {
-          //   duration: 1000,
-          //   easing: 'linear',
-          //   fill: 'forwards',
-          // })
-
-          // setTimeout(() => {
-          //   const p2 = x.start(200)
-          //   p2.then(() => {
-          //     console.log('then p2', performance.now())
-          //   })
-          // }, 500)
+          setTimeout(() => {
+            x.pause()
+            x.resume()
+            // setTimeout(() => {
+            // }, 1000)
+          }, 500)
 
           p.then(() => {
-            // p.finished.then(() => {
             console.log('then p', performance.now())
           })
-          // const a = x.start(200, {
-          //   ease: 'easeInBack',
-          //   duration: 1000,
-          //   // onUpdate(current) {
-          //   //   ref.current!.style.transform = `translate3d(${current}px,0,0)`
-          //   //   // ref.current!.style.opacity = current
-          //   //   // eslint-disable-next-line no-plusplus
-          //   //   console.log(current, count++)
-          //   // },
-          // })
-          // animateValue(x, 200, {
-          //   ease: 'easeInBack',
-          //   duration: 1000,
-          //   // onUpdate(current) {
-          //   //   ref.current!.style.transform = `translate3d(${current}px,0,0)`
-          //   //   // ref.current!.style.opacity = current
-          //   //   // eslint-disable-next-line no-plusplus
-          //   //   console.log(current, count++)
-          //   // },
-          // })
         }}
       >
         start

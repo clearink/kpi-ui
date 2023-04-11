@@ -6,15 +6,24 @@ import type { MotionValue } from '.'
 import { setMotionStatus } from './motion_status'
 
 export default class MotionAnimation {
-  time = 0
+  // 动画持续的时间
+  startTime = 0
+
+  motionTime = 0
+
+  lastTime = 0
 
   duration = 300
+
+  step = 0
 
   easing = easings.linear
 
   from = 0
 
   to = 0
+
+  resume = false
 
   resolve: VoidFunction = noop
 
@@ -29,13 +38,14 @@ export default class MotionAnimation {
   }
 
   onStart = (t: number, value: MotionValue) => {
-    this.time = t
-    value.notify('onStart')
+    this.startTime = t
+    if (!this.motionTime) value.notify('onStart')
   }
 
-  onUpdate = (current: number, value: MotionValue) => {
+  onUpdate = (current: number, value: MotionValue, t: number) => {
     value.notify('onUpdate', current)
     value.set(current)
+    this.motionTime = t + this.lastTime - this.startTime
   }
 
   onComplete = (value: MotionValue) => {
