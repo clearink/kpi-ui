@@ -1,20 +1,20 @@
 import each from '../utils/each'
 
-const makeQueue = <T extends Function>() => {
-  const current = new Set<T>()
+export type AnyFunction = (...args: any[]) => any
+export default class Queue<T extends AnyFunction> {
+  private current = new Set<T>()
 
-  return {
-    add: (fn: T) => {
-      return current.add(fn)
-    },
-    delete: (fn: T) => {
-      return current.delete(fn)
-    },
-    flush: (arg?: any) => {
-      each(current, (fn) => !fn(arg) && current.delete(fn))
-      return current.size
-    },
+  add = (fn: T) => {
+    return this.current.add(fn)
+  }
+
+  delete = (fn: T) => {
+    return this.current.delete(fn)
+  }
+
+  flush = (...args: Parameters<T>) => {
+    each(this.current, (fn) => !fn(...args) && this.delete(fn))
+
+    return this.current.size
   }
 }
-
-export default makeQueue

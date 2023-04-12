@@ -1,25 +1,17 @@
 /* eslint-disable no-return-assign */
 import { isNull } from '@kpi/shared'
-import { raf as Raf, caf as Caf } from '../utils/raf'
-import now from '../utils/now'
+import Queue from './queue'
 import { frameData, updateFrameDelta } from './delta'
-import makeQueue from './queue'
+import { raf as $raf, caf, now } from './driver'
 
 const makeFrameLoopDriver = <T extends (t: number) => boolean>() => {
-  let raf = Raf
-  let caf = Caf
   let $id: null | number = null
-  const $queue = makeQueue<T>()
-
-  const use = (customRaf: typeof Raf, customCaf?: typeof Caf) => {
-    if (customRaf) raf = customRaf
-    if (customCaf) caf = customCaf
-  }
+  const $queue = new Queue<(t: number) => boolean>()
 
   // with measure frame delta
-  const $raf = (callback: FrameRequestCallback) => raf((t) => updateFrameDelta(t, callback(t)))
+  const raf = (callback: FrameRequestCallback) => $raf((t) => updateFrameDelta(t, callback(t)))
 
-  const update = () => ($id = $raf((t) => ($queue.flush(t) ? update() : ($id = null))))
+  const update = () => ($id = raf((t) => ($queue.flush(t) ? update() : ($id = null))))
 
   const start = (fn: T) => $queue.add(fn) && isNull($id) && update()
 
@@ -28,14 +20,14 @@ const makeFrameLoopDriver = <T extends (t: number) => boolean>() => {
   const loop = (callback: (timestamp: number, delta: number) => boolean) => {
     let id: number
 
-    const tick = (t: number) => callback(t, frameData.delta) && (id = $raf(tick))
+    const tick = (t: number) => callback(t, frameData.delta) && (id = raf(tick))
 
-    id = $raf(tick)
+    id = raf(tick)
 
     return () => caf(id)
   }
 
-  return { now, raf: $raf, caf, use, start, cancel, loop }
+  return { now, raf, caf, start, cancel, loop }
 }
 
 export default makeFrameLoopDriver()

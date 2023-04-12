@@ -141,7 +141,7 @@
 //   )
 // }
 import { useEffect, useRef } from 'react'
-import { animateValue } from './motion/animation-new/animate'
+import { animate } from './motion/animation/animate'
 
 import useMotionValue from './motion/hooks/use_motion_value'
 
