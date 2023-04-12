@@ -3,13 +3,13 @@ import { noop } from '@kpi/shared'
 import { easings } from '../../tween'
 
 import type { MotionValue } from '.'
-import { setMotionStatus } from './motion_status'
 
+// 参考 anime.js 的 animations 对象
 export default class MotionAnimation {
   // 动画持续的时间
   startTime = 0
 
-  motionTime = 0
+  currentTime = 0
 
   lastTime = 0
 
@@ -39,21 +39,21 @@ export default class MotionAnimation {
 
   onStart = (t: number, value: MotionValue) => {
     this.startTime = t
-    if (!this.motionTime) value.notify('onStart')
+    // if (!this.currentTime) value.notify('start')
   }
 
   onUpdate = (current: number, value: MotionValue, t: number) => {
-    value.notify('onUpdate', current)
-    value.set(current)
-    this.motionTime = t + this.lastTime - this.startTime
+    // value.notify('change', current)
+    // value.set(current)
+    this.currentTime = t + this.lastTime - this.startTime
   }
 
   onComplete = (value: MotionValue) => {
-    value.notify('onComplete')
-    setMotionStatus(value, 'finished')
+    // value.notify('finish')
+    // value.status = 'finished'
     // set motion value to target
     // eslint-disable-next-line no-param-reassign
-    value.animation = null
+    // value.animation = null
     this.resolve()
   }
 }

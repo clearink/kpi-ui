@@ -1,18 +1,21 @@
 import { useEvent } from '@kpi/shared'
 import { useEffect, useRef } from 'react'
-import { caf, raf } from '../utils/raf'
+import driver from '../frame-loop'
 
-export default function useAnimationFrame(callback: FrameRequestCallback) {
-  const timestamp = useRef(0)
+export type FrameCallback = (timestamp: number, delta: number) => void
 
+export default function useAnimationFrame(callback: FrameCallback) {
   const eventCallback = useEvent(callback)
 
+  const startTime = useRef(0)
+
   useEffect(() => {
-    // const id = raf((t) => {
-    //   if (!timestamp.current) timestamp.current = t
-    //   eventCallback(t - timestamp.current)
-    //   return true
-    // })
-    // return () => caf(id)
+    return driver.loop((timestamp, delta) => {
+      if (!startTime.current) startTime.current = timestamp
+
+      eventCallback(timestamp - startTime.current, delta)
+
+      return true
+    })
   }, [eventCallback])
 }

@@ -141,6 +141,7 @@
 //   )
 // }
 import { useEffect, useRef } from 'react'
+import { animateValue } from './motion/animation-new/animate'
 
 import useMotionValue from './motion/hooks/use_motion_value'
 
@@ -148,14 +149,14 @@ export default function App() {
   const ref = useRef<HTMLDivElement>(null)
   const x = useMotionValue(0)
   useEffect(() => {
-    x.on('onStart', () => {
+    x.on('start', () => {
       console.log('p start')
     })
-    x.on('onCancel', () => {
+    x.on('cancel', () => {
       console.log('p cancel')
     })
-    return x.on('onUpdate', (current) => {
-      console.log('1')
+    return x.on('change', (current) => {
+      console.log(current)
       ref.current!.style.transform = `translate3d(${current}px,0,0)`
     })
   }, [x])
@@ -164,17 +165,8 @@ export default function App() {
       <button
         type="button"
         onClick={() => {
-          const p = x.start(800)
-          setTimeout(() => {
-            x.pause()
-            x.resume()
-            // setTimeout(() => {
-            // }, 1000)
-          }, 500)
-
-          p.then(() => {
-            console.log('then p', performance.now())
-          })
+          const p = animateValue(x, 200)
+          p.then(() => console.log('then p', performance.now()))
         }}
       >
         start

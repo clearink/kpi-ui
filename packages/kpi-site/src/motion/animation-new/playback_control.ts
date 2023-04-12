@@ -3,7 +3,7 @@
 import { isFunction, isArray, isString } from '@kpi/shared'
 import { easings, cubicBezier } from '../tween'
 
-import createFinishedPromise from '../utils/make_controlled_promise'
+import makeControlledPromise from '../utils/make_controlled_promise'
 
 import type { MotionValue } from './motion'
 import type { MotionAnimation } from './animation'
@@ -27,14 +27,25 @@ const max = (list: number[]) => Math.max.apply(null, list)
 const sum = (list: number[]) => list.reduce((acc, cur) => acc + cur, 0)
 
 export interface PlaybackControl {
+  // motion time
   time: number
+
+  // motion speed
   speed: number
 
+  // lasted animation end time
   duration: number
 
+  // stop animation
   stop: () => void
+
+  // play animation
   play: () => void
+
+  // pause animation
   pause: () => void
+
+  //
   complete: () => void
   cancel: () => void
   then: (onfulfilled: VoidFunction, onrejected?: VoidFunction) => Promise<void>
@@ -68,10 +79,10 @@ const interpolator = (value: number, input: [number, number], output: [number, n
 // 负责调度 motion animations
 export default function playbackControl<V extends string | number>(
   value: MotionValue<V>,
-  animation: MotionAnimation,
+  animations: MotionAnimation[],
   options: AnimationOptions = {}
 ): PlaybackControl {
-  const finishedPromise = createFinishedPromise()
+  const finishedPromise = makeControlledPromise()
 
   finishedPromise.update()
 
@@ -82,41 +93,11 @@ export default function playbackControl<V extends string | number>(
 
   const ease = getAnimateEasing(options.ease)
 
-  let startTime = 0
-  const tick = (time: number) => {
-    if (!startTime) startTime = time
-
-    if (startTime === time) value.notify('onStart')
-
-    const current: number[] = []
-
-    const { length } = animation.to.numbers
-
-    const elapsed = clamp(time - startTime, 0, duration) / duration
-
-    for (let i = 0; i < length; i += 1) {
-      const from = animation.from.numbers[i]
-      const to = animation.to.numbers[i]
-
-      current.push(interpolator(ease(elapsed), [0, 1], [from, to]))
-    }
-
-    const next = transform(current, animation.to.strings)
-
-    value.notify('onUpdate', next)
-
-    value.set(next as V)
-
-    if (elapsed === 1) value.notify('onComplete')
-
-    return elapsed < 1
-  }
-
   const play = () => {
     if (playState === 'running') return
     playState = 'running'
   }
-
+  let startTime = 0
   return {
     get time() {
       return startTime

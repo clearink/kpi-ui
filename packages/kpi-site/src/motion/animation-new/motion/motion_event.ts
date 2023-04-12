@@ -1,32 +1,33 @@
+import { $event } from '../../utils/symbol'
 import SubscriptionManager from '../../utils/subscription_manager'
 
 export interface MotionValueEventCallbacks<V = any> {
-  onStart?: VoidFunction
-  onUpdate?: (current: V) => void
-  onPause?: VoidFunction
-  onCancel?: VoidFunction
-  onStop?: VoidFunction
-  onComplete?: VoidFunction
+  start?: VoidFunction
+  change?: (current: V) => void
+  pause?: VoidFunction
+  cancel?: VoidFunction
+  stop?: VoidFunction
+  finish?: VoidFunction
 }
 
-export type MotionValueEventName = keyof MotionValueEventCallbacks
+export type MotionValueEventName<V = any> = keyof MotionValueEventCallbacks<V>
+export type MotionValueEventHandler<N extends MotionValueEventName> = MotionValueEventCallbacks[N]
 
-export default class MotionValueEvent<V = any> {
-  events = new Map<string, SubscriptionManager>()
+export default class MotionEvent<V = any> {
+  private _event = new Map<string, SubscriptionManager>()
 
-  on = <T extends keyof MotionValueEventCallbacks<V>>(
-    type: T,
-    handler: MotionValueEventCallbacks<V>[T]
-  ) => {
-    if (!this.events.has(type)) this.events.set(type, new SubscriptionManager())
+  on = <T extends MotionValueEventName>(type: T, handler: MotionValueEventHandler<T>) => {
+    const event = this._event
 
-    return this.events.get(type)!.add(handler)
+    if (!event.has(type)) event.set(type, new SubscriptionManager())
+
+    return event.get(type)!.add(handler)
   }
 
-  notify = (type: keyof MotionValueEventCallbacks<V>, ...args: any[]) => {
-    const observer = this.events.get(type)
-    observer && observer.notify(...args)
+  notify = <T extends MotionValueEventName<V>>(type: T, ...args: any) => {
+    const event = this._event.get(type)
+    event && event.notify(...args)
   }
 
-  clear = () => this.events.clear()
+  clear = () => this._event.clear()
 }

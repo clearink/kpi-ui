@@ -23,36 +23,36 @@ export function animateValue<V extends string | number>(
   to: V,
   options?: AnimationOptions
 ) {
-  // TODO: 如何取消之前的 motion ?
   const value = motionValue(from)
 
+  console.log(value)
+
   // create animation
-  const animation = motionAnimation(value.get(), to)
+  const animations = motionAnimation(value.get(), to)
 
   // create playback control
-  const control = playbackControl(value, animation, options)
+  const control = playbackControl(value, animations, options)
 
   if (options?.autoplay) control.play()
 
   return control
 }
 
-const eventNames: MotionValueEventName[] = [
+const eventNames: `on${Capitalize<MotionValueEventName>}`[] = [
   'onStart',
-  'onUpdate',
+  'onChange',
   'onPause',
   'onCancel',
   'onStop',
-  'onComplete',
+  'onFinish',
 ]
 
 function subscribeMotionEvent(value: MotionValue, options: AnimationOptions = {}) {
-  const picked = pick(options, eventNames)
-
-  return Object.entries(picked).map(([eventName, handler]) => {
-    if (!isFunction(handler)) return noop
-    return value.on(eventName as MotionValueEventName, handler)
-  })
+  // const picked = pick(options, eventNames)
+  // return Object.entries(picked).map(([eventName, handler]) => {
+  //   if (!isFunction(handler)) return noop
+  //   return value.on(eventName as MotionValueEventName, handler)
+  // })
 }
 
 // const a = motionValue(0)

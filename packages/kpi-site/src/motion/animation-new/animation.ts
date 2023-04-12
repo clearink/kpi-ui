@@ -17,11 +17,10 @@ import { colorToRgba, isColor } from '../parse/color'
 //   }, '')
 // }
 
-// 创建 anime.js 中的  animations 对象, 动画的调度是在 playbackControl 实现的
-// 1. 实现 thenable 不然无法感知到是否结束了
-// 2. 需要有 from
-// 3. 需要有 to
-// 4. 需要有对应的 parser，transform 来解析，生成需要的数据
+// 创建 anime.js 中的 animations 对象, 动画的调度是在 playbackControl 实现的
+// 1. 需要有 from
+// 2. 需要有 to
+// 3. 需要有对应的 parser，transform 来解析，生成需要的数据
 
 export interface MotionAnimation {
   from: { numbers: number[]; strings: string[] }
@@ -39,7 +38,7 @@ function normalizeOriginalValue(value: string | number) {
 export function motionAnimation<V extends string | number = any>(
   original: V,
   target: V
-): MotionAnimation {
+): MotionAnimation[] {
   // const target = resolvedTarget(value.get(), unResolvedTarget)
 
   // eslint-disable-next-line no-nested-ternary
@@ -51,12 +50,14 @@ export function motionAnimation<V extends string | number = any>(
   const from = normalizeOriginalValue(o)
   const to = normalizeOriginalValue(t)
 
-  return {
-    get from() {
-      return from
+  return [
+    {
+      get from() {
+        return from
+      },
+      get to() {
+        return to
+      },
     },
-    get to() {
-      return to
-    },
-  }
+  ]
 }

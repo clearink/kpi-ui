@@ -1,28 +1,29 @@
-import defineHidden from '../../utils/define_hidden'
-import { $status, $animated } from '../../utils/symbol'
+export default class MotionStatus {
+  private _status: AnimationPlayState = 'idle'
 
-import type { MotionValue } from '.'
+  private _animated = false
 
-export function setMotionStatus(value: MotionValue, status: AnimationPlayState) {
-  defineHidden(value, $status, status)
-}
+  get status() {
+    return this._status
+  }
 
-export function getMotionStatus(value: MotionValue) {
-  return value[$status] as AnimationPlayState
-}
+  set status(status: typeof this._status) {
+    this._status = status
+  }
 
-export function motionRunning(value: MotionValue) {
-  return getMotionStatus(value) === 'running'
-}
+  get running() {
+    return this.status === 'running'
+  }
 
-export function motionFinished(value: MotionValue) {
-  return getMotionStatus(value) === 'finished'
-}
+  get paused() {
+    return this._status === 'paused'
+  }
 
-export function motionPaused(value) {
-  return getMotionStatus(value) === 'paused'
-}
+  get animated() {
+    return this._animated
+  }
 
-export function motionAnimated(value: MotionValue) {
-  return !!value[$animated]
+  set animated(animated: boolean) {
+    this._animated = animated
+  }
 }
