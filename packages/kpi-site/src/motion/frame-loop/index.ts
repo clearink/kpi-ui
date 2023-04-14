@@ -2,32 +2,33 @@
 import { isNull } from '@kpi/shared'
 import Queue from './queue'
 import { frameData, updateFrameDelta } from './delta'
-import { raf as $raf, caf, now } from './driver'
+import { raf as $raf, caf, now } from './raf'
 
-const makeFrameLoopDriver = <T extends (t: number) => boolean>() => {
-  let $id: null | number = null
-  const $queue = new Queue<(t: number) => boolean>()
+export type FrameLoopFn = (t: number) => boolean
 
-  // with measure frame delta
-  const raf = (callback: FrameRequestCallback) => $raf((t) => updateFrameDelta(t, callback(t)))
+let $id: null | number = null
 
-  const update = () => ($id = raf((t) => ($queue.flush(t) ? update() : ($id = null))))
+const $queue = new Queue<FrameLoopFn>()
 
-  const start = (fn: T) => $queue.add(fn) && isNull($id) && update()
+// with update frame delta
+const raf = (callback: FrameRequestCallback) => $raf((t) => updateFrameDelta(t, callback(t)))
 
-  const cancel = (fn: T) => $queue.delete(fn)
+const update = () => ($id = raf((t) => ($queue.flush(t) ? update() : ($id = null))))
 
-  const loop = (callback: (timestamp: number, delta: number) => boolean) => {
-    let id: number
+const start = (fn: FrameLoopFn) => $queue.add(fn) && isNull($id) && update()
 
-    const tick = (t: number) => callback(t, frameData.delta) && (id = raf(tick))
+const cancel = (fn: FrameLoopFn) => $queue.delete(fn)
 
-    id = raf(tick)
+const loop = (callback: (timestamp: number, delta: number) => boolean) => {
+  let id: number
 
-    return () => caf(id)
-  }
+  const tick = (t: number) => callback(t, frameData.delta) && (id = raf(tick))
 
-  return { now, raf, caf, start, cancel, loop }
+  id = raf(tick)
+
+  return () => caf(id)
 }
 
-export default makeFrameLoopDriver()
+const driver = { now, raf, caf, start, cancel, loop }
+
+export default driver

@@ -1,4 +1,3 @@
-import type { MotionValueEventCallbacks } from '../motion/interface'
 import type { Easing } from '../tween/interface'
 import type { PlaybackControl } from './playback_control'
 
@@ -27,8 +26,6 @@ export type AnimatableValue = string | number
 
 export type DOMKeyframesDefinition = any
 
-export type AnimateOptions<T = any> = any
-
 export interface AnimationScope<T = any> {
   readonly current: T
   animations: PlaybackControl[]
@@ -41,4 +38,14 @@ export interface Transition {
   autoplay?: boolean
 }
 
-export interface AnimationOptions extends Transition, MotionValueEventCallbacks {}
+interface AnimationPlaybackLifeCycles<V> {
+  onStart?: VoidFunction
+  onChange?: (current: V) => void
+  onPause?: VoidFunction
+  onRepeat?: VoidFunction
+  onCancel?: VoidFunction
+  onStop?: VoidFunction
+  onFinish?: VoidFunction
+}
+
+export interface AnimationOptions<V = any> extends Transition, AnimationPlaybackLifeCycles<V> {}

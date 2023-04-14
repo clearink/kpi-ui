@@ -6,7 +6,6 @@ import { easings, cubicBezier } from '../tween'
 
 import makeControlledPromise from '../utils/make_controlled_promise'
 
-import type { MotionValue } from '../motion'
 import type { MotionAnimation } from './make_animation'
 import type { AnimatableValue, AnimationOptions, Transition } from './interface'
 

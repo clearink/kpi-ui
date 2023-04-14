@@ -165,7 +165,7 @@ export default function App() {
       <button
         type="button"
         onClick={() => {
-          const p = animateValue(x, 200)
+          const p = animate(x, 200, {})
           p.then(() => console.log('then p', performance.now()))
         }}
       >

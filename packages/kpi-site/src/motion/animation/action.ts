@@ -19,13 +19,13 @@ export function animateValue<V extends AnimatableValue>(
 ): PlaybackControl {
   const value = motionValue(from)
 
-  console.log(value)
-
   const animations = makeAnimation(value, to)
 
-  const control = playbackControl(value, animations, options)
+  const control = playbackControl(animations, options)
 
   if (options?.autoplay) control.play()
+
+  console.log(control)
 
   return control
 }
@@ -37,15 +37,16 @@ export function animateElement<V>(
   options?: AnimationOptions,
   scope?: AnimationScope
 ): PlaybackControl {
-  const value = motionValue(from)
+  return {} as PlaybackControl
+  // const value = motionValue(from)
 
-  console.log(value)
+  // console.log(value)
 
-  const animations = motionAnimation(value, to)
+  // const animations = motionAnimation(value, to)
 
-  const control = playbackControl(value, animations, options)
+  // const control = playbackControl(value, animations, options)
 
-  if (options?.autoplay) control.play()
+  // if (options?.autoplay) control.play()
 
-  return control
+  // return control
 }

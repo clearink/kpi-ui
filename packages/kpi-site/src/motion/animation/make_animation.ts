@@ -109,24 +109,15 @@ export function makeAnimation<V extends AnimatableValue>(
   // const target = resolvedTarget(value.get(), unResolvedTarget)
 
   const original = motion.get()
-  const target = toArray(keyframes)
-  // eslint-disable-next-line no-nested-ternary
-  const o = isNumber(original) ? original : isColor(original) ? colorToRgba(original) : original
+  // const target = toArray(keyframes)
+  // // eslint-disable-next-line no-nested-ternary
+  // const o = isNumber(original) ? original : isColor(original) ? colorToRgba(original) : original
 
-  // eslint-disable-next-line no-nested-ternary
-  const t = isNumber(target) ? target : isColor(target) ? colorToRgba(target) : target
+  // // eslint-disable-next-line no-nested-ternary
+  // const t = isNumber(target) ? target : isColor(target) ? colorToRgba(target) : target
 
-  const from = normalizeOriginalValue(o)
-  const to = normalizeOriginalValue(t)
+  // const from = normalizeOriginalValue(o)
+  // const to = normalizeOriginalValue(t)
 
-  return [
-    {
-      get from() {
-        return from
-      },
-      get to() {
-        return to
-      },
-    },
-  ]
+  return [{} as MotionAnimation<V>]
 }
