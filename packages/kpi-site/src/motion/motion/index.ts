@@ -1,8 +1,8 @@
-import { isNumber } from '@kpi/shared'
+import { isString } from '@kpi/shared'
 import { MotionAccessor, MotionEvent, MotionStatus } from './misc'
 import { $accessor, $event, $id, $status } from '../utils/symbol'
 import defineHidden from '../utils/define_hidden'
-import makeUniqueId from '../utils/make_unique_id'
+import uniqueId from '../utils/unique_id'
 
 export class MotionValue<V = any> {
   constructor(initial: V) {
@@ -115,19 +115,17 @@ export class MotionValue<V = any> {
   // }
 }
 
-const uniqueId = makeUniqueId(0)
-
 export function motionValue<V>(initial: V | MotionValue<V>) {
   if (isMotionValue(initial)) return initial
 
   const value = new MotionValue(initial)
 
   // 唯一标识
-  defineHidden(value, $id, uniqueId())
+  defineHidden(value, $id, uniqueId('motion-'))
 
   return value
 }
 
 export function isMotionValue<V>(obj: V | MotionValue<V>): obj is MotionValue<V> {
-  return obj && isNumber(obj[$id])
+  return obj && isString(obj[$id])
 }

@@ -1,6 +1,6 @@
 import { animateElement, animateValue } from './action'
 
-import type { PlaybackControl } from './playback_control'
+import type PlaybackControl from './playback_control'
 import type { ElementOrSelector } from '../utils/resolve_element'
 import type { MotionValue } from '../motion'
 import type {

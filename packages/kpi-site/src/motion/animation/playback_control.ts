@@ -3,8 +3,7 @@
 
 import { isFunction, isArray, isString } from '@kpi/shared'
 import { easings, cubicBezier } from '../tween'
-
-import makeControlledPromise from '../utils/make_controlled_promise'
+import { $animations } from '../utils/symbol'
 
 import type { MotionAnimation } from './make_animation'
 import type { AnimatableValue, AnimationOptions, Transition } from './interface'
@@ -40,11 +39,12 @@ const interpolator = (value: number, input: [number, number], output: [number, n
   return output[0] + (output[1] - output[0]) * percent
 }
 
-export class PlaybackControl {
-  private promise = makeControlledPromise()
+// 负责调度 motion animations
+export default class PlaybackControl {
+  private [$animations]: MotionAnimation[] = []
 
-  constructor(private animations: MotionAnimation[]) {
-    this.promise.update()
+  constructor(animations: MotionAnimation[]) {
+    this[$animations] = animations
   }
 
   // motion time
@@ -71,14 +71,6 @@ export class PlaybackControl {
   cancel = () => {}
 
   then(onfulfilled: VoidFunction, onrejected?: VoidFunction) {
-    return this.promise.get().then(onfulfilled, onrejected)
+    return Promise.all(this[$animations]).then(onfulfilled, onrejected)
   }
-}
-
-// 负责调度 motion animations
-export function playbackControl<V extends AnimatableValue = AnimatableValue>(
-  animations: MotionAnimation<V>[],
-  options: AnimationOptions = {}
-) {
-  return new PlaybackControl(animations)
 }

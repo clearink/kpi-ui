@@ -1,6 +1,6 @@
 import { motionValue } from '../motion'
 import { makeAnimation } from './make_animation'
-import { PlaybackControl, playbackControl } from './playback_control'
+import PlaybackControl from './playback_control'
 
 import type { MotionValue } from '../motion'
 import type { ElementOrSelector } from '../utils/resolve_element'
@@ -21,11 +21,11 @@ export function animateValue<V extends AnimatableValue>(
 
   const animations = makeAnimation(value, to)
 
-  const control = playbackControl(animations, options)
+  const control = new PlaybackControl(animations)
 
   if (options?.autoplay) control.play()
 
-  console.log(control)
+  console.log(control, value)
 
   return control
 }

@@ -64,6 +64,8 @@ import { colorToRgba, isColor } from '../parse/color'
 
 import type { MotionValue } from '../motion'
 import type { AnimatableValue, GenericKeyframes } from './interface'
+import { $promise } from '../utils/symbol'
+import makeControlledPromise from '../utils/make_controlled_promise'
 
 // // 'object' | 'attribute' | 'transform' | 'css'
 // type AnimationType = any
@@ -96,10 +98,16 @@ export class MotionAnimation<V extends AnimatableValue = AnimatableValue> {
   from!: { original: V; transform: (input: any) => V }
 
   to!: { original: V; transform: (input: any) => V }
-  // export interface MotionAnimation {
-  //   from: { numbers: number[]; strings: string[] }
-  //   to: this['from']
-  // }
+
+  private [$promise] = makeControlledPromise()
+
+  constructor() {
+    this[$promise].update()
+  }
+
+  then(onfulfilled: VoidFunction, onrejected?: VoidFunction) {
+    return this[$promise].get().then(onfulfilled, onrejected)
+  }
 }
 
 export function makeAnimation<V extends AnimatableValue>(
