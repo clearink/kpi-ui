@@ -127,5 +127,5 @@ export function motionValue<V>(initial: V | MotionValue<V>) {
 }
 
 export function isMotionValue<V>(obj: V | MotionValue<V>): obj is MotionValue<V> {
-  return obj && isString(obj[$id])
+  return obj && obj[$id]
 }

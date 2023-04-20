@@ -113,7 +113,7 @@ export class MotionAnimation<V extends AnimatableValue = AnimatableValue> {
 export function makeAnimation<V extends AnimatableValue>(
   motion: MotionValue<V>,
   keyframes: V | GenericKeyframes<V>
-): MotionAnimation<V>[] {
+): MotionAnimation<V> {
   // const target = resolvedTarget(value.get(), unResolvedTarget)
 
   const original = motion.get()
@@ -127,5 +127,5 @@ export function makeAnimation<V extends AnimatableValue>(
   // const from = normalizeOriginalValue(o)
   // const to = normalizeOriginalValue(t)
 
-  return [{} as MotionAnimation<V>]
+  return {} as MotionAnimation<V>
 }

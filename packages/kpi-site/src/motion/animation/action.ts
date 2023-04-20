@@ -19,9 +19,9 @@ export function animateValue<V extends AnimatableValue>(
 ): PlaybackControl {
   const value = motionValue(from)
 
-  const animations = makeAnimation(value, to)
+  const animation = makeAnimation(value, to)
 
-  const control = new PlaybackControl(animations)
+  const control = new PlaybackControl([animation])
 
   if (options?.autoplay) control.play()
 

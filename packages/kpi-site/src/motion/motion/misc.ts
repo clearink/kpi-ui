@@ -26,18 +26,10 @@ export class MotionEvent<V = any> {
 }
 
 export class MotionAccessor<V> {
-  private _value: V
+  value: V
 
   constructor(private _initial: V) {
-    this._value = this._initial
-  }
-
-  get value() {
-    return this._value
-  }
-
-  set value(value: V) {
-    this._value = value
+    this.value = this._initial
   }
 }
 
