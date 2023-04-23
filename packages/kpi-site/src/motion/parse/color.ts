@@ -2,6 +2,9 @@
 // rgb rgba 编码
 // hsl 编码
 /* eslint-disable no-multi-assign */
+
+import { isString } from '@kpi/shared'
+
 /* eslint-disable no-param-reassign */
 export const isHexColor = (v: string) => /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(v)
 export const isRgbColor = (v: string) => /^rgb/.test(v)
@@ -61,3 +64,92 @@ export const colorToRgba = (v: string) => {
 
   return v
 }
+
+const color = {
+  test: (v: any) => isString(v) && (isHexColor(v) || isRgbColor(v) || isHslColor(v)),
+  parse: () => {},
+  transform: () => {},
+}
+export default color
+
+/**
+ * <Motion tag="div" from={{x:0,y:100}} enter={{x:'100%', y:0, color: '#f00'}} leave={{x:0,y:100}}>
+ *  1212631212423482342367
+ * </Motion>
+ * => 会创建出怎样的 motion 对象呢?
+ * const enterPropMotions = [
+ * {
+ *    type: 'transform',
+ *    property: 'x',
+ *    original: 0,
+ *    easing: EasingFunction,
+ *    start: 123.23,
+ *    end: 2123.23,
+ *    duration: 1500,
+ *    delay: 500,
+ *    from: { unit: '%', original: 0, transform:()=>{} },
+ *    to: { unit: '%',original: '100%', transform:()=>{} }
+ * },
+ * {
+ *    type: 'transform',
+ *    property: 'y',
+ *    original: 0,
+ *    easing: EasingFunction,
+ *    start: 123.23,
+ *    end: 2123.23,
+ *    duration: 1500,
+ *    delay: 500,
+ *    from: {unit: '', original: 100, transform:()=>{} },
+ *    to: { unit: '',original: 0, transform:()=>{} }
+ * },
+ * {
+ *    type: 'style',
+ *    property: 'color',
+ *    easing: EasingFunction,
+ *    start: 123.23,
+ *    end: 2123.23,
+ *    duration: 1500,
+ *    delay: 500,
+ *    from: { original: undefined, transform:()=>{} },
+ *    to: { original: '#ff0', transform:()=>{} }
+ * },
+ * ]
+ */
+
+/**
+ * const value = useMotionValue(0)
+ *
+ * animate(value, 100)
+ *
+ * const propMotion = [
+ * {
+ *  type: 'value',
+ *  property: never,
+ *  easing: EasingFunction,
+ *  start: 123.23,
+ *  end: 2123.23,
+ *  duration: 1500,
+ *  delay: 500,
+ *  from: {unit:'', original: 0, transform:()=>{}},
+ *  to: {unit:'', original: 0, transform:()=>{}},
+ * }
+ * ]
+ *
+ * const value = useMotionValue(0)
+ *
+ * animate(value, '100%')
+ *
+ * const propMotion = [
+ * {
+ *  type: 'value',
+ *  property: never,
+ *  easing: EasingFunction,
+ *  start: 123.23,
+ *  end: 2123.23,
+ *  duration: 1500,
+ *  delay: 500,
+ *  from: {unit:'%', original: 0, transform:()=>{}},
+ *  to: {unit:'%', original: 0, transform:()=>{}},
+ * }
+ * ]
+ */

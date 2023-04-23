@@ -1,7 +1,7 @@
 import { motionValue } from '../motion'
-import { makeAnimation } from './make_animation'
-import PlaybackControl from './playback_control'
+import { playbackControl } from './playback_control'
 
+import type { PlaybackControl } from './playback_control'
 import type { MotionValue } from '../motion'
 import type { ElementOrSelector } from '../utils/resolve_element'
 import type {
@@ -10,6 +10,7 @@ import type {
   AnimationScope,
   DOMKeyframesDefinition,
 } from './interface'
+import { motionAnimation } from './motion_animation'
 
 // animate value or motionValue
 export function animateValue<V extends AnimatableValue>(
@@ -19,13 +20,13 @@ export function animateValue<V extends AnimatableValue>(
 ): PlaybackControl {
   const value = motionValue(from)
 
-  const animation = makeAnimation(value, to)
+  const animation = motionAnimation(value.get(), to, options)
 
-  const control = new PlaybackControl([animation])
+  const control = playbackControl([animation])
 
   if (options?.autoplay) control.play()
 
-  console.log(control, value)
+  console.log(control)
 
   return control
 }

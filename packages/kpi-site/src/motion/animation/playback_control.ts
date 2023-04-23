@@ -1,76 +1,204 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable no-param-reassign */
+import { finished, paused, running } from './utils/status'
+import makeControlledPromise from '../utils/make_controlled_promise'
+import driver from '../frame-loop'
 
-import { isFunction, isArray, isString } from '@kpi/shared'
-import { easings, cubicBezier } from '../tween'
-import { $animations } from '../utils/symbol'
+import type { MotionAnimation } from './motion_animation'
+import each from '../utils/each'
 
-import type { MotionAnimation } from './make_animation'
-import type { AnimatableValue, AnimationOptions, Transition } from './interface'
+// const run = (funcs: VoidFunction[]) => funcs.forEach((func) => isFunction(func) && func())
 
-const run = (funcs: VoidFunction[]) => funcs.forEach((func) => isFunction(func) && func())
+// const max = (list: number[]) => Math.max.apply(null, list)
 
-const max = (list: number[]) => Math.max.apply(null, list)
+// const sum = (list: number[]) => list.reduce((acc, cur) => acc + cur, 0)
 
-const sum = (list: number[]) => list.reduce((acc, cur) => acc + cur, 0)
-
-// 获取 animate 所需要的时间
-function getAnimateEasing(ease: Transition['ease']) {
-  if (isFunction(ease)) return ease
-
-  if (isArray(ease) && ease.length === 4) return cubicBezier(...ease)
-
-  if (isString(ease) && easings[ease]) return easings[ease]
-
-  return easings.linear
-}
-
-const transform = (numbers: number[], strings: string[]) => {
-  return strings.reduce((result, str, i) => {
-    const num = numbers[i] ?? ''
-    return `${result}${str}${num}`
-  }, '')
-}
-
-// 插值
-const interpolator = (value: number, input: [number, number], output: [number, number]) => {
-  const percent = (value - input[0]) / (input[1] - input[0])
-
-  return output[0] + (output[1] - output[0]) * percent
-}
+// const transform = (numbers: number[], strings: string[]) => {
+//   return strings.reduce((result, str, i) => {
+//     const num = numbers[i] ?? ''
+//     return `${result}${str}${num}`
+//   }, '')
+// }
 
 // 负责调度 motion animations
-export default class PlaybackControl {
-  private [$animations]: MotionAnimation[] = []
+// export default class PlaybackControl {
+//   private [$animations]: MotionAnimation[] = []
 
-  constructor(animations: MotionAnimation[]) {
-    this[$animations] = animations
-  }
+//   private [$promise] = makeControlledPromise()
 
-  // motion time
-  time!: number
+//   constructor(animations: MotionAnimation[]) {
+//     this[$animations] = animations
+//     this[$promise].update()
+//   }
 
-  // motion speed
-  speed = 1
+//   // status
+//   private _status: AnimationPlayState = 'idle'
+
+//   get status() {
+//     return this._status
+//   }
+
+//   animated = false
+
+//   // motion time
+//   private _time!: number
+
+//   // motion speed
+//   speed = 1
+
+//   // lasted animation end time
+//   get duration() {
+//     const len = this[$animations].length
+//     return this[$animations][len - 1]?.end ?? 0
+//   }
+
+//   private _update = (t: number) => {
+//     return true
+//   }
+
+//   play = () => {
+//     if (running(this) || finished(this)) return
+
+//     this.animated = true
+
+//     this._status = 'running'
+
+//     driver.start(this._update)
+//   }
+
+//   reset = () => {}
+
+//   restart = () => {
+//     this.reset()
+//     this.play()
+//   }
+
+//   cancel = () => {
+//     this._status = 'finished'
+//     // 取消上一次的 promise 回调
+//     this[$promise].update(true)
+
+//     driver.cancel(this._update)
+//   }
+
+//   stop = () => {
+//     this._status = 'idle'
+//     driver.cancel(this._update)
+//   }
+
+//   pause = () => {
+//     if (paused(this)) return
+
+//     this._status = 'paused'
+//     driver.cancel(this._update)
+//   }
+
+//   reverse = () => {}
+
+//   finish = () => {
+//     this._status = 'finished'
+//   }
+
+//   seek = () => {}
+
+//   then(onfulfilled: VoidFunction, onrejected?: VoidFunction) {
+//     return this[$promise].get().then(onfulfilled, onrejected)
+//   }
+// }
+
+export interface PlaybackControl {
+  readonly time: number
+
+  readonly status: AnimationPlayState
+
+  readonly animated: boolean
+
+  readonly speed: number
 
   // lasted animation end time
-  duration!: number
+  readonly duration: number
 
-  // stop animation
-  stop = () => {}
+  play: VoidFunction
 
-  // play animation
-  play = () => {}
+  reset: VoidFunction
 
-  // pause animation
-  pause = () => {}
+  restart: VoidFunction
 
-  // finish animation
-  finish = () => {}
+  cancel: VoidFunction
 
-  cancel = () => {}
+  stop: VoidFunction
 
-  then(onfulfilled: VoidFunction, onrejected?: VoidFunction) {
-    return Promise.all(this[$animations]).then(onfulfilled, onrejected)
+  pause: VoidFunction
+
+  reverse: VoidFunction
+
+  finish: VoidFunction
+
+  seek: VoidFunction
+
+  then(onfulfilled: VoidFunction, onrejected?: VoidFunction): Promise<void>
+}
+
+export function playbackControl(animations: MotionAnimation[]): PlaybackControl {
+  const $status: AnimationPlayState = 'idle'
+  const $animated = false
+  const $promise = makeControlledPromise()
+
+  $promise.update()
+
+  let start = 0
+  let $time = 0
+
+  const $update = (t: number) => {
+    if (!start) start = t
+    $time = t - start
+    each(animations, (animation) => {})
+    return true
+  }
+
+  return {
+    get time() {
+      return $time
+    },
+
+    get status() {
+      return $status
+    },
+
+    get animated() {
+      return $animated
+    },
+
+    get speed() {
+      return 1
+    },
+
+    get duration() {
+      return animations[animations.length - 1]?.end ?? 0
+    },
+
+    play: () => {
+      if (paused($status)) return
+
+      driver.start($update)
+    },
+
+    reset: () => {},
+
+    restart: () => {},
+
+    cancel: () => {},
+
+    stop: () => {},
+
+    pause: () => {},
+
+    reverse: () => {},
+
+    finish: () => {},
+
+    seek: () => {},
+
+    then(onfulfilled, onrejected) {
+      return $promise.get().then(onfulfilled, onrejected)
+    },
   }
 }

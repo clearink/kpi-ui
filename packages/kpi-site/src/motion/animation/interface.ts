@@ -1,5 +1,5 @@
 import type { Easing } from '../tween/interface'
-import type PlaybackControl from './playback_control'
+import type { PlaybackControl } from './playback_control'
 
 export interface AnimationPlaybackControls {
   time: number
@@ -32,9 +32,8 @@ export interface AnimationScope<T = any> {
 }
 
 export interface Transition {
-  ease?: Easing
+  easing?: Easing
   delay?: number
-  endDelay?: number
   duration?: number
   autoplay?: boolean
 }

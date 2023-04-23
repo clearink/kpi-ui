@@ -1,35 +1,28 @@
-import { isString } from '@kpi/shared'
-import { MotionAccessor, MotionEvent, MotionStatus } from './misc'
-import { $accessor, $event, $id, $status } from '../utils/symbol'
+/* eslint-disable class-methods-use-this */
+import MotionEvent from './event'
+import { $id } from '../utils/symbol'
 import defineHidden from '../utils/define_hidden'
 import uniqueId from '../utils/unique_id'
 
 export class MotionValue<V = any> {
-  constructor(initial: V) {
-    this[$accessor] = new MotionAccessor(initial)
+  constructor(private _initial: V) {
+    this._value = this._initial
   }
 
   // events
-  private [$event] = new MotionEvent<V>()
+  private _event = new MotionEvent<V>()
 
-  on = this[$event].on
-
-  // status
-  private [$status] = new MotionStatus()
-
-  get status() {
-    return this[$status].status
-  }
+  on = this._event.on
 
   // accessor
-  private [$accessor]: MotionAccessor<V>
+  private _value: V
 
   get = () => {
-    return this[$accessor].value
+    return this._value
   }
 
   set = (value: V) => {
-    this[$accessor].value = value
+    this._value = value
   }
 
   // private _value: V
