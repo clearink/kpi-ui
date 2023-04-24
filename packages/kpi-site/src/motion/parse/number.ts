@@ -1,1 +1,2 @@
 // convert number
+export default {}

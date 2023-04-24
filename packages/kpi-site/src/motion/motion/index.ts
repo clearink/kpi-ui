@@ -14,6 +14,8 @@ export class MotionValue<V = any> {
 
   on = this._event.on
 
+  notify = this._event.notify
+
   // accessor
   private _value: V
 

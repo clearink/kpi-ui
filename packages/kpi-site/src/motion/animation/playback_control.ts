@@ -1,9 +1,13 @@
-import { finished, paused, running } from './utils/status'
+import { paused, running } from './utils/status'
 import makeControlledPromise from '../utils/make_controlled_promise'
 import driver from '../frame-loop'
 
-import type { MotionAnimation } from './motion_animation'
+import { MotionAnimation, shouldMotion } from './motion_animation'
 import each from '../utils/each'
+import interpolator from '../utils/interpolator'
+import { MotionValue } from '../motion'
+import { AnimatableValue } from './interface'
+import clamp from '../utils/clamp'
 
 // const run = (funcs: VoidFunction[]) => funcs.forEach((func) => isFunction(func) && func())
 
@@ -137,21 +141,54 @@ export interface PlaybackControl {
   then(onfulfilled: VoidFunction, onrejected?: VoidFunction): Promise<void>
 }
 
-export function playbackControl(animations: MotionAnimation[]): PlaybackControl {
-  const $status: AnimationPlayState = 'idle'
-  const $animated = false
-  const $promise = makeControlledPromise()
+export function playbackControl<V extends AnimatableValue>(
+  motion: MotionValue<V>,
+  animations: MotionAnimation[]
+): PlaybackControl {
+  const $duration = animations[animations.length - 1]?.end ?? 0
 
+  const $promise = makeControlledPromise()
   $promise.update()
 
-  let start = 0
+  // 是否运行动画过
+  let $animated = false
+  // 状态
+  let $status: AnimationPlayState = 'idle'
+  // 运动开始时间
+  let $start = 0
+  // 运动结束时间
+  const $end = 0
+  // 运动经过的时长
   let $time = 0
 
   const $update = (t: number) => {
-    if (!start) start = t
-    $time = t - start
-    each(animations, (animation) => {})
-    return true
+    if (!running($status)) return false
+
+    if (!$start) $start = t
+
+    $animated = true
+
+    $time = t + $end - $start
+
+    each(animations, (animation) => {
+      const { start, delay, duration, value } = animation
+
+      if (!shouldMotion($time, animation)) return
+      const elapsed = clamp($time - start - delay, 0, duration)
+      // 如果在误差范围内, 可以进行 notify
+
+      const current = interpolator(elapsed, [0, duration], value as any)
+      console.log(current, elapsed, duration)
+      if (Math.round(elapsed) === 0) {
+        motion.notify('change', value[0] as any)
+      } else if (Math.round(elapsed) >= duration) {
+        motion.notify('change', value[1] as any)
+      } else {
+        motion.notify('change', current as any)
+      }
+    })
+
+    return $time <= $duration
   }
 
   return {
@@ -172,11 +209,13 @@ export function playbackControl(animations: MotionAnimation[]): PlaybackControl 
     },
 
     get duration() {
-      return animations[animations.length - 1]?.end ?? 0
+      return $duration
     },
 
     play: () => {
       if (paused($status)) return
+
+      $status = 'running'
 
       driver.start($update)
     },

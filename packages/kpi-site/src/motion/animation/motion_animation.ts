@@ -45,16 +45,24 @@ export function motionAnimation<V extends AnimatableValue>(
   const strings = []
 
   return {
+    type: 'value',
     unit: getUnit(to),
     easing: getAnimateEasing(merged.easing),
     value: Object.freeze([from, to]),
     duration: merged.duration,
     start: 0,
     delay: merged.delay,
-    type: 'value',
     get end() {
       return this.start + this.delay + this.duration
     },
     transform: () => {},
   }
+}
+
+// 是否应该启动 animation
+export function shouldMotion(time: number, animation: MotionAnimation) {
+  const { start, delay, end } = animation
+  const accurate = Math.round(time)
+
+  return start + delay <= accurate && accurate <= end
 }

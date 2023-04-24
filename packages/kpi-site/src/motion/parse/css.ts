@@ -2,3 +2,4 @@
 // common
 
 // transform
+export default {}

@@ -22,7 +22,7 @@ export function animateValue<V extends AnimatableValue>(
 
   const animation = motionAnimation(value.get(), to, options)
 
-  const control = playbackControl([animation])
+  const control = playbackControl(value, [animation])
 
   if (options?.autoplay) control.play()
 

@@ -156,7 +156,6 @@ export default function App() {
       console.log('p cancel')
     })
     return x.on('change', (current) => {
-      console.log(current)
       ref.current!.style.transform = `translate3d(${current}px,0,0)`
     })
   }, [x])
@@ -166,7 +165,9 @@ export default function App() {
         type="button"
         onClick={() => {
           const p = animate(x, 200, {
-            duration: 2000,
+            autoplay: true,
+            duration: 1000,
+            delay: 100,
           })
           p.then(() => console.log('then p', performance.now()))
         }}
