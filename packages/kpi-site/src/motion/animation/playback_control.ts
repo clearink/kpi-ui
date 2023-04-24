@@ -174,18 +174,11 @@ export function playbackControl<V extends AnimatableValue>(
       const { start, delay, duration, value } = animation
 
       if (!shouldMotion($time, animation)) return
+
       const elapsed = clamp($time - start - delay, 0, duration)
-      // 如果在误差范围内, 可以进行 notify
 
       const current = interpolator(elapsed, [0, duration], value as any)
-      console.log(current, elapsed, duration)
-      if (Math.round(elapsed) === 0) {
-        motion.notify('change', value[0] as any)
-      } else if (Math.round(elapsed) >= duration) {
-        motion.notify('change', value[1] as any)
-      } else {
-        motion.notify('change', current as any)
-      }
+      motion.notify('change', current as any)
     })
 
     return $time <= $duration

@@ -4,6 +4,7 @@ import { cubicBezier, easings } from '../tween'
 import getUnit from '../parse/utils/get_unit'
 import { MotionAnimationType } from '../motion/interface'
 import { Easing, EasingFunction } from '../tween/interface'
+import { frameData } from '../frame-loop/delta'
 
 function getAnimateEasing(easing?: Easing) {
   if (isFunction(easing)) return easing
@@ -62,6 +63,7 @@ export function motionAnimation<V extends AnimatableValue>(
 // 是否应该启动 animation
 export function shouldMotion(time: number, animation: MotionAnimation) {
   const { start, delay, end } = animation
+
   const accurate = Math.round(time)
 
   return start + delay <= accurate && accurate <= end
