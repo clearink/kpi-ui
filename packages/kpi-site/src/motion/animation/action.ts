@@ -1,7 +1,7 @@
 import { pick, shallowMerge } from '@kpi/shared'
 import { motionValue } from '../motion'
 import { playbackControl } from './playback_control'
-import { motionAnimation } from './motion_animation'
+import { makeMotionAnimations, motionAnimation } from './motion_animation'
 import { defaultAnimationOptions } from './constant'
 
 import type { PlaybackControl } from './playback_control'
@@ -12,6 +12,7 @@ import type {
   AnimationOptions,
   AnimationScope,
   DOMKeyframesDefinition,
+  GenericKeyframes,
 } from './interface'
 import resolveElements from '../utils/resolve_element'
 
@@ -27,7 +28,7 @@ const callbackNames = [
 ] as const
 export function animateValue<V extends AnimatableValue>(
   from: V | MotionValue<V>,
-  to: V,
+  to: V | GenericKeyframes<V>,
   options: AnimationOptions = {}
 ): PlaybackControl {
   const value = motionValue(from)
@@ -38,11 +39,13 @@ export function animateValue<V extends AnimatableValue>(
 
   // TODO value.get(), to 进行转换 '#ff0' => rgba(255, 255, 0, 1)
 
-  const animation = motionAnimation(value.get(), to, mergedOptions)
+  const animations = makeMotionAnimations(value.get(), to, mergedOptions)
 
   // 获取回调函数调度时触发
   const callbacks = pick(options, callbackNames)
-  const control = playbackControl(value, callbacks, [animation])
+  const control = playbackControl(value, callbacks, animations)
+
+  console.log(animations)
 
   if (mergedOptions.autoplay) control.play()
 

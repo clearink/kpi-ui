@@ -17,7 +17,7 @@ export function playbackControl<V extends AnimatableValue>(
 ) {
   const promise = motion[$promise]
   // 清除上一次的 resolve
-  promise.update()
+  promise.update(true)
 
   const $duration = animations[animations.length - 1]?.end ?? 0
 
