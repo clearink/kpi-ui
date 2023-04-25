@@ -11,6 +11,3 @@ export default function getUnit(value: AnimatableValue) {
 
   return match ? match[1] : null
 }
-
-//
-//   const rgx = /[+-]?\d*\.?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g; // handles exponents notation

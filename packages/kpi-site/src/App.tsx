@@ -142,42 +142,34 @@
 // }
 import { useEffect, useRef } from 'react'
 import { animate } from './motion/animation/animate'
+import driver from './motion/frame-loop'
 
 import useMotionValue from './motion/hooks/use_motion_value'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
-  const x = useMotionValue(0)
-  useEffect(() => {
-    x.on('start', () => {
-      console.log('p start')
-    })
-    x.on('cancel', () => {
-      console.log('p cancel')
-    })
-    return x.on('change', (current) => {
-      ref.current!.style.transform = `translate3d(${current}px,0,0)`
-    })
-  }, [x])
   return (
-    <div className="font-bold w-[762px] text-center">
+    <div>
       <button
         type="button"
         onClick={() => {
-          const p = animate(x, 200, {
-            autoplay: true,
-            duration: 1000,
-            delay: 100,
-          })
+          const p = animate(
+            ref.current!,
+            {
+              x: 200,
+              y: 200,
+              backgroundColor: ['#f00', '#00f'],
+            },
+            {
+              easing: 'easeInBack',
+            }
+          )
           p.then(() => console.log('then p', performance.now()))
         }}
       >
         start
       </button>
-      <div
-        ref={ref}
-        style={{ width: 100, height: 100, borderRadius: '50%', backgroundColor: 'red' }}
-      />
+      <div ref={ref} />
     </div>
   )
 }

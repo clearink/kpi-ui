@@ -1,62 +1,55 @@
-import { isArray, isFunction, isString, shallowMerge } from '@kpi/shared'
+import { shallowMerge } from '@kpi/shared'
 import { AnimatableValue, AnimationOptions } from './interface'
-import { cubicBezier, easings } from '../tween'
 import getUnit from '../parse/utils/get_unit'
 import { MotionAnimationType } from '../motion/interface'
-import { Easing, EasingFunction } from '../tween/interface'
 import { frameData } from '../frame-loop/delta'
+import { normalizeEasing } from './utils/normalize'
+import { defaultAnimationOptions } from './constant'
+import getDecompose from '../parse/utils/get_decompose'
+import interpolator from '../utils/interpolator'
+import { EasingFunction } from '../tween/interface'
 
-function getAnimateEasing(easing?: Easing) {
-  if (isFunction(easing)) return easing
-
-  if (isArray(easing) && easing.length === 4) return cubicBezier(...easing)
-
-  if (isString(easing) && easings[easing]) return easings[easing]
-
-  return easings.linear
-}
-
-const defaultAnimationOptions = {
-  duration: 1000,
-  easing: easings.linear,
-  delay: 0,
-}
-
-export interface MotionAnimation {
-  type?: MotionAnimationType
-  property?: string
-  unit: string | null
-  value: readonly [AnimatableValue, AnimatableValue]
-  duration: number
-  easing: EasingFunction
-  start: number
-  end: number
-  delay: number
-  transform: () => void
-}
+export type MotionAnimation = ReturnType<typeof motionAnimation<AnimatableValue>>
 
 export function motionAnimation<V extends AnimatableValue>(
   from: V,
   to: V,
-  options: AnimationOptions = {}
-): MotionAnimation {
-  const merged = shallowMerge(options, defaultAnimationOptions)
+  options: AnimationOptions & { duration: number; easing: EasingFunction; delay: number }
+) {
+  const { duration, delay, easing: $easing } = options
+  const unit = getUnit(to)
 
-  const numbers = []
-  const strings = []
+  const easing = normalizeEasing($easing)
+
+  const { numbers: fromNumbers } = getDecompose(from)
+
+  const { numbers: toNumbers, strings: toStrings, numeric } = getDecompose(to)
+
+  const transform = <T extends AnimatableValue>(elapsed: number): T => {
+    const mapping = interpolator.bind(null, easing(elapsed / duration), [0, 1])
+
+    const numbers = toNumbers.map((num, i) => mapping([fromNumbers[i], num]))
+
+    if (numeric) return numbers[0] as T
+
+    return toStrings.reduce((result, str, i) => {
+      return `${result}${str}${numbers[i] ?? ''}`
+    }, '') as T
+  }
 
   return {
-    type: 'value',
-    unit: getUnit(to),
-    easing: getAnimateEasing(merged.easing),
-    value: Object.freeze([from, to]),
-    duration: merged.duration,
+    type: 'value' as MotionAnimationType,
+    property: undefined as string | undefined,
+    unit,
+    value: from,
+    original: Object.freeze([from, to] as const),
     start: 0,
-    delay: merged.delay,
+    delay,
+    duration,
+    transform,
     get end() {
       return this.start + this.delay + this.duration
     },
-    transform: () => {},
   }
 }
 
@@ -64,7 +57,7 @@ export function motionAnimation<V extends AnimatableValue>(
 export function shouldMotion(time: number, animation: MotionAnimation) {
   const { start, delay, end } = animation
 
-  const accurate = Math.round(time)
+  const { delta } = frameData
 
-  return start + delay <= accurate && accurate <= end
+  return start + delay - delta <= time && time <= end + delta
 }

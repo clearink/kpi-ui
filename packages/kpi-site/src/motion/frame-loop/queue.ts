@@ -1,5 +1,3 @@
-import each from '../utils/each'
-
 export type AnyFunction = (...args: any[]) => any
 export default class Queue<T extends AnyFunction> {
   private current = new Set<T>()
@@ -13,7 +11,7 @@ export default class Queue<T extends AnyFunction> {
   }
 
   flush = (...args: Parameters<T>) => {
-    each(this.current, (fn) => !fn(...args) && this.delete(fn))
+    this.current.forEach((fn) => !fn(...args) && this.delete(fn))
 
     return this.current.size
   }

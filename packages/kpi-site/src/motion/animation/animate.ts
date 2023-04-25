@@ -10,9 +10,7 @@ import type {
   DOMKeyframesDefinition,
   GenericKeyframes,
 } from './interface'
-
-// TODO
-const isDOMKeyframes = (val: any) => false
+import isElementAnimation from './utils/is_element_animation'
 
 export function createAnimateWithScope(scope?: AnimationScope) {
   // animate string | number
@@ -30,23 +28,23 @@ export function createAnimateWithScope(scope?: AnimationScope) {
   ): PlaybackControl
 
   // animate dom
-  function scopedAnimate<V>(
+  function scopedAnimate(
     maybeElement: ElementOrSelector,
-    keyframes: DOMKeyframesDefinition,
-    options?: AnimationOptions<V>
+    keyframes: DOMKeyframesDefinition<AnimatableValue>,
+    options?: AnimationOptions
   ): PlaybackControl
 
-  function scopedAnimate<V>(
+  function scopedAnimate<V extends AnimatableValue>(
     animateInput: V | MotionValue<V> | ElementOrSelector,
-    keyframes: V | GenericKeyframes<V> | DOMKeyframesDefinition,
-    options: AnimationOptions<V> = {}
+    keyframes: V | GenericKeyframes<V> | DOMKeyframesDefinition<V>,
+    options?: AnimationOptions<V>
   ): PlaybackControl {
     let animation: PlaybackControl
 
-    if (isDOMKeyframes(keyframes)) {
-      animation = animateElement(animateInput as ElementOrSelector, keyframes, options, scope)
+    if (isElementAnimation(animateInput, keyframes)) {
+      animation = animateElement(animateInput as any, keyframes as any, options, scope)
     } else {
-      animation = animateValue(animateInput, keyframes, options)
+      animation = animateValue(animateInput as any, keyframes as any, options)
     }
 
     if (scope) scope.animations.push(animation)

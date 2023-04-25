@@ -1,6 +1,5 @@
 import { useConstant, useUnmountEffect } from '@kpi/shared'
 import { createAnimateWithScope } from '../animation/animate'
-import each from '../utils/each'
 
 import type { AnimationScope } from '../animation/interface'
 
@@ -12,7 +11,7 @@ export default function useAnimate<T extends Element = any>() {
 
   const animate = useConstant(() => createAnimateWithScope(scope))
 
-  useUnmountEffect(() => each(scope.animations, (animation) => animation.stop()))
+  useUnmountEffect(() => scope.animations.forEach((animation) => animation.stop()))
 
   return [scope, animate] as const
 }

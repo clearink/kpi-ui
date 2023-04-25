@@ -1,154 +1,25 @@
-import { paused, running } from './utils/status'
-import makeControlledPromise from '../utils/make_controlled_promise'
 import driver from '../frame-loop'
-
-import { MotionAnimation, shouldMotion } from './motion_animation'
-import each from '../utils/each'
-import interpolator from '../utils/interpolator'
-import { MotionValue } from '../motion'
-import { AnimatableValue } from './interface'
 import clamp from '../utils/clamp'
+import { paused, running } from './utils/status'
+import { shouldMotion } from './motion_animation'
+import { $promise } from '../utils/symbol'
 
-// const run = (funcs: VoidFunction[]) => funcs.forEach((func) => isFunction(func) && func())
+import type { MotionValue } from '../motion'
+import type { MotionAnimation } from './motion_animation'
+import type { AnimatableValue, AnimationPlaybackLifeCycles } from './interface'
 
-// const max = (list: number[]) => Math.max.apply(null, list)
-
-// const sum = (list: number[]) => list.reduce((acc, cur) => acc + cur, 0)
-
-// const transform = (numbers: number[], strings: string[]) => {
-//   return strings.reduce((result, str, i) => {
-//     const num = numbers[i] ?? ''
-//     return `${result}${str}${num}`
-//   }, '')
-// }
-
-// 负责调度 motion animations
-// export default class PlaybackControl {
-//   private [$animations]: MotionAnimation[] = []
-
-//   private [$promise] = makeControlledPromise()
-
-//   constructor(animations: MotionAnimation[]) {
-//     this[$animations] = animations
-//     this[$promise].update()
-//   }
-
-//   // status
-//   private _status: AnimationPlayState = 'idle'
-
-//   get status() {
-//     return this._status
-//   }
-
-//   animated = false
-
-//   // motion time
-//   private _time!: number
-
-//   // motion speed
-//   speed = 1
-
-//   // lasted animation end time
-//   get duration() {
-//     const len = this[$animations].length
-//     return this[$animations][len - 1]?.end ?? 0
-//   }
-
-//   private _update = (t: number) => {
-//     return true
-//   }
-
-//   play = () => {
-//     if (running(this) || finished(this)) return
-
-//     this.animated = true
-
-//     this._status = 'running'
-
-//     driver.start(this._update)
-//   }
-
-//   reset = () => {}
-
-//   restart = () => {
-//     this.reset()
-//     this.play()
-//   }
-
-//   cancel = () => {
-//     this._status = 'finished'
-//     // 取消上一次的 promise 回调
-//     this[$promise].update(true)
-
-//     driver.cancel(this._update)
-//   }
-
-//   stop = () => {
-//     this._status = 'idle'
-//     driver.cancel(this._update)
-//   }
-
-//   pause = () => {
-//     if (paused(this)) return
-
-//     this._status = 'paused'
-//     driver.cancel(this._update)
-//   }
-
-//   reverse = () => {}
-
-//   finish = () => {
-//     this._status = 'finished'
-//   }
-
-//   seek = () => {}
-
-//   then(onfulfilled: VoidFunction, onrejected?: VoidFunction) {
-//     return this[$promise].get().then(onfulfilled, onrejected)
-//   }
-// }
-
-export interface PlaybackControl {
-  readonly time: number
-
-  readonly status: AnimationPlayState
-
-  readonly animated: boolean
-
-  readonly speed: number
-
-  // lasted animation end time
-  readonly duration: number
-
-  play: VoidFunction
-
-  reset: VoidFunction
-
-  restart: VoidFunction
-
-  cancel: VoidFunction
-
-  stop: VoidFunction
-
-  pause: VoidFunction
-
-  reverse: VoidFunction
-
-  finish: VoidFunction
-
-  seek: VoidFunction
-
-  then(onfulfilled: VoidFunction, onrejected?: VoidFunction): Promise<void>
-}
+export type PlaybackControl<V extends AnimatableValue = any> = ReturnType<typeof playbackControl<V>>
 
 export function playbackControl<V extends AnimatableValue>(
   motion: MotionValue<V>,
+  callbacks: AnimationPlaybackLifeCycles<V>,
   animations: MotionAnimation[]
-): PlaybackControl {
-  const $duration = animations[animations.length - 1]?.end ?? 0
+) {
+  const promise = motion[$promise]
+  // 清除上一次的 resolve
+  promise.update()
 
-  const $promise = makeControlledPromise()
-  $promise.update()
+  const $duration = animations[animations.length - 1]?.end ?? 0
 
   // 是否运行动画过
   let $animated = false
@@ -157,7 +28,7 @@ export function playbackControl<V extends AnimatableValue>(
   // 运动开始时间
   let $start = 0
   // 运动结束时间
-  const $end = 0
+  let $end = 0
   // 运动经过的时长
   let $time = 0
 
@@ -170,15 +41,29 @@ export function playbackControl<V extends AnimatableValue>(
 
     $time = t + $end - $start
 
-    each(animations, (animation) => {
-      const { start, delay, duration, value } = animation
+    animations.forEach((animation) => {
+      const { start, delay, duration } = animation
 
-      if (!shouldMotion($time, animation)) return
+      if (!shouldMotion($time, animation)) return false
 
       const elapsed = clamp($time - start - delay, 0, duration)
 
-      const current = interpolator(elapsed, [0, duration], value as any)
-      motion.notify('change', current as any)
+      const current = animation.transform<V>(elapsed)
+
+      if (elapsed === 0) {
+        motion.notify('start')
+        callbacks.onStart?.()
+      } else if (elapsed === duration) {
+        motion.notify('complete')
+        callbacks.onComplete?.()
+        promise.update()
+      }
+
+      motion.notify('change', current)
+
+      callbacks.onChange?.(current)
+
+      motion.set(current)
     })
 
     return $time <= $duration
@@ -205,8 +90,9 @@ export function playbackControl<V extends AnimatableValue>(
       return $duration
     },
 
+    // "finished" | "idle" | "paused" | "running"
     play: () => {
-      if (paused($status)) return
+      if (running($status)) return
 
       $status = 'running'
 
@@ -215,13 +101,26 @@ export function playbackControl<V extends AnimatableValue>(
 
     reset: () => {},
 
-    restart: () => {},
+    replay: () => {},
 
-    cancel: () => {},
+    cancel: () => {
+      $status = 'idle'
+      motion.notify('cancel')
+      promise.update(true)
+      driver.cancel($update)
+    },
 
     stop: () => {},
 
-    pause: () => {},
+    pause: () => {
+      if (paused($status)) return
+
+      $status = 'paused'
+
+      $end = $time
+
+      driver.cancel($update)
+    },
 
     reverse: () => {},
 
@@ -229,8 +128,8 @@ export function playbackControl<V extends AnimatableValue>(
 
     seek: () => {},
 
-    then(onfulfilled, onrejected) {
-      return $promise.get().then(onfulfilled, onrejected)
+    then(onfulfilled: VoidFunction, onrejected?: VoidFunction) {
+      return promise.get().then(onfulfilled, onrejected)
     },
   }
 }

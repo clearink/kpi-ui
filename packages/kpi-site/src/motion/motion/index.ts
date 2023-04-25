@@ -1,13 +1,16 @@
 /* eslint-disable class-methods-use-this */
 import MotionEvent from './event'
-import { $id } from '../utils/symbol'
+import { $id, $promise } from '../utils/symbol'
 import defineHidden from '../utils/define_hidden'
 import uniqueId from '../utils/unique_id'
+import makeControlledPromise from '../utils/make_controlled_promise'
 
 export class MotionValue<V = any> {
   constructor(private _initial: V) {
     this._value = this._initial
   }
+
+  [$promise] = makeControlledPromise()
 
   // events
   private _event = new MotionEvent<V>()

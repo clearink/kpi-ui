@@ -1,5 +1,8 @@
+import { pick, shallowMerge } from '@kpi/shared'
 import { motionValue } from '../motion'
 import { playbackControl } from './playback_control'
+import { motionAnimation } from './motion_animation'
+import { defaultAnimationOptions } from './constant'
 
 import type { PlaybackControl } from './playback_control'
 import type { MotionValue } from '../motion'
@@ -10,34 +13,53 @@ import type {
   AnimationScope,
   DOMKeyframesDefinition,
 } from './interface'
-import { motionAnimation } from './motion_animation'
+import resolveElements from '../utils/resolve_element'
 
 // animate value or motionValue
+const callbackNames = [
+  'onCancel',
+  'onChange',
+  'onComplete',
+  'onPause',
+  'onRepeat',
+  'onStart',
+  'onStop',
+] as const
 export function animateValue<V extends AnimatableValue>(
   from: V | MotionValue<V>,
   to: V,
-  options?: AnimationOptions
+  options: AnimationOptions = {}
 ): PlaybackControl {
   const value = motionValue(from)
 
-  const animation = motionAnimation(value.get(), to, options)
+  const mergedOptions = shallowMerge(options, defaultAnimationOptions)
 
-  const control = playbackControl(value, [animation])
+  // TODO: cleanup 清除之前的操作行为
 
-  if (options?.autoplay) control.play()
+  // TODO value.get(), to 进行转换 '#ff0' => rgba(255, 255, 0, 1)
 
-  console.log(control)
+  const animation = motionAnimation(value.get(), to, mergedOptions)
+
+  // 获取回调函数调度时触发
+  const callbacks = pick(options, callbackNames)
+  const control = playbackControl(value, callbacks, [animation])
+
+  if (mergedOptions.autoplay) control.play()
 
   return control
 }
 
 // animate dom
-export function animateElement<V>(
+export function animateElement<V extends AnimatableValue>(
   maybeElement: ElementOrSelector,
-  keyframes: DOMKeyframesDefinition,
+  keyframes: DOMKeyframesDefinition<V>,
   options?: AnimationOptions,
   scope?: AnimationScope
 ): PlaybackControl {
+  const elements = resolveElements(maybeElement)
+
+  // 根据 elements 与 keyframes 计算出最终的 animations
+  const animations = []
   return {} as PlaybackControl
   // const value = motionValue(from)
 

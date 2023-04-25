@@ -4,7 +4,7 @@ export interface MotionEventCallbacks<V = any> {
   pause?: VoidFunction
   cancel?: VoidFunction
   stop?: VoidFunction
-  finish?: VoidFunction
+  complete?: VoidFunction
 }
 export type MotionValueEventName<V = any> = keyof MotionEventCallbacks<V>
 export type MotionValueEventHandler<V, N extends MotionValueEventName> = MotionEventCallbacks<V>[N]
