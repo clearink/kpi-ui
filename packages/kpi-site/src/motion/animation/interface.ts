@@ -1,11 +1,11 @@
 import type { Easing } from '../tween/interface'
 import type { PlaybackControl } from './playback_control'
 
-export type GenericKeyframes<V extends AnimatableValue> = [null, ...V[]] | V[]
+export type GenericKeyframes<V> = [null, ...V[]] | V[]
 
 export type AnimatableValue = string | number
 
-export type DOMKeyframesDefinition<V extends AnimatableValue> = {
+export type DOMKeyframesDefinition<V> = {
   x?: V | [V, V]
   y?: V | [V, V]
   z?: V | [V, V]

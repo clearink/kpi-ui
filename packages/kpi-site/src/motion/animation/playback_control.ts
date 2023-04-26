@@ -1,7 +1,6 @@
 import driver from '../frame-loop'
 import clamp from '../utils/clamp'
 import { paused, running } from './utils/status'
-import { shouldMotion } from './motion_animation'
 import { $promise } from '../utils/symbol'
 
 import type { MotionValue } from '../motion'
@@ -41,30 +40,22 @@ export function playbackControl<V extends AnimatableValue>(
 
     $time = t + $end - $start
 
-    animations.forEach((animation) => {
-      const { start, delay, duration } = animation
+    // 获取此刻需要操作的 animations
+    // TODO: 待优化
+    let animation = animations.filter((ani) => $time < ani.end)[0]
+    if (!animation) animation = animations[animations.length - 1]
 
-      if (!shouldMotion($time, animation)) return false
+    const { start, delay, duration } = animation
 
-      const elapsed = clamp($time - start - delay, 0, duration)
+    const elapsed = clamp($time - start - delay, 0, duration)
 
-      const current = animation.transform<V>(elapsed)
+    const current = animation.transform<V>(elapsed)
 
-      if (elapsed === 0) {
-        motion.notify('start')
-        callbacks.onStart?.()
-      } else if (elapsed === duration) {
-        motion.notify('complete')
-        callbacks.onComplete?.()
-        promise.update()
-      }
+    motion.notify('change', current)
 
-      motion.notify('change', current)
+    callbacks.onChange?.(current)
 
-      callbacks.onChange?.(current)
-
-      motion.set(current)
-    })
+    motion.set(current)
 
     return $time <= $duration
   }

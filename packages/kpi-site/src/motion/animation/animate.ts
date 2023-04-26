@@ -4,7 +4,6 @@ import type { PlaybackControl } from './playback_control'
 import type { ElementOrSelector } from '../utils/resolve_element'
 import type { MotionValue } from '../motion'
 import type {
-  AnimatableValue,
   AnimationOptions,
   AnimationScope,
   DOMKeyframesDefinition,
@@ -13,28 +12,20 @@ import type {
 import isElementAnimation from './utils/is_element_animation'
 
 export function createAnimateWithScope(scope?: AnimationScope) {
-  // animate string | number
-  function scopedAnimate<V extends AnimatableValue>(
-    from: V,
+  // animate value
+  function scopedAnimate<V>(
+    from: V | MotionValue<NonNullable<V>>,
     to: V | GenericKeyframes<V>,
-    options?: AnimationOptions<V>
+    options?: AnimationOptions<NonNullable<V>>
   ): PlaybackControl
-
-  // animate motion value
-  function scopedAnimate<V extends AnimatableValue>(
-    value: MotionValue<V>,
-    keyframes: V | GenericKeyframes<V>,
-    options?: AnimationOptions<V>
-  ): PlaybackControl
-
   // animate dom
-  function scopedAnimate(
+  function scopedAnimate<V>(
     maybeElement: ElementOrSelector,
-    keyframes: DOMKeyframesDefinition<AnimatableValue>,
+    keyframes: DOMKeyframesDefinition<V>,
     options?: AnimationOptions
   ): PlaybackControl
 
-  function scopedAnimate<V extends AnimatableValue>(
+  function scopedAnimate<V>(
     animateInput: V | MotionValue<V> | ElementOrSelector,
     keyframes: V | GenericKeyframes<V> | DOMKeyframesDefinition<V>,
     options?: AnimationOptions<V>

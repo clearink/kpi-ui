@@ -149,13 +149,8 @@ export default function App() {
   const ref = useRef<HTMLDivElement>(null)
   const x = useMotionValue(0)
   useEffect(() => {
-    x.on('start', () => {
-      console.log('p start')
-    })
-    x.on('cancel', () => {
-      console.log('p cancel')
-    })
     return x.on('change', (current) => {
+      console.log(current)
       ref.current!.style.transform = `translate3d(${current}px,0,0)`
     })
   }, [x])
@@ -164,11 +159,31 @@ export default function App() {
       <button
         type="button"
         onClick={() => {
-          const p = animate(x as any, [null, 200, 500, 300, 1000], {
-            easing: 'easeInBack',
+          // animate(0, [
+          //   {
+          //     value: [0, 200],
+          //     duration: 300,
+          //     easing: 'easeInBack',
+          //   },
+          //   {
+          //     value: 300,
+          //     duration: 300,
+          //     easing: 'easeInBack',
+          //   },
+          //   {
+          //     value: 500,
+          //     duration: 300,
+          //     easing: 'easeInBack',
+          //   },
+          // ])
+          animate(0, [10, 200, 500, 300, 1000], {
             duration: 4000,
+            easing: 'easeInBack',
+            onChange: (current) => {
+              console.log(current)
+              ref.current!.style.transform = `translate3d(${current}px,0,0)`
+            },
           })
-          p.then(() => console.log('then p', performance.now()))
         }}
       >
         start

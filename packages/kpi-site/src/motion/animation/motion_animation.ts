@@ -1,14 +1,13 @@
 /* eslint-disable no-return-assign */
-import { isNull, toArray } from '@kpi/shared'
+import { isArray, isNull } from '@kpi/shared'
 import getUnit from '../parse/utils/get_unit'
-import { frameData } from '../frame-loop/delta'
 import { normalizeEasing } from './utils/normalize'
 import getDecompose from '../parse/utils/get_decompose'
-import interpolator from '../utils/interpolator'
 
 import type { MotionAnimationType } from '../motion/interface'
 import type { AnimatableValue, GenericKeyframes, MergedAnimationOptions } from './interface'
 import { pushItem } from '../utils/array'
+import interpolator from '../utils/interpolator'
 
 export type MotionAnimation = ReturnType<typeof motionAnimation<AnimatableValue>>
 
@@ -79,35 +78,34 @@ export function motionAnimation<V extends AnimatableValue>(
   }
 }
 
-// 是否应该启动 animation
-export function shouldMotion(time: number, animation: MotionAnimation) {
-  const { start, delay, end } = animation
-
-  const { delta } = frameData
-
-  return start + delay - delta <= time && time <= end + delta
-}
-
 export function makeMotionAnimations<V extends AnimatableValue>(
   from: V,
-  to: V | GenericKeyframes<V>[number][],
+  to: V | GenericKeyframes<V>,
   options: MergedAnimationOptions<V>
 ): MotionAnimation[] {
-  const tos = toArray(to).map((item, i) => {
+  if (!isArray(to)) return [motionAnimation(from, to, options)]
+
+  if (to.length === 0) return []
+
+  const keyframes = to.map((item, i) => {
     if (i === 0 && isNull(item)) return from
-    return item as V
+    return item as unknown as V
   })
 
-  return tos.reduce<MotionAnimation[]>((animations, item, i) => {
+  if (keyframes.length === 1) keyframes.unshift(from)
+
+  const duration = options.duration / (keyframes.length - 1)
+
+  return keyframes.reduce<MotionAnimation[]>((animations, item, i) => {
     if (i === 0) return animations
 
     const lastAnimation = animations[animations.length - 1]
 
-    const nextFrom = lastAnimation ? lastAnimation.original[1] : tos[i - 1]
+    const nextFrom = lastAnimation ? lastAnimation.original[1] : keyframes[i - 1]
 
     const animation = motionAnimation(nextFrom, item, options)
 
-    animation.duration = options.duration / tos.length
+    animation.duration = duration
 
     if (i > 1) animation.start = lastAnimation.end
 

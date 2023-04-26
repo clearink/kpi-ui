@@ -1,7 +1,7 @@
 import { pick, shallowMerge } from '@kpi/shared'
 import { motionValue } from '../motion'
 import { playbackControl } from './playback_control'
-import { makeMotionAnimations, motionAnimation } from './motion_animation'
+import { makeMotionAnimations } from './motion_animation'
 import { defaultAnimationOptions } from './constant'
 
 import type { PlaybackControl } from './playback_control'
@@ -31,6 +31,7 @@ export function animateValue<V extends AnimatableValue>(
   to: V | GenericKeyframes<V>,
   options: AnimationOptions = {}
 ): PlaybackControl {
+  // TODO: 需要清除之前的 animate 吗?
   const value = motionValue(from)
 
   const mergedOptions = shallowMerge(options, defaultAnimationOptions)
