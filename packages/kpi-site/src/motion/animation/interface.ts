@@ -1,17 +1,52 @@
+import type { MotionValue } from '../motion'
 import type { Easing } from '../tween/interface'
+import type { ElementOrSelector } from '../utils/resolve_element'
 import type { PlaybackControl } from './playback_control'
-
-export type GenericKeyframes<V> = [null, ...V[]] | V[]
 
 export type AnimatableValue = string | number
 
-export type DOMKeyframesDefinition<V> = {
-  x?: V | [V, V]
-  y?: V | [V, V]
-  z?: V | [V, V]
-  [key: string]: V | [V, V] | undefined
+export type GenericKeyframes<V> = [null, ...V[]] | V[]
+
+export type KeyframeTarget = AnimatableValue | AnimatableValue[] | GenericKeyframes<AnimatableValue>
+
+// dom animation
+export type AnimatableStyleProperty =
+  | keyof Omit<CSSStyleDeclaration, 'direction' | 'transition'>
+  | 'x'
+  | 'y'
+  | 'z'
+  | 'rotateX'
+  | 'rotateY'
+  | 'rotateZ'
+  | 'scaleX'
+  | 'scaleY'
+  | 'scaleZ'
+  | 'skewX'
+  | 'skewY'
+
+export type DOMKeyframes = Record<AnimatableStyleProperty, KeyframeTarget>
+
+// sequence animation
+export type SequenceTime = number | '<' | `+${number}` | `-${number}`
+export interface At {
+  at?: SequenceTime
 }
 
+export type MotionValueSegment =
+  | [MotionValue, KeyframeTarget | KeyframeTarget[]]
+  | [MotionValue, KeyframeTarget | KeyframeTarget[], Transition & At]
+
+export type DOMKeyframesSegment =
+  | [ElementOrSelector, DOMKeyframes]
+  // TODO: replace any type
+  | [ElementOrSelector, DOMKeyframes, any]
+
+export type SequenceLabelSegment = string & {
+  name: string
+  at: SequenceTime
+}
+
+export type AnimationSequence = (MotionValueSegment | DOMKeyframesSegment | SequenceLabelSegment)[]
 export interface AnimationScope<T = any> {
   readonly current: T
   animations: PlaybackControl[]

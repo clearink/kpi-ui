@@ -2,7 +2,7 @@ import { pick, shallowMerge } from '@kpi/shared'
 import { motionValue } from '../motion'
 import { playbackControl } from './playback_control'
 import { makeMotionAnimations } from './motion_animation'
-import { defaultAnimationOptions } from './constant'
+import { defaultAnimationOptions } from './config/default'
 
 import type { PlaybackControl } from './playback_control'
 import type { MotionValue } from '../motion'
@@ -77,3 +77,6 @@ export function animateElement<V extends AnimatableValue>(
 
   // return control
 }
+
+// animate sequence
+export function animateSequence<V>() {}

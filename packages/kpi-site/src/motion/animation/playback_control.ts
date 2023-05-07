@@ -5,14 +5,14 @@ import { $promise } from '../utils/symbol'
 
 import type { MotionValue } from '../motion'
 import type { MotionAnimation } from './motion_animation'
-import type { AnimatableValue, AnimationPlaybackLifeCycles } from './interface'
+import type { AnimatableValue, MergedAnimationOptions } from './interface'
 
 export type PlaybackControl<V extends AnimatableValue = any> = ReturnType<typeof playbackControl<V>>
 
-export function playbackControl<V extends AnimatableValue>(
+export function playbackControl<V>(
   motion: MotionValue<V>,
-  callbacks: AnimationPlaybackLifeCycles<V>,
-  animations: MotionAnimation[]
+  animations: MotionAnimation[],
+  options: MergedAnimationOptions<V>
 ) {
   const promise = motion[$promise]
   // 清除上一次的 resolve
@@ -49,11 +49,11 @@ export function playbackControl<V extends AnimatableValue>(
 
     const elapsed = clamp($time - start - delay, 0, duration)
 
-    const current = animation.transform<V>(elapsed)
+    const current = animation.transform(elapsed) as V
 
     motion.notify('change', current)
 
-    callbacks.onChange?.(current)
+    options.onChange?.(current)
 
     motion.set(current)
 

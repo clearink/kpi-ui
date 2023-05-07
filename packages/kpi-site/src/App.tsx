@@ -159,24 +159,7 @@ export default function App() {
       <button
         type="button"
         onClick={() => {
-          // animate(0, [
-          //   {
-          //     value: [0, 200],
-          //     duration: 300,
-          //     easing: 'easeInBack',
-          //   },
-          //   {
-          //     value: 300,
-          //     duration: 300,
-          //     easing: 'easeInBack',
-          //   },
-          //   {
-          //     value: 500,
-          //     duration: 300,
-          //     easing: 'easeInBack',
-          //   },
-          // ])
-          animate(0, [10, 200, 500, 300, 1000], {
+          animate(0, [0, 200, 500, 300, 1000], {
             duration: 4000,
             easing: 'easeInBack',
             onChange: (current) => {
@@ -195,3 +178,57 @@ export default function App() {
     </div>
   )
 }
+
+/**
+ *
+ * useMotionValue 无法自定义 keyframes 的缓动函数?
+ * 必须
+ * const x = useMotionValue(0)
+ * animate(x, 200,{duration, easing: 'easeInBack'})
+ * animate(x, 500,{duration, easing: 'easeOutBack'})
+ * animate(x, 300,{duration, easing: 'easeInBack'})
+ * animate(x, 1000,{duration, easing: 'easeOutBack'})
+ *
+ * gsap
+ *
+ * gsap({x:0},[
+ * {
+ *  x:200,
+ *  easing: 'easeInBack'
+ * },
+ * {
+ *  x:500,
+ *  easing: 'easeOutBack'
+ * },
+ * {
+ *  x:300,
+ *  easing: 'easeOutBack'
+ * },
+ * {
+ *  x:1000,
+ *  easing: 'easeOutBack'
+ * }
+ * ])
+ */
+
+/**
+ * const x = useMotionValue(0)
+ * animate(x, 500, config)
+ * animate(x,[100,200,300,400,500], config)
+ *
+ * advanced
+ *
+ * animate([
+ * [target, to, config]
+ * ])
+ * animate([
+ * [x, 200, config],
+ * [x, 300, config],
+ * [x, 400, config],
+ * [x, 500, config],
+ * ])
+ * animate([{x, 200,{duration}}])
+ * animate([
+ * { targets:x, to:200, ...config }
+ * ])
+ */
