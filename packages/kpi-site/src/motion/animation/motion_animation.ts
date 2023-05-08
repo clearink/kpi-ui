@@ -78,7 +78,7 @@ export function motionAnimation<V extends AnimatableValue>(
   }
 }
 
-export function makeMotionAnimations<V>(
+export function makeMotionAnimations<V extends AnimatableValue>(
   from: V,
   to: V | GenericKeyframes<V>,
   options: MergedAnimationOptions<V>

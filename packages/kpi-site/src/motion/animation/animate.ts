@@ -6,6 +6,7 @@ import type { PlaybackControl } from './playback_control'
 import type { ElementOrSelector } from '../utils/resolve_element'
 import type { MotionValue } from '../motion'
 import type {
+  AnimatableValue,
   AnimationOptions,
   AnimationScope,
   AnimationSequence,
@@ -14,22 +15,40 @@ import type {
 } from './interface'
 
 export function createAnimateWithScope(scope?: AnimationScope) {
-  // animate value
-  function scopedAnimate<V>(
-    from: V | MotionValue<NonNullable<V>>,
-    to: V | GenericKeyframes<V>,
-    options?: AnimationOptions<NonNullable<V>>
+  // animate number
+  function scopedAnimate(
+    from: number,
+    to: number | GenericKeyframes<number>,
+    options?: AnimationOptions<number>
+  ): PlaybackControl
+  // animate motion number
+  function scopedAnimate(
+    from: MotionValue<number>,
+    to: number | GenericKeyframes<number>,
+    options?: AnimationOptions<number>
+  ): PlaybackControl
+  // animate string
+  function scopedAnimate(
+    from: string,
+    to: string | GenericKeyframes<string>,
+    options?: AnimationOptions<string>
+  ): PlaybackControl
+  // animate motion string
+  function scopedAnimate(
+    from: MotionValue<string>,
+    to: string | GenericKeyframes<string>,
+    options?: AnimationOptions<string>
   ): PlaybackControl
   // animate dom
-  function scopedAnimate(
+  function scopedAnimate<V>(
     element: ElementOrSelector,
     keyframes: DOMKeyframes,
-    options?: AnimationOptions
+    options?: AnimationOptions<V>
   ): PlaybackControl
   // animate sequence
   function scopedAnimate(sequence: AnimationSequence, options?: AnimationOptions): PlaybackControl
 
-  function scopedAnimate<V>(
+  function scopedAnimate<V extends AnimatableValue>(
     animateInput: V | MotionValue<V> | ElementOrSelector | AnimationSequence,
     keyframes: V | GenericKeyframes<V> | DOMKeyframes,
     options?: AnimationOptions<V>
@@ -42,9 +61,7 @@ export function createAnimateWithScope(scope?: AnimationScope) {
       animation = animateElement(animateInput as ElementOrSelector, keyframes, options, scope)
     } else if (isValueAnimation(animateInput)) {
       animation = animateValue(animateInput, keyframes, options)
-    } else {
-      throw Error('invalid animate targets')
-    }
+    } else throw Error('invalid animate targets')
 
     if (scope) scope.animations.push(animation)
 

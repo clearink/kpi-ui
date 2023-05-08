@@ -4,8 +4,9 @@ import { $id, $promise } from '../utils/symbol'
 import defineHidden from '../utils/define_hidden'
 import uniqueId from '../utils/unique_id'
 import makeControlledPromise from '../utils/make_controlled_promise'
+import { AnimatableValue } from '../animation/interface'
 
-export class MotionValue<V = any> {
+export class MotionValue<V extends AnimatableValue = AnimatableValue> {
   constructor(private _initial: V) {
     this._value = this._initial
   }
@@ -31,7 +32,7 @@ export class MotionValue<V = any> {
   }
 }
 
-export function motionValue<V>(initial: V | MotionValue<V>) {
+export function motionValue<V extends AnimatableValue>(initial: V | MotionValue<V>) {
   if (isMotionValue(initial)) return initial
 
   const value = new MotionValue(initial)
@@ -42,6 +43,6 @@ export function motionValue<V>(initial: V | MotionValue<V>) {
   return value
 }
 
-export function isMotionValue<V>(obj: V | MotionValue<V>): obj is MotionValue<V> {
-  return obj && obj[$id]
-}
+export const isMotionValue = <V extends AnimatableValue>(
+  obj: V | MotionValue<V>
+): obj is MotionValue<V> => obj && obj[$id]

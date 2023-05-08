@@ -141,25 +141,26 @@
 //   )
 // }
 import { useEffect, useRef } from 'react'
-import { animate } from './motion/animation/animate'
+// import { animate } from './motion/animation/animate'
+// import useMotionValue from './motion/hooks/use_motion_value'
 
-import useMotionValue from './motion/hooks/use_motion_value'
+import { animate, useMotionValue } from 'framer-motion'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
-  const x = useMotionValue(0)
+  const v = useMotionValue(0)
   useEffect(() => {
-    return x.on('change', (current) => {
+    return v.on('change', (current) => {
       console.log(current)
       ref.current!.style.transform = `translate3d(${current}px,0,0)`
     })
-  }, [x])
+  }, [v])
   return (
     <div>
       <button
         type="button"
         onClick={() => {
-          animate(0, [0, 200, 500, 300, 1000], {
+          animate(v, [0, 200, 500, 300, 1000], {
             duration: 4000,
             easing: 'easeInBack',
             onChange: (current) => {

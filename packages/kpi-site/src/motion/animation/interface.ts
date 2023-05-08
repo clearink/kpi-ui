@@ -24,7 +24,7 @@ export type AnimatableStyleProperty =
   | 'skewX'
   | 'skewY'
 
-export type DOMKeyframes = Record<AnimatableStyleProperty, KeyframeTarget>
+export type DOMKeyframes = Partial<Record<AnimatableStyleProperty, KeyframeTarget>>
 
 // sequence animation
 export type SequenceTime = number | '<' | `+${number}` | `-${number}`

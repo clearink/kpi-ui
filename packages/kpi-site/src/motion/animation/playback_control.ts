@@ -7,9 +7,9 @@ import type { MotionValue } from '../motion'
 import type { MotionAnimation } from './motion_animation'
 import type { AnimatableValue, MergedAnimationOptions } from './interface'
 
-export type PlaybackControl<V extends AnimatableValue = any> = ReturnType<typeof playbackControl<V>>
+export type PlaybackControl = ReturnType<typeof playbackControl<AnimatableValue>>
 
-export function playbackControl<V>(
+export function playbackControl<V extends AnimatableValue>(
   motion: MotionValue<V>,
   animations: MotionAnimation[],
   options: MergedAnimationOptions<V>

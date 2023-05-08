@@ -5,11 +5,11 @@ import { makeMotionAnimations } from '../motion_animation'
 import { playbackControl } from '../playback_control'
 
 import type { MotionValue } from '../../motion'
-import type { AnimationOptions, GenericKeyframes } from '../interface'
+import type { AnimatableValue, AnimationOptions, GenericKeyframes } from '../interface'
 import type { PlaybackControl } from '../playback_control'
 import type { ElementOrSelector } from '../../utils/resolve_element'
 
-export default function animateValue<V>(
+export default function animateValue<V extends AnimatableValue>(
   from: V | MotionValue<V>,
   to: V | GenericKeyframes<V>,
   options: AnimationOptions = {}
@@ -34,7 +34,7 @@ export default function animateValue<V>(
   return control
 }
 
-export function isValueAnimation<V>(
+export function isValueAnimation<V extends AnimatableValue>(
   animateInput: V | MotionValue<V> | ElementOrSelector
 ): animateInput is V | MotionValue<V> {
   return !isObjectLike(animateInput) || isMotionValue(animateInput as any)
