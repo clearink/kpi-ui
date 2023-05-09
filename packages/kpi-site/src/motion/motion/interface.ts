@@ -8,5 +8,3 @@ export interface MotionEventCallbacks<V = any> {
 }
 export type MotionValueEventName<V = any> = keyof MotionEventCallbacks<V>
 export type MotionValueEventHandler<V, N extends MotionValueEventName> = MotionEventCallbacks<V>[N]
-
-export type MotionAnimationType = 'transform' | 'attribute' | 'css' | 'value'

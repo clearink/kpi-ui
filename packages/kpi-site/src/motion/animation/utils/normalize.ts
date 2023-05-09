@@ -1,7 +1,7 @@
 import { isArray, isFunction, isString } from '@kpi/shared'
-import { cubicBezier, easings } from '../../tween'
+import { cubicBezier, easings } from '../../easing'
 
-import type { Easing, EasingFunction } from '../../tween/interface'
+import type { Easing, EasingFunction } from '../../easing/interface'
 
 const cubicBezierCache = new Map<string, EasingFunction>()
 

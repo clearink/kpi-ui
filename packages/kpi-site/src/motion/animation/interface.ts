@@ -1,5 +1,5 @@
 import type { MotionValue } from '../motion'
-import type { Easing } from '../tween/interface'
+import type { Easing } from '../easing/interface'
 import type { ElementOrSelector } from '../utils/resolve_element'
 import type { PlaybackControl } from './playback_control'
 

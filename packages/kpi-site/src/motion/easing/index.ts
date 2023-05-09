@@ -42,7 +42,7 @@ const Elastic = generateEasing('Elastic', (x) => {
   return x === 0 || x === 1 ? x : -(2 ** (10 * x - 10)) * Math.sin((x * 10 - 10.75) * c4)
 })
 
-export default {
+export const easings = {
   linear,
   ...Sine,
   ...Quad,
@@ -55,3 +55,6 @@ export default {
   ...Bounce,
   ...Elastic,
 }
+
+export { default as cubicBezier } from './cubic_bezier'
+export { default as steps } from './steps'

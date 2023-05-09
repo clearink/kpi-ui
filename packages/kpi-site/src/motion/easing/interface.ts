@@ -1,4 +1,6 @@
-import type { EasingDefinition } from '.'
+import { easings } from '.'
+
+export type EasingDefinition = keyof typeof easings
 
 export type EasingFunction = (x: number) => number
 

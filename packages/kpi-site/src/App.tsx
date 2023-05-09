@@ -141,10 +141,10 @@
 //   )
 // }
 import { useEffect, useRef } from 'react'
-// import { animate } from './motion/animation/animate'
-// import useMotionValue from './motion/hooks/use_motion_value'
+import { animate } from './motion/animation/animate'
+import useMotionValue from './motion/hooks/use_motion_value'
 
-import { animate, useMotionValue } from 'framer-motion'
+// import { animate, useMotionValue } from 'framer-motion'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)

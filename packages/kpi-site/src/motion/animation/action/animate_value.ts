@@ -12,7 +12,7 @@ import type { ElementOrSelector } from '../../utils/resolve_element'
 export default function animateValue<V extends AnimatableValue>(
   from: V | MotionValue<V>,
   to: V | GenericKeyframes<V>,
-  options: AnimationOptions = {}
+  options: AnimationOptions<V> = {}
 ): PlaybackControl {
   // TODO: 需要清除之前的 animate 吗?
   const value = motionValue(from)
@@ -27,7 +27,7 @@ export default function animateValue<V extends AnimatableValue>(
 
   const control = playbackControl(value, animations, mergedOptions)
 
-  console.log(animations)
+  console.log('animations', animations)
 
   if (mergedOptions.autoplay) control.play()
 

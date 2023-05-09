@@ -4,7 +4,6 @@ import getUnit from '../parse/utils/get_unit'
 import { normalizeEasing } from './utils/normalize'
 import getDecompose from '../parse/utils/get_decompose'
 
-import type { MotionAnimationType } from '../motion/interface'
 import type { AnimatableValue, GenericKeyframes, MergedAnimationOptions } from './interface'
 import { pushItem } from '../utils/array'
 import interpolator from '../utils/interpolator'
@@ -20,7 +19,6 @@ export function motionAnimation<V extends AnimatableValue>(
 
   let $duration = options.duration
   let $start = 0
-  let $delay = options.delay
 
   const unit = getUnit(to)
 
@@ -43,22 +41,30 @@ export function motionAnimation<V extends AnimatableValue>(
   }
 
   return {
-    type: 'value' as MotionAnimationType,
-    property: undefined as string | undefined,
-    unit,
-    original: Object.freeze([from, to] as const),
+    get type() {
+      return 'value'
+    },
+
+    get property() {
+      return undefined as string | undefined
+    },
+
+    get unit() {
+      return unit
+    },
+
+    get original() {
+      return Object.freeze([from, to] as const)
+    },
 
     get delay() {
-      return $delay
-    },
-    // TODO: 是否需要该 setter ?
-    set delay(delay: number) {
-      $delay = delay
+      return options.delay
     },
 
     get start() {
       return $start
     },
+
     set start(start: number) {
       $start = start
     },
@@ -66,6 +72,7 @@ export function motionAnimation<V extends AnimatableValue>(
     get duration() {
       return $duration
     },
+
     set duration(duration: number) {
       $duration = duration
     },
@@ -112,3 +119,11 @@ export function makeMotionAnimations<V extends AnimatableValue>(
     return pushItem(animations, animation)
   }, [])
 }
+
+export function makeAnimations(type: 'value' | 'element' | 'sequence') {
+  return () => {}
+}
+
+export const makeValueAnimations = makeAnimations('value')
+export const makeElementAnimations = makeAnimations('element')
+export const makeSequenceAnimations = makeAnimations('sequence')

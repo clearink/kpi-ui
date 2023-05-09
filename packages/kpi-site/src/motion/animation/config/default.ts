@@ -1,5 +1,5 @@
 import { noop } from '@kpi/shared'
-import { easings } from '../../tween'
+import { easings } from '../../easing'
 
 export const LifeCycles = {
   onStart: noop,
