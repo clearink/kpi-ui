@@ -1,5 +1,5 @@
 import { isArray, isFunction, isString } from '@kpi/shared'
-import { cubicBezier, easings } from '../../easing'
+import { cubicBezier, eases } from '../../easing'
 
 import type { Easing, EasingFunction } from '../../easing/interface'
 
@@ -16,9 +16,9 @@ export const normalizeEasing = (easing?: Easing) => {
     return cubicBezierCache.get(key)!
   }
 
-  if (isString(easing) && easings[easing]) return easings[easing]
+  if (isString(easing) && eases[easing]) return eases[easing]
 
-  return easings.linear
+  return eases.linear
 }
 
 export const normalizeAnimateCallbacks = () => {}

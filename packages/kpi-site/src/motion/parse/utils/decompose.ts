@@ -1,6 +1,6 @@
 import { isNumber } from '@kpi/shared'
 
-export default function getDecompose(input: number | string) {
+export default function decompose(input: number | string) {
   if (isNumber(input)) return { numbers: [input], strings: [], numeric: true }
 
   const rgx = /[+-]?\d*\.?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g // handles exponents notation

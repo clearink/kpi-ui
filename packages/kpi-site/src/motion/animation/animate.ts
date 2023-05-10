@@ -1,8 +1,9 @@
-import animateValue, { isValueAnimation } from './action/animate_value'
-import animateElement, { isElementAnimation } from './action/animate_element'
-import animateSequence, { isSequenceAnimation } from './action/animate_sequence'
+import { shallowMerge } from '@kpi/shared'
+import animateValue, { isValueAnimation } from './action/value'
+import animateElement, { isElementAnimation } from './action/element'
+import animateSequence, { isSequenceAnimation } from './action/sequence'
 
-import type { PlaybackControl } from './playback_control'
+import type { PlaybackControl } from './controller'
 import type { ElementOrSelector } from '../utils/resolve_element'
 import type { MotionValue } from '../motion'
 import type {
@@ -10,9 +11,10 @@ import type {
   AnimationOptions,
   AnimationScope,
   AnimationSequence,
-  DOMKeyframes,
+  ElementKeyframes,
   GenericKeyframes,
 } from './interface'
+import { Options } from './config/default'
 
 export function createAnimateWithScope(scope?: AnimationScope) {
   // animate number
@@ -42,7 +44,7 @@ export function createAnimateWithScope(scope?: AnimationScope) {
   // animate dom
   function scopedAnimate<V>(
     element: ElementOrSelector,
-    keyframes: DOMKeyframes,
+    keyframes: ElementKeyframes,
     options?: AnimationOptions<V>
   ): PlaybackControl
   // animate sequence
@@ -50,7 +52,7 @@ export function createAnimateWithScope(scope?: AnimationScope) {
 
   function scopedAnimate<V extends AnimatableValue>(
     animateInput: V | MotionValue<V> | ElementOrSelector | AnimationSequence,
-    keyframes: V | GenericKeyframes<V> | DOMKeyframes,
+    keyframes: V | GenericKeyframes<V> | ElementKeyframes,
     options?: AnimationOptions<V>
   ): PlaybackControl {
     let animation: PlaybackControl
@@ -58,9 +60,11 @@ export function createAnimateWithScope(scope?: AnimationScope) {
     if (isSequenceAnimation(animateInput)) {
       animation = animateSequence(animateInput)
     } else if (isElementAnimation(keyframes)) {
-      animation = animateElement(animateInput as ElementOrSelector, keyframes, options, scope)
+      const mergedOptions = shallowMerge(options, Options)
+      animation = animateElement(animateInput as ElementOrSelector, keyframes, mergedOptions, scope)
     } else if (isValueAnimation(animateInput)) {
-      animation = animateValue(animateInput, keyframes, options)
+      const mergedOptions = shallowMerge(options, Options)
+      animation = animateValue(animateInput, keyframes, mergedOptions)
     } else throw Error('invalid animate targets')
 
     if (scope) scope.animations.push(animation)

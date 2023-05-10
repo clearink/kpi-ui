@@ -1,5 +1,5 @@
 import { noop } from '@kpi/shared'
-import { easings } from '../../easing'
+import { eases } from '../../easing'
 
 export const LifeCycles = {
   onStart: noop,
@@ -13,7 +13,7 @@ export const LifeCycles = {
 
 export const Options = {
   duration: 300,
-  easing: easings.linear,
+  easing: eases.linear,
   delay: 0,
   autoplay: true,
   ...LifeCycles,

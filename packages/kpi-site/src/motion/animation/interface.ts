@@ -1,7 +1,7 @@
 import type { MotionValue } from '../motion'
 import type { Easing } from '../easing/interface'
 import type { ElementOrSelector } from '../utils/resolve_element'
-import type { PlaybackControl } from './playback_control'
+import type { PlaybackControl } from './controller'
 
 export type AnimatableValue = string | number
 
@@ -24,7 +24,7 @@ export type AnimatableStyleProperty =
   | 'skewX'
   | 'skewY'
 
-export type DOMKeyframes = Partial<Record<AnimatableStyleProperty, KeyframeTarget>>
+export type ElementKeyframes = Partial<Record<AnimatableStyleProperty, KeyframeTarget>>
 
 // sequence animation
 export type SequenceTime = number | '<' | `+${number}` | `-${number}`
@@ -37,9 +37,9 @@ export type MotionValueSegment =
   | [MotionValue, KeyframeTarget | KeyframeTarget[], Transition & At]
 
 export type DOMKeyframesSegment =
-  | [ElementOrSelector, DOMKeyframes]
+  | [ElementOrSelector, ElementKeyframes]
   // TODO: replace any type
-  | [ElementOrSelector, DOMKeyframes, any]
+  | [ElementOrSelector, ElementKeyframes, any]
 
 export type SequenceLabelSegment = string & {
   name: string
@@ -73,7 +73,21 @@ export interface AnimationPlaybackLifeCycles<V> {
   onComplete?: VoidFunction
 }
 
-export interface AnimationOptions<V = any> extends Transition, AnimationPlaybackLifeCycles<V> {}
-export interface MergedAnimationOptions<V = any>
-  extends Required<Transition>,
+export interface AnimationOptions<V = AnimatableValue>
+  extends Transition,
     AnimationPlaybackLifeCycles<V> {}
+
+export interface TweenLifeCycles<V> {
+  onStart?: VoidFunction
+  onChange?: (current: V) => void
+  onPause?: VoidFunction
+  onRepeat?: VoidFunction
+  onCancel?: VoidFunction
+  onStop?: VoidFunction
+  onComplete?: VoidFunction
+}
+
+// TODO: xxxx
+export interface ValueTweenOptions<V> extends Transition, TweenLifeCycles<V> {}
+export interface ElementTweenOptions<V> extends Transition, TweenLifeCycles<V> {}
+export interface SequenceOptions extends Transition {}
