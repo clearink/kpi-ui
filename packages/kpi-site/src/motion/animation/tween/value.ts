@@ -6,55 +6,82 @@ import interpolator from '../../utils/interpolator'
 import { normalizeEasing } from '../utils/normalize'
 
 import type { AnimatableValue, GenericKeyframes, AnimationOptions } from '../interface'
+import type { ValueTween } from './interface'
+import type { MotionValue } from '../../motion'
 
-export class ValueTween<V extends AnimatableValue = AnimatableValue> {
-  unit: string | null = null
+export function valueTween<V extends AnimatableValue = AnimatableValue>(
+  from: V,
+  to: V,
+  options: Required<AnimationOptions<V>>
+): ValueTween<V> {
+  const $unit = getUnit(to)
+  const $original = Object.freeze([from, to] as const)
 
-  delay = 0
+  // TODO: 处理 options.times 与 keyframes
 
-  original: readonly [V, V]
+  const easing = normalizeEasing(options.easing)
 
-  start = 0
+  const From = decompose(from)
+  const To = decompose(to)
 
-  duration = 0
+  let $start = 0
+  let $duration = 0
 
-  get end() {
-    return this.start + this.delay + this.duration
-  }
+  return {
+    get type() {
+      return 'value' as const
+    },
+    get unit() {
+      return $unit
+    },
+    get original() {
+      return $original
+    },
+    get delay() {
+      return options.delay
+    },
+    get end() {
+      return this.delay + this.start + this.duration
+    },
 
-  transform: <T extends V>(elapsed: number) => T
+    get start() {
+      return $start
+    },
+    set start(start: number) {
+      $start = start
+    },
 
-  constructor(from: V, to: V, options: Required<AnimationOptions<V>>) {
-    this.unit = getUnit(to)
-    this.duration = options.duration
-    this.delay = options.delay
-    this.original = Object.freeze([from, to])
+    get duration() {
+      return $duration
+    },
+    set duration(duration: number) {
+      $duration = duration
+    },
 
-    const easing = normalizeEasing(options.easing)
-
-    const From = decompose(from)
-    const To = decompose(to)
-
-    this.transform = <T extends V>(elapsed: number): T => {
-      const mapping = interpolator.bind(null, easing(elapsed / this.duration), [0, 1])
+    transform: <T extends V>(elapsed: number): T => {
+      const mapping = interpolator.bind(null, easing(elapsed / $duration), [0, 1])
 
       const numbers = To.numbers.map((num, i) => mapping([From.numbers[i], num]))
 
       if (To.numeric) return numbers[0] as T
 
-      return To.strings.reduce((result, str, i) => {
-        return `${result}${str}${numbers[i] ?? ''}`
+      return To.strings.reduce((result, str, index) => {
+        return `${result}${str}${numbers[index] ?? ''}`
       }, '') as T
-    }
+    },
   }
 }
 
-export function makeValueTweens<V extends AnimatableValue>(
-  from: V,
+export function valueTweens<V extends AnimatableValue>(
+  value: MotionValue<V>,
   to: V | GenericKeyframes<V>,
   options: Required<AnimationOptions<V>>
 ): ValueTween<V>[] {
-  if (!isArray(to)) return [new ValueTween(from, to, options)]
+  // TODO: 此处应该只生成一个 valueTween 对象
+  // 解析 times 与 keyframes 数据
+  const from = value.get()
+
+  if (!isArray(to)) return [valueTween(from, to, options)]
 
   if (to.length === 0) return []
 
@@ -62,8 +89,6 @@ export function makeValueTweens<V extends AnimatableValue>(
     if (i === 0 && isNull(item)) return from
     return item as unknown as V
   })
-
-  if (keyframes.length === 1) keyframes.unshift(from)
 
   const duration = options.duration / (keyframes.length - 1)
 
@@ -74,12 +99,12 @@ export function makeValueTweens<V extends AnimatableValue>(
 
     const nextFrom = lastAnimation ? lastAnimation.original[1] : keyframes[i - 1]
 
-    const animation = new ValueTween(nextFrom, item, options)
+    const tween = valueTween(nextFrom, item, options)
 
-    animation.duration = duration
+    tween.duration = duration
 
-    if (i > 1) animation.start = lastAnimation.end
+    if (i > 1) tween.start = lastAnimation.end
 
-    return pushItem(animations, animation)
+    return pushItem(animations, tween)
   }, [])
 }

@@ -7,6 +7,7 @@ export function pushItem<T>(array: T[], items: T | T[], unique = false) {
 
   for (let i = 0; i < arrayItems.length; i += 1) {
     const item = arrayItems[i]
+
     if (!unique || !~array.indexOf(item)) array.push(item)
   }
 

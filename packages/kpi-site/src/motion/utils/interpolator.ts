@@ -8,3 +8,10 @@ export default function interpolator(
 
   return output[0] + (output[1] - output[0]) * percent
 }
+
+export interface InterpolateOptions<V> {
+  clamp?: false
+  range: V[]
+  input: V[]
+}
+export function interpolate<V = any>(options: InterpolateOptions<V>) {}

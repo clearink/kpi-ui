@@ -5,7 +5,7 @@ import { $promise } from '../utils/symbol'
 
 import type { MotionValue } from '../motion'
 import type { AnimatableValue, AnimationOptions } from './interface'
-import { ValueTween } from './tween/value'
+import type { ValueTween } from './tween/interface'
 
 export type PlaybackControl = ReturnType<typeof playbackControl<AnimatableValue>>
 
@@ -40,6 +40,7 @@ export function playbackControl<V extends AnimatableValue>(
 
     $time = t + $end - $start
 
+    // 该逻辑需要收敛到 tween 内部
     let tween = tweens.find((ani) => $time < ani.end)
     if (!tween) tween = tweens[tweens.length - 1]
 

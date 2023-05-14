@@ -16,5 +16,6 @@ export const Options = {
   easing: eases.linear,
   delay: 0,
   autoplay: true,
+  times: [],
   ...LifeCycles,
 }

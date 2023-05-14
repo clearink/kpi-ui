@@ -1,6 +1,6 @@
 import { isObjectLike } from '@kpi/shared'
 import { isMotionValue, motionValue } from '../../motion'
-import { makeValueTweens } from '../tween/value'
+import { valueTweens } from '../tween/value'
 import { playbackControl } from '../controller'
 
 import type { MotionValue } from '../../motion'
@@ -8,6 +8,7 @@ import type { AnimatableValue, AnimationOptions, GenericKeyframes } from '../int
 import type { PlaybackControl } from '../controller'
 import type { ElementOrSelector } from '../../utils/resolve_element'
 
+// string | number 动画效果
 export default function animateValue<V extends AnimatableValue>(
   from: V | MotionValue<V>,
   to: V | GenericKeyframes<V>,
@@ -20,7 +21,7 @@ export default function animateValue<V extends AnimatableValue>(
 
   // TODO value.get(), to 进行转换 '#ff0' => rgba(255, 255, 0, 1)
 
-  const tweens = makeValueTweens(value.get(), to, options)
+  const tweens = valueTweens(value, to, options)
 
   const control = playbackControl(value, tweens, options)
 

@@ -75,7 +75,12 @@ export interface AnimationPlaybackLifeCycles<V> {
 
 export interface AnimationOptions<V = AnimatableValue>
   extends Transition,
-    AnimationPlaybackLifeCycles<V> {}
+    AnimationPlaybackLifeCycles<V> {
+  /**
+   * @description keyframes 持续时间占比 [0, 1] 之间
+   */
+  times?: number[]
+}
 
 export interface TweenLifeCycles<V> {
   onStart?: VoidFunction

@@ -21,4 +21,4 @@ export const normalizeEasing = (easing?: Easing) => {
   return eases.linear
 }
 
-export const normalizeAnimateCallbacks = () => {}
+export const normalizeTimes = (times: number[]) => {}

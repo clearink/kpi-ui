@@ -1,8 +1,8 @@
 import { isObject } from '@kpi/shared'
-import { makeElementTweens } from '../tween/element'
+import { elementTweens } from '../tween/element'
 import resolveElements from '../../utils/resolve_element'
 
-import type { PlaybackControl } from '../controller'
+import { PlaybackControl, playbackControl } from '../controller'
 import type { ElementOrSelector } from '../../utils/resolve_element'
 import type {
   AnimatableValue,
@@ -20,7 +20,9 @@ export default function animateElement<V extends AnimatableValue>(
 ): PlaybackControl {
   const elements = resolveElements(maybeElements)
 
-  const tweens = makeElementTweens()
+  // const tweens = elementTweens(elements, keyframes, options)
+
+  // const control = playbackControl()
   return {} as PlaybackControl
 }
 

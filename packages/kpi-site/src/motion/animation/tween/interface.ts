@@ -1,19 +1,19 @@
 import { AnimatableValue } from '../interface'
 
-export type MotionTweenType = 'value' | 'element'
-export type MotionTween<V> = MotionValueTween<V> | MotionElementTween<V>
+export type TweenType = 'value' | 'element'
+export type Tween<V> = ValueTween<V> | ElementTween<V>
 
-export interface MotionValueTween<V> {
+export interface ValueTween<V> {
   readonly type: 'value'
   readonly unit: null | string
-  readonly original: [V, V]
+  readonly original: readonly [V, V]
   readonly delay: number
   readonly end: number
   start: number
   duration: number
-  transform: <T extends AnimatableValue>(elapsed: number) => T
+  transform: <T extends V>(elapsed: number) => T
 }
-export interface MotionElementTween<V> extends Omit<MotionValueTween<V>, 'type'> {
+export interface ElementTween<V> extends Omit<ValueTween<V>, 'type'> {
   readonly type: 'element'
   readonly targets: Element[]
 }
