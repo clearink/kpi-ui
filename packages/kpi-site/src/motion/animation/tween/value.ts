@@ -1,49 +1,34 @@
-import { isArray, isNull } from '@kpi/shared'
-import decompose from '../../parse/utils/decompose'
 import { getUnit } from '../../parse/utils/getters'
-import { pushItem } from '../../utils/array'
-import interpolator from '../../utils/interpolator'
-import { normalizeEasing } from '../utils/normalize'
+import clamp from '../../utils/clamp'
+import { normalizeEasing, normalizeTweenTarget, normalizeTweenTimes } from '../utils/normalize'
+import { createTweenGenerator } from '../utils/generator'
 
 import type { AnimatableValue, GenericKeyframes, AnimationOptions } from '../interface'
 import type { ValueTween } from './interface'
 import type { MotionValue } from '../../motion'
 
-export function valueTween<V extends AnimatableValue = AnimatableValue>(
-  from: V,
-  to: V,
+export default function valueTween<V extends AnimatableValue>(
+  motion: MotionValue<V>,
+  to: V | GenericKeyframes<V>,
   options: Required<AnimationOptions<V>>
-): ValueTween<V> {
-  const $unit = getUnit(to)
-  const $original = Object.freeze([from, to] as const)
+): ValueTween {
+  const { times: $times, easing: $easing, duration: $duration } = options
 
-  // TODO: 处理 options.times 与 keyframes
+  const from = motion.get()
 
-  const easing = normalizeEasing(options.easing)
+  const $unit = getUnit(from)
+  // TODO: 单位转换
+  const target = normalizeTweenTarget(from, to)
+  // percents
+  const times = normalizeTweenTimes(target, $times)
 
-  const From = decompose(from)
-  const To = decompose(to)
+  const easing = normalizeEasing($easing)
+
+  const generator = createTweenGenerator(target, times, easing)
 
   let $start = 0
-  let $duration = 0
 
   return {
-    get type() {
-      return 'value' as const
-    },
-    get unit() {
-      return $unit
-    },
-    get original() {
-      return $original
-    },
-    get delay() {
-      return options.delay
-    },
-    get end() {
-      return this.delay + this.start + this.duration
-    },
-
     get start() {
       return $start
     },
@@ -51,60 +36,26 @@ export function valueTween<V extends AnimatableValue = AnimatableValue>(
       $start = start
     },
 
+    get delay() {
+      return options.delay
+    },
+    get end() {
+      return this.delay + this.start + this.duration
+    },
     get duration() {
       return $duration
     },
-    set duration(duration: number) {
-      $duration = duration
-    },
+    tick: (time: number) => {
+      const elapsed = clamp(time - $start - options.delay, 0, $duration)
+      const current = generator(elapsed / $duration)
 
-    transform: <T extends V>(elapsed: number): T => {
-      const mapping = interpolator.bind(null, easing(elapsed / $duration), [0, 1])
+      motion.set(current)
+      // console.log('current', current)
 
-      const numbers = To.numbers.map((num, i) => mapping([From.numbers[i], num]))
-
-      if (To.numeric) return numbers[0] as T
-
-      return To.strings.reduce((result, str, index) => {
-        return `${result}${str}${numbers[index] ?? ''}`
-      }, '') as T
+      // change
+      motion.notify('change', current)
+      options.onChange(current)
+      // options event
     },
   }
-}
-
-export function valueTweens<V extends AnimatableValue>(
-  value: MotionValue<V>,
-  to: V | GenericKeyframes<V>,
-  options: Required<AnimationOptions<V>>
-): ValueTween<V>[] {
-  // TODO: 此处应该只生成一个 valueTween 对象
-  // 解析 times 与 keyframes 数据
-  const from = value.get()
-
-  if (!isArray(to)) return [valueTween(from, to, options)]
-
-  if (to.length === 0) return []
-
-  const keyframes = to.map((item, i) => {
-    if (i === 0 && isNull(item)) return from
-    return item as unknown as V
-  })
-
-  const duration = options.duration / (keyframes.length - 1)
-
-  return keyframes.reduce<ValueTween<V>[]>((animations, item, i) => {
-    if (i === 0) return animations
-
-    const lastAnimation = animations[animations.length - 1]
-
-    const nextFrom = lastAnimation ? lastAnimation.original[1] : keyframes[i - 1]
-
-    const tween = valueTween(nextFrom, item, options)
-
-    tween.duration = duration
-
-    if (i > 1) tween.start = lastAnimation.end
-
-    return pushItem(animations, tween)
-  }, [])
 }

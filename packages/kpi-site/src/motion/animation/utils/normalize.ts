@@ -1,7 +1,8 @@
-import { isArray, isFunction, isString } from '@kpi/shared'
+import { isArray, isFunction, isNull, isString } from '@kpi/shared'
 import { cubicBezier, eases } from '../../easing'
 
 import type { Easing, EasingFunction } from '../../easing/interface'
+import type { AnimatableValue, GenericKeyframes } from '../interface'
 
 const cubicBezierCache = new Map<string, EasingFunction>()
 
@@ -21,4 +22,25 @@ export const normalizeEasing = (easing?: Easing) => {
   return eases.linear
 }
 
-export const normalizeTimes = (times: number[]) => {}
+export const normalizeTweenTarget = <V extends AnimatableValue>(
+  from: V,
+  to: V | GenericKeyframes<V>
+): V[] => {
+  if (!isArray(to)) return [from, to]
+
+  return to.map((item, i) => (i === 0 && isNull(item) ? from : item))
+}
+
+export const normalizeTweenTimes = <V extends AnimatableValue>(target: V[], times: number[]) => {
+  const steps = target.length
+
+  if (steps === times.length) return times
+
+  const resolved = [0]
+
+  for (let i = 0; i < steps - 1; i += 1) {
+    resolved.push((1 / (steps - 1)) * (i + 1))
+  }
+
+  return resolved
+}

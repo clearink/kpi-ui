@@ -148,29 +148,18 @@ import { animate, useMotionValue } from './motion'
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
   const v = useMotionValue(0)
-  useEffect(() => {
-    return v.on('change', (current) => {
-      console.log(current)
-      ref.current!.style.transform = `translate3d(${current}px,0,0)`
-    })
-  }, [v])
   return (
     <div>
       <button
         type="button"
         onClick={() => {
-          animate(
-            ref.current!,
-            { x: 12, y: 300 },
-            {
-              duration: 4000,
-              easing: 'easeInBack',
-              onChange: (current) => {
-                console.log(current)
-                ref.current!.style.transform = `translate3d(${current}px,0,0)`
-              },
-            }
-          )
+          animate(v, [null, 500, 200, 800, 400, 1000], {
+            duration: 4000,
+            easing: 'easeInBack',
+            onChange: (current) => {
+              ref.current!.style.transform = `translate3d(${current}px,0,0)`
+            },
+          })
         }}
       >
         start

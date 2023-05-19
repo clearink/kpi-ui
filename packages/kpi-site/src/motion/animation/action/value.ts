@@ -1,6 +1,6 @@
 import { isObjectLike } from '@kpi/shared'
 import { isMotionValue, motionValue } from '../../motion'
-import { valueTweens } from '../tween/value'
+import valueTween from '../tween/value'
 import { playbackControl } from '../controller'
 
 import type { MotionValue } from '../../motion'
@@ -21,11 +21,11 @@ export default function animateValue<V extends AnimatableValue>(
 
   // TODO value.get(), to 进行转换 '#ff0' => rgba(255, 255, 0, 1)
 
-  const tweens = valueTweens(value, to, options)
+  const tween = valueTween(value, to, options)
 
-  const control = playbackControl(value, tweens, options)
+  const control = playbackControl([tween])
 
-  console.log('tweens', tweens)
+  console.log('tweens', tween)
 
   if (options.autoplay) control.play()
 
