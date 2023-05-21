@@ -1,8 +1,6 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
 
-import eases from './eases'
-
 const subdivisionPrecision = 0.0000001
 const subdivisionMaxIterations = 12
 
@@ -35,7 +33,7 @@ function binarySubdivide(
 
 export default function cubicBezier(mX1: number, mY1: number, mX2: number, mY2: number) {
   // If this is a linear gradient, return linear easing
-  if (mX1 === mY1 && mX2 === mY2) return eases.linear
+  if (mX1 === mY1 && mX2 === mY2) return (t: number) => t
 
   const getTForX = (aX: number) => binarySubdivide(aX, 0, 1, mX1, mX2)
 

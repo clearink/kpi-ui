@@ -1,5 +1,5 @@
 import { isObject } from '@kpi/shared'
-import { elementTweens } from '../tween/element'
+import elementTweens from '../tween/element'
 import resolveElements from '../../utils/resolve_element'
 
 import { PlaybackControl, playbackControl } from '../controller'
@@ -20,10 +20,13 @@ export default function animateElement<V extends AnimatableValue>(
 ): PlaybackControl {
   const elements = resolveElements(maybeElements)
 
-  // const tweens = elementTweens(elements, keyframes, options)
+  const tweens = elementTweens(elements, keyframes, options)
 
-  // const control = playbackControl()
-  return {} as PlaybackControl
+  const control = playbackControl(tweens)
+
+  if (options.autoplay) control.play()
+
+  return control
 }
 
 // 是否为 html 元素动画

@@ -140,7 +140,7 @@
 //     </div>
 //   )
 // }
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { animate, useMotionValue } from './motion'
 
 // import { animate, useMotionValue } from 'framer-motion'
@@ -149,79 +149,40 @@ export default function App() {
   const ref = useRef<HTMLDivElement>(null)
   const v = useMotionValue(0)
   return (
-    <div>
+    <div ref={ref}>
       <button
         type="button"
         onClick={() => {
-          animate(v, [null, 500, 200, 800, 400, 1000], {
-            duration: 4000,
-            easing: 'easeInBack',
-            onChange: (current) => {
-              ref.current!.style.transform = `translate3d(${current}px,0,0)`
+          animate(
+            ref.current!.querySelectorAll('div'),
+            {
+              x: 200,
+              y: 300,
+              // color: "var(--primary-color, '#fff')",
             },
-          })
+            {
+              // times: [0, 0.2, 0.5, 0.7, 0.95, 1],
+              onChange: (current) => {
+                console.log(current)
+                // ref.current!.style.transform = `translate3d(${current}px,0,0)`
+                // ref.current!.style.backgroundColor = `${current}`
+              },
+            }
+          )
         }}
       >
         start
       </button>
       <div
-        ref={ref}
-        style={{ width: 100, height: 100, borderRadius: '50%', backgroundColor: 'red' }}
+        style={{
+          width: 100,
+          height: 100,
+          borderRadius: '50%',
+          backgroundColor: 'red',
+          // color: 'var(--primary-color)',
+        }}
       />
+      {/* <div style={{ width: 100, height: 100, borderRadius: '50%', backgroundColor: 'red' }} /> */}
     </div>
   )
 }
-
-/**
- *
- * useMotionValue 无法自定义 keyframes 的缓动函数?
- * 必须
- * const x = useMotionValue(0)
- * animate(x, 200,{duration, easing: 'easeInBack'})
- * animate(x, 500,{duration, easing: 'easeOutBack'})
- * animate(x, 300,{duration, easing: 'easeInBack'})
- * animate(x, 1000,{duration, easing: 'easeOutBack'})
- *
- * gsap
- *
- * gsap({x:0},[
- * {
- *  x:200,
- *  easing: 'easeInBack'
- * },
- * {
- *  x:500,
- *  easing: 'easeOutBack'
- * },
- * {
- *  x:300,
- *  easing: 'easeOutBack'
- * },
- * {
- *  x:1000,
- *  easing: 'easeOutBack'
- * }
- * ])
- */
-
-/**
- * const x = useMotionValue(0)
- * animate(x, 500, config)
- * animate(x,[100,200,300,400,500], config)
- *
- * advanced
- *
- * animate([
- * [target, to, config]
- * ])
- * animate([
- * [x, 200, config],
- * [x, 300, config],
- * [x, 400, config],
- * [x, 500, config],
- * ])
- * animate([{x, 200,{duration}}])
- * animate([
- * { targets:x, to:200, ...config }
- * ])
- */

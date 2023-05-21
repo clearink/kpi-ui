@@ -1,11 +1,12 @@
 import { shallowMerge } from '@kpi/shared'
-import animateValue, { isValueAnimation } from './action/value'
 import animateElement, { isElementAnimation } from './action/element'
 import animateSequence, { isSequenceAnimation } from './action/sequence'
+import animateValue, { isValueAnimation } from './action/value'
+import { Options } from './config/default'
 
-import type { PlaybackControl } from './controller'
-import type { ElementOrSelector } from '../utils/resolve_element'
 import type { MotionValue } from '../motion'
+import type { ElementOrSelector } from '../utils/resolve_element'
+import type { PlaybackControl } from './controller'
 import type {
   AnimatableValue,
   AnimationOptions,
@@ -14,7 +15,6 @@ import type {
   ElementKeyframes,
   GenericKeyframes,
 } from './interface'
-import { Options } from './config/default'
 
 export function createAnimateWithScope(scope?: AnimationScope) {
   // animate number

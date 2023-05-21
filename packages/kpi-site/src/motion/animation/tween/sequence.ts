@@ -1,23 +1,21 @@
-import { getUnit } from '../../parse/utils/getters'
+import getUnit from '../../parse/utils/get_unit'
 import clamp from '../../utils/clamp'
+import createTweenGenerator from '../utils/generator'
 import { normalizeEasing, normalizeTweenTarget, normalizeTweenTimes } from '../utils/normalize'
-import { createTweenGenerator } from '../utils/generator'
 
 import type { AnimatableValue, GenericKeyframes, AnimationOptions } from '../interface'
-import type { ValueTween } from './interface'
+import type { Tween } from './interface'
 import type { MotionValue } from '../../motion'
 
 export default function valueTween<V extends AnimatableValue>(
   motion: MotionValue<V>,
   to: V | GenericKeyframes<V>,
   options: Required<AnimationOptions<V>>
-): ValueTween {
+): Tween {
   const { times: $times, easing: $easing, duration: $duration } = options
 
   const from = motion.get()
 
-  const $unit = getUnit(from)
-  // TODO: 单位转换
   const target = normalizeTweenTarget(from, to)
   // percents
   const times = normalizeTweenTimes(target, $times)

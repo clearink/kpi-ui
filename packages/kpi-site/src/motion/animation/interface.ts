@@ -7,7 +7,7 @@ export type AnimatableValue = string | number
 
 export type GenericKeyframes<V> = [null, ...V[]] | V[]
 
-export type KeyframeTarget = AnimatableValue | AnimatableValue[] | GenericKeyframes<AnimatableValue>
+export type KeyframeTarget = AnimatableValue | GenericKeyframes<AnimatableValue>
 
 // dom animation
 export type AnimatableStyleProperty =

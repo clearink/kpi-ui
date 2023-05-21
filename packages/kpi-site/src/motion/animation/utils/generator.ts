@@ -4,11 +4,11 @@ import decompose from '../../parse/utils/decompose'
 import type { EasingFunction } from '../../easing/interface'
 import type { AnimatableValue } from '../interface'
 
-export const createTweenGenerator = <V extends AnimatableValue>(
+export default function createTweenGenerator<V extends AnimatableValue>(
   target: V[],
   times: number[],
   easing: EasingFunction
-) => {
+) {
   const Target = target.map(decompose)
 
   return (elapsed: number) => {
@@ -33,5 +33,3 @@ export const createTweenGenerator = <V extends AnimatableValue>(
     return To.strings.reduce((res, str, i) => `${res}${str}${numbers[i] ?? ''}`, '') as V
   }
 }
-
-export const a = 1

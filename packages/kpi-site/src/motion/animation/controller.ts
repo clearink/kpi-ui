@@ -10,7 +10,7 @@ export function playbackControl(tweens: Tween[]) {
   // // 清除上一次的 resolve
   // promise.update(true)
 
-  const $duration = tweens[tweens.length - 1].end ?? 0
+  const $duration = tweens[tweens.length - 1]?.end ?? 0
 
   // 是否运行动画过
   let $animated = false

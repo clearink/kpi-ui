@@ -25,8 +25,6 @@ export default function animateValue<V extends AnimatableValue>(
 
   const control = playbackControl([tween])
 
-  console.log('tweens', tween)
-
   if (options.autoplay) control.play()
 
   return control
