@@ -50,41 +50,23 @@ export const normalizeTweenTimes = <V extends AnimatableValue>(target: V[], time
 
 // 格式化 element 动效值
 export const normalizeKeyframes = (element: Element, keyframes: ElementKeyframes) => {
-  // Object.keys(keyframes).forEach((key) => {
-  //   if (attr.test(element, key)) {
-  //     // attr
-  //     const from = element.getAttribute(key)!
-  //     const motion = motionValue(from as V)
-  //     const tween = valueTween(motion, keyframes[key], {
-  //       ...options,
-  //       onChange: chainedFunc(options.onChange, (current) => {
-  //         console.log('current', current, key, element, 'attr')
-  //       }),
-  //     })
-  //     tweens.push(tween)
-  //   } else if (css.test(element, key)) {
-  //     const from = (element as HTMLElement).style
-  //     console.log(from.getPropertyValue('transform'), key)
-  //     // const motion = motionValue(from as V)
-  //     // const tween = valueTween(motion, keyframes[key], {
-  //     //   ...options,
-  //     //   onChange: chainedFunc(options.onChange, (current) => {
-  //     //     console.log('current', current, key, element, 'css')
-  //     //   }),
-  //     // })
-  //     // tweens.push(tween)
-  //   }
-  // })
-  console.log(keyframes) // {x: 200, y: 300}
   // 先进行 transform 的转换 将 x,y 转换成合法的数据
+  console.log(keyframes) // {x: 200, y: 300}
+
+  // 记录 transform 
+  const list = new Map<string, any>()
+  // 1. 组合全部的 transform 属性成一个字符串
+  // 2. 
   Object.keys(keyframes).forEach((key) => {
+    if (transform.test(key)) {
+      return transform.transform(transform.parse(element, key))
+    }
     if (attr.test(element, key)) {
-      //
+      return attr.
     } else if (css.test(element, key)) {
       //
-    } else if (transform.test(element, key)) {
-      //
     }
+    // tweens.push(valueTween())
   })
   const from = {}
   const to = {}

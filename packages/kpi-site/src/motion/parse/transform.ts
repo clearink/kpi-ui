@@ -1,5 +1,5 @@
 const transformProps = [
-  'perspective',
+  'p', // transform perspective 区分 css perspective
   'x',
   'y',
   'z',
@@ -18,8 +18,10 @@ const transformProps = [
   'skewY',
 ]
 
+const set = new Set(transformProps)
+
 export default {
-  test: (element: Element, key: string) => {
-    return transformProps.indexOf(key) !== -1
-  },
+  test: (key: string) => set.has(key),
+  parse: (element: Element, key: string) => {},
+  transform: () => {},
 }

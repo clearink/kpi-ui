@@ -12,6 +12,7 @@ export type KeyframeTarget = AnimatableValue | GenericKeyframes<AnimatableValue>
 // dom animation
 export type AnimatableStyleProperty =
   | keyof Omit<CSSStyleDeclaration, 'direction' | 'transition'>
+  | 'p'
   | 'x'
   | 'y'
   | 'z'

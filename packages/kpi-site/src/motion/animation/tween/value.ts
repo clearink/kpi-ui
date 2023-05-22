@@ -1,7 +1,6 @@
-import { isNumber } from '@kpi/shared'
 import clamp from '../../utils/clamp'
 import createTweenGenerator from '../utils/generator'
-import color from '../../parse/color'
+import { parseValueTweenTarget } from '../../parse'
 import { normalizeEasing, normalizeTweenTarget, normalizeTweenTimes } from '../utils/normalize'
 
 import type { AnimatableValue, GenericKeyframes, AnimationOptions } from '../interface'
@@ -19,12 +18,8 @@ export default function valueTween<V extends AnimatableValue>(
 
   const from = motion.get()
 
-  // 这里只会解析 color 形式的字符串
-  const target = normalizeTweenTarget(from, to).map((item) => {
-    if (isNumber(item)) return item
-    if (color.test(item)) return color.transform(color.parse(item)) as V
-    return item
-  })
+  // 只解析 color 形式的字符串
+  const target = parseValueTweenTarget(normalizeTweenTarget(from, to))
 
   const times = normalizeTweenTimes(target, $times)
 

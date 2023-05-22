@@ -6,9 +6,8 @@
 // transform
 
 export default {
-  test: (element: Element, key: string) => {
-    if (!('style' in element)) return false
-    const styles = element.style as CSSStyleDeclaration
-    return true
-  },
+  test: (element: Element, key: string) => 'style' in element && element.nodeType,
+
+  parse: (element: Element, key: string) => {},
+  transform: () => {},
 }

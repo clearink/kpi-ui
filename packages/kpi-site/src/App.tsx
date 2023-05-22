@@ -75,7 +75,7 @@
 //   )
 // }
 
-// // somple animate function
+// // simple animate function
 
 // interface AnimateOptions {
 //   duration?: number
@@ -147,7 +147,7 @@ import { animate, useMotionValue } from './motion'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
-  const v = useMotionValue(0)
+  const v = useMotionValue('#fff')
   return (
     <div ref={ref}>
       <button
