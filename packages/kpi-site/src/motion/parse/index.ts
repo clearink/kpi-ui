@@ -1,14 +1,17 @@
 import { isNumber } from '@kpi/shared'
 import color from './color'
+import angle from './angle'
 
 import type { AnimatableValue, ElementKeyframes } from '../animation/interface'
 import type { Tween } from '../animation/tween/interface'
 
 export const parseValueTweenTarget = <V extends AnimatableValue>(target: V[]) => {
   return target.map((item) => {
-    if (isNumber(item) || !color.test(item)) return item
+    if (isNumber(item)) return item
+    if (color.test(item)) return color.transform(color.parse(item)) as V
+    if (angle.test(item)) return angle.transform(angle.parse(item)) as V
 
-    return color.transform(color.parse(item)) as V
+    return item
   })
 }
 

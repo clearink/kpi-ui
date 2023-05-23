@@ -1,12 +1,12 @@
 import decompose from '../utils/decompose'
-
-import type { RGBA } from '../interface'
 import clamp from '../../utils/clamp'
 
-const hsl = /^rgb/
+import type { RGBA } from '../interface'
+
+const rgb = /^rgb/
 
 export default {
-  test: (v: string) => hsl.test(v),
+  test: (v: string) => rgb.test(v),
   parse: (v: string): RGBA => {
     const [r, g, b, a = 1] = decompose(v).numbers
 
