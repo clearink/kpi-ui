@@ -4,6 +4,9 @@ import { ResolvedTransform } from '../interface'
 
 export default {
   parse: (v: string) => {
+    if (v === 'none') {
+      return {}
+    }
     return v.split(' ').reduce((result, item) => {
       const parsed = parseFunctionString(item)
 

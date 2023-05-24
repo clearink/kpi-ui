@@ -27,6 +27,7 @@ const transformProps = Object.freeze({
 
 export const transformPropsList = Object.keys(transformProps) as (keyof typeof transformProps)[]
 
+// 直接解析 matrix
 export default {
   test: (key: string) => !!transformProps[key],
   parse: (v: string) => {

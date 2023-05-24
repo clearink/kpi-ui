@@ -140,14 +140,31 @@
 //     </div>
 //   )
 // }
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { animate, useMotionValue } from './motion'
+import transform from './motion/parse/transform'
 
 // import { animate, useMotionValue } from 'framer-motion'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
   const v = useMotionValue('#fff')
+  useEffect(() => {
+    ref.current!.querySelectorAll('div').forEach((element) => {
+      const s = getComputedStyle(element).transform!
+      const a = Object.entries(transform.parse(s))
+        .reduce((res: string[], [key, value]) => {
+          res.push(`${key}(${value})`)
+          return res
+        }, [])
+        .join(' ')
+      console.log(a)
+      // translate3d(20px,200px, 0px) rotate(40.36799deg) skew(0.89063deg, 0.99988deg) scale(1.09173,0.91609)
+      // translate3d(20px, 200px, 0px) rotate(40.3682deg) skew(0.891072deg, 0deg) scale(1.09173, 0.91598)
+      // equal
+      // translate(20px, 200px) skew(10deg) rotate(45deg)
+    })
+  }, [])
   return (
     <div ref={ref}>
       <button
@@ -177,8 +194,9 @@ export default function App() {
         style={{
           width: 100,
           height: 100,
-          borderRadius: '50%',
+          borderRadius: '4px',
           backgroundColor: 'red',
+          transform: 'translate(20px, 200px) skew(10deg, 123deg) rotate(1deg) scale(3)',
           // color: 'var(--primary-color)',
         }}
       />
