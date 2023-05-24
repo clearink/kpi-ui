@@ -3,6 +3,8 @@ import elementTweens from '../tween/element'
 import resolveElements from '../../utils/resolve_element'
 
 import { PlaybackControl, playbackControl } from '../controller'
+import { ensureElementCache } from '../../utils/cache'
+
 import type { ElementOrSelector } from '../../utils/resolve_element'
 import type {
   AnimatableValue,
@@ -19,6 +21,8 @@ export default function animateElement<V extends AnimatableValue>(
   scope?: AnimationScope
 ): PlaybackControl {
   const elements = resolveElements(maybeElements)
+
+  elements.forEach(ensureElementCache)
 
   const tweens = elementTweens(elements, keyframes, options)
 

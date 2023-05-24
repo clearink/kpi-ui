@@ -27,7 +27,7 @@ const transformProps = Object.freeze({
 
 export const transformPropsList = Object.keys(transformProps) as (keyof typeof transformProps)[]
 
-// 直接解析 matrix
+// 解析 matrix 会增加太多的代码量, 这里只解析 x, y, z 算了
 export default {
   test: (key: string) => !!transformProps[key],
   parse: (v: string) => {

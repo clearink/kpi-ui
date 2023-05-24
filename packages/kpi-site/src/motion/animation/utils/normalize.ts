@@ -1,6 +1,6 @@
 import { isArray, isFunction, isNull, isString } from '@kpi/shared'
-import { cubicBezier, eases } from '../../easing'
-import { cubicBezierCache } from '../../utils/cache'
+import { eases } from '../../easing'
+import { getBezierCache } from '../../utils/cache'
 import attr from '../../parse/attr'
 import css from '../../parse/css'
 import transform from '../../parse/transform'
@@ -13,13 +13,7 @@ import getElementStyle from '../../parse/utils/get_style'
 export const normalizeEasing = (easing?: Easing) => {
   if (isFunction(easing)) return easing
 
-  if (isArray(easing) && easing.length === 4) {
-    const key = easing.join('$')
-
-    if (!cubicBezierCache.has(key)) cubicBezierCache.set(key, cubicBezier(...easing))
-
-    return cubicBezierCache.get(key)!
-  }
+  if (isArray(easing) && easing.length === 4) return getBezierCache(easing)
 
   if (isString(easing) && eases[easing]) return eases[easing]
 
@@ -63,6 +57,7 @@ export const normalizeKeyframes = (element: Element, keyframes: ElementKeyframes
 
   Object.entries(keyframes).forEach(([key, value]) => {
     if (transform.test(key)) {
+      // transform 比较特殊
       const style = getElementStyle(element, 'transform')
       const parsed = transform.parse(style!)
 

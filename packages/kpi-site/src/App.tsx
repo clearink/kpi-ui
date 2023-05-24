@@ -196,7 +196,7 @@ export default function App() {
           height: 100,
           borderRadius: '4px',
           backgroundColor: 'red',
-          transform: 'translate(20px, 200px) skew(10deg, 123deg) rotate(1deg) scale(3)',
+          transform: 'skew(222deg)',
           // color: 'var(--primary-color)',
         }}
       />
