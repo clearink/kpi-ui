@@ -8,11 +8,11 @@ export interface RGBA {
 }
 
 export interface ResolvedTransform<V = AnimatableValue> {
-  translate3d: [V, V, V]
-  perspective: [V]
-  scale3d: [V, V, V]
-  rotate: [V]
-  rotateX: [V]
-  rotateY: [V]
-  skew: [V, V]
+  perspective?: [V]
+  translate3d?: [V, V, V]
+  rotateX?: [V]
+  rotateY?: [V]
+  rotate?: [V]
+  skew?: [V, V]
+  scale3d?: [V, V, V]
 }

@@ -166,8 +166,8 @@ export default function App() {
           animate(
             ref.current!,
             {
-              x: 0,
-              rotate: '20deg',
+              rotate: '20turn',
+              x: [100, 200],
             },
             {
               // times: [0, 0.2, 0.5, 0.7, 0.95, 1],

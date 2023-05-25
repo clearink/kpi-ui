@@ -17,7 +17,7 @@ export default function elementTweens<V extends AnimatableValue>(
     // 2. 获取除了 transform 的其它 from, to 值 生成 tweens
     // 3. 都 push 到 result 中
 
-    console.log('groupTransformKeyframes', groupTransformKeyframes(element, keyframes))
+    groupTransformKeyframes(element, keyframes)
 
     // const tweens = Object.keys(to).map((key) => valueTween(from[key], to[key], options))
 

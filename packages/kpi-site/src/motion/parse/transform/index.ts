@@ -2,30 +2,9 @@ import { hasOwn } from '@kpi/shared'
 import common from './common'
 import matrix2d from './matrix2d'
 import matrix3d from './matrix3d'
+import { transformProps } from '../utils/resolve_transform'
 
-export const transformProps = Object.freeze({
-  p: 'perspective',
-  perspective: 'perspective',
-  x: 'translateX',
-  y: 'translateY',
-  z: 'translateZ',
-  translateX: 'translateX',
-  translateY: 'translateY',
-  translateZ: 'translateZ',
-  scale: 'scale',
-  scaleX: 'scaleX',
-  scaleY: 'scaleY',
-  scaleZ: 'scaleZ',
-  rotate: 'rotate',
-  rotateX: 'rotateX',
-  rotateY: 'rotateY',
-  rotateZ: 'rotateZ',
-  skew: 'skew',
-  skewX: 'skewX',
-  skewY: 'skewY',
-})
-
-export const transformPropsList = Object.keys(transformProps) as (keyof typeof transformProps)[]
+import type { ResolvedTransform } from '../interface'
 
 export default {
   test: (key: string) => !!transformProps[key],
@@ -34,7 +13,8 @@ export default {
     if (matrix2d.test(v)) return matrix2d.parse(v)
     return common.parse(v)
   },
-  transform: (v: Record<string, (string | number)[]>) => {
+  transform: (v: ResolvedTransform) => {
+    // TODO: 按照 perspective, translate3d, rotate, skew, scale 的顺序去生成数据
     const result = Object.entries(v)
       .map(([fn, args]) => `${fn}(${args.join(',')})`)
       .join(' ')
