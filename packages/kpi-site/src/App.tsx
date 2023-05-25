@@ -143,7 +143,9 @@
 import { useEffect, useRef } from 'react'
 import { animate, useMotionValue } from './motion'
 import transform from './motion/parse/transform'
+import { getInlineCSS } from './motion/parse/utils/get_style'
 
+import './style.css'
 // import { animate, useMotionValue } from 'framer-motion'
 
 export default function App() {
@@ -151,31 +153,21 @@ export default function App() {
   const v = useMotionValue('#fff')
   useEffect(() => {
     ref.current!.querySelectorAll('div').forEach((element) => {
-      const s = getComputedStyle(element).transform!
-      const a = Object.entries(transform.parse(s))
-        .reduce((res: string[], [key, value]) => {
-          res.push(`${key}(${value})`)
-          return res
-        }, [])
-        .join(' ')
+      const s = getInlineCSS(element, 'transform')
+      const a = transform.transform(transform.parse(s!))
       console.log(a)
-      // translate3d(20px,200px, 0px) rotate(40.36799deg) skew(0.89063deg, 0.99988deg) scale(1.09173,0.91609)
-      // translate3d(20px, 200px, 0px) rotate(40.3682deg) skew(0.891072deg, 0deg) scale(1.09173, 0.91598)
-      // equal
-      // translate(20px, 200px) skew(10deg) rotate(45deg)
     })
   }, [])
   return (
-    <div ref={ref}>
+    <div>
       <button
         type="button"
         onClick={() => {
           animate(
-            ref.current!.querySelectorAll('div'),
+            ref.current!,
             {
-              x: 200,
-              y: 300,
-              // color: "var(--primary-color, '#fff')",
+              x: 0,
+              rotate: '20deg',
             },
             {
               // times: [0, 0.2, 0.5, 0.7, 0.95, 1],
@@ -191,12 +183,13 @@ export default function App() {
         start
       </button>
       <div
+        ref={ref}
         style={{
           width: 100,
           height: 100,
           borderRadius: '4px',
           backgroundColor: 'red',
-          transform: 'skew(222deg)',
+          transform: 'translate(20px, 200px) rotate(1deg) skew(10deg, 123deg) scale(3)',
           // color: 'var(--primary-color)',
         }}
       />

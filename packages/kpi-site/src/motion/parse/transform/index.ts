@@ -1,33 +1,32 @@
+import { hasOwn } from '@kpi/shared'
 import common from './common'
 import matrix2d from './matrix2d'
 import matrix3d from './matrix3d'
 
-import type { ResolvedTransform } from '../interface'
-
-const transformProps = Object.freeze({
-  p: (value: string) => ({ type: 'perspective', value, index: 0 }),
-  x: (value: string) => ({ type: 'translate3d', value, index: 0 }),
-  y: (value: string) => ({ type: 'translate3d', value, index: 1 }),
-  z: (value: string) => ({ type: 'translate3d', value, index: 2 }),
-  translateX: (value: string) => ({ type: 'translate3d', value, index: 0 }),
-  translateY: (value: string) => ({ type: 'translate3d', value, index: 1 }),
-  translateZ: (value: string) => ({ type: 'translate3d', value, index: 2 }),
-  scale: (value: string) => ({ type: 'scale3d', value, index: 0 }),
-  scaleX: (value: string) => ({ type: 'scale3d', value, index: 0 }),
-  scaleY: (value: string) => ({ type: 'scale3d', value, index: 1 }),
-  scaleZ: (value: string) => ({ type: 'scale3d', value, index: 2 }),
-  rotate: (value: string) => ({ type: 'rotate3d', value, index: 0 }),
-  rotateX: (value: string) => ({ type: 'rotate3d', value, index: 0 }),
-  rotateY: (value: string) => ({ type: 'rotate3d', value, index: 1 }),
-  rotateZ: (value: string) => ({ type: 'rotate3d', value, index: 2 }),
-  skew: (value: string) => ({ type: 'skew', value, index: 0 }),
-  skewX: (value: string) => ({ type: 'skew', value, index: 0 }),
-  skewY: (value: string) => ({ type: 'skew', value, index: 1 }),
+export const transformProps = Object.freeze({
+  p: 'perspective',
+  perspective: 'perspective',
+  x: 'translateX',
+  y: 'translateY',
+  z: 'translateZ',
+  translateX: 'translateX',
+  translateY: 'translateY',
+  translateZ: 'translateZ',
+  scale: 'scale',
+  scaleX: 'scaleX',
+  scaleY: 'scaleY',
+  scaleZ: 'scaleZ',
+  rotate: 'rotate',
+  rotateX: 'rotateX',
+  rotateY: 'rotateY',
+  rotateZ: 'rotateZ',
+  skew: 'skew',
+  skewX: 'skewX',
+  skewY: 'skewY',
 })
 
 export const transformPropsList = Object.keys(transformProps) as (keyof typeof transformProps)[]
 
-// 解析 matrix 会增加太多的代码量, 这里只解析 x, y, z 算了
 export default {
   test: (key: string) => !!transformProps[key],
   parse: (v: string) => {
@@ -35,9 +34,15 @@ export default {
     if (matrix2d.test(v)) return matrix2d.parse(v)
     return common.parse(v)
   },
-  transform: (v: ResolvedTransform) => {
-    return Object.entries(v)
+  transform: (v: Record<string, (string | number)[]>) => {
+    const result = Object.entries(v)
       .map(([fn, args]) => `${fn}(${args.join(',')})`)
       .join(' ')
+
+    if (!result) return 'none'
+
+    if (hasOwn(v, 'translate3d') || hasOwn(v, 'translateZ')) return result
+
+    return `${result} translateZ(0px)`
   },
 }

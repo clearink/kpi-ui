@@ -1,13 +1,9 @@
 import { isArray, isFunction, isNull, isString } from '@kpi/shared'
 import { eases } from '../../easing'
 import { getBezierCache } from '../../utils/cache'
-import attr from '../../parse/attr'
-import css from '../../parse/css'
-import transform from '../../parse/transform'
 
 import type { Easing } from '../../easing/interface'
-import type { AnimatableValue, ElementKeyframes, GenericKeyframes } from '../interface'
-import getElementStyle from '../../parse/utils/get_style'
+import type { AnimatableValue, GenericKeyframes } from '../interface'
 
 // 解析缓动函数
 export const normalizeEasing = (easing?: Easing) => {
@@ -41,35 +37,4 @@ export const normalizeTweenTimes = <V extends AnimatableValue>(target: V[], time
   }
 
   return resolved
-}
-
-// 格式化 element 动效值
-export const normalizeKeyframes = (element: Element, keyframes: ElementKeyframes) => {
-  // 先进行 transform 的转换 将 x,y 转换成合法的数据
-  console.log(keyframes) // {x: 200, y: 300} => translate3d(200px, 300px)
-
-  // 记录 transform
-  const list = new Map<string, any>()
-
-  const from = {}
-
-  const to = {}
-
-  Object.entries(keyframes).forEach(([key, value]) => {
-    if (transform.test(key)) {
-      // transform 比较特殊
-      const style = getElementStyle(element, 'transform')
-      const parsed = transform.parse(style!)
-
-      // return transform.transform(transform.parse(element, key))
-    }
-    if (attr.test(element, key)) {
-      //
-    } else if (css.test(element, key)) {
-      //
-    }
-    // tweens.push(valueTween())
-  })
-
-  return [from, to] as const
 }
