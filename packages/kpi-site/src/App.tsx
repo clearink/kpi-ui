@@ -157,7 +157,7 @@ export default function App() {
           animate(
             ref.current!,
             {
-              x: ['30%'],
+              x: [200, 300, '20vh', '20vw', '30%'],
               color: '#fff',
               // y: [200],
               // rotate: [30, '20turn'],

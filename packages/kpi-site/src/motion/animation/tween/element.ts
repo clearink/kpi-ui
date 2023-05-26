@@ -4,7 +4,7 @@ import valueTween from './value'
 import { normalizeTweenTarget } from '../utils/normalize'
 import { motionValue } from '../../motion'
 import transform from '../../parse/transform'
-import { defaultTransformValue } from '../../parse/transform/resolve'
+import { transformProps } from '../../parse/transform/resolve'
 import { convertToUnit } from '../../parse'
 import getUnit from '../../parse/utils/get_unit'
 import units from '../../config/units'
@@ -21,7 +21,7 @@ export default function elementTweens(
     // transform 的 tween
     Object.entries(transform.parse(keyframes)).forEach(([key, value]) => {
       // 给每个属性添加默认单位
-      const defaultValue = defaultTransformValue[key]
+      const defaultValue = (transformProps[key] || [])[0]
       const defaultUnit = units[key] || 'px'
 
       const target: string[] = normalizeTweenTarget(defaultValue, value).map((item) => {
@@ -32,11 +32,13 @@ export default function elementTweens(
 
       const converted = target.map((item) => convertToUnit(element, key, item, targetUnit))
 
+      console.log(converted)
+
       const motion = motionValue(converted[0])
 
       const tween = valueTween(motion, converted, options)
 
-      result.push(tween)
+      // result.push(tween)
     })
 
     // 其它的 tween

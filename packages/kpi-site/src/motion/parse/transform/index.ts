@@ -8,7 +8,7 @@ export default {
   test: (key: string) => !!transformProps[key],
   parse: (keyframes: ElementKeyframes): ResolvedTransform => {
     return Object.entries(keyframes).reduce((result, [key, value]) => {
-      const setter = transformProps[key]
+      const setter = (transformProps[key] || [])[1]
 
       if (!setter || isUndefined(value)) return result
 
