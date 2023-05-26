@@ -1,28 +1,28 @@
-import { hasOwn } from '@kpi/shared'
-import common from './common'
-import matrix2d from './matrix2d'
-import matrix3d from './matrix3d'
-import { transformProps } from '../utils/resolve_transform'
+import { hasOwn, isUndefined } from '@kpi/shared'
+import { transformProps } from './resolve'
 
 import type { ResolvedTransform } from '../interface'
+import type { ElementKeyframes } from '../../animation/interface'
 
 export default {
   test: (key: string) => !!transformProps[key],
-  parse: (v: string) => {
-    if (matrix3d.test(v)) return matrix3d.parse(v)
-    if (matrix2d.test(v)) return matrix2d.parse(v)
-    return common.parse(v)
+  parse: (keyframes: ElementKeyframes): ResolvedTransform => {
+    return Object.entries(keyframes).reduce((result, [key, value]) => {
+      const setter = transformProps[key]
+
+      if (!setter || isUndefined(value)) return result
+
+      return setter(result, value)
+    }, {} as ResolvedTransform)
   },
   transform: (v: ResolvedTransform) => {
     // TODO: 按照 perspective, translate3d, rotate, skew, scale 的顺序去生成数据
-    const result = Object.entries(v)
-      .map(([fn, args]) => `${fn}(${args.join(',')})`)
-      .join(' ')
+    const keys = Object.keys(v)
 
-    if (!result) return 'none'
+    if (!keys.length) return 'none'
 
-    if (hasOwn(v, 'translate3d') || hasOwn(v, 'translateZ')) return result
+    const result = keys.map((fn) => `${fn}(${v[fn]})`).join(' ')
 
-    return `${result} translateZ(0px)`
+    return hasOwn(v, 'translateZ') ? result : `${result} translateZ(0px)`
   },
 }

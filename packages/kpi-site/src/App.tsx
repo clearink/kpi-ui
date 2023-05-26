@@ -142,8 +142,6 @@
 // }
 import { useEffect, useRef } from 'react'
 import { animate, useMotionValue } from './motion'
-import transform from './motion/parse/transform'
-import { getInlineCSS } from './motion/parse/utils/get_style'
 
 import './style.css'
 // import { animate, useMotionValue } from 'framer-motion'
@@ -151,13 +149,6 @@ import './style.css'
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
   const v = useMotionValue('#fff')
-  useEffect(() => {
-    ref.current!.querySelectorAll('div').forEach((element) => {
-      const s = getInlineCSS(element, 'transform')
-      const a = transform.transform(transform.parse(s!))
-      console.log(a)
-    })
-  }, [])
   return (
     <div>
       <button
@@ -166,8 +157,13 @@ export default function App() {
           animate(
             ref.current!,
             {
-              rotate: '20turn',
-              x: [100, 200],
+              x: ['30%'],
+              color: '#fff',
+              // y: [200],
+              // rotate: [30, '20turn'],
+              // skewX: [10],
+              // skewY: [123],
+              // scale: [3],
             },
             {
               // times: [0, 0.2, 0.5, 0.7, 0.95, 1],
@@ -185,11 +181,10 @@ export default function App() {
       <div
         ref={ref}
         style={{
-          width: 100,
-          height: 100,
+          width: 23,
+          height: 23,
           borderRadius: '4px',
           backgroundColor: 'red',
-          transform: 'translate(20px, 200px) rotate(1deg) skew(10deg, 123deg) scale(3)',
           // color: 'var(--primary-color)',
         }}
       />

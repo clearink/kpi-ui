@@ -1,8 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { isUndefined } from '@kpi/shared'
-import transform from '../../parse/transform'
-import { getInlineCSS } from '../../parse/utils/get_style'
-import { transformProps } from '../../parse/utils/resolve_transform'
+import { transformProps } from '../../parse/transform/resolve'
 
 import type { ElementKeyframes } from '../interface'
 import type { ResolvedTransform } from '../../parse/interface'
@@ -14,24 +12,11 @@ export function adaptorHtml() {
 }
 
 export function groupTransformKeyframes(element: Element, keyframes: ElementKeyframes) {
-  const inline = getInlineCSS(element, 'transform')
-  // transform 的初始值需要结合
+  return Object.entries(keyframes).reduce((result, [key, value]) => {
+    const setter = transformProps[key]
 
-  const r = Object.entries(keyframes).reduce((result, [key, value]) => {
-    if (isUndefined(value)) return result
+    if (!setter || isUndefined(value)) return result
 
-    const fn = transformProps[key]
-
-    fn && fn(result, [value])
-
-    return result
+    return setter(result, value)
   }, {} as ResolvedTransform)
-
-  console.log('parsed inline', transform.parse(inline || ''))
-  console.log('parsed keyframes', r)
-  // 只需要检查 r 中的 motion value 即可
-  // parsed inline 中有而 keyframes 中没有的可以不用进行 motion
-  // 再进行单位转换
-
-  return r
 }

@@ -1,11 +1,5 @@
 import { hasOwn, isFunction, isNull } from '@kpi/shared'
 
-export function getElementStyle(element: Element, prop: string): string | undefined {
-  const computed = getComputedCSS(element, prop)
-
-  return !isNull(computed) ? computed : getInlineCSS(element, prop)
-}
-
 export function getComputedCSS(element: Element, prop: string) {
   if (isFunction(globalThis.getComputedStyle)) {
     return globalThis.getComputedStyle(element)[prop]
@@ -18,4 +12,10 @@ export function getInlineCSS(element: Element, prop: string): string | undefined
     return (element.style as CSSStyleDeclaration)[prop]
   }
   return undefined
+}
+
+export function getElementStyle(element: Element, prop: string): string | undefined {
+  const computed = getComputedCSS(element, prop)
+
+  return !isNull(computed) ? computed : getInlineCSS(element, prop)
 }

@@ -18,6 +18,12 @@ export const getBezierCache = (easing: BezierDefinition) => {
   return bezier
 }
 
+// TODO
+// export const angleOrColorCache = new Map<string, string>()
+// export const getAngleOrColorCache = (value: string) => {
+//   if(angleOrColorCache.has(key)) return angleOrColorCache.get(key)!
+// }
+
 export const valueTweens = new WeakMap<Element, any>()
 export const getElementCache = (element: Element) => {
   if (valueTweens.has(element)) return valueTweens.get(element)!

@@ -6,17 +6,16 @@ import { PlaybackControl, playbackControl } from '../controller'
 
 import type { ElementOrSelector } from '../../utils/resolve_element'
 import type {
-  AnimatableValue,
   AnimationOptions,
   AnimationScope,
   ElementKeyframes,
   GenericKeyframes,
 } from '../interface'
 
-export default function animateElement<V extends AnimatableValue>(
+export default function animateElement(
   maybeElements: ElementOrSelector,
   keyframes: ElementKeyframes,
-  options: Required<AnimationOptions<V>>,
+  options: Required<AnimationOptions>,
   scope?: AnimationScope
 ): PlaybackControl {
   const elements = resolveElements(maybeElements)
