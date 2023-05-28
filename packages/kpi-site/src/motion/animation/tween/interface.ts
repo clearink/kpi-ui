@@ -5,3 +5,9 @@ export interface Tween {
   readonly duration: number
   tick: (time: number) => void
 }
+
+export interface TweenTransition {
+  delay: number
+  start: number
+  duration: number
+}

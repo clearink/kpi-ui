@@ -2,10 +2,9 @@ import { shallowMerge } from '@kpi/shared'
 import animateElement, { isElementAnimation } from './action/element'
 import animateSequence, { isSequenceAnimation } from './action/sequence'
 import animateValue, { isValueAnimation } from './action/value'
-import { Options } from './config/default'
+import { Options } from '../config/options'
 
 import type { MotionValue } from '../motion'
-import type { ElementOrSelector } from '../utils/resolve_element'
 import type { PlaybackControl } from './controller'
 import type {
   AnimatableValue,
@@ -13,6 +12,7 @@ import type {
   AnimationScope,
   AnimationSequence,
   ElementKeyframes,
+  ElementOrSelector,
   GenericKeyframes,
 } from './interface'
 

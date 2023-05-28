@@ -1,6 +1,5 @@
 import type { MotionValue } from '../motion'
 import type { Easing } from '../easing/interface'
-import type { ElementOrSelector } from '../utils/resolve_element'
 import type { PlaybackControl } from './controller'
 
 export type AnimatableValue = string | number
@@ -8,6 +7,8 @@ export type AnimatableValue = string | number
 export type GenericKeyframes<V> = [null, ...V[]] | V[]
 
 export type KeyframeTarget = AnimatableValue | GenericKeyframes<AnimatableValue>
+
+export type ElementOrSelector = Element | Element[] | NodeListOf<Element> | string
 
 // dom animation
 export type AnimatableStyleProperty =
@@ -58,7 +59,7 @@ export interface AnimationScope<T = any> {
 }
 
 export interface Transition {
-  easing?: Easing
+  easing?: Easing | Easing[]
   /**
    * @description 延迟时间(由于底层使用 raf 所以实际效果并不一定准确)
    * @default 0

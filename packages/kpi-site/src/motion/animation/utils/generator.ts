@@ -5,31 +5,33 @@ import type { EasingFunction } from '../../easing/interface'
 import type { AnimatableValue } from '../interface'
 
 export default function createTweenGenerator<V extends AnimatableValue>(
-  target: V[],
+  targets: V[],
   times: number[],
-  easing: EasingFunction
+  easings: EasingFunction[]
 ) {
-  const Target = target.map(decompose)
+  const decomposedTargets = targets.map(decompose)
 
   return (elapsed: number) => {
     const active = times.findIndex((time) => elapsed < time)
 
-    if (active === -1) return target[target.length - 1]
+    if (active === -1) return targets[targets.length - 1]
 
-    const From = Target[active - 1]
+    const easing = easings[active - 1]
 
-    const To = Target[active]
+    const from = decomposedTargets[active - 1]
+
+    const to = decomposedTargets[active]
 
     const mapping = interpolator.bind(null, elapsed, [times[active - 1], times[active]])
 
-    const numbers = To.numbers.map((num, i) => {
-      const [percent, transform] = mapping([From.numbers[i], num])
+    const numbers = to.numbers.map((num, i) => {
+      const [percent, transform] = mapping([from.numbers[i], num])
 
       return transform(easing(percent))
     })
 
-    if (To.numeric) return numbers[0] as V
+    if (to.numeric) return numbers[0] as V
 
-    return To.strings.reduce((res, str, i) => `${res}${str}${numbers[i] ?? ''}`, '') as V
+    return to.strings.reduce((res, str, i) => `${res}${str}${numbers[i] ?? ''}`, '') as V
   }
 }

@@ -1,14 +1,14 @@
 import { hasOwn, isUndefined } from '@kpi/shared'
-import { transformProps } from './resolve'
+import { motionTransformProps } from './misc'
 
-import type { ResolvedTransform } from '../interface'
 import type { ElementKeyframes } from '../../animation/interface'
+import type { ResolvedTransform } from '../interface'
 
 export default {
-  test: (key: string) => !!transformProps[key],
+  test: (key: string) => !!motionTransformProps[key],
   parse: (keyframes: ElementKeyframes): ResolvedTransform => {
     return Object.entries(keyframes).reduce((result, [key, value]) => {
-      const setter = (transformProps[key] || [])[1]
+      const setter = (motionTransformProps[key] || [])[1]
 
       if (!setter || isUndefined(value)) return result
 

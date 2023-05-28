@@ -1,12 +1,16 @@
 import { isObjectLike } from '@kpi/shared'
 import { isMotionValue, motionValue } from '../../motion'
-import valueTween from '../tween/value'
 import { playbackControl } from '../controller'
+import valueTween from '../tween/value'
 
 import type { MotionValue } from '../../motion'
-import type { AnimatableValue, AnimationOptions, GenericKeyframes } from '../interface'
 import type { PlaybackControl } from '../controller'
-import type { ElementOrSelector } from '../../utils/resolve_element'
+import type {
+  AnimatableValue,
+  AnimationOptions,
+  ElementOrSelector,
+  GenericKeyframes,
+} from '../interface'
 
 // string | number 动画效果
 export default function animateValue<V extends AnimatableValue>(

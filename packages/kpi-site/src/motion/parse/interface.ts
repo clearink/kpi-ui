@@ -20,14 +20,6 @@ export interface ResolvedTransform<V = AnimatableValue> {
   scaleX?: V
   scaleY?: V
   scaleZ?: V
-  skew?: V
   skewX?: V
   skewY?: V
 }
-
-export type TransformProps<
-  V extends Required<ResolvedTransform> = Required<ResolvedTransform>,
-  K extends keyof V = keyof V
-> = Readonly<Record<K, readonly [V[K], (resolved: V, value: V[K]) => V]>>
-
-export type TransformPropValue = TransformProps[keyof TransformProps]

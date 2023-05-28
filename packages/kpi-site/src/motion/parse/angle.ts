@@ -3,7 +3,7 @@ const grad = /grad$/
 const rad = /rad$/
 const turn = /turn$/
 
-// 解析
+// 全都转成 deg
 export default {
   test: (v: string) => deg.test(v) || grad.test(v) || rad.test(v) || turn.test(v),
   parse: (v: string) => {

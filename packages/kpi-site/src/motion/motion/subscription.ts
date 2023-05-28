@@ -1,6 +1,6 @@
 type AnyFunction = (...args: any[]) => any
 
-export default class SubscriptionManager<Handler extends AnyFunction = any> {
+export default class Subscription<Handler extends AnyFunction = any> {
   private subscriptions = new Set<Handler>()
 
   get size() {

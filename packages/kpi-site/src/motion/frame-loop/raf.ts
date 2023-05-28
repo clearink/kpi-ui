@@ -10,16 +10,16 @@ export const now = (() => {
 })()
 
 export const raf: (callback: FrameRequestCallback) => number = (() => {
-  if (isFunction(globalThis.requestAnimationFrame)) {
+  if (globalThis && isFunction(globalThis.requestAnimationFrame)) {
     return globalThis.requestAnimationFrame.bind(null)
   }
   return (callback: FrameRequestCallback) =>
-    globalThis.setTimeout(() => callback(now()), frameData.delta) as unknown as number
+    setTimeout(() => callback(now()), frameData.delta) as unknown as number
 })()
 
 export const caf: (handle: number) => void = (() => {
-  if (isFunction(globalThis.cancelAnimationFrame)) {
+  if (globalThis && isFunction(globalThis.cancelAnimationFrame)) {
     return globalThis.cancelAnimationFrame.bind(null)
   }
-  return globalThis.clearTimeout.bind(null)
+  return clearTimeout.bind(null)
 })()

@@ -1,19 +1,22 @@
-import { isArray, isFunction, isNull, isString } from '@kpi/shared'
+import { isArray, isFunction, isNull, isString, toArray } from '@kpi/shared'
 import { eases } from '../../easing'
 import { getBezierCache } from '../../utils/cache'
 
 import type { Easing } from '../../easing/interface'
 import type { AnimatableValue, GenericKeyframes } from '../interface'
 
-// 解析缓动函数
-export const normalizeEasing = (easing?: Easing) => {
-  if (isFunction(easing)) return easing
+export const normalizeEasings = (length: number, easings: Easing[]) => {
+  return Array.from({ length }, (_, i) => {
+    const easing = easings[i]
 
-  if (isArray(easing) && easing.length === 4) return getBezierCache(easing)
+    if (isFunction(easing)) return easing
 
-  if (isString(easing) && eases[easing]) return eases[easing]
+    if (isArray(easing) && easing.length === 4) return getBezierCache(easing)
 
-  return eases.linear
+    if (isString(easing) && eases[easing]) return eases[easing]
+
+    return eases.linear
+  })
 }
 
 export const normalizeTweenTarget = <V extends AnimatableValue>(
@@ -38,3 +41,5 @@ export const normalizeTweenTimes = <V extends AnimatableValue>(target: V[], time
 
   return resolved
 }
+
+export const normalizeTweenTransition = () => {}

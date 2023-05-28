@@ -1,7 +1,7 @@
-import getUnit from '../../parse/utils/get_unit'
+import { toArray } from '@kpi/shared'
 import clamp from '../../utils/clamp'
 import createTweenGenerator from '../utils/generator'
-import { normalizeEasing, normalizeTweenTarget, normalizeTweenTimes } from '../utils/normalize'
+import { normalizeEasings, normalizeTweenTarget, normalizeTweenTimes } from '../utils/normalize'
 
 import type { AnimatableValue, GenericKeyframes, AnimationOptions } from '../interface'
 import type { Tween } from './interface'
@@ -20,7 +20,7 @@ export default function valueTween<V extends AnimatableValue>(
   // percents
   const times = normalizeTweenTimes(target, $times)
 
-  const easing = normalizeEasing($easing)
+  const easing = normalizeEasings(times.length, toArray($easing))
 
   const generator = createTweenGenerator(target, times, easing)
 

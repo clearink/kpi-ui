@@ -148,7 +148,7 @@ import './style.css'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
-  const v = useMotionValue('#fff')
+  const v = useMotionValue(0)
   return (
     <div>
       <button
@@ -158,7 +158,7 @@ export default function App() {
             ref.current!,
             {
               x: [200, 300, '20vh', '20vw', '30%'],
-              color: '#fff',
+              // color: '#fff',
               // y: [200],
               // rotate: [30, '20turn'],
               // skewX: [10],
@@ -166,7 +166,8 @@ export default function App() {
               // scale: [3],
             },
             {
-              // times: [0, 0.2, 0.5, 0.7, 0.95, 1],
+              duration: 4000,
+              times: [0, 0.2, 0.5, 0.7, 0.95, 1],
               onChange: (current) => {
                 console.log(current)
                 // ref.current!.style.transform = `translate3d(${current}px,0,0)`
@@ -192,3 +193,14 @@ export default function App() {
     </div>
   )
 }
+
+/**
+ * animate(motion,[
+ *  { to: null, duration: 1000, easing: '' },
+ *  { to: 300, duration: 1000, easing: '' },
+ *  { to: 500, duration: 1000, easing: '' },
+ *  { to: 1000, duration: 1000, easing: '' },
+ *  { to: 1000, duration: 1000, easing: '' },
+ * ]) 对于单个 数据来说,这种是完全正常的
+ * ,是否需要使用null 进行占位呢?
+ */

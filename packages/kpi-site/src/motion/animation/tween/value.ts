@@ -1,60 +1,77 @@
-import clamp from '../../utils/clamp'
+import { toArray } from '@kpi/shared'
 import createTweenGenerator from '../utils/generator'
-import { parseValueTweenTarget } from '../../parse'
-import { normalizeEasing, normalizeTweenTarget, normalizeTweenTimes } from '../utils/normalize'
+import { normalizeEasings, normalizeTweenTarget, normalizeTweenTimes } from '../utils/normalize'
+import { resolveValueTweenTarget } from '../utils/resolve'
+import createTweenEventTrigger from '../utils/trigger'
+import tweenBase from './base'
 
-import type { AnimatableValue, GenericKeyframes, AnimationOptions } from '../interface'
-import type { Tween } from './interface'
 import type { MotionValue } from '../../motion'
+import type { AnimatableValue, AnimationOptions, GenericKeyframes } from '../interface'
+import type { Tween, TweenTransition } from './interface'
 
 export default function valueTween<V extends AnimatableValue>(
   motion: MotionValue<V>,
   to: V | GenericKeyframes<V>,
   options: Required<AnimationOptions<V>>
 ): Tween {
-  const { delay: $delay, times: $times, easing: $easing, duration: $duration } = options
+  const { times: $times, easing: $easing } = options
 
-  // TODO: motion.$promise
+  // TODO: drop previous motion.$promise
 
   const from = motion.get()
 
-  // 只解析 color 形式的字符串
-  const target = parseValueTweenTarget(normalizeTweenTarget(from, to))
+  // 只解析 color, angle 形式的字符串
+  const targets = resolveValueTweenTarget(normalizeTweenTarget(from, to))
 
-  const times = normalizeTweenTimes(target, $times)
+  const times = normalizeTweenTimes(targets, $times)
 
-  const easing = normalizeEasing($easing)
+  const easings = normalizeEasings(times.length, toArray($easing))
 
-  const generator = createTweenGenerator(target, times, easing)
+  const generator = createTweenGenerator(targets, times, easings)
 
-  let $start = 0
+  const trigger = createTweenEventTrigger()
 
-  return {
-    get start() {
-      return $start
-    },
-    set start(start: number) {
-      $start = start
-    },
-    get delay() {
-      return $delay
-    },
-    get end() {
-      return this.delay + this.start + this.duration
-    },
-    get duration() {
-      return $duration
-    },
-    tick: (time: number) => {
-      const elapsed = clamp(time - $start - options.delay, 0, $duration)
-      const current = generator(elapsed / $duration)
-
-      motion.set(current)
-
-      // change
-      motion.notify('change', current)
-      options.onChange(current)
-      // options event
-    },
+  // TODO: add tween transition
+  const transition: TweenTransition = {
+    delay: options.delay,
+    start: 0,
+    duration: options.duration,
   }
+  // normalizeTweenTransition()
+
+  return tweenBase(generator, trigger, transition)
 }
+
+/**
+ * 
+  // return {
+  //   get start() {
+  //     return $start
+  //   },
+  //   set start(start: number) {
+  //     $start = start
+  //   },
+  //   get delay() {
+  //     return $delay
+  //   },
+  //   get end() {
+  //     return this.delay + this.start + this.duration
+  //   },
+  //   get duration() {
+  //     return $duration
+  //   },
+  //   tick: (time: number) => {
+  //     const elapsed = clamp(time - $start - options.delay, 0, $duration)
+  //     const current = generator(elapsed / $duration)
+
+  //     // trigger
+
+  //     motion.set(current)
+
+  //     // change
+  //     motion.notify('change', current)
+  //     options.onChange(current)
+  //     // options event
+  //   },
+  // }
+ */

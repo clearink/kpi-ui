@@ -1,22 +1,10 @@
-import { isNumber } from '@kpi/shared'
 import color from './color'
 import angle from './angle'
 import getUnit from './utils/get_unit'
 
-import type { AnimatableValue, ElementKeyframes } from '../animation/interface'
-import type { Tween } from '../animation/tween/interface'
-import transform from './transform'
-import sanitize from './utils/sanitize'
+// TODO: 重新设计整个 parse 模块
 
-export const parseValueTweenTarget = <V extends AnimatableValue>(target: V[]) => {
-  return target.map((item) => {
-    if (isNumber(item)) return item
-    if (color.test(item)) return color.transform(color.parse(item)) as V
-    if (angle.test(item)) return angle.transform(angle.parse(item)) as V
-
-    return item
-  })
-}
+import type { ElementKeyframes } from '../animation/interface'
 
 export const parseElementTweenTarget = (element: Element, keyframes: ElementKeyframes) => {
   return []
@@ -29,9 +17,7 @@ export const convertToUnit = (
   target: string
 ) => {
   // 如果是角度值或者颜色，直接返回即可
-  // TODO: 添加 cache
-  if (angle.test(value)) return angle.transform(angle.parse(value))
-  if (color.test(value)) return color.transform(color.parse(value))
+  if (angle.test(value) || color.test(value)) return value
 
   const current = getUnit(value) || 'px'
 

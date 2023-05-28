@@ -1,14 +1,14 @@
 import { isObject } from '@kpi/shared'
+import { playbackControl } from '../controller'
 import elementTweens from '../tween/element'
-import resolveElements from '../../utils/resolve_element'
+import { resolveElements } from '../utils/resolve'
 
-import { PlaybackControl, playbackControl } from '../controller'
-
-import type { ElementOrSelector } from '../../utils/resolve_element'
+import type { PlaybackControl } from '../controller'
 import type {
   AnimationOptions,
   AnimationScope,
   ElementKeyframes,
+  ElementOrSelector,
   GenericKeyframes,
 } from '../interface'
 
