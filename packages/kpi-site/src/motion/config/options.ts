@@ -3,7 +3,7 @@ import { eases } from '../easing'
 
 export const LifeCycles = {
   onStart: noop,
-  onChange: noop,
+  onUpdate: noop,
   onPause: noop,
   onRepeat: noop,
   onCancel: noop,
@@ -13,7 +13,7 @@ export const LifeCycles = {
 
 export const Options = {
   duration: 300,
-  easing: eases.linear,
+  easing: eases.easeInBack,
   delay: 0,
   autoplay: true,
   times: [],

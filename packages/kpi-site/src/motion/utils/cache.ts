@@ -24,11 +24,11 @@ export const getBezierCache = (easing: BezierDefinition) => {
 //   if(angleOrColorCache.has(key)) return angleOrColorCache.get(key)!
 // }
 
-export const valueTweens = new WeakMap<Element, any>()
-export const getElementCache = (element: Element) => {
+export const valueTweens = new WeakMap<Element, Map<string, MotionValue>>()
+export function getElementCache(element: Element) {
   if (valueTweens.has(element)) return valueTweens.get(element)!
 
-  const cache = {}
+  const cache = new Map<string, MotionValue>()
 
   valueTweens.set(element, cache)
 

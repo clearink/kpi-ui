@@ -3,7 +3,7 @@
 import clamp from '../../utils/clamp'
 import decompose from '../../utils/decompose'
 
-import type { RGBA } from '../interface'
+import type { RGBA } from './interface'
 
 const hsl = /^hsl/
 

@@ -1,18 +1,18 @@
 import { isArray } from '@kpi/shared'
 
-import type { MotionValue } from '../../motion'
+import type { MotionValue } from '../../../motion'
 import type { PlaybackControl } from '../controller'
+import type { ElementOrSelector } from '../../utils/selector'
 import type {
   AnimatableValue,
-  AnimationOptions,
+  AnimateSequenceOptions,
   AnimationScope,
   AnimationSequence,
-  ElementOrSelector,
-} from '../interface'
+} from '../../interface'
 
 export default function animateSequence(
   sequence: AnimationSequence,
-  options?: AnimationOptions,
+  options?: AnimateSequenceOptions,
   scope?: AnimationScope
 ): PlaybackControl {
   return {} as PlaybackControl

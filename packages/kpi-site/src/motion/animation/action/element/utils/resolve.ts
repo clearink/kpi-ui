@@ -1,11 +1,9 @@
 import { isUndefined } from '@kpi/shared'
-import units from '../../config/units'
-import transform from '../../parse/transform'
-import { motionTransformProps } from '../../parse/transform/misc'
-import { convertTargetUnit } from './convert'
+import transform from '../../../../parse/transform'
+import { motionTransformProps } from '../../../../parse/transform/misc'
 
-import type Tween from '../action/tween'
-import type { ElementKeyframes } from '../interface'
+import type Tween from '../../tween'
+import type { ElementKeyframes } from '../../../interface'
 
 export function resolveTweenTransition(tweens: Tween[]) {
   return tweens.reduce((result, tween, i) => {
@@ -23,8 +21,8 @@ export function resolveElementTransform(element: Element, keyframes: ElementKeyf
 
     const targets = []
 
-    const unit = units[key] || 'px'
-    const converted = convertTargetUnit(element, key, targets)
+    // const unit = units[key] || 'px'
+    // const converted = convertTargetUnit(element, key, targets)
 
     setter(resolved, to)
     return resolved

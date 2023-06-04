@@ -154,27 +154,10 @@ export default function App() {
       <button
         type="button"
         onClick={() => {
-          animate(
-            ref.current!,
-            {
-              x: [200, 300, '20vh', '20vw', '30%'],
-              // color: '#fff',
-              // y: [200],
-              // rotate: [30, '20turn'],
-              // skewX: [10],
-              // skewY: [123],
-              // scale: [3],
-            },
-            {
-              duration: 4000,
-              times: [0, 0.2, 0.5, 0.7, 0.95, 1],
-              onChange: (current) => {
-                console.log(current)
-                // ref.current!.style.transform = `translate3d(${current}px,0,0)`
-                // ref.current!.style.backgroundColor = `${current}`
-              },
-            }
-          )
+          animate(ref.current!, {
+            x: 300,
+            y: 200,
+          })
         }}
       >
         start

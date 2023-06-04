@@ -1,6 +1,6 @@
 export interface MotionEventCallbacks<V = any> {
   start?: VoidFunction
-  change?: (current: V) => void
+  update?: (current: V) => void
   pause?: VoidFunction
   cancel?: VoidFunction
   stop?: VoidFunction

@@ -1,14 +1,18 @@
 import type { MotionValue } from '../motion'
 import type { Easing } from '../easing/interface'
-import type { PlaybackControl } from './controller'
+import type { ElementOrSelector } from './utils/selector'
+import type { PlaybackControl } from './action/controller'
 
 export type AnimatableValue = string | number
 
-export type GenericKeyframes<V> = [null, ...V[]] | V[]
+export type GenericKeyframes<V> = (V | null)[]
 
 export type KeyframeTarget = AnimatableValue | GenericKeyframes<AnimatableValue>
 
-export type ElementOrSelector = Element | Element[] | NodeListOf<Element> | string
+export interface AnimationScope<T = any> {
+  readonly current: T
+  animations: PlaybackControl[]
+}
 
 // dom animation
 export type AnimatableStyleProperty =
@@ -32,8 +36,19 @@ export type AnimatableStyleProperty =
 
 export type ElementKeyframes = Partial<Record<AnimatableStyleProperty, KeyframeTarget>>
 
-// sequence animation
-export type SequenceTime = number | '<' | `+${number}` | `-${number}`
+// TODO: 根据 gsap 的position完善类型
+export type SequenceTime =
+  | number
+  | '<'
+  | '>'
+  | `+${number}`
+  | `-${number}`
+  | `+=${number}`
+  | `-=${number}`
+  | `+${number}%`
+  | `-${number}%`
+  | `+=${number}%`
+  | `-=${number}%`
 export interface At {
   at?: SequenceTime
 }
@@ -53,13 +68,13 @@ export type SequenceLabelSegment = string & {
 }
 
 export type AnimationSequence = (MotionValueSegment | DOMKeyframesSegment | SequenceLabelSegment)[]
-export interface AnimationScope<T = any> {
-  readonly current: T
-  animations: PlaybackControl[]
-}
 
 export interface Transition {
   easing?: Easing | Easing[]
+  /**
+   * @description keyframes 持续时间占比 [0, 1] 之间
+   */
+  times?: number[]
   /**
    * @description 延迟时间(由于底层使用 raf 所以实际效果并不一定准确)
    * @default 0
@@ -69,28 +84,9 @@ export interface Transition {
   autoplay?: boolean
 }
 
-export interface AnimationPlaybackLifeCycles<V> {
+export interface TweenLifeCycles<V = AnimatableValue> {
   onStart?: VoidFunction
-  onChange?: (current: V) => void
-  onPause?: VoidFunction
-  onRepeat?: VoidFunction
-  onCancel?: VoidFunction
-  onStop?: VoidFunction
-  onComplete?: VoidFunction
-}
-
-export interface AnimationOptions<V = AnimatableValue>
-  extends Transition,
-    AnimationPlaybackLifeCycles<V> {
-  /**
-   * @description keyframes 持续时间占比 [0, 1] 之间
-   */
-  times?: number[]
-}
-
-export interface TweenLifeCycles<V> {
-  onStart?: VoidFunction
-  onChange?: (current: V) => void
+  onUpdate?: (current: V) => void
   onPause?: VoidFunction
   onRepeat?: VoidFunction
   onCancel?: VoidFunction
@@ -99,6 +95,13 @@ export interface TweenLifeCycles<V> {
 }
 
 // TODO: xxxx
-export interface ValueTweenOptions<V> extends Transition, TweenLifeCycles<V> {}
-export interface ElementTweenOptions<V> extends Transition, TweenLifeCycles<V> {}
-export interface SequenceOptions extends Transition {}
+export type AnimateValueOptions<V> = Transition & TweenLifeCycles<V>
+export type AnimateElementOptions = Transition &
+  TweenLifeCycles & {
+    [x: string]: Transition & TweenLifeCycles
+  }
+
+export type AnimateSequenceOptions = Transition &
+  TweenLifeCycles & {
+    default: Transition & TweenLifeCycles
+  }

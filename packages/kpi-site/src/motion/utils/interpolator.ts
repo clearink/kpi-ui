@@ -1,3 +1,5 @@
+import clamp from './clamp'
+
 export function percentage(value: number, range: [number, number]) {
   if (range[0] === range[1]) return 1
 
@@ -10,7 +12,7 @@ export default function interpolator(
   range: [number, number],
   output: [number, number]
 ) {
-  const $percent = percentage(value, range)
+  const $percent = clamp(percentage(value, range), 0, 1)
 
   const transform = (percent: number) => output[0] + (output[1] - output[0]) * percent
 

@@ -6,4 +6,8 @@ module.exports = {
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,
   },
+  rules: {
+    'react/require-default-props': 'off',
+    'react/no-unused-prop-types': 1,
+  },
 }

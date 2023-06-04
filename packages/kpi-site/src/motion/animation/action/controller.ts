@@ -1,16 +1,18 @@
-import driver from '../frame-loop'
-import { paused } from './utils/status'
+import driver from '../../frame-loop'
+import { Options } from '../../config/options'
+import { paused } from '../utils/status'
 
-import type { Tween } from './tween/interface'
+import type Tween from './tween'
+import type { AnimatableValue } from '../interface'
 
 export type PlaybackControl = ReturnType<typeof playbackControl>
 
-export function playbackControl(tweens: Tween[]) {
+export function playbackControl<V extends AnimatableValue>(tweens: Tween<V>[]) {
   // const promise = motion[$promise]
   // // 清除上一次的 resolve
   // promise.update(true)
 
-  const $duration = tweens[tweens.length - 1]?.end ?? 0
+  const $duration = tweens[tweens.length - 1]?.end ?? Options.duration
 
   // 是否运行动画过
   let $animated = false
@@ -31,6 +33,9 @@ export function playbackControl(tweens: Tween[]) {
     $time = t + $end - $start
 
     tweens.forEach((tween) => tween.tick($time))
+
+    // update 只能触发 start, update, complete 三种事件
+    // 还有其他的事件需要在外部触发
 
     return $time < $duration
   }

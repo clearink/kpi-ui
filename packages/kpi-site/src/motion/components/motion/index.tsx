@@ -1,5 +1,10 @@
 import { createElement } from 'react'
-import type { MotionProps } from './props'
+import type { ComponentType, ReactNode } from 'react'
+
+export interface MotionProps {
+  tag?: keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap | ComponentType
+  children?: ReactNode
+}
 
 export default function Motion(props: MotionProps) {
   const { tag = 'div', children } = props

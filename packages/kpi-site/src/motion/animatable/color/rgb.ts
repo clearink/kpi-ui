@@ -1,7 +1,7 @@
 import decompose from '../../utils/decompose'
 import clamp from '../../utils/clamp'
 
-import type { RGBA } from '../interface'
+import type { RGBA } from './interface'
 
 const rgb = /^rgb/
 
