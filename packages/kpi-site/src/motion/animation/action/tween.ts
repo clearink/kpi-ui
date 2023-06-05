@@ -19,10 +19,7 @@ export default class Tween<V extends AnimatableValue = AnimatableValue> {
 
   public tick: (time: number) => void
 
-  constructor(
-    public trigger: (sliding: [number, number], current: NonNullable<V>) => void,
-    generator: (progress: number) => NonNullable<V>
-  ) {
+  constructor(generator: (progress: number) => NonNullable<V>) {
     this.tick = (time: number) => {
       let elapsed = (time - this.start - this.delay) / this.duration
 
@@ -30,15 +27,33 @@ export default class Tween<V extends AnimatableValue = AnimatableValue> {
 
       pushItem(this.sliding, elapsed).shift()
 
-      if (this.sliding[0] < 0 && this.sliding[1] < 0) return
-      if (this.sliding[0] > 1 && this.sliding[1] > 1) return
+      if (isWaiting(this.sliding) || isCompleted(this.sliding)) return null
 
       const progress = clamp(elapsed, 0, 1)
 
       const current = generator(progress)
 
-      // TODO: 需要重新设计,以便能够触发各种事件
-      trigger(this.sliding, current)
+      return current
     }
   }
+}
+
+export const isWaiting = (sliding: [number, number]) => {
+  const [one, two] = sliding
+  return one < 0 && two < 0
+}
+
+export const isCompleted = (sliding: [number, number]) => {
+  const [one, two] = sliding
+  return one >= 1 && two > 1
+}
+
+export const isStarting = (sliding: [number, number]) => {
+  const [one, two] = sliding
+  return one < 0 && two >= 0
+}
+
+export const isCompleting = (sliding: [number, number]) => {
+  const [one, two] = sliding
+  return one < 1 && two >= 1
 }

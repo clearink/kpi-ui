@@ -1,4 +1,3 @@
-import clamp from '../../../../utils/clamp'
 import interpolator from '../../../../utils/interpolator'
 import decompose from '../../../../utils/decompose'
 
@@ -12,12 +11,12 @@ export default function createTweenGenerator<V extends AnimatableValue>(
 ) {
   const decomposed = targets.map(decompose)
 
+  const steps = targets.length
+
   return (progress: number): NonNullable<V> => {
-    let active = times.findIndex((time) => progress < time)
+    let active = times.findIndex((time, i) => i < steps && progress < time)
 
-    if (active === -1) active = targets.length - 1
-
-    active = clamp(active, 0, targets.length - 1)
+    if (active === -1) active = steps - 1
 
     const easing = easings[active - 1]
 

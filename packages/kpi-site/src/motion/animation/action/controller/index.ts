@@ -1,9 +1,11 @@
-import driver from '../../frame-loop'
-import { Options } from '../../config/options'
-import { paused } from '../utils/status'
+import driver from '../../../frame-loop'
+import { Options } from '../../../config/options'
+import { paused } from '../../utils/status'
 
-import type Tween from './tween'
-import type { AnimatableValue } from '../interface'
+import type Tween from '../tween'
+import type { AnimatableValue } from '../../interface'
+import { pushItem } from '../../../utils/array'
+import { isCompleted, isWaiting } from '../tween'
 
 export type PlaybackControl = ReturnType<typeof playbackControl>
 
@@ -25,6 +27,8 @@ export function playbackControl<V extends AnimatableValue>(tweens: Tween<V>[]) {
   // 运动经过的时长
   let $time = 0
 
+  const sliding: [number, number] = [-0.1, -0.1]
+
   const $update = (t: number) => {
     if (!$start) $start = t
 
@@ -32,12 +36,20 @@ export function playbackControl<V extends AnimatableValue>(tweens: Tween<V>[]) {
 
     $time = t + $end - $start
 
+    pushItem(sliding, $time / $duration).shift()
+
+    if (isWaiting(sliding)) return true
+
+    if (isCompleted(sliding)) return false
+
+    // if(repeat){ do some things}
+
     tweens.forEach((tween) => tween.tick($time))
 
     // update 只能触发 start, update, complete 三种事件
     // 还有其他的事件需要在外部触发
 
-    return $time < $duration
+    return true
   }
 
   return {

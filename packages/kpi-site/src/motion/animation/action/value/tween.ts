@@ -3,7 +3,6 @@ import Tween from '../tween'
 import createTweenGenerator from './utils/generator'
 import { normalizeEasings, normalizeTargets, normalizeTimes } from './utils/normalize'
 import resolveTarget from './utils/resolve'
-import createTweenTrigger from './utils/trigger'
 
 import type { MotionValue } from '../../../motion'
 import type { AnimatableValue, AnimateValueOptions, GenericKeyframes } from '../../interface'
@@ -28,9 +27,7 @@ export default function valueTween<V extends AnimatableValue>(
 
   const generator = createTweenGenerator(targets, times, easings)
 
-  const trigger = createTweenTrigger(motion, options)
-
-  const tween = new Tween(trigger, generator)
+  const tween = new Tween(generator)
 
   tween.start = 0
   tween.delay = options.delay

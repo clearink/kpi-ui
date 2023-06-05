@@ -16,12 +16,13 @@ export default function animateValue<V extends AnimatableValue>(
 ): PlaybackControl {
   const value = motionValue(from)
 
-  const tween = valueTween(value, to, options)
+  const tweens = [valueTween(value, to, options)]
 
   // 每个 tween 有一个自己的 trigger
   // 整个 control 也有一个自己的 trigger
+  const triggers = createTweenTrigger(tweens)
 
-  const control = playbackControl([tween])
+  const control = playbackControl(tweens, triggers)
 
   if (options.autoplay) control.play()
 
