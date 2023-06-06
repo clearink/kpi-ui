@@ -1,115 +1,148 @@
+import { isNull } from '@kpi/shared'
 import driver from '../../../frame-loop'
-import { Options } from '../../../config/options'
+import { pushItem } from '../../../utils/array'
 import { paused } from '../../utils/status'
 
-import type Tween from '../tween'
+import Tween from '../tween'
+
 import type { AnimatableValue } from '../../interface'
-import { pushItem } from '../../../utils/array'
-import { isCompleted, isWaiting } from '../tween'
 
-export type PlaybackControl = ReturnType<typeof playbackControl>
+// export function playbackControl<V extends AnimatableValue>(tweens: Tween<V>[]) {
+//   // const promise = motion[$promise]
+//   // // 清除上一次的 resolve
+//   // promise.update(true)
 
-export function playbackControl<V extends AnimatableValue>(tweens: Tween<V>[]) {
-  // const promise = motion[$promise]
-  // // 清除上一次的 resolve
-  // promise.update(true)
+//   // 每个 tween 有一个自己的 trigger
+//   // 整个 control 也有一个自己的 trigger
+//   // TODO: 设置 tweens 的 transition 数据
+//   // TODO:
 
-  const $duration = tweens[tweens.length - 1]?.end ?? Options.duration
+//   const $duration = tweens[tweens.length - 1]?.end ?? 0
 
-  // 是否运行动画过
-  let $animated = false
-  // 状态
-  let $status: AnimationPlayState = 'idle'
-  // 运动开始时间
-  let $start = 0
-  // 运动结束时间
-  let $end = 0
-  // 运动经过的时长
-  let $time = 0
+//   // 是否运行动画过
+//   let $animated = false
+//   // 状态
+//   let $status: AnimationPlayState = 'idle'
+//   // 运动开始时间
+//   let $start = 0
+//   // 运动结束时间
+//   let $end = 0
+//   // 运动经过的时长
+//   let $time = 0
 
-  const sliding: [number, number] = [-0.1, -0.1]
+//   const $delay = 0
 
-  const $update = (t: number) => {
-    if (!$start) $start = t
+//   const sliding: number[] = [-Infinity, -Infinity]
 
-    $animated = true
+//   const $update = (t: number) => {
+//     if (!$start) $start = t
 
-    $time = t + $end - $start
+//     $animated = true
 
-    pushItem(sliding, $time / $duration).shift()
+//     $time = t + $end - $start - $delay
 
-    if (isWaiting(sliding)) return true
+//     // TODO: repeat logic
 
-    if (isCompleted(sliding)) return false
+//     pushItem(sliding, $time / $duration).shift()
 
-    // if(repeat){ do some things}
+//     if (isWaiting(sliding)) return true
 
-    tweens.forEach((tween) => tween.tick($time))
+//     if (isCompleted(sliding)) return false
 
-    // update 只能触发 start, update, complete 三种事件
-    // 还有其他的事件需要在外部触发
+//     tweens.forEach((tween) => tween.tick($time))
 
-    return true
+//     // update 只能触发 start, update, complete 三种事件
+//     // 还有其他的事件需要在外部触发
+
+//     return true
+//   }
+
+//   return {
+//     get time() {
+//       return $time
+//     },
+
+//     get status() {
+//       return $status
+//     },
+
+//     get animated() {
+//       return $animated
+//     },
+
+//     get speed() {
+//       return 1
+//     },
+
+//     get duration() {
+//       return $duration
+//     },
+
+//     // "finished" | "idle" | "paused" | "running"
+//     play: () => {
+//       $status = 'running'
+//       driver.start($update)
+//     },
+
+//     reset: () => {},
+
+//     replay: () => {},
+
+//     cancel: () => {
+//       $status = 'idle'
+//       // motion.notify('cancel')
+//       // promise.update(true)
+//       driver.cancel($update)
+//     },
+
+//     stop: () => {},
+
+//     pause: () => {
+//       if (paused($status)) return
+
+//       $status = 'paused'
+
+//       $end = $time
+
+//       driver.cancel($update)
+//     },
+
+//     reverse: () => {},
+
+//     seek: () => {},
+
+//     then(onfulfilled: VoidFunction, onrejected?: VoidFunction) {
+//       // return promise.get().then(onfulfilled, onrejected)
+//     },
+//   }
+// }
+
+export default class Controller<V extends AnimatableValue = AnimatableValue> extends Tween<V> {
+  public status: AnimationPlayState = 'idle'
+
+  constructor(private tweens: Tween[]) {
+    super((t) => t as V)
   }
 
-  return {
-    get time() {
-      return $time
-    },
+  private update = (time: number) => {
+    const progress = this.tick(time) as number
 
-    get status() {
-      return $status
-    },
+    console.log(progress)
 
-    get animated() {
-      return $animated
-    },
+    if (isNull(progress)) return !this.completed
 
-    get speed() {
-      return 1
-    },
+    this.tweens.forEach((tween) => tween.tick(progress * this.duration))
+    return !this.completed
+  }
 
-    get duration() {
-      return $duration
-    },
-
+  public play = () => {
     // "finished" | "idle" | "paused" | "running"
-    play: () => {
-      $status = 'running'
-      driver.start($update)
-    },
+    this.status = 'running'
+    driver.start(this.update)
+  }
 
-    reset: () => {},
-
-    replay: () => {},
-
-    cancel: () => {
-      $status = 'idle'
-      // motion.notify('cancel')
-      // promise.update(true)
-      driver.cancel($update)
-    },
-
-    stop: () => {},
-
-    pause: () => {
-      if (paused($status)) return
-
-      $status = 'paused'
-
-      $end = $time
-
-      driver.cancel($update)
-    },
-
-    reverse: () => {},
-
-    finish: () => {},
-
-    seek: () => {},
-
-    then(onfulfilled: VoidFunction, onrejected?: VoidFunction) {
-      // return promise.get().then(onfulfilled, onrejected)
-    },
+  public stop = () => {
+    this.status = 'idle'
+    driver.cancel(this.update)
   }
 }

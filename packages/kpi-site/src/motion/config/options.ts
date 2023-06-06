@@ -1,21 +1,15 @@
-import { noop } from '@kpi/shared'
 import { eases } from '../easing'
 
-export const LifeCycles = {
-  onStart: noop,
-  onUpdate: noop,
-  onPause: noop,
-  onRepeat: noop,
-  onCancel: noop,
-  onStop: noop,
-  onComplete: noop,
-}
-
-export const Options = {
+const Options = {
   duration: 300,
   easing: eases.easeInBack,
   delay: 0,
   autoplay: true,
   times: [],
-  ...LifeCycles,
+
+  repeat: 0,
+  repeatType: 'loop',
+  repeatDelay: 0,
 }
+
+export default Options

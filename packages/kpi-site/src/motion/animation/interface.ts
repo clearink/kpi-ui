@@ -1,7 +1,7 @@
 import type { MotionValue } from '../motion'
 import type { Easing } from '../easing/interface'
 import type { ElementOrSelector } from './utils/selector'
-import type { PlaybackControl } from './action/controller'
+import type PlaybackControl from './action/controller'
 
 export type AnimatableValue = string | number
 
@@ -69,6 +69,12 @@ export type SequenceLabelSegment = string & {
 
 export type AnimationSequence = (MotionValueSegment | DOMKeyframesSegment | SequenceLabelSegment)[]
 
+export interface Repeat {
+  repeat?: number
+  repeatType?: 'loop' | 'reverse' | 'mirror'
+  repeatDelay?: number
+}
+
 export interface Transition {
   easing?: Easing | Easing[]
   /**
@@ -95,13 +101,11 @@ export interface TweenLifeCycles<V = AnimatableValue> {
 }
 
 // TODO: xxxx
-export type AnimateValueOptions<V> = Transition & TweenLifeCycles<V>
-export type AnimateElementOptions = Transition &
-  TweenLifeCycles & {
-    [x: string]: Transition & TweenLifeCycles
-  }
+export type AnimateValueOptions<V = AnimatableValue> = Transition & TweenLifeCycles<V> & Repeat
+export type AnimateElementOptions = AnimateValueOptions & {
+  [x: string]: AnimateValueOptions
+}
 
-export type AnimateSequenceOptions = Transition &
-  TweenLifeCycles & {
-    default: Transition & TweenLifeCycles
-  }
+export type AnimateSequenceOptions = AnimateValueOptions & {
+  default: AnimateValueOptions
+}

@@ -29,6 +29,7 @@ const loop = (callback: (timestamp: number, delta: number) => boolean) => {
   return () => caf(id)
 }
 
+// TODO: 为了解决布局抖动, 应当使读，写分离
 const driver = { now, raf, caf, start, cancel, loop }
 
 export default driver

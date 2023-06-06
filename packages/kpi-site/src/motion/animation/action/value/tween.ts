@@ -10,11 +10,9 @@ import type { AnimatableValue, AnimateValueOptions, GenericKeyframes } from '../
 export default function valueTween<V extends AnimatableValue>(
   motion: MotionValue<V>,
   to: V | GenericKeyframes<V>,
-  options: Required<AnimateValueOptions<V>>
+  options: AnimateValueOptions<V>
 ) {
-  const { times: $times, easing: $easing } = options
-
-  // TODO: drop previous motion.$promise
+  const { times: $times = [], easing: $easing } = options
 
   const from = motion.get()
 
@@ -27,11 +25,5 @@ export default function valueTween<V extends AnimatableValue>(
 
   const generator = createTweenGenerator(targets, times, easings)
 
-  const tween = new Tween(generator)
-
-  tween.start = 0
-  tween.delay = options.delay
-  tween.duration = options.duration
-
-  return tween
+  return new Tween(generator)
 }

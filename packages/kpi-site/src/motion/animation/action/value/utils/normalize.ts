@@ -1,7 +1,6 @@
 import { isArray, isFunction, isNull, isString } from '@kpi/shared'
 import { pushItem } from '../../../../utils/array'
-import { eases } from '../../../../easing'
-import { getBezierCache } from '../../../../utils/cache'
+import { cubicBezier, eases } from '../../../../easing'
 
 import type { Easing } from '../../../../easing/interface'
 import type { AnimatableValue, GenericKeyframes } from '../../../interface'
@@ -22,11 +21,11 @@ export function normalizeEasings(length: number, easings: Easing[]) {
 
     if (isFunction(easing)) return easing
 
-    if (isArray(easing) && easing.length === 4) return getBezierCache(easing)
+    if (isArray(easing) && easing.length === 4) return cubicBezier(...easing)
 
     if (isString(easing) && eases[easing]) return eases[easing]
 
-    return eases.linear
+    return eases.easeInBack
   })
 }
 

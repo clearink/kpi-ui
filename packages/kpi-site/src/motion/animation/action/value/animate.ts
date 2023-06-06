@@ -1,10 +1,10 @@
 import { isObjectLike } from '@kpi/shared'
 import { isMotionValue, motionValue } from '../../../motion'
-import { playbackControl } from '../controller'
+import { setTransition } from '../../utils/transition'
+import Controller from '../controller'
 import valueTween from './tween'
 
 import type { MotionValue } from '../../../motion'
-import type { PlaybackControl } from '../controller'
 import type { AnimatableValue, AnimateValueOptions, GenericKeyframes } from '../../interface'
 import type { ElementOrSelector } from '../../utils/selector'
 
@@ -12,17 +12,17 @@ import type { ElementOrSelector } from '../../utils/selector'
 export default function animateValue<V extends AnimatableValue>(
   from: V | MotionValue<V>,
   to: V | GenericKeyframes<V>,
-  options: Required<AnimateValueOptions<V>>
-): PlaybackControl {
+  options: AnimateValueOptions<V>
+): Controller {
   const value = motionValue(from)
 
-  const tweens = [valueTween(value, to, options)]
+  // TODO: drop previous motion.$promise
 
-  // 每个 tween 有一个自己的 trigger
-  // 整个 control 也有一个自己的 trigger
-  const triggers = createTweenTrigger(tweens)
+  const tween = valueTween(value, to, options)
 
-  const control = playbackControl(tweens, triggers)
+  const tweens = setTransition([tween], options)
+
+  const control = new Controller(tweens)
 
   if (options.autoplay) control.play()
 

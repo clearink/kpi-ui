@@ -16,6 +16,7 @@ export default function createTweenGenerator<V extends AnimatableValue>(
   return (progress: number): NonNullable<V> => {
     let active = times.findIndex((time, i) => i < steps && progress < time)
 
+    // 找不到就用最后一个
     if (active === -1) active = steps - 1
 
     const easing = easings[active - 1]

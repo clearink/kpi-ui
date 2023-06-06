@@ -10,50 +10,53 @@ export default class Tween<V extends AnimatableValue = AnimatableValue> {
 
   public delay = 0
 
+  public repeat = 0
+
+  public repeatType = 'loop'
+
+  public repeatDelay = 0
+
   public get end() {
-    return this.start + this.delay + this.duration
+    const cycle = this.duration + this.repeatDelay
+
+    return this.delay + this.start + this.duration + cycle * this.repeat
   }
 
-  // 维护一个滑动窗口用来检测是否可以 animated
-  public sliding: [number, number] = [-0.1, -0.1]
+  public sliding: number[] = [-Infinity, -Infinity]
 
-  public tick: (time: number) => void
+  protected get waiting() {
+    const [pre, now] = this.sliding
+    return pre < 0 && now < 0
+  }
+
+  protected get completed() {
+    const whole = this.end - this.start
+    const [pre, now] = this.sliding
+    return pre >= whole && now > whole
+  }
+
+  public tick: (time: number) => NonNullable<V> | null
 
   constructor(generator: (progress: number) => NonNullable<V>) {
     this.tick = (time: number) => {
-      let elapsed = (time - this.start - this.delay) / this.duration
+      const { start, delay, duration, repeatDelay } = this
 
-      elapsed = Number.isNaN(elapsed) ? 1 : elapsed
+      const elapsed = time - start - delay
 
+      // update sliding
       pushItem(this.sliding, elapsed).shift()
 
-      if (isWaiting(this.sliding) || isCompleted(this.sliding)) return null
+      if (this.waiting || this.completed) return null
 
-      const progress = clamp(elapsed, 0, 1)
+      const cycle = duration + repeatDelay
 
-      const current = generator(progress)
+      const [pre, now] = this.sliding.map((t) => (t % cycle) / duration)
 
-      return current
+      if (pre >= 1 && now > 1) return null
+
+      // TODO: repeatType logic
+
+      return generator(clamp(now, 0, 1))
     }
   }
-}
-
-export const isWaiting = (sliding: [number, number]) => {
-  const [one, two] = sliding
-  return one < 0 && two < 0
-}
-
-export const isCompleted = (sliding: [number, number]) => {
-  const [one, two] = sliding
-  return one >= 1 && two > 1
-}
-
-export const isStarting = (sliding: [number, number]) => {
-  const [one, two] = sliding
-  return one < 0 && two >= 0
-}
-
-export const isCompleting = (sliding: [number, number]) => {
-  const [one, two] = sliding
-  return one < 1 && two >= 1
 }

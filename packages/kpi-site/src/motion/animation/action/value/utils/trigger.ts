@@ -13,3 +13,28 @@ export default function createTweenTrigger<V extends AnimatableValue>(motion: Mo
     if (one < 1 && two >= 1) motion.notify('complete')
   }
 }
+
+export const isWaiting = (sliding: number[]) => {
+  const [pre, now] = sliding
+  return pre < 0 && now < 0
+}
+
+export const isRepeatWaiting = (sliding: number[]) => {
+  const [pre, now] = sliding
+  return pre >= 1 && now > 1
+}
+
+export const isCompleted = (sliding: number[]) => {
+  const [pre, now] = sliding
+  return pre >= 1 && now > 1
+}
+
+export const isStarting = (sliding: number[]) => {
+  const [pre, now] = sliding
+  return pre < 0 && now >= 0
+}
+
+export const isCompleting = (sliding: number[]) => {
+  const [pre, now] = sliding
+  return pre < 1 && now >= 1
+}
