@@ -149,15 +149,17 @@ import './style.css'
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
   const v = useMotionValue(0)
+  useEffect(() => {
+    return v.on('update', (val) => {
+      console.log(val)
+    })
+  }, [v])
   return (
     <div>
       <button
         type="button"
         onClick={() => {
-          animate(ref.current!, {
-            x: 300,
-            y: 200,
-          })
+          animate(v, [200, 300, null])
         }}
       >
         start

@@ -25,5 +25,5 @@ export default function valueTween<V extends AnimatableValue>(
 
   const generator = createTweenGenerator(targets, times, easings)
 
-  return new Tween(generator)
+  return new Tween(motion.notify, generator)
 }

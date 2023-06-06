@@ -1,6 +1,9 @@
+/* eslint-disable prefer-destructuring */
 import { pushItem } from '../../utils/array'
 import clamp from '../../utils/clamp'
+import { percentage } from '../../utils/interpolator'
 
+import type { MotionValue } from '../../motion'
 import type { AnimatableValue } from '../interface'
 
 export default class Tween<V extends AnimatableValue = AnimatableValue> {
@@ -22,41 +25,68 @@ export default class Tween<V extends AnimatableValue = AnimatableValue> {
     return this.delay + this.start + this.duration + cycle * this.repeat
   }
 
-  public sliding: number[] = [-Infinity, -Infinity]
+  public window: number[] = [-Infinity, -Infinity]
+
+  protected get ratios() {
+    const { duration, repeatDelay } = this
+
+    if (!duration) return [this.window[0], 1]
+
+    const cycle = duration + repeatDelay
+
+    return this.window.map((t) => percentage(t % cycle, [0, duration]))
+  }
 
   protected get waiting() {
-    const [pre, now] = this.sliding
+    const [pre, now] = this.window
+
     return pre < 0 && now < 0
+  }
+
+  public get starting() {
+    const [pre, now] = this.ratios
+
+    return pre < 0 && now >= 0
+  }
+
+  public get completing() {
+    const [pre, now] = this.ratios
+
+    return pre < 1 && now >= 1
   }
 
   protected get completed() {
     const whole = this.end - this.start
-    const [pre, now] = this.sliding
+
+    const [pre, now] = this.window
+
     return pre >= whole && now > whole
   }
 
-  public tick: (time: number) => NonNullable<V> | null
+  public tick: (timestamp: number) => null | [number, NonNullable<V>]
 
-  constructor(generator: (progress: number) => NonNullable<V>) {
-    this.tick = (time: number) => {
-      const { start, delay, duration, repeatDelay } = this
+  constructor(
+    public notify: MotionValue<V>['notify'],
+    generator: (progress: number) => NonNullable<V>
+  ) {
+    this.tick = (timestamp: number) => {
+      const elapsed = timestamp - this.start - this.delay
 
-      const elapsed = time - start - delay
-
-      // update sliding
-      pushItem(this.sliding, elapsed).shift()
+      // 更新滑动窗口数据
+      pushItem(this.window, elapsed).shift()
 
       if (this.waiting || this.completed) return null
 
-      const cycle = duration + repeatDelay
+      const [pre, now] = this.ratios
 
-      const [pre, now] = this.sliding.map((t) => (t % cycle) / duration)
-
+      // repeat delay timing
       if (pre >= 1 && now > 1) return null
 
-      // TODO: repeatType logic
+      const progress = clamp(now, 0, 1)
+      console.log(pre, now)
 
-      return generator(clamp(now, 0, 1))
+      // TODO: 考虑 repeatType 对 generator 的影响
+      return [progress, generator(progress)]
     }
   }
 }

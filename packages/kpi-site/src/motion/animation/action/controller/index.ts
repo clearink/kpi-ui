@@ -1,9 +1,7 @@
-import { isNull } from '@kpi/shared'
+import { isNull, noop } from '@kpi/shared'
 import driver from '../../../frame-loop'
-import { pushItem } from '../../../utils/array'
-import { paused } from '../../utils/status'
-
 import Tween from '../tween'
+import createEmitter from './emitter'
 
 import type { AnimatableValue } from '../../interface'
 
@@ -120,19 +118,39 @@ import type { AnimatableValue } from '../../interface'
 export default class Controller<V extends AnimatableValue = AnimatableValue> extends Tween<V> {
   public status: AnimationPlayState = 'idle'
 
+  private update: (time: number) => boolean
+
   constructor(private tweens: Tween[]) {
-    super((t) => t as V)
-  }
+    super(noop, (t) => t as V)
 
-  private update = (time: number) => {
-    const progress = this.tick(time) as number
+    const emitter = createEmitter()
 
-    console.log(progress)
+    this.update = (time: number) => {
+      // 获取当前的 animate 的进度 progress 在 [0, 1] 之间
+      const progress = this.tick(time)
 
-    if (isNull(progress)) return !this.completed
+      if (isNull(progress)) return !this.completed
 
-    this.tweens.forEach((tween) => tween.tick(progress * this.duration))
-    return !this.completed
+      if (this.starting) console.log(`trigger('start')`, this.window)
+
+      const results = this.tweens.map((tween) => tween.tick(progress[0] * this.duration))
+
+      this.tweens.forEach((tween) => tween.starting && tween.notify('start'))
+
+      // emit tweens update
+      this.tweens.forEach((tween, index) => {
+        const result = results[index]
+        !isNull(result) && tween.notify('update', result[1])
+      })
+      console.log(`trigger('update')`, results)
+      emitter('update', this.tweens)
+
+      this.tweens.forEach((tween) => tween.completing && tween.notify('complete'))
+
+      if (this.completing) console.log(`trigger('complete')`)
+
+      return !this.completed
+    }
   }
 
   public play = () => {

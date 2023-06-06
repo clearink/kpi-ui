@@ -2,6 +2,7 @@ import type { MotionValue } from '../motion'
 import type { Easing } from '../easing/interface'
 import type { ElementOrSelector } from './utils/selector'
 import type PlaybackControl from './action/controller'
+import Tween from './action/tween'
 
 export type AnimatableValue = string | number
 
@@ -90,9 +91,9 @@ export interface Transition {
   autoplay?: boolean
 }
 
-export interface TweenLifeCycles<V = AnimatableValue> {
+export interface TweenLifeCycles<V extends AnimatableValue = AnimatableValue> {
   onStart?: VoidFunction
-  onUpdate?: (current: V) => void
+  onUpdate?: (tweens: Tween<V>[]) => void
   onPause?: VoidFunction
   onRepeat?: VoidFunction
   onCancel?: VoidFunction
@@ -101,7 +102,9 @@ export interface TweenLifeCycles<V = AnimatableValue> {
 }
 
 // TODO: xxxx
-export type AnimateValueOptions<V = AnimatableValue> = Transition & TweenLifeCycles<V> & Repeat
+export type AnimateValueOptions<V extends AnimatableValue = AnimatableValue> = Transition &
+  TweenLifeCycles<V> &
+  Repeat
 export type AnimateElementOptions = AnimateValueOptions & {
   [x: string]: AnimateValueOptions
 }

@@ -7,11 +7,7 @@ export function percentage(value: number, range: [number, number]) {
 }
 
 // 插值
-export default function interpolator(
-  value: number,
-  range: [number, number],
-  output: [number, number]
-) {
+export default function interpolator<V extends [number, number]>(value: V[0], range: V, output: V) {
   const $percent = clamp(percentage(value, range), 0, 1)
 
   const transform = (percent: number) => output[0] + (output[1] - output[0]) * percent
