@@ -2,6 +2,8 @@ import type { MotionValue } from '../../../../motion'
 import type { MotionEventCallbacks } from '../../../../motion/interface'
 import type { AnimatableValue, AnimateValueOptions } from '../../../interface'
 
+export type Emitter = (type: keyof MotionEventCallbacks) => void
+
 export function createTweenEmitter<V extends AnimatableValue>(
   motion: MotionValue<V>,
   options: AnimateValueOptions<V>
@@ -17,4 +19,4 @@ export function createTweenEmitter<V extends AnimatableValue>(
   }
 }
 
-export function createPlaybackControlEmitter() {}
+export function createControllerEmitter() {}

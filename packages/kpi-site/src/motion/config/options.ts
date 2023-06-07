@@ -2,7 +2,7 @@ import { eases } from '../easing'
 
 const Options = {
   duration: 300,
-  easing: eases.easeInBack,
+  easing: eases.linear,
   delay: 0,
   autoplay: true,
   times: [],

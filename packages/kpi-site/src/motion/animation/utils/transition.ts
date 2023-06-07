@@ -19,7 +19,7 @@ export function getTransition(
 
 // 暂时只考虑 value tween
 export function setControllerTransition<V extends AnimatableValue>(
-  tweens: Tween<V>[],
+  tweens: Tween[],
   options: AnimateValueOptions<V> = {}
 ) {
   tweens.forEach((tween, index) => {

@@ -22,9 +22,10 @@ export default function animateValue<V extends AnimatableValue>(
   const tween = valueTween(motion, to, options)
 
   setControllerTransition([tween], options)
-  console.log(tween)
 
-  const control = new PlaybackControl([tween])
+  const emitter = createControllerEmitter()
+
+  const control = new PlaybackControl([tween], emitter)
 
   return control
 }

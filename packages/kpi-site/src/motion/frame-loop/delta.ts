@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const adjust = 1000 / 30
 let timestamp = 0
 

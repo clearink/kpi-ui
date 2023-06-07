@@ -1,4 +1,4 @@
-import { toArray } from '@kpi/shared'
+import { omit, toArray } from '@kpi/shared'
 import { Tween } from '../tween'
 import { createTweenEmitter } from './utils/emitter'
 import createTweenGenerator from './utils/generator'
@@ -12,7 +12,7 @@ export default function valueTween<V extends AnimatableValue>(
   motion: MotionValue<V>,
   to: V | GenericKeyframes<V>,
   options: AnimateValueOptions<V>
-): Tween<V> {
+): Tween {
   const { times: $times = [], easing: $easing } = options
 
   // 只解析 color, angle 形式的字符串
@@ -25,7 +25,20 @@ export default function valueTween<V extends AnimatableValue>(
   const generator = createTweenGenerator(targets, times, easings)
 
   // 设置最新值
-  const emitter = createTweenEmitter(motion, options)
+  const emitter = createTweenEmitter(
+    motion,
+    // 在 valueTween 中 需要去除 options 中的事件监听
+    // 这些事件监听是给 playbackControl 使用的
+    omit(options, [
+      'onUpdate',
+      'onCancel',
+      'onComplete',
+      'onPause',
+      'onRepeat',
+      'onStart',
+      'onStop',
+    ])
+  )
 
   return new Tween(emitter, (progress) => motion.set(generator(progress)))
 }
