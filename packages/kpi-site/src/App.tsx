@@ -149,17 +149,33 @@ import './style.css'
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
   const v = useMotionValue(0)
-  useEffect(() => {
-    return v.on('update', (val) => {
-      console.log(val)
-    })
-  }, [v])
   return (
     <div>
       <button
         type="button"
         onClick={() => {
-          animate(v, [200, 300, null])
+          const a = animate(v, [null, 200, 300, null], {
+            duration: 2000,
+            repeat: 4,
+            onUpdate(current) {
+              ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
+            },
+          })
+          console.log(a)
+
+          // animate(
+          //   ref.current!,
+          //   {
+          //     x: [200, 300, 100, null, 200],
+          //     y: [300, 100, 0, 10],
+          //   },
+          //   {
+          //     x: { duration: 2000, delay: 1000 },
+          //     y: { duration: 5000, delay: 200 },
+          //   }
+          // )
+          // 生成2个tween tween 的 start，end 不一致，是否要生成2个 controller 呢？
+          // 貌似不用吧
         }}
       >
         start

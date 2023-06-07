@@ -1,7 +1,8 @@
 import { isObjectLike } from '@kpi/shared'
 import { isMotionValue, motionValue } from '../../../motion'
-import { setTransition } from '../../utils/transition'
-import Controller from '../controller'
+import { setControllerTransition } from '../../utils/transition'
+import { PlaybackControl } from '../tween'
+import Options from '../../../config/options'
 import valueTween from './tween'
 
 import type { MotionValue } from '../../../motion'
@@ -13,18 +14,17 @@ export default function animateValue<V extends AnimatableValue>(
   from: V | MotionValue<V>,
   to: V | GenericKeyframes<V>,
   options: AnimateValueOptions<V>
-): Controller {
-  const value = motionValue(from)
+): PlaybackControl {
+  const motion = motionValue(from)
 
   // TODO: drop previous motion.$promise
 
-  const tween = valueTween(value, to, options)
+  const tween = valueTween(motion, to, options)
 
-  const tweens = setTransition([tween], options)
+  setControllerTransition([tween], options)
+  console.log(tween)
 
-  const control = new Controller(tweens)
-
-  if (options.autoplay) control.play()
+  const control = new PlaybackControl([tween])
 
   return control
 }

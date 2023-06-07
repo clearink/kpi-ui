@@ -1,12 +1,14 @@
-/* eslint-disable prefer-destructuring */
+/* eslint-disable max-classes-per-file */
+import { isBoolean } from '@kpi/shared'
 import { pushItem } from '../../utils/array'
-import clamp from '../../utils/clamp'
 import { percentage } from '../../utils/interpolator'
 
-import type { MotionValue } from '../../motion'
-import type { AnimatableValue } from '../interface'
+import driver from '../../frame-loop'
 
-export default class Tween<V extends AnimatableValue = AnimatableValue> {
+import type { AnimatableValue } from '../interface'
+import type { MotionEventCallbacks } from '../../motion/interface'
+
+export class TweenBase {
   public start = 0
 
   public duration = 0
@@ -25,16 +27,21 @@ export default class Tween<V extends AnimatableValue = AnimatableValue> {
     return this.delay + this.start + this.duration + cycle * this.repeat
   }
 
-  public window: number[] = [-Infinity, -Infinity]
+  protected window: number[] = [-Infinity, -Infinity]
 
   protected get ratios() {
     const { duration, repeatDelay } = this
 
-    if (!duration) return [this.window[0], 1]
+    const [pre, now] = this.window
+
+    if (!duration) return [pre, 1]
 
     const cycle = duration + repeatDelay
 
-    return this.window.map((t) => percentage(t % cycle, [0, duration]))
+    // TODO: 这里有一点问题
+    const done = Math.floor(now / cycle)
+
+    return this.window.map((t) => percentage(t - done * cycle, [0, duration]))
   }
 
   protected get waiting() {
@@ -43,16 +50,22 @@ export default class Tween<V extends AnimatableValue = AnimatableValue> {
     return pre < 0 && now < 0
   }
 
-  public get starting() {
+  protected get starting() {
     const [pre, now] = this.ratios
 
     return pre < 0 && now >= 0
   }
 
-  public get completing() {
+  protected get completing() {
     const [pre, now] = this.ratios
 
     return pre < 1 && now >= 1
+  }
+
+  protected get running() {
+    const [pre, now] = this.ratios
+
+    return pre >= 0 && now <= 1
   }
 
   protected get completed() {
@@ -63,30 +76,84 @@ export default class Tween<V extends AnimatableValue = AnimatableValue> {
     return pre >= whole && now > whole
   }
 
-  public tick: (timestamp: number) => null | [number, NonNullable<V>]
+  public tick(timestamp: number): boolean | number {
+    const elapsed = timestamp - this.start - this.delay
 
+    pushItem(this.window, elapsed).shift()
+
+    if (this.waiting || this.completed) return false
+
+    const [pre, now] = this.ratios
+
+    if (pre >= 1 && now > 1) return false
+
+    return now
+  }
+}
+
+export class Tween<V extends AnimatableValue = AnimatableValue> extends TweenBase {
   constructor(
-    public notify: MotionValue<V>['notify'],
-    generator: (progress: number) => NonNullable<V>
+    private emitter: (type: keyof MotionEventCallbacks<V>) => void,
+    render: (progress: number) => void
   ) {
+    super()
+
     this.tick = (timestamp: number) => {
-      const elapsed = timestamp - this.start - this.delay
+      const progress = super.tick(timestamp)
 
-      // 更新滑动窗口数据
-      pushItem(this.window, elapsed).shift()
+      console.log('tween', progress)
+      if (isBoolean(progress)) return !this.completed
 
-      if (this.waiting || this.completed) return null
+      this.starting && this.emitter('start')
 
-      const [pre, now] = this.ratios
+      render(progress)
 
-      // repeat delay timing
-      if (pre >= 1 && now > 1) return null
+      this.running && this.emitter('update')
 
-      const progress = clamp(now, 0, 1)
-      console.log(pre, now)
+      this.completing && this.emitter('complete')
 
-      // TODO: 考虑 repeatType 对 generator 的影响
-      return [progress, generator(progress)]
+      return progress
     }
+  }
+}
+
+export class PlaybackControl extends TweenBase {
+  public status: AnimationPlayState = 'idle'
+
+  private $start = 0
+
+  constructor(private tweens: Tween[]) {
+    super()
+    this.duration = tweens[tweens.length - 1]?.end ?? 0
+  }
+
+  public tick = (timestamp: number) => {
+    if (!this.$start) this.$start = timestamp
+
+    const progress = super.tick(timestamp - this.$start)
+
+    if (isBoolean(progress)) return !this.completed
+
+    // TODO: 触发事件
+    // this.starting && this.emitter('start')
+
+    this.tweens.forEach((tween) => tween.tick(progress * this.duration))
+
+    // this.running && this.emitter('update')
+
+    // this.completing && this.emitter('complete')
+
+    return !this.completed
+  }
+
+  public play = () => {
+    // "finished" | "idle" | "paused" | "running"
+    this.status = 'running'
+    driver.start(this.tick)
+  }
+
+  public stop = () => {
+    this.status = 'idle'
+    driver.cancel(this.tick)
   }
 }

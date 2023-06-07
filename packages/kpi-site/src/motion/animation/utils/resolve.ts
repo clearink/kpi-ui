@@ -4,10 +4,9 @@ import transform from '../../parse/transform'
 import { motionTransformProps } from '../../parse/transform/misc'
 import { convertTargetUnit } from './convert'
 
-import type Tween from '../action/tween'
 import type { ElementKeyframes } from '../interface'
 
-export function resolveTweenTransition(tweens: Tween[]) {
+export function resolveTweenTransition(tweens: any[]) {
   return tweens.reduce((result, tween, i) => {
     return result
   }, [])

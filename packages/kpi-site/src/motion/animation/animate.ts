@@ -1,6 +1,5 @@
 import { shallowMerge } from '@kpi/shared'
 import Options from '../config/options'
-import Controller from './action/controller'
 import animateElement, { isElementAnimation } from './action/element/animate'
 import animateSequence, { isSequenceAnimation } from './action/sequence/animate'
 import animateValue, { isValueAnimation } from './action/value/animate'
@@ -17,6 +16,7 @@ import type {
   GenericKeyframes,
 } from './interface'
 import type { ElementOrSelector } from './utils/selector'
+import { PlaybackControl } from './action/tween'
 
 export function createAnimateWithScope(scope?: AnimationScope) {
   // animate number
@@ -24,45 +24,48 @@ export function createAnimateWithScope(scope?: AnimationScope) {
     from: number,
     to: number | GenericKeyframes<number>,
     options?: AnimateValueOptions<number>
-  ): Controller
+  ): PlaybackControl
 
   // animate motion number
   function scopedAnimate(
     from: MotionValue<number>,
     to: number | GenericKeyframes<number>,
     options?: AnimateValueOptions<number>
-  ): Controller
+  ): PlaybackControl
 
   // animate string
   function scopedAnimate(
     from: string,
     to: string | GenericKeyframes<string>,
     options?: AnimateValueOptions<string>
-  ): Controller
+  ): PlaybackControl
 
   // animate motion string
   function scopedAnimate(
     from: MotionValue<string>,
     to: string | GenericKeyframes<string>,
     options?: AnimateValueOptions<string>
-  ): Controller
+  ): PlaybackControl
 
   // animate dom
   function scopedAnimate(
     element: ElementOrSelector,
     keyframes: ElementKeyframes,
     options?: AnimateElementOptions
-  ): Controller
+  ): PlaybackControl
 
   // animate sequence
-  function scopedAnimate(sequence: AnimationSequence, options?: AnimateSequenceOptions): Controller
+  function scopedAnimate(
+    sequence: AnimationSequence,
+    options?: AnimateSequenceOptions
+  ): PlaybackControl
 
   function scopedAnimate<V extends AnimatableValue>(
     animateInput: V | MotionValue<V> | ElementOrSelector | AnimationSequence,
     keyframes: V | GenericKeyframes<V> | ElementKeyframes,
     options?: AnimateValueOptions<V> | AnimateElementOptions | AnimateSequenceOptions
-  ): Controller {
-    let animation: Controller
+  ): PlaybackControl {
+    let animation: PlaybackControl
 
     const mergedOptions = shallowMerge(options, Options)
 
@@ -78,6 +81,8 @@ export function createAnimateWithScope(scope?: AnimationScope) {
     } else if (isValueAnimation(animateInput)) {
       animation = animateValue(animateInput, keyframes, mergedOptions)
     } else throw Error('invalid animate targets')
+
+    if (mergedOptions?.autoplay) animation.play()
 
     if (scope) scope.animations.push(animation)
 

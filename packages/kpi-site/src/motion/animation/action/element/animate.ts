@@ -1,7 +1,7 @@
 import { isObject } from '@kpi/shared'
-import Controller from '../controller'
 import selector from '../../utils/selector'
 import elementTweens from './tween'
+import { PlaybackControl } from '../tween'
 
 import type {
   AnimateElementOptions,
@@ -16,12 +16,12 @@ export default function animateElement(
   keyframes: ElementKeyframes,
   options: AnimateElementOptions,
   scope?: AnimationScope
-): Controller {
+): PlaybackControl {
   const elements = selector(maybeElements)
 
   const tweens = elementTweens(elements, keyframes, options)
 
-  const control = new Controller(tweens)
+  const control = new PlaybackControl(tweens)
 
   if (options.autoplay) control.play()
 

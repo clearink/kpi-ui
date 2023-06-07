@@ -1,8 +1,7 @@
-import type { MotionValue } from '../motion'
 import type { Easing } from '../easing/interface'
+import type { MotionValue } from '../motion'
+import { PlaybackControl } from './action/tween'
 import type { ElementOrSelector } from './utils/selector'
-import type PlaybackControl from './action/controller'
-import Tween from './action/tween'
 
 export type AnimatableValue = string | number
 
@@ -93,7 +92,7 @@ export interface Transition {
 
 export interface TweenLifeCycles<V extends AnimatableValue = AnimatableValue> {
   onStart?: VoidFunction
-  onUpdate?: (tweens: Tween<V>[]) => void
+  onUpdate?: (current: V) => void
   onPause?: VoidFunction
   onRepeat?: VoidFunction
   onCancel?: VoidFunction
@@ -107,6 +106,7 @@ export type AnimateValueOptions<V extends AnimatableValue = AnimatableValue> = T
   Repeat
 export type AnimateElementOptions = AnimateValueOptions & {
   [x: string]: AnimateValueOptions
+  default: AnimateValueOptions
 }
 
 export type AnimateSequenceOptions = AnimateValueOptions & {

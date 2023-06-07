@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import Options from '../../config/options'
 
-import type Tween from '../action/tween'
+import type { Tween } from '../action/tween'
 import type {
   AnimatableValue,
   AnimateElementOptions,
@@ -18,18 +18,18 @@ export function getTransition(
 }
 
 // 暂时只考虑 value tween
-export function setTransition<V extends AnimatableValue>(
+export function setControllerTransition<V extends AnimatableValue>(
   tweens: Tween<V>[],
   options: AnimateValueOptions<V> = {}
 ) {
-  return tweens.map((tween) => {
-    tween.start = 0
+  tweens.forEach((tween, index) => {
+    const prev = tweens[index - 1]
+
+    tween.start = prev ? prev.end : 0
     tween.duration = options.duration ?? Options.duration
-    tween.delay = 0
+    tween.delay = Math.max(options.delay ?? Options.delay, 0)
     tween.repeat = Math.max(options.repeat ?? Options.repeat, 0)
     tween.repeatType = options.repeatType ?? Options.repeatType
     tween.repeatDelay = options.repeatDelay ?? Options.repeatDelay
-
-    return tween
   })
 }
