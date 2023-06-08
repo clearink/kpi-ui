@@ -171,6 +171,23 @@ export default function App() {
               console.log('onComplete')
             },
           })
+          console.log(a)
+          /**
+           * animate([
+           *  [v, [200, 300], { repeat: 3 }], // 重复3次进入下一阶段
+           *  [v, [200, 300], { repeat: 3 }],
+           *  [v, [200, 300], { repeat: 3 }],
+           *  [v, [200, 300], { repeat: 3 }],
+           * ], { repeat: 3 }) // 上述阶段重新重复3次
+           * 200-300 这个过程需要重复 3*4*3 = 36 次
+           *
+           * animate(v, [200, 300], {
+           *  repeat: 3,
+           *  duration: 3,
+           *  onStart:()=>{}
+           * })
+           * => animate([v, [200, 300], { repeat: 3, duration: 3, onStart: ()=>{} }]) ？
+           */
 
           // animate(
           //   ref.current!,

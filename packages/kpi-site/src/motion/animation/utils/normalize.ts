@@ -1,0 +1,53 @@
+import { isString } from '@kpi/shared'
+import Options from '../../config/options'
+import { MotionValue } from '../../motion'
+import { pushItem } from '../../utils/array'
+
+import type {
+  AnimateElementOptions,
+  AnimateSequenceOptions,
+  AnimateValueOptions,
+  AnimationSequence,
+  GenericKeyframes,
+} from '../interface'
+
+export const getElementOptions = (
+  property: string,
+  options: AnimateElementOptions,
+  root?: AnimateSequenceOptions
+) => {
+  const defaultOptions = { ...Options, ...root?.default, ...options.default }
+  return { ...defaultOptions, ...options[property] } as AnimateValueOptions
+}
+
+export const getCommonOptions = (
+  options: AnimateElementOptions | AnimateValueOptions,
+  root?: AnimateSequenceOptions
+) => ({ ...Options, ...options, ...root?.default } as Required<AnimateValueOptions>)
+
+export function normalizeTimelineOptions(
+  sequence: AnimationSequence,
+  options?: AnimateSequenceOptions
+) {
+  const init: (AnimateValueOptions & { start: number })[] = [{ start: 0, ...Options }]
+  const timeline = sequence.reduce((res, item, i) => {
+    // TODO: 添加标签
+    if (isString(item)) return res
+
+    const valueOptions = getCommonOptions(item[2] ?? {}, options)
+    const { delay, duration, repeatDelay, repeat } = valueOptions
+
+    const current = res[i - 1].start + delay + duration + (repeatDelay + duration) * repeat
+
+    return pushItem(res, { ...valueOptions, start: current })
+  }, init)
+
+  return timeline
+}
+
+export function normalizeControllerOptions(
+  timelineOptions: (AnimateValueOptions & { start: number })[],
+  options?: AnimateSequenceOptions
+): AnimateValueOptions & { start: number } {
+  return {} as any
+}

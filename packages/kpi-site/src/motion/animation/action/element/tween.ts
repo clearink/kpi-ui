@@ -1,6 +1,5 @@
 import { isNull } from '@kpi/shared'
 import { pushItem } from '../../../utils/array'
-import valueTween from '../value/tween'
 import { motionValue } from '../../../motion'
 import transform from '../../../parse/transform'
 import { motionTransformProps } from '../../../parse/transform/misc'
@@ -14,12 +13,13 @@ import getUnit from '../../../parse/utils/get_unit'
 import units from '../../../config/units'
 
 import type { AnimateElementOptions, ElementKeyframes } from '../../interface'
+import type { Renderer } from '../../engine'
 
 export default function elementTweens(
   elements: Element[],
   keyframes: ElementKeyframes,
   options: AnimateElementOptions
-) {
+): Renderer[] {
   return elements.reduce((result: any[], element) => {
     // transform 的 tween
     const transforms = resolveElementTransform(element, keyframes)

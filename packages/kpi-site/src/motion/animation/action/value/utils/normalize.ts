@@ -3,7 +3,7 @@ import Options from '../../../../config/options'
 import { cubicBezier, eases } from '../../../../easing'
 import { pushItem } from '../../../../utils/array'
 
-import type { Easing } from '../../../../easing/interface'
+import type { Easing, EasingFunction } from '../../../../easing/interface'
 import type { AnimatableValue, GenericKeyframes } from '../../../interface'
 
 export function normalizeTargets<V>(from: V, to: V | GenericKeyframes<V>) {
@@ -26,7 +26,7 @@ export function normalizeEasings(length: number, easings: Easing[]) {
 
     if (isString(easing) && eases[easing]) return eases[easing]
 
-    return Options.easing
+    return Options.easing as EasingFunction
   })
 }
 

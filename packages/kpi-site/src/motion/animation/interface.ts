@@ -1,6 +1,6 @@
 import type { Easing } from '../easing/interface'
 import type { MotionValue } from '../motion'
-import { PlaybackControl } from './action/tween'
+import type { Controller } from './engine'
 import type { ElementOrSelector } from './utils/selector'
 
 export type AnimatableValue = string | number
@@ -11,7 +11,7 @@ export type KeyframeTarget = AnimatableValue | GenericKeyframes<AnimatableValue>
 
 export interface AnimationScope<T = any> {
   readonly current: T
-  animations: PlaybackControl[]
+  animations: Controller[]
 }
 
 // dom animation
@@ -55,12 +55,12 @@ export interface At {
 
 export type MotionValueSegment =
   | [MotionValue, KeyframeTarget | KeyframeTarget[]]
-  | [MotionValue, KeyframeTarget | KeyframeTarget[], Transition & At]
+  | [MotionValue, KeyframeTarget | KeyframeTarget[], AnimateValueOptions]
 
 export type DOMKeyframesSegment =
   | [ElementOrSelector, ElementKeyframes]
   // TODO: replace any type
-  | [ElementOrSelector, ElementKeyframes, any]
+  | [ElementOrSelector, ElementKeyframes, AnimateElementOptions]
 
 export type SequenceLabelSegment = string & {
   name: string
@@ -110,5 +110,5 @@ export type AnimateElementOptions = AnimateValueOptions & {
 }
 
 export type AnimateSequenceOptions = AnimateValueOptions & {
-  default: AnimateValueOptions
+  default?: AnimateValueOptions
 }

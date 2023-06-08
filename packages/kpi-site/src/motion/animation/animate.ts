@@ -1,10 +1,11 @@
 import { shallowMerge } from '@kpi/shared'
 import Options from '../config/options'
-import animateElement, { isElementAnimation } from './action/element/animate'
-import animateSequence, { isSequenceAnimation } from './action/sequence/animate'
-import animateValue, { isValueAnimation } from './action/value/animate'
+import animateElement, { isElementAnimation } from './action/element'
+import animateSequence, { isSequenceAnimation } from './action/sequence'
+import animateValue, { isValueAnimation } from './action/value'
 
 import type { MotionValue } from '../motion'
+import type { Controller } from './engine'
 import type {
   AnimatableValue,
   AnimateElementOptions,
@@ -16,7 +17,6 @@ import type {
   GenericKeyframes,
 } from './interface'
 import type { ElementOrSelector } from './utils/selector'
-import { PlaybackControl } from './action/tween'
 
 export function createAnimateWithScope(scope?: AnimationScope) {
   // animate number
@@ -24,48 +24,45 @@ export function createAnimateWithScope(scope?: AnimationScope) {
     from: number,
     to: number | GenericKeyframes<number>,
     options?: AnimateValueOptions<number>
-  ): PlaybackControl
+  ): Controller
 
   // animate motion number
   function scopedAnimate(
     from: MotionValue<number>,
     to: number | GenericKeyframes<number>,
     options?: AnimateValueOptions<number>
-  ): PlaybackControl
+  ): Controller
 
   // animate string
   function scopedAnimate(
     from: string,
     to: string | GenericKeyframes<string>,
     options?: AnimateValueOptions<string>
-  ): PlaybackControl
+  ): Controller
 
   // animate motion string
   function scopedAnimate(
     from: MotionValue<string>,
     to: string | GenericKeyframes<string>,
     options?: AnimateValueOptions<string>
-  ): PlaybackControl
+  ): Controller
 
   // animate dom
   function scopedAnimate(
     element: ElementOrSelector,
     keyframes: ElementKeyframes,
     options?: AnimateElementOptions
-  ): PlaybackControl
+  ): Controller
 
   // animate sequence
-  function scopedAnimate(
-    sequence: AnimationSequence,
-    options?: AnimateSequenceOptions
-  ): PlaybackControl
+  function scopedAnimate(sequence: AnimationSequence, options?: AnimateSequenceOptions): Controller
 
   function scopedAnimate<V extends AnimatableValue>(
     animateInput: V | MotionValue<V> | ElementOrSelector | AnimationSequence,
     keyframes: V | GenericKeyframes<V> | ElementKeyframes,
     options?: AnimateValueOptions<V> | AnimateElementOptions | AnimateSequenceOptions
-  ): PlaybackControl {
-    let animation: PlaybackControl
+  ): Controller {
+    let animation: Controller
 
     const mergedOptions = shallowMerge(options, Options)
 
