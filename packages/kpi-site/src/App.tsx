@@ -154,28 +154,23 @@ export default function App() {
       <button
         type="button"
         onClick={() => {
-          // const a = animate(v, [null, 200, 600], {
-          //   duration: 2000,
-          //   repeat: 4,
-          //   repeatDelay: 200,
-          //   onStart() {
-          //     console.log('onStart')
-          //   },
-          //   onRepeat() {
-          //     console.log('onRepeat')
-          //   },
-          //   onUpdate(current) {
-          //     ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
-          //   },
-          //   onComplete() {
-          //     console.log('onComplete')
-          //   },
-          // })
-          animate([
-            [v, 200, { duration: 3 }],
-            { name: 'first', at: '<' },
-            ['div', { x: 200, y: 300 }, { duration: 200, at: '>' }],
-          ])
+          const a = animate(v, [null, 200, 600], {
+            duration: 2000,
+            repeat: 4,
+            repeatDelay: 200,
+            onStart() {
+              console.log('onStart')
+            },
+            onRepeat() {
+              console.log('onRepeat')
+            },
+            onUpdate(current) {
+              ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
+            },
+            onComplete() {
+              console.log('onComplete')
+            },
+          })
         }}
       >
         start
