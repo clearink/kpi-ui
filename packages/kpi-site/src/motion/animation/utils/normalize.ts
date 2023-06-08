@@ -36,7 +36,9 @@ export function normalizeTimelineOptions(
     const valueOptions = getCommonOptions(item[2] ?? {}, options)
     const { delay, duration, repeatDelay, repeat } = valueOptions
 
-    const current = res[i - 1].start + delay + duration + (repeatDelay + duration) * repeat
+    const prevStart = res[i - 1]?.start || 0
+
+    const current = prevStart + delay + duration + (repeatDelay + duration) * repeat
 
     return pushItem(res, { ...valueOptions, start: current })
   }, init)
