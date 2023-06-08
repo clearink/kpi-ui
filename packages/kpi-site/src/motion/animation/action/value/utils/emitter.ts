@@ -4,7 +4,7 @@ import type { AnimatableValue, AnimateValueOptions } from '../../../interface'
 
 export type Emitter = (type: keyof MotionEventCallbacks) => void
 
-export function createTweenEmitter<V extends AnimatableValue>(
+export default function createTweenEmitter<V extends AnimatableValue>(
   motion: MotionValue<V>,
   options: AnimateValueOptions<V>
 ) {
@@ -18,5 +18,3 @@ export function createTweenEmitter<V extends AnimatableValue>(
     motion.notify(type, ...args)
   }
 }
-
-export function createControllerEmitter() {}

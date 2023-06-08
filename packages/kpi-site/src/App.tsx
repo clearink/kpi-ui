@@ -154,54 +154,28 @@ export default function App() {
       <button
         type="button"
         onClick={() => {
-          const a = animate(v, [null, 200, 600], {
-            duration: 2000,
-            repeat: 4,
-            repeatDelay: 200,
-            onStart() {
-              console.log('onStart')
-            },
-            onRepeat() {
-              console.log('onRepeat')
-            },
-            onUpdate(current) {
-              ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
-            },
-            onComplete() {
-              console.log('onComplete')
-            },
-          })
-          console.log(a)
-          /**
-           * animate([
-           *  [v, [200, 300], { repeat: 3 }], // 重复3次进入下一阶段
-           *  [v, [200, 300], { repeat: 3 }],
-           *  [v, [200, 300], { repeat: 3 }],
-           *  [v, [200, 300], { repeat: 3 }],
-           * ], { repeat: 3 }) // 上述阶段重新重复3次
-           * 200-300 这个过程需要重复 3*4*3 = 36 次
-           *
-           * animate(v, [200, 300], {
-           *  repeat: 3,
-           *  duration: 3,
-           *  onStart:()=>{}
-           * })
-           * => animate([v, [200, 300], { repeat: 3, duration: 3, onStart: ()=>{} }]) ？
-           */
-
-          // animate(
-          //   ref.current!,
-          //   {
-          //     x: [200, 300, 100, null, 200],
-          //     y: [300, 100, 0, 10],
+          // const a = animate(v, [null, 200, 600], {
+          //   duration: 2000,
+          //   repeat: 4,
+          //   repeatDelay: 200,
+          //   onStart() {
+          //     console.log('onStart')
           //   },
-          //   {
-          //     x: { duration: 2000, delay: 1000 },
-          //     y: { duration: 5000, delay: 200 },
-          //   }
-          // )
-          // 生成2个tween tween 的 start，end 不一致，是否要生成2个 controller 呢？
-          // 貌似不用吧
+          //   onRepeat() {
+          //     console.log('onRepeat')
+          //   },
+          //   onUpdate(current) {
+          //     ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
+          //   },
+          //   onComplete() {
+          //     console.log('onComplete')
+          //   },
+          // })
+          animate([
+            [v, 200, { duration: 3 }],
+            { name: 'first', at: '<' },
+            ['div', { x: 200, y: 300 }, { duration: 200, at: '>' }],
+          ])
         }}
       >
         start

@@ -1,6 +1,6 @@
 import type { Easing } from '../easing/interface'
 import type { MotionValue } from '../motion'
-import type { Controller } from './engine'
+import type { TweenController } from './tween'
 import type { ElementOrSelector } from './utils/selector'
 
 export type AnimatableValue = string | number
@@ -11,7 +11,7 @@ export type KeyframeTarget = AnimatableValue | GenericKeyframes<AnimatableValue>
 
 export interface AnimationScope<T = any> {
   readonly current: T
-  animations: Controller[]
+  animations: TweenController[]
 }
 
 // dom animation
@@ -36,39 +36,6 @@ export type AnimatableStyleProperty =
 
 export type ElementKeyframes = Partial<Record<AnimatableStyleProperty, KeyframeTarget>>
 
-// TODO: 根据 gsap 的position完善类型
-export type SequenceTime =
-  | number
-  | '<'
-  | '>'
-  | `+${number}`
-  | `-${number}`
-  | `+=${number}`
-  | `-=${number}`
-  | `+${number}%`
-  | `-${number}%`
-  | `+=${number}%`
-  | `-=${number}%`
-export interface At {
-  at?: SequenceTime
-}
-
-export type MotionValueSegment =
-  | [MotionValue, KeyframeTarget | KeyframeTarget[]]
-  | [MotionValue, KeyframeTarget | KeyframeTarget[], AnimateValueOptions]
-
-export type DOMKeyframesSegment =
-  | [ElementOrSelector, ElementKeyframes]
-  // TODO: replace any type
-  | [ElementOrSelector, ElementKeyframes, AnimateElementOptions]
-
-export type SequenceLabelSegment = string & {
-  name: string
-  at: SequenceTime
-}
-
-export type AnimationSequence = (MotionValueSegment | DOMKeyframesSegment | SequenceLabelSegment)[]
-
 export interface Repeat {
   repeat?: number
   repeatType?: 'loop' | 'reverse' | 'mirror'
@@ -90,7 +57,7 @@ export interface Transition {
   autoplay?: boolean
 }
 
-export interface TweenLifeCycles<V extends AnimatableValue = AnimatableValue> {
+export interface TweenLifeCycles<V = any> {
   onStart?: VoidFunction
   onUpdate?: (current: V) => void
   onPause?: VoidFunction
@@ -100,15 +67,50 @@ export interface TweenLifeCycles<V extends AnimatableValue = AnimatableValue> {
   onComplete?: VoidFunction
 }
 
-// TODO: xxxx
-export type AnimateValueOptions<V extends AnimatableValue = AnimatableValue> = Transition &
-  TweenLifeCycles<V> &
-  Repeat
+export type AnimateValueOptions<V = any> = Transition & TweenLifeCycles<V> & Repeat
+
 export type AnimateElementOptions = AnimateValueOptions & {
-  [x: string]: AnimateValueOptions
-  default: AnimateValueOptions
+  [x in string]?: AnimateValueOptions
 }
 
 export type AnimateSequenceOptions = AnimateValueOptions & {
   default?: AnimateValueOptions
 }
+
+export type TweenOptions = AnimateValueOptions & {
+  start: number
+}
+
+// TODO: 根据 gsap 的position完善类型
+export type SequenceTime =
+  | number
+  | '<'
+  | '>'
+  | `+${number}`
+  | `-${number}`
+  | `+=${number}`
+  | `-=${number}`
+  | `+${number}%`
+  | `-${number}%`
+  | `+=${number}%`
+  | `-=${number}%`
+export interface At {
+  at?: SequenceTime
+}
+
+export type MotionValueSegment =
+  | [MotionValue, KeyframeTarget | KeyframeTarget[]]
+  | [MotionValue, KeyframeTarget | KeyframeTarget[], AnimateValueOptions & At]
+
+export type DOMKeyframesSegment =
+  | [ElementOrSelector, ElementKeyframes]
+  | [ElementOrSelector, ElementKeyframes, AnimateValueOptions & At]
+
+export type SequenceLabelSegment =
+  | string
+  | {
+      name: string
+      at?: SequenceTime
+    }
+
+export type AnimationSequence = (MotionValueSegment | DOMKeyframesSegment | SequenceLabelSegment)[]

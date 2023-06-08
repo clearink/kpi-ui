@@ -5,7 +5,6 @@ import animateSequence, { isSequenceAnimation } from './action/sequence'
 import animateValue, { isValueAnimation } from './action/value'
 
 import type { MotionValue } from '../motion'
-import type { Controller } from './engine'
 import type {
   AnimatableValue,
   AnimateElementOptions,
@@ -16,7 +15,9 @@ import type {
   ElementKeyframes,
   GenericKeyframes,
 } from './interface'
+import type { TweenController } from './tween'
 import type { ElementOrSelector } from './utils/selector'
+import { normalizeControllerOptions, normalizeTimelineOptions } from './utils/normalize'
 
 export function createAnimateWithScope(scope?: AnimationScope) {
   // animate number
@@ -24,59 +25,72 @@ export function createAnimateWithScope(scope?: AnimationScope) {
     from: number,
     to: number | GenericKeyframes<number>,
     options?: AnimateValueOptions<number>
-  ): Controller
+  ): TweenController
 
   // animate motion number
   function scopedAnimate(
     from: MotionValue<number>,
     to: number | GenericKeyframes<number>,
     options?: AnimateValueOptions<number>
-  ): Controller
+  ): TweenController
 
   // animate string
   function scopedAnimate(
     from: string,
     to: string | GenericKeyframes<string>,
     options?: AnimateValueOptions<string>
-  ): Controller
+  ): TweenController
 
   // animate motion string
   function scopedAnimate(
     from: MotionValue<string>,
     to: string | GenericKeyframes<string>,
     options?: AnimateValueOptions<string>
-  ): Controller
+  ): TweenController
 
   // animate dom
   function scopedAnimate(
     element: ElementOrSelector,
     keyframes: ElementKeyframes,
     options?: AnimateElementOptions
-  ): Controller
+  ): TweenController
 
   // animate sequence
-  function scopedAnimate(sequence: AnimationSequence, options?: AnimateSequenceOptions): Controller
+  function scopedAnimate(
+    sequence: AnimationSequence,
+    options?: AnimateSequenceOptions
+  ): TweenController
 
   function scopedAnimate<V extends AnimatableValue>(
     animateInput: V | MotionValue<V> | ElementOrSelector | AnimationSequence,
-    keyframes: V | GenericKeyframes<V> | ElementKeyframes,
+    keyframes: V | GenericKeyframes<V> | ElementKeyframes | AnimateSequenceOptions,
     options?: AnimateValueOptions<V> | AnimateElementOptions | AnimateSequenceOptions
-  ): Controller {
-    let animation: Controller
+  ): TweenController {
+    let animation: TweenController
 
     const mergedOptions = shallowMerge(options, Options)
 
+    // TODO: 直接在这里解析 timelineOptions 就可以了
+    const sequence = isSequenceAnimation(animateInput)
+      ? animateInput
+      : [[animateInput, keyframes, options!]]
+    const params = isSequenceAnimation(animateInput) ? keyframes : options
+
+    const timelineOptions = normalizeTimelineOptions(sequence as any, params as any)
+    const rendererOptions = timelineOptions[0]
+    const controllerOptions = normalizeControllerOptions(timelineOptions)
+
     if (isSequenceAnimation(animateInput)) {
-      animation = animateSequence(animateInput, options as AnimateSequenceOptions, scope)
+      animation = animateSequence(animateInput, options as any, scope)
     } else if (isElementAnimation(keyframes)) {
-      animation = animateElement(
-        animateInput as ElementOrSelector,
-        keyframes,
-        mergedOptions as AnimateElementOptions,
-        scope
-      )
+      animation = animateElement(animateInput as any, keyframes, mergedOptions as any, scope)
     } else if (isValueAnimation(animateInput)) {
-      animation = animateValue(animateInput, keyframes, mergedOptions)
+      animation = animateValue(
+        animateInput,
+        keyframes as V | GenericKeyframes<V>,
+        rendererOptions,
+        controllerOptions
+      )
     } else throw Error('invalid animate targets')
 
     if (mergedOptions?.autoplay) animation.play()

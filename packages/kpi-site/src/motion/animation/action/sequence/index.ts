@@ -8,14 +8,14 @@ import type {
   AnimationSequence,
 } from '../../interface'
 import type { ElementOrSelector } from '../../utils/selector'
-import type { Controller } from '../../engine'
+import type { TweenController } from '../../tween'
 
 export default function animateSequence(
   sequence: AnimationSequence,
   options?: AnimateSequenceOptions,
   scope?: AnimationScope
-): Controller {
-  return {} as Controller
+) {
+  return {} as TweenController
 }
 export function isSequenceAnimation<V extends AnimatableValue>(
   animateInput: V | MotionValue<V> | ElementOrSelector | AnimationSequence

@@ -1,6 +1,5 @@
 import { isString } from '@kpi/shared'
 import Options from '../../config/options'
-import { MotionValue } from '../../motion'
 import { pushItem } from '../../utils/array'
 
 import type {
@@ -8,7 +7,7 @@ import type {
   AnimateSequenceOptions,
   AnimateValueOptions,
   AnimationSequence,
-  GenericKeyframes,
+  TweenOptions,
 } from '../interface'
 
 export const getElementOptions = (
@@ -29,7 +28,7 @@ export function normalizeTimelineOptions(
   sequence: AnimationSequence,
   options?: AnimateSequenceOptions
 ) {
-  const init: (AnimateValueOptions & { start: number })[] = [{ start: 0, ...Options }]
+  const init = [{ start: 0, ...Options }] as TweenOptions[]
   const timeline = sequence.reduce((res, item, i) => {
     // TODO: 添加标签
     if (isString(item)) return res

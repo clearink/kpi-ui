@@ -1,12 +1,13 @@
 /* eslint-disable max-classes-per-file */
 import { isBoolean } from '@kpi/shared'
-import driver from '../../frame-loop'
+import Options from '../../config/options'
 import { pushItem } from '../../utils/array'
-import { AnimateValueOptions } from '../interface'
+import driver from '../driver'
+import { TweenOptions } from '../interface'
 
 import type { Emitter } from '../action/value/utils/emitter'
 
-export class Scheduler {
+export class TweenScheduler {
   protected $start = 0
 
   protected $delay = 0
@@ -17,11 +18,11 @@ export class Scheduler {
 
   protected $repeatDelay = 0
 
-  protected $repeatType: AnimateValueOptions['repeatType'] = 'loop'
+  protected $repeatType: TweenOptions['repeatType'] = 'loop'
 
   private $sliding = [-Infinity, -Infinity]
 
-  private get $end() {
+  public get $end() {
     const { $delay, $start, $duration, $repeatDelay, $repeat } = this
 
     return $delay + $start + $duration + ($repeatDelay + $duration) * $repeat
@@ -31,7 +32,7 @@ export class Scheduler {
     return this.$end - this.$start
   }
 
-  private get $progresses() {
+  private get $ratios() {
     const { $duration, $repeatDelay, $repeat, $sliding } = this
 
     if (!$duration) return [-Infinity, 1]
@@ -56,19 +57,19 @@ export class Scheduler {
   }
 
   get repeating() {
-    return !this.starting && this.$progresses[0] < 0 && this.$progresses[1] >= 0
+    return !this.starting && this.$ratios[0] < 0 && this.$ratios[1] >= 0
   }
 
   get completing() {
     return this.$sliding[0] < this.$whole && this.$sliding[1] >= this.$whole
   }
 
-  constructor(options: AnimateValueOptions & { start: number }) {
+  constructor(options: TweenOptions) {
     this.$start = options.start ?? 0
 
     this.$delay = options.delay ?? 0
 
-    this.$duration = options.duration ?? 300
+    this.$duration = options.duration ?? Options.duration
 
     this.$repeat = options.repeat ?? 0
 
@@ -86,7 +87,7 @@ export class Scheduler {
 
     if (this.waiting || this.completed) return false
 
-    const [pre, now] = this.$progresses
+    const [pre, now] = this.$ratios
 
     // repeat delay
     if (pre >= 1 && now > 1) return false
@@ -95,12 +96,8 @@ export class Scheduler {
   }
 }
 
-export class Renderer extends Scheduler {
-  constructor(
-    public emitter: Emitter,
-    render: (progress: number) => void,
-    options: AnimateValueOptions & { start: number }
-  ) {
+export class TweenRenderer extends TweenScheduler {
+  constructor(public emitter: Emitter, render: (progress: number) => void, options: TweenOptions) {
     super(options)
 
     this.schedule = (timestamp: number) => {
@@ -123,7 +120,7 @@ export class Renderer extends Scheduler {
   }
 }
 
-export class Controller extends Scheduler {
+export class TweenController extends TweenScheduler {
   private $status: AnimationPlayState = 'idle'
 
   // animate 开始的时间
@@ -134,11 +131,7 @@ export class Controller extends Scheduler {
 
   public schedule: (timestamp: number) => boolean
 
-  constructor(
-    private renderers: Renderer[],
-    private emitter: (type: string) => void,
-    options: AnimateValueOptions & { start: number }
-  ) {
+  constructor(private renderers: TweenRenderer[], private emitter: Emitter, options: TweenOptions) {
     super(options)
 
     this.schedule = (timestamp: number) => {

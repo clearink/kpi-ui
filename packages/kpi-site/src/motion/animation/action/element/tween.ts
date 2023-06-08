@@ -13,14 +13,14 @@ import getUnit from '../../../parse/utils/get_unit'
 import units from '../../../config/units'
 
 import type { AnimateElementOptions, ElementKeyframes } from '../../interface'
-import type { Renderer } from '../../engine'
+import type { TweenRenderer } from '../../tween'
 
 export default function elementTweens(
   elements: Element[],
   keyframes: ElementKeyframes,
   options: AnimateElementOptions
-): Renderer[] {
-  return elements.reduce((result: any[], element) => {
+) {
+  return elements.reduce((result: TweenRenderer[], element) => {
     // transform 的 tween
     const transforms = resolveElementTransform(element, keyframes)
     const styles = resolveElementStyle(element, keyframes)

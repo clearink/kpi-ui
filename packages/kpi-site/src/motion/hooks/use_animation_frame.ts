@@ -1,6 +1,6 @@
 import { useEvent } from '@kpi/shared'
 import { useEffect, useRef } from 'react'
-import driver from '../frame-loop'
+import driver from '../animation/driver'
 
 export type FrameCallback = (timestamp: number, delta: number) => void
 

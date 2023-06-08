@@ -4,7 +4,7 @@ import { $id } from '../utils/symbol'
 import uniqueId from '../utils/unique_id'
 import MotionEvent from './event'
 
-export class MotionValue<V extends AnimatableValue = AnimatableValue> {
+export class MotionValue<V = any> {
   on: MotionEvent<V>['on']
 
   notify: MotionEvent<V>['notify']
@@ -24,7 +24,7 @@ export class MotionValue<V extends AnimatableValue = AnimatableValue> {
   }
 }
 
-export function motionValue<V extends AnimatableValue>(initial: V | MotionValue<V>) {
+export function motionValue<V = any>(initial: V | MotionValue<V>) {
   if (isMotionValue(initial)) return initial
 
   const value = new MotionValue(initial)
@@ -35,8 +35,6 @@ export function motionValue<V extends AnimatableValue>(initial: V | MotionValue<
   return value
 }
 
-export function isMotionValue<V extends AnimatableValue>(
-  obj: V | MotionValue<V>
-): obj is MotionValue<V> {
+export function isMotionValue<V>(obj: V | MotionValue<V>): obj is MotionValue<V> {
   return obj && obj[$id]
 }

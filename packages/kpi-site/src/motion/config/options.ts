@@ -1,7 +1,5 @@
 import { eases } from '../easing'
 
-import type { AnimateValueOptions } from '../animation/interface'
-
 const Options = {
   easing: eases.linear,
   times: [],
@@ -15,4 +13,4 @@ const Options = {
   repeatDelay: 0,
 }
 
-export default Options as AnimateValueOptions
+export default Options
