@@ -1,6 +1,5 @@
 /* eslint-disable max-classes-per-file */
 import { isBoolean, isNullish } from '@kpi/shared'
-import Options from '../../config/options'
 import { pushItem } from '../../utils/array'
 import clamp from '../../utils/clamp'
 import driver from '../driver'
@@ -19,8 +18,6 @@ export class TweenScheduler {
 
   repeatDelay = 0
 
-  repeatType = Options.repeatType as TweenOptions['repeatType']
-
   get end() {
     const { delay, start, duration, repeatDelay, repeat } = this
 
@@ -33,16 +30,23 @@ export class TweenScheduler {
 
   protected sliding = [-Infinity, -Infinity]
 
+  // TODO: 当 repeat = Infinity 时，会对Controller 造成影响
   protected get ratios() {
-    const { duration, repeatDelay, repeat, sliding } = this
+    const { duration, repeatDelay, sliding } = this
 
     if (!duration) return [-Infinity, 1]
 
-    const cycle = repeatDelay + duration
-
-    const done = Math.min(Math.floor(sliding[1] / cycle), repeat) * cycle
+    const done = this.iterations * (repeatDelay + duration)
 
     return sliding.map((elapsed) => (elapsed - done) / duration)
+  }
+
+  get iterations() {
+    const { duration, repeatDelay, repeat, sliding } = this
+
+    const cycle = repeatDelay + duration
+
+    return Math.min(Math.floor(sliding[1] / cycle), repeat)
   }
 
   get waiting() {
@@ -66,7 +70,7 @@ export class TweenScheduler {
   }
 
   constructor(options: TweenOptions) {
-    const { start, delay, duration, repeat, repeatDelay, repeatType } = options
+    const { start, delay, duration, repeat, repeatDelay } = options
 
     !isNullish(start) && (this.start = start)
 
@@ -77,8 +81,6 @@ export class TweenScheduler {
     !isNullish(repeat) && (this.repeat = repeat)
 
     !isNullish(repeatDelay) && (this.repeatDelay = repeatDelay)
-
-    !isNullish(repeatType) && (this.repeatType = repeatType)
   }
 
   schedule(timestamp: number): boolean | number {
@@ -100,7 +102,11 @@ export class TweenScheduler {
 }
 
 export class TweenRenderer extends TweenScheduler {
-  constructor(public emitter: Emitter, render: (progress: number) => void, options: TweenOptions) {
+  constructor(
+    public emitter: Emitter,
+    render: (progress: number, iterations: number) => void,
+    options: TweenOptions
+  ) {
     super(options)
 
     this.schedule = (timestamp: number) => {
@@ -110,7 +116,10 @@ export class TweenRenderer extends TweenScheduler {
 
       this.starting && this.emitter('start')
 
-      render(clamp(progress, 0, 1))
+      // 修复 duration = Infinity 时的错误
+      const percent = Number.isNaN(progress) ? 0 : progress
+
+      render(clamp(percent, 0, 1), this.iterations)
 
       this.emitter('update')
 
@@ -141,13 +150,16 @@ export class TweenController extends TweenScheduler {
     this.schedule = (timestamp: number) => {
       if (!this.$startTime) this.$startTime = timestamp
 
-      const progress = super.schedule(timestamp - this.$startTime)
+      const elapsed = timestamp - this.$startTime
+
+      const progress = super.schedule(elapsed)
 
       if (isBoolean(progress)) return !this.completed
 
       this.starting && this.emitter('start')
 
-      const time = progress * this.duration
+      // 修复 duration = Infinity 时的错误
+      const time = Number.isNaN(progress) ? elapsed : progress * this.duration
 
       this.renderers.forEach((renderer) => renderer.schedule(time))
 

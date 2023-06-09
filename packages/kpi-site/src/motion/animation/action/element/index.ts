@@ -1,7 +1,7 @@
 import { isObject } from '@kpi/shared'
 import { TweenController } from '../../tween'
 import selector from '../../utils/selector'
-import elementTweens from './tween'
+import createElementsRenderer from './renderer'
 
 import type {
   AnimateElementOptions,
@@ -19,7 +19,7 @@ export default function animateElement(
 ) {
   const elements = selector(maybeElements, scope)
 
-  const renderers = elementTweens(elements, keyframes, options)
+  const renderers = createElementsRenderer(elements, keyframes, options)
 
   const controllerOptions = {} as any
   const control = new TweenController(renderers, () => {}, controllerOptions)

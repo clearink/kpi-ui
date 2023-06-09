@@ -155,35 +155,15 @@ export default function App() {
         type="button"
         onClick={() => {
           const a = animate(v, [null, 600], {
-            duration: 2000,
-            repeat: 4,
-            repeatType: 'reverse',
-            onStart() {
-              console.log('onStart')
-            },
-            onRepeat() {
-              console.log('onRepeat')
-            },
+            duration: 4000,
+            repeat: Infinity,
+            easing: 'easeInOutQuad',
+            repeatType: 'mirror',
             onUpdate(current) {
               ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
             },
-            onComplete() {
-              console.log('onComplete')
-            },
           })
           console.log(a)
-          // animate([
-          //   [
-          //     ref.current!,
-          //     {
-          //       x: 200,
-          //       y: 300,
-          //     },
-          //     {
-          //       duration: 300,
-          //     },
-          //   ],
-          // ])
         }}
       >
         start
@@ -191,8 +171,8 @@ export default function App() {
       <div
         ref={ref}
         style={{
-          width: 23,
-          height: 23,
+          width: 200,
+          height: 200,
           borderRadius: '4px',
           backgroundColor: 'red',
           // color: 'var(--primary-color)',

@@ -13,7 +13,7 @@ export default function createTweenRenderer<V extends AnimatableValue>(
   to: V | GenericKeyframes<V>,
   rendererOptions: TweenOptions
 ) {
-  const { times: $times = [], easing: $easing } = rendererOptions
+  const { times: $times = [], easing: $easing, repeatType } = rendererOptions
 
   const motion = motionValue(from)
 
@@ -26,9 +26,10 @@ export default function createTweenRenderer<V extends AnimatableValue>(
 
   const emitter = createTweenEmitter(motion, rendererOptions)
 
-  const generator = createTweenGenerator(targets, times, easings)
+  const generator = createTweenGenerator(targets, times, easings, repeatType)
 
-  const render = (progress: number) => motion.set(generator(progress))
+  const render = (progress: number, iterations: number) =>
+    motion.set(generator(progress, iterations))
 
   return new TweenRenderer(emitter, render, rendererOptions)
 }
