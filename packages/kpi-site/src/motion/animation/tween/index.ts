@@ -2,6 +2,7 @@
 import { isBoolean, isNullish } from '@kpi/shared'
 import Options from '../../config/options'
 import { pushItem } from '../../utils/array'
+import clamp from '../../utils/clamp'
 import driver from '../driver'
 import { TweenOptions } from '../interface'
 
@@ -109,15 +110,12 @@ export class TweenRenderer extends TweenScheduler {
 
       this.starting && this.emitter('start')
 
-      this.repeating && this.emitter('repeat')
-
-      const cycle = this.repeatDelay + this.duration
-
-      const count = Math.min(Math.floor(this.sliding[1] / cycle), this.repeat)
-
-      render(progress)
+      render(clamp(progress, 0, 1))
 
       this.emitter('update')
+
+      // TODO: 是否还要加上 repeatComplete ?
+      this.repeating && this.emitter('repeat')
 
       this.completing && this.emitter('complete')
 
@@ -149,14 +147,14 @@ export class TweenController extends TweenScheduler {
 
       this.starting && this.emitter('start')
 
-      // TODO: 是否还要加上 repeatComplete ?
-      this.repeating && this.emitter('repeat')
-
       const time = progress * this.duration
 
       this.renderers.forEach((renderer) => renderer.schedule(time))
 
       this.emitter('update')
+
+      // TODO: 是否还要加上 repeatComplete ?
+      this.repeating && this.emitter('repeat')
 
       this.completing && this.emitter('complete')
 
