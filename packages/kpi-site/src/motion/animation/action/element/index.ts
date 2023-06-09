@@ -17,7 +17,7 @@ export default function animateElement(
   options: AnimateElementOptions,
   scope?: AnimationScope
 ) {
-  const elements = selector(maybeElements)
+  const elements = selector(maybeElements, scope)
 
   const renderers = elementTweens(elements, keyframes, options)
 

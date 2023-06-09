@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { isBoolean } from '@kpi/shared'
+import { isBoolean, isNullish } from '@kpi/shared'
 import Options from '../../config/options'
 import { pushItem } from '../../utils/array'
 import driver from '../driver'
@@ -8,86 +8,88 @@ import { TweenOptions } from '../interface'
 import type { Emitter } from '../action/value/utils/emitter'
 
 export class TweenScheduler {
-  protected $start = 0
+  start = 0
 
-  protected $delay = 0
+  delay = 0
 
-  protected $duration = 0
+  duration = 0
 
-  protected $repeat = 0
+  repeat = 0
 
-  protected $repeatDelay = 0
+  repeatDelay = 0
 
-  protected $repeatType: TweenOptions['repeatType'] = 'loop'
+  repeatType = Options.repeatType as TweenOptions['repeatType']
 
-  private $sliding = [-Infinity, -Infinity]
+  get end() {
+    const { delay, start, duration, repeatDelay, repeat } = this
 
-  public get $end() {
-    const { $delay, $start, $duration, $repeatDelay, $repeat } = this
-
-    return $delay + $start + $duration + ($repeatDelay + $duration) * $repeat
+    return delay + start + duration + (repeatDelay + duration) * repeat
   }
 
-  private get $whole() {
-    return this.$end - this.$start
+  protected get whole() {
+    return this.end - this.start
   }
 
-  private get $ratios() {
-    const { $duration, $repeatDelay, $repeat, $sliding } = this
+  protected sliding = [-Infinity, -Infinity]
 
-    if (!$duration) return [-Infinity, 1]
+  protected get ratios() {
+    const { duration, repeatDelay, repeat, sliding } = this
 
-    const cycle = $repeatDelay + $duration
+    if (!duration) return [-Infinity, 1]
 
-    const done = Math.min(Math.floor($sliding[1] / cycle), $repeat) * cycle
+    const cycle = repeatDelay + duration
 
-    return $sliding.map((elapsed) => (elapsed - done) / $duration)
+    const done = Math.min(Math.floor(sliding[1] / cycle), repeat) * cycle
+
+    return sliding.map((elapsed) => (elapsed - done) / duration)
   }
 
   get waiting() {
-    return this.$sliding[0] < 0 && this.$sliding[1] < 0
+    return this.sliding[0] < 0 && this.sliding[1] < 0
   }
 
   get completed() {
-    return this.$sliding[0] >= this.$whole && this.$sliding[1] > this.$whole
+    return this.sliding[0] >= this.whole && this.sliding[1] > this.whole
   }
 
   get starting() {
-    return this.$sliding[0] < 0 && this.$sliding[1] >= 0
+    return this.sliding[0] < 0 && this.sliding[1] >= 0
   }
 
   get repeating() {
-    return !this.starting && this.$ratios[0] < 0 && this.$ratios[1] >= 0
+    return !this.starting && this.ratios[0] < 0 && this.ratios[1] >= 0
   }
 
   get completing() {
-    return this.$sliding[0] < this.$whole && this.$sliding[1] >= this.$whole
+    return this.sliding[0] < this.whole && this.sliding[1] >= this.whole
   }
 
   constructor(options: TweenOptions) {
-    this.$start = options.start ?? 0
+    const { start, delay, duration, repeat, repeatDelay, repeatType } = options
 
-    this.$delay = options.delay ?? 0
+    !isNullish(start) && (this.start = start)
 
-    this.$duration = options.duration ?? Options.duration
+    !isNullish(delay) && (this.delay = delay)
 
-    this.$repeat = options.repeat ?? 0
+    !isNullish(duration) && (this.duration = duration)
 
-    this.$repeatDelay = options.repeatDelay ?? 0
+    !isNullish(repeat) && (this.repeat = repeat)
 
-    this.$repeatType = options.repeatType ?? 'loop'
+    !isNullish(repeatDelay) && (this.repeatDelay = repeatDelay)
+
+    !isNullish(repeatType) && (this.repeatType = repeatType)
   }
 
   schedule(timestamp: number): boolean | number {
-    const { $start, $delay, $sliding } = this
+    const { start, delay, sliding } = this
 
-    const elapsed = timestamp - $start - $delay
+    const elapsed = timestamp - start - delay
 
-    pushItem($sliding, elapsed).shift()
+    pushItem(sliding, elapsed).shift()
 
     if (this.waiting || this.completed) return false
 
-    const [pre, now] = this.$ratios
+    const [pre, now] = this.ratios
 
     // repeat delay
     if (pre >= 1 && now > 1) return false
@@ -108,6 +110,10 @@ export class TweenRenderer extends TweenScheduler {
       this.starting && this.emitter('start')
 
       this.repeating && this.emitter('repeat')
+
+      const cycle = this.repeatDelay + this.duration
+
+      const count = Math.min(Math.floor(this.sliding[1] / cycle), this.repeat)
 
       render(progress)
 
@@ -146,7 +152,7 @@ export class TweenController extends TweenScheduler {
       // TODO: 是否还要加上 repeatComplete ?
       this.repeating && this.emitter('repeat')
 
-      const time = progress * this.$duration
+      const time = progress * this.duration
 
       this.renderers.forEach((renderer) => renderer.schedule(time))
 
@@ -160,7 +166,6 @@ export class TweenController extends TweenScheduler {
 
   play = () => {
     this.$status = 'running'
-
     driver.start(this.schedule)
   }
 

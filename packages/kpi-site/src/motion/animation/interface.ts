@@ -71,6 +71,8 @@ export type AnimateValueOptions<V = any> = Transition & TweenLifeCycles<V> & Rep
 
 export type AnimateElementOptions = AnimateValueOptions & {
   [x in string]?: AnimateValueOptions
+} & {
+  default?: AnimateValueOptions
 }
 
 export type AnimateSequenceOptions = AnimateValueOptions & {

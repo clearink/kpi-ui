@@ -1,12 +1,14 @@
 import { isArray, isFunction, isNull, isString } from '@kpi/shared'
 import Options from '../../../../config/options'
 import { cubicBezier, eases } from '../../../../easing'
+import angle from '../../../../parse/angle'
+import color from '../../../../parse/color'
 import { pushItem } from '../../../../utils/array'
 
 import type { Easing } from '../../../../easing/interface'
 import type { AnimatableValue, GenericKeyframes } from '../../../interface'
 
-export function normalizeTargets<V>(from: V, to: V | GenericKeyframes<V>) {
+export function normalizeKeyframes<V>(from: V, to: V | GenericKeyframes<V>) {
   const targets = isArray(to) ? to : [null, to]
 
   return targets.reduce((result: V[], target, i) => {
@@ -14,6 +16,18 @@ export function normalizeTargets<V>(from: V, to: V | GenericKeyframes<V>) {
 
     return pushItem(result, i === 0 ? from : result[i - 1])
   }, [])
+}
+
+export function normalizeTargets<V>(from: V, to: V | GenericKeyframes<V>) {
+  return normalizeKeyframes(from, to).map((item) => {
+    if (!isString(item)) return item
+
+    if (color.test(item)) return color.transform(color.parse(item)) as V
+
+    if (angle.test(item)) return angle.transform(angle.parse(item)) as V
+
+    return item
+  })
 }
 
 export function normalizeEasings(length: number, easings: Easing[]) {

@@ -1,4 +1,3 @@
-import { AnimatableValue } from '../animation/interface'
 import defineHidden from '../utils/define_hidden'
 import { $id } from '../utils/symbol'
 import uniqueId from '../utils/unique_id'
@@ -9,11 +8,15 @@ export class MotionValue<V = any> {
 
   notify: MotionEvent<V>['notify']
 
-  constructor(private _value: V) {
+  constructor(private _initial: V) {
+    this._value = this._initial
+
     const event = new MotionEvent<V>()
     this.on = event.on
     this.notify = event.notify
   }
+
+  private _value: V
 
   get = () => {
     return this._value

@@ -154,10 +154,10 @@ export default function App() {
       <button
         type="button"
         onClick={() => {
-          const a = animate(v, [null, 200, 600], {
+          const a = animate(v, [null, 600], {
             duration: 2000,
             repeat: 4,
-            repeatDelay: 200,
+            repeatType: 'reverse',
             onStart() {
               console.log('onStart')
             },
@@ -171,6 +171,19 @@ export default function App() {
               console.log('onComplete')
             },
           })
+          console.log(a)
+          // animate([
+          //   [
+          //     ref.current!,
+          //     {
+          //       x: 200,
+          //       y: 300,
+          //     },
+          //     {
+          //       duration: 300,
+          //     },
+          //   ],
+          // ])
         }}
       >
         start
@@ -191,12 +204,8 @@ export default function App() {
 }
 
 /**
- * animate(motion,[
- *  { to: null, duration: 1000, easing: '' },
- *  { to: 300, duration: 1000, easing: '' },
- *  { to: 500, duration: 1000, easing: '' },
- *  { to: 1000, duration: 1000, easing: '' },
- *  { to: 1000, duration: 1000, easing: '' },
- * ]) 对于单个 数据来说,这种是完全正常的
- * ,是否需要使用null 进行占位呢?
+ * Q: 解析 timelineOptions
+ *
+ * 1. 将 animateValue 与 animateElement 都看作是 animateSequence 的简写
+ * 2.
  */
