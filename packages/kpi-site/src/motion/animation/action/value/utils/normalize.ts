@@ -1,12 +1,12 @@
 import { isArray, isFunction, isNull, isString } from '@kpi/shared'
-import Options from '../../../../config/options'
+import Options from '../../../config/options'
 import { cubicBezier, eases } from '../../../../easing'
 import angle from '../../../../parse/angle'
 import color from '../../../../parse/color'
 import { pushItem } from '../../../../utils/array'
 
 import type { Easing } from '../../../../easing/interface'
-import type { AnimatableValue, GenericKeyframes } from '../../../interface'
+import type { GenericKeyframes } from '../../../interface'
 
 export function normalizeKeyframes<V>(from: V, to: V | GenericKeyframes<V>) {
   const targets = isArray(to) ? to : [null, to]
@@ -30,8 +30,8 @@ export function normalizeTargets<V>(from: V, to: V | GenericKeyframes<V>) {
   })
 }
 
-export function normalizeEasings(length: number, easings: Easing[]) {
-  return Array.from({ length }, (_, i) => {
+export function normalizeEasings(steps: number, easings: Easing[]) {
+  return Array.from({ length: steps - 1 }, (_, i) => {
     const easing = easings[i]
 
     if (isFunction(easing)) return easing
@@ -44,10 +44,8 @@ export function normalizeEasings(length: number, easings: Easing[]) {
   })
 }
 
-export function normalizeTimes<V extends AnimatableValue>(target: V[], times: number[]) {
-  const steps = target.length
-
-  if (steps <= times.length) return times
+export function normalizeTimes(steps: number, times: number[]) {
+  if (steps === times.length) return times
 
   // TODO: 是否从头开始分配?
   const resolved = [0]

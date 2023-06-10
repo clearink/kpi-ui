@@ -1,7 +1,7 @@
-import { eases } from '../easing'
+import { eases } from '../../easing'
 
 const Options = {
-  easing: eases.linear,
+  easing: eases.easeInSine,
   times: [],
 
   delay: 0,

@@ -1,6 +1,6 @@
 import type { Easing } from '../easing/interface'
 import type { MotionValue } from '../motion'
-import type { TweenController } from './tween'
+import type { TweenController } from './scheduler'
 import type { ElementOrSelector } from './utils/selector'
 
 export type AnimatableValue = string | number
@@ -69,11 +69,9 @@ export interface TweenLifeCycles<V = any> {
 
 export type AnimateValueOptions<V = any> = Transition & TweenLifeCycles<V> & Repeat
 
-export type AnimateElementOptions = AnimateValueOptions & {
-  [x in string]?: AnimateValueOptions
-} & {
-  default?: AnimateValueOptions
-}
+export type AnimateElementOptions =
+  | AnimateValueOptions
+  | (AnimateValueOptions & { [key: string]: AnimateValueOptions })
 
 export type AnimateSequenceOptions = AnimateValueOptions & {
   default?: AnimateValueOptions

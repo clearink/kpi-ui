@@ -10,26 +10,25 @@ export default function createTweenGenerator<V extends AnimatableValue>(
   easings: EasingFunction[],
   repeatType: TweenOptions['repeatType']
 ) {
-  const common = targets.map(decompose)
-  const mirror = [...targets].reverse().map(decompose)
+  const decomposed = targets.map(decompose)
 
   const steps = targets.length
 
-  return (progress: number, iterations: number): NonNullable<V> => {
-    const change = repeatType === 'mirror' && iterations % 2
+  return (ratio: number, iterations: number) => {
+    const odd = iterations % 2 === 1
 
-    const adjusted = repeatType === 'reverse' && iterations % 2 ? 1 - progress : progress
+    const backward = repeatType === 'mirror' && odd
 
-    let active = times.findIndex((time, i) => i < steps && adjusted < time)
+    const progress = repeatType === 'reverse' && odd ? 1 - ratio : ratio
 
-    // 找不到就用最后一个
-    if (active === -1) active = steps - 1
+    // 要么选最后一个, 要么选符合要求的
+    const active = times.findIndex((time, i) => i === steps - 1 || progress < time)
 
     const easing = easings[active - 1]
 
-    const from = change ? mirror[active - 1] : common[active - 1]
+    const from = decomposed[backward ? steps - active : active - 1]
 
-    const to = change ? mirror[active] : common[active]
+    const to = decomposed[backward ? steps - 1 - active : active]
 
     const mapping = interpolator.bind(null, progress, [times[active - 1], times[active]])
 

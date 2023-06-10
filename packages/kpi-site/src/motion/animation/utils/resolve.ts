@@ -1,5 +1,5 @@
 import { isUndefined } from '@kpi/shared'
-import units from '../../config/units'
+import units from '../config/units'
 import transform from '../../parse/transform'
 import { motionTransformProps } from '../../parse/transform/misc'
 import { convertTargetUnit } from './convert'

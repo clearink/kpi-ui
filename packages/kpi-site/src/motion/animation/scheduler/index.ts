@@ -104,22 +104,22 @@ export class TweenScheduler {
 export class TweenRenderer extends TweenScheduler {
   constructor(
     public emitter: Emitter,
-    render: (progress: number, iterations: number) => void,
+    render: (ratio: number, iterations: number) => void,
     options: TweenOptions
   ) {
     super(options)
 
     this.schedule = (timestamp: number) => {
-      const progress = super.schedule(timestamp)
+      const ratio = super.schedule(timestamp)
 
-      if (isBoolean(progress)) return !this.completed
+      if (isBoolean(ratio)) return !this.completed
 
       this.starting && this.emitter('start')
 
       // 修复 duration = Infinity 时的错误
-      const percent = Number.isNaN(progress) ? 0 : progress
+      const adjusted = Number.isNaN(ratio) ? 0 : ratio
 
-      render(clamp(percent, 0, 1), this.iterations)
+      render(clamp(adjusted, 0, 1), this.iterations)
 
       this.emitter('update')
 
@@ -139,6 +139,9 @@ export class TweenController extends TweenScheduler {
   // animate 开始的时间
   private $startTime = 0
 
+  // animate 当前的时间
+  private $currentTime = 0
+
   // animate 结束的时间
   private $endTime = 0
 
@@ -150,18 +153,18 @@ export class TweenController extends TweenScheduler {
     this.schedule = (timestamp: number) => {
       if (!this.$startTime) this.$startTime = timestamp
 
-      const elapsed = timestamp - this.$startTime
+      this.$currentTime = timestamp - this.$startTime
 
-      const progress = super.schedule(elapsed)
+      const ratio = super.schedule(this.$currentTime)
 
-      if (isBoolean(progress)) return !this.completed
+      if (isBoolean(ratio)) return !this.completed
 
       this.starting && this.emitter('start')
 
       // 修复 duration = Infinity 时的错误
-      const time = Number.isNaN(progress) ? elapsed : progress * this.duration
+      const adjusted = Number.isNaN(ratio) ? this.$currentTime : ratio * this.duration
 
-      this.renderers.forEach((renderer) => renderer.schedule(time))
+      this.renderers.forEach((renderer) => renderer.schedule(adjusted))
 
       this.emitter('update')
 
@@ -183,5 +186,10 @@ export class TweenController extends TweenScheduler {
     this.$status = 'idle'
 
     driver.cancel(this.schedule)
+  }
+
+  reset = () => {
+    this.$status = 'idle'
+    // 主要是设置初始值
   }
 }

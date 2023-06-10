@@ -1,23 +1,27 @@
 /* eslint-disable no-return-assign */
 import { isNull } from '@kpi/shared'
-import Queue from './queue'
 import { frameData, updateFrameDelta } from './delta'
-import { raf as $raf, caf, now } from './raf'
+import makeQueue from './queue'
 
-export type FrameLoopFn = (t: number) => boolean
+type FrameLoopFn = (t: number) => boolean
 
-let $id: null | number = null
+const $queue = makeQueue<FrameLoopFn>()
 
-const $queue = new Queue<FrameLoopFn>()
+const $raf = requestAnimationFrame
+
+const caf = cancelAnimationFrame
+
+const now = () => performance.now()
 
 // with update frame delta
 const raf = (callback: FrameRequestCallback) => $raf((t) => updateFrameDelta(t, callback(t)))
 
+let $id: null | number = null
 const update = () => ($id = raf((t) => ($queue.flush(t) ? update() : ($id = null))))
 
 const start = (fn: FrameLoopFn) => $queue.add(fn) && isNull($id) && update()
 
-const cancel = (fn: FrameLoopFn) => $queue.delete(fn)
+const cancel = (fn: FrameLoopFn) => $queue.del(fn)
 
 const loop = (callback: (timestamp: number, delta: number) => boolean) => {
   let id: number

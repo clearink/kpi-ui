@@ -13,7 +13,7 @@ import type {
   ElementKeyframes,
   GenericKeyframes,
 } from './interface'
-import type { TweenController } from './tween'
+import type { TweenController } from './scheduler'
 import type { ElementOrSelector } from './utils/selector'
 
 export function createAnimateWithScope(scope?: AnimationScope) {

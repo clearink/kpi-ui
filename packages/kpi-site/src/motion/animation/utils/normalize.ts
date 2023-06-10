@@ -1,5 +1,5 @@
 import { isString } from '@kpi/shared'
-import Options from '../../config/options'
+import Options from '../config/options'
 import { pushItem } from '../../utils/array'
 
 import type {
@@ -15,7 +15,7 @@ export const getElementOptions = (
   options: AnimateElementOptions,
   root?: AnimateSequenceOptions
 ) => {
-  const defaultOptions = { ...Options, ...root?.default, ...options.default }
+  const defaultOptions = { ...Options, ...root?.default }
   return { ...defaultOptions, ...options[property] } as AnimateValueOptions
 }
 

@@ -1,7 +1,7 @@
 import { isObjectLike, noop, shallowMerge } from '@kpi/shared'
-import Options from '../../../config/options'
+import Options from '../../config/options'
 import { isMotionValue } from '../../../motion'
-import { TweenController } from '../../tween'
+import { TweenController } from '../../scheduler'
 import createTweenRenderer from './renderer'
 
 import type { MotionValue } from '../../../motion'

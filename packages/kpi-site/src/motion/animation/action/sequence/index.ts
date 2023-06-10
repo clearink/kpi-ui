@@ -8,7 +8,7 @@ import type {
   AnimationSequence,
 } from '../../interface'
 import type { ElementOrSelector } from '../../utils/selector'
-import type { TweenController } from '../../tween'
+import type { TweenController } from '../../scheduler'
 
 export default function animateSequence(
   sequence: AnimationSequence,
