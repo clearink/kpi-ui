@@ -3,10 +3,8 @@ import clamp from '../../utils/clamp'
 
 import type { RGBA } from '../interface'
 
-const rgb = /^rgb/
-
 export default {
-  test: (v: string) => rgb.test(v),
+  test: (v: string) => /^rgb/.test(v),
   parse: (v: string): RGBA => {
     const [r, g, b, a = 1] = decompose(v).numbers
 

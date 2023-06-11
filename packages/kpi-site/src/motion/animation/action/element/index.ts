@@ -1,7 +1,9 @@
 import { isObject, shallowMerge } from '@kpi/shared'
-import { TweenController } from '../../scheduler'
+import { pushItem } from '../../../utils/array'
+import Options from '../../config/options'
+import { TweenController, TweenRenderer } from '../../scheduler'
 import selector from '../../utils/selector'
-import createElementsRenderer from './renderer'
+import createElementRenderer from './renderer'
 
 import type {
   AnimateElementOptions,
@@ -10,7 +12,6 @@ import type {
   GenericKeyframes,
 } from '../../interface'
 import type { ElementOrSelector } from '../../utils/selector'
-import Options from '../../config/options'
 
 export default function animateElement(
   maybeElements: ElementOrSelector,
@@ -22,7 +23,9 @@ export default function animateElement(
 
   const elements = selector(maybeElements, scope)
 
-  const renderers = createElementsRenderer(elements, keyframes, mergedOptions)
+  const renderers = elements.reduce((result: TweenRenderer[], element) => {
+    return pushItem(result, createElementRenderer(element, keyframes, mergedOptions))
+  }, [])
 
   const lastRenderer = renderers[renderers.length - 1]
 

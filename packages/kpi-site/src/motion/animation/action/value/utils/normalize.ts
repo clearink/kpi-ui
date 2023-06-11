@@ -24,7 +24,7 @@ export function normalizeTargets<V>(from: V, to: V | GenericKeyframes<V>) {
 
     if (color.test(item)) return color.transform(color.parse(item)) as V
 
-    if (angle.test(item)) return angle.transform(angle.parse(item)) as V
+    if (angle.test(item)) return angle.render(angle.prepare(item)) as V
 
     return item
   })

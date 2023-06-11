@@ -5,8 +5,6 @@ import decompose from '../../utils/decompose'
 
 import type { RGBA } from '../interface'
 
-const hsl = /^hsl/
-
 function hueToRgb(p: number, q: number, t: number) {
   if (t < 0) t += 1
   if (t > 1) t -= 1
@@ -17,7 +15,7 @@ function hueToRgb(p: number, q: number, t: number) {
 }
 
 export default {
-  test: (v: string) => hsl.test(v),
+  test: (v: string) => /^hsl/.test(v),
   parse: (v: string): RGBA => {
     let [h, s, l, a = 1] = decompose(v).numbers
 
