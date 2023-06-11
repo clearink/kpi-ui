@@ -1,8 +1,8 @@
 import { isArray, isFunction, isNull, isString } from '@kpi/shared'
 import Options from '../../../config/options'
 import { cubicBezier, eases } from '../../../../easing'
-import angle from '../../../../parse/angle'
-import color from '../../../../parse/color'
+import angle from '../../../../prepare/angle'
+import color from '../../../../prepare/color'
 import { pushItem } from '../../../../utils/array'
 
 import type { Easing } from '../../../../easing/interface'

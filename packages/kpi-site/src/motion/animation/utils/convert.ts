@@ -3,7 +3,7 @@
 import { isNull } from '@kpi/shared'
 import units from '../config/units'
 import { AnimatableValue } from '../interface'
-import getUnit from '../../parse/utils/get_unit'
+import getUnit from '../../prepare/utils/get_unit'
 
 export const convertTargetUnit = <V extends AnimatableValue>(
   element: Element,

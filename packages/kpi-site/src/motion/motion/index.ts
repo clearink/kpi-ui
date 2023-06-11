@@ -27,7 +27,7 @@ export class MotionValue<V = any> {
   }
 }
 
-export function motionValue<V = any>(initial: V | MotionValue<V>) {
+export function motionValue<V = any>(initial: V | MotionValue<V>): MotionValue<V> {
   if (isMotionValue(initial)) return initial
 
   const value = new MotionValue(initial)
@@ -35,9 +35,9 @@ export function motionValue<V = any>(initial: V | MotionValue<V>) {
   // 唯一标识
   defineHidden(value, $id, uniqueId('motion-'))
 
-  return value
+  return value as MotionValue<V>
 }
 
-export function isMotionValue<V>(obj: V | MotionValue<V>): obj is MotionValue<V> {
+export function isMotionValue(obj: any): obj is MotionValue {
   return obj && obj[$id]
 }

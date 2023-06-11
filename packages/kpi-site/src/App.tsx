@@ -154,35 +154,43 @@ export default function App() {
       <button
         type="button"
         onClick={() => {
-          // const a = animate(v, [200, 800], {
-          //   duration: 5000,
-          //   repeat: Infinity,
-          //   delay: 1000,
-          //   repeatType: 'mirror',
-          //   onUpdate(current) {
-          //     console.log('current', current)
-          //     ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
-          //   },
-          // })
-          // console.log(a)
-          const b = animate(
-            ref.current!,
-            {
-              x: 200,
-              y: 300,
+          const a = animate(v, [200, 800], {
+            duration: Infinity,
+            repeat: 4,
+            repeatType: 'mirror',
+            onStart() {
+              console.log('start')
             },
-            {
-              duration: 1000,
-              repeat: 2,
-              delay: 2000,
-              easing: 'easeInOutQuad',
-              repeatType: 'mirror',
-              onUpdate(current) {
-                console.log('current', current)
-              },
-            }
-          )
-          console.log(b)
+            onRepeat() {
+              console.log('repeat')
+            },
+            onComplete() {
+              console.log('complete')
+            },
+            onUpdate(current) {
+              console.log('current', current)
+              ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
+            },
+          })
+          console.log(a)
+          // const b = animate(
+          //   ref.current!,
+          //   {
+          //     x: 200,
+          //     y: 300,
+          //   },
+          //   {
+          //     duration: 1000,
+          //     repeat: 2,
+          //     delay: 2000,
+          //     easing: 'easeInOutQuad',
+          //     repeatType: 'mirror',
+          //     onUpdate(current) {
+          //       console.log('current', current)
+          //     },
+          //   }
+          // )
+          // console.log(b)
         }}
       >
         start

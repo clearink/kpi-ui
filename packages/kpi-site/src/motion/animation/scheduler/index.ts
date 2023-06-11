@@ -21,7 +21,10 @@ export class TweenScheduler {
   get end() {
     const { delay, start, duration, repeatDelay, repeat } = this
 
-    return delay + start + duration + (repeatDelay + duration) * repeat
+    const result = delay + start + duration + (repeatDelay + duration) * repeat
+
+    // 修复 duration = Infinity 时的错误
+    return Number.isNaN(result) ? Infinity : result
   }
 
   protected get whole() {
@@ -30,7 +33,6 @@ export class TweenScheduler {
 
   protected sliding = [-Infinity, -Infinity]
 
-  // TODO: 当 repeat = Infinity 时，会对Controller 造成影响
   protected get ratios() {
     const { duration, repeatDelay, sliding } = this
 

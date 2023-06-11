@@ -1,5 +1,6 @@
 import decompose from '../../../../utils/decompose'
 import interpolator from '../../../../utils/interpolator'
+import sanitize from '../../../../utils/sanitize'
 
 import type { EasingFunction } from '../../../../easing/interface'
 import type { AnimatableValue, TweenOptions } from '../../../interface'
@@ -35,7 +36,7 @@ export default function createTweenGenerator<V extends AnimatableValue>(
     const numbers = to.numbers.map((num, i) => {
       const [percent, transform] = mapping([from.numbers[i], num])
 
-      return transform(easing(percent))
+      return sanitize(transform(easing(percent)))
     })
 
     if (to.numeric) return numbers[0] as V
