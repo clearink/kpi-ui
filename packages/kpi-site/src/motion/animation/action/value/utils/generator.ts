@@ -15,15 +15,15 @@ export default function createTweenGenerator<V extends AnimatableValue>(
 
   const steps = targets.length
 
-  return (ratio: number, iterations: number) => {
+  return (progress: number, iterations: number) => {
     const odd = iterations % 2 === 1
 
     const backward = repeatType === 'mirror' && odd
 
-    const progress = repeatType === 'reverse' && odd ? 1 - ratio : ratio
+    const adjusted = repeatType === 'reverse' && odd ? 1 - progress : progress
 
     // 要么选最后一个, 要么选符合要求的
-    const active = times.findIndex((time, i) => i === steps - 1 || progress < time)
+    const active = times.findIndex((time, i) => i === steps - 1 || adjusted < time)
 
     const easing = easings[active - 1]
 
@@ -31,7 +31,7 @@ export default function createTweenGenerator<V extends AnimatableValue>(
 
     const to = decomposed[backward ? steps - 1 - active : active]
 
-    const mapping = interpolator.bind(null, progress, [times[active - 1], times[active]])
+    const mapping = interpolator.bind(null, adjusted, [times[active - 1], times[active]])
 
     const numbers = to.numbers.map((num, i) => {
       const [percent, transform] = mapping([from.numbers[i], num])

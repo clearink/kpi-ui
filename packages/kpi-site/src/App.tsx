@@ -155,8 +155,8 @@ export default function App() {
         type="button"
         onClick={() => {
           const a = animate(v, [200, 800], {
-            duration: Infinity,
-            repeat: 4,
+            duration: 1000,
+            repeat: 3,
             repeatType: 'mirror',
             onStart() {
               console.log('start')
@@ -168,7 +168,7 @@ export default function App() {
               console.log('complete')
             },
             onUpdate(current) {
-              console.log('current', current)
+              // console.log('current', current)
               ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
             },
           })

@@ -27,9 +27,9 @@ export default function animateElement(
     return pushItem(result, createElementRenderer(element, keyframes, mergedOptions))
   }, [])
 
-  const lastRenderer = renderers[renderers.length - 1]
+  const ends = renderers.map((re) => re.end)
 
-  const controllerOptions = { start: 0, duration: lastRenderer?.end } as any
+  const controllerOptions = { start: 0, duration: ends.length ? Math.max.apply(null, ends) : 0 }
 
   const controller = new TweenController(renderers, () => {}, controllerOptions)
 

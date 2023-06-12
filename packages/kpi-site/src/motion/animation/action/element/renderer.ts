@@ -16,7 +16,6 @@ import {
 import createTweenRenderer from '../value/renderer'
 
 import type { AnimateElementOptions, ElementKeyframes } from '../../interface'
-import type { TweenRenderer } from '../../scheduler'
 
 export default function createElementRenderer(
   elements: Element,

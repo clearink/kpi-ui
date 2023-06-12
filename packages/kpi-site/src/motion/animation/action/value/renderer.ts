@@ -30,8 +30,8 @@ export default function createTweenRenderer<V extends AnimatableValue>(
 
   const generator = createTweenGenerator(targets, times, easings, repeatType)
 
-  const render = (ratio: number, iterations: number) => {
-    return motion.set(generator(ratio, iterations))
+  const render = (progress: number, iterations: number) => {
+    return motion.set(generator(progress, iterations))
   }
 
   // 当设置为 keyframes 时, 主动触发一次 update 事件

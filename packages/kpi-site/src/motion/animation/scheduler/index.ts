@@ -106,20 +106,20 @@ export class TweenScheduler {
 export class TweenRenderer extends TweenScheduler {
   constructor(
     public emitter: Emitter,
-    render: (ratio: number, iterations: number) => void,
+    render: (progress: number, iterations: number) => void,
     options: TweenOptions
   ) {
     super(options)
 
     this.schedule = (timestamp: number) => {
-      const ratio = super.schedule(timestamp)
+      const progress = super.schedule(timestamp)
 
-      if (isBoolean(ratio)) return !this.completed
+      if (isBoolean(progress)) return !this.completed
 
       this.starting && this.emitter('start')
 
       // 修复 duration = Infinity 时的错误
-      const adjusted = Number.isNaN(ratio) ? 0 : ratio
+      const adjusted = Number.isNaN(progress) ? 0 : progress
 
       render(clamp(adjusted, 0, 1), this.iterations)
 
@@ -157,14 +157,14 @@ export class TweenController extends TweenScheduler {
 
       this.$currentTime = timestamp - this.$startTime
 
-      const ratio = super.schedule(this.$currentTime)
+      const progress = super.schedule(this.$currentTime)
 
-      if (isBoolean(ratio)) return !this.completed
+      if (isBoolean(progress)) return !this.completed
 
       this.starting && this.emitter('start')
 
       // 修复 duration = Infinity 时的错误
-      const adjusted = Number.isNaN(ratio) ? this.$currentTime : ratio * this.duration
+      const adjusted = Number.isNaN(progress) ? this.$currentTime : progress * this.duration
 
       this.renderers.forEach((renderer) => renderer.schedule(adjusted))
 
