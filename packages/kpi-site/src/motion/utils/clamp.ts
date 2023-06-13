@@ -1,3 +1,5 @@
 export default function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max)
+  const $max = Math.max(min, max)
+  const $min = Math.min(min, max)
+  return Math.min(Math.max(value, $min), $max)
 }

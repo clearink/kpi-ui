@@ -21,14 +21,13 @@ export class TweenScheduler {
   get end() {
     const { delay, start, duration, repeatDelay, repeat } = this
 
-    const result = delay + start + duration + (repeatDelay + duration) * repeat
+    const cycle = (repeatDelay + duration) * repeat || 0
 
-    // 修复 duration = Infinity 时的错误
-    return Number.isNaN(result) ? Infinity : result
+    return delay + start + duration + cycle
   }
 
   protected get whole() {
-    return this.end - this.start
+    return this.end - this.start - this.delay
   }
 
   protected sliding = [-Infinity, -Infinity]
@@ -38,7 +37,7 @@ export class TweenScheduler {
 
     if (!duration) return [-Infinity, 1]
 
-    const done = this.iterations * (repeatDelay + duration)
+    const done = this.iterations * (repeatDelay + duration) || 0
 
     return sliding.map((elapsed) => (elapsed - done) / duration)
   }
@@ -46,9 +45,9 @@ export class TweenScheduler {
   get iterations() {
     const { duration, repeatDelay, repeat, sliding } = this
 
-    const cycle = repeatDelay + duration
+    const count = sliding[1] / (repeatDelay + duration) || 0
 
-    return Math.min(Math.floor(sliding[1] / cycle), repeat)
+    return clamp(Math.floor(count), 0, repeat)
   }
 
   get waiting() {
@@ -118,10 +117,7 @@ export class TweenRenderer extends TweenScheduler {
 
       this.starting && this.emitter('start')
 
-      // 修复 duration = Infinity 时的错误
-      const adjusted = Number.isNaN(progress) ? 0 : progress
-
-      render(clamp(adjusted, 0, 1), this.iterations)
+      render(clamp(progress, 0, 1), this.iterations)
 
       this.emitter('update')
 
@@ -163,8 +159,7 @@ export class TweenController extends TweenScheduler {
 
       this.starting && this.emitter('start')
 
-      // 修复 duration = Infinity 时的错误
-      const adjusted = Number.isNaN(progress) ? this.$currentTime : progress * this.duration
+      const adjusted = this.iterations ? progress * this.duration : this.$currentTime
 
       this.renderers.forEach((renderer) => renderer.schedule(adjusted))
 
