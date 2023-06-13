@@ -30,14 +30,14 @@ export class TweenScheduler {
     return this.end - this.start - this.delay
   }
 
-  protected sliding = [-Infinity, -Infinity]
+  protected sliding = [-1e-90, -1e-90]
 
   protected get ratios() {
     const { duration, repeatDelay, sliding } = this
 
     const done = this.iterations * (repeatDelay + duration) || 0
 
-    // 添加一个足够小的值避免 NaN 的出现
+    // 避免 NaN 的出现
     return sliding.map((elapsed) => (elapsed - done + 1e-100) / duration)
   }
 

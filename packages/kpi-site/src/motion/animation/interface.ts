@@ -69,9 +69,9 @@ export interface TweenLifeCycles<V = any> {
 
 export type AnimateValueOptions<V = any> = Transition & TweenLifeCycles<V> & Repeat
 
-export type AnimateElementOptions =
-  | AnimateValueOptions
-  | (AnimateValueOptions & { [key: string]: AnimateValueOptions })
+export type TransitionMap = { [key: string]: AnimateValueOptions }
+
+export type AnimateElementOptions = AnimateValueOptions | (AnimateValueOptions & TransitionMap)
 
 export type AnimateSequenceOptions = AnimateValueOptions & {
   default?: AnimateValueOptions

@@ -1,7 +1,6 @@
 import { Children } from 'react'
-import type { ReactNode, ReactElement } from 'react'
-
 import { isFragment } from 'react-is'
+import type { ReactNode, ReactElement } from 'react'
 import { isNullish } from './is'
 
 /**

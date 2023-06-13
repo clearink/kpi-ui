@@ -5,19 +5,19 @@ import { $cache } from '../../../../utils/symbol'
 import type { MotionValue } from '../../../../motion'
 import type { AnimatableValue } from '../../../interface'
 
-export function ensureCache(element: Element) {
+export function ensureElementMotionCache(element: Element) {
   if (hasOwn(element, $cache)) return
 
   defineHidden(element, $cache, new Map())
 }
 
-export function getCache(element: Element) {
-  ensureCache(element)
+export function getElementMotionCache(element: Element) {
+  ensureElementMotionCache(element)
   return element[$cache] as Map<string, MotionValue<AnimatableValue>>
 }
 
-export function setCache(element, key: string, value: MotionValue) {
-  const cache = getCache(element)
+export function setElementMotionCache(element, key: string, value: MotionValue) {
+  const cache = getElementMotionCache(element)
 
   cache.set(key, value)
 }
