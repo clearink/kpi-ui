@@ -38,12 +38,13 @@ export default function createElementsRenderer(
 
       const rendererOptions = { start: 0, ...transition }
 
-      pushItem(result, createElementRenderer(element, property, target, rendererOptions))
+      // pushItem(result, createElementRenderer(element, property, target, rendererOptions))
     })
 
     return result
   }, [])
 }
+
 function createElementRenderer(
   element: Element,
   property: string,
@@ -55,6 +56,7 @@ function createElementRenderer(
   // 1. normalize Target
   // 如果已经存在 直接创建 renderer 返回
   if (cacheMotionValue) {
+    //
   }
   // const from = cacheMotionValue ? cacheMotionValue.get() : getElementProperty()
 

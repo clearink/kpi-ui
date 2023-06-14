@@ -30,7 +30,7 @@ export class TweenScheduler {
     return this.end - this.start - this.delay
   }
 
-  protected sliding = [-1e-90, -1e-90]
+  protected sliding = [-Infinity, -Infinity]
 
   protected get ratios() {
     const { duration, repeatDelay, sliding } = this
