@@ -37,8 +37,8 @@ export class TweenScheduler {
 
     const done = this.iterations * (repeatDelay + duration) || 0
 
-    // 避免 NaN 的出现
-    return sliding.map((elapsed) => (elapsed - done + 1e-100) / duration)
+    // 添加一个足够小的数字避免 NaN 的出现
+    return sliding.map((elapsed) => (elapsed - done + 1e-99) / duration)
   }
 
   get iterations() {

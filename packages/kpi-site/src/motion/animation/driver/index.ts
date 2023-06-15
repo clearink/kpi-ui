@@ -21,7 +21,7 @@ const update = () => ($id = raf((t) => ($queue.flush(t) ? update() : ($id = null
 
 const start = (fn: FrameLoopFn) => $queue.add(fn) && isNull($id) && update()
 
-const cancel = (fn: FrameLoopFn) => $queue.del(fn)
+const cancel = (fn: FrameLoopFn) => $queue.delete(fn)
 
 const loop = (callback: (timestamp: number, delta: number) => boolean) => {
   let id: number

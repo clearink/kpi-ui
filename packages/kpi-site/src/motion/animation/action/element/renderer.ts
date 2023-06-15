@@ -8,11 +8,7 @@ import { pushItem } from '../../../utils/array'
 import defineHidden from '../../../utils/define_hidden'
 import { $cache } from '../../../utils/symbol'
 import units from '../../config/units'
-import {
-  resolveElementAttribute,
-  resolveElementStyle,
-  resolveElementTransform,
-} from '../../utils/resolve'
+
 import createTweenRenderer from '../value/renderer'
 import { getElementMotionCache } from './utils/cache'
 import { normalizePropertyTransition } from './utils/normalize'
