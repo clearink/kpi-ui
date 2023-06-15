@@ -144,6 +144,7 @@ export class TweenController extends TweenScheduler {
 
   public schedule: (timestamp: number) => boolean
 
+  // TODO: 添加 renderer 实现 repeat 功能
   constructor(private renderers: TweenRenderer[], private emitter: Emitter, options: TweenOptions) {
     super(options)
 
@@ -187,5 +188,12 @@ export class TweenController extends TweenScheduler {
   reset = () => {
     this.$status = 'idle'
     // 主要是设置初始值
+  }
+
+  private reversed = false
+
+  reverse = () => {
+    // 传递给
+    this.reversed = true
   }
 }

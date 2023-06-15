@@ -2,7 +2,7 @@ import { isArray, logger, toArray } from '@kpi/shared'
 import { motionValue } from '../../../motion'
 import { TweenRenderer } from '../../scheduler'
 import createTweenEmitter from './utils/emitter'
-import createTweenGenerator from './utils/generator'
+import { createRendererGenerator } from './utils/generator'
 import { normalizeEasings, normalizeTargets, normalizeTimes } from './utils/normalize'
 
 import type { MotionValue } from '../../../motion'
@@ -28,7 +28,7 @@ export default function createTweenRenderer<V extends AnimatableValue>(
 
   const emitter = createTweenEmitter(motion, rendererOptions)
 
-  const generator = createTweenGenerator(targets, times, easings, repeatType)
+  const generator = createRendererGenerator(targets, times, easings, repeatType)
 
   const render = (progress: number, iterations: number) => {
     return motion.set(generator(progress, iterations))

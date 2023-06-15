@@ -5,7 +5,7 @@ import sanitize from '../../../../utils/sanitize'
 import type { EasingFunction } from '../../../../easing/interface'
 import type { AnimatableValue, TweenOptions } from '../../../interface'
 
-export default function createTweenGenerator<V extends AnimatableValue>(
+export function createRendererGenerator<V extends AnimatableValue>(
   targets: V[],
   times: number[],
   easings: EasingFunction[],
@@ -44,3 +44,5 @@ export default function createTweenGenerator<V extends AnimatableValue>(
     return to.strings.reduce((res, str, i) => `${res}${str}${numbers[i] ?? ''}`, '') as V
   }
 }
+
+export function createControllerGenerator() {}
