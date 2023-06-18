@@ -1,6 +1,5 @@
 /* eslint-disable max-classes-per-file */
 import { isBoolean, isNullish } from '@kpi/shared'
-import { pushItem } from '../../utils/array'
 import clamp from '../../utils/clamp'
 import driver from '../driver'
 import { TweenOptions } from '../interface'
@@ -13,6 +12,8 @@ export class TweenScheduler {
   delay = 0
 
   duration = 0
+
+  reversed = false
 
   repeat = 0
 
@@ -30,15 +31,18 @@ export class TweenScheduler {
     return this.end - this.start - this.delay
   }
 
-  protected sliding = [-Infinity, -Infinity]
+  protected sliding: number[] = [-Infinity, -Infinity]
 
+  // TODO: reverse 时的计算方式需不需要改变?
   protected get ratios() {
-    const { duration, repeatDelay, sliding } = this
+    const { duration, repeatDelay, sliding, reversed } = this
 
     const done = this.iterations * (repeatDelay + duration) || 0
 
     // 添加一个足够小的数字避免 NaN 的出现
-    return sliding.map((elapsed) => (elapsed - done + 1e-99) / duration)
+    const min = reversed ? -1e-99 : 1e-99
+
+    return sliding.map((elapsed) => (elapsed - done + min) / duration)
   }
 
   get iterations() {
@@ -50,23 +54,49 @@ export class TweenScheduler {
   }
 
   get waiting() {
-    return this.sliding[0] < 0 && this.sliding[1] < 0
+    const [first, second] = this.sliding
+
+    if (this.reversed) return first >= this.whole && second > this.whole
+
+    return first < 0 && second < 0
   }
 
   get completed() {
-    return this.sliding[0] >= this.whole && this.sliding[1] > this.whole
+    const [first, second] = this.sliding
+
+    if (this.reversed) return first < 0 && second < 0
+
+    return first >= this.whole && second > this.whole
   }
 
   get starting() {
-    return this.sliding[0] < 0 && this.sliding[1] >= 0
+    const [first, second] = this.sliding
+
+    if (this.reversed) return first < this.whole && second >= this.whole
+
+    return first < 0 && second >= 0
   }
 
   get repeating() {
-    return !this.starting && this.ratios[0] < 0 && this.ratios[1] >= 0
+    const [first, second] = this.ratios
+
+    if (this.starting) return false
+
+    if (this.reversed) return first < 1 && second >= 1
+
+    return first < 0 && second >= 0
   }
 
   get completing() {
-    return this.sliding[0] < this.whole && this.sliding[1] >= this.whole
+    const [first, second] = this.sliding
+
+    if (this.reversed) return first < 0 && second >= 0
+
+    return first < this.whole && second >= this.whole
+  }
+
+  get progress() {
+    return clamp(this.sliding[1], 0, 1)
   }
 
   constructor(options: TweenOptions) {
@@ -81,6 +111,10 @@ export class TweenScheduler {
     !isNullish(repeat) && (this.repeat = repeat)
 
     !isNullish(repeatDelay) && (this.repeatDelay = repeatDelay)
+
+    const factor = this.reversed ? -1 : 1
+
+    this.sliding = this.sliding.map((time) => time * factor)
   }
 
   schedule(timestamp: number): boolean | number {
@@ -88,7 +122,9 @@ export class TweenScheduler {
 
     const elapsed = timestamp - start - delay
 
-    pushItem(sliding, elapsed).shift()
+    const change = this.reversed ? 0 : 1
+    sliding[1 - change] = sliding[change]
+    sliding[change] = elapsed
 
     if (this.waiting || this.completed) return false
 
@@ -153,6 +189,8 @@ export class TweenController extends TweenScheduler {
 
       this.$currentTime = timestamp - this.$startTime
 
+      if (this.reversed) this.$currentTime = this.end - this.$currentTime
+
       const progress = super.schedule(this.$currentTime)
 
       if (isBoolean(progress)) return !this.completed
@@ -189,8 +227,6 @@ export class TweenController extends TweenScheduler {
     this.$status = 'idle'
     // 主要是设置初始值
   }
-
-  private reversed = false
 
   reverse = () => {
     // 传递给
