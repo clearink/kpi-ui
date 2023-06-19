@@ -35,7 +35,7 @@ export default function createTweenRenderer<V extends AnimatableValue>(
   }
 
   // 当设置为 keyframes 时, 主动触发一次 update 事件
-  isArray(to) && emitter('update', motion.set(targets[0]))
+  isArray(to) && emitter('update', motion.set(targets[0].original))
 
   return new TweenRenderer(emitter, render, rendererOptions)
 }

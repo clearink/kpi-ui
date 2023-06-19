@@ -33,7 +33,6 @@ export class TweenScheduler {
 
   protected sliding: number[] = [-Infinity, -Infinity]
 
-  // TODO: reverse 时的计算方式需不需要改变?
   protected get ratios() {
     const { duration, repeatDelay, sliding, reversed } = this
 
@@ -93,10 +92,6 @@ export class TweenScheduler {
     if (this.reversed) return first < 0 && second >= 0
 
     return first < this.whole && second >= this.whole
-  }
-
-  get progress() {
-    return clamp(this.sliding[1], 0, 1)
   }
 
   constructor(options: TweenOptions) {
@@ -173,10 +168,10 @@ export class TweenController extends TweenScheduler {
   private $startTime = 0
 
   // animate 当前的时间
-  private $currentTime = 0
+  private $updateTime = 0
 
-  // animate 结束的时间
-  private $endTime = 0
+  // animate 最后的时间
+  private $lastTime = 0
 
   public schedule: (timestamp: number) => boolean
 
@@ -187,17 +182,16 @@ export class TweenController extends TweenScheduler {
     this.schedule = (timestamp: number) => {
       if (!this.$startTime) this.$startTime = timestamp
 
-      this.$currentTime = timestamp - this.$startTime
+      this.$updateTime = timestamp - this.$startTime + this.$lastTime
 
-      if (this.reversed) this.$currentTime = this.end - this.$currentTime
-
-      const progress = super.schedule(this.$currentTime)
+      const progress = super.schedule(this.$updateTime)
 
       if (isBoolean(progress)) return !this.completed
 
       this.starting && this.emitter('start')
 
-      const adjusted = this.iterations ? progress * this.duration : this.$currentTime
+      let adjusted = this.reversed ? this.whole - this.$updateTime : this.$updateTime
+      if (this.iterations) adjusted = (this.reversed ? 1 - progress : progress) * this.duration
 
       this.renderers.forEach((renderer) => renderer.schedule(adjusted))
 
@@ -223,13 +217,29 @@ export class TweenController extends TweenScheduler {
     driver.cancel(this.schedule)
   }
 
+  pause = () => {
+    this.$status = 'idle'
+
+    this.$lastTime = this.$updateTime
+    this.$startTime = 0
+    driver.cancel(this.schedule)
+  }
+
   reset = () => {
     this.$status = 'idle'
     // 主要是设置初始值
   }
 
   reverse = () => {
-    // 传递给
-    this.reversed = true
+    this.reversed = !this.reversed
+    this.$startTime = 0
+    this.$lastTime = this.whole - this.$updateTime
+    this.play()
   }
 }
+
+/**
+ * emitter 逻辑无论是正向还是反向都非常正确（是否需要加上 reversed 标识？）
+ *
+ * controller 的 $updateTime 计算不准确
+ */

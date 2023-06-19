@@ -18,15 +18,18 @@ export function normalizeKeyframes<V>(from: V, to: V | GenericKeyframes<V>) {
   }, [])
 }
 
+// TODO: 优化逻辑
 export function normalizeTargets<V>(from: V, to: V | GenericKeyframes<V>) {
   return normalizeKeyframes(from, to).map((item) => {
-    if (!isString(item)) return item
+    if (!isString(item)) return { original: item, formatted: item }
 
-    if (color.test(item)) return color.transform(color.parse(item)) as V
+    if (color.test(item))
+      return { original: item, formatted: color.transform(color.parse(item)) as V }
 
-    if (angle.test(item)) return angle.render(angle.prepare(item)) as V
+    if (angle.test(item))
+      return { original: item, formatted: angle.render(angle.prepare(item)) as V }
 
-    return item
+    return { original: item, formatted: item }
   })
 }
 

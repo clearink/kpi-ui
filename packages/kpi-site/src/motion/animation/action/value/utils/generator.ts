@@ -1,17 +1,18 @@
 import decompose from '../../../../utils/decompose'
 import interpolator from '../../../../utils/interpolator'
-import sanitize from '../../../../utils/sanitize'
 
 import type { EasingFunction } from '../../../../easing/interface'
 import type { AnimatableValue, TweenOptions } from '../../../interface'
 
 export function createRendererGenerator<V extends AnimatableValue>(
-  targets: V[],
+  targets: { original: V; formatted: V }[],
   times: number[],
   easings: EasingFunction[],
   repeatType: TweenOptions['repeatType']
 ) {
-  const decomposed = targets.map(decompose)
+  const decomposed = targets.map(({ original, formatted }) => {
+    return { original, formatted: decompose(formatted) }
+  })
 
   const steps = targets.length
 
@@ -31,17 +32,21 @@ export function createRendererGenerator<V extends AnimatableValue>(
 
     const to = decomposed[backward ? steps - 1 - active : active]
 
+    if (adjusted === 0) return from.original
+
+    if (adjusted === 1) return to.original
+
     const mapping = interpolator.bind(null, adjusted, [times[active - 1], times[active]])
 
-    const numbers = to.numbers.map((num, i) => {
-      const [percent, transform] = mapping([from.numbers[i], num])
+    const numbers = to.formatted.numbers.map((num, i) => {
+      const [percent, transform] = mapping([from.formatted.numbers[i], num])
 
-      return sanitize(transform(easing(percent)))
+      return transform(easing(percent))
     })
 
-    if (to.numeric) return numbers[0] as V
+    if (to.formatted.numeric) return numbers[0] as V
 
-    return to.strings.reduce((res, str, i) => `${res}${str}${numbers[i] ?? ''}`, '') as V
+    return to.formatted.strings.reduce((res, str, i) => `${res}${str}${numbers[i] ?? ''}`, '') as V
   }
 }
 
