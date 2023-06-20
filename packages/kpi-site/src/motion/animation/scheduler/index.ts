@@ -13,7 +13,7 @@ export class TweenScheduler {
 
   duration = 0
 
-  reversed = false
+  reversed = !false
 
   repeat = 0
 
@@ -113,13 +113,13 @@ export class TweenScheduler {
   }
 
   schedule(timestamp: number): boolean | number {
-    const { start, delay, sliding } = this
+    let elapsed = timestamp - this.start - this.delay
 
-    const elapsed = timestamp - start - delay
+    if (this.reversed) elapsed = this.whole - elapsed || 0
 
     const change = this.reversed ? 0 : 1
-    sliding[1 - change] = sliding[change]
-    sliding[change] = elapsed
+    this.sliding[1 - change] = this.sliding[change]
+    this.sliding[change] = elapsed
 
     if (this.waiting || this.completed) return false
 
@@ -190,7 +190,7 @@ export class TweenController extends TweenScheduler {
 
       this.starting && this.emitter('start')
 
-      let adjusted = this.reversed ? this.whole - this.$updateTime : this.$updateTime
+      let adjusted = this.reversed ? this.whole - this.$updateTime || 0 : this.$updateTime
       if (this.iterations) adjusted = (this.reversed ? 1 - progress : progress) * this.duration
 
       this.renderers.forEach((renderer) => renderer.schedule(adjusted))
