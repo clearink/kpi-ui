@@ -34,14 +34,11 @@ export class TweenScheduler {
   protected sliding: number[] = [-Infinity, -Infinity]
 
   protected get ratios() {
-    const { duration, repeatDelay, sliding, reversed } = this
+    const { duration: dur, repeatDelay, sliding } = this
 
-    const done = this.iterations * (repeatDelay + duration) || 0
+    const done = this.iterations * (repeatDelay + dur) || 0
 
-    // 添加一个足够小的数字避免 NaN 的出现
-    const min = reversed ? -1e-99 : 1e-99
-
-    return sliding.map((elapsed) => (elapsed - done + min) / duration)
+    return sliding.map((t) => (t - done === dur ? 1 : (t - done) / dur))
   }
 
   get iterations() {
@@ -97,19 +94,18 @@ export class TweenScheduler {
   constructor(options: TweenOptions) {
     const { start, delay, duration, repeat, repeatDelay } = options
 
-    !isNullish(start) && (this.start = start)
+    // 设置一个足够大的值 防止由于 Infinity 计算出 NaN
+    const big = 1e20
 
-    !isNullish(delay) && (this.delay = delay)
+    !isNullish(start) && (this.start = clamp(start, 0, big))
 
-    !isNullish(duration) && (this.duration = duration)
+    !isNullish(delay) && (this.delay = clamp(delay, 0, big))
 
-    !isNullish(repeat) && (this.repeat = repeat)
+    !isNullish(duration) && (this.duration = clamp(duration, 0, big))
 
-    !isNullish(repeatDelay) && (this.repeatDelay = repeatDelay)
+    !isNullish(repeat) && (this.repeat = clamp(repeat, 0, big))
 
-    const factor = this.reversed ? -1 : 1
-
-    this.sliding = this.sliding.map((time) => time * factor)
+    !isNullish(repeatDelay) && (this.repeatDelay = clamp(repeatDelay, 0, big))
   }
 
   schedule(timestamp: number): boolean | number {
@@ -123,12 +119,12 @@ export class TweenScheduler {
 
     if (this.waiting || this.completed) return false
 
-    const [pre, now] = this.ratios
+    const [before, current] = this.ratios
 
-    // repeat delay
-    if (pre >= 1 && now > 1) return false
+    // duration: 1000, delay: 2000 解决 reversed 时的 逻辑问题, 应当是立即运行,然后到末尾 delay 2000ms
+    // 还是 sliding 计算有问题
 
-    return now
+    return before >= 1 && current > 1 ? false : current
   }
 }
 
@@ -142,6 +138,7 @@ export class TweenRenderer extends TweenScheduler {
 
     this.schedule = (timestamp: number) => {
       const progress = super.schedule(timestamp)
+      console.log(progress, this.ratios)
 
       if (isBoolean(progress)) return !this.completed
 
@@ -168,7 +165,7 @@ export class TweenController extends TweenScheduler {
   private $startTime = 0
 
   // animate 当前的时间
-  private $updateTime = 0
+  private $currentTime = 0
 
   // animate 最后的时间
   private $lastTime = 0
@@ -182,16 +179,15 @@ export class TweenController extends TweenScheduler {
     this.schedule = (timestamp: number) => {
       if (!this.$startTime) this.$startTime = timestamp
 
-      this.$updateTime = timestamp - this.$startTime + this.$lastTime
+      this.$currentTime = timestamp - this.$startTime + this.$lastTime
 
-      const progress = super.schedule(this.$updateTime)
+      const progress = super.schedule(this.$currentTime)
 
       if (isBoolean(progress)) return !this.completed
 
       this.starting && this.emitter('start')
 
-      let adjusted = this.reversed ? this.whole - this.$updateTime || 0 : this.$updateTime
-      if (this.iterations) adjusted = (this.reversed ? 1 - progress : progress) * this.duration
+      const adjusted = this.iterations ? progress * this.duration : this.$currentTime
 
       this.renderers.forEach((renderer) => renderer.schedule(adjusted))
 
@@ -220,7 +216,7 @@ export class TweenController extends TweenScheduler {
   pause = () => {
     this.$status = 'idle'
 
-    this.$lastTime = this.$updateTime
+    this.$lastTime = this.$currentTime
     this.$startTime = 0
     driver.cancel(this.schedule)
   }
@@ -233,7 +229,7 @@ export class TweenController extends TweenScheduler {
   reverse = () => {
     this.reversed = !this.reversed
     this.$startTime = 0
-    this.$lastTime = this.whole - this.$updateTime
+    this.$lastTime = this.whole - this.$currentTime
     this.play()
   }
 }
@@ -241,5 +237,5 @@ export class TweenController extends TweenScheduler {
 /**
  * emitter 逻辑无论是正向还是反向都非常正确（是否需要加上 reversed 标识？）
  *
- * controller 的 $updateTime 计算不准确
+ * controller 的 $currentTime 计算不准确
  */

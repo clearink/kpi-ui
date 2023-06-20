@@ -1,5 +1,6 @@
 import decompose from '../../../../utils/decompose'
 import interpolator from '../../../../utils/interpolator'
+import sanitize from '../../../../utils/sanitize'
 
 import type { EasingFunction } from '../../../../easing/interface'
 import type { AnimatableValue, TweenOptions } from '../../../interface'
@@ -41,7 +42,7 @@ export function createRendererGenerator<V extends AnimatableValue>(
     const numbers = to.formatted.numbers.map((num, i) => {
       const [percent, transform] = mapping([from.formatted.numbers[i], num])
 
-      return transform(easing(percent))
+      return sanitize(transform(easing(percent)))
     })
 
     if (to.formatted.numeric) return numbers[0] as V

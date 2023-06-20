@@ -155,7 +155,9 @@ export default function App() {
         type="button"
         onClick={() => {
           const a = animate(v, 800, {
-            duration: 1e10,
+            duration: 1000,
+            delay: 2000,
+            repeat: 1,
             easing: 'linear',
             // repeatType: 'mirror',
             onStart() {
@@ -173,9 +175,9 @@ export default function App() {
               ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
             },
           })
-          // setTimeout(() => {
-          //   a.reverse()
-          // }, 400)
+          setTimeout(() => {
+            // a.reverse()
+          }, 400)
           console.log(a)
           // const b = animate(
           //   ref.current!,
