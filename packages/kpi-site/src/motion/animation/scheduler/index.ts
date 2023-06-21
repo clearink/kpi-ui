@@ -13,7 +13,7 @@ export class TweenScheduler {
 
   duration = 0
 
-  reversed = !false
+  reversed = false
 
   repeat = 0
 
@@ -109,9 +109,7 @@ export class TweenScheduler {
   }
 
   schedule(timestamp: number): boolean | number {
-    let elapsed = timestamp - this.start - this.delay
-
-    if (this.reversed) elapsed = this.whole - elapsed || 0
+    const elapsed = timestamp - this.start - this.delay
 
     const change = this.reversed ? 0 : 1
     this.sliding[1 - change] = this.sliding[change]
@@ -120,9 +118,6 @@ export class TweenScheduler {
     if (this.waiting || this.completed) return false
 
     const [before, current] = this.ratios
-
-    // duration: 1000, delay: 2000 解决 reversed 时的 逻辑问题, 应当是立即运行,然后到末尾 delay 2000ms
-    // 还是 sliding 计算有问题
 
     return before >= 1 && current > 1 ? false : current
   }
@@ -138,7 +133,6 @@ export class TweenRenderer extends TweenScheduler {
 
     this.schedule = (timestamp: number) => {
       const progress = super.schedule(timestamp)
-      console.log(progress, this.ratios)
 
       if (isBoolean(progress)) return !this.completed
 
@@ -180,6 +174,8 @@ export class TweenController extends TweenScheduler {
       if (!this.$startTime) this.$startTime = timestamp
 
       this.$currentTime = timestamp - this.$startTime + this.$lastTime
+
+      if (this.reversed) this.$currentTime = this.whole - this.$currentTime
 
       const progress = super.schedule(this.$currentTime)
 
@@ -228,6 +224,10 @@ export class TweenController extends TweenScheduler {
 
   reverse = () => {
     this.reversed = !this.reversed
+    this.renderers.forEach((renderer) => {
+      // eslint-disable-next-line no-param-reassign
+      renderer.reversed = !renderer.reversed
+    })
     this.$startTime = 0
     this.$lastTime = this.whole - this.$currentTime
     this.play()

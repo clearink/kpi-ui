@@ -156,8 +156,7 @@ export default function App() {
         onClick={() => {
           const a = animate(v, 800, {
             duration: 1000,
-            delay: 2000,
-            repeat: 1,
+            delay: 200,
             easing: 'linear',
             // repeatType: 'mirror',
             onStart() {
@@ -170,13 +169,13 @@ export default function App() {
               console.log('complete')
             },
             onUpdate(current) {
-              // console.log('current', current)
+              console.log('current', current)
               // ref.current!.style.backgroundColor = current
               ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
             },
           })
           setTimeout(() => {
-            // a.reverse()
+            a.reverse()
           }, 400)
           console.log(a)
           // const b = animate(
