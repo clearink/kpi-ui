@@ -1,5 +1,4 @@
 import { isArray, logger, toArray } from '@kpi/shared'
-import { motionValue } from '../../../motion'
 import { TweenRenderer } from '../../scheduler'
 import createTweenEmitter from './utils/emitter'
 import { createRendererGenerator } from './utils/generator'

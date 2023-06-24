@@ -1,10 +1,11 @@
-/* eslint-disable max-classes-per-file */
+/* eslint-disable no-return-assign, max-classes-per-file */
 import { isBoolean, isNullish } from '@kpi/shared'
 import clamp from '../../utils/clamp'
+import { defineProperty } from '../../utils/define'
 import driver from '../driver'
-import { TweenOptions } from '../interface'
 
 import type { Emitter } from '../action/value/utils/emitter'
+import type { TweenOptions } from '../interface'
 
 export class TweenScheduler {
   start = 0
@@ -13,11 +14,11 @@ export class TweenScheduler {
 
   duration = 0
 
-  reversed = false
-
   repeat = 0
 
   repeatDelay = 0
+
+  sliding: number[] = [-Infinity, -Infinity]
 
   get end() {
     const { delay, start, duration, repeatDelay, repeat } = this
@@ -27,18 +28,18 @@ export class TweenScheduler {
     return delay + start + duration + cycle
   }
 
-  protected get whole() {
+  get whole() {
     return this.end - this.start - this.delay
   }
 
-  protected sliding: number[] = [-Infinity, -Infinity]
-
-  protected get ratios() {
+  get ratios() {
     const { duration: dur, repeatDelay, sliding } = this
 
     const done = this.iterations * (repeatDelay + dur) || 0
 
-    return sliding.map((t) => (t - done === dur ? 1 : (t - done) / dur))
+    return sliding
+      .map((timestamp) => timestamp - done)
+      .map((time) => (time === dur ? 1 : time / dur))
   }
 
   get iterations() {
@@ -52,15 +53,11 @@ export class TweenScheduler {
   get waiting() {
     const [first, second] = this.sliding
 
-    if (this.reversed) return first >= this.whole && second > this.whole
-
     return first < 0 && second < 0
   }
 
   get completed() {
     const [first, second] = this.sliding
-
-    if (this.reversed) return first < 0 && second < 0
 
     return first >= this.whole && second > this.whole
   }
@@ -68,25 +65,17 @@ export class TweenScheduler {
   get starting() {
     const [first, second] = this.sliding
 
-    if (this.reversed) return first < this.whole && second >= this.whole
-
     return first < 0 && second >= 0
   }
 
   get repeating() {
     const [first, second] = this.ratios
 
-    if (this.starting) return false
-
-    if (this.reversed) return first < 1 && second >= 1
-
-    return first < 0 && second >= 0
+    return !this.starting && first < 0 && second >= 0
   }
 
   get completing() {
     const [first, second] = this.sliding
-
-    if (this.reversed) return first < 0 && second >= 0
 
     return first < this.whole && second >= this.whole
   }
@@ -108,10 +97,10 @@ export class TweenScheduler {
     !isNullish(repeatDelay) && (this.repeatDelay = clamp(repeatDelay, 0, big))
   }
 
-  schedule(timestamp: number): boolean | number {
+  schedule(timestamp: number, reversed: boolean): boolean | number {
     const elapsed = timestamp - this.start - this.delay
 
-    const change = this.reversed ? 0 : 1
+    const change = reversed ? 0 : 1
     this.sliding[1 - change] = this.sliding[change]
     this.sliding[change] = elapsed
 
@@ -119,123 +108,138 @@ export class TweenScheduler {
 
     const [before, current] = this.ratios
 
-    return before >= 1 && current > 1 ? false : current
+    if (before >= 1 && current > 1) return false
+
+    return current
   }
 }
 
-export class TweenRenderer extends TweenScheduler {
+export class TweenRenderer {
+  readonly start!: number
+
+  readonly end!: number
+
+  schedule: (timestamp: number, reversed: boolean) => boolean
+
   constructor(
-    public emitter: Emitter,
+    emitter: Emitter,
     render: (progress: number, iterations: number) => void,
     options: TweenOptions
   ) {
-    super(options)
+    const scheduler = new TweenScheduler(options)
 
-    this.schedule = (timestamp: number) => {
-      const progress = super.schedule(timestamp)
+    defineProperty(this, 'start', { get: () => scheduler.start })
 
-      if (isBoolean(progress)) return !this.completed
+    defineProperty(this, 'end', { get: () => scheduler.end })
 
-      this.starting && this.emitter('start')
+    this.schedule = (timestamp: number, reversed: boolean) => {
+      const progress = scheduler.schedule(timestamp, reversed)
 
-      render(clamp(progress, 0, 1), this.iterations)
+      if (isBoolean(progress)) return !scheduler.completed
 
-      this.emitter('update')
+      scheduler.starting && emitter('start')
+
+      render(clamp(progress, 0, 1), scheduler.iterations)
+
+      emitter('update')
 
       // TODO: 是否还要加上 repeatComplete ?
-      this.repeating && this.emitter('repeat')
+      scheduler.repeating && emitter('repeat')
 
-      this.completing && this.emitter('complete')
+      scheduler.completing && emitter('complete')
 
-      return !this.completed
+      return !scheduler.completed
     }
   }
 }
 
-export class TweenController extends TweenScheduler {
-  private $status: AnimationPlayState = 'idle'
+export class TweenController {
+  play: () => void
 
-  // animate 开始的时间
-  private $startTime = 0
+  replay: () => void
 
-  // animate 当前的时间
-  private $currentTime = 0
+  stop: () => void
 
-  // animate 最后的时间
-  private $lastTime = 0
+  pause: () => void
 
-  public schedule: (timestamp: number) => boolean
+  reset: () => void
 
-  // TODO: 添加 renderer 实现 repeat 功能
-  constructor(private renderers: TweenRenderer[], private emitter: Emitter, options: TweenOptions) {
-    super(options)
+  speed!: number
 
-    this.schedule = (timestamp: number) => {
-      if (!this.$startTime) this.$startTime = timestamp
+  readonly status!: AnimationPlayState
 
-      this.$currentTime = timestamp - this.$startTime + this.$lastTime
+  constructor(renderers: TweenRenderer[], emitter: Emitter, options: TweenOptions) {
+    let $status: AnimationPlayState = 'idle'
+    // animate 开始的时间
+    let $lastUpdate = 0
+    // animate 当前的时间
+    let $currentTime = 0
+    // animate 速度
+    let $speed = 1
 
-      if (this.reversed) this.$currentTime = this.whole - this.$currentTime
+    const scheduler = new TweenScheduler(options)
 
-      const progress = super.schedule(this.$currentTime)
+    defineProperty(this, 'status', { get: () => $status })
 
-      if (isBoolean(progress)) return !this.completed
-
-      this.starting && this.emitter('start')
-
-      const adjusted = this.iterations ? progress * this.duration : this.$currentTime
-
-      this.renderers.forEach((renderer) => renderer.schedule(adjusted))
-
-      this.emitter('update')
-
-      // TODO: 是否还要加上 repeatComplete ?
-      this.repeating && this.emitter('repeat')
-
-      this.completing && this.emitter('complete')
-
-      return !this.completed
-    }
-  }
-
-  play = () => {
-    this.$status = 'running'
-    driver.start(this.schedule)
-  }
-
-  stop = () => {
-    this.$status = 'idle'
-
-    driver.cancel(this.schedule)
-  }
-
-  pause = () => {
-    this.$status = 'idle'
-
-    this.$lastTime = this.$currentTime
-    this.$startTime = 0
-    driver.cancel(this.schedule)
-  }
-
-  reset = () => {
-    this.$status = 'idle'
-    // 主要是设置初始值
-  }
-
-  reverse = () => {
-    this.reversed = !this.reversed
-    this.renderers.forEach((renderer) => {
-      // eslint-disable-next-line no-param-reassign
-      renderer.reversed = !renderer.reversed
+    defineProperty(this, 'speed', {
+      get: () => $speed,
+      set: (val) => ($speed = val),
     })
-    this.$startTime = 0
-    this.$lastTime = this.whole - this.$currentTime
-    this.play()
+
+    const schedule = (timestamp: number) => {
+      const elapsed = $lastUpdate ? timestamp - $lastUpdate : 0
+
+      $lastUpdate = timestamp
+
+      $currentTime += elapsed * $speed
+
+      const reversed = $speed < 0
+
+      const progress = scheduler.schedule($currentTime, reversed)
+
+      if (isBoolean(progress)) return !scheduler.completed
+
+      scheduler.starting && emitter('start')
+
+      const adjusted = scheduler.iterations ? progress * scheduler.duration : $currentTime
+
+      renderers.forEach((renderer) => renderer.schedule(adjusted, reversed))
+
+      emitter('update')
+
+      // TODO: 是否还要加上 repeatComplete ?
+      scheduler.repeating && emitter('repeat')
+
+      scheduler.completing && emitter('complete')
+
+      return !scheduler.completed
+    }
+
+    this.play = () => {
+      $status = 'running'
+      driver.start(schedule)
+    }
+
+    this.replay = () => {
+      $lastUpdate = 0
+    }
+
+    this.stop = () => {
+      $status = 'idle'
+      driver.cancel(schedule)
+    }
+
+    this.pause = () => {
+      $status = 'idle'
+      $lastUpdate = 0
+
+      driver.cancel(schedule)
+    }
+
+    this.reset = () => {
+      $status = 'idle'
+      $lastUpdate = 0
+      $currentTime = 0
+    }
   }
 }
-
-/**
- * emitter 逻辑无论是正向还是反向都非常正确（是否需要加上 reversed 标识？）
- *
- * controller 的 $currentTime 计算不准确
- */

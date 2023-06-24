@@ -82,7 +82,3 @@ export function createAnimateWithScope(scope?: AnimationScope) {
 }
 
 export const animate = createAnimateWithScope()
-
-const $animate = {
-  motion: () => {},
-}

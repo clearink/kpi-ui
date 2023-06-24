@@ -1,4 +1,4 @@
-import defineHidden from '../utils/define_hidden'
+import { defineHidden } from '../utils/define'
 import { $id } from '../utils/symbol'
 import uniqueId from '../utils/unique_id'
 import MotionEvent from './event'

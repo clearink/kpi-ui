@@ -1,5 +1,5 @@
 import { hasOwn } from '@kpi/shared'
-import defineHidden from '../../../../utils/define_hidden'
+import { defineHidden } from '../../../../utils/define'
 import { $cache } from '../../../../utils/symbol'
 
 import type { MotionValue } from '../../../../motion'

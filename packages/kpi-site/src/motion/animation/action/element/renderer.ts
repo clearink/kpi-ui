@@ -5,7 +5,7 @@ import transform from '../../../prepare/transform'
 import { motionTransformProps } from '../../../prepare/transform/misc'
 import getUnit from '../../../prepare/utils/get_unit'
 import { pushItem } from '../../../utils/array'
-import defineHidden from '../../../utils/define_hidden'
+import { defineHidden } from '../../../utils/define'
 import { $cache } from '../../../utils/symbol'
 import units from '../../config/units'
 
