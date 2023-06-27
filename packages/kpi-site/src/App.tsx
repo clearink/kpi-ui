@@ -155,7 +155,7 @@ export default function App() {
         type="button"
         onClick={() => {
           const a = animate(v, [0, 800], {
-            duration: 1000,
+            duration: 2000,
             easing: 'easeInSine',
             delay: 1000,
             repeat: 2,
@@ -177,15 +177,16 @@ export default function App() {
             },
           })
 
-          // setTimeout(() => {
-          //   a.pause()
-          //   setTimeout(() => {
-          //     a.play()
-          //     setTimeout(() => {
-          //       a.reverse()
-          //     }, 1400)
-          //   }, 1400)
-          // }, 1400)
+          setTimeout(() => {
+            a.pause()
+            setTimeout(() => {
+              a.play()
+              setTimeout(() => {
+                a.speed = -1
+                // a.reverse()
+              }, 400)
+            }, 400)
+          }, 1400)
 
           console.log(a)
           // const b = animate(

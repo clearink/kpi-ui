@@ -1,8 +1,9 @@
-/* eslint-disable no-return-assign, max-classes-per-file */
+/* eslint-disable no-return-assign, max-classes-per-file, prefer-destructuring */
 import { isBoolean, isNullish } from '@kpi/shared'
 import clamp from '../../utils/clamp'
 import { defineProperty } from '../../utils/define'
 import driver from '../driver'
+import { frameData } from '../driver/delta'
 
 import type { Emitter } from '../action/value/utils/emitter'
 import type { TweenOptions } from '../interface'
@@ -37,9 +38,7 @@ export class TweenScheduler {
 
     const done = this.iterations * (repeatDelay + dur) || 0
 
-    return sliding
-      .map((timestamp) => timestamp - done)
-      .map((time) => (time === dur ? 1 : time / dur))
+    return sliding.map((t) => (t - done === dur ? 1 : (t - done) / dur))
   }
 
   get iterations() {
@@ -98,11 +97,12 @@ export class TweenScheduler {
   }
 
   schedule(timestamp: number, reversed: boolean): boolean | number {
-    const elapsed = timestamp - this.start - this.delay
-
     const change = reversed ? 0 : 1
     this.sliding[1 - change] = this.sliding[change]
-    this.sliding[change] = elapsed
+    this.sliding[change] = timestamp - this.start - this.delay
+
+    if (this.sliding[1] - this.sliding[0] > frameData.two)
+      this.sliding[0] = this.sliding[1] - frameData.delta
 
     if (this.waiting || this.completed) return false
 
@@ -132,7 +132,7 @@ export class TweenRenderer {
 
     defineProperty(this, 'end', { get: () => scheduler.end })
 
-    this.schedule = (timestamp: number, reversed: boolean) => {
+    this.schedule = (timestamp, reversed) => {
       const progress = scheduler.schedule(timestamp, reversed)
 
       if (isBoolean(progress)) return !scheduler.completed
@@ -148,7 +148,7 @@ export class TweenRenderer {
 
       scheduler.completing && emitter('complete')
 
-      return !scheduler.completed
+      return !scheduler.completing
     }
   }
 }
@@ -164,7 +164,7 @@ export class TweenController {
 
   reset: () => void
 
-  speed!: number
+  speed: number = 1
 
   readonly status!: AnimationPlayState
 
@@ -174,26 +174,21 @@ export class TweenController {
     let $lastUpdate = 0
     // animate 当前的时间
     let $currentTime = 0
-    // animate 速度
-    let $speed = 1
 
     const scheduler = new TweenScheduler(options)
 
     defineProperty(this, 'status', { get: () => $status })
-
-    defineProperty(this, 'speed', {
-      get: () => $speed,
-      set: (val) => ($speed = val),
-    })
 
     const schedule = (timestamp: number) => {
       const elapsed = $lastUpdate ? timestamp - $lastUpdate : 0
 
       $lastUpdate = timestamp
 
-      $currentTime += elapsed * $speed
+      $currentTime += elapsed * this.speed
 
-      const reversed = $speed < 0
+      const reversed = this.speed < 0
+
+      if ($currentTime < -frameData.half) return false
 
       const progress = scheduler.schedule($currentTime, reversed)
 
@@ -212,7 +207,7 @@ export class TweenController {
 
       scheduler.completing && emitter('complete')
 
-      return !scheduler.completed
+      return !scheduler.completing
     }
 
     this.play = () => {
