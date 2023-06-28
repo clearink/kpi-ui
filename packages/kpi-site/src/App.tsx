@@ -159,7 +159,6 @@ export default function App() {
             easing: 'easeInSine',
             delay: 1000,
             repeat: 2,
-            repeatDelay: 10,
             repeatType: 'mirror',
             onStart() {
               console.log('start', performance.now())
@@ -176,18 +175,8 @@ export default function App() {
               ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
             },
           })
-
-          setTimeout(() => {
-            a.pause()
-            setTimeout(() => {
-              a.play()
-              setTimeout(() => {
-                a.speed = -1
-                // a.reverse()
-              }, 400)
-            }, 400)
-          }, 1400)
-
+          a.time = 7000
+          a.speed = -1
           console.log(a)
           // const b = animate(
           //   ref.current!,
