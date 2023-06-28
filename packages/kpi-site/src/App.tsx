@@ -154,59 +154,24 @@ export default function App() {
       <button
         type="button"
         onClick={() => {
-          const a = animate(v, [0, 800], {
-            duration: 2000,
-            easing: 'easeInSine',
-            delay: 1000,
-            repeat: 2,
-            repeatDelay: 10,
-            repeatType: 'mirror',
-            onStart() {
-              console.log('start', performance.now())
+          const b = animate(
+            ref.current!,
+            {
+              x: 200,
+              y: 300,
             },
-            onRepeat() {
-              console.log('repeat')
-            },
-            onComplete() {
-              console.log('complete', performance.now())
-            },
-            onUpdate(current) {
-              // console.log('current', current)
-              // ref.current!.style.backgroundColor = current
-              ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
-            },
-          })
-
-          setTimeout(() => {
-            a.pause()
-            setTimeout(() => {
-              a.play()
-              setTimeout(() => {
-                a.speed = -1
-                // a.reverse()
-              }, 400)
-            }, 400)
-          }, 1400)
-
-          console.log(a)
-          // const b = animate(
-          //   ref.current!,
-          //   {
-          //     x: 200,
-          //     y: 300,
-          //   },
-          //   {
-          //     duration: 1000,
-          //     repeat: 2,
-          //     delay: 2000,
-          //     easing: 'easeInOutQuad',
-          //     repeatType: 'mirror',
-          //     onUpdate(current) {
-          //       console.log('current', current)
-          //     },
-          //   }
-          // )
-          // console.log(b)
+            {
+              duration: 1000,
+              repeat: 2,
+              delay: 2000,
+              easing: 'easeInOutQuad',
+              repeatType: 'mirror',
+              onUpdate(current) {
+                console.log('current', current)
+              },
+            }
+          )
+          console.log(b)
         }}
       >
         start

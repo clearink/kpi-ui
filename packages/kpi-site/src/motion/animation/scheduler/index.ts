@@ -82,7 +82,6 @@ export class TweenScheduler {
   constructor(options: TweenOptions) {
     const { start, delay, duration, repeat, repeatDelay } = options
 
-    // 设置一个足够大的值 防止由于 Infinity 计算出 NaN
     const big = 1e20
 
     !isNullish(start) && (this.start = clamp(start, 0, big))
@@ -97,12 +96,12 @@ export class TweenScheduler {
   }
 
   schedule(timestamp: number, reversed: boolean): boolean | number {
+    const factor = reversed ? 1 : -1
     const change = reversed ? 0 : 1
-    this.sliding[1 - change] = this.sliding[change]
-    this.sliding[change] = timestamp - this.start - this.delay
 
-    if (this.sliding[1] - this.sliding[0] > frameData.two)
-      this.sliding[0] = this.sliding[1] - frameData.delta
+    const prev = this.sliding[change]
+    this.sliding[1 - change] = Math.abs(prev) === Infinity ? factor * Infinity : prev
+    this.sliding[change] = timestamp - this.start - this.delay
 
     if (this.waiting || this.completed) return false
 
@@ -110,7 +109,7 @@ export class TweenScheduler {
 
     if (before >= 1 && current > 1) return false
 
-    return current
+    return reversed ? before : current
   }
 }
 
@@ -188,7 +187,7 @@ export class TweenController {
 
       const reversed = this.speed < 0
 
-      if ($currentTime < -frameData.half) return false
+      if ($currentTime < -frameData.delta * 2) return false
 
       const progress = scheduler.schedule($currentTime, reversed)
 
