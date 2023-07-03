@@ -1,4 +1,4 @@
-/* eslint-disable no-return-assign, max-classes-per-file, prefer-destructuring */
+/* eslint-disable no-return-assign, max-classes-per-file */
 import { isBoolean, isNullish } from '@kpi/shared'
 import clamp from '../../utils/clamp'
 import { defineProperty } from '../../utils/define'
@@ -18,6 +18,8 @@ export class TweenScheduler {
   repeat = 0
 
   repeatDelay = 0
+
+  reversed = false
 
   sliding: number[] = [-Infinity, -Infinity]
 
@@ -52,11 +54,15 @@ export class TweenScheduler {
   get waiting() {
     const [first, second] = this.sliding
 
+    if (this.reversed) return first >= this.whole && second > this.whole
+
     return first < 0 && second < 0
   }
 
   get completed() {
     const [first, second] = this.sliding
+
+    if (this.reversed) return first < 0 && second < 0
 
     return first >= this.whole && second > this.whole
   }
@@ -64,17 +70,21 @@ export class TweenScheduler {
   get starting() {
     const [first, second] = this.sliding
 
+    if (this.reversed) return first < this.whole && second >= this.whole
+
     return first < 0 && second >= 0
   }
 
   get repeating() {
     const [first, second] = this.ratios
 
-    return !this.starting && first < 0 && second >= 0
+    return !this.starting && !this.completing && first < 0 && second >= 0
   }
 
   get completing() {
     const [first, second] = this.sliding
+
+    if (this.reversed) return first < 0 && second >= 0
 
     return first < this.whole && second >= this.whole
   }
@@ -102,6 +112,8 @@ export class TweenScheduler {
     const prev = this.sliding[change]
     this.sliding[1 - change] = Math.abs(prev) === Infinity ? factor * Infinity : prev
     this.sliding[change] = timestamp - this.start - this.delay
+
+    this.reversed = reversed
 
     if (this.waiting || this.completed) return false
 
@@ -163,7 +175,11 @@ export class TweenController {
 
   reset: () => void
 
+  reverse: () => void
+
   speed: number = 1
+
+  time!: number
 
   readonly status!: AnimationPlayState
 
@@ -177,6 +193,8 @@ export class TweenController {
     const scheduler = new TweenScheduler(options)
 
     defineProperty(this, 'status', { get: () => $status })
+
+    defineProperty(this, 'time', { get: () => $currentTime, set: (val) => ($currentTime = val) })
 
     const schedule = (timestamp: number) => {
       const elapsed = $lastUpdate ? timestamp - $lastUpdate : 0
@@ -213,6 +231,8 @@ export class TweenController {
       $status = 'running'
       driver.start(schedule)
     }
+
+    this.reverse = () => {}
 
     this.replay = () => {
       $lastUpdate = 0

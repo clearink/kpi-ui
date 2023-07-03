@@ -154,24 +154,48 @@ export default function App() {
       <button
         type="button"
         onClick={() => {
-          const b = animate(
-            ref.current!,
-            {
-              x: 200,
-              y: 300,
+          const a = animate(v, [0, 800], {
+            duration: 2000,
+            easing: 'easeInSine',
+            delay: 1000,
+            repeat: 2,
+            repeatType: 'mirror',
+            onStart() {
+              console.log('start', performance.now())
             },
-            {
-              duration: 1000,
-              repeat: 2,
-              delay: 2000,
-              easing: 'easeInOutQuad',
-              repeatType: 'mirror',
-              onUpdate(current) {
-                console.log('current', current)
-              },
-            }
-          )
-          console.log(b)
+            onRepeat() {
+              console.log('repeat')
+            },
+            onComplete() {
+              console.log('complete', performance.now())
+            },
+            onUpdate(current) {
+              // console.log('current', current)
+              // ref.current!.style.backgroundColor = current
+              ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
+            },
+          })
+          a.time = 7000
+          a.speed = -1
+          console.log(a)
+          // const b = animate(
+          //   ref.current!,
+          //   {
+          //     x: 200,
+          //     y: 300,
+          //   },
+          //   {
+          //     duration: 1000,
+          //     repeat: 2,
+          //     delay: 2000,
+          //     easing: 'easeInOutQuad',
+          //     repeatType: 'mirror',
+          //     onUpdate(current) {
+          //       console.log('current', current)
+          //     },
+          //   }
+          // )
+          // console.log(b)
         }}
       >
         start
