@@ -170,14 +170,13 @@ export default function App() {
               console.log('complete', performance.now())
             },
             onUpdate(current) {
-              // console.log('current', current)
-              // ref.current!.style.backgroundColor = current
               ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
             },
           })
-          a.time = 7000
-          a.speed = -1
-          console.log(a)
+          console.log('')
+          // setTimeout(() => {
+          //   a.reverse()
+          // }, 2300)
           // const b = animate(
           //   ref.current!,
           //   {

@@ -4,6 +4,7 @@ import clamp from '../../utils/clamp'
 import { defineProperty } from '../../utils/define'
 import driver from '../driver'
 import { frameData } from '../driver/delta'
+import { running } from './status'
 
 import type { Emitter } from '../action/value/utils/emitter'
 import type { TweenOptions } from '../interface'
@@ -123,6 +124,10 @@ export class TweenScheduler {
 
     return reversed ? before : current
   }
+
+  reset() {
+    this.sliding = [-Infinity, -Infinity]
+  }
 }
 
 export class TweenRenderer {
@@ -131,6 +136,8 @@ export class TweenRenderer {
   readonly end!: number
 
   schedule: (timestamp: number, reversed: boolean) => boolean
+
+  reset: () => void
 
   constructor(
     emitter: Emitter,
@@ -161,6 +168,8 @@ export class TweenRenderer {
 
       return !scheduler.completing
     }
+
+    this.reset = () => scheduler.reset()
   }
 }
 
@@ -179,22 +188,15 @@ export class TweenController {
 
   speed: number = 1
 
-  time!: number
-
-  readonly status!: AnimationPlayState
-
   constructor(renderers: TweenRenderer[], emitter: Emitter, options: TweenOptions) {
-    let $status: AnimationPlayState = 'idle'
     // animate 开始的时间
     let $lastUpdate = 0
     // animate 当前的时间
     let $currentTime = 0
+    // 是否暂停
+    const $paused = false
 
     const scheduler = new TweenScheduler(options)
-
-    defineProperty(this, 'status', { get: () => $status })
-
-    defineProperty(this, 'time', { get: () => $currentTime, set: (val) => ($currentTime = val) })
 
     const schedule = (timestamp: number) => {
       const elapsed = $lastUpdate ? timestamp - $lastUpdate : 0
@@ -224,36 +226,46 @@ export class TweenController {
 
       scheduler.completing && emitter('complete')
 
-      return !scheduler.completing
+      const shouldContinue = !scheduler.completing
+
+      return shouldContinue
+    }
+
+    this.reset = () => {
+      // 重置 sliding
+      scheduler.reset()
+      renderers.forEach((renderer) => renderer.reset())
+
+      $lastUpdate = 0
+
+      // 重置$currentTime
+      $currentTime = this.speed > 0 ? 0 : scheduler.end
     }
 
     this.play = () => {
-      $status = 'running'
       driver.start(schedule)
     }
 
-    this.reverse = () => {}
+    this.reverse = () => {
+      this.speed = -this.speed
+
+      $paused && this.reset()
+
+      this.play()
+    }
 
     this.replay = () => {
       $lastUpdate = 0
     }
 
     this.stop = () => {
-      $status = 'idle'
       driver.cancel(schedule)
     }
 
     this.pause = () => {
-      $status = 'idle'
       $lastUpdate = 0
 
       driver.cancel(schedule)
-    }
-
-    this.reset = () => {
-      $status = 'idle'
-      $lastUpdate = 0
-      $currentTime = 0
     }
   }
 }
