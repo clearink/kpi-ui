@@ -3,7 +3,12 @@ export const adjust = 1000 / 30
 
 let timestamp = 0
 
-export const frameData = { delta: adjust / 2 }
+export const frameData = {
+  delta: adjust / 2,
+  get lagged() {
+    return this.delta * 2
+  },
+}
 
 export const updateFrameDelta = (t: number, ...args: any[]) => {
   const delta = t - timestamp

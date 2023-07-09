@@ -1,4 +1,4 @@
-import { isObjectLike, noop, shallowMerge } from '@kpi/shared'
+import { isObjectLike, shallowMerge } from '@kpi/shared'
 import { isMotionValue, motionValue } from '../../../motion'
 import Options from '../../config/options'
 import { TweenController } from '../../scheduler'
@@ -23,7 +23,7 @@ export default function animateValue<V extends AnimatableValue>(
   const renderer = createTweenRenderer(motion, to, { start: 0, ...mergedOptions })
 
   // const generator = createControllerGenerator()
-  const controller = new TweenController([renderer], noop, { start: 0, duration: renderer.end })
+  const controller = new TweenController([renderer], { start: 0, duration: renderer.end })
 
   if (mergedOptions.autoplay) controller.play()
 

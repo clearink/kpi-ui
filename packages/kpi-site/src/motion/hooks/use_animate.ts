@@ -11,7 +11,7 @@ export default function useAnimate<T extends Element = any>() {
 
   const animate = useConstant(() => createAnimateWithScope(scope))
 
-  useUnmountEffect(() => scope.animations.forEach((animation) => animation.stop()))
+  useUnmountEffect(() => scope.animations.forEach((animation) => animation.cancel()))
 
   return [scope, animate] as const
 }

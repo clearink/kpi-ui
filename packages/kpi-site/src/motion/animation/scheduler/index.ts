@@ -4,10 +4,13 @@ import clamp from '../../utils/clamp'
 import { defineProperty } from '../../utils/define'
 import driver from '../driver'
 import { frameData } from '../driver/delta'
-import { running } from './status'
+import controlledPromise from '../utils/controlled_promise'
 
 import type { Emitter } from '../action/value/utils/emitter'
-import type { TweenOptions } from '../interface'
+import type { AnimationStatus, TweenOptions } from '../interface'
+
+const running = (status: AnimationStatus) => status === 'running'
+const canceled = (status: AnimationStatus) => status === 'canceled'
 
 export class TweenScheduler {
   start = 0
@@ -139,6 +142,8 @@ export class TweenRenderer {
 
   reset: () => void
 
+  emit: Emitter
+
   constructor(
     emitter: Emitter,
     render: (progress: number, iterations: number) => void,
@@ -170,31 +175,45 @@ export class TweenRenderer {
     }
 
     this.reset = () => scheduler.reset()
+
+    this.emit = (type) => {
+      emitter(type)
+    }
   }
 }
 
 export class TweenController {
-  play: () => void
+  play: (restart?: boolean) => void
 
-  replay: () => void
-
-  stop: () => void
+  cancel: () => void
 
   pause: () => void
 
-  reset: () => void
-
   reverse: () => void
+
+  readonly paused!: boolean
 
   speed: number = 1
 
-  constructor(renderers: TweenRenderer[], emitter: Emitter, options: TweenOptions) {
+  then: (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => void
+
+  constructor(renderers: TweenRenderer[], options: TweenOptions) {
     // animate 开始的时间
     let $lastUpdate = 0
     // animate 当前的时间
     let $currentTime = 0
-    // 是否暂停
-    const $paused = false
+    // animate 状态
+    let $status: AnimationStatus = 'paused'
+
+    const $promise = controlledPromise()
+    $promise.update()
+
+    this.then = (onfulfilled, onrejected) => {
+      return $promise.get().then(onfulfilled, onrejected)
+    }
+    defineProperty(this, 'promise', { get: () => $promise })
+
+    defineProperty(this, 'status', { get: () => $status })
 
     const scheduler = new TweenScheduler(options)
 
@@ -207,64 +226,66 @@ export class TweenController {
 
       const reversed = this.speed < 0
 
-      if ($currentTime < -frameData.delta * 2) return false
+      if ($currentTime < -frameData.lagged || !running($status)) return false
 
       const progress = scheduler.schedule($currentTime, reversed)
 
       if (isBoolean(progress)) return !scheduler.completed
 
-      scheduler.starting && emitter('start')
-
       const adjusted = scheduler.iterations ? progress * scheduler.duration : $currentTime
 
       renderers.forEach((renderer) => renderer.schedule(adjusted, reversed))
-
-      emitter('update')
-
-      // TODO: 是否还要加上 repeatComplete ?
-      scheduler.repeating && emitter('repeat')
-
-      scheduler.completing && emitter('complete')
 
       const shouldContinue = !scheduler.completing
 
       return shouldContinue
     }
 
-    this.reset = () => {
+    const emit: Emitter = (type) => {
+      renderers.forEach((renderer) => renderer.emit(type))
+    }
+
+    const reset = () => {
       // 重置 sliding
-      scheduler.reset()
       renderers.forEach((renderer) => renderer.reset())
+      scheduler.reset()
 
+      // 重置 time
+      $status = 'paused'
       $lastUpdate = 0
-
-      // 重置$currentTime
       $currentTime = this.speed > 0 ? 0 : scheduler.end
     }
 
-    this.play = () => {
+    // 运行
+    this.play = (restart = false) => {
+      if (canceled($status)) return
+
+      if (restart) reset()
+      $status = 'running'
       driver.start(schedule)
     }
 
     this.reverse = () => {
-      this.speed = -this.speed
+      if (canceled($status)) return
 
-      $paused && this.reset()
-
-      this.play()
+      this.speed *= -1
+      this.play(!running($status))
     }
 
-    this.replay = () => {
-      $lastUpdate = 0
-    }
+    this.cancel = () => {
+      if (canceled($status)) return
 
-    this.stop = () => {
+      $status = 'canceled'
+      emit('cancel')
       driver.cancel(schedule)
+      $promise.update(true)
     }
 
     this.pause = () => {
-      $lastUpdate = 0
+      if (canceled($status)) return
 
+      $lastUpdate = 0
+      $status = 'paused'
       driver.cancel(schedule)
     }
   }

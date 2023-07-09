@@ -114,3 +114,5 @@ export type SequenceLabelSegment =
     }
 
 export type AnimationSequence = (MotionValueSegment | DOMKeyframesSegment | SequenceLabelSegment)[]
+
+export type AnimationStatus = 'running' | 'paused' | 'canceled' | 'finished'

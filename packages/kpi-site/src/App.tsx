@@ -173,7 +173,8 @@ export default function App() {
               ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
             },
           })
-          console.log('')
+          console.log(a)
+
           // setTimeout(() => {
           //   a.reverse()
           // }, 2300)
