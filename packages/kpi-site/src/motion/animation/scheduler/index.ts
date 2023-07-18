@@ -1,7 +1,7 @@
 /* eslint-disable no-return-assign, max-classes-per-file */
 import { isBoolean, isNullish } from '@kpi/shared'
 import clamp from '../../utils/clamp'
-import { defineProperty } from '../../utils/define'
+import { defineGetter } from '../../utils/define'
 import driver from '../driver'
 import { frameData } from '../driver/delta'
 import controlledPromise from '../utils/controlled_promise'
@@ -15,6 +15,7 @@ const canceled = (status: AnimationStatus) => status === 'canceled'
 export class TweenScheduler {
   start = 0
 
+  // 无论正向还是反向，该属性一直生效
   delay = 0
 
   duration = 0
@@ -136,6 +137,8 @@ export class TweenScheduler {
 export class TweenRenderer {
   readonly start!: number
 
+  readonly delay!: number
+
   readonly end!: number
 
   schedule: (timestamp: number, reversed: boolean) => boolean
@@ -151,18 +154,21 @@ export class TweenRenderer {
   ) {
     const scheduler = new TweenScheduler(options)
 
-    defineProperty(this, 'start', { get: () => scheduler.start })
+    defineGetter(this, 'start', () => scheduler.start)
 
-    defineProperty(this, 'end', { get: () => scheduler.end })
+    defineGetter(this, 'delay', () => scheduler.delay)
+
+    defineGetter(this, 'end', () => scheduler.end)
 
     this.schedule = (timestamp, reversed) => {
       const progress = scheduler.schedule(timestamp, reversed)
+      console.log(progress, timestamp)
 
       if (isBoolean(progress)) return !scheduler.completed
 
       scheduler.starting && emitter('start')
 
-      render(clamp(progress, 0, 1), scheduler.iterations)
+      render(clamp(1 - progress, 0, 1), scheduler.iterations)
 
       emitter('update')
 
@@ -195,7 +201,7 @@ export class TweenController {
 
   speed: number = 1
 
-  then: (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => void
+  then!: (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => void
 
   constructor(renderers: TweenRenderer[], options: TweenOptions) {
     // animate 开始的时间
@@ -208,12 +214,11 @@ export class TweenController {
     const $promise = controlledPromise()
     $promise.update()
 
-    this.then = (onfulfilled, onrejected) => {
+    defineGetter(this, 'then', (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => {
       return $promise.get().then(onfulfilled, onrejected)
-    }
-    defineProperty(this, 'promise', { get: () => $promise })
+    })
 
-    defineProperty(this, 'status', { get: () => $status })
+    defineGetter(this, 'status', () => $status)
 
     const scheduler = new TweenScheduler(options)
 
@@ -224,9 +229,10 @@ export class TweenController {
 
       $currentTime += elapsed * this.speed
 
-      const reversed = this.speed < 0
+      // 超出范围 or 状态不为 running 停止循环
+      if ($currentTime < -frameData.lagged() || !running($status)) return false
 
-      if ($currentTime < -frameData.lagged || !running($status)) return false
+      const reversed = this.speed < 0
 
       const progress = scheduler.schedule($currentTime, reversed)
 
@@ -237,6 +243,8 @@ export class TweenController {
       renderers.forEach((renderer) => renderer.schedule(adjusted, reversed))
 
       const shouldContinue = !scheduler.completing
+
+      !shouldContinue && ($status = 'finished')
 
       return shouldContinue
     }
@@ -253,7 +261,7 @@ export class TweenController {
       // 重置 time
       $status = 'paused'
       $lastUpdate = 0
-      $currentTime = this.speed > 0 ? 0 : scheduler.end
+      $currentTime = this.speed > 0 ? 0 : scheduler.end + scheduler.delay
     }
 
     // 运行

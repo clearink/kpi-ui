@@ -10,7 +10,6 @@
 // import easing from './motion/tween/easing'
 // import steps from './motion/tween/steps'
 // import { clamp } from './motion/utils'
-// import { frameData } from './motion/utils/frame_data'
 // import raf from './motion/utils/raf'
 // import './style.css'
 
@@ -82,25 +81,6 @@
 //   type?: any
 // }
 
-// function animate(target: HTMLElement, from: number, to: number, options: AnimateOptions = {}) {
-//   const { duration = 300, type = easing.linear } = options
-
-//   const frameCount = Math.ceil(duration / frameData.delta)
-//   let frame = 0
-
-//   function tick(t) {
-//     frame += 1
-
-//     const elapsed = clamp(frame, 0, frameCount) / frameCount
-//     const next = from + type(elapsed) * (to - from)
-
-//     target.style.setProperty('transform', `translate3d(${next}px,0,0)`)
-
-//     return frame < frameCount
-//   }
-
-//   return raf(tick)
-// }
 // export default function App() {
 //   const ref = useRef<HTMLDivElement>(null)
 //   const cancel = useRef(() => {})
@@ -157,7 +137,7 @@ export default function App() {
           const a = animate(v, [0, 800], {
             duration: 2000,
             easing: 'easeInSine',
-            delay: 1000,
+            delay: 2000,
             repeat: 2,
             repeatType: 'mirror',
             onStart() {
@@ -173,10 +153,10 @@ export default function App() {
               ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
             },
           })
-          console.log(a)
 
+          ;(window as any).a = a
           // setTimeout(() => {
-          //   a.reverse()
+          // a.reverse()
           // }, 2300)
           // const b = animate(
           //   ref.current!,
