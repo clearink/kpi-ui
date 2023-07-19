@@ -137,6 +137,7 @@ export default function App() {
           const a = animate(v, 800, {
             duration: 2000,
             easing: 'easeInSine',
+            delay: 2000,
             // repeat: 2,
             // repeatType: 'mirror',
             // repeatDelay: 1000,

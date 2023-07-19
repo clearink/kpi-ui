@@ -22,6 +22,8 @@ export class TweenScheduler {
   // 准确来说应该是 startDelay
   delay = 0
 
+  endDelay = 2000
+
   duration = 0
 
   repeat = 0
@@ -37,13 +39,22 @@ export class TweenScheduler {
 
     const cycle = (repeatDelay + duration) * repeat || 0
 
-    return delay + start + duration + cycle
+    return delay + start + duration + cycle + this.endDelay
   }
 
-  get whole() {
-    return this.end - this.start - this.delay
+  // TODO: 改这里
+  get updateTimeline() {
+    const { duration, repeatDelay, repeat } = this
+
+    return duration + ((repeatDelay + duration) * repeat || 0)
   }
 
+  // TODO: 改这里
+  get wholeTimeline() {
+    return this.delay + this.updateTimeline + this.endDelay
+  }
+
+  // TODO: 改这里
   get ratios() {
     const { duration: dur, repeatDelay, sliding } = this
 
@@ -52,6 +63,7 @@ export class TweenScheduler {
     return sliding.map((t) => (t - done === dur ? 1 : (t - done) / dur))
   }
 
+  // TODO: 改这里
   get iterations() {
     const { duration, repeatDelay, repeat, sliding } = this
 
@@ -63,7 +75,7 @@ export class TweenScheduler {
   get waiting() {
     const [first, second] = this.sliding
 
-    if (this.reversed) return first >= this.whole && second > this.whole
+    if (this.reversed) return first >= this.wholeTimeline && second > this.wholeTimeline
 
     return first < 0 && second < 0
   }
@@ -73,13 +85,13 @@ export class TweenScheduler {
 
     if (this.reversed) return first < 0 && second < 0
 
-    return first >= this.whole && second > this.whole
+    return first >= this.wholeTimeline && second > this.wholeTimeline
   }
 
   get starting() {
     const [first, second] = this.sliding
 
-    if (this.reversed) return first < this.whole && second >= this.whole
+    if (this.reversed) return first < this.wholeTimeline && second >= this.wholeTimeline
 
     return first < 0 && second >= 0
   }
@@ -95,7 +107,7 @@ export class TweenScheduler {
 
     if (this.reversed) return first < 0 && second >= 0
 
-    return first < this.whole && second >= this.whole
+    return first < this.wholeTimeline && second >= this.wholeTimeline
   }
 
   constructor(options: TweenOptions) {
@@ -120,10 +132,11 @@ export class TweenScheduler {
 
     const pre = this.sliding[change]
     this.sliding[1 - change] = Math.abs(pre) === Infinity ? factor * Infinity : pre
-    this.sliding[change] = timestamp - this.start - this.delay
+    this.sliding[change] = timestamp - this.start
 
     this.reversed = reversed
 
+    // 超出范围
     if (this.waiting || this.completed) return false
 
     const [before, current] = this.ratios
@@ -153,6 +166,7 @@ export class TweenRenderer {
     this.schedule = (timestamp, reversed) => {
       const progress = scheduler.schedule(timestamp, reversed)
 
+      console.log(progress, scheduler.sliding)
       if (isBoolean(progress)) return !scheduler.completed
 
       scheduler.starting && emitter('start')
@@ -209,20 +223,22 @@ export class TweenController {
       return $promise.get().then(onfulfilled, onrejected)
     })
 
-    const $duration = max(renderers.map(({ scheduler }) => scheduler.end))
+    const duration = max(renderers.map(({ scheduler }) => scheduler.end))
+
+    const scheduler = new TweenScheduler({ start: 0, duration })
 
     const reset = () => {
       // 重置 time
       $status = 'paused'
       $lastUpdate = 0
-      $currentTime = this.speed > 0 ? 0 : $duration
+      $currentTime = this.speed > 0 ? 0 : duration
 
-      // TODO: 初始时是否应该调用 reset 函数？
       // 重置 renderer 状态
       renderers.forEach((renderer) => renderer.reset(this.speed < 0))
     }
 
     // 初始化数据
+    // TODO: 初始时是否应该调用 reset 函数？
     reset()
 
     const tick = (timestamp: number) => {
@@ -234,11 +250,15 @@ export class TweenController {
 
       if ($currentTime < -frameData.lagged() || !running($status)) return false
 
-      const shouldContinue = renderers.reduce((result, renderer) => {
-        const progress = renderer.schedule($currentTime, this.speed < 0)
+      const reversed = this.speed < 0
 
-        return isBoolean(progress) ? progress || result : true
-      }, false)
+      const progress = scheduler.schedule($currentTime, reversed)
+
+      if (isBoolean(progress)) return !scheduler.completed
+
+      renderers.forEach((renderer) => renderer.schedule($currentTime, reversed))
+
+      const shouldContinue = !scheduler.completing
 
       if (shouldContinue) return true
 
