@@ -5,17 +5,21 @@ import { defineGetter } from '../../utils/define'
 import driver from '../driver'
 import { frameData } from '../driver/delta'
 import controlledPromise from '../utils/controlled_promise'
+import { max } from '../utils/math'
 
 import type { Emitter } from '../action/value/utils/emitter'
 import type { AnimationStatus, TweenOptions } from '../interface'
 
 const running = (status: AnimationStatus) => status === 'running'
+
 const canceled = (status: AnimationStatus) => status === 'canceled'
+
+const finished = (status: AnimationStatus) => status === 'finished'
 
 export class TweenScheduler {
   start = 0
 
-  // 无论正向还是反向，该属性一直生效
+  // 准确来说应该是 startDelay
   delay = 0
 
   duration = 0
@@ -110,12 +114,12 @@ export class TweenScheduler {
     !isNullish(repeatDelay) && (this.repeatDelay = clamp(repeatDelay, 0, big))
   }
 
-  schedule(timestamp: number, reversed: boolean): boolean | number {
+  schedule(timestamp: number, reversed: boolean) {
     const factor = reversed ? 1 : -1
     const change = reversed ? 0 : 1
 
-    const prev = this.sliding[change]
-    this.sliding[1 - change] = Math.abs(prev) === Infinity ? factor * Infinity : prev
+    const pre = this.sliding[change]
+    this.sliding[1 - change] = Math.abs(pre) === Infinity ? factor * Infinity : pre
     this.sliding[change] = timestamp - this.start - this.delay
 
     this.reversed = reversed
@@ -128,24 +132,14 @@ export class TweenScheduler {
 
     return reversed ? before : current
   }
-
-  reset() {
-    this.sliding = [-Infinity, -Infinity]
-  }
 }
 
 export class TweenRenderer {
-  readonly start!: number
-
-  readonly delay!: number
-
-  readonly end!: number
+  readonly scheduler!: TweenScheduler
 
   schedule: (timestamp: number, reversed: boolean) => boolean
 
-  reset: () => void
-
-  emit: Emitter
+  reset: (reversed: boolean) => void
 
   constructor(
     emitter: Emitter,
@@ -154,21 +148,16 @@ export class TweenRenderer {
   ) {
     const scheduler = new TweenScheduler(options)
 
-    defineGetter(this, 'start', () => scheduler.start)
-
-    defineGetter(this, 'delay', () => scheduler.delay)
-
-    defineGetter(this, 'end', () => scheduler.end)
+    defineGetter(this, 'scheduler', () => scheduler)
 
     this.schedule = (timestamp, reversed) => {
       const progress = scheduler.schedule(timestamp, reversed)
-      console.log(progress, timestamp)
 
       if (isBoolean(progress)) return !scheduler.completed
 
       scheduler.starting && emitter('start')
 
-      render(clamp(1 - progress, 0, 1), scheduler.iterations)
+      render(clamp(progress, 0, 1), scheduler.iterations)
 
       emitter('update')
 
@@ -180,15 +169,19 @@ export class TweenRenderer {
       return !scheduler.completing
     }
 
-    this.reset = () => scheduler.reset()
+    this.reset = (reversed) => {
+      scheduler.sliding = [-Infinity, -Infinity]
 
-    this.emit = (type) => {
-      emitter(type)
+      emitter('update', render(+reversed, 0))
     }
   }
 }
 
 export class TweenController {
+  readonly status!: AnimationStatus
+
+  speed: number = 1
+
   play: (restart?: boolean) => void
 
   cancel: () => void
@@ -197,13 +190,9 @@ export class TweenController {
 
   reverse: () => void
 
-  readonly paused!: boolean
-
-  speed: number = 1
-
   then!: (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => void
 
-  constructor(renderers: TweenRenderer[], options: TweenOptions) {
+  constructor(renderers: TweenRenderer[]) {
     // animate 开始的时间
     let $lastUpdate = 0
     // animate 当前的时间
@@ -211,66 +200,64 @@ export class TweenController {
     // animate 状态
     let $status: AnimationStatus = 'paused'
 
+    defineGetter(this, 'status', () => $status)
+
     const $promise = controlledPromise()
     $promise.update()
 
-    defineGetter(this, 'then', (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => {
+    defineGetter(this, 'then', () => (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => {
       return $promise.get().then(onfulfilled, onrejected)
     })
 
-    defineGetter(this, 'status', () => $status)
+    const $duration = max(renderers.map(({ scheduler }) => scheduler.end))
 
-    const scheduler = new TweenScheduler(options)
+    const reset = () => {
+      // 重置 time
+      $status = 'paused'
+      $lastUpdate = 0
+      $currentTime = this.speed > 0 ? 0 : $duration
 
-    const schedule = (timestamp: number) => {
+      // TODO: 初始时是否应该调用 reset 函数？
+      // 重置 renderer 状态
+      renderers.forEach((renderer) => renderer.reset(this.speed < 0))
+    }
+
+    // 初始化数据
+    reset()
+
+    const tick = (timestamp: number) => {
       const elapsed = $lastUpdate ? timestamp - $lastUpdate : 0
 
       $lastUpdate = timestamp
 
       $currentTime += elapsed * this.speed
 
-      // 超出范围 or 状态不为 running 停止循环
       if ($currentTime < -frameData.lagged() || !running($status)) return false
 
-      const reversed = this.speed < 0
+      const shouldContinue = renderers.reduce((result, renderer) => {
+        const progress = renderer.schedule($currentTime, this.speed < 0)
 
-      const progress = scheduler.schedule($currentTime, reversed)
+        return isBoolean(progress) ? progress || result : true
+      }, false)
 
-      if (isBoolean(progress)) return !scheduler.completed
+      if (shouldContinue) return true
 
-      const adjusted = scheduler.iterations ? progress * scheduler.duration : $currentTime
+      // 更改状态
+      $status = 'finished'
 
-      renderers.forEach((renderer) => renderer.schedule(adjusted, reversed))
+      // 触发 promise 回调
+      $promise.update()
 
-      const shouldContinue = !scheduler.completing
-
-      !shouldContinue && ($status = 'finished')
-
-      return shouldContinue
-    }
-
-    const emit: Emitter = (type) => {
-      renderers.forEach((renderer) => renderer.emit(type))
-    }
-
-    const reset = () => {
-      // 重置 sliding
-      renderers.forEach((renderer) => renderer.reset())
-      scheduler.reset()
-
-      // 重置 time
-      $status = 'paused'
-      $lastUpdate = 0
-      $currentTime = this.speed > 0 ? 0 : scheduler.end + scheduler.delay
+      return false
     }
 
     // 运行
     this.play = (restart = false) => {
       if (canceled($status)) return
 
-      if (restart) reset()
+      if (restart || finished($status)) reset()
       $status = 'running'
-      driver.start(schedule)
+      driver.start(tick)
     }
 
     this.reverse = () => {
@@ -284,9 +271,10 @@ export class TweenController {
       if (canceled($status)) return
 
       $status = 'canceled'
-      emit('cancel')
-      driver.cancel(schedule)
-      $promise.update(true)
+
+      // emit('cancel')
+
+      driver.cancel(tick)
     }
 
     this.pause = () => {
@@ -294,7 +282,7 @@ export class TweenController {
 
       $lastUpdate = 0
       $status = 'paused'
-      driver.cancel(schedule)
+      driver.cancel(tick)
     }
   }
 }

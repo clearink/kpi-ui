@@ -24,11 +24,7 @@ export default function animateElement(
 
   const renderers = createElementsRenderer(elements, keyframes, mergedOptions)
 
-  const ends = renderers.map((r) => r.end)
-
-  const controllerOptions = { start: 0, duration: ends.length ? Math.max.apply(null, ends) : 0 }
-
-  const controller = new TweenController(renderers, controllerOptions)
+  const controller = new TweenController(renderers)
 
   if (mergedOptions.autoplay) controller.play()
 

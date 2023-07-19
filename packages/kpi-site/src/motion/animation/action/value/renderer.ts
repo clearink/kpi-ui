@@ -1,4 +1,4 @@
-import { isArray, logger, toArray } from '@kpi/shared'
+import { logger, toArray } from '@kpi/shared'
 import { TweenRenderer } from '../../scheduler'
 import createTweenEmitter from './utils/emitter'
 import { createRendererGenerator } from './utils/generator'
@@ -30,9 +30,6 @@ export default function createTweenRenderer<V extends AnimatableValue>(
   const render = (progress: number, iterations: number) => {
     return motion.set(generator(progress, iterations))
   }
-
-  // 当设置为 keyframes 时, 主动触发一次 update 事件
-  isArray(to) && emitter('update', motion.set(targets[0].original))
 
   return new TweenRenderer(emitter, render, rendererOptions)
 }

@@ -3,7 +3,7 @@ import type { MotionValue } from '../../../../motion'
 import type { MotionEventCallbacks } from '../../../../motion/interface'
 import type { AnimatableValue, AnimateValueOptions } from '../../../interface'
 
-export type Emitter = (type: keyof MotionEventCallbacks) => void
+export type Emitter = (type: keyof MotionEventCallbacks, ...params: any[]) => void
 
 export default function createTweenEmitter<V extends AnimatableValue>(
   motion: MotionValue<V>,
