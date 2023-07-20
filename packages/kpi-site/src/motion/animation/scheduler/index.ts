@@ -22,7 +22,7 @@ export class TweenScheduler {
   // 准确来说应该是 startDelay
   delay = 0
 
-  endDelay = 2000
+  endDelay = 0
 
   duration = 0
 
@@ -35,79 +35,83 @@ export class TweenScheduler {
   sliding: number[] = [-Infinity, -Infinity]
 
   get end() {
-    const { delay, start, duration, repeatDelay, repeat } = this
+    const { delay, start, duration, repeatDelay, repeat, endDelay } = this
 
     const cycle = (repeatDelay + duration) * repeat || 0
 
-    return delay + start + duration + cycle + this.endDelay
+    return delay + start + duration + cycle + endDelay
   }
 
-  // TODO: 改这里
-  get updateTimeline() {
-    const { duration, repeatDelay, repeat } = this
-
-    return duration + ((repeatDelay + duration) * repeat || 0)
+  get whole() {
+    return this.end - this.start
   }
 
-  // TODO: 改这里
-  get wholeTimeline() {
-    return this.delay + this.updateTimeline + this.endDelay
-  }
-
-  // TODO: 改这里
   get ratios() {
-    const { duration: dur, repeatDelay, sliding } = this
+    const { duration, repeatDelay, sliding, delay } = this
 
-    const done = this.iterations * (repeatDelay + dur) || 0
+    const done = this.iterations * (repeatDelay + duration) || 0
 
-    return sliding.map((t) => (t - done === dur ? 1 : (t - done) / dur))
+    // TODO: 改这里
+    return sliding.map((t) => t - done - delay).map((t) => (t === duration ? 1 : t / duration))
   }
 
-  // TODO: 改这里
   get iterations() {
-    const { duration, repeatDelay, repeat, sliding } = this
+    const { duration, repeatDelay, repeat, sliding, reversed, delay } = this
 
-    const count = sliding[1] / (repeatDelay + duration) || 0
+    const time = reversed ? sliding[0] : sliding[1]
+
+    const count = (time - delay) / (repeatDelay + duration) || 0
 
     return clamp(Math.floor(count), 0, repeat)
   }
 
-  get waiting() {
+  get running() {
     const [first, second] = this.sliding
 
-    if (this.reversed) return first >= this.wholeTimeline && second > this.wholeTimeline
+    const time = this.whole
 
-    return first < 0 && second < 0
+    return !(first < 0 && second < 0) && !(first > time && second > time)
+  }
+
+  get updating() {
+    const [first, second] = this.ratios
+
+    return !(first < 0 && second < 0) && !(first > 1 && first > 1)
   }
 
   get completed() {
     const [first, second] = this.sliding
 
-    if (this.reversed) return first < 0 && second < 0
+    const time = this.reversed ? 0 : this.whole
 
-    return first >= this.wholeTimeline && second > this.wholeTimeline
+    if (this.reversed) return first < time && second < time
+
+    return first > time && second > time
   }
 
   get starting() {
     const [first, second] = this.sliding
 
-    if (this.reversed) return first < this.wholeTimeline && second >= this.wholeTimeline
+    const time = this.reversed ? this.whole : 0
 
-    return first < 0 && second >= 0
+    return first < time && second >= time
   }
 
+  // TODO: 改这里
   get repeating() {
     const [first, second] = this.ratios
 
-    return !this.starting && !this.completing && first < 0 && second >= 0
+    if (this.iterations === 0) return false
+
+    return first < 0 && second >= 0
   }
 
   get completing() {
     const [first, second] = this.sliding
 
-    if (this.reversed) return first < 0 && second >= 0
+    const time = this.reversed ? 0 : this.whole
 
-    return first < this.wholeTimeline && second >= this.wholeTimeline
+    return first < time && second >= time
   }
 
   constructor(options: TweenOptions) {
@@ -136,14 +140,9 @@ export class TweenScheduler {
 
     this.reversed = reversed
 
-    // 超出范围
-    if (this.waiting || this.completed) return false
+    if (!this.running) return false
 
-    const [before, current] = this.ratios
-
-    if (before >= 1 && current > 1) return false
-
-    return reversed ? before : current
+    return this.ratios[change]
   }
 }
 
@@ -166,17 +165,17 @@ export class TweenRenderer {
     this.schedule = (timestamp, reversed) => {
       const progress = scheduler.schedule(timestamp, reversed)
 
-      console.log(progress, scheduler.sliding)
       if (isBoolean(progress)) return !scheduler.completed
 
       scheduler.starting && emitter('start')
 
-      render(clamp(progress, 0, 1), scheduler.iterations)
+      scheduler.updating && render(clamp(progress, 0, 1), scheduler.iterations)
 
-      emitter('update')
+      scheduler.updating && emitter('update')
 
       // TODO: 是否还要加上 repeatComplete ?
       scheduler.repeating && emitter('repeat')
+      console.log(scheduler.ratios)
 
       scheduler.completing && emitter('complete')
 
@@ -204,7 +203,7 @@ export class TweenController {
 
   reverse: () => void
 
-  then!: (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => void
+  then!: (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => Promise<void>
 
   constructor(renderers: TweenRenderer[]) {
     // animate 开始的时间

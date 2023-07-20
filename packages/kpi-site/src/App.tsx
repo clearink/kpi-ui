@@ -138,9 +138,9 @@ export default function App() {
             duration: 2000,
             easing: 'easeInSine',
             delay: 2000,
-            // repeat: 2,
-            // repeatType: 'mirror',
-            // repeatDelay: 1000,
+            repeat: 2,
+            repeatType: 'mirror',
+            repeatDelay: 1000,
             onStart() {
               console.log('start', performance.now())
             },
