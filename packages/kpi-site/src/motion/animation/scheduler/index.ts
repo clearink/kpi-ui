@@ -60,17 +60,10 @@ export class TweenScheduler {
 
     const time = reversed ? sliding[0] : sliding[1]
 
+    // TODO: 改这里
     const count = (time - delay) / (repeatDelay + duration) || 0
 
     return clamp(Math.floor(count), 0, repeat)
-  }
-
-  get running() {
-    const [first, second] = this.sliding
-
-    const time = this.whole
-
-    return !(first < 0 && second < 0) && !(first > time && second > time)
   }
 
   get updating() {
@@ -130,6 +123,12 @@ export class TweenScheduler {
     !isNullish(repeatDelay) && (this.repeatDelay = clamp(repeatDelay, 0, big))
   }
 
+  running(timestamp: number) {
+    const lagged = frameData.lagged()
+
+    return timestamp + lagged >= this.start && timestamp - lagged <= this.end
+  }
+
   schedule(timestamp: number, reversed: boolean) {
     const factor = reversed ? 1 : -1
     const change = reversed ? 0 : 1
@@ -138,18 +137,24 @@ export class TweenScheduler {
     this.sliding[1 - change] = Math.abs(pre) === Infinity ? factor * Infinity : pre
     this.sliding[change] = timestamp - this.start
 
+    const diff = this.sliding[1] - this.sliding[0]
+
+    // 更改方向了,需要调整sliding
+    // 是否需要?
+    if (this.reversed !== reversed && diff >= frameData.lagged()) {
+      this.sliding[1 - change] = this.sliding[change] + factor * frameData.delta
+    }
+
     this.reversed = reversed
 
-    if (!this.running) return false
-
-    return this.ratios[change]
+    return clamp(this.ratios[change], 0, 1)
   }
 }
 
 export class TweenRenderer {
   readonly scheduler!: TweenScheduler
 
-  schedule: (timestamp: number, reversed: boolean) => boolean
+  schedule: (timestamp: number, reversed: boolean) => void
 
   reset: (reversed: boolean) => void
 
@@ -163,23 +168,23 @@ export class TweenRenderer {
     defineGetter(this, 'scheduler', () => scheduler)
 
     this.schedule = (timestamp, reversed) => {
+      // 未到 animation 运行时间
+      if (!scheduler.running(timestamp)) return
+
       const progress = scheduler.schedule(timestamp, reversed)
 
-      if (isBoolean(progress)) return !scheduler.completed
+      console.log(progress, timestamp)
 
       scheduler.starting && emitter('start')
 
-      scheduler.updating && render(clamp(progress, 0, 1), scheduler.iterations)
+      scheduler.updating && render(progress, scheduler.iterations)
 
       scheduler.updating && emitter('update')
 
       // TODO: 是否还要加上 repeatComplete ?
       scheduler.repeating && emitter('repeat')
-      console.log(scheduler.ratios)
 
       scheduler.completing && emitter('complete')
-
-      return !scheduler.completing
     }
 
     this.reset = (reversed) => {
@@ -224,8 +229,6 @@ export class TweenController {
 
     const duration = max(renderers.map(({ scheduler }) => scheduler.end))
 
-    const scheduler = new TweenScheduler({ start: 0, duration })
-
     const reset = () => {
       // 重置 time
       $status = 'paused'
@@ -241,27 +244,26 @@ export class TweenController {
     reset()
 
     const tick = (timestamp: number) => {
+      if (!running($status)) return false
+
       const elapsed = $lastUpdate ? timestamp - $lastUpdate : 0
 
       $lastUpdate = timestamp
 
       $currentTime += elapsed * this.speed
 
-      if ($currentTime < -frameData.lagged() || !running($status)) return false
+      const lagged = frameData.lagged()
+
+      if ($currentTime + lagged <= 0) return false
 
       const reversed = this.speed < 0
 
-      const progress = scheduler.schedule($currentTime, reversed)
-
-      if (isBoolean(progress)) return !scheduler.completed
-
       renderers.forEach((renderer) => renderer.schedule($currentTime, reversed))
 
-      const shouldContinue = !scheduler.completing
+      if ($currentTime - lagged <= duration) return true
 
-      if (shouldContinue) return true
-
-      // 更改状态
+      // 触发事件是否应当放到 renderer 中?
+      // // 更改状态
       $status = 'finished'
 
       // 触发 promise 回调
@@ -283,6 +285,8 @@ export class TweenController {
       if (canceled($status)) return
 
       this.speed *= -1
+      console.log($currentTime, duration - $currentTime)
+      $currentTime = duration - $currentTime
       this.play(!running($status))
     }
 
@@ -305,3 +309,11 @@ export class TweenController {
     }
   }
 }
+
+/**
+ * 根据 web animations api 的分析, 其生命周期如下
+ * 1. start---delay---update--endDelay--finish
+ *
+ *
+ * Q: controller 是否需要创建一个 scheduler ?
+ */
