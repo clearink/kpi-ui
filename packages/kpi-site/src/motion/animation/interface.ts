@@ -53,6 +53,7 @@ export interface Transition {
    * @default 0
    */
   delay?: number
+  endDelay?: number
   duration?: number
   autoplay?: boolean
 }

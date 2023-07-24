@@ -1,5 +1,6 @@
+/* eslint-disable no-bitwise */
 /* eslint-disable no-return-assign, max-classes-per-file */
-import { isBoolean, isNullish } from '@kpi/shared'
+import { isNullish } from '@kpi/shared'
 import clamp from '../../utils/clamp'
 import { defineGetter } from '../../utils/define'
 import driver from '../driver'
@@ -47,23 +48,27 @@ export class TweenScheduler {
   }
 
   get ratios() {
-    const { duration, repeatDelay, sliding, delay } = this
+    const { duration, repeatDelay, sliding, delay, endDelay, reversed } = this
 
     const done = this.iterations * (repeatDelay + duration) || 0
 
-    // TODO: 改这里
-    return sliding.map((t) => t - done - delay).map((t) => (t === duration ? 1 : t / duration))
+    return sliding
+      .map((t) => t - done - (reversed ? endDelay : delay))
+      .map((t) => (t === duration ? 1 : t / duration))
   }
 
   get iterations() {
-    const { duration, repeatDelay, repeat, sliding, reversed, delay } = this
+    const { duration, repeat, repeatDelay, sliding, reversed, delay, endDelay } = this
 
-    const time = reversed ? sliding[0] : sliding[1]
-
-    // TODO: 改这里
-    const count = (time - delay) / (repeatDelay + duration) || 0
+    const count = (sliding[1] - (reversed ? endDelay : delay)) / (repeatDelay + duration) || 0
 
     return clamp(Math.floor(count), 0, repeat)
+  }
+
+  get running() {
+    const [first, second] = this.sliding
+
+    return !(first < 0 && second < 0) && !(first > this.whole && first > this.whole)
   }
 
   get updating() {
@@ -72,82 +77,56 @@ export class TweenScheduler {
     return !(first < 0 && second < 0) && !(first > 1 && first > 1)
   }
 
-  get completed() {
-    const [first, second] = this.sliding
-
-    const time = this.reversed ? 0 : this.whole
-
-    if (this.reversed) return first < time && second < time
-
-    return first > time && second > time
-  }
-
   get starting() {
-    const [first, second] = this.sliding
+    const { sliding } = this
 
-    const time = this.reversed ? this.whole : 0
-
-    return first < time && second >= time
+    return sliding[0] < 0 && sliding[1] >= 0
   }
 
-  // TODO: 改这里
   get repeating() {
-    const [first, second] = this.ratios
+    const { ratios, iterations } = this
 
-    if (this.iterations === 0) return false
-
-    return first < 0 && second >= 0
+    return iterations && ratios[0] < 0 && ratios[1] >= 0
   }
 
   get completing() {
     const [first, second] = this.sliding
 
-    const time = this.reversed ? 0 : this.whole
+    const time = this.whole
 
     return first < time && second >= time
   }
 
   constructor(options: TweenOptions) {
-    const { start, delay, duration, repeat, repeatDelay } = options
+    const { start, duration, repeat, delay, endDelay, repeatDelay } = options
 
-    const big = 1e20
+    const maximum = 1e20
 
-    !isNullish(start) && (this.start = clamp(start, 0, big))
+    !isNullish(start) && (this.start = clamp(start, 0, maximum))
 
-    !isNullish(delay) && (this.delay = clamp(delay, 0, big))
+    !isNullish(duration) && (this.duration = clamp(duration, 0, maximum))
 
-    !isNullish(duration) && (this.duration = clamp(duration, 0, big))
+    !isNullish(repeat) && (this.repeat = clamp(repeat, 0, maximum))
 
-    !isNullish(repeat) && (this.repeat = clamp(repeat, 0, big))
+    !isNullish(delay) && (this.delay = clamp(delay, 0, maximum))
 
-    !isNullish(repeatDelay) && (this.repeatDelay = clamp(repeatDelay, 0, big))
-  }
+    !isNullish(delay) && (this.delay = clamp(delay, 0, maximum))
 
-  running(timestamp: number) {
-    const lagged = frameData.lagged()
+    !isNullish(endDelay) && (this.endDelay = clamp(endDelay, 0, maximum))
 
-    return timestamp + lagged >= this.start && timestamp - lagged <= this.end
+    !isNullish(repeatDelay) && (this.repeatDelay = clamp(repeatDelay, 0, maximum))
   }
 
   schedule(timestamp: number, reversed: boolean) {
-    const factor = reversed ? 1 : -1
-    const change = reversed ? 0 : 1
+    const elapsed = timestamp - this.start
+    const diff = Math.abs(elapsed - this.sliding[1]) - frameData.delta
 
-    const pre = this.sliding[change]
-    this.sliding[1 - change] = Math.abs(pre) === Infinity ? factor * Infinity : pre
-    this.sliding[change] = timestamp - this.start
-
-    const diff = this.sliding[1] - this.sliding[0]
-
-    // 更改方向了,需要调整sliding
-    // 是否需要?
-    if (this.reversed !== reversed && diff >= frameData.lagged()) {
-      this.sliding[1 - change] = this.sliding[change] + factor * frameData.delta
-    }
+    this.sliding[0] = diff | 0 ? elapsed - frameData.delta : this.sliding[1]
+    this.sliding[1] = elapsed
 
     this.reversed = reversed
 
-    return clamp(this.ratios[change], 0, 1)
+    return this.running ? clamp(reversed ? 1 - this.ratios[1] : this.ratios[1], 0, 1) : false
   }
 }
 
@@ -168,18 +147,14 @@ export class TweenRenderer {
     defineGetter(this, 'scheduler', () => scheduler)
 
     this.schedule = (timestamp, reversed) => {
-      // 未到 animation 运行时间
-      if (!scheduler.running(timestamp)) return
-
       const progress = scheduler.schedule(timestamp, reversed)
+      console.log(scheduler.sliding)
 
-      console.log(progress, timestamp)
+      if (progress === false) return false
 
       scheduler.starting && emitter('start')
 
-      scheduler.updating && render(progress, scheduler.iterations)
-
-      scheduler.updating && emitter('update')
+      scheduler.updating && emitter('update', render(progress, scheduler.iterations))
 
       // TODO: 是否还要加上 repeatComplete ?
       scheduler.repeating && emitter('repeat')
@@ -198,7 +173,7 @@ export class TweenRenderer {
 export class TweenController {
   readonly status!: AnimationStatus
 
-  speed: number = 1
+  speed = 1
 
   play: (restart?: boolean) => void
 
@@ -211,11 +186,11 @@ export class TweenController {
   then!: (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => Promise<void>
 
   constructor(renderers: TweenRenderer[]) {
-    // animate 开始的时间
-    let $lastUpdate = 0
-    // animate 当前的时间
+    // animation 上次更新的时间
+    let $lastTime = 0
+    // animation 当前的时间
     let $currentTime = 0
-    // animate 状态
+    // animation 状态
     let $status: AnimationStatus = 'paused'
 
     defineGetter(this, 'status', () => $status)
@@ -232,7 +207,7 @@ export class TweenController {
     const reset = () => {
       // 重置 time
       $status = 'paused'
-      $lastUpdate = 0
+      $lastTime = 0
       $currentTime = this.speed > 0 ? 0 : duration
 
       // 重置 renderer 状态
@@ -246,27 +221,24 @@ export class TweenController {
     const tick = (timestamp: number) => {
       if (!running($status)) return false
 
-      const elapsed = $lastUpdate ? timestamp - $lastUpdate : 0
+      const elapsed = $lastTime ? timestamp - $lastTime : 0
 
-      $lastUpdate = timestamp
+      $lastTime = timestamp
 
       $currentTime += elapsed * this.speed
 
-      const lagged = frameData.lagged()
-
-      if ($currentTime + lagged <= 0) return false
+      if (Math.floor($currentTime + frameData.delta) <= 0) return false
 
       const reversed = this.speed < 0
 
-      renderers.forEach((renderer) => renderer.schedule($currentTime, reversed))
+      const adjusted = reversed ? duration - $currentTime : $currentTime
 
-      if ($currentTime - lagged <= duration) return true
+      renderers.forEach((renderer) => renderer.schedule(adjusted, reversed))
 
-      // 触发事件是否应当放到 renderer 中?
-      // // 更改状态
+      if ($currentTime <= duration) return true
+
       $status = 'finished'
 
-      // 触发 promise 回调
       $promise.update()
 
       return false
@@ -285,8 +257,7 @@ export class TweenController {
       if (canceled($status)) return
 
       this.speed *= -1
-      console.log($currentTime, duration - $currentTime)
-      $currentTime = duration - $currentTime
+
       this.play(!running($status))
     }
 
@@ -295,16 +266,16 @@ export class TweenController {
 
       $status = 'canceled'
 
-      // emit('cancel')
-
       driver.cancel(tick)
     }
 
     this.pause = () => {
       if (canceled($status)) return
 
-      $lastUpdate = 0
       $status = 'paused'
+
+      $lastTime = 0
+
       driver.cancel(tick)
     }
   }

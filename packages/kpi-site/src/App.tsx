@@ -138,9 +138,10 @@ export default function App() {
             duration: 2000,
             easing: 'easeInSine',
             delay: 2000,
+            endDelay: 1000,
             repeat: 2,
             repeatType: 'mirror',
-            repeatDelay: 1000,
+            repeatDelay: 100,
             onStart() {
               console.log('start', performance.now())
             },
@@ -151,6 +152,7 @@ export default function App() {
               console.log('complete', performance.now())
             },
             onUpdate(current) {
+              // console.log(current)
               ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
             },
           })
