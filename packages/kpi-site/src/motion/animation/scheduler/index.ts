@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 /* eslint-disable no-return-assign, max-classes-per-file */
 import { isNullish } from '@kpi/shared'
 import clamp from '../../utils/clamp'
@@ -119,9 +118,9 @@ export class TweenScheduler {
 
   schedule(timestamp: number, reversed: boolean) {
     const elapsed = timestamp - this.start
-    const diff = Math.abs(elapsed - this.sliding[1]) - frameData.delta
+    const diff = Math.abs(Math.abs(elapsed - this.sliding[1]) - frameData.delta)
 
-    this.sliding[0] = diff | 0 ? elapsed - frameData.delta : this.sliding[1]
+    this.sliding[0] = Math.floor(diff) ? elapsed - frameData.delta : this.sliding[1]
     this.sliding[1] = elapsed
 
     this.reversed = reversed
@@ -148,7 +147,7 @@ export class TweenRenderer {
 
     this.schedule = (timestamp, reversed) => {
       const progress = scheduler.schedule(timestamp, reversed)
-      console.log(scheduler.sliding)
+      console.log(progress, timestamp)
 
       if (progress === false) return false
 
@@ -227,7 +226,8 @@ export class TweenController {
 
       $currentTime += elapsed * this.speed
 
-      if (Math.floor($currentTime + frameData.delta) <= 0) return false
+      // TODO: 不稳定 是否考虑使用 renderer.schedule 的返回值
+      if ($currentTime + frameData.delta * 2 <= 0) return false
 
       const reversed = this.speed < 0
 
@@ -280,11 +280,3 @@ export class TweenController {
     }
   }
 }
-
-/**
- * 根据 web animations api 的分析, 其生命周期如下
- * 1. start---delay---update--endDelay--finish
- *
- *
- * Q: controller 是否需要创建一个 scheduler ?
- */
