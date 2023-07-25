@@ -64,28 +64,16 @@ export class TweenScheduler {
     return clamp(Math.floor(count), 0, repeat)
   }
 
-  get running() {
-    const [first, second] = this.sliding
-
-    return !(first < 0 && second < 0) && !(first > this.whole && first > this.whole)
-  }
-
-  get updating() {
-    const [first, second] = this.ratios
-
-    return !(first < 0 && second < 0) && !(first > 1 && first > 1)
-  }
-
   get starting() {
     const { sliding } = this
 
     return sliding[0] < 0 && sliding[1] >= 0
   }
 
-  get repeating() {
-    const { ratios, iterations } = this
+  get running() {
+    const [first, second] = this.sliding
 
-    return iterations && ratios[0] < 0 && ratios[1] >= 0
+    return !(first < 0 && second < 0) && !(first > this.whole && first > this.whole)
   }
 
   get completing() {
@@ -94,6 +82,18 @@ export class TweenScheduler {
     const time = this.whole
 
     return first < time && second >= time
+  }
+
+  get updating() {
+    const [first, second] = this.ratios
+
+    return !(first < 0 && second < 0) && !(first > 1 && first > 1)
+  }
+
+  get repeating() {
+    const { ratios, iterations } = this
+
+    return iterations && ratios[0] < 0 && ratios[1] >= 0
   }
 
   constructor(options: TweenOptions) {
@@ -125,7 +125,9 @@ export class TweenScheduler {
 
     this.reversed = reversed
 
-    return this.running ? clamp(reversed ? 1 - this.ratios[1] : this.ratios[1], 0, 1) : false
+    if (this.running) return false
+
+    return clamp(reversed ? 1 - this.ratios[1] : this.ratios[1], 0, 1)
   }
 }
 
@@ -228,8 +230,6 @@ export class TweenController {
       const reversed = this.speed < 0
 
       const adjusted = reversed ? duration - $currentTime : $currentTime
-
-      // console.log(adjusted, $currentTime, duration)
 
       renderers.forEach((renderer) => renderer.schedule(adjusted, reversed))
 

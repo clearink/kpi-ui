@@ -135,10 +135,8 @@ export default function App() {
         type="button"
         onClick={() => {
           const a = animate(v, 800, {
-            duration: 600,
+            duration: Infinity,
             easing: 'easeInSine',
-            delay: 2000,
-            endDelay: 1000,
             // repeat: 2,
             // delay: 1000,
             // repeatType: 'mirror',
@@ -159,11 +157,11 @@ export default function App() {
           })
 
           ;(window as any).a = a
-          // a.then(() => console.log('finish', performance.now()))
-          setTimeout(() => {
-            a.reverse()
-            console.log(a, performance.now())
-          }, 2300)
+          a.then(() => console.log('finish', performance.now()))
+          // setTimeout(() => {
+          //   a.reverse()
+          //   console.log(a, performance.now())
+          // }, 2300)
           // setTimeout(() => {
           // a.reverse()
           // }, 2300)
