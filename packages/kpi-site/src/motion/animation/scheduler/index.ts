@@ -147,7 +147,6 @@ export class TweenRenderer {
 
     this.schedule = (timestamp, reversed) => {
       const progress = scheduler.schedule(timestamp, reversed)
-      console.log(progress, timestamp)
 
       if (progress === false) return false
 
@@ -226,16 +225,15 @@ export class TweenController {
 
       $currentTime += elapsed * this.speed
 
-      // TODO: 不稳定 是否考虑使用 renderer.schedule 的返回值
-      if ($currentTime + frameData.delta * 2 <= 0) return false
-
       const reversed = this.speed < 0
 
       const adjusted = reversed ? duration - $currentTime : $currentTime
 
+      // console.log(adjusted, $currentTime, duration)
+
       renderers.forEach((renderer) => renderer.schedule(adjusted, reversed))
 
-      if ($currentTime <= duration) return true
+      if (adjusted < duration) return true
 
       $status = 'finished'
 
@@ -249,7 +247,9 @@ export class TweenController {
       if (canceled($status)) return
 
       if (restart || finished($status)) reset()
+
       $status = 'running'
+
       driver.start(tick)
     }
 
