@@ -2,8 +2,6 @@ import { isUndefined } from '@kpi/shared'
 
 let supported: boolean | undefined
 
-window?.addEventListener?.('DOMContentLoaded', detectFlexGap)
-
 export default function detectFlexGap() {
   if (!isUndefined(supported)) return supported
 
