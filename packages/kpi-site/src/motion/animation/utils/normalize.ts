@@ -1,6 +1,5 @@
-import { isString } from '@kpi/shared'
+import { isString, pushItem } from '@kpi/shared'
 import Options from '../config/options'
-import { pushItem } from '../../utils/array'
 
 import type {
   AnimateElementOptions,

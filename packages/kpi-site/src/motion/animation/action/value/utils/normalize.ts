@@ -1,9 +1,8 @@
-import { isArray, isFunction, isNull, isString } from '@kpi/shared'
-import Options from '../../../config/options'
+import { isArray, isFunction, isNull, isString, pushItem } from '@kpi/shared'
 import { cubicBezier, eases } from '../../../../easing'
 import angle from '../../../../prepare/angle'
 import color from '../../../../prepare/color'
-import { pushItem } from '../../../../utils/array'
+import Options from '../../../config/options'
 
 import type { Easing } from '../../../../easing/interface'
 import type { GenericKeyframes } from '../../../interface'

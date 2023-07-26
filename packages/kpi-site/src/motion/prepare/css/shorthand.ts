@@ -1,4 +1,4 @@
-import { pushItem } from '../../utils/array'
+import { pushItem } from '@kpi/shared'
 
 // padding margin width radius
 const sides = ['Top', 'Right', 'Bottom', 'Left']

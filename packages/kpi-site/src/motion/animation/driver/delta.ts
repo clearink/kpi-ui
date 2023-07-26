@@ -1,13 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-let timestamp = 0
+export const frameData = { delta: 1000 / 60, timestamp: 0 }
 
-export const frameData = { delta: 1000 / 60 }
-
-export const updateFrameDelta = (t: number, ...args: any[]) => {
-  const delta = t - timestamp
+export const updateFrameDelta = (t: number, ...params: any[]) => {
+  const delta = t - frameData.timestamp
 
   // 保证在偏差以内
-  if (timestamp && delta < frameData.delta * 2) frameData.delta = delta
-
-  timestamp = t
+  if (frameData.timestamp && delta < frameData.delta * 2) frameData.delta = delta
 }

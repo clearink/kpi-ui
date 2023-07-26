@@ -1,7 +1,16 @@
 /* eslint-disable max-classes-per-file,class-methods-use-this */
-import { isFunction, hasOwn, isBoolean, isUndefined, logger, toArray } from '@kpi/shared'
+import {
+  isFunction,
+  hasOwn,
+  isBoolean,
+  isUndefined,
+  logger,
+  toArray,
+  pushItem,
+  removeItem,
+} from '@kpi/shared'
 import BaseControl from './base_control'
-import { pushItem, removeItem, _getName } from '../utils/path'
+import { _getName } from '../utils/path'
 import { setIn, getIn, deleteIn, mergeValue, cloneWithPath, hasOwnWithPath } from '../utils/value'
 import { InvalidField } from './field_control'
 
