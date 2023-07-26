@@ -19,7 +19,6 @@ const finished = (status: AnimationStatus) => status === 'finished'
 export class TweenScheduler {
   start = 0
 
-  // 准确来说应该是 startDelay
   delay = 0
 
   endDelay = 0
@@ -30,70 +29,12 @@ export class TweenScheduler {
 
   repeatDelay = 0
 
-  reversed = false
-
-  sliding: number[] = [-Infinity, -Infinity]
+  sliding = [0, 0]
 
   get end() {
-    const { delay, start, duration, repeatDelay, repeat, endDelay } = this
+    const $cycle = (this.repeatDelay + this.duration) * this.repeat || 0
 
-    const cycle = (repeatDelay + duration) * repeat || 0
-
-    return delay + start + duration + cycle + endDelay
-  }
-
-  get whole() {
-    return this.end - this.start
-  }
-
-  get ratios() {
-    const { duration, repeatDelay, sliding, delay, endDelay, reversed } = this
-
-    const done = this.iterations * (repeatDelay + duration) || 0
-
-    return sliding
-      .map((t) => t - done - (reversed ? endDelay : delay))
-      .map((t) => (t === duration ? 1 : t / duration))
-  }
-
-  get iterations() {
-    const { duration, repeat, repeatDelay, sliding, reversed, delay, endDelay } = this
-
-    const count = (sliding[1] - (reversed ? endDelay : delay)) / (repeatDelay + duration) || 0
-
-    return clamp(Math.floor(count), 0, repeat)
-  }
-
-  get starting() {
-    const { sliding } = this
-
-    return sliding[0] < 0 && sliding[1] >= 0
-  }
-
-  get running() {
-    const [first, second] = this.sliding
-
-    return !(first < 0 && second < 0) && !(first > this.whole && first > this.whole)
-  }
-
-  get completing() {
-    const [first, second] = this.sliding
-
-    const time = this.whole
-
-    return first < time && second >= time
-  }
-
-  get updating() {
-    const [first, second] = this.ratios
-
-    return !(first < 0 && second < 0) && !(first > 1 && first > 1)
-  }
-
-  get repeating() {
-    const { ratios, iterations } = this
-
-    return iterations && ratios[0] < 0 && ratios[1] >= 0
+    return this.delay + this.start + this.duration + $cycle + this.endDelay
   }
 
   constructor(options: TweenOptions) {
@@ -123,11 +64,42 @@ export class TweenScheduler {
     this.sliding[0] = Math.floor(diff) ? elapsed - frameData.delta : this.sliding[1]
     this.sliding[1] = elapsed
 
-    this.reversed = reversed
+    const [first, second] = this.sliding
 
-    if (this.running) return false
+    const timeline = this.end - this.start
 
-    return clamp(reversed ? 1 - this.ratios[1] : this.ratios[1], 0, 1)
+    // 不在时间线内
+    if ((first < 0 && second < 0) || (first > timeline && second > timeline)) return false
+
+    const { duration, repeat, repeatDelay } = this
+
+    const $delay = reversed ? this.endDelay : this.delay
+
+    const count = (second - $delay) / (repeatDelay + duration) || 0
+
+    // 运行次数
+    const $iterations = clamp(Math.floor(count), 0, repeat)
+
+    const done = $iterations * (repeatDelay + duration) || 0
+
+    // 进度
+    const $ratios = this.sliding
+      .map((t) => t - done - $delay)
+      .map((t) => (t === duration ? 1 : t / duration))
+
+    // 更新中
+    const $updating = !($ratios[0] < 0 && $ratios[1] < 0) && !($ratios[0] > 1 && $ratios[1] > 1)
+
+    // 重复中
+    const $repeating = $iterations > 0 && $ratios[0] < 0 && $ratios[1] >= 0
+
+    // 开始中
+    const $starting = first < 0 && second >= 0
+
+    // 结束中
+    const $completing = first < timeline && second >= timeline
+
+    return { $starting, $completing, $updating, $repeating, $iterations, $ratios }
   }
 }
 
@@ -147,25 +119,23 @@ export class TweenRenderer {
 
     defineGetter(this, 'scheduler', () => scheduler)
 
+    this.reset = (reversed) => emitter('update', render(+reversed, 0))
+
     this.schedule = (timestamp, reversed) => {
-      const progress = scheduler.schedule(timestamp, reversed)
+      const $status = scheduler.schedule(timestamp, reversed)
 
-      if (progress === false) return false
+      if ($status === false) return
 
-      scheduler.starting && emitter('start')
+      const $progress = clamp(reversed ? 1 - $status.$ratios[1] : $status.$ratios[1], 0, 1)
 
-      scheduler.updating && emitter('update', render(progress, scheduler.iterations))
+      $status.$starting && emitter('start')
 
-      // TODO: 是否还要加上 repeatComplete ?
-      scheduler.repeating && emitter('repeat')
+      $status.$updating && render($progress, $status.$iterations)
+      $status.$updating && emitter('update')
 
-      scheduler.completing && emitter('complete')
-    }
+      $status.$repeating && emitter('repeat')
 
-    this.reset = (reversed) => {
-      scheduler.sliding = [-Infinity, -Infinity]
-
-      emitter('update', render(+reversed, 0))
+      $status.$completing && emitter('complete')
     }
   }
 }
@@ -202,21 +172,9 @@ export class TweenController {
       return $promise.get().then(onfulfilled, onrejected)
     })
 
+    defineGetter(this, '$promise', () => $promise)
+
     const duration = max(renderers.map(({ scheduler }) => scheduler.end))
-
-    const reset = () => {
-      // 重置 time
-      $status = 'paused'
-      $lastTime = 0
-      $currentTime = this.speed > 0 ? 0 : duration
-
-      // 重置 renderer 状态
-      renderers.forEach((renderer) => renderer.reset(this.speed < 0))
-    }
-
-    // 初始化数据
-    // TODO: 初始时是否应该调用 reset 函数？
-    reset()
 
     const tick = (timestamp: number) => {
       if (!running($status)) return false
@@ -242,7 +200,15 @@ export class TweenController {
       return false
     }
 
-    // 运行
+    const reset = () => {
+      $lastTime = 0
+      $currentTime = this.speed > 0 ? 0 : duration
+
+      // 重置时强行回到原始位置
+      renderers.forEach((renderer) => renderer.reset(this.speed < 0))
+    }
+
+    // 运行/重新运行
     this.play = (restart = false) => {
       if (canceled($status)) return
 
@@ -253,14 +219,16 @@ export class TweenController {
       driver.start(tick)
     }
 
+    // 反转
     this.reverse = () => {
       if (canceled($status)) return
 
       this.speed *= -1
 
-      this.play(!running($status))
+      this.play()
     }
 
+    // 取消
     this.cancel = () => {
       if (canceled($status)) return
 
@@ -269,6 +237,7 @@ export class TweenController {
       driver.cancel(tick)
     }
 
+    // 暂停
     this.pause = () => {
       if (canceled($status)) return
 

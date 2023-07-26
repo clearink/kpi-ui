@@ -20,7 +20,7 @@ export default function animateValue<V extends AnimatableValue>(
 
   const motion = motionValue(from)
 
-  const renderer = createTweenRenderer(motion, to, { start: 0, ...mergedOptions })
+  const renderer = createTweenRenderer(motion, to, mergedOptions)
 
   const controller = new TweenController([renderer])
 

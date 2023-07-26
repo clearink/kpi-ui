@@ -133,19 +133,20 @@ export default function App() {
     <div>
       <button
         type="button"
-        onClick={() => {
-          const a = animate(v, 800, {
-            duration: Infinity,
+        onClick={async () => {
+          const a = animate(v, [200, 800], {
+            duration: 2000,
             easing: 'easeInSine',
-            // repeat: 2,
-            // delay: 1000,
+            delay: 1000,
+            endDelay: 1000,
+            // repeat: 3,
             // repeatType: 'mirror',
             // repeatDelay: 100,
             onStart() {
               console.log('start', performance.now())
             },
             onRepeat() {
-              console.log('repeat')
+              console.log('repeat', performance.now())
             },
             onComplete() {
               console.log('complete', performance.now())

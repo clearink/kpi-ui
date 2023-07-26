@@ -79,7 +79,7 @@ export type AnimateSequenceOptions = AnimateValueOptions & {
 }
 
 export type TweenOptions = AnimateValueOptions & {
-  start: number
+  start?: number
 }
 
 // TODO: 根据 gsap 的position完善类型
