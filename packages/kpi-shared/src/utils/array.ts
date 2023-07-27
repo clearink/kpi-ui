@@ -13,9 +13,8 @@ export function toArray<T>(candidate?: T | T[] | null, strict = false): T[] {
 }
 
 export function pushItem<T>(array: T[], items: T | T[]) {
-  const arrayItems = isArray(items) ? items : [items]
-
-  for (let i = 0; i < arrayItems.length; i += 1) array.push(arrayItems[i])
+  if (!isArray(items)) array.push(items)
+  else for (let i = 0; i < items.length; i += 1) array.push(items[i])
 
   return array
 }
@@ -23,5 +22,5 @@ export function pushItem<T>(array: T[], items: T | T[]) {
 export function removeItem<T>(array: T[], value: T) {
   const index = array.indexOf(value)
 
-  index !== -1 && array.splice(index, 1)
+  index > -1 && array.splice(index, 1)
 }

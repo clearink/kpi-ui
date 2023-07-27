@@ -1,3 +1,6 @@
+/* eslint-disable no-bitwise */
+import { isUndefined } from './is'
+
 import type { AnyObject } from '../types'
 
 export function omit<T extends AnyObject, K extends keyof T>(
@@ -6,14 +9,12 @@ export function omit<T extends AnyObject, K extends keyof T>(
 ): Omit<T, K> {
   const result = {} as T
 
-  const sourceKeys = Object.keys(obj)
+  const keys = Object.keys(obj) as K[]
 
-  for (let i = 0; i < sourceKeys.length; i += 1) {
-    const key = sourceKeys[i] as K
+  for (let i = 0; i < keys.length; i += 1) {
+    const key = keys[i]
 
-    if (excluded.indexOf(key) !== -1) continue
-
-    result[key] = obj[key]
+    if (excluded.indexOf(key) < 0) result[key] = obj[key]
   }
   return result
 }
@@ -28,9 +29,7 @@ export function pick<T, K extends keyof T>(
   for (let i = 0; i < keys.length; i += 1) {
     const key = keys[i]
 
-    if (!allowUndefined && obj[key] === undefined) continue
-
-    result[key] = obj[key]
+    if (!isUndefined(obj[key]) || allowUndefined) result[key] = obj[key]
   }
   return result
 }

@@ -1,16 +1,8 @@
 // /* eslint-disable import/no-extraneous-dependencies */
-// // import { Form, Button, Space } from '@kpi/ui'··
-// // import kv from '@kpi/validate'
-// // import { useEffect, useLayoutEffect, useReducer, useState } from 'react'
+// import { Form, Button, Space } from '@kpi/ui'
+// import kv from '@kpi/validate'
+// import { useEffect, useLayoutEffect, useState } from 'react'
 
-// import { Button } from '@kpi/ui'
-// import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-// import useAnimationFrame from './motion/hooks/use_animation_frame'
-// import cubicBezier from './motion/tween/cubic_bezier'
-// import easing from './motion/tween/easing'
-// import steps from './motion/tween/steps'
-// import { clamp } from './motion/utils'
-// import raf from './motion/utils/raf'
 // import './style.css'
 
 // function Input(props: any) {
@@ -58,6 +50,35 @@
 //           margin: '0 auto',
 //         }}
 //       >
+//         <Form.List name="username" initialValue={Array(3000).fill(1)}>
+//           {(fields, helpers) => {
+//             return (
+//               <>
+//                 <Button
+//                   onClick={() => {
+//                     ;(window as any).a = 0
+//                     helpers.insert(0, Math.random() * 100)
+//                     setTimeout(() => {
+//                       console.log((window as any).a)
+//                     })
+//                   }}
+//                 >
+//                   insert
+//                 </Button>
+//                 {fields.map((field) => (
+//                   <Form.Item
+//                     {...field}
+//                     label="123123"
+//                     noStyle={noStyle}
+//                     rule={noRule ? undefined : kv.string().required()}
+//                   >
+//                     <Input placeholder={`username-${field.name}`} />
+//                   </Form.Item>
+//                 ))}
+//               </>
+//             )
+//           }}
+//         </Form.List>
 //         {Array.from({ length: inputNumber }, (_, i) => (
 //           <Form.Item
 //             key={i}
@@ -74,52 +95,6 @@
 //   )
 // }
 
-// // simple animate function
-
-// interface AnimateOptions {
-//   duration?: number
-//   type?: any
-// }
-
-// export default function App() {
-//   const ref = useRef<HTMLDivElement>(null)
-//   const cancel = useRef(() => {})
-//   return (
-//     <div>
-//       <Button
-//         onClick={() => {
-//           cancel.current()
-//           cancel.current = animate(ref.current!, 0, 200, {
-//             type: easing.easeInBack,
-//             duration: 500,
-//           })
-//         }}
-//       >
-//         start
-//       </Button>
-
-//       <Button
-//         onClick={() => {
-//           cancel.current()
-//         }}
-//       >
-//         stop
-//       </Button>
-
-//       {/* <Collapse open={open} timeout={300}> */}
-//       <div className="container" ref={ref}>
-//         {/* <div className="cube" ref={ref}>
-//           <div className="side front" />
-//           <div className="side left" />
-//           <div className="side right" />
-//           <div className="side top" />
-//           <div className="side bottom" />
-//           <div className="side back" />
-//         </div> */}
-//       </div>
-//     </div>
-//   )
-// }
 import { useRef } from 'react'
 import { animate, useMotionValue } from './motion'
 
@@ -134,56 +109,52 @@ export default function App() {
       <button
         type="button"
         onClick={async () => {
-          const a = animate(v, [200, 800], {
-            duration: 2000,
-            easing: 'easeInSine',
-            delay: 1000,
-            endDelay: 1000,
-            // repeat: 3,
-            // repeatType: 'mirror',
-            // repeatDelay: 100,
-            onStart() {
-              console.log('start', performance.now())
+          // const a = animate(v, 800, {
+          //   duration: 2000,
+          //   easing: 'easeInSine',
+          //   // repeat: 3,
+          //   // repeatType: 'mirror',
+          //   // repeatDelay: 100,
+          //   onStart() {
+          //     console.log('start', performance.now())
+          //   },
+          //   onRepeat() {
+          //     console.log('repeat', performance.now())
+          //   },
+          //   onComplete() {
+          //     console.log('complete', performance.now())
+          //   },
+          //   onUpdate(current) {
+          //     // console.log(current)
+          //     ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
+          //   },
+          // })
+          const a = animate(
+            ref.current!,
+            {
+              x: 200,
+              y: 300,
             },
-            onRepeat() {
-              console.log('repeat', performance.now())
-            },
-            onComplete() {
-              console.log('complete', performance.now())
-            },
-            onUpdate(current) {
-              // console.log(current)
-              ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
-            },
-          })
+            {
+              duration: 1000,
+              repeat: 2,
+              delay: 2000,
+              easing: 'easeInOutQuad',
+              repeatType: 'mirror',
+              onUpdate(current) {
+                console.log('current', current)
+              },
+              x: {
+                duration: 3000,
+                delay: 1000,
+                endDelay: 30,
+              },
+            }
+          )
 
+          console.log(a)
           ;(window as any).a = a
           a.then(() => console.log('finish', performance.now()))
-          // setTimeout(() => {
-          //   a.reverse()
-          //   console.log(a, performance.now())
-          // }, 2300)
-          // setTimeout(() => {
-          // a.reverse()
-          // }, 2300)
-          // const b = animate(
-          //   ref.current!,
-          //   {
-          //     x: 200,
-          //     y: 300,
-          //   },
-          //   {
-          //     duration: 1000,
-          //     repeat: 2,
-          //     delay: 2000,
-          //     easing: 'easeInOutQuad',
-          //     repeatType: 'mirror',
-          //     onUpdate(current) {
-          //       console.log('current', current)
-          //     },
-          //   }
-          // )
-          // console.log(b)
         }}
       >
         start
@@ -202,10 +173,3 @@ export default function App() {
     </div>
   )
 }
-
-/**
- * Q: 解析 timelineOptions
- *
- * 1. 将 animateValue 与 animateElement 都看作是 animateSequence 的简写
- * 2.
- */

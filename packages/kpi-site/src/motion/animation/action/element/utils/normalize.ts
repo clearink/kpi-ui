@@ -2,9 +2,9 @@ import type { AnimateElementOptions, AnimateValueOptions } from '../../../interf
 
 export function normalizePropertyTransition(
   maybeOptions: AnimateElementOptions | undefined,
-  defaultOptions: AnimateValueOptions | undefined
+  defaultOptions: AnimateValueOptions
 ) {
-  return { ...defaultOptions, ...maybeOptions }
+  return maybeOptions ?? defaultOptions
 }
 
 export const a = 1

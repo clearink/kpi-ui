@@ -37,7 +37,8 @@ export default class ArraySchema<
       return this.inner._validate(item, ctx)
     })
     return Promise.all(list).then((results) => {
-      for (const result of results) {
+      for (let i = 0; i < results.length; i += 1) {
+        const result = results[i]
         if (result.status === 'invalid') return result
       }
       // TODO: value 需要改变 因为内部可能会有 transform 改变了原始值

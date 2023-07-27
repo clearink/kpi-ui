@@ -1,10 +1,10 @@
-/* eslint-disable no-return-assign, max-classes-per-file */
+/* eslint-disable max-classes-per-file */
 import { isNullish } from '@kpi/shared'
 import clamp from '../../utils/clamp'
 import { defineGetter } from '../../utils/define'
 import driver from '../driver'
 import { frameData } from '../driver/delta'
-import controlledPromise from '../utils/controlled_promise'
+import makeControlledPromise from '../utils/controlled_promise'
 import { max } from '../utils/math'
 
 import type { Emitter } from '../action/value/utils/emitter'
@@ -17,25 +17,21 @@ const canceled = (status: AnimationStatus) => status === 'canceled'
 const finished = (status: AnimationStatus) => status === 'finished'
 
 export class TweenScheduler {
-  start = 0
+  private start = 0
 
-  delay = 0
+  private delay = 0
 
-  endDelay = 0
+  private duration = 0
 
-  duration = 0
+  private repeat = 0
 
-  repeat = 0
+  private repeatDelay = 0
 
-  repeatDelay = 0
+  private endDelay = 0
 
-  sliding = [0, 0]
+  private sliding = [0, 0]
 
-  get end() {
-    const $cycle = (this.repeatDelay + this.duration) * this.repeat || 0
-
-    return this.delay + this.start + this.duration + $cycle + this.endDelay
-  }
+  readonly end!: number
 
   constructor(options: TweenOptions) {
     const { start, duration, repeat, delay, endDelay, repeatDelay } = options
@@ -44,17 +40,21 @@ export class TweenScheduler {
 
     !isNullish(start) && (this.start = clamp(start, 0, maximum))
 
+    !isNullish(delay) && (this.delay = clamp(delay, 0, maximum))
+
     !isNullish(duration) && (this.duration = clamp(duration, 0, maximum))
 
     !isNullish(repeat) && (this.repeat = clamp(repeat, 0, maximum))
 
-    !isNullish(delay) && (this.delay = clamp(delay, 0, maximum))
-
-    !isNullish(delay) && (this.delay = clamp(delay, 0, maximum))
+    !isNullish(repeatDelay) && (this.repeatDelay = clamp(repeatDelay, 0, maximum))
 
     !isNullish(endDelay) && (this.endDelay = clamp(endDelay, 0, maximum))
 
-    !isNullish(repeatDelay) && (this.repeatDelay = clamp(repeatDelay, 0, maximum))
+    const cycle = (this.repeatDelay + this.duration) * this.repeat || 0
+
+    const end = this.delay + this.start + this.duration + cycle + this.endDelay
+
+    defineGetter(this, 'end', () => end)
   }
 
   schedule(timestamp: number, reversed: boolean) {
@@ -71,38 +71,37 @@ export class TweenScheduler {
     // 不在时间线内
     if ((first < 0 && second < 0) || (first > timeline && second > timeline)) return false
 
-    const { duration, repeat, repeatDelay } = this
+    const delay = reversed ? this.endDelay : this.delay
 
-    const $delay = reversed ? this.endDelay : this.delay
-
-    const count = (second - $delay) / (repeatDelay + duration) || 0
+    const count = (second - delay) / (this.repeatDelay + this.duration) || 0
 
     // 运行次数
-    const $iterations = clamp(Math.floor(count), 0, repeat)
+    const iterations = clamp(Math.floor(count), 0, this.repeat)
 
-    const done = $iterations * (repeatDelay + duration) || 0
+    const done = iterations * (this.repeatDelay + this.duration) || 0
 
     // 进度
-    const $ratios = this.sliding
-      .map((t) => t - done - $delay)
-      .map((t) => (t === duration ? 1 : t / duration))
+    const ratios = this.sliding
+      .map((t) => t - done - delay)
+      .map((t) => (t === this.duration ? 1 : t / this.duration))
 
     // 更新中
-    const $updating = !($ratios[0] < 0 && $ratios[1] < 0) && !($ratios[0] > 1 && $ratios[1] > 1)
+    const updating = !(ratios[0] < 0 && ratios[1] < 0) && !(ratios[0] > 1 && ratios[1] > 1)
 
     // 重复中
-    const $repeating = $iterations > 0 && $ratios[0] < 0 && $ratios[1] >= 0
+    const repeating = iterations > 0 && ratios[0] < 0 && ratios[1] >= 0
 
     // 开始中
-    const $starting = first < 0 && second >= 0
+    const starting = first < 0 && second >= 0
 
     // 结束中
-    const $completing = first < timeline && second >= timeline
+    const completing = first < timeline && second >= timeline
 
-    return { $starting, $completing, $updating, $repeating, $iterations, $ratios }
+    return { starting, completing, updating, repeating, iterations, ratios }
   }
 }
 
+type Update = (progress: number, iterations: number) => void
 export class TweenRenderer {
   readonly scheduler!: TweenScheduler
 
@@ -110,32 +109,27 @@ export class TweenRenderer {
 
   reset: (reversed: boolean) => void
 
-  constructor(
-    emitter: Emitter,
-    render: (progress: number, iterations: number) => void,
-    options: TweenOptions
-  ) {
+  constructor(emitter: Emitter, update: Update, options: TweenOptions) {
     const scheduler = new TweenScheduler(options)
 
     defineGetter(this, 'scheduler', () => scheduler)
 
-    this.reset = (reversed) => emitter('update', render(+reversed, 0))
+    this.reset = (reversed) => emitter('update', update(+reversed, 0))
 
     this.schedule = (timestamp, reversed) => {
-      const $status = scheduler.schedule(timestamp, reversed)
+      const status = scheduler.schedule(timestamp, reversed)
 
-      if ($status === false) return
+      if (status === false) return
 
-      const $progress = clamp(reversed ? 1 - $status.$ratios[1] : $status.$ratios[1], 0, 1)
+      const progress = clamp(reversed ? 1 - status.ratios[1] : status.ratios[1], 0, 1)
 
-      $status.$starting && emitter('start')
+      status.starting && emitter('start')
 
-      $status.$updating && render($progress, $status.$iterations)
-      $status.$updating && emitter('update')
+      status.updating && emitter('update', update(progress, status.iterations))
 
-      $status.$repeating && emitter('repeat')
+      status.repeating && emitter('repeat')
 
-      $status.$completing && emitter('complete')
+      status.completing && emitter('complete')
     }
   }
 }
@@ -165,14 +159,12 @@ export class TweenController {
 
     defineGetter(this, 'status', () => $status)
 
-    const $promise = controlledPromise()
+    const $promise = makeControlledPromise()
     $promise.update()
 
     defineGetter(this, 'then', () => (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => {
       return $promise.get().then(onfulfilled, onrejected)
     })
-
-    defineGetter(this, '$promise', () => $promise)
 
     const duration = max(renderers.map(({ scheduler }) => scheduler.end))
 

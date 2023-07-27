@@ -50,8 +50,8 @@ export default class ObjectSchema<
       return schema._validate(value[key], ctx)
     })
     return Promise.all(list).then((results) => {
-      for (const result of results) {
-        // 已经添加过 invalid 数据 此处直接返回即可
+      for (let i = 0; i < results.length; i += 1) {
+        const result = results[i][1]
         if (result.status === 'invalid') return result
       }
       // TODO: value 需要改变 因为内部可能会有 transform 改变了原始值

@@ -1,11 +1,10 @@
 import { isObjectLike, shallowMerge } from '@kpi/shared'
 import { isMotionValue, motionValue } from '../../../motion'
+// import { defineHidden } from '../../../utils/define'
+// import { $promise } from '../../../utils/symbol'
 import Options from '../../config/options'
 import { TweenController } from '../../scheduler'
 import createTweenRenderer from './renderer'
-// import { createControllerGenerator } from './utils/generator'
-// import defineHidden from '../../../utils/define_hidden'
-// import { $promise } from '../../../utils/symbol'
 
 import type { MotionValue } from '../../../motion'
 import type { AnimatableValue, AnimateValueOptions, GenericKeyframes } from '../../interface'

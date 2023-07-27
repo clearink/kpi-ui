@@ -1,4 +1,6 @@
 import { isObject, shallowMerge } from '@kpi/shared'
+// import { defineHidden } from '../../../utils/define'
+// import { $promise } from '../../../utils/symbol'
 import Options from '../../config/options'
 import { TweenController } from '../../scheduler'
 import selector from '../../utils/selector'
@@ -25,6 +27,9 @@ export default function animateElement(
   const renderers = createElementsRenderer(elements, keyframes, mergedOptions)
 
   const controller = new TweenController(renderers)
+
+  // TODO: controller 挂到 element 上，下次 play 时可以取消掉
+  // elements.forEach((element) => defineHidden(element, $promise, controller))
 
   if (mergedOptions.autoplay) controller.play()
 

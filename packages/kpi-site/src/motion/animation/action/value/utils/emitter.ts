@@ -1,3 +1,5 @@
+import { capitalize } from '@kpi/shared'
+
 import type { MotionValue } from '../../../../motion'
 import type { MotionEventCallbacks } from '../../../../motion/interface'
 import type { AnimatableValue, AnimateValueOptions } from '../../../interface'
@@ -9,7 +11,7 @@ export default function createTweenEmitter<V extends AnimatableValue>(
   options: AnimateValueOptions<V>
 ): Emitter {
   return (type: keyof MotionEventCallbacks<V>) => {
-    const camelCase = type.replace(/^(.)/, (a) => `on${a.toUpperCase()}`)
+    const camelCase = `on${capitalize(type)}`
 
     const args: [V] | [] = type === 'update' ? [motion.get()] : []
 

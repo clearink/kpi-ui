@@ -1,4 +1,4 @@
-import { hasOwn, isNull, isUndefined, toArray } from '@kpi/shared'
+import { hasOwn, isNull, isUndefined, pushItem, toArray } from '@kpi/shared'
 import { motionValue } from '../../../motion'
 import { convertToUnit } from '../../../prepare'
 import transform from '../../../prepare/transform'
@@ -18,7 +18,7 @@ import type {
   KeyframeTarget,
   TweenOptions,
 } from '../../interface'
-import type { TweenRenderer } from '../../scheduler'
+import { TweenRenderer } from '../../scheduler'
 
 export default function createElementsRenderer(
   elements: Element[],
@@ -26,15 +26,17 @@ export default function createElementsRenderer(
   options: AnimateElementOptions
 ) {
   return elements.reduce((result: TweenRenderer[], element) => {
-    Object.entries(keyframes).forEach(([property, target]) => {
-      if (isUndefined(target)) return
+    const entries = Object.entries(keyframes)
+
+    for (let i = 0; i < entries.length; i += 1) {
+      const [property, target] = entries[i]
+
+      if (isUndefined(target)) continue
 
       const transition = normalizePropertyTransition(options[property], options)
 
-      const rendererOptions = { start: 0, ...transition }
-
-      // pushItem(result, createElementRenderer(element, property, target, rendererOptions))
-    })
+      pushItem(result, createElementRenderer(element, property, target, transition))
+    }
 
     return result
   }, [])
@@ -56,5 +58,8 @@ function createElementRenderer(
   // const from = cacheMotionValue ? cacheMotionValue.get() : getElementProperty()
 
   // const from = motionValue(0)
-  // ...
+
+  const emitter = () => {}
+  const update = (progress: number, iterations: number) => {}
+  return new TweenRenderer(emitter, update, options)
 }

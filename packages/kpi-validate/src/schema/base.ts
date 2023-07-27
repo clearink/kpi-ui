@@ -37,7 +37,8 @@ export default abstract class BaseSchema<Out = any, In = Out> {
   _validate(value: Out, context: Context): ValidateReturn<Out> {
     const list = [...this.rules.values()].map((rule) => rule(value, context))
     return Promise.all(list).then((results) => {
-      for (const result of results) {
+      for (let i = 0; i < results.length; i += 1) {
+        const result = results[i]
         if (result.status === 'invalid') return result
       }
       return Valid(value)
@@ -266,16 +267,14 @@ export class UnionSchema<
     )
 
     // 存在合法的就返回
-    for (const [, result] of results) {
+    for (let i = 0; i < results.length; i += 1) {
+      const result = results[i][1]
       if (result.status === 'valid') return result
     }
-
     // TODO: 需要手段检测是否为 invalid_type 错误
-    for (const [, result] of results) {
-      if (result.status === 'invalid') {
-        // 存在不是 invalid_type 的错误
-        return result
-      }
+    for (let i = 0; i < results.length; i += 1) {
+      const result = results[i][1]
+      if (result.status === 'invalid') return result
     }
 
     // 如果 results 都是 invalid_type 就联合成一个 invalid_type

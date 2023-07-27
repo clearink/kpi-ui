@@ -1,29 +1,35 @@
-import { defineHidden } from '../utils/define'
+import { defineGetter, defineHidden } from '../utils/define'
 import { $id } from '../utils/symbol'
 import uniqueId from '../utils/unique_id'
 import MotionEvent from './event'
 
 export class MotionValue<V = any> {
-  on: MotionEvent<V>['on']
+  on!: MotionEvent<V>['on']
 
-  notify: MotionEvent<V>['notify']
+  notify!: MotionEvent<V>['notify']
 
-  constructor(private _initial: V) {
-    this._value = this._initial
+  clear!: MotionEvent<V>['clear']
+
+  get: () => V
+
+  set: (val: V) => void
+
+  constructor(initial: V) {
+    let $value = initial
 
     const event = new MotionEvent<V>()
-    this.on = event.on
-    this.notify = event.notify
-  }
 
-  private _value: V
+    defineGetter(this, 'on', () => event.on)
 
-  get = () => {
-    return this._value
-  }
+    defineGetter(this, 'notify', () => event.notify)
 
-  set = (value: V) => {
-    this._value = value
+    defineGetter(this, 'clear', () => event.clear)
+
+    this.get = () => $value
+
+    this.set = (value) => {
+      $value = value
+    }
   }
 }
 
