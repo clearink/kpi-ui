@@ -103,21 +103,19 @@ export class TweenScheduler {
 
 type Update = (progress: number, iterations: number) => void
 export class TweenRenderer {
-  readonly scheduler!: TweenScheduler
+  scheduler: TweenScheduler
 
   schedule: (timestamp: number, reversed: boolean) => void
 
   reset: (reversed: boolean) => void
 
   constructor(emitter: Emitter, update: Update, options: TweenOptions) {
-    const scheduler = new TweenScheduler(options)
-
-    defineGetter(this, 'scheduler', () => scheduler)
+    this.scheduler = new TweenScheduler(options)
 
     this.reset = (reversed) => emitter('update', update(+reversed, 0))
 
     this.schedule = (timestamp, reversed) => {
-      const status = scheduler.schedule(timestamp, reversed)
+      const status = this.scheduler.schedule(timestamp, reversed)
 
       if (status === false) return
 

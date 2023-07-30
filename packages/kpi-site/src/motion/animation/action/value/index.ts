@@ -1,7 +1,7 @@
 import { isObjectLike, shallowMerge } from '@kpi/shared'
 import { isMotionValue, motionValue } from '../../../motion'
-// import { defineHidden } from '../../../utils/define'
-// import { $promise } from '../../../utils/symbol'
+import { defineHidden } from '../../../utils/define'
+import { $controller } from '../../../utils/symbol'
 import Options from '../../config/options'
 import { TweenController } from '../../scheduler'
 import createTweenRenderer from './renderer'
@@ -19,15 +19,16 @@ export default function animateValue<V extends AnimatableValue>(
 
   const motion = motionValue(from)
 
+  // 取消上次的动画
+  motion[$controller] && motion[$controller].cancel()
+
   const renderer = createTweenRenderer(motion, to, mergedOptions)
 
   const controller = new TweenController([renderer])
 
+  defineHidden(motion, $controller, controller)
+
   if (mergedOptions.autoplay) controller.play()
-
-  // TODO: controller 挂到 motion 上，下次 play 时可以取消掉
-
-  // defineHidden(motion, $promise, controller)
 
   return controller
 }

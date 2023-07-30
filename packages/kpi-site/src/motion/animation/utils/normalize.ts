@@ -1,53 +1,89 @@
-import { isString, pushItem } from '@kpi/shared'
+// import { isString, pushItem } from '@kpi/shared'
+// import Options from '../config/options'
+
+// import type {
+//   AnimateElementOptions,
+//   AnimateSequenceOptions,
+//   AnimateValueOptions,
+//   AnimationSequence,
+//   TweenOptions,
+// } from '../interface'
+
+// export const getElementOptions = (
+//   property: string,
+//   options: AnimateElementOptions,
+//   root?: AnimateSequenceOptions
+// ) => {
+//   const defaultOptions = { ...Options, ...root?.default }
+//   return { ...defaultOptions, ...options[property] } as AnimateValueOptions
+// }
+
+// export const getCommonOptions = (
+//   options: AnimateElementOptions | AnimateValueOptions,
+//   root?: AnimateSequenceOptions
+// ) => ({ ...Options, ...options, ...root?.default } as Required<AnimateValueOptions>)
+
+// export function normalizeTimelineOptions(
+//   sequence: AnimationSequence,
+//   options?: AnimateSequenceOptions
+// ) {
+//   const init = [{ start: 0, ...Options }] as TweenOptions[]
+//   const timeline = sequence.reduce((res, item, i) => {
+//     // TODO: 添加标签
+//     if (isString(item)) return res
+
+//     const valueOptions = getCommonOptions(item[2] ?? {}, options)
+//     const { delay, duration, repeatDelay, repeat } = valueOptions
+
+//     const prevStart = res[i - 1]?.start || 0
+
+//     const current = prevStart + delay + duration + (repeatDelay + duration) * repeat
+
+//     return pushItem(res, { ...valueOptions, start: current })
+//   }, init)
+
+//   return timeline
+// }
+
+import { isArray, isFunction, isNull, isString, pushItem } from '@kpi/shared'
+import { cubicBezier, eases } from '../../easing'
 import Options from '../config/options'
 
-import type {
-  AnimateElementOptions,
-  AnimateSequenceOptions,
-  AnimateValueOptions,
-  AnimationSequence,
-  TweenOptions,
-} from '../interface'
+import type { Easing } from '../../easing/interface'
+import type { GenericKeyframes } from '../interface'
 
-export const getElementOptions = (
-  property: string,
-  options: AnimateElementOptions,
-  root?: AnimateSequenceOptions
-) => {
-  const defaultOptions = { ...Options, ...root?.default }
-  return { ...defaultOptions, ...options[property] } as AnimateValueOptions
+export function normalizeKeyframes<V>(from: V, to: V | GenericKeyframes<V>) {
+  const targets = isArray(to) ? to : [null, to]
+
+  return targets.reduce((result: V[], target, i) => {
+    if (!isNull(target)) return pushItem(result, target)
+
+    return pushItem(result, i === 0 ? from : result[i - 1])
+  }, [])
 }
 
-export const getCommonOptions = (
-  options: AnimateElementOptions | AnimateValueOptions,
-  root?: AnimateSequenceOptions
-) => ({ ...Options, ...options, ...root?.default } as Required<AnimateValueOptions>)
+export function normalizeEasings(steps: number, easings: Easing[]) {
+  return Array.from({ length: steps - 1 }, (_, i) => {
+    const easing = easings[i]
 
-export function normalizeTimelineOptions(
-  sequence: AnimationSequence,
-  options?: AnimateSequenceOptions
-) {
-  const init = [{ start: 0, ...Options }] as TweenOptions[]
-  const timeline = sequence.reduce((res, item, i) => {
-    // TODO: 添加标签
-    if (isString(item)) return res
+    if (isFunction(easing)) return easing
 
-    const valueOptions = getCommonOptions(item[2] ?? {}, options)
-    const { delay, duration, repeatDelay, repeat } = valueOptions
+    if (isArray(easing) && easing.length === 4) return cubicBezier(...easing)
 
-    const prevStart = res[i - 1]?.start || 0
+    if (isString(easing) && eases[easing]) return eases[easing]
 
-    const current = prevStart + delay + duration + (repeatDelay + duration) * repeat
-
-    return pushItem(res, { ...valueOptions, start: current })
-  }, init)
-
-  return timeline
+    return Options.easing
+  })
 }
 
-export function normalizeControllerOptions(
-  timelineOptions: (AnimateValueOptions & { start: number })[],
-  options?: AnimateSequenceOptions
-): AnimateValueOptions & { start: number } {
-  return {} as any
+export function normalizeTimes(steps: number, times: number[]) {
+  if (steps === times.length) return times
+
+  const resolved = [0]
+
+  for (let i = 0; i < steps - 1; i += 1) {
+    resolved.push((1 / (steps - 1)) * (i + 1))
+  }
+
+  return resolved
 }

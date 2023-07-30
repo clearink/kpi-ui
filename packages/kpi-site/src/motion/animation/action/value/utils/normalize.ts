@@ -1,21 +1,10 @@
-import { isArray, isFunction, isNull, isString, pushItem } from '@kpi/shared'
-import { cubicBezier, eases } from '../../../../easing'
+/* eslint-disable import/prefer-default-export */
+import { isString } from '@kpi/shared'
 import angle from '../../../../prepare/angle'
 import color from '../../../../prepare/color'
-import Options from '../../../config/options'
+import { normalizeKeyframes } from '../../../utils/normalize'
 
-import type { Easing } from '../../../../easing/interface'
 import type { GenericKeyframes } from '../../../interface'
-
-export function normalizeKeyframes<V>(from: V, to: V | GenericKeyframes<V>) {
-  const targets = isArray(to) ? to : [null, to]
-
-  return targets.reduce((result: V[], target, i) => {
-    if (!isNull(target)) return pushItem(result, target)
-
-    return pushItem(result, i === 0 ? from : result[i - 1])
-  }, [])
-}
 
 // TODO: 优化逻辑
 export function normalizeTargets<V>(from: V, to: V | GenericKeyframes<V>) {
@@ -30,31 +19,4 @@ export function normalizeTargets<V>(from: V, to: V | GenericKeyframes<V>) {
 
     return { original: item, formatted: item }
   })
-}
-
-export function normalizeEasings(steps: number, easings: Easing[]) {
-  return Array.from({ length: steps - 1 }, (_, i) => {
-    const easing = easings[i]
-
-    if (isFunction(easing)) return easing
-
-    if (isArray(easing) && easing.length === 4) return cubicBezier(...easing)
-
-    if (isString(easing) && eases[easing]) return eases[easing]
-
-    return Options.easing
-  })
-}
-
-export function normalizeTimes(steps: number, times: number[]) {
-  if (steps === times.length) return times
-
-  // TODO: 是否从头开始分配?
-  const resolved = [0]
-
-  for (let i = 0; i < steps - 1; i += 1) {
-    resolved.push((1 / (steps - 1)) * (i + 1))
-  }
-
-  return resolved
 }

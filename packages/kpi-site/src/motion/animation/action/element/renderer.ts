@@ -1,24 +1,10 @@
-import { hasOwn, isNull, isUndefined, pushItem, toArray } from '@kpi/shared'
-import { motionValue } from '../../../motion'
-import { convertToUnit } from '../../../prepare'
-import transform from '../../../prepare/transform'
-import { motionTransformProps } from '../../../prepare/transform/misc'
-import getUnit from '../../../prepare/utils/get_unit'
-import { defineHidden } from '../../../utils/define'
-import { $cache } from '../../../utils/symbol'
-import units from '../../config/units'
-
-import createTweenRenderer from '../value/renderer'
-import { getElementMotionCache } from './utils/cache'
-import { normalizePropertyTransition } from './utils/normalize'
-
-import type {
-  AnimateElementOptions,
-  ElementKeyframes,
-  KeyframeTarget,
-  TweenOptions,
-} from '../../interface'
+import { isUndefined, logger, pushItem, toArray } from '@kpi/shared'
 import { TweenRenderer } from '../../scheduler'
+import { normalizeEasings, normalizeTimes } from '../../utils/normalize'
+import createRendererGenerator from '../value/utils/generator'
+import { normalizeTargets, normalizeTransition } from './utils/normalize'
+
+import type { AnimateElementOptions, ElementKeyframes } from '../../interface'
 
 export default function createElementsRenderer(
   elements: Element[],
@@ -26,40 +12,36 @@ export default function createElementsRenderer(
   options: AnimateElementOptions
 ) {
   return elements.reduce((result: TweenRenderer[], element) => {
-    const entries = Object.entries(keyframes)
+    Object.entries(keyframes).forEach(([property, target]) => {
+      if (isUndefined(target)) return
 
-    for (let i = 0; i < entries.length; i += 1) {
-      const [property, target] = entries[i]
+      const transition = normalizeTransition(options[property], options)
 
-      if (isUndefined(target)) continue
+      const { times: $times = [], easing, repeatType } = transition
 
-      const transition = normalizePropertyTransition(options[property], options)
+      const targets = normalizeTargets(element, property, target)
 
-      pushItem(result, createElementRenderer(element, property, target, transition))
-    }
+      const times = normalizeTimes(targets.length, $times)
+
+      logger(times[0] !== 0, 'Please ensure times[0] equal 0')
+
+      const easings = normalizeEasings(targets.length, toArray(easing))
+
+      const generator = createRendererGenerator(targets, times, easings, repeatType)
+
+      const update = (progress: number, iterations: number) => {
+        const value = generator(progress, iterations) as string
+        console.log(value)
+        // 这里需要重新设计
+        ;(element as HTMLElement).style.setProperty('transform', `translate3d(${value}px, 0, 0)`)
+      }
+
+      // 这里需要重新设计
+      const emitter = () => {}
+
+      pushItem(result, new TweenRenderer(emitter, update, transition))
+    })
 
     return result
   }, [])
-}
-
-function createElementRenderer(
-  element: Element,
-  property: string,
-  target: KeyframeTarget,
-  options: TweenOptions
-) {
-  const propertiesCache = getElementMotionCache(element)
-  const cacheMotionValue = propertiesCache.get(property)
-  // 1. normalize Target
-  // 如果已经存在 直接创建 renderer 返回
-  if (cacheMotionValue) {
-    //
-  }
-  // const from = cacheMotionValue ? cacheMotionValue.get() : getElementProperty()
-
-  // const from = motionValue(0)
-
-  const emitter = () => {}
-  const update = (progress: number, iterations: number) => {}
-  return new TweenRenderer(emitter, update, options)
 }

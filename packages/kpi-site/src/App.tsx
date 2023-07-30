@@ -99,7 +99,6 @@ import { useRef } from 'react'
 import { animate, useMotionValue } from './motion'
 
 import './style.css'
-// import { animate, useMotionValue } from 'framer-motion'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
@@ -112,9 +111,8 @@ export default function App() {
           // const a = animate(v, 800, {
           //   duration: 2000,
           //   easing: 'easeInSine',
-          //   // repeat: 3,
-          //   // repeatType: 'mirror',
-          //   // repeatDelay: 100,
+          //   repeat: 3,
+          //   repeatType: 'mirror',
           //   onStart() {
           //     console.log('start', performance.now())
           //   },
@@ -133,7 +131,7 @@ export default function App() {
             ref.current!,
             {
               x: 200,
-              y: 300,
+              // y: 300,
             },
             {
               duration: 1000,
@@ -144,14 +142,13 @@ export default function App() {
               onUpdate(current) {
                 console.log('current', current)
               },
-              x: {
-                duration: 3000,
-                delay: 1000,
-                endDelay: 30,
-              },
+              // x: {
+              //   duration: 3000,
+              //   delay: 1000,
+              //   endDelay: 30,
+              // },
             }
           )
-
           console.log(a)
           ;(window as any).a = a
           a.then(() => console.log('finish', performance.now()))

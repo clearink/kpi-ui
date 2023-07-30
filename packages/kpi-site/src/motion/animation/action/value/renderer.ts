@@ -1,8 +1,9 @@
 import { isArray, logger, toArray } from '@kpi/shared'
 import { TweenRenderer } from '../../scheduler'
+import { normalizeEasings, normalizeTimes } from '../../utils/normalize'
 import createTweenEmitter from './utils/emitter'
 import createRendererGenerator from './utils/generator'
-import { normalizeEasings, normalizeTargets, normalizeTimes } from './utils/normalize'
+import { normalizeTargets } from './utils/normalize'
 
 import type { MotionValue } from '../../../motion'
 import type { AnimatableValue, GenericKeyframes, TweenOptions } from '../../interface'
@@ -12,7 +13,7 @@ export default function createTweenRenderer<V extends AnimatableValue>(
   to: V | GenericKeyframes<V>,
   rendererOptions: TweenOptions
 ) {
-  const { times: $times = [], easing: $easing, repeatType } = rendererOptions
+  const { times: $times = [], easing, repeatType } = rendererOptions
 
   // 只解析 color, angle 形式的字符串
   const targets = normalizeTargets(motion.get(), to)
@@ -21,7 +22,7 @@ export default function createTweenRenderer<V extends AnimatableValue>(
 
   logger(times[0] !== 0, 'Please ensure times[0] equal 0')
 
-  const easings = normalizeEasings(targets.length, toArray($easing))
+  const easings = normalizeEasings(targets.length, toArray(easing))
 
   const emitter = createTweenEmitter(motion, rendererOptions)
 
