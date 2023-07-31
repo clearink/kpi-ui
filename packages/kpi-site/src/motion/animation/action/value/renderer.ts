@@ -18,13 +18,13 @@ export default function createTweenRenderer<V extends AnimatableValue>(
   // 只解析 color, angle 形式的字符串
   const targets = normalizeTargets(motion.get(), to)
 
+  const emitter = createTweenEmitter(motion, rendererOptions)
+
   const times = normalizeTimes(targets.length, $times)
 
   logger(times[0] !== 0, 'Please ensure times[0] equal 0')
 
   const easings = normalizeEasings(targets.length, toArray(easing))
-
-  const emitter = createTweenEmitter(motion, rendererOptions)
 
   const generator = createRendererGenerator(targets, times, easings, repeatType)
 

@@ -130,7 +130,7 @@ export default function App() {
           const a = animate(
             ref.current!,
             {
-              x: 200,
+              x: [null, 100, 300, '20vh', '40px', '20vw'],
               // y: 300,
             },
             {
