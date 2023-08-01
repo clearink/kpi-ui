@@ -23,3 +23,9 @@ export function normalizeTargets(element: Element, property: string, to: Keyfram
   // // const from = motionValue(0)
   return []
 }
+
+export function normalizeKeyframes(element: Element, property: string, to: KeyframeTarget) {
+  // 区分 transform 与 attribute, style
+  // const from = getElementStyle(element, property)
+  return []
+}

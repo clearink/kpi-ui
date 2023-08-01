@@ -1,12 +1,25 @@
 import { isUndefined, logger, pushItem, toArray } from '@kpi/shared'
+import decompose from '../../../utils/decompose'
+import { defineGetter } from '../../../utils/define'
 import { TweenRenderer } from '../../scheduler'
-import createTweenGenerator from '../../utils/generator'
+import updateGenerator from '../../utils/generator'
 import { normalizeEasings, normalizeTimes } from '../../utils/normalize'
-import GeneratorItem from './utils/generator_item'
-import { normalizeTargets, normalizeTransition } from './utils/normalize'
+import { normalizeKeyframes, normalizeTransition } from './utils/normalize'
 import createSetter from './utils/setter'
 
-import type { AnimateElementOptions, ElementKeyframes } from '../../interface'
+import type { AnimatableValue, AnimateElementOptions, ElementKeyframes } from '../../interface'
+
+class GeneratorItem<V extends AnimatableValue> {
+  formatted!: ReturnType<typeof decompose>
+
+  constructor(public original: V) {
+    let $formatted: this['formatted']
+    defineGetter(this, 'formatted', () => {
+      if (!$formatted) $formatted = decompose(original)
+      return $formatted
+    })
+  }
+}
 
 export default function createElementsRenderer(
   elements: Element[],
@@ -22,7 +35,7 @@ export default function createElementsRenderer(
       const { times: $times = [], easing, repeatType } = transition
 
       // TODO
-      const $keyframes = normalizeTargets(element, property, target)
+      const $keyframes = normalizeKeyframes(element, property, target)
 
       const setter = createSetter(element, property)
 
@@ -38,10 +51,10 @@ export default function createElementsRenderer(
       // TODO: GeneratorItem 需要重新设计
       const targets = $keyframes.map((keyframe) => new GeneratorItem(keyframe))
 
-      const generator = createTweenGenerator(targets, times, easings, repeatType)
+      const generate = updateGenerator(targets, times, easings, repeatType)
 
       const update = (progress: number, iterations: number) => {
-        setter(generator(progress, iterations))
+        setter(generate(progress, iterations))
       }
 
       // 当设置为 keyframes 时, 主动触发一次 update 事件

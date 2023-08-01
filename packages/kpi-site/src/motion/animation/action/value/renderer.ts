@@ -1,13 +1,26 @@
 import { isArray, logger, toArray } from '@kpi/shared'
+import decompose from '../../../utils/decompose'
+import { defineGetter } from '../../../utils/define'
 import { TweenRenderer } from '../../scheduler'
-import createTweenGenerator from '../../utils/generator'
+import updateGenerator from '../../utils/generator'
 import { normalizeEasings, normalizeTimes } from '../../utils/normalize'
 import createTweenEmitter from './utils/emitter'
-import GeneratorItem from './utils/generator_item'
-import { normalizeKeyframes } from './utils/normalize'
+import { normalizeKeyframes, normalizeTarget } from './utils/normalize'
 
 import type { MotionValue } from '../../../motion'
 import type { AnimatableValue, GenericKeyframes, TweenOptions } from '../../interface'
+
+class GeneratorItem<V extends AnimatableValue> {
+  formatted!: ReturnType<typeof decompose>
+
+  constructor(public original: V) {
+    let $formatted: this['formatted']
+    defineGetter(this, 'formatted', () => {
+      if (!$formatted) $formatted = decompose(normalizeTarget(original))
+      return $formatted
+    })
+  }
+}
 
 export default function createTweenRenderer<V extends AnimatableValue>(
   motion: MotionValue<V>,
@@ -28,10 +41,10 @@ export default function createTweenRenderer<V extends AnimatableValue>(
 
   const targets = keyframes.map((keyframe) => new GeneratorItem(keyframe))
 
-  const generator = createTweenGenerator(targets, times, easings, repeatType)
+  const generate = updateGenerator(targets, times, easings, repeatType)
 
   const update = (progress: number, iterations: number) => {
-    motion.set(generator(progress, iterations))
+    motion.set(generate(progress, iterations))
   }
 
   // 当设置为 keyframes 时, 主动触发一次 update 事件

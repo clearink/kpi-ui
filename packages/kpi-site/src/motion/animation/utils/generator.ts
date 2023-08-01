@@ -5,18 +5,13 @@ import sanitize from '../../utils/sanitize'
 import type { EasingFunction } from '../../easing/interface'
 import type { AnimatableValue, TweenOptions } from '../interface'
 
-export type GeneratorItem<V extends AnimatableValue> = {
-  original: V
-  formatted: ReturnType<typeof decompose>
-}
-
-export default function createTweenGenerator<V extends AnimatableValue>(
-  targets: GeneratorItem<V>[],
+export default function updateGenerator<V extends AnimatableValue>(
+  items: { original: V; formatted: ReturnType<typeof decompose> }[],
   times: number[],
   easings: EasingFunction[],
   repeatType: TweenOptions['repeatType']
 ) {
-  const steps = targets.length
+  const steps = items.length
 
   return (progress: number, iterations: number) => {
     const odd = iterations % 2 === 1
@@ -30,20 +25,19 @@ export default function createTweenGenerator<V extends AnimatableValue>(
 
     const easing = easings[active - 1]
 
-    const from = targets[backward ? steps - active : active - 1]
+    const from = items[backward ? steps - active : active - 1]
 
-    const to = targets[backward ? steps - 1 - active : active]
+    const to = items[backward ? steps - 1 - active : active]
 
     if (adjusted === 0) return from.original
 
     if (adjusted === 1) return to.original
 
+    const range: [number, number] = [times[active - 1], times[active]]
+
     const numbers = to.formatted.numbers.map((num, i) => {
-      const [percent, transform] = interpolator(
-        adjusted,
-        [times[active - 1], times[active]],
-        [from.formatted.numbers[i], num]
-      )
+      const [percent, transform] = interpolator(adjusted, range, [from.formatted.numbers[i], num])
+
       return sanitize(transform(easing(percent)))
     })
 
