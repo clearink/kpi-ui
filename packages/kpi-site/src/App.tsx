@@ -108,9 +108,10 @@ export default function App() {
       <button
         type="button"
         onClick={async () => {
-          // const a = animate(v, 800, {
+          // const a = animate(v, [null, 100, 300, 100, 700, 500], {
           //   duration: 2000,
           //   easing: 'easeInSine',
+          //   delay: 1000,
           //   repeat: 3,
           //   repeatType: 'mirror',
           //   onStart() {

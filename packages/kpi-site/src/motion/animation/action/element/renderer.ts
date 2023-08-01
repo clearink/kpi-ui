@@ -1,7 +1,8 @@
-import { isArray, isUndefined, logger, pushItem, toArray } from '@kpi/shared'
+import { isUndefined, logger, pushItem, toArray } from '@kpi/shared'
 import { TweenRenderer } from '../../scheduler'
+import createTweenGenerator from '../../utils/generator'
 import { normalizeEasings, normalizeTimes } from '../../utils/normalize'
-import createRendererGenerator from '../value/utils/generator'
+import GeneratorItem from './utils/generator_item'
 import { normalizeTargets, normalizeTransition } from './utils/normalize'
 import createSetter from './utils/setter'
 
@@ -20,20 +21,24 @@ export default function createElementsRenderer(
 
       const { times: $times = [], easing, repeatType } = transition
 
-      const targets = normalizeTargets(element, property, target)
+      // TODO
+      const $keyframes = normalizeTargets(element, property, target)
 
       const setter = createSetter(element, property)
 
       // 这里需要重新设计
       const emitter = () => {}
 
-      const times = normalizeTimes(targets.length, $times)
+      const times = normalizeTimes($keyframes.length, $times)
 
       logger(times[0] !== 0, 'Please ensure times[0] equal 0')
 
-      const easings = normalizeEasings(targets.length, toArray(easing))
+      const easings = normalizeEasings($keyframes.length, toArray(easing))
 
-      const generator = createRendererGenerator(targets, times, easings, repeatType)
+      // TODO: GeneratorItem 需要重新设计
+      const targets = $keyframes.map((keyframe) => new GeneratorItem(keyframe))
+
+      const generator = createTweenGenerator(targets, times, easings, repeatType)
 
       const update = (progress: number, iterations: number) => {
         setter(generator(progress, iterations))

@@ -29,14 +29,12 @@ export function convertUnit<V extends AnimatableValue>(
   property: string,
   to: KeyframeTarget
 ) {
-  if (element.nodeType) {
-    const targets = to.map((item) => ({ unit: getUnit(item) ?? (units[property] || 'px'), item }))
-
-    // 讨论是否为svg了
-
-    // 原始值
-    const original = element.style.getPropertyValue()
-    // 最终目标的 unit
-    const target = targets[targets.length - 1]
-  }
+  // if (element.nodeType) {
+  //   const targets = to.map((item) => ({ unit: getUnit(item) ?? (units[property] || 'px'), item }))
+  //   // 讨论是否为svg了
+  //   // 原始值
+  //   const original = element.style.getPropertyValue()
+  //   // 最终目标的 unit
+  //   const target = targets[targets.length - 1]
+  // }
 }

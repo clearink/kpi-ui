@@ -1,22 +1,26 @@
-/* eslint-disable import/prefer-default-export */
-import { isString } from '@kpi/shared'
+import { isArray, isNull, isString, pushItem } from '@kpi/shared'
 import angle from '../../../../prepare/angle'
 import color from '../../../../prepare/color'
-import { normalizeKeyframes } from '../../../utils/normalize'
 
 import type { GenericKeyframes } from '../../../interface'
 
-// TODO: 优化逻辑
-export function normalizeTargets<V>(from: V, to: V | GenericKeyframes<V>) {
-  return normalizeKeyframes(from, to).map((item) => {
-    if (!isString(item)) return { original: item, formatted: item }
+export function normalizeKeyframes<V>(from: V, to: V | GenericKeyframes<V>) {
+  const targets = isArray(to) ? to : [null, to]
 
-    if (color.test(item))
-      return { original: item, formatted: color.transform(color.parse(item)) as V }
+  return targets.reduce((result: V[], target, i) => {
+    if (!isNull(target)) return pushItem(result, target)
 
-    if (angle.test(item))
-      return { original: item, formatted: angle.render(angle.prepare(item)) as V }
+    return pushItem(result, i === 0 ? from : result[i - 1])
+  }, [])
+}
 
-    return { original: item, formatted: item }
-  })
+// 只解析 color, angle 形式的字符串
+export function normalizeTarget<V>(target: V) {
+  if (!isString(target)) return target
+
+  if (color.test(target)) return color.transform(color.parse(target)) as V
+
+  if (angle.test(target)) return angle.render(angle.prepare(target)) as V
+
+  return target
 }

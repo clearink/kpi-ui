@@ -1,9 +1,10 @@
 import { isArray, logger, toArray } from '@kpi/shared'
 import { TweenRenderer } from '../../scheduler'
+import createTweenGenerator from '../../utils/generator'
 import { normalizeEasings, normalizeTimes } from '../../utils/normalize'
 import createTweenEmitter from './utils/emitter'
-import createRendererGenerator from './utils/generator'
-import { normalizeTargets } from './utils/normalize'
+import GeneratorItem from './utils/generator_item'
+import { normalizeKeyframes } from './utils/normalize'
 
 import type { MotionValue } from '../../../motion'
 import type { AnimatableValue, GenericKeyframes, TweenOptions } from '../../interface'
@@ -11,22 +12,23 @@ import type { AnimatableValue, GenericKeyframes, TweenOptions } from '../../inte
 export default function createTweenRenderer<V extends AnimatableValue>(
   motion: MotionValue<V>,
   to: V | GenericKeyframes<V>,
-  rendererOptions: TweenOptions
+  options: TweenOptions
 ) {
-  const { times: $times = [], easing, repeatType } = rendererOptions
+  const { times: $times = [], easing, repeatType } = options
 
-  // 只解析 color, angle 形式的字符串
-  const targets = normalizeTargets(motion.get(), to)
+  const keyframes = normalizeKeyframes(motion.get(), to)
 
-  const emitter = createTweenEmitter(motion, rendererOptions)
+  const emitter = createTweenEmitter(motion, options)
 
-  const times = normalizeTimes(targets.length, $times)
+  const times = normalizeTimes(keyframes.length, $times)
 
   logger(times[0] !== 0, 'Please ensure times[0] equal 0')
 
-  const easings = normalizeEasings(targets.length, toArray(easing))
+  const easings = normalizeEasings(keyframes.length, toArray(easing))
 
-  const generator = createRendererGenerator(targets, times, easings, repeatType)
+  const targets = keyframes.map((keyframe) => new GeneratorItem(keyframe))
+
+  const generator = createTweenGenerator(targets, times, easings, repeatType)
 
   const update = (progress: number, iterations: number) => {
     motion.set(generator(progress, iterations))
@@ -35,5 +37,5 @@ export default function createTweenRenderer<V extends AnimatableValue>(
   // 当设置为 keyframes 时, 主动触发一次 update 事件
   if (isArray(to)) emitter('update', update(0, 0))
 
-  return new TweenRenderer(emitter, update, rendererOptions)
+  return new TweenRenderer(emitter, update, options)
 }

@@ -45,22 +45,11 @@
 //   return timeline
 // }
 
-import { isArray, isFunction, isNull, isString, pushItem } from '@kpi/shared'
+import { isArray, isFunction, isString } from '@kpi/shared'
 import { cubicBezier, eases } from '../../easing'
 import Options from '../config/options'
 
 import type { Easing } from '../../easing/interface'
-import type { GenericKeyframes } from '../interface'
-
-export function normalizeKeyframes<V>(from: V, to: V | GenericKeyframes<V>) {
-  const targets = isArray(to) ? to : [null, to]
-
-  return targets.reduce((result: V[], target, i) => {
-    if (!isNull(target)) return pushItem(result, target)
-
-    return pushItem(result, i === 0 ? from : result[i - 1])
-  }, [])
-}
 
 export function normalizeEasings(steps: number, easings: Easing[]) {
   return Array.from({ length: steps - 1 }, (_, i) => {

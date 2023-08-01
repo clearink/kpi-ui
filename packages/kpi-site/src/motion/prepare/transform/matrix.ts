@@ -3,7 +3,6 @@ import parseFunctionString from '../utils/parse_function_string'
 import type { ResolvedTransform } from '../interface'
 
 // 解析 transform matrix 只解析 x, y, z 三个
-// TODO: 使用 DOMMatrix 进行转换
 export default {
   test: (v: string) => /^matrix(3d)?\(/.test(v),
   parse: (v: string): ResolvedTransform => {
