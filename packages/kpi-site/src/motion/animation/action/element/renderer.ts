@@ -21,7 +21,7 @@ class GeneratorItem<V extends AnimatableValue> {
   }
 }
 
-export default function createElementsRenderer(
+export default function createTweenRenderer(
   elements: Element[],
   keyframes: ElementKeyframes,
   options: AnimateElementOptions

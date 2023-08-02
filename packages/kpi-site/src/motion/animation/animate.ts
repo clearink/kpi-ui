@@ -63,19 +63,19 @@ export function createAnimateWithScope(scope?: AnimationScope) {
     keyframes: V | GenericKeyframes<V> | ElementKeyframes | AnimateSequenceOptions,
     options?: AnimateValueOptions<V> | AnimateElementOptions | AnimateSequenceOptions
   ): TweenController {
-    let animation: TweenController
+    let controller: TweenController
 
     if (isSequenceAnimation(animateInput)) {
-      animation = animateSequence(animateInput, options as any, scope)
+      controller = animateSequence(animateInput, options as any, scope)
     } else if (isElementAnimation(keyframes)) {
-      animation = animateElement(animateInput as any, keyframes, options as any, scope)
+      controller = animateElement(animateInput as any, keyframes, options as any, scope)
     } else if (isValueAnimation(animateInput)) {
-      animation = animateValue(animateInput, keyframes as any, options as any)
+      controller = animateValue(animateInput, keyframes as any, options as any)
     } else throw Error('invalid animate targets')
 
-    if (scope) scope.animations.push(animation)
+    if (scope) scope.controllers.push(controller)
 
-    return animation
+    return controller
   }
 
   return scopedAnimate

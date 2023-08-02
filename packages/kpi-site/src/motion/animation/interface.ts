@@ -11,7 +11,7 @@ export type KeyframeTarget = AnimatableValue | GenericKeyframes<AnimatableValue>
 
 export interface AnimationScope<T = any> {
   readonly current: T
-  animations: TweenController[]
+  controllers: TweenController[]
 }
 
 // dom animation

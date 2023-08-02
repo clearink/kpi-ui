@@ -136,10 +136,7 @@ export default function App() {
             },
             {
               duration: 1000,
-              repeat: 2,
-              delay: 2000,
               easing: 'easeInOutQuad',
-              repeatType: 'mirror',
               onUpdate(current) {
                 console.log('current', current)
               },

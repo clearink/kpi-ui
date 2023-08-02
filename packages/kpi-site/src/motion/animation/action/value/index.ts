@@ -19,7 +19,7 @@ export default function animateValue<V extends AnimatableValue>(
 
   const motion = motionValue(from)
 
-  // 取消上次的动画
+  // 取消上次的动画, 一个 motionValue 同时只能进行一个 animate
   motion[$controller] && motion[$controller].cancel()
 
   const renderer = createTweenRenderer(motion, to, mergedOptions)
