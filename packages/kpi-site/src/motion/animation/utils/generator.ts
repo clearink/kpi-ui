@@ -36,7 +36,9 @@ export default function updateGenerator<V extends AnimatableValue>(
     const range: [number, number] = [times[active - 1], times[active]]
 
     const numbers = to.formatted.numbers.map((num, i) => {
-      const [percent, transform] = interpolator(adjusted, range, [from.formatted.numbers[i], num])
+      const output: [number, number] = [from.formatted.numbers[i] || 0, num]
+
+      const [percent, transform] = interpolator(adjusted, range, output)
 
       return sanitize(transform(easing(percent)))
     })

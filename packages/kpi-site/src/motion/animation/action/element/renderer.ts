@@ -34,10 +34,11 @@ export default function createTweenRenderer(
 
       const { times: $times = [], easing, repeatType } = transition
 
-      // TODO
+      // 需要提前将 property 的 默认值以及 setter 给出来
+
       const $keyframes = normalizeKeyframes(element, property, target)
 
-      const setter = createSetter(element, property)
+      console.log($keyframes)
 
       // 这里需要重新设计
       const emitter = () => {}
@@ -54,7 +55,8 @@ export default function createTweenRenderer(
       const generate = updateGenerator(targets, times, easings, repeatType)
 
       const update = (progress: number, iterations: number) => {
-        setter(generate(progress, iterations))
+        const value = generate(progress, iterations)
+        // setter(value)
       }
 
       // 当设置为 keyframes 时, 主动触发一次 update 事件

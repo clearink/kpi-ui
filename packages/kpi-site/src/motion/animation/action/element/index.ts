@@ -24,8 +24,6 @@ export default function animateElement(
 
   const renderers = createTweenRenderer(elements, keyframes, mergedOptions)
 
-  console.log(renderers)
-
   const controller = new TweenController(renderers)
 
   if (mergedOptions.autoplay) controller.play()

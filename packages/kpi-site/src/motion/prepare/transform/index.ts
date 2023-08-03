@@ -15,7 +15,7 @@ export default {
       return setter(result, value)
     }, {} as ResolvedTransform)
   },
-  transform: (v: ResolvedTransform) => {
+  transform: (v: ElementKeyframes) => {
     // TODO: 按照 perspective, translate3d, rotate, skew, scale 的顺序去生成数据
     const keys = Object.keys(v)
 

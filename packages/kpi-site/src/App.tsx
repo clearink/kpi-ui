@@ -131,11 +131,11 @@ export default function App() {
           const a = animate(
             ref.current!,
             {
-              x: [null, 100, 300, '20vh', '40px', '20vw'],
+              height: [null, 100, 300, '20vh', 'auto'],
               // y: 300,
             },
             {
-              duration: 1000,
+              duration: 2000,
               easing: 'easeInOutQuad',
               onUpdate(current) {
                 console.log('current', current)

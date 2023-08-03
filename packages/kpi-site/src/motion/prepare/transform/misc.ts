@@ -4,7 +4,7 @@ import { hasOwn, isNullish } from '@kpi/shared'
 
 import type { ResolvedTransform } from '../interface'
 
-const makeMotionTransformTuple = <V extends Required<ResolvedTransform>, K extends keyof V>(
+const makeTuple = <V extends Required<ResolvedTransform>, K extends keyof V>(
   key: K,
   defaultValue: V[K]
 ) => {
@@ -22,25 +22,25 @@ const makeMotionTransformTuple = <V extends Required<ResolvedTransform>, K exten
 
 // 符合要求有关 transform 的属性值
 export const motionTransformProps = Object.freeze({
-  p: makeMotionTransformTuple('perspective', 0),
-  perspective: makeMotionTransformTuple('perspective', 0),
-  x: makeMotionTransformTuple('translateX', 0),
-  translateX: makeMotionTransformTuple('translateX', 0),
-  y: makeMotionTransformTuple('translateY', 0),
-  translateY: makeMotionTransformTuple('translateY', 0),
-  z: makeMotionTransformTuple('translateZ', 0),
-  translateZ: makeMotionTransformTuple('translateZ', 0),
-  scale: makeMotionTransformTuple('scale', 1),
-  scaleX: makeMotionTransformTuple('scaleX', 1),
-  scaleY: makeMotionTransformTuple('scaleY', 1),
-  scaleZ: makeMotionTransformTuple('scaleZ', 1),
-  rotate: makeMotionTransformTuple('rotate', 0),
-  rotateX: makeMotionTransformTuple('rotateX', 0),
-  rotateY: makeMotionTransformTuple('rotateY', 0),
-  rotateZ: makeMotionTransformTuple('rotateZ', 0),
-  skew: makeMotionTransformTuple('skewX', 0),
-  skewX: makeMotionTransformTuple('skewX', 0),
-  skewY: makeMotionTransformTuple('skewY', 0),
+  p: makeTuple('perspective', 0),
+  perspective: makeTuple('perspective', 0),
+  x: makeTuple('translateX', 0),
+  translateX: makeTuple('translateX', 0),
+  y: makeTuple('translateY', 0),
+  translateY: makeTuple('translateY', 0),
+  z: makeTuple('translateZ', 0),
+  translateZ: makeTuple('translateZ', 0),
+  scale: makeTuple('scaleX', 1),
+  scaleX: makeTuple('scaleX', 1),
+  scaleY: makeTuple('scaleY', 1),
+  scaleZ: makeTuple('scaleZ', 1),
+  rotate: makeTuple('rotate', 0),
+  rotateX: makeTuple('rotateX', 0),
+  rotateY: makeTuple('rotateY', 0),
+  rotateZ: makeTuple('rotateZ', 0),
+  skew: makeTuple('skewX', 0),
+  skewX: makeTuple('skewX', 0),
+  skewY: makeTuple('skewY', 0),
 })
 
 // 暂时不解析这玩意儿

@@ -1,23 +1,10 @@
-import { hasOwn } from '@kpi/shared'
 import { defineHidden } from '../../../../utils/define'
 import { $cache } from '../../../../utils/symbol'
 
-import type { MotionValue } from '../../../../motion'
-import type { AnimatableValue } from '../../../interface'
+import type { ElementKeyframes } from '../../../interface'
 
-export function ensureElementMotionCache(element: Element) {
-  if (hasOwn(element, $cache)) return
+export default function getElementCache(element: Element) {
+  if (!element[$cache]) defineHidden(element, $cache, {})
 
-  defineHidden(element, $cache, new Map())
-}
-
-export function getElementMotionCache(element: Element) {
-  ensureElementMotionCache(element)
-  return element[$cache] as Map<string, MotionValue<AnimatableValue>>
-}
-
-export function setElementMotionCache(element, key: string, value: MotionValue) {
-  const cache = getElementMotionCache(element)
-
-  cache.set(key, value)
+  return element[$cache] as ElementKeyframes
 }
