@@ -1,6 +1,5 @@
-import { isArray, isNull, isString, pushItem } from '@kpi/shared'
-import angle from '../../../../prepare/angle'
-import color from '../../../../prepare/color'
+/* eslint-disable import/prefer-default-export */
+import { isArray, isNull, pushItem } from '@kpi/shared'
 
 import type { GenericKeyframes } from '../../../interface'
 
@@ -12,15 +11,4 @@ export function normalizeKeyframes<V>(from: V, to: V | GenericKeyframes<V>) {
 
     return pushItem(result, i === 0 ? from : result[i - 1])
   }, [])
-}
-
-// 只解析 color, angle 形式的字符串
-export function normalizeTarget<V>(target: V) {
-  if (!isString(target)) return target
-
-  if (color.test(target)) return color.transform(color.parse(target)) as V
-
-  if (angle.test(target)) return angle.render(angle.prepare(target)) as V
-
-  return target
 }

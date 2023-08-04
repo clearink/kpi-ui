@@ -97,11 +97,15 @@ export class TweenScheduler {
     // 结束中
     const completing = first < timeline && second >= timeline
 
-    return { starting, completing, updating, repeating, iterations, ratios }
+    // 进度
+    const progress = clamp(reversed ? 1 - ratios[1] : ratios[1], 0, 1)
+
+    return { starting, completing, updating, repeating, iterations, progress }
   }
 }
 
 type Update = (progress: number, iterations: number) => void
+
 export class TweenRenderer {
   scheduler: TweenScheduler
 
@@ -119,11 +123,9 @@ export class TweenRenderer {
 
       if (status === false) return
 
-      const progress = clamp(reversed ? 1 - status.ratios[1] : status.ratios[1], 0, 1)
-
       status.starting && emitter('start')
 
-      status.updating && emitter('update', update(progress, status.iterations))
+      status.updating && emitter('update', update(status.progress, status.iterations))
 
       status.repeating && emitter('repeat')
 

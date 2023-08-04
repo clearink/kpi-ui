@@ -5,7 +5,7 @@ import { TweenRenderer } from '../../scheduler'
 import updateGenerator from '../../utils/generator'
 import { normalizeEasings, normalizeTimes } from '../../utils/normalize'
 import createTweenEmitter from './utils/emitter'
-import { normalizeKeyframes, normalizeTarget } from './utils/normalize'
+import { normalizeKeyframes } from './utils/normalize'
 
 import type { MotionValue } from '../../../motion'
 import type { AnimatableValue, GenericKeyframes, TweenOptions } from '../../interface'
@@ -16,7 +16,7 @@ class GeneratorItem<V extends AnimatableValue> {
   constructor(public original: V) {
     let $formatted: this['formatted']
     defineGetter(this, 'formatted', () => {
-      if (!$formatted) $formatted = decompose(normalizeTarget(original))
+      if (!$formatted) $formatted = decompose(original)
       return $formatted
     })
   }
