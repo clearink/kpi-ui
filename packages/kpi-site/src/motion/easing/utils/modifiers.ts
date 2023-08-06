@@ -1,6 +1,7 @@
 import type { EasingModifier } from '../interface'
 
 export const easeInToEaseOut: EasingModifier = (easeIn) => (p) => 1 - easeIn(1 - p)
+
 export const easeOutToEaseIn = easeInToEaseOut
 
 export const easeInToEaseInOut: EasingModifier = (easeIn) => (p) =>

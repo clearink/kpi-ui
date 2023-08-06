@@ -45,5 +45,5 @@ export function motionValue<V = any>(initial: V | MotionValue<V>): MotionValue<V
 }
 
 export function isMotionValue(obj: any): obj is MotionValue {
-  return obj && obj[$id]
+  return Boolean(obj && obj[$id])
 }

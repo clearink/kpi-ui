@@ -1,8 +1,8 @@
 import { isArray, logger, toArray } from '@kpi/shared'
 import decompose from '../../../utils/decompose'
 import { defineGetter } from '../../../utils/define'
+import updateGenerator from '../../generator'
 import { TweenRenderer } from '../../scheduler'
-import updateGenerator from '../../utils/generator'
 import { normalizeEasings, normalizeTimes } from '../../utils/normalize'
 import createTweenEmitter from './utils/emitter'
 import { normalizeKeyframes } from './utils/normalize'
@@ -27,21 +27,13 @@ export default function createTweenRenderer<V extends AnimatableValue>(
   to: V | GenericKeyframes<V>,
   options: TweenOptions
 ) {
-  const { times: $times = [], easing, repeatType } = options
-
   const keyframes = normalizeKeyframes(motion.get(), to)
-
-  const emitter = createTweenEmitter(motion, options)
-
-  const times = normalizeTimes(keyframes.length, $times)
-
-  logger(times[0] !== 0, 'Please ensure times[0] equal 0')
-
-  const easings = normalizeEasings(keyframes.length, toArray(easing))
 
   const targets = keyframes.map((keyframe) => new GeneratorItem(keyframe))
 
-  const generate = updateGenerator(targets, times, easings, repeatType)
+  const emitter = createTweenEmitter(motion, options)
+
+  const generate = updateGenerator(targets, options)
 
   const update = (progress: number, iterations: number) => {
     motion.set(generate(progress, iterations))

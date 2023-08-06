@@ -73,12 +73,10 @@ export class TweenScheduler {
 
     const delay = reversed ? this.endDelay : this.delay
 
-    const count = (second - delay) / (this.repeatDelay + this.duration) || 0
-
     // 运行次数
-    const iterations = clamp(Math.floor(count), 0, this.repeat)
+    const iteration = Math.floor((second - delay) / (this.repeatDelay + this.duration) || 0)
 
-    const done = iterations * (this.repeatDelay + this.duration) || 0
+    const done = iteration * (this.repeatDelay + this.duration) || 0
 
     // 进度
     const ratios = this.sliding
@@ -89,7 +87,7 @@ export class TweenScheduler {
     const updating = !(ratios[0] < 0 && ratios[1] < 0) && !(ratios[0] > 1 && ratios[1] > 1)
 
     // 重复中
-    const repeating = iterations > 0 && ratios[0] < 0 && ratios[1] >= 0
+    const repeating = iteration > 0 && ratios[0] < 0 && ratios[1] >= 0
 
     // 开始中
     const starting = first < 0 && second >= 0
@@ -100,7 +98,7 @@ export class TweenScheduler {
     // 进度
     const progress = clamp(reversed ? 1 - ratios[1] : ratios[1], 0, 1)
 
-    return { starting, completing, updating, repeating, iterations, progress }
+    return { starting, completing, updating, repeating, iteration, progress }
   }
 }
 
@@ -125,7 +123,7 @@ export class TweenRenderer {
 
       status.starting && emitter('start')
 
-      status.updating && emitter('update', update(status.progress, status.iterations))
+      status.updating && emitter('update', update(status.progress, status.iteration))
 
       status.repeating && emitter('repeat')
 
