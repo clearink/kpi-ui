@@ -33,9 +33,9 @@ export default function createTweenRenderer(
       const transition = normalizeTransition(options[property], options)
 
       // TODO: GeneratorItem 需要重新设计
-      const targets = normalizeKeyframes(element, property, target).map((keyframe) => {
-        return new GeneratorItem(keyframe)
-      })
+      const $keyframes = normalizeKeyframes(element, property, target)
+
+      const targets = $keyframes.map((keyframe) => new GeneratorItem(keyframe))
       // 需要提前将 property 的 默认值以及 setter 给出来
 
       // 这里需要重新设计

@@ -102,18 +102,17 @@ import './style.css'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
-  const v = useMotionValue(0)
+  const v = useMotionValue('')
   return (
     <div>
       <button
         type="button"
         onClick={async () => {
-          const a = animate(v, [null, 100, 300, 100, 700, 500], {
-            duration: 10000,
-            easing: 'easeInSine',
+          const a = animate(v, ['blur(5px)', 'none'], {
+            duration: 1000,
             // delay: 1000,
-            repeat: 3,
-            repeatDelay: 100,
+            // repeat: 3,
+            // repeatDelay: 100,
             // repeatType: 'mirror',
             onStart() {
               console.log('start', performance.now())
@@ -125,8 +124,9 @@ export default function App() {
               console.log('complete', performance.now())
             },
             onUpdate(current) {
-              // console.log(current)
-              ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
+              console.log(current)
+              ref.current!.style.setProperty('filter', current)
+              // ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
             },
           })
           // const a = animate(
