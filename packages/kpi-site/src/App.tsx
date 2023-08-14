@@ -102,13 +102,13 @@ import './style.css'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
-  const v = useMotionValue('')
+  const v = useMotionValue(0)
   return (
     <div>
       <button
         type="button"
         onClick={async () => {
-          const a = animate(v, ['blur(5px)', 'none'], {
+          const a = animate(v, [200, 300], {
             duration: 1000,
             // delay: 1000,
             // repeat: 3,
@@ -124,9 +124,8 @@ export default function App() {
               console.log('complete', performance.now())
             },
             onUpdate(current) {
-              console.log(current)
-              ref.current!.style.setProperty('filter', current)
-              // ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
+              // ref.current!.style.setProperty('filter', current)
+              ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
             },
           })
           // const a = animate(

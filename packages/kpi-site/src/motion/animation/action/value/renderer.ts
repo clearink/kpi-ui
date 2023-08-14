@@ -1,6 +1,6 @@
-import decompose from '../../../utils/decompose'
 import updateGenerator from '../../generator'
 import { TweenRenderer } from '../../scheduler'
+import GeneratorItem from './utils/generator_item'
 import createTweenEmitter from './utils/emitter'
 import { normalizeKeyframes } from './utils/normalize'
 
@@ -14,16 +14,15 @@ export default function createTweenRenderer<V extends AnimatableValue>(
 ) {
   const keyframes = normalizeKeyframes(motion.get(), to)
 
-  const targets = keyframes.map((original) => {
-    return { original, formatted: decompose(original) }
-  })
-
   const emitter = createTweenEmitter(motion, options)
 
-  const generate = updateGenerator(targets, options)
+  const items = keyframes.map((item) => new GeneratorItem(item))
 
-  const update = (progress: number, iterations: number) => {
-    motion.set(generate(progress, iterations))
+  const generate = updateGenerator(items, options)
+
+  const update = (progress: number, iteration: number) => {
+    motion.set(generate(progress, iteration) as V)
+    emitter('update')
   }
 
   // 目前来看，确实需要 在 renderer 中添加一个 init 函数

@@ -74,7 +74,9 @@ export class TweenScheduler {
     const delay = reversed ? this.endDelay : this.delay
 
     // 运行次数
-    const iteration = Math.floor((second - delay) / (this.repeatDelay + this.duration) || 0)
+    let iteration = Math.floor((second - delay) / (this.repeatDelay + this.duration) || 0)
+
+    iteration = clamp(iteration, 0, this.repeat)
 
     const done = iteration * (this.repeatDelay + this.duration) || 0
 
@@ -114,7 +116,7 @@ export class TweenRenderer {
   constructor(emitter: Emitter, update: Update, options: TweenOptions) {
     this.scheduler = new TweenScheduler(options)
 
-    this.reset = (reversed) => emitter('update', update(+reversed, 0))
+    this.reset = (reversed) => update(+reversed, 0)
 
     this.schedule = (timestamp, reversed) => {
       const status = this.scheduler.schedule(timestamp, reversed)
@@ -123,7 +125,7 @@ export class TweenRenderer {
 
       status.starting && emitter('start')
 
-      status.updating && emitter('update', update(status.progress, status.iteration))
+      status.updating && update(status.progress, status.iteration)
 
       status.repeating && emitter('repeat')
 

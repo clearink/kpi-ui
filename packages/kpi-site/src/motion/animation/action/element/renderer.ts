@@ -4,22 +4,11 @@ import { defineGetter } from '../../../utils/define'
 import updateGenerator from '../../generator'
 import { TweenRenderer } from '../../scheduler'
 import { normalizeEasings, normalizeTimes } from '../../utils/normalize'
+import GeneratorItem from './utils/generator_item'
 import { normalizeKeyframes, normalizeTransition } from './utils/normalize'
 import createSetter from './utils/setter'
 
 import type { AnimatableValue, AnimateElementOptions, ElementKeyframes } from '../../interface'
-
-class GeneratorItem<V extends AnimatableValue> {
-  formatted!: ReturnType<typeof decompose>
-
-  constructor(public original: V) {
-    let $formatted: this['formatted']
-    defineGetter(this, 'formatted', () => {
-      if (!$formatted) $formatted = decompose(original)
-      return $formatted
-    })
-  }
-}
 
 export default function createTweenRenderer(
   elements: Element[],
@@ -35,7 +24,7 @@ export default function createTweenRenderer(
       // TODO: GeneratorItem 需要重新设计
       const $keyframes = normalizeKeyframes(element, property, target)
 
-      const targets = $keyframes.map((keyframe) => new GeneratorItem(keyframe))
+      const targets = $keyframes.map((keyframe) => new GeneratorItem(element, property, keyframe))
       // 需要提前将 property 的 默认值以及 setter 给出来
 
       // 这里需要重新设计
@@ -44,8 +33,9 @@ export default function createTweenRenderer(
       const generate = updateGenerator(targets, transition)
 
       const update = (progress: number, iterations: number) => {
-        const value = generate(progress, iterations)
+        const next = generate(progress, iterations)
         // setter(value)
+        emitter()
       }
 
       // 当设置为 keyframes 时, 主动触发一次 update 事件

@@ -14,7 +14,7 @@ const caf = cancelAnimationFrame
 const now = () => performance.now()
 
 // with update frame delta
-const raf = (callback: FrameRequestCallback) => $raf((t) => updateFrameDelta(t, callback(t)))
+const raf = (callback: FrameRequestCallback) => $raf((t) => updateFrameDelta(t) || callback(t))
 
 let $id: null | number = null
 const update = () => ($id = raf((t) => ($queue.flush(t) ? update() : ($id = null))))
