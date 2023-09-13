@@ -1,243 +1,248 @@
-/* eslint-disable max-classes-per-file */
-import { isNullish } from '@kpi/shared'
-import clamp from '../../utils/clamp'
-import { defineGetter } from '../../utils/define'
-import driver from '../driver'
-import { frameData } from '../driver/delta'
-import makeControlledPromise from '../utils/controlled_promise'
-import { max } from '../utils/math'
+export { default as TweenScheduler } from './scheduler'
+export { default as TweenAnimation } from './animation'
+export { default as TweenController } from './controller'
+export { default as TweenTimeline } from './timeline'
 
-import type { Emitter } from '../action/value/utils/emitter'
-import type { AnimationStatus, TweenOptions } from '../interface'
+// /* eslint-disable max-classes-per-file */
+// import { isNullish } from '@kpi/shared'
+// import clamp from '../../utils/clamp'
+// import { defineGetter } from '../../utils/define'
+// import driver from '../driver'
+// import { frameData } from '../driver/delta'
+// import makeControlledPromise from '../utils/controlled_promise'
+// import { max } from '../utils/math'
 
-const running = (status: AnimationStatus) => status === 'running'
+// import type { Emitter } from '../action/value/utils/emitter'
+// import type { AnimationStatus, TweenOptions } from '../interface'
 
-const canceled = (status: AnimationStatus) => status === 'canceled'
+// const running = (status: AnimationStatus) => status === 'running'
 
-const finished = (status: AnimationStatus) => status === 'finished'
+// const canceled = (status: AnimationStatus) => status === 'canceled'
 
-export class TweenScheduler {
-  private start = 0
+// const finished = (status: AnimationStatus) => status === 'finished'
 
-  private delay = 0
+// export class TweenScheduler {
+//   private start = 0
 
-  private duration = 0
+//   private delay = 0
 
-  private repeat = 0
+//   private duration = 0
 
-  private repeatDelay = 0
+//   private repeat = 0
 
-  private endDelay = 0
+//   private repeatDelay = 0
 
-  private sliding = [0, 0]
+//   private endDelay = 0
 
-  readonly end!: number
+//   private sliding = [0, 0]
 
-  constructor(options: TweenOptions) {
-    const { start, duration, repeat, delay, endDelay, repeatDelay } = options
+//   readonly end!: number
 
-    const maximum = 1e20
+//   constructor(options: TweenOptions) {
+//     const { start, duration, repeat, delay, endDelay, repeatDelay } = options
 
-    !isNullish(start) && (this.start = clamp(start, 0, maximum))
+//     const maximum = 1e20
 
-    !isNullish(delay) && (this.delay = clamp(delay, 0, maximum))
+//     !isNullish(start) && (this.start = clamp(start, 0, maximum))
 
-    !isNullish(duration) && (this.duration = clamp(duration, 0, maximum))
+//     !isNullish(delay) && (this.delay = clamp(delay, 0, maximum))
 
-    !isNullish(repeat) && (this.repeat = clamp(repeat, 0, maximum))
+//     !isNullish(duration) && (this.duration = clamp(duration, 0, maximum))
 
-    !isNullish(repeatDelay) && (this.repeatDelay = clamp(repeatDelay, 0, maximum))
+//     !isNullish(repeat) && (this.repeat = clamp(repeat, 0, maximum))
 
-    !isNullish(endDelay) && (this.endDelay = clamp(endDelay, 0, maximum))
+//     !isNullish(repeatDelay) && (this.repeatDelay = clamp(repeatDelay, 0, maximum))
 
-    const cycle = (this.repeatDelay + this.duration) * this.repeat || 0
+//     !isNullish(endDelay) && (this.endDelay = clamp(endDelay, 0, maximum))
 
-    const end = this.delay + this.start + this.duration + cycle + this.endDelay
+//     const cycle = (this.repeatDelay + this.duration) * this.repeat || 0
 
-    defineGetter(this, 'end', () => end)
-  }
+//     const end = this.delay + this.start + this.duration + cycle + this.endDelay
 
-  schedule(timestamp: number, reversed: boolean) {
-    const elapsed = timestamp - this.start
-    const diff = Math.abs(Math.abs(elapsed - this.sliding[1]) - frameData.delta)
+//     defineGetter(this, 'end', () => end)
+//   }
 
-    this.sliding[0] = Math.floor(diff) ? elapsed - frameData.delta : this.sliding[1]
-    this.sliding[1] = elapsed
+//   schedule(timestamp: number, reversed: boolean) {
+//     const elapsed = timestamp - this.start
+//     const diff = Math.abs(Math.abs(elapsed - this.sliding[1]) - frameData.delta)
 
-    const [first, second] = this.sliding
+//     this.sliding[0] = Math.floor(diff) ? elapsed - frameData.delta : this.sliding[1]
+//     this.sliding[1] = elapsed
 
-    const timeline = this.end - this.start
+//     const [first, second] = this.sliding
 
-    // 不在时间线内
-    if ((first < 0 && second < 0) || (first > timeline && second > timeline)) return false
+//     const timeline = this.end - this.start
 
-    const delay = reversed ? this.endDelay : this.delay
+//     // 不在时间线内
+//     if ((first < 0 && second < 0) || (first > timeline && second > timeline)) return false
 
-    // 运行次数
-    let iteration = Math.floor((second - delay) / (this.repeatDelay + this.duration) || 0)
+//     const delay = reversed ? this.endDelay : this.delay
 
-    iteration = clamp(iteration, 0, this.repeat)
+//     // 运行次数
+//     let iteration = Math.floor((second - delay) / (this.repeatDelay + this.duration) || 0)
 
-    const done = iteration * (this.repeatDelay + this.duration) || 0
+//     iteration = clamp(iteration, 0, this.repeat)
 
-    // 进度
-    const ratios = this.sliding
-      .map((t) => t - done - delay)
-      .map((t) => (t === this.duration ? 1 : t / this.duration))
+//     const done = iteration * (this.repeatDelay + this.duration) || 0
 
-    // 更新中
-    const updating = !(ratios[0] < 0 && ratios[1] < 0) && !(ratios[0] > 1 && ratios[1] > 1)
+//     // 进度
+//     const ratios = this.sliding
+//       .map((t) => t - done - delay)
+//       .map((t) => (t === this.duration ? 1 : t / this.duration))
 
-    // 重复中
-    const repeating = iteration > 0 && ratios[0] < 0 && ratios[1] >= 0
+//     // 更新中
+//     const updating = !(ratios[0] < 0 && ratios[1] < 0) && !(ratios[0] > 1 && ratios[1] > 1)
 
-    // 开始中
-    const starting = first < 0 && second >= 0
+//     // 重复中
+//     const repeating = iteration > 0 && ratios[0] < 0 && ratios[1] >= 0
 
-    // 结束中
-    const completing = first < timeline && second >= timeline
+//     // 开始中
+//     const starting = first < 0 && second >= 0
 
-    // 进度
-    const progress = clamp(reversed ? 1 - ratios[1] : ratios[1], 0, 1)
+//     // 结束中
+//     const completing = first < timeline && second >= timeline
 
-    return { starting, completing, updating, repeating, iteration, progress }
-  }
-}
+//     // 进度
+//     const progress = clamp(reversed ? 1 - ratios[1] : ratios[1], 0, 1)
 
-type Update = (progress: number, iterations: number) => void
+//     return { starting, completing, updating, repeating, iteration, progress }
+//   }
+// }
 
-export class TweenRenderer {
-  scheduler: TweenScheduler
+// type Update = (progress: number, iterations: number) => void
 
-  schedule: (timestamp: number, reversed: boolean) => void
+// export class TweenRenderer {
+//   scheduler: TweenScheduler
 
-  reset: (reversed: boolean) => void
+//   schedule: (timestamp: number, reversed: boolean) => void
 
-  constructor(emitter: Emitter, update: Update, options: TweenOptions) {
-    this.scheduler = new TweenScheduler(options)
+//   reset: (reversed: boolean) => void
 
-    this.reset = (reversed) => update(+reversed, 0)
+//   constructor(emitter: Emitter, update: Update, options: TweenOptions) {
+//     this.scheduler = new TweenScheduler(options)
 
-    this.schedule = (timestamp, reversed) => {
-      const status = this.scheduler.schedule(timestamp, reversed)
+//     this.reset = (reversed) => update(+reversed, 0)
 
-      if (status === false) return
+//     this.schedule = (timestamp, reversed) => {
+//       const status = this.scheduler.schedule(timestamp, reversed)
 
-      status.starting && emitter('start')
+//       if (status === false) return
 
-      status.updating && update(status.progress, status.iteration)
+//       status.starting && emitter('start')
 
-      status.repeating && emitter('repeat')
+//       status.updating && update(status.progress, status.iteration)
 
-      status.completing && emitter('complete')
-    }
-  }
-}
+//       status.repeating && emitter('repeat')
 
-export class TweenController {
-  readonly status!: AnimationStatus
+//       status.completing && emitter('complete')
+//     }
+//   }
+// }
 
-  speed = 1
+// export class TweenController {
+//   readonly status!: AnimationStatus
 
-  play: (restart?: boolean) => void
+//   speed = 1
 
-  cancel: () => void
+//   play: (restart?: boolean) => void
 
-  pause: () => void
+//   cancel: () => void
 
-  reverse: () => void
+//   pause: () => void
 
-  then!: (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => Promise<void>
+//   reverse: () => void
 
-  constructor(renderers: TweenRenderer[]) {
-    // animation 上次更新的时间
-    let $lastTime = 0
-    // animation 当前的时间
-    let $currentTime = 0
-    // animation 状态
-    let $status: AnimationStatus = 'paused'
+//   then!: (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => Promise<void>
 
-    defineGetter(this, 'status', () => $status)
+//   constructor(renderers: TweenRenderer[]) {
+//     // animation 上次更新的时间
+//     let $lastTime = 0
+//     // animation 当前的时间
+//     let $currentTime = 0
+//     // animation 状态
+//     let $status: AnimationStatus = 'paused'
 
-    const $promise = makeControlledPromise()
-    $promise.update()
+//     defineGetter(this, 'status', () => $status)
 
-    defineGetter(this, 'then', () => (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => {
-      return $promise.get().then(onfulfilled, onrejected)
-    })
+//     const $promise = makeControlledPromise()
+//     $promise.update()
 
-    const duration = max(renderers.map(({ scheduler }) => scheduler.end))
+//     defineGetter(this, 'then', () => (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => {
+//       return $promise.get().then(onfulfilled, onrejected)
+//     })
 
-    const tick = (timestamp: number) => {
-      if (!running($status)) return false
+//     const duration = max(renderers.map(({ scheduler }) => scheduler.end))
 
-      const elapsed = $lastTime ? timestamp - $lastTime : 0
+//     const tick = (timestamp: number) => {
+//       if (!running($status)) return false
 
-      $lastTime = timestamp
+//       const elapsed = $lastTime ? timestamp - $lastTime : 0
 
-      $currentTime += elapsed * this.speed
+//       $lastTime = timestamp
 
-      const reversed = this.speed < 0
+//       $currentTime += elapsed * this.speed
 
-      const adjusted = reversed ? duration - $currentTime : $currentTime
+//       const reversed = this.speed < 0
 
-      renderers.forEach((renderer) => renderer.schedule(adjusted, reversed))
+//       const adjusted = reversed ? duration - $currentTime : $currentTime
 
-      if (adjusted < duration) return true
+//       renderers.forEach((renderer) => renderer.schedule(adjusted, reversed))
 
-      $status = 'finished'
+//       if (adjusted < duration) return true
 
-      $promise.update()
+//       $status = 'finished'
 
-      return false
-    }
+//       $promise.update()
 
-    const reset = () => {
-      $lastTime = 0
-      $currentTime = this.speed > 0 ? 0 : duration
+//       return false
+//     }
 
-      // 重置时强行回到原始位置
-      renderers.forEach((renderer) => renderer.reset(this.speed < 0))
-    }
+//     const reset = () => {
+//       $lastTime = 0
+//       $currentTime = this.speed > 0 ? 0 : duration
 
-    // 运行/重新运行
-    this.play = (restart = false) => {
-      if (canceled($status)) return
+//       // 重置时强行回到原始位置
+//       renderers.forEach((renderer) => renderer.reset(this.speed < 0))
+//     }
 
-      if (restart || finished($status)) reset()
+//     // 运行/重新运行
+//     this.play = (restart = false) => {
+//       if (canceled($status)) return
 
-      $status = 'running'
+//       if (restart || finished($status)) reset()
 
-      driver.start(tick)
-    }
+//       $status = 'running'
 
-    // 反转
-    this.reverse = () => {
-      if (canceled($status)) return
+//       driver.start(tick)
+//     }
 
-      this.speed *= -1
+//     // 反转
+//     this.reverse = () => {
+//       if (canceled($status)) return
 
-      this.play()
-    }
+//       this.speed *= -1
 
-    // 取消
-    this.cancel = () => {
-      if (canceled($status)) return
+//       this.play()
+//     }
 
-      $status = 'canceled'
+//     // 取消
+//     this.cancel = () => {
+//       if (canceled($status)) return
 
-      driver.cancel(tick)
-    }
+//       $status = 'canceled'
 
-    // 暂停
-    this.pause = () => {
-      if (canceled($status)) return
+//       driver.cancel(tick)
+//     }
 
-      $status = 'paused'
+//     // 暂停
+//     this.pause = () => {
+//       if (canceled($status)) return
 
-      $lastTime = 0
+//       $status = 'paused'
 
-      driver.cancel(tick)
-    }
-  }
-}
+//       $lastTime = 0
+
+//       driver.cancel(tick)
+//     }
+//   }
+// }

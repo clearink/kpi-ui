@@ -2,7 +2,7 @@ import { isUndefined, logger, pushItem, toArray } from '@kpi/shared'
 import decompose from '../../../utils/decompose'
 import { defineGetter } from '../../../utils/define'
 import updateGenerator from '../../generator'
-import { TweenRenderer } from '../../scheduler'
+import { TweenTimeline } from '../../scheduler'
 import { normalizeEasings, normalizeTimes } from '../../utils/normalize'
 import GeneratorItem from './utils/generator_item'
 import { normalizeKeyframes, normalizeTransition } from './utils/normalize'
@@ -10,12 +10,12 @@ import createSetter from './utils/setter'
 
 import type { AnimatableValue, AnimateElementOptions, ElementKeyframes } from '../../interface'
 
-export default function createTweenRenderer(
+export default function makeTimeline(
   elements: Element[],
   keyframes: ElementKeyframes,
   options: AnimateElementOptions
 ) {
-  return elements.reduce((result: TweenRenderer[], element) => {
+  return elements.reduce((result: TweenTimeline[], element) => {
     Object.entries(keyframes).forEach(([property, target]) => {
       if (isUndefined(target)) return
 
@@ -41,7 +41,7 @@ export default function createTweenRenderer(
       // 当设置为 keyframes 时, 主动触发一次 update 事件
       // if (isArray(target)) emitter('update', update(0, 0))
 
-      pushItem(result, new TweenRenderer(emitter, update, transition))
+      pushItem(result, new TweenTimeline([], transition))
     })
 
     return result

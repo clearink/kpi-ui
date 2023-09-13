@@ -18,7 +18,7 @@ export default function updateGenerator(targets: GeneratorItem[], options: Tween
   return (progress: number, iterations: number): AnimatableValue => {
     const odd = iterations % 2 === 1
 
-    const backward = options.repeatType === 'mirror' && odd
+    // const backward = options.repeatType === 'mirror' && odd
 
     const adjusted = options.repeatType === 'reverse' && odd ? 1 - progress : progress
 
@@ -27,9 +27,13 @@ export default function updateGenerator(targets: GeneratorItem[], options: Tween
 
     const easing = easings[active - 1]
 
-    const from = targets[backward ? steps - active : active - 1].decompose()
+    const from = targets[active - 1].decompose()
 
-    const to = targets[backward ? steps - 1 - active : active].decompose()
+    const to = targets[active].decompose()
+
+    // const from = targets[backward ? steps - active : active - 1].decompose()
+
+    // const to = targets[backward ? steps - 1 - active : active].decompose()
 
     const range: [number, number] = [times[active - 1], times[active]]
 

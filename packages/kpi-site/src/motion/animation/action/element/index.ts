@@ -2,7 +2,7 @@ import { isObject, shallowMerge } from '@kpi/shared'
 import Options from '../../config/options'
 import { TweenController } from '../../scheduler'
 import selector from '../../utils/selector'
-import createTweenRenderer from './renderer'
+import makeTimeline from './timeline'
 
 import type {
   AnimateElementOptions,
@@ -22,9 +22,9 @@ export default function animateElement(
 
   const elements = selector(maybeElements, scope)
 
-  const renderers = createTweenRenderer(elements, keyframes, mergedOptions)
+  const timelines = makeTimeline(elements, keyframes, mergedOptions)
 
-  const controller = new TweenController(renderers)
+  const controller = new TweenController(timelines)
 
   if (mergedOptions.autoplay) controller.play()
 

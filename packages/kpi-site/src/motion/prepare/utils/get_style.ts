@@ -1,20 +1,17 @@
 import { hasOwn, isFunction, isNull } from '@kpi/shared'
 
 export function getComputedCSS(element: Element, prop: string) {
-  if (isFunction(globalThis.getComputedStyle)) {
-    return globalThis.getComputedStyle(element)[prop]
-  }
-  return null
+  if (!isFunction(getComputedStyle)) return null
+
+  return getComputedStyle(element)[prop] as string
 }
 
-export function getInlineCSS(element: Element, prop: string): string | undefined {
+export function getInlineCSS(element: Element, prop: string) {
   if ('style' in element && hasOwn(element.style, prop)) {
-    return (element.style as CSSStyleDeclaration)[prop]
+    return (element.style as CSSStyleDeclaration)[prop] as string
   }
-  return undefined
 }
-
-export function getElementStyle(element: Element, prop: string): string | undefined {
+export function getElementStyle(element: Element, prop: string) {
   const computed = getComputedCSS(element, prop)
 
   return !isNull(computed) ? computed : getInlineCSS(element, prop)
