@@ -5,51 +5,52 @@ import './style.css'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
-  const v = useMotionValue(0)
+  const v = useMotionValue('0')
   return (
     <div>
       <button
         type="button"
         onClick={async () => {
-          const a = animate(v, [0, 800, 200, 300, 500], {
-            duration: 4000,
-            // delay: 1000,
-            repeat: 3,
-            repeatDelay: 100,
-            repeatType: 'mirror',
-            onStart() {
-              console.log('start', performance.now())
-            },
-            onRepeat() {
-              console.log('repeat', performance.now())
-            },
-            onComplete() {
-              console.log('complete', performance.now())
-            },
-            onUpdate(current) {
-              // ref.current!.style.setProperty('filter', current)
-              ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
-            },
-          })
-          // const a = animate(
-          //   ref.current!,
-          //   {
-          //     height: [null, 100, 300, '20vh', 'auto'],
-          //     // y: 300,
+          // const a = animate(v, ['0', '300'], {
+          //   duration: 300,
+          //   repeat: 1,
+          //   repeatType: 'mirror',
+          //   onStart() {
+          //     console.log('start', performance.now())
           //   },
-          //   {
-          //     duration: 2000,
-          //     easing: 'easeInOutQuad',
-          //     onUpdate(current) {
-          //       console.log('current', current)
-          //     },
-          //     // x: {
-          //     //   duration: 3000,
-          //     //   delay: 1000,
-          //     //   endDelay: 30,
-          //     // },
-          //   }
-          // )
+          //   onRepeat() {
+          //     console.log('repeat', performance.now())
+          //   },
+          //   onComplete() {
+          //     console.log('complete', performance.now())
+          //   },
+          //   onUpdate(current) {
+          //     console.log(current)
+          //     // ref.current!.style.setProperty('background-color', current)
+          //     ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
+          //   },
+          // })
+          const a = animate(
+            ref.current!,
+            {
+              height: [100, 300, 500],
+              // height: [null, 100, 300, '20vh', 'auto'],
+              // y: 300,
+            },
+            {
+              duration: 2000,
+              delay: 1000,
+              easing: 'easeInOutQuad',
+              onUpdate(current) {
+                // console.log('current', current)
+              },
+              // x: {
+              //   duration: 3000,
+              //   delay: 1000,
+              //   endDelay: 30,
+              // },
+            }
+          )
           console.log(a)
           ;(window as any).a = a
           a.then(() => console.log('finish', performance.now()))

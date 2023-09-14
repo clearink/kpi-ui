@@ -1,47 +1,39 @@
-import { isUndefined, logger, pushItem, toArray } from '@kpi/shared'
-import decompose from '../../../utils/decompose'
-import { defineGetter } from '../../../utils/define'
-import updateGenerator from '../../generator'
-import { TweenTimeline } from '../../scheduler'
-import { normalizeEasings, normalizeTimes } from '../../utils/normalize'
-import GeneratorItem from './utils/generator_item'
+import { isUndefined, pushItem } from '@kpi/shared'
+import { TweenTimeline, updateGenerator } from '../../scheduler'
+import makeAccessor from './utils/accessor'
+import makeAnimations from './utils/animation'
 import { normalizeKeyframes, normalizeTransition } from './utils/normalize'
-import createSetter from './utils/setter'
 
-import type { AnimatableValue, AnimateElementOptions, ElementKeyframes } from '../../interface'
+import type { AnimateElementOptions, ElementKeyframes } from '../../interface'
 
-export default function makeTimeline(
+export default function makeTimelines(
   elements: Element[],
-  keyframes: ElementKeyframes,
+  elementKeyframes: ElementKeyframes,
   options: AnimateElementOptions
 ) {
   return elements.reduce((result: TweenTimeline[], element) => {
-    Object.entries(keyframes).forEach(([property, target]) => {
+    Object.entries(elementKeyframes).forEach(([property, target]) => {
       if (isUndefined(target)) return
 
       const transition = normalizeTransition(options[property], options)
 
-      // TODO: GeneratorItem 需要重新设计
-      const $keyframes = normalizeKeyframes(element, property, target)
+      const keyframes = normalizeKeyframes(element, property, target)
 
-      const targets = $keyframes.map((keyframe) => new GeneratorItem(element, property, keyframe))
-      // 需要提前将 property 的 默认值以及 setter 给出来
+      const accessor = makeAccessor(element, property)
+
+      const animations = makeAnimations(accessor, keyframes)
 
       // 这里需要重新设计
       const emitter = () => {}
 
-      const generate = updateGenerator(targets, transition)
+      const generate = updateGenerator<string>(animations, transition)
 
       const update = (progress: number, iterations: number) => {
-        const next = generate(progress, iterations)
-        // setter(value)
-        emitter()
+        accessor.set(generate(progress, iterations))
+        // emitter('update')
       }
 
-      // 当设置为 keyframes 时, 主动触发一次 update 事件
-      // if (isArray(target)) emitter('update', update(0, 0))
-
-      pushItem(result, new TweenTimeline([], transition))
+      pushItem(result, new TweenTimeline(emitter, update, transition))
     })
 
     return result

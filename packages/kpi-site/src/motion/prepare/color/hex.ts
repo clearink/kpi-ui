@@ -7,9 +7,9 @@ export default {
   parse: (v: string): RGBA => {
     const isShorthand = v.length < 6
 
-    const [r, g, b, a] = Array.from({ length: 4 }, (_, i) =>
-      isShorthand ? v.substring(i + 1, i + 2).repeat(2) : v.substring(i * 2 + 1, i * 2 + 3)
-    )
+    const [r, g, b, a] = isShorthand
+      ? Array.from({ length: 4 }, (_, i) => v.substring(i + 1, i + 2).repeat(2))
+      : Array.from({ length: 4 }, (_, i) => v.substring(i * 2 + 1, i * 2 + 3))
 
     return {
       red: parseInt(r, 16),

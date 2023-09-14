@@ -2,7 +2,7 @@ import { isObject, shallowMerge } from '@kpi/shared'
 import Options from '../../config/options'
 import { TweenController } from '../../scheduler'
 import selector from '../../utils/selector'
-import makeTimeline from './timeline'
+import makeTimelines from './timeline'
 
 import type {
   AnimateElementOptions,
@@ -22,7 +22,7 @@ export default function animateElement(
 
   const elements = selector(maybeElements, scope)
 
-  const timelines = makeTimeline(elements, keyframes, mergedOptions)
+  const timelines = makeTimelines(elements, keyframes, mergedOptions)
 
   const controller = new TweenController(timelines)
 

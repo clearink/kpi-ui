@@ -1,11 +1,9 @@
-import { logger, toArray } from '@kpi/shared'
-import interpolator from '../../utils/interpolator'
-import { normalizeEasings, normalizeTimes } from '../utils/normalize'
 import TweenScheduler from './scheduler'
 
 import type { TweenOptions } from '../interface'
-import type TweenAnimation from './animation'
+import { Emitter } from '../action/value/utils/emitter'
 
+type Update = (progress: number, iteration: number) => void
 export default class TweenTimeline {
   scheduler: TweenScheduler
 
@@ -13,50 +11,54 @@ export default class TweenTimeline {
 
   reset: (reversed: boolean) => void
 
-  constructor(animations: TweenAnimation[], options: TweenOptions) {
+  constructor(emitter: Emitter, update: Update, options: TweenOptions) {
     this.scheduler = new TweenScheduler(options)
 
-    const steps = animations.length
-
-    const times = normalizeTimes(steps, options.times || [])
-
-    logger(times[0] !== 0, 'Please ensure times[0] equal 0')
-
-    const easings = normalizeEasings(steps, toArray(options.easing))
-
-    this.reset = (reversed) => {
-      console.log(this.scheduler.end)
-    }
+    this.reset = (reversed) => update(+reversed, 0)
 
     this.schedule = (timestamp, reversed) => {
       const status = this.scheduler.schedule(timestamp, reversed)
 
       if (status === false) return
 
-      let { progress } = status
+      status.starting && emitter('start')
 
-      const odd = status.iteration % 2 === 1
+      status.updating && update(status.progress, status.iteration)
 
-      const backward = options.repeatType === 'mirror' && odd
+      status.repeating && emitter('repeat')
 
-      if (options.repeatType === 'reverse' && odd) progress = 1 - progress
-
-      const active = times.findIndex((time, i) => progress < time || i === steps - 1)
-
-      const range: [number, number] = [times[active - 1], times[active]]
-
-      const easing = easings[backward ? steps - active : active - 1]
-
-      if (backward) range.reverse()
-
-      const [percent, transform] = interpolator(progress, range, [0, 1])
-
-      const animation = animations[backward ? steps - active : active - 1]
-
-      animation.render(transform(easing(percent)))
+      status.completing && emitter('complete')
     }
   }
 }
+
+// this.schedule = (timestamp, reversed) => {
+//   const status = this.scheduler.schedule(timestamp, reversed)
+
+//   if (status === false) return
+
+//   let { progress } = status
+
+//   const odd = status.iteration % 2 === 1
+
+//   const backward = options.repeatType === 'mirror' && odd
+
+//   if (options.repeatType === 'reverse' && odd) progress = 1 - progress
+
+//   const active = times.findIndex((time, i) => progress < time || i === steps - 1)
+
+//   const range: [number, number] = [times[active - 1], times[active]]
+
+//   const easing = easings[backward ? steps - active : active - 1]
+
+//   if (backward) range.reverse()
+
+//   const [percent, transform] = interpolator(progress, range, [0, 1])
+
+//   const animation = animations[backward ? steps - active : active - 1]
+
+//   animation.render(transform(easing(percent)))
+// }
 
 /**
  * 对于 duration= 3000, easing=['easeInBack', 'linear'] times = [0, 0.4, 1], keyframes = [0, 100, 300]

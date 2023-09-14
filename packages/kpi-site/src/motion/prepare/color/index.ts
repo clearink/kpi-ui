@@ -6,13 +6,13 @@ import clamp from '../../utils/clamp'
 import type { RGBA } from '../interface'
 
 export default {
-  test: (v: string) => hex.test(v) || rgb.test(v) || hsl.test(v),
-  parse: (v: string) => {
+  test: (v: any) => hex.test(v) || rgb.test(v) || hsl.test(v),
+  prepare: (v: any) => {
     if (rgb.test(v)) return rgb.parse(v)
     if (hsl.test(v)) return hsl.parse(v)
     return hex.parse(v)
   },
-  transform: (v: RGBA) => {
+  render: (v: RGBA) => {
     const r = clamp(v.red, 0, 255)
     const g = clamp(v.green, 0, 255)
     const b = clamp(v.blue, 0, 255)
