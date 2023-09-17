@@ -34,24 +34,14 @@ export default function updateGenerator<V extends AnimatableValue = AnimatableVa
 
     const animation = animations[backward ? steps - active : active - 1]
 
-    animation.ensureInitialized()
+    animation.init()
 
     const range: [number, number] = [times[active - 1], times[active]]
 
-    const from = animation.tuple[backward ? 1 : 0]
-
-    const to = animation.tuple[backward ? 0 : 1]
-
-    const numbers = to.numbers.map((num, i) => {
-      const output: [number, number] = [from.numbers[i] || 0, num]
-
+    return animation.render(adjusted, (output) => {
+      if (backward) output.reverse()
       const [percent, transform] = interpolator(adjusted, range, output)
-
       return sanitize(transform(easing(percent)))
     })
-
-    if (to.numeric) return numbers[0] as V
-
-    return to.strings.reduce((r, s, i) => `${r + s}${numbers[i] ?? ''}`, '') as V
   }
 }

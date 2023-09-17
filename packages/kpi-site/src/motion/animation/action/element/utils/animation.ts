@@ -11,10 +11,12 @@ class ElementAnimation<V extends AnimatableValue = AnimatableValue> implements T
 
   tuple: TweenAnimation['tuple'] = [decompose(0), decompose(0)]
 
-  ensureInitialized: TweenAnimation['ensureInitialized']
+  init: TweenAnimation['init']
+
+  render: TweenAnimation['render']
 
   constructor(accessor: ReturnType<typeof makeAccessor>, from: V, to: V) {
-    this.ensureInitialized = () => {
+    this.init = () => {
       if (this.initialized) return
 
       this.initialized = true
@@ -23,6 +25,7 @@ class ElementAnimation<V extends AnimatableValue = AnimatableValue> implements T
 
       this.tuple = [decompose(`${from}${unit}`), decompose(`${to}${unit}`)]
     }
+    this.render = () => {}
   }
 }
 
