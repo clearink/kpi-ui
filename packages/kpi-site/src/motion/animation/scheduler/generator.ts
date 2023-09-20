@@ -3,13 +3,10 @@ import interpolator from '../../utils/interpolator'
 import sanitize from '../../utils/sanitize'
 import { normalizeEasings, normalizeTimes } from '../utils/normalize'
 
-import type { AnimatableValue, TweenOptions } from '../interface'
-import type { TweenAnimation } from './animation'
+import type { TweenOptions } from '../interface'
+import type TweenAnimation from './animation'
 
-export default function updateGenerator<V extends AnimatableValue = AnimatableValue>(
-  animations: TweenAnimation[],
-  options: TweenOptions
-) {
+export default function updateGenerator(animations: TweenAnimation[], options: TweenOptions) {
   const { times: $times, easing: $easing, repeatType } = options
 
   const steps = animations.length
@@ -32,15 +29,21 @@ export default function updateGenerator<V extends AnimatableValue = AnimatableVa
 
     const easing = easings[active - 1]
 
-    const animation = animations[backward ? steps - active : active - 1]
-
-    animation.init()
-
     const range: [number, number] = [times[active - 1], times[active]]
 
-    return animation.render(adjusted, (output) => {
+    const animation = animations[backward ? steps - active : active - 1]
+
+    if (!animation.initialized) animation.init()
+
+    if (adjusted === 0 || (backward && adjusted === 1)) return animation.from
+
+    if (adjusted === 1 || (backward && adjusted === 0)) return animation.to
+
+    return animation.render((output) => {
       if (backward) output.reverse()
+
       const [percent, transform] = interpolator(adjusted, range, output)
+
       return sanitize(transform(easing(percent)))
     })
   }

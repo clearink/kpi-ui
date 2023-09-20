@@ -17,10 +17,10 @@ export default function makeTimeline<V extends AnimatableValue>(
 
   const animations = makeAnimations(keyframes)
 
-  const generate = updateGenerator<V>(animations, options)
+  const generate = updateGenerator(animations, options)
 
   const update = (progress: number, iteration: number) => {
-    motion.set(generate(progress, iteration))
+    motion.set(generate(progress, iteration) as V)
     emitter('update')
   }
 

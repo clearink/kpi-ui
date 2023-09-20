@@ -5,6 +5,7 @@ import makeAnimations from './utils/animation'
 import { normalizeKeyframes, normalizeTransition } from './utils/normalize'
 
 import type { AnimateElementOptions, ElementKeyframes } from '../../interface'
+import { getUnit } from './utils/unit'
 
 export default function makeTimelines(
   elements: Element[],
@@ -21,15 +22,15 @@ export default function makeTimelines(
 
       const accessor = makeAccessor(element, property)
 
-      const animations = makeAnimations(accessor, keyframes)
+      const animations = makeAnimations(element, accessor, keyframes)
 
       // 这里需要重新设计
       const emitter = () => {}
 
-      const generate = updateGenerator<string>(animations, transition)
+      const generate = updateGenerator(animations, transition)
 
       const update = (progress: number, iterations: number) => {
-        accessor.set(generate(progress, iterations))
+        accessor.set(generate(progress, iterations) as string)
         // emitter('update')
       }
 

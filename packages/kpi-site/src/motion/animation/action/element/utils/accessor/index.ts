@@ -1,9 +1,18 @@
-import { motionTransformProps } from '../../../../prepare/transform/misc'
-import { getElementStyle, getInlineStyle } from '../../../../prepare/utils/get_style'
-import getElementCache from './cache'
+import { motionTransformProps } from '../../../../../prepare/transform/misc'
+import { getElementStyle, getInlineStyle } from '../../../../../prepare/utils/get_style'
+import getElementCache from '../cache'
+import makeAttrAccessor, { isElementAttribute } from './attr'
+import makeCssAccessor from './css'
+import makeTransformAccessor, { isElementTransform } from './transform'
 
 export default function makeAccessor(element: Element, property: string) {
   const cache = getElementCache(element)
+
+  // if (isElementTransform()) return makeTransformAccessor()
+
+  // if (isElementAttribute()) return makeAttrAccessor()
+
+  // return makeCssAccessor()
 
   if (motionTransformProps[property]) {
     // 是 transform 属性

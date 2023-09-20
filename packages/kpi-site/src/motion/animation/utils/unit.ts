@@ -15,16 +15,3 @@ export default function getUnit(value: AnimatableValue) {
 
   return match ? match[1] : null
 }
-
-export const convertTargetUnit = <V extends AnimatableValue>(
-  element: Element,
-  property: string,
-  targets: V[]
-) => {
-  const unit = units[property] || 'px'
-
-  const withUnitTargets = targets.map((item) => (isNull(getUnit(item)) ? `${item}${unit}` : item))
-
-  // 最终目标的 unit
-  const target = withUnitTargets[withUnitTargets.length - 1]
-}
