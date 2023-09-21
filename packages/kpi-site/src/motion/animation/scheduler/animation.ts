@@ -22,5 +22,5 @@ export default class TweenAnimation<V extends AnimatableValue = AnimatableValue>
     return to.strings.reduce((r, s, i) => `${r + s}${numbers[i] ?? ''}`, '')
   }
 
-  constructor(public from: V, public to: V) {}
+  constructor(public from: V | null, public to: V | null) {}
 }

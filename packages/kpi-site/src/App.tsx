@@ -11,7 +11,7 @@ export default function App() {
       <button
         type="button"
         onClick={async () => {
-          // const a = animate(v, [null, 300, 500], {
+          // const a = animate(v, [300, 200, 500, null, 700], {
           //   duration: 2000,
           //   repeat: 1,
           //   repeatType: 'mirror',
@@ -26,7 +26,7 @@ export default function App() {
           //     console.log('complete', performance.now())
           //   },
           //   onUpdate(current) {
-          //     console.log(current)
+          //     // console.log(current)
           //     // ref.current!.style.setProperty('background-color', current)
           //     ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
           //   },
@@ -34,7 +34,8 @@ export default function App() {
           const a = animate(
             ref.current!,
             {
-              height: [100, 300, 500],
+              x: [100, 300, 500],
+              y: 20,
               // height: [null, 100, 300, '20vh', 'auto'],
               // y: 300,
             },

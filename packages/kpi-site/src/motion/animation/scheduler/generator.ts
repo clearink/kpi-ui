@@ -35,9 +35,9 @@ export default function updateGenerator(animations: TweenAnimation[], options: T
 
     if (!animation.initialized) animation.init()
 
-    if (adjusted === 0 || (backward && adjusted === 1)) return animation.from
+    if (adjusted === 0 || (backward && adjusted === 1)) return animation.from!
 
-    if (adjusted === 1 || (backward && adjusted === 0)) return animation.to
+    if (adjusted === 1 || (backward && adjusted === 0)) return animation.to!
 
     return animation.render((output) => {
       if (backward) output.reverse()

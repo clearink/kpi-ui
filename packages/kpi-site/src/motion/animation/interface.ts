@@ -52,7 +52,7 @@ export interface Transition {
    * @description 延迟时间(由于底层使用 raf 所以实际效果并不一定准确)
    * @default 0
    */
-  delay?: number
+  delay?: number // 还可以传一个函数
   endDelay?: number
   duration?: number
   autoplay?: boolean

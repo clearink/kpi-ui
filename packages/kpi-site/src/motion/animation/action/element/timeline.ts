@@ -1,14 +1,13 @@
-import { isUndefined, pushItem } from '@kpi/shared'
+import { isArray, isNullish, isUndefined, pushItem } from '@kpi/shared'
 import { TweenTimeline, updateGenerator } from '../../scheduler'
 import makeAccessor from './utils/accessor'
-import makeAnimations from './utils/animation'
-import { normalizeKeyframes, normalizeTransition } from './utils/normalize'
+import makeAnimations from './animation'
 
 import type { AnimateElementOptions, ElementKeyframes } from '../../interface'
-import { getUnit } from './utils/unit'
+import makeTweenEmitter from './emitter'
 
 export default function makeTimelines(
-  elements: Element[],
+  elements: HTMLElement[],
   elementKeyframes: ElementKeyframes,
   options: AnimateElementOptions
 ) {
@@ -16,23 +15,25 @@ export default function makeTimelines(
     Object.entries(elementKeyframes).forEach(([property, target]) => {
       if (isUndefined(target)) return
 
-      const transition = normalizeTransition(options[property], options)
+      const transition = isNullish(options[property]) ? options : options[property]
 
-      const keyframes = normalizeKeyframes(element, property, target)
+      const keyframes = isArray(target) ? target : [null, target]
 
       const accessor = makeAccessor(element, property)
 
       const animations = makeAnimations(element, accessor, keyframes)
 
-      // 这里需要重新设计
-      const emitter = () => {}
+      const emitter = makeTweenEmitter(transition)
 
       const generate = updateGenerator(animations, transition)
 
-      const update = (progress: number, iterations: number) => {
-        accessor.set(generate(progress, iterations) as string)
-        // emitter('update')
+      const update = (progress: number, iteration: number) => {
+        const value = generate(progress, iteration) as string
+        accessor.set(value)
+        emitter('update', value)
       }
+
+      // if(isArray(target)) update(0, 0)
 
       pushItem(result, new TweenTimeline(emitter, update, transition))
     })
