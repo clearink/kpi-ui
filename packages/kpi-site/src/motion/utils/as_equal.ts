@@ -1,3 +1,3 @@
 export default function asEqual(a: number, b: number) {
-  return a - b < 1e-5
+  return a - b < Number.EPSILON
 }

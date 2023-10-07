@@ -1,73 +1,110 @@
-import { useRef } from 'react'
-import { animate, useMotionValue } from './motion'
-
+import { useRef, useState } from 'react'
+import Collapse from './Collapse'
+import { animate, eases } from './motion'
 import './style.css'
 
 export default function App() {
   const ref = useRef<HTMLDivElement>(null)
-  const v = useMotionValue(0)
+  const [collapsed, set] = useState(false)
   return (
     <div>
       <button
         type="button"
         onClick={async () => {
-          // const a = animate(v, [300, 200, 500, null, 700], {
-          //   duration: 2000,
-          //   repeat: 1,
-          //   repeatType: 'mirror',
-          //   easing: ['easeInBack', 'linear'],
-          //   onStart() {
-          //     console.log('start', performance.now())
-          //   },
-          //   onRepeat() {
-          //     console.log('repeat', performance.now())
-          //   },
-          //   onComplete() {
-          //     console.log('complete', performance.now())
-          //   },
-          //   onUpdate(current) {
-          //     // console.log(current)
-          //     // ref.current!.style.setProperty('background-color', current)
-          //     ref.current!.style.transform = `translate3d(${current}px, 0, 0)`
-          //   },
-          // })
-          const a = animate(
-            ref.current!,
+          const dom = ref.current!
+
+          const fade = (node: HTMLDivElement) => {
+            const current = () => {}
+            return {
+              easing: eases.easeInBack,
+              duration: 3000,
+              times: [0, 0.4, 0.8, 1],
+              repeat: 4,
+              repeatType: 'mirror',
+              init: (step: number) => {
+                if (step === 0) return [0, 200]
+                if (step === 1) return [200, 500]
+                return [500, 800]
+              },
+              tick: (val, label: string) => {
+                // label
+              },
+            }
+          }
+          animate(
             {
-              x: [100, 300, 500],
-              y: 20,
-              // height: [null, 100, 300, '20vh', 'auto'],
-              // y: 300,
+              x: [
+                (step: number) => {
+                  if (step === 0) return [0, 300]
+                  if (step === 1) return [300, 500]
+                  return [500, 1000]
+                },
+                (value: string, status: any) => {
+                  dom.style.setProperty('transform', value)
+                },
+              ],
+              y: [
+                () => [0, 500],
+                (value: string) => {
+                  dom.style.setProperty('transform', value)
+                },
+              ],
+              opacity: [
+                () => [0, 1],
+                (value) => {
+                  dom.style.setProperty('opacity', value)
+                },
+              ],
             },
             {
-              duration: 2000,
-              onUpdate(current) {
-                // console.log('current', current)
-              },
-              // x: {
-              //   duration: 3000,
-              //   delay: 1000,
-              //   endDelay: 30,
-              // },
+              easing: eases.easeInBack,
+              duration: 3000,
+              times: [0, 0.4, 0.8, 1],
+              repeat: 4,
+              repeatType: 'mirror',
             }
           )
-          console.log(a)
-          ;(window as any).a = a
-          a.then(() => console.log('finish', performance.now()))
+          animate(
+            dom,
+            {
+              height: [0, 200, 500],
+              opacity: [0, 1],
+            },
+            {
+              duration: 1000,
+              times: [0, 0.4, 0.8, 1],
+              repeat: 4,
+              repeatType: 'mirror',
+            }
+          )
         }}
       >
         start
       </button>
-      <div
-        ref={ref}
-        style={{
-          width: 200,
-          height: 200,
-          borderRadius: '4px',
-          backgroundColor: 'red',
-          // color: 'var(--primary-color)',
-        }}
-      />
+      <Collapse collapsed={collapsed}>
+        <div
+          ref={ref}
+          style={{
+            width: 200,
+            height: 0,
+            borderRadius: '4px',
+            backgroundColor: 'red',
+            // color: 'var(--primary-color)',
+          }}
+        >
+          <p style={{ height: 10 }} />
+          <p style={{ height: 10 }} />
+          <p style={{ height: 10 }} />
+          <p style={{ height: 10 }} />
+          <p style={{ height: 10 }} />
+          <p style={{ height: 10 }} />
+          <p style={{ height: 10 }} />
+          <p style={{ height: 10 }} />
+          <p style={{ height: 10 }} />
+          <p style={{ height: 10 }} />
+          <p style={{ height: 10 }} />
+        </div>
+      </Collapse>
       {/* <div style={{ width: 100, height: 100, borderRadius: '50%', backgroundColor: 'red' }} /> */}
     </div>
   )

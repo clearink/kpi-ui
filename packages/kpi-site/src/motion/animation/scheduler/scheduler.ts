@@ -1,6 +1,5 @@
 import { isNullish } from '@kpi/shared'
 import clamp from '../../utils/clamp'
-import { defineGetter } from '../../utils/define'
 import { frameData } from '../driver/delta'
 
 import type { TweenOptions } from '../interface'
@@ -20,7 +19,7 @@ export default class TweenScheduler {
 
   private sliding = [0, 0]
 
-  readonly end!: number
+  end: number
 
   constructor(options: TweenOptions) {
     const { start, duration, repeat, delay, endDelay, repeatDelay } = options
@@ -41,9 +40,7 @@ export default class TweenScheduler {
 
     const cycle = (this.repeatDelay + this.duration) * this.repeat || 0
 
-    const end = this.delay + this.start + this.duration + cycle + this.endDelay
-
-    defineGetter(this, 'end', () => end)
+    this.end = this.delay + this.start + this.duration + cycle + this.endDelay
   }
 
   schedule(timestamp: number, reversed: boolean) {

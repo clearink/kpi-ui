@@ -28,10 +28,7 @@ export default class TweenController {
   then!: (onfulfilled?: VoidFunction, onrejected?: VoidFunction) => Promise<void>
 
   constructor(timelines: TweenTimeline[]) {
-    // animation 上次更新的时间
-    let $lastTime = 0
-    // animation 当前的时间
-    let $currentTime = 0
+    const $time = { prev: 0, curr: 0 }
     // animation 状态
     let $status: AnimationStatus = 'paused'
 
@@ -49,15 +46,15 @@ export default class TweenController {
     const tick = (timestamp: number) => {
       if (!running($status)) return false
 
-      const elapsed = $lastTime ? timestamp - $lastTime : 0
+      const elapsed = $time.prev ? timestamp - $time.prev : 0
 
-      $lastTime = timestamp
+      $time.prev = timestamp
 
-      $currentTime += elapsed * this.speed
+      $time.curr += elapsed * this.speed
 
       const reversed = this.speed < 0
 
-      const adjusted = reversed ? duration - $currentTime : $currentTime
+      const adjusted = reversed ? duration - $time.curr : $time.curr
 
       timelines.forEach((timeline) => timeline.schedule(adjusted, reversed))
 
@@ -71,11 +68,11 @@ export default class TweenController {
     }
 
     const reset = () => {
-      $lastTime = 0
-      $currentTime = this.speed > 0 ? 0 : duration
-
+      const reversed = this.speed < 0
+      $time.prev = 0
+      $time.curr = reversed ? duration : 0
       // 重置时强行回到原始位置
-      timelines.forEach((timeline) => timeline.reset(this.speed < 0))
+      timelines.forEach((timeline) => timeline.reset(reversed))
     }
 
     // 运行/重新运行
@@ -113,7 +110,7 @@ export default class TweenController {
 
       $status = 'paused'
 
-      $lastTime = 0
+      $time.prev = 0
 
       driver.cancel(tick)
     }

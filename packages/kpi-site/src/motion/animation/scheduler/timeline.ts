@@ -1,6 +1,5 @@
 import TweenScheduler from './scheduler'
 
-import type { Emitter } from '../action/value/emitter'
 import type { TweenOptions } from '../interface'
 
 type Update = (progress: number, iteration: number) => void
@@ -11,7 +10,7 @@ export default class TweenTimeline {
 
   reset: (reversed: boolean) => void
 
-  constructor(emitter: Emitter, update: Update, options: TweenOptions) {
+  constructor(update: Update, options: TweenOptions) {
     this.scheduler = new TweenScheduler(options)
 
     this.reset = (reversed) => update(+reversed, 0)
@@ -21,13 +20,13 @@ export default class TweenTimeline {
 
       if (status === false) return
 
-      status.starting && emitter('start')
+      status.starting && options.onStart && options.onStart()
 
       status.updating && update(status.progress, status.iteration)
 
-      status.repeating && emitter('repeat')
+      status.repeating && options.onRepeat && options.onRepeat()
 
-      status.completing && emitter('complete')
+      status.completing && options.onComplete && options.onComplete()
     }
   }
 }

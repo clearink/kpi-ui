@@ -1,6 +1,5 @@
 import { isArray } from '@kpi/shared'
 
-import type { MotionValue } from '../../../motion'
 import type {
   AnimatableValue,
   AnimateSequenceOptions,
@@ -18,7 +17,7 @@ export default function animateSequence(
   return {} as TweenController
 }
 export function isSequenceAnimation<V extends AnimatableValue>(
-  animateInput: V | MotionValue<V> | ElementOrSelector | AnimationSequence
+  animateInput: V | ElementOrSelector | AnimationSequence
 ): animateInput is AnimationSequence {
   return isArray(animateInput) && isArray(animateInput[0])
 }

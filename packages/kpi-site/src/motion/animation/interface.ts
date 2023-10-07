@@ -1,5 +1,3 @@
-import type { Easing } from '../easing/interface'
-import type { MotionValue } from '../motion'
 import type { TweenController } from './scheduler'
 import type { ElementOrSelector } from './utils/selector'
 
@@ -42,8 +40,9 @@ export interface Repeat {
   repeatDelay?: number
 }
 
+export type EasingFunction = (x: number) => number
 export interface Transition {
-  easing?: Easing | Easing[]
+  easing?: EasingFunction | EasingFunction[]
   /**
    * @description keyframes 持续时间占比 [0, 1] 之间
    */
@@ -53,8 +52,20 @@ export interface Transition {
    * @default 0
    */
   delay?: number // 还可以传一个函数
+  /**
+   * @description 结束延迟时间
+   * @default 0
+   */
   endDelay?: number
+  /**
+   * @description 持续时间(毫秒)
+   * @default 300
+   */
   duration?: number
+  /**
+   * @description 是否自动执行
+   * @default true
+   */
   autoplay?: boolean
 }
 
@@ -99,10 +110,6 @@ export interface At {
   at?: SequenceTime
 }
 
-export type MotionValueSegment =
-  | [MotionValue, KeyframeTarget | KeyframeTarget[]]
-  | [MotionValue, KeyframeTarget | KeyframeTarget[], AnimateValueOptions & At]
-
 export type DOMKeyframesSegment =
   | [ElementOrSelector, ElementKeyframes]
   | [ElementOrSelector, ElementKeyframes, AnimateValueOptions & At]
@@ -114,6 +121,6 @@ export type SequenceLabelSegment =
       at?: SequenceTime
     }
 
-export type AnimationSequence = (MotionValueSegment | DOMKeyframesSegment | SequenceLabelSegment)[]
+export type AnimationSequence = (DOMKeyframesSegment | SequenceLabelSegment)[]
 
 export type AnimationStatus = 'running' | 'paused' | 'canceled' | 'finished'

@@ -17,6 +17,7 @@ export default function makeAnimations(
 
     animation.init = () => {
       animation.initialized = true
+      // 既然这里逻辑太复杂，不如暴露出去吧
 
       // 1. 去除 null 的影响
       animation.from = isNull(animation.from) ? accessor.get() : animation.from
