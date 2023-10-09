@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unused-prop-types */
-import { createElement, ReactNode, RefObject, useCallback, useRef } from 'react'
-import useStableCounter from './hooks/useStableCounter'
+import { type RefObject, useRef } from 'react'
+import useStableCounter from './hooks/useTransitionStore'
 import useTransitionEffect from './hooks/useTransitionEffect'
 import useTransitionEvent from './hooks/useTransitionEvent'
 import formatClassNames from './utils/format'
