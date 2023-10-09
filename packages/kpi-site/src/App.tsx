@@ -1,111 +1,58 @@
-import { useRef, useState } from 'react'
-import Collapse from './Collapse'
-import { animate, eases } from './motion'
+import { RefObject, useRef, useState } from 'react'
+import Transition from './transition'
 import './style.css'
 
+let s = 0
 export default function App() {
-  const ref = useRef<HTMLDivElement>(null)
-  const [collapsed, set] = useState(false)
+  const [val, set] = useState(true)
   return (
     <div>
       <button
         type="button"
-        onClick={async () => {
-          const dom = ref.current!
-
-          const fade = (node: HTMLDivElement) => {
-            const current = () => {}
-            return {
-              easing: eases.easeInBack,
-              duration: 3000,
-              times: [0, 0.4, 0.8, 1],
-              repeat: 4,
-              repeatType: 'mirror',
-              init: (step: number) => {
-                if (step === 0) return [0, 200]
-                if (step === 1) return [200, 500]
-                return [500, 800]
-              },
-              tick: (val, label: string) => {
-                // label
-              },
-            }
-          }
-          animate(
-            {
-              x: [
-                (step: number) => {
-                  if (step === 0) return [0, 300]
-                  if (step === 1) return [300, 500]
-                  return [500, 1000]
-                },
-                (value: string, status: any) => {
-                  dom.style.setProperty('transform', value)
-                },
-              ],
-              y: [
-                () => [0, 500],
-                (value: string) => {
-                  dom.style.setProperty('transform', value)
-                },
-              ],
-              opacity: [
-                () => [0, 1],
-                (value) => {
-                  dom.style.setProperty('opacity', value)
-                },
-              ],
-            },
-            {
-              easing: eases.easeInBack,
-              duration: 3000,
-              times: [0, 0.4, 0.8, 1],
-              repeat: 4,
-              repeatType: 'mirror',
-            }
-          )
-          animate(
-            dom,
-            {
-              height: [0, 200, 500],
-              opacity: [0, 1],
-            },
-            {
-              duration: 1000,
-              times: [0, 0.4, 0.8, 1],
-              repeat: 4,
-              repeatType: 'mirror',
-            }
-          )
+        onClick={() => {
+          set((p) => !p)
         }}
       >
         start
       </button>
-      <Collapse collapsed={collapsed}>
-        <div
-          ref={ref}
-          style={{
-            width: 200,
-            height: 0,
-            borderRadius: '4px',
-            backgroundColor: 'red',
-            // color: 'var(--primary-color)',
-          }}
-        >
-          <p style={{ height: 10 }} />
-          <p style={{ height: 10 }} />
-          <p style={{ height: 10 }} />
-          <p style={{ height: 10 }} />
-          <p style={{ height: 10 }} />
-          <p style={{ height: 10 }} />
-          <p style={{ height: 10 }} />
-          <p style={{ height: 10 }} />
-          <p style={{ height: 10 }} />
-          <p style={{ height: 10 }} />
-          <p style={{ height: 10 }} />
-        </div>
-      </Collapse>
-      {/* <div style={{ width: 100, height: 100, borderRadius: '50%', backgroundColor: 'red' }} /> */}
+      <Transition
+        when={val}
+        name="fade"
+        onEnter={() => {
+          s = performance.now()
+        }}
+        onEntering={() => {
+          console.log('entering', performance.now() - s)
+        }}
+        onExitCancel={(el) => {
+          console.log('exit cancel', el)
+        }}
+      >
+        {(ref: RefObject<HTMLDivElement>) => {
+          return (
+            <div
+              ref={ref}
+              style={{
+                width: 200,
+                borderRadius: '4px',
+                backgroundColor: 'red',
+              }}
+            >
+              <p style={{ height: 10 }} />
+              <p style={{ height: 10 }} />
+              <p style={{ height: 10 }} />
+              <p style={{ height: 10 }} />
+              <p style={{ height: 10 }} />
+              <p style={{ height: 10 }} />
+              <p style={{ height: 10 }} />
+              <p style={{ height: 10 }} />
+              <p style={{ height: 10 }} />
+              <p style={{ height: 10 }} />
+              <p style={{ height: 10 }} />
+            </div>
+          )
+        }}
+      </Transition>
     </div>
   )
 }
