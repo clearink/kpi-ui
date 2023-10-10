@@ -1,11 +1,9 @@
-import { useMemo, useReducer, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 
-const reducer = (state, action) => {
-  return { isMounting: false }
-}
-export default function useTransitionStore(init: number) {
-  const [state, dispatch] = useReducer(reducer, { isMounting: false })
-  const ref = useRef(init)
+import type { TransitionProps } from '../props'
+
+export default function useTransitionStore<E extends HTMLElement>(props: TransitionProps<E>) {
+  const ref = useRef({ appearing: false, entering: false, exiting: false })
   return useMemo(() => {
     return {
       get: () => ref.current,

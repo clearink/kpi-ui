@@ -15,11 +15,14 @@ export default function App() {
       >
         start
       </button>
+
       <Transition
+        appear
         when={val}
         name="fade"
         onEnter={() => {
           s = performance.now()
+          console.log('enter')
         }}
         onEntering={() => {
           console.log('entering', performance.now() - s)

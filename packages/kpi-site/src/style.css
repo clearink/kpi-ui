@@ -4,7 +4,7 @@
 }
 
 .fade-enter-active {
-  transition: transform 0.5s ease-out 2s, opacity 1s ease-out 1s;
+  transition: transform 0.5s ease-out, opacity 1s ease-out;
 }
 
 .fade-enter-to {
