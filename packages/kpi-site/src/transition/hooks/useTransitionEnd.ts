@@ -1,5 +1,5 @@
-import { pushItem, useEvent } from '@kpi/shared'
-import { RefObject, useLayoutEffect } from 'react'
+import { useEvent } from '@kpi/shared'
+import { useLayoutEffect } from 'react'
 import { delClassName } from '../utils/classnames'
 import useFormatClassNames from './useFormatClassNames'
 import useTransitionStore from './useTransitionStore'
@@ -10,8 +10,7 @@ import type { TransitionProps } from '../props'
 
 // 结束状态
 export default function useTransitionEnd<E extends HTMLElement>(
-  ref: RefObject<E>,
-  store: ReturnType<typeof useTransitionStore>,
+  store: ReturnType<typeof useTransitionStore<E>>,
   classNames: ReturnType<typeof useFormatClassNames>,
   props: TransitionProps<E>
 ) {
@@ -78,32 +77,35 @@ export default function useTransitionEnd<E extends HTMLElement>(
 
   const handleFinish = useEvent((step: 'appear' | 'enter' | 'exit') => {})
 
+  const hhh = useEvent((el: E, info: any) => {
+    if (incFinishProp(el) < info.propCount) return
+
+    // handleFinish()
+    delClassName(el, classNames.enter.active)
+    delClassName(el, classNames.enter.to)
+    delClassName(el, classNames.exit.active)
+    delClassName(el, classNames.exit.to)
+    console.log('callHook finished', performance.now())
+    if (when) {
+      // enter finished
+    } else {
+      // eslint-disable-next-line no-param-reassign
+      el.style.display = 'none'
+    }
+  })
   useLayoutEffect(() => {
-    const el = ref.current
+    const el = store.ref.current
 
     if (!el) return
 
     const info = getTransitionInfo(el, type)
 
-    const handle = (e: TransitionEvent) => {
-      if (incFinishProp(el) < info.propCount) return
-
-      // handleFinish()
-      console.log('callHook finished')
-    }
+    const handle = () => hhh(el, info)
 
     el.addEventListener('transitionend', handle)
 
     return () => {
       el.removeEventListener('transitionend', handle)
     }
-
-    // dom.addEventListener('transitionend', handleFinish)
-    // dom.addEventListener('animationend', handleFinish)
-
-    // return () => {
-    //   dom.removeEventListener('transitionend', handleFinish)
-    //   dom.removeEventListener('animationend', handleFinish)
-    // }
-  }, [ref, type])
+  }, [hhh, store.ref, type])
 }

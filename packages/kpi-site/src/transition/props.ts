@@ -33,3 +33,5 @@ export interface TransitionProps<E extends HTMLElement = HTMLElement> {
   onExited?: (el: E) => void
   onExitCancel?: (el: E) => void
 }
+
+export type TransitionStep = 'enter' | 'appear' | 'exit'

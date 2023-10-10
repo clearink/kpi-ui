@@ -1,28 +1,27 @@
 import { useEvent, useIsomorphicEffect } from '@kpi/shared'
-import type { RefObject } from 'react'
 import { addClassName, delClassName } from '../utils/classnames'
 import nextFrame from '../utils/next-frame'
 import reflow from '../utils/reflow'
 import useFormatClassNames from './useFormatClassNames'
 import useTransitionStore from './useTransitionStore'
+import useTransitionCancel from './useTransitionCancel'
 
-import type { TransitionProps } from '../props'
+import type { TransitionProps, TransitionStep } from '../props'
 
 export default function useTransitionEffect<E extends HTMLElement>(
-  ref: RefObject<E>,
-  store: ReturnType<typeof useTransitionStore>,
+  store: ReturnType<typeof useTransitionStore<E>>,
   classNames: ReturnType<typeof useFormatClassNames>,
   props: TransitionProps<E>
 ) {
   const { appear, when, onEnter, onEntering, onExit, onExiting } = props
 
+  const handleCancel = useTransitionCancel(store, classNames, props)
+
   // name 改变不会重新应用动画, 决定是否需要进行动画的只有 when 属性
-  const handleTransition = useEvent((step: 'appear' | 'enter' | 'exit') => {
-    const el = ref.current
+  const handleTransition = useEvent((step: TransitionStep) => {
+    const el = store.ref.current
 
     if (!el) return
-
-    // 使用变量记录是否已经完成了动画， 如果没有那么就调用 cancel
 
     const appearing = step === 'appear'
 
@@ -31,12 +30,10 @@ export default function useTransitionEffect<E extends HTMLElement>(
 
     addClassName(el, classNames[step].from)
 
-    // TODO: 这里是否需要？
     if (step === 'exit') reflow(el)
 
     addClassName(el, classNames[step].active)
 
-    // 下一帧调用
     const cancelFrame = nextFrame(() => {
       if (step === 'exit') onExiting && onExiting(el)
       else onEntering && onEntering(el, appearing)
@@ -48,17 +45,14 @@ export default function useTransitionEffect<E extends HTMLElement>(
 
     return () => {
       cancelFrame()
-      console.log('检查是否 cancel transition')
-      // if (!hasExplicitCallback(hook)) {
-      //   whenTransitionEnds(el, type, enterDuration, resolve)
-      // }
+      handleCancel(el, step)
     }
   })
 
   useIsomorphicEffect(() => {
-    store.add()
+    store.update()
 
-    if (store.get() > 1) return handleTransition(when ? 'enter' : 'exit')
+    if (store.count > 1) return handleTransition(when ? 'enter' : 'exit')
 
     if (appear) return handleTransition('appear')
   }, [appear, store, handleTransition, when])

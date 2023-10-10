@@ -1,5 +1,5 @@
 .fade-enter-from {
-  transform: translateX(60px);
+  transform: translateX(160px);
   opacity: 0;
 }
 
@@ -16,6 +16,6 @@
   transition: transform 0.5s ease-out, opacity 0.5s ease-out;
 }
 .fade-exit-to {
-  transform: translateX(60px);
+  transform: translateX(160px);
   opacity: 0;
 }

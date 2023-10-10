@@ -1,15 +1,34 @@
-import { useMemo, useRef } from 'react'
+import { useConstant } from '@kpi/shared'
 
-import type { TransitionProps } from '../props'
+import type { RefObject } from 'react'
 
-export default function useTransitionStore<E extends HTMLElement>(props: TransitionProps<E>) {
-  const ref = useRef({ appearing: false, entering: false, exiting: false })
-  return useMemo(() => {
+export default function useTransitionStore<E extends HTMLElement>() {
+  return useConstant(() => {
+    const state = {
+      count: 0,
+      running: false,
+      ref: { current: null } as RefObject<E>,
+    }
+
     return {
-      get: () => ref.current,
-      add: () => {
-        ref.current += 1
+      get ref() {
+        return state.ref
+      },
+      get count() {
+        return state.count
+      },
+      get appearing() {
+        return state.count === 1
+      },
+      get running() {
+        return state.running
+      },
+      setRunning(running: boolean) {
+        state.running = running
+      },
+      update: () => {
+        state.count += 1
       },
     }
-  }, [])
+  })
 }

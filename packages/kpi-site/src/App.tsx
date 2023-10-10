@@ -1,8 +1,7 @@
-import { RefObject, useRef, useState } from 'react'
+import { RefObject, useState } from 'react'
 import Transition from './transition'
 import './style.css'
 
-let s = 0
 export default function App() {
   const [val, set] = useState(true)
   return (
@@ -20,12 +19,13 @@ export default function App() {
         appear
         when={val}
         name="fade"
-        onEnter={() => {
-          s = performance.now()
+        onEnter={(el) => {
           console.log('enter')
+          // eslint-disable-next-line no-param-reassign
+          el.style.display = ''
         }}
         onEntering={() => {
-          console.log('entering', performance.now() - s)
+          console.log('entering', performance.now())
         }}
         onExitCancel={(el) => {
           console.log('exit cancel', el)

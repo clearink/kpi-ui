@@ -1,6 +1,9 @@
 import { useMemo } from 'react'
+import { isUndefined } from '@kpi/shared'
 
 import type { TransitionProps } from '../props'
+
+const fallback = <T>(a: T | undefined, b: T) => (isUndefined(a) ? b : a)
 
 export default function useFormatClassNames(
   name: TransitionProps['name'],
@@ -8,21 +11,21 @@ export default function useFormatClassNames(
 ) {
   return useMemo(() => {
     const enter = {
-      from: classNames.enter || `${name}-enter-from`,
-      active: classNames.enterActive || `${name}-enter-active`,
-      to: classNames.enterTo || `${name}-enter-to`,
+      from: fallback(classNames.enter, `${name}-enter-from`),
+      active: fallback(classNames.enterActive, `${name}-enter-active`),
+      to: fallback(classNames.enterTo, `${name}-enter-to`),
     }
 
     const appear = {
-      from: classNames.appear || enter.from,
-      active: classNames.appearActive || enter.active,
-      to: classNames.appearTo || enter.to,
+      from: fallback(classNames.appear, enter.from),
+      active: fallback(classNames.appearActive, enter.active),
+      to: fallback(classNames.appearTo, enter.to),
     }
 
     const exit = {
-      from: classNames.exit || `${name}-exit-from`,
-      active: classNames.exitActive || `${name}-exit-active`,
-      to: classNames.exitTo || `${name}-exit-to`,
+      from: fallback(classNames.exit, `${name}-exit-from`),
+      active: fallback(classNames.exitActive, `${name}-exit-active`),
+      to: fallback(classNames.exitTo, `${name}-exit-to`),
     }
 
     return { appear, enter, exit }

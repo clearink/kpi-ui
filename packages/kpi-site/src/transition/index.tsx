@@ -9,7 +9,7 @@ import type { TransitionProps } from './props'
 export default function Transition<E extends HTMLElement = HTMLElement>(props: TransitionProps<E>) {
   const classNames = useFormatClassNames(props.name, props.classNames)
 
-  const store = useTransitionStore(props)
+  const store = useTransitionStore<E>()
 
   useTransitionEffect(store, classNames, props)
 
@@ -17,5 +17,5 @@ export default function Transition<E extends HTMLElement = HTMLElement>(props: T
 
   // useTransitionCancel(store, classNames, props)
 
-  return props.children(store.current)
+  return props.children(store.ref)
 }
