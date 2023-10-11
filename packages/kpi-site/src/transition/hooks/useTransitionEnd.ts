@@ -1,12 +1,25 @@
-import { useEvent } from '@kpi/shared'
-import { useLayoutEffect } from 'react'
+/* eslint-disable @typescript-eslint/naming-convention */
+import { isNumber, isUndefined, useEvent, useIsomorphicEffect, useUnmountEffect } from '@kpi/shared'
+import { useCallback, useLayoutEffect, useMemo } from 'react'
 import { delClassName } from '../utils/classnames'
+import collectTimeoutInfo from '../utils/collect'
+import normalizeDuration from '../utils/duration'
 import useFormatClassNames from './useFormatClassNames'
 import useTransitionStore from './useTransitionStore'
-import getTransitionInfo from '../utils/measure'
-import { incFinishProp } from '../utils/symbol'
 
-import type { TransitionProps } from '../props'
+import type { TransitionProps, TransitionStep } from '../props'
+
+function addEventListener<E extends Element>(
+  el: E,
+  event: string,
+  handler: () => any,
+  options?: any
+) {
+  el.addEventListener(event, handler, options)
+  return () => {
+    el.removeEventListener(event, handler, options)
+  }
+}
 
 // 结束状态
 export default function useTransitionEnd<E extends HTMLElement>(
@@ -14,98 +27,57 @@ export default function useTransitionEnd<E extends HTMLElement>(
   classNames: ReturnType<typeof useFormatClassNames>,
   props: TransitionProps<E>
 ) {
-  const { type, when, unmountOnExit, addEndListener, onEntered, onExited } = props
+  const { type, unmountOnExit, addEndListener, onEntered, onExited } = props
 
-  // TODO: 需要判断当前是什么模式
-  // TODO: 需要找出当前模式下耗时最长的属性值
+  const done = useEvent((el: E, step: TransitionStep) => {
+    // 删除 className
+    delClassName(el, classNames[step].from)
+    delClassName(el, classNames[step].active)
+    delClassName(el, classNames[step].to)
 
-  // const handleFinish = useEvent((e: TransitionEvent | AnimationEvent) => {
-  //   // animation
-  //   if (e instanceof AnimationEvent) {
-  //     const collection = getComputedStyle(ref.current!)
-  //     const { transitionDelay, transitionDuration, transitionProperty } = collection
+    const exiting = step === 'exit'
 
-  //     if (when) onEntered && onEntered(ref.current!, store.get() <= 1)
-  //     else {
-  //       onExited && onExited(ref.current!)
-  //       if (unmountOnExit) {
-  //         // 渲染 null
-  //       }
-  //     }
-  //   } else {
-  //     const collection = getComputedStyle(ref.current!)
+    if (exiting) onExited && onExited(el)
+    else onEntered && onEntered(el, step === 'appear')
 
-  //     const { transitionDelay, transitionDuration, transitionProperty } = collection
-  //     const delayList = transitionDelay.split(', ').map(parseFloat)
-  //     const durationList = transitionDuration.split(', ').map(parseFloat)
-  //     const propertyList = transitionProperty.split(', ')
-  //     const a = propertyList.reduce((res, prop, i) => {
-  //       return pushItem(res, { prop, duration: durationList[i] + delayList[i] })
-  //     }, [] as { prop: string; duration: number }[])
-
-  //     let max = a[0]
-  //     a.forEach((item) => {
-  //       if (max.duration < item.duration) max = item
-  //     })
-
-  //     console.log(a, max, e.propertyName)
-
-  //     if (max.prop !== e.propertyName) return
-
-  //     if (when) {
-  //       delClassName(ref.current!, classNames.enter.active)
-  //       delClassName(ref.current!, classNames.enter.to)
-
-  //       onEntered && onEntered(ref.current!, store.get() <= 1)
-  //     } else {
-  //       delClassName(ref.current!, classNames.exit.active)
-  //       delClassName(ref.current!, classNames.exit.to)
-
-  //       onExited && onExited(ref.current!)
-  //       // if (unmountOnExit) {
-  //       //   // 渲染 null
-  //       // }
-  //     }
-  //   }
-  // })
-
-  // 结束进入过渡
-  const finishEnter = useEvent(() => {})
-
-  // 结束离开过渡
-  const finishExit = useEvent(() => {})
-
-  const handleFinish = useEvent((step: 'appear' | 'enter' | 'exit') => {})
-
-  const hhh = useEvent((el: E, info: any) => {
-    if (incFinishProp(el) < info.propCount) return
-
-    // handleFinish()
-    delClassName(el, classNames.enter.active)
-    delClassName(el, classNames.enter.to)
-    delClassName(el, classNames.exit.active)
-    delClassName(el, classNames.exit.to)
-    console.log('callHook finished', performance.now())
-    if (when) {
-      // enter finished
-    } else {
-      // eslint-disable-next-line no-param-reassign
-      el.style.display = 'none'
-    }
+    if (unmountOnExit && exiting) store.setInstance(null)
   })
-  useLayoutEffect(() => {
-    const el = store.ref.current
 
-    if (!el) return
+  const onTimeoutFinish = useCallback((timeout: number, callback: () => void) => {
+    const id = setTimeout(callback, timeout)
 
-    const info = getTransitionInfo(el, type)
+    return clearTimeout.bind(null, id)
+  }, [])
 
-    const handle = () => hhh(el, info)
+  return useEvent((el: E, step: TransitionStep, timeout?: number) => {
+    // 一定会生成一个 setTimeout 用于 removeEventListener
 
-    el.addEventListener('transitionend', handle)
+    const resolve = () => done(el, step)
 
-    return () => {
-      el.removeEventListener('transitionend', handle)
+    if (!isUndefined(timeout)) return onTimeoutFinish(timeout, resolve)
+
+    const collection = getComputedStyle(el, null)
+
+    const style = (property: string): string[] => (collection[property] || '').split(', ')
+
+    const transitions = collectTimeoutInfo(style('transitionDelay'), style('transitionDuration'))
+
+    const animations = collectTimeoutInfo(style('animationDelay'), style('animationDuration'))
+
+    if (transitions.timeout <= 0 && animations.timeout <= 0) return resolve()
+
+    if (type === 'transition' && transitions.timeout > 0) {
+      return addEventListener(el, 'transitionend', resolve)
     }
-  }, [hhh, store.ref, type])
+
+    if (type === 'animation' && animations.timeout > 0) {
+      return addEventListener(el, 'animationend', resolve)
+    }
+
+    if (transitions.timeout > animations.timeout) {
+      return addEventListener(el, 'transitionend', resolve)
+    }
+
+    return addEventListener(el, 'animationend', resolve)
+  })
 }

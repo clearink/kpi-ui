@@ -1,12 +1,22 @@
+import {
+  isArray,
+  isFunction,
+  isNullish,
+  logger,
+  rawType,
+  toArray,
+  useConstant,
+  useDeepMemo,
+  useEvent,
+} from '@kpi/shared'
 import { useMemo } from 'react'
-import { useDeepMemo, useEvent, isArray, isFunction, logger, rawType, toArray } from '@kpi/shared'
-import Field from './form_field'
-import { useFormArrayControl } from '../hooks/use_form'
 import { FieldContext } from '../../context'
+import { FormArrayControl } from '../control'
 import { getIn } from '../utils/value'
+import Field from './form_field'
 
-import type { FieldData, FormListProps, ListField } from '../props'
 import type { UpdateFieldActionType as ActionType } from '../internal_props'
+import type { FieldData, FormListProps, ListField } from '../props'
 
 export default function FormList(props: FormListProps) {
   const { name, rule, initialValue, preserve, children } = props
@@ -21,7 +31,7 @@ export default function FormList(props: FormListProps) {
     return { ...formInstance, parentNamePath: listPath }
   }, [formInstance, listPath])
 
-  const control = useFormArrayControl()
+  const control = useConstant(() => new FormArrayControl())
 
   control.setFormInstance(formInstance, listPath, rule)
 
@@ -39,10 +49,10 @@ export default function FormList(props: FormListProps) {
 
   const helpers = useMemo(() => control._getFeatures(), [control])
 
-  if (!isFunction(children)) {
-    logger(true, 'Form.List only accepts function as children.')
-    return null
-  }
+  const invalidChildren = !isFunction(children) || isNullish(children)
+  logger(invalidChildren, 'Form.List only accepts function as children.')
+
+  if (invalidChildren) return null
 
   return (
     <FieldContext.Provider value={fieldContext}>
@@ -59,7 +69,7 @@ export default function FormList(props: FormListProps) {
             return children([], helpers, meta)
           }
 
-          const listValue: ListField[] = value.map((__, index) => {
+          const listValue: ListField[] = value.map((_, index) => {
             return {
               key: control.ensureFieldKey(index),
               name: index,

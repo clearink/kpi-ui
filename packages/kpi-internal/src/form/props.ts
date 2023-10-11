@@ -16,7 +16,7 @@ export interface FormProps<S = any>
    * @zh 设置 Form 渲染元素，为 null 则不创建 DOM 节点
    * @default form
    */
-  as?: string | null | ComponentType
+  component?: string | null | ComponentType
 
   /**
    * @zh 校验成功后的回调

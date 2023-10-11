@@ -1,9 +1,9 @@
-import { isValidElement, type ReactElement } from 'react'
 import { flattenChildren, isFunction } from '@kpi/shared'
+import { isValidElement, type ReactElement } from 'react'
 
-import type { InnerReturn, InternalFormFieldProps, InternalFormInstance } from '../internal_props'
-import type { FormFieldControl } from '../control'
 import type { AnyObject } from '../../types'
+import type { FormFieldControl } from '../control'
+import type { InnerReturn, InternalFormFieldProps, InternalFormInstance } from '../internal_props'
 
 /** 格式化 Form.Field children */
 export default function normalizeChildren(

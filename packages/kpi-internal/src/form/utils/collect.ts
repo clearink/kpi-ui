@@ -65,11 +65,13 @@ export default function collectInjectProps(
     }
 
     // 校验触发时机
-    const triggerList = toArray((validateTrigger ?? formInstance.validateTrigger) || [])
+    const triggerList = toArray(validateTrigger ?? formInstance.validateTrigger)
 
     const init = { ...injectProps }
 
     return triggerList.reduce((result, triggerName) => {
+      if (triggerName === false) return result
+
       result[triggerName] = (...args: any[]) => {
         injectProps[triggerName] && injectProps[triggerName](...args)
         rule && formInstance.validateField(name)

@@ -1,4 +1,6 @@
-import type { RefObject } from 'react'
+import type { RefCallback } from 'react'
+
+export type TransitionStep = 'enter' | 'appear' | 'exit'
 
 export interface TransitionProps<E extends HTMLElement = HTMLElement> {
   name: string
@@ -10,7 +12,8 @@ export interface TransitionProps<E extends HTMLElement = HTMLElement> {
   appear?: boolean
   css?: boolean
   mode?: 'in-out' | 'out-in' | 'default'
-  children: (ref: RefObject<E>) => JSX.Element
+  children: (ref: RefCallback<E>) => JSX.Element
+  // classNames
   classNames?: {
     appear?: string
     appearActive?: string
@@ -22,7 +25,8 @@ export interface TransitionProps<E extends HTMLElement = HTMLElement> {
     exitActive?: string
     exitTo?: string
   }
-  addEndListener?: (el: E, done: () => void) => void
+  // 自定义结束事件，会在 onEntering 与 onExiting 时多次调用
+  addEndListener?: (el: E, step: TransitionStep, done: () => void) => void | (() => void)
   // events
   onEnter?: (el: E, appearing: boolean) => void
   onEntering?: (el: E, appearing: boolean) => void
@@ -33,5 +37,3 @@ export interface TransitionProps<E extends HTMLElement = HTMLElement> {
   onExited?: (el: E) => void
   onExitCancel?: (el: E) => void
 }
-
-export type TransitionStep = 'enter' | 'appear' | 'exit'

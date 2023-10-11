@@ -1,8 +1,9 @@
-import { RefObject, useState } from 'react'
+import { useRef, useState } from 'react'
 import Transition from './transition'
 import './style.css'
 
 export default function App() {
+  // const ref = useRef<HTMLDivElement>(null)
   const [val, set] = useState(true)
   return (
     <div>
@@ -14,47 +15,35 @@ export default function App() {
       >
         start
       </button>
-
       <Transition
-        appear
         when={val}
         name="fade"
-        onEnter={(el) => {
-          console.log('enter')
-          // eslint-disable-next-line no-param-reassign
-          el.style.display = ''
-        }}
-        onEntering={() => {
-          console.log('entering', performance.now())
-        }}
-        onExitCancel={(el) => {
-          console.log('exit cancel', el)
+        addEndListener={(el, step, done) => {
+          console.log('end listener')
         }}
       >
-        {(ref: RefObject<HTMLDivElement>) => {
-          return (
-            <div
-              ref={ref}
-              style={{
-                width: 200,
-                borderRadius: '4px',
-                backgroundColor: 'red',
-              }}
-            >
-              <p style={{ height: 10 }} />
-              <p style={{ height: 10 }} />
-              <p style={{ height: 10 }} />
-              <p style={{ height: 10 }} />
-              <p style={{ height: 10 }} />
-              <p style={{ height: 10 }} />
-              <p style={{ height: 10 }} />
-              <p style={{ height: 10 }} />
-              <p style={{ height: 10 }} />
-              <p style={{ height: 10 }} />
-              <p style={{ height: 10 }} />
-            </div>
-          )
-        }}
+        {(ref) => (
+          <div
+            ref={ref}
+            style={{
+              width: 200,
+              borderRadius: '4px',
+              backgroundColor: 'red',
+            }}
+          >
+            <p style={{ height: 10 }} />
+            <p style={{ height: 10 }} />
+            <p style={{ height: 10 }} />
+            <p style={{ height: 10 }} />
+            <p style={{ height: 10 }} />
+            <p style={{ height: 10 }} />
+            <p style={{ height: 10 }} />
+            <p style={{ height: 10 }} />
+            <p style={{ height: 10 }} />
+            <p style={{ height: 10 }} />
+            <p style={{ height: 10 }} />
+          </div>
+        )}
       </Transition>
     </div>
   )

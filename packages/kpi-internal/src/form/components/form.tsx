@@ -1,17 +1,18 @@
+import { isEqual, isFunction, omit, toArray, useConstant, useEvent } from '@kpi/shared'
 import {
-  type FormEvent,
+  createElement,
   ForwardedRef,
   forwardRef,
+  ReactElement,
+  Ref,
+  useEffect,
   useImperativeHandle,
   useMemo,
-  Ref,
-  ReactElement,
   useRef,
-  useEffect,
+  type FormEvent,
 } from 'react'
-import { isFunction, omit, toArray, useConstant, useEvent, isEqual } from '@kpi/shared'
-import withDefaultProps from '../../hocs'
 import { FieldContext, FormContext } from '../../context'
+import withDefaultProps from '../../hocs'
 import { HOOK_MARK } from '../control'
 import useForm from '../hooks/use_form'
 
@@ -20,7 +21,7 @@ import type { FormInstance, FormProps } from '../props'
 
 const excluded = [
   'name',
-  'as',
+  'component',
   'form',
   'children',
   'onReset',
@@ -36,7 +37,15 @@ const excluded = [
 ] as const
 
 function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance>) {
-  const { name, as, form, children: $children, onReset, initialValues, validateTrigger } = props
+  const {
+    name,
+    component = 'form',
+    form,
+    children: $children,
+    onReset,
+    initialValues,
+    validateTrigger,
+  } = props
 
   const formInstance = useForm(form) as InternalFormInstance
 
@@ -95,17 +104,15 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     </FieldContext.Provider>
   )
 
-  if (as === null) return children
-
-  const Component: any = as ?? 'form'
+  if (component === null) return children
 
   // 表单剩余字段
   const formProps = omit(props, excluded)
 
-  return (
-    <Component {...formProps} onSubmit={handleSubmit} onReset={handleReset}>
-      {children}
-    </Component>
+  return createElement(
+    component as any,
+    { ...formProps, onSubmit: handleSubmit, onReset: handleReset },
+    children
   )
 }
 

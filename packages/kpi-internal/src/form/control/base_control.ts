@@ -4,6 +4,8 @@ export default class BaseControl {
 
   constructor(_forceUpdate: () => void, mounted: () => boolean) {
     // 必须在组件挂载时调用
-    this.forceUpdate = () => (mounted() ? _forceUpdate() : undefined)
+    this.forceUpdate = () => {
+      mounted() && _forceUpdate()
+    }
   }
 }

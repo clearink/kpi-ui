@@ -1,6 +1,6 @@
-import { useReducer, useRef } from 'react'
 import { useMounted } from '@kpi/shared'
-import { FormArrayControl, FormFieldControl, FormGroupControl } from '../control'
+import { useReducer, useRef } from 'react'
+import { FormFieldControl, FormGroupControl } from '../control'
 
 import type { FormInstance } from '../props'
 
@@ -29,13 +29,4 @@ export function useFormFieldControl() {
   control.current = current ?? new FormFieldControl(forceUpdate, resetField, mounted)
 
   return [control.current, resetCount] as const
-}
-
-export function useFormArrayControl() {
-  const control = useRef<FormArrayControl>()
-
-  const { current } = control
-  control.current = current ?? new FormArrayControl()
-
-  return control.current
 }
