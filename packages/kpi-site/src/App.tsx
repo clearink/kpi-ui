@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react'
-import Transition from './transition'
+import { CSSTransition } from './Transition'
 import './style.css'
 
 export default function App() {
   // const ref = useRef<HTMLDivElement>(null)
   const [val, set] = useState(true)
+
   return (
     <div>
       <button
@@ -15,20 +16,15 @@ export default function App() {
       >
         start
       </button>
-      <Transition
-        when={val}
-        name="fade"
-        addEndListener={(el, step, done) => {
-          console.log('end listener')
-        }}
-      >
-        {(ref) => (
+
+      <CSSTransition when={val} name="fade">
+        {(getInstance) => (
           <div
-            ref={ref}
+            ref={getInstance}
             style={{
               width: 200,
               borderRadius: '4px',
-              backgroundColor: 'red',
+              backgroundColor: 'blue',
             }}
           >
             <p style={{ height: 10 }} />
@@ -44,7 +40,7 @@ export default function App() {
             <p style={{ height: 10 }} />
           </div>
         )}
-      </Transition>
+      </CSSTransition>
     </div>
   )
 }

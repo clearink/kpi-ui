@@ -1,13 +1,11 @@
 import { useEvent, useIsomorphicEffect } from '@kpi/shared'
 import { useMemo } from 'react'
 import { addClassName, delClassName } from '../utils/classnames'
-import nextFrame from '../utils/next_frame'
-import reflow from '../utils/reflow'
-import useFormatClassNames from './useFormatClassNames'
-import useTransitionCancel from './useTransitionCancel'
-import useTransitionEnd from './useTransitionEnd'
-import useTransitionStore from './useTransitionStore'
 import normalizeDuration from '../utils/duration'
+import nextFrame from '../utils/next_frame'
+import useFormatClassNames from './useFormatClassNames'
+import useTransitionEvent from './useTransitionEvent'
+import useTransitionStore from './useTransitionStore'
 
 import type { TransitionProps, TransitionStep } from '../props'
 
@@ -16,15 +14,12 @@ export default function useTransitionEffect<E extends HTMLElement>(
   classNames: ReturnType<typeof useFormatClassNames>,
   props: TransitionProps<E>
 ) {
-  const { appear, when, duration, onEnter, onEntering, onExit, onExiting } = props
+  const { appear, when, duration, addEndListener, onEnter, onEntering, onExit, onExiting } = props
 
   const timeouts = useMemo(() => normalizeDuration(duration), [duration])
 
-  const handleTransitionEnd = useTransitionEnd(store, classNames, props)
+  const [cancel, end, done] = useTransitionEvent(store, classNames, props)
 
-  const handleTransitionCancel = useTransitionCancel(store, classNames, props)
-
-  // name 改变不会重新应用动画, 决定是否需要进行动画的只有 when 属性
   const handleTransition = useEvent((step: TransitionStep) => {
     const el = store.instance
 
@@ -35,32 +30,50 @@ export default function useTransitionEffect<E extends HTMLElement>(
     if (step === 'exit') onExit && onExit(el)
     else onEnter && onEnter(el, appearing)
 
-    addClassName(el, classNames[step].from)
+    const { from, active, to } = classNames[step]
+    addClassName(el, from, active)
 
-    if (step === 'exit') reflow(el)
-
-    addClassName(el, classNames[step].active)
-
-    // 设置 状态
     store.running(true)
 
     const handleNextFrameCancel = nextFrame(() => {
       if (step === 'exit') onExiting && onExiting(el)
       else onEntering && onEntering(el, appearing)
 
-      delClassName(el, classNames[step].from)
+      delClassName(el, from)
 
-      addClassName(el, classNames[step].to)
+      addClassName(el, to)
 
-      handleTransitionEnd(el, step, timeouts[step])
+      // 保存结束时的回调
+      store.setEndCleanup(
+        addEndListener
+          ? addEndListener(el, step, () => done(el, step))
+          : end(el, step, timeouts[step])
+      )
     })
 
     return () => {
       handleNextFrameCancel()
 
-      handleTransitionCancel(el, step)
+      // 清除该次动画的结束函数
+      store.runEndCleanup(true)
 
-      store.running(false)
+      // 执行取消逻辑
+      if (store.running()) cancel(el, step)
+      else delClassName(el, to)
+    }
+  })
+
+  const handleInitClass = useEvent(() => {
+    const el = store.instance
+
+    if (!el) return
+
+    const className = classNames[when ? 'enter' : 'exit'].to
+
+    addClassName(el, className)
+
+    return () => {
+      delClassName(el, className)
     }
   })
 
@@ -69,6 +82,8 @@ export default function useTransitionEffect<E extends HTMLElement>(
 
     if (store.updateGteTwoTimes) return handleTransition(when ? 'enter' : 'exit')
 
-    if (appear) return handleTransition('appear')
-  }, [appear, store, handleTransition, when])
+    if (appear && when) return handleTransition('appear')
+
+    return handleInitClass()
+  }, [appear, handleInitClass, handleTransition, store, when])
 }

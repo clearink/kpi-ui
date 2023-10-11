@@ -1,9 +1,7 @@
 import { useMemo } from 'react'
-import { isUndefined } from '@kpi/shared'
+import fallback from '../utils/fallback'
 
 import type { TransitionProps } from '../props'
-
-const fallback = <T>(a: T | undefined, b: T) => (isUndefined(a) ? b : a)
 
 export default function useFormatClassNames(
   name: TransitionProps['name'],

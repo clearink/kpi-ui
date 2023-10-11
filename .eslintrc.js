@@ -14,6 +14,7 @@ module.exports = {
     'no-continue': 'off',
     'no-underscore-dangle': 'off',
     'consistent-return': 'off',
+    'no-plusplus': 'off',
     'no-restricted-syntax': [
       'error',
       {

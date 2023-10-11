@@ -10,8 +10,7 @@ export interface TransitionProps<E extends HTMLElement = HTMLElement> {
   type?: 'transition' | 'animation'
   duration?: number | { appear?: number; enter?: number; exit?: number }
   appear?: boolean
-  css?: boolean
-  mode?: 'in-out' | 'out-in' | 'default'
+  css?: false
   children: (ref: RefCallback<E>) => JSX.Element
   // classNames
   classNames?: {

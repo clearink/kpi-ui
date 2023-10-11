@@ -1,4 +1,4 @@
-import { max } from '../../motion/animation/utils/math'
+import { max } from '../../../motion/animation/utils/math'
 
 const millisecond = (s: string) => (parseFloat(s) || 0) * 1e3
 
