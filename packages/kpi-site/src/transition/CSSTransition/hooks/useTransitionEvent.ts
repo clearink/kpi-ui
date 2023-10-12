@@ -1,6 +1,6 @@
 import { isUndefined, useEvent } from '@kpi/shared'
-import { addListener, makeTimeout } from '../utils/listener'
-import { delClassName } from '../utils/classnames'
+import { addListener, addTimeout } from '../utils/listener'
+import { delTransitionClass } from '../utils/classnames'
 import collectTimeoutInfo from '../utils/collect'
 import useFormatClassNames from './useFormatClassNames'
 import useTransitionStore from './useTransitionStore'
@@ -17,8 +17,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
   const runCancel = useEvent((el: E, step: TransitionStep) => {
     const { from, active, to } = classNames[step]
-
-    delClassName(el, from, active, to)
+    delTransitionClass(el, from, active, to)
 
     if (step === 'exit') onExitCancel && onExitCancel(el)
     else onEnterCancel && onEnterCancel(el, step === 'appear')
@@ -30,7 +29,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     // 删除 className
     const { from, active } = classNames[step]
-    delClassName(el, from, active)
+    delTransitionClass(el, from, active)
 
     if (step === 'exit') onExited && onExited(el)
     else onEntered && onEntered(el, step === 'appear')
@@ -39,9 +38,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
   const runEnd = useEvent((el: E, step: TransitionStep, timeout?: number) => {
     if (css === false) return () => {}
 
-    const resolve = () => done(el, step)
-
-    if (!isUndefined(timeout)) return makeTimeout(timeout, resolve)
+    if (!isUndefined(timeout)) return addTimeout(timeout, () => done(el, step))
 
     const collection = getComputedStyle(el, null)
 
@@ -49,13 +46,11 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     const [animTimeout, animCount] = collectTimeoutInfo(collection, 'animation')
 
-    if (tranTimeout <= 0 && animTimeout <= 0) return makeTimeout(0, resolve)
+    if (tranTimeout <= 0 && animTimeout <= 0) return addTimeout(0, () => done(el, step))
 
     const makeEndHook = (count: number) => {
       let ended = 0
-      return () => {
-        ++ended >= count && done(el, step)
-      }
+      return () => ++ended >= count && done(el, step)
     }
 
     if (type === 'transition' && tranTimeout > 0) {

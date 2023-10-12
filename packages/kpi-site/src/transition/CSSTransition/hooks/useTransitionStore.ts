@@ -1,8 +1,6 @@
 import { isUndefined, useConstant, useForceUpdate } from '@kpi/shared'
 
 class TransitionStore<E extends HTMLElement> {
-  constructor(private forceUpdate: () => void) {}
-
   /** 保存 dom 实例 */
   instance: E | null = null
 
@@ -47,7 +45,5 @@ class TransitionStore<E extends HTMLElement> {
 }
 
 export default function useTransitionStore<E extends HTMLElement>() {
-  const forceUpdate = useForceUpdate()
-
-  return useConstant(() => new TransitionStore<E>(forceUpdate))
+  return useConstant(() => new TransitionStore<E>())
 }

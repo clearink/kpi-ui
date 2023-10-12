@@ -21,27 +21,17 @@ export default function SwitchTransition(props: SwitchTransitionProps) {
     if (!el) return el
 
     if (mode === 'out-in' && isValidElement(children)) {
-      if (store.status === 'EXITING') {
-        console.log('1232')
-        // 立即取消
-        store.status = 'ENTERED'
+      const newInstance = cloneElement(el, {
+        when: false,
+        onExited: batch(el.props.onExited, () => {
+          console.log('exited')
+          // 显示设置 appear = true
+          store.setInstance(cloneElement(children, { when: true, appear: true }))
+          store.forceUpdate()
+        }),
+      })
 
-        const newInstance = cloneElement(children, { when: true })
-
-        store.setInstance(newInstance)
-      } else {
-        store.status = 'EXITING'
-
-        const newInstance = cloneElement(el, {
-          when: false,
-          onExited: batch(el.props.onExited, () => {
-            store.setInstance(cloneElement(children, { when: true, appear: true }))
-            store.forceUpdate()
-          }),
-        })
-
-        store.setInstance(newInstance)
-      }
+      store.setInstance(newInstance)
     }
   }
 

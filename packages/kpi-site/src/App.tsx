@@ -1,5 +1,4 @@
 import { forwardRef, useRef, useState } from 'react'
-import { AnimatePresence, motion as m } from 'framer-motion'
 import { CSSTransition, SwitchTransition } from './Transition'
 import './style.css'
 
@@ -54,7 +53,7 @@ const Blue = forwardRef((props: any, ref: any) => {
 export default function App() {
   // const ref = useRef<HTMLDivElement>(null)
   const [val, set] = useState(true)
-  const [val1, set1] = useState(true)
+  const set1 = useState(true)[1]
 
   return (
     <div>
@@ -72,21 +71,14 @@ export default function App() {
           set1((p) => !p)
         }}
       >
-        sta
+        set1
       </button>
 
-      {/* <CSSTransition when={val} name="fade">
-        {
-          (getInstance) => <Red ref={getInstance} />
-          // (val ? <Red ref={getInstance} /> : <Blue ref={getInstance} />)
-        }
-      </CSSTransition> */}
-      {/* <SwitchTransition mode="out-in">
-      </SwitchTransition> */}
-
-      {/* <AnimatePresence mode="popLayout"> */}
-      {/* {val ? <Red /> : <Blue />} */}
-      {/* </AnimatePresence> */}
+      <SwitchTransition mode="out-in">
+        <CSSTransition key={`${val}`} name="fade">
+          {(getInstance) => (val ? <Red ref={getInstance} /> : <Blue ref={getInstance} />)}
+        </CSSTransition>
+      </SwitchTransition>
     </div>
   )
 }

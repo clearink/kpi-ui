@@ -1,6 +1,6 @@
 import { useEvent, useIsomorphicEffect } from '@kpi/shared'
 import { useMemo } from 'react'
-import { addClassName, delClassName } from '../utils/classnames'
+import { addTransitionClass, delTransitionClass } from '../utils/classnames'
 import normalizeDuration from '../utils/duration'
 import nextFrame from '../utils/next_frame'
 import useFormatClassNames from './useFormatClassNames'
@@ -18,7 +18,7 @@ export default function useTransitionEffect<E extends HTMLElement>(
 
   const timeouts = useMemo(() => normalizeDuration(duration), [duration])
 
-  const [runCancel, end, done] = useTransitionEvent(store, classNames, props)
+  const [runCancel, runEnd, done] = useTransitionEvent(store, classNames, props)
 
   const handleTransition = useEvent((step: TransitionStep) => {
     const el = store.instance
@@ -31,35 +31,31 @@ export default function useTransitionEffect<E extends HTMLElement>(
     else onEnter && onEnter(el, appearing)
 
     const { from, active, to } = classNames[step]
-    addClassName(el, from, active)
+    addTransitionClass(el, from, active)
 
     store.running(true)
 
-    const cancelNextFrame = nextFrame(() => {
+    const cleanupFrameHook = nextFrame(() => {
       if (step === 'exit') onExiting && onExiting(el)
       else onEntering && onEntering(el, appearing)
 
-      delClassName(el, from)
+      delTransitionClass(el, from)
 
-      addClassName(el, to)
+      addTransitionClass(el, to)
 
       // 保存结束时的回调
       store.setEndCleanup(
         addEndListener
           ? addEndListener(el, step, () => done(el, step))
-          : end(el, step, timeouts[step])
+          : runEnd(el, step, timeouts[step])
       )
     })
 
     return () => {
-      cancelNextFrame()
-
-      // 清除该次动画的结束函数
+      cleanupFrameHook()
       store.runEndCleanup(true)
-
       if (store.running()) runCancel(el, step)
-
-      delClassName(el, to)
+      else delTransitionClass(el, to)
     }
   })
 
@@ -70,11 +66,9 @@ export default function useTransitionEffect<E extends HTMLElement>(
 
     const className = classNames[when ? 'enter' : 'exit'].to
 
-    addClassName(el, className)
+    addTransitionClass(el, className)
 
-    return () => {
-      delClassName(el, className)
-    }
+    return () => delTransitionClass(el, className)
   })
 
   useIsomorphicEffect(() => {

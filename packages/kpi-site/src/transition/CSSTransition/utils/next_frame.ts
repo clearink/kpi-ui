@@ -5,7 +5,5 @@ export default function nextFrame(callback: () => void) {
     ids[1] = requestAnimationFrame(callback)
   })
 
-  return () => {
-    ids.forEach(cancelAnimationFrame)
-  }
+  return () => ids.forEach(cancelAnimationFrame)
 }

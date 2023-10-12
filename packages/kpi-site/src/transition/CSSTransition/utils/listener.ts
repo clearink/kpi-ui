@@ -6,15 +6,11 @@ export function addListener<E extends HTMLElement, K extends keyof HTMLElementEv
 ) {
   el.addEventListener(event, listener, options)
 
-  return () => {
-    el.removeEventListener(event, listener, options)
-  }
+  return () => el.removeEventListener(event, listener, options)
 }
 
-export function makeTimeout(timeout: number, callback: () => any) {
+export function addTimeout(timeout: number, callback: () => any) {
   const id = setTimeout(callback, timeout)
 
-  return () => {
-    clearTimeout(id)
-  }
+  return () => clearTimeout(id)
 }
