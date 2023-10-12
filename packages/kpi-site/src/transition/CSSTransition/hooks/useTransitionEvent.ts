@@ -1,29 +1,29 @@
 import { isUndefined, useEvent } from '@kpi/shared'
-import { addListener, makeTimeout } from '../utils/add_listener'
+import { addListener, makeTimeout } from '../utils/listener'
 import { delClassName } from '../utils/classnames'
 import collectTimeoutInfo from '../utils/collect'
 import useFormatClassNames from './useFormatClassNames'
 import useTransitionStore from './useTransitionStore'
 
-import type { TransitionProps, TransitionStep } from '../props'
+import type { CSSTransitionProps, TransitionStep } from '../props'
 
 // 结束状态
 export default function useTransitionEvent<E extends HTMLElement>(
   store: ReturnType<typeof useTransitionStore<E>>,
   classNames: ReturnType<typeof useFormatClassNames>,
-  props: TransitionProps<E>
+  props: CSSTransitionProps<E>
 ) {
-  const { type, css, unmountOnExit, onEntered, onExited, onEnterCancel, onExitCancel } = props
+  const { type, css, onEntered, onExited, onEnterCancel, onExitCancel } = props
 
-  const cancel = useEvent((el: E, step: TransitionStep) => {
+  const runCancel = useEvent((el: E, step: TransitionStep) => {
     const { from, active, to } = classNames[step]
+
     delClassName(el, from, active, to)
 
     if (step === 'exit') onExitCancel && onExitCancel(el)
     else onEnterCancel && onEnterCancel(el, step === 'appear')
   })
 
-  // 到底要做什么事情?
   const done = useEvent((el: E, step: TransitionStep) => {
     store.running(false)
     store.runEndCleanup(true)
@@ -32,15 +32,11 @@ export default function useTransitionEvent<E extends HTMLElement>(
     const { from, active } = classNames[step]
     delClassName(el, from, active)
 
-    const exiting = step === 'exit'
-
-    if (!exiting) onEntered && onEntered(el, step === 'appear')
-    else onExited && onExited(el)
-
-    if (unmountOnExit && exiting) store.setInstance(null, true)
+    if (step === 'exit') onExited && onExited(el)
+    else onEntered && onEntered(el, step === 'appear')
   })
 
-  const end = useEvent((el: E, step: TransitionStep, timeout?: number) => {
+  const runEnd = useEvent((el: E, step: TransitionStep, timeout?: number) => {
     if (css === false) return () => {}
 
     const resolve = () => done(el, step)
@@ -49,13 +45,11 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     const collection = getComputedStyle(el, null)
 
-    const style = (property: string): string[] => (collection[property] || '').split(', ')
+    const [tranTimeout, tranCount] = collectTimeoutInfo(collection, 'transition')
 
-    const tranInfo = collectTimeoutInfo(style('transitionDelay'), style('transitionDuration'))
+    const [animTimeout, animCount] = collectTimeoutInfo(collection, 'animation')
 
-    const animInfo = collectTimeoutInfo(style('animationDelay'), style('animationDuration'))
-
-    if (tranInfo.timeout <= 0 && animInfo.timeout <= 0) return makeTimeout(0, resolve)
+    if (tranTimeout <= 0 && animTimeout <= 0) return makeTimeout(0, resolve)
 
     const makeEndHook = (count: number) => {
       let ended = 0
@@ -64,31 +58,20 @@ export default function useTransitionEvent<E extends HTMLElement>(
       }
     }
 
-    if (type === 'transition' && tranInfo.timeout > 0) {
-      return addListener(el, 'transitionend', makeEndHook(tranInfo.count))
+    if (type === 'transition' && tranTimeout > 0) {
+      return addListener(el, 'transitionend', makeEndHook(tranCount))
     }
 
-    if (type === 'animation' && animInfo.timeout > 0) {
-      return addListener(el, 'animationend', makeEndHook(animInfo.count))
+    if (type === 'animation' && animTimeout > 0) {
+      return addListener(el, 'animationend', makeEndHook(animCount))
     }
 
-    if (tranInfo.timeout > animInfo.timeout) {
-      return addListener(el, 'transitionend', makeEndHook(tranInfo.count))
+    if (tranTimeout > animTimeout) {
+      return addListener(el, 'transitionend', makeEndHook(tranCount))
     }
 
-    return addListener(el, 'animationend', makeEndHook(animInfo.count))
+    return addListener(el, 'animationend', makeEndHook(animCount))
   })
 
-  return [cancel, end, done] as const
+  return [runCancel, runEnd, done] as const
 }
-
-/**
- * 1. 指定 timeout, 代表使用定时器
- * Q: 定时器到期时需要做什么 ?
- * A: 1. 去除 className
- *    2. 执行回调函数
- *    3. 执行 unmountOnExit 等一些特殊的逻辑
- * Q: 清理函数 ?
- * A: 可以保存在 store 中
- *
- */

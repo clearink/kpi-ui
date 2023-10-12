@@ -1,11 +1,18 @@
-import { max } from '../../../motion/animation/utils/math'
+import { max } from './math'
 
-const millisecond = (s: string) => (parseFloat(s) || 0) * 1e3
+const ms = (s: string) => (parseFloat(s) || 0) * 1e3
 
-export default function collectTimeoutInfo(delays: string[], durations: string[]) {
+export default function collectTimeoutInfo(
+  collection: CSSStyleDeclaration,
+  type: 'transition' | 'animation'
+) {
+  const style = (property: string): string[] => (collection[property] || '').split(', ')
+
+  const delays = style(`${type}Delay`)
+  const durations = style(`${type}Duration`)
+
   const len = delays.length
+  const timeout = max(durations.map((d, i) => ms(d) + ms(delays[i % len])))
 
-  const timeout = max(durations.map((d, i) => millisecond(d) + millisecond(delays[i % len])))
-
-  return { timeout, count: durations.length }
+  return [timeout, durations.length] as const
 }

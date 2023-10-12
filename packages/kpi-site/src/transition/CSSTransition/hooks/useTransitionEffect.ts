@@ -7,18 +7,18 @@ import useFormatClassNames from './useFormatClassNames'
 import useTransitionEvent from './useTransitionEvent'
 import useTransitionStore from './useTransitionStore'
 
-import type { TransitionProps, TransitionStep } from '../props'
+import type { CSSTransitionProps, TransitionStep } from '../props'
 
 export default function useTransitionEffect<E extends HTMLElement>(
   store: ReturnType<typeof useTransitionStore<E>>,
   classNames: ReturnType<typeof useFormatClassNames>,
-  props: TransitionProps<E>
+  props: CSSTransitionProps<E>
 ) {
   const { appear, when, duration, addEndListener, onEnter, onEntering, onExit, onExiting } = props
 
   const timeouts = useMemo(() => normalizeDuration(duration), [duration])
 
-  const [cancel, end, done] = useTransitionEvent(store, classNames, props)
+  const [runCancel, end, done] = useTransitionEvent(store, classNames, props)
 
   const handleTransition = useEvent((step: TransitionStep) => {
     const el = store.instance
@@ -35,7 +35,7 @@ export default function useTransitionEffect<E extends HTMLElement>(
 
     store.running(true)
 
-    const handleNextFrameCancel = nextFrame(() => {
+    const cancelNextFrame = nextFrame(() => {
       if (step === 'exit') onExiting && onExiting(el)
       else onEntering && onEntering(el, appearing)
 
@@ -52,14 +52,14 @@ export default function useTransitionEffect<E extends HTMLElement>(
     })
 
     return () => {
-      handleNextFrameCancel()
+      cancelNextFrame()
 
       // 清除该次动画的结束函数
       store.runEndCleanup(true)
 
-      // 执行取消逻辑
-      if (store.running()) cancel(el, step)
-      else delClassName(el, to)
+      if (store.running()) runCancel(el, step)
+
+      delClassName(el, to)
     }
   })
 

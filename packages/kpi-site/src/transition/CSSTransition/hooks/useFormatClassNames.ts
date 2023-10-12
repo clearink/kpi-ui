@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import fallback from '../utils/fallback'
 
-import type { TransitionProps } from '../props'
+import type { CSSTransitionProps } from '../props'
 
 export default function useFormatClassNames(
-  name: TransitionProps['name'],
-  classNames: TransitionProps['classNames'] = {}
+  name: CSSTransitionProps['name'],
+  classNames: CSSTransitionProps['classNames'] = {}
 ) {
   return useMemo(() => {
     const enter = {

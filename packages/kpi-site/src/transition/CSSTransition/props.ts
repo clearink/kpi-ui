@@ -2,11 +2,9 @@ import type { RefCallback } from 'react'
 
 export type TransitionStep = 'enter' | 'appear' | 'exit'
 
-export interface TransitionProps<E extends HTMLElement = HTMLElement> {
-  name: string
-  when: boolean
-  mountOnEnter?: boolean
-  unmountOnExit?: boolean
+export interface CSSTransitionProps<E extends HTMLElement = HTMLElement> {
+  when?: boolean
+  name?: string
   type?: 'transition' | 'animation'
   duration?: number | { appear?: number; enter?: number; exit?: number }
   appear?: boolean

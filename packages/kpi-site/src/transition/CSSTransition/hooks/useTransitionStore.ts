@@ -1,31 +1,27 @@
-import { isUndefined, useConstant } from '@kpi/shared'
-import { useReducer } from 'react'
+import { isUndefined, useConstant, useForceUpdate } from '@kpi/shared'
 
 class TransitionStore<E extends HTMLElement> {
   constructor(private forceUpdate: () => void) {}
 
+  /** 保存 dom 实例 */
   instance: E | null = null
 
-  setInstance = (instance: E | null, update?: boolean) => {
+  setInstance = (instance: E | null) => {
     this.instance = instance
-
-    update && this.forceUpdate()
   }
 
+  /** 记录更新次数 */
   private $count = 0
 
   get updateGteTwoTimes() {
     return this.$count >= 2
   }
 
-  get shouldUnmount() {
-    return this.updateGteTwoTimes && !this.instance
-  }
-
   updateCounter() {
     this.$count += 1
   }
 
+  /** 是否正在执行动画  */
   private $running = false
 
   running(): boolean
@@ -36,7 +32,7 @@ class TransitionStore<E extends HTMLElement> {
     return this.$running
   }
 
-  // 清理结束时的回调
+  /** 记录清除动画结束的回调函数 */
   private $endCleanup: void | (() => void) = undefined
 
   setEndCleanup(callback?: void | (() => void)) {
@@ -51,7 +47,7 @@ class TransitionStore<E extends HTMLElement> {
 }
 
 export default function useTransitionStore<E extends HTMLElement>() {
-  const forceUpdate = useReducer((c) => c + 1, 0)[1]
+  const forceUpdate = useForceUpdate()
 
   return useConstant(() => new TransitionStore<E>(forceUpdate))
 }

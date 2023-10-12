@@ -70,18 +70,22 @@ function CommonFormItem(props: FormItemProps) {
   //   // TODO: 检测是否支持 ref 获取 dom 用于实现 scrollToField
   // }
   const [meta, setMeta] = useDebounceState(45, makeEmptyMeta)
-  const handleMetaChange = useCallback((fieldMeta: FieldMeta) => {
-    const next = fieldMeta as FieldMeta & { mounted: boolean }
-    if (next.mounted) setMeta(omit(next, ['mounted']))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const handleMetaChange = useCallback(
+    (fieldMeta: FieldMeta) => {
+      const next = fieldMeta as FieldMeta & { mounted: boolean }
+      if (next.mounted) setMeta(omit(next, ['mounted']))
+    },
+    [setMeta]
+  )
 
   const [subMeta, setSubMeta] = useDebounceState(45, makeEmptyMeta)
-  const handleSubMetaChange = useCallback((fieldMeta: FieldMeta) => {
-    const next = fieldMeta as FieldMeta & { mounted: boolean }
-    if (next.mounted) setSubMeta(omit(next, ['mounted']))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const handleSubMetaChange = useCallback(
+    (fieldMeta: FieldMeta) => {
+      const next = fieldMeta as FieldMeta & { mounted: boolean }
+      if (next.mounted) setSubMeta(omit(next, ['mounted']))
+    },
+    [setSubMeta]
+  )
 
   const status = useMemo<ValidateStatus>(() => {
     let inner: ValidateStatus = ''
@@ -96,8 +100,7 @@ function CommonFormItem(props: FormItemProps) {
   const className = useFormItemClass(props, status, prefixCls)
 
   const required = useMemo(() => {
-    if (toArray(name).length <= 0) return false
-    return !!rule?.isRequired()
+    return toArray(name).length <= 0 ? false : rule && rule.isRequired()
   }, [name, rule])
 
   const mergedErrors = meta.errors.concat(subMeta.errors)

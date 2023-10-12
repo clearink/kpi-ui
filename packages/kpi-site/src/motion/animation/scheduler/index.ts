@@ -1,5 +1,0 @@
-export { default as TweenAnimation } from './animation'
-export { default as TweenController } from './controller'
-export { default as updateGenerator } from './generator'
-export { default as TweenScheduler } from './scheduler'
-export { default as TweenTimeline } from './timeline'

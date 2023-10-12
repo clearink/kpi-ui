@@ -1,10 +1,60 @@
-import { useRef, useState } from 'react'
-import { CSSTransition } from './Transition'
+import { forwardRef, useRef, useState } from 'react'
+import { AnimatePresence, motion as m } from 'framer-motion'
+import { CSSTransition, SwitchTransition } from './Transition'
 import './style.css'
 
+const Red = forwardRef((props: any, ref: any) => {
+  return (
+    <div
+      ref={ref}
+      style={{
+        width: 200,
+        borderRadius: '4px',
+        backgroundColor: 'red',
+      }}
+    >
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+    </div>
+  )
+})
+const Blue = forwardRef((props: any, ref: any) => {
+  return (
+    <div
+      ref={ref}
+      style={{
+        width: 200,
+        borderRadius: '4px',
+        backgroundColor: 'blue',
+      }}
+    >
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+      <p style={{ height: 10 }} />
+    </div>
+  )
+})
 export default function App() {
   // const ref = useRef<HTMLDivElement>(null)
   const [val, set] = useState(true)
+  const [val1, set1] = useState(true)
 
   return (
     <div>
@@ -16,62 +66,43 @@ export default function App() {
       >
         start
       </button>
+      <button
+        type="button"
+        onClick={() => {
+          set1((p) => !p)
+        }}
+      >
+        sta
+      </button>
 
-      <CSSTransition when={val} name="fade">
-        {(getInstance) => (
-          <div
-            ref={getInstance}
-            style={{
-              width: 200,
-              borderRadius: '4px',
-              backgroundColor: 'blue',
-            }}
-          >
-            <p style={{ height: 10 }} />
-            <p style={{ height: 10 }} />
-            <p style={{ height: 10 }} />
-            <p style={{ height: 10 }} />
-            <p style={{ height: 10 }} />
-            <p style={{ height: 10 }} />
-            <p style={{ height: 10 }} />
-            <p style={{ height: 10 }} />
-            <p style={{ height: 10 }} />
-            <p style={{ height: 10 }} />
-            <p style={{ height: 10 }} />
-          </div>
-        )}
-      </CSSTransition>
+      {/* <CSSTransition when={val} name="fade">
+        {
+          (getInstance) => <Red ref={getInstance} />
+          // (val ? <Red ref={getInstance} /> : <Blue ref={getInstance} />)
+        }
+      </CSSTransition> */}
+      {/* <SwitchTransition mode="out-in">
+      </SwitchTransition> */}
+
+      {/* <AnimatePresence mode="popLayout"> */}
+      {/* {val ? <Red /> : <Blue />} */}
+      {/* </AnimatePresence> */}
     </div>
   )
 }
-// M = MT * MR * MH * MS
+
 /**
- * m = [
- *  [1.23261,   -0.424421,  12],
- *  [0.351116,  0.0875432,  13],
- *  [0,         0,          1]
- * ]
- * const MT = [
- *  [1, 0, tx],
- *  [0, 1, ty],
- *  [0, 0, 1]
- * ]
+ * 场景1:
+ * enter 时，变更属性需要执行exit
+ * in-out: 立即执行
+ * out-in
+ * default
  *
- * const MR = [
- *  [cos(θ),  -sin(θ),  0],
- *  [sin(θ),  cos(θ),   0],
- *  [0,       0,        1]
- * ]
  *
- * const MH = [
- *  [1,       tan(hx),  0],
- *  [tan(hy), 1,        0],
- *  [0,       0,        1]
- * ]
+ * 场景2:
+ * exit 时，变更属性需要执行 enter
+ * in-out
+ * out-in
+ * default
  *
- * const MS = [
- *  [sx,  0,  0],
- *  [0,   sy, 0],
- *  [0,   0,  1]
- * ]
  */
