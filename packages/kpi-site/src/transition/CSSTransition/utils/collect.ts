@@ -14,5 +14,5 @@ export default function collectTimeoutInfo(
   const len = delays.length
   const timeout = max(durations.map((d, i) => ms(d) + ms(delays[i % len])))
 
-  return [timeout, durations.length] as const
+  return { timeout, count: durations.length }
 }

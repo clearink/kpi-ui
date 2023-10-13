@@ -6,6 +6,7 @@ import useFormatClassNames from './useFormatClassNames'
 import useTransitionStore from './useTransitionStore'
 
 import type { CSSTransitionProps, TransitionStep } from '../props'
+import batch from '../utils/batch'
 
 // 结束状态
 export default function useTransitionEvent<E extends HTMLElement>(
@@ -13,7 +14,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
   classNames: ReturnType<typeof useFormatClassNames>,
   props: CSSTransitionProps<E>
 ) {
-  const { type, css, onEntered, onExited, onEnterCancel, onExitCancel } = props
+  const { type, onEntered, onExited, onEnterCancel, onExitCancel } = props
 
   const runCancel = useEvent((el: E, step: TransitionStep) => {
     const { from, active, to } = classNames[step]
@@ -25,9 +26,8 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
   const done = useEvent((el: E, step: TransitionStep) => {
     store.running(false)
-    store.runEndCleanup(true)
+    store.runEndHook()
 
-    // 删除 className
     const { from, active } = classNames[step]
     delTransitionClass(el, from, active)
 
@@ -35,38 +35,50 @@ export default function useTransitionEvent<E extends HTMLElement>(
     else onEntered && onEntered(el, step === 'appear')
   })
 
-  const runEnd = useEvent((el: E, step: TransitionStep, timeout?: number) => {
-    if (css === false) return () => {}
+  const makeEndHook = useEvent((el: E, step: TransitionStep, timeout?: number) => {
+    const resolve = () => done(el, step)
 
-    if (!isUndefined(timeout)) return addTimeout(timeout, () => done(el, step))
+    if (!isUndefined(timeout)) return addTimeout(timeout, resolve)
 
     const collection = getComputedStyle(el, null)
 
-    const [tranTimeout, tranCount] = collectTimeoutInfo(collection, 'transition')
+    const transition = collectTimeoutInfo(collection, 'transition')
 
-    const [animTimeout, animCount] = collectTimeoutInfo(collection, 'animation')
+    const animation = collectTimeoutInfo(collection, 'animation')
 
-    if (tranTimeout <= 0 && animTimeout <= 0) return addTimeout(0, () => done(el, step))
+    if (transition.timeout <= 0 && animation.timeout <= 0) return addTimeout(0, resolve)
 
-    const makeEndHook = (count: number) => {
+    const makeEndListener = (count: number) => {
       let ended = 0
-      return () => ++ended >= count && done(el, step)
+      return () => ++ended >= count && resolve()
     }
 
-    if (type === 'transition' && tranTimeout > 0) {
-      return addListener(el, 'transitionend', makeEndHook(tranCount))
+    if (type === 'transition' && transition.timeout > 0) {
+      return batch(
+        addListener(el, 'transitionend', makeEndListener(transition.count)),
+        addTimeout(transition.timeout, resolve)
+      )
     }
 
-    if (type === 'animation' && animTimeout > 0) {
-      return addListener(el, 'animationend', makeEndHook(animCount))
+    if (type === 'animation' && animation.timeout > 0) {
+      return batch(
+        addListener(el, 'animationend', makeEndListener(animation.count)),
+        addTimeout(animation.timeout, resolve)
+      )
     }
 
-    if (tranTimeout > animTimeout) {
-      return addListener(el, 'transitionend', makeEndHook(tranCount))
+    if (transition.timeout > animation.timeout) {
+      return batch(
+        addListener(el, 'transitionend', makeEndListener(transition.count)),
+        addTimeout(transition.timeout, resolve)
+      )
     }
 
-    return addListener(el, 'animationend', makeEndHook(animCount))
+    return batch(
+      addListener(el, 'animationend', makeEndListener(animation.count)),
+      addTimeout(animation.timeout, resolve)
+    )
   })
 
-  return [runCancel, runEnd, done] as const
+  return [runCancel, makeEndHook, done] as const
 }

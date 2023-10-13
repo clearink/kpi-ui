@@ -1,6 +1,10 @@
-import { forwardRef, useRef, useState } from 'react'
+import { forwardRef, useMemo, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { CSSTransition, SwitchTransition } from './Transition'
+
 import './style.css'
+import reflow from './Transition/CSSTransition/utils/reflow'
+import nextFrame from './Transition/CSSTransition/utils/next_frame'
 
 const Red = forwardRef((props: any, ref: any) => {
   return (
@@ -12,17 +16,18 @@ const Red = forwardRef((props: any, ref: any) => {
         backgroundColor: 'red',
       }}
     >
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
     </div>
   )
 })
@@ -36,17 +41,18 @@ const Blue = forwardRef((props: any, ref: any) => {
         backgroundColor: 'blue',
       }}
     >
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
-      <p style={{ height: 10 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
+      <div style={{ height: 40 }} />
     </div>
   )
 })
@@ -57,44 +63,54 @@ export default function App() {
 
   return (
     <div>
-      <button
-        type="button"
-        onClick={() => {
-          set((p) => !p)
-        }}
-      >
-        start
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          set1((p) => !p)
-        }}
-      >
-        set1
-      </button>
+      <div>
+        <button
+          type="button"
+          onClick={() => {
+            set((p) => !p)
+          }}
+        >
+          start
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            set1((p) => !p)
+          }}
+        >
+          set1
+        </button>
+      </div>
 
-      <SwitchTransition mode="out-in">
+      {/* <SwitchTransition mode="out-in">
         <CSSTransition key={`${val}`} name="fade">
-          {(getInstance) => (val ? <Red ref={getInstance} /> : <Blue ref={getInstance} />)}
+          {(setInstance) => <Red ref={setInstance} />}
         </CSSTransition>
-      </SwitchTransition>
+      </SwitchTransition> */}
+
+      {/* {(setInstance) => (val ? <Red ref={setInstance} /> : <Blue ref={setInstance} />)} */}
+
+      {/* <AnimatePresence initial={false} mode="wait">
+        {val ? (
+          <motion.div
+            initial={{ x: 260, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 260, opacity: 0 }}
+            transition={{ duration: 2, type: 'tween', ease: 'easeOut' }}
+          >
+            <Red />
+          </motion.div>
+        ) : (
+          <motion.section
+            initial={{ x: 260, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 260, opacity: 0 }}
+            transition={{ duration: 2, type: 'tween', ease: 'easeOut' }}
+          >
+            <Blue />
+          </motion.section>
+        )}
+      </AnimatePresence> */}
     </div>
   )
 }
-
-/**
- * 场景1:
- * enter 时，变更属性需要执行exit
- * in-out: 立即执行
- * out-in
- * default
- *
- *
- * 场景2:
- * exit 时，变更属性需要执行 enter
- * in-out
- * out-in
- * default
- *
- */

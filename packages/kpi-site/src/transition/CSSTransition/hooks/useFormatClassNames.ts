@@ -9,9 +9,9 @@ export default function useFormatClassNames(
 ) {
   return useMemo(() => {
     const enter = {
-      from: fallback(classNames.enter, `${name}-enter-from`),
-      active: fallback(classNames.enterActive, `${name}-enter-active`),
-      to: fallback(classNames.enterTo, `${name}-enter-to`),
+      from: fallback(classNames.enter, name && `${name}-enter-from`),
+      active: fallback(classNames.enterActive, name && `${name}-enter-active`),
+      to: fallback(classNames.enterTo, name && `${name}-enter-to`),
     }
 
     const appear = {
@@ -21,9 +21,9 @@ export default function useFormatClassNames(
     }
 
     const exit = {
-      from: fallback(classNames.exit, `${name}-exit-from`),
-      active: fallback(classNames.exitActive, `${name}-exit-active`),
-      to: fallback(classNames.exitTo, `${name}-exit-to`),
+      from: fallback(classNames.exit, name && `${name}-exit-from`),
+      active: fallback(classNames.exitActive, name && `${name}-exit-active`),
+      to: fallback(classNames.exitTo, name && `${name}-exit-to`),
     }
 
     return { appear, enter, exit }

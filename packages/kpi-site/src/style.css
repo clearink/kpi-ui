@@ -19,3 +19,31 @@
   transform: translateX(260px);
   opacity: 0;
 }
+
+.collapse-enter-from {
+  opacity: 0;
+}
+
+.collapse-enter-active {
+  overflow: hidden;
+  transition: height 2s cubic-bezier(0.645, 0.045, 0.355, 1),
+    opacity 2 cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.collapse-enter-to {
+  opacity: 1;
+}
+
+.collapse-exit-from {
+  opacity: 1;
+}
+
+.collapse-exit-active {
+  overflow: hidden;
+  transition: height 2s cubic-bezier(0.645, 0.045, 0.355, 1),
+    opacity 2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.collapse-exit-to {
+  opacity: 0;
+}

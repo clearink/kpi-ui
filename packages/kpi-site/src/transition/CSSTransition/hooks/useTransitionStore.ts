@@ -1,46 +1,53 @@
-import { isUndefined, useConstant, useForceUpdate } from '@kpi/shared'
+import { isUndefined, useConstant } from '@kpi/shared'
 
 class TransitionStore<E extends HTMLElement> {
   /** 保存 dom 实例 */
   instance: E | null = null
 
-  setInstance = (instance: E | null) => {
-    this.instance = instance
+  setInstance = (el: E | null) => {
+    this.instance = el
   }
 
-  /** 记录更新次数 */
-  private $count = 0
+  private $updateCount = 0
 
-  get updateGteTwoTimes() {
-    return this.$count >= 2
+  updateCounter = () => {
+    this.$updateCount += 1
   }
 
-  updateCounter() {
-    this.$count += 1
+  get isInitial() {
+    return this.$updateCount < 2
   }
 
-  /** 是否正在执行动画  */
   private $running = false
 
-  running(): boolean
-  running(running: boolean): boolean
-  running(args?: boolean) {
-    if (!isUndefined(args)) this.$running = args
+  running = (val?: boolean) => {
+    if (!isUndefined(val)) this.$running = val
 
     return this.$running
   }
 
-  /** 记录清除动画结束的回调函数 */
-  private $endCleanup: void | (() => void) = undefined
+  private $endHook: void | (() => void) = undefined
 
-  setEndCleanup(callback?: void | (() => void)) {
-    this.$endCleanup = callback
+  setEndHook = (callback?: void | (() => void)) => {
+    this.$endHook = callback
   }
 
-  runEndCleanup(reset?: boolean) {
-    this.$endCleanup && this.$endCleanup()
+  runEndHook = () => {
+    this.$endHook && this.$endHook()
 
-    if (reset) this.setEndCleanup(undefined)
+    this.setEndHook(undefined)
+  }
+
+  private $initHook: void | (() => void) = undefined
+
+  setInitHook = (callback?: void | (() => void)) => {
+    this.$initHook = callback
+  }
+
+  runInitHook = () => {
+    this.$initHook && this.$initHook()
+
+    this.setInitHook(undefined)
   }
 }
 
