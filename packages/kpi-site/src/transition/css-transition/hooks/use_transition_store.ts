@@ -8,6 +8,7 @@ class TransitionStore<E extends HTMLElement> {
     this.instance = el
   }
 
+  /** 记录更新次数 */
   private $updateCount = 0
 
   updateCounter = () => {

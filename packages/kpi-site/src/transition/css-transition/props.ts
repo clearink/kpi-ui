@@ -10,7 +10,7 @@ export interface CSSTransitionProps<E extends HTMLElement = HTMLElement> {
   appear?: boolean
   mountOnEnter?: boolean
   unmountOnExit?: boolean
-  children: (ref: RefCallback<E>) => JSX.Element
+  children: (refCallback: RefCallback<E>) => JSX.Element
   // classNames
   classNames?: {
     appear?: string

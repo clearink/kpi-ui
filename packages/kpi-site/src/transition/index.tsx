@@ -1,2 +1,2 @@
-export { default as CSSTransition } from './CSSTransition'
-export { default as SwitchTransition } from './SwitchTransition'
+export { default as CSSTransition } from './css-transition'
+export { default as SwitchTransition } from './switch-transition'

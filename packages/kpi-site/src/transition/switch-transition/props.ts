@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import type { CSSTransitionProps } from '../CSSTransition/props'
+import type { CSSTransitionProps as CSS } from '../css-transition/props'
 
 export type SwitchMode = 'out-in' | 'in-out' | 'default'
 export interface SwitchTransitionProps {
@@ -7,5 +7,5 @@ export interface SwitchTransitionProps {
   /**
    * @description 注意，必须显示为子元素设置一个 key 属性帮助 SwitchTransition 识别是否需要进行转场动画
    */
-  children?: ReactElement<CSSTransitionProps>
+  children?: ReactElement<CSS>
 }

@@ -1,7 +1,7 @@
 import { cloneElement, ReactElement } from 'react'
-import batch from '../../CSSTransition/utils/batch'
+import batch from '../../css-transition/utils/batch'
 
-import type { CSSTransitionProps as CSS } from '../../CSSTransition/props'
+import type { CSSTransitionProps as CSS } from '../../css-transition/props'
 import type { SwitchMode } from '../props'
 
 export default function scheduler<C extends ReactElement<CSS>>(

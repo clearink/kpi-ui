@@ -1,10 +1,8 @@
 import { forwardRef, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { CSSTransition, SwitchTransition } from './Transition'
+import { CSSTransition, SwitchTransition } from './transition'
 
 import './style.css'
-import reflow from './Transition/CSSTransition/utils/reflow'
-import nextFrame from './Transition/CSSTransition/utils/next_frame'
 
 const Red = forwardRef((props: any, ref: any) => {
   return (
@@ -61,6 +59,7 @@ export default function App() {
   const [val, set] = useState(true)
   const set1 = useState(true)[1]
 
+  const a = [<div>123</div>]
   return (
     <div>
       <div>
@@ -82,35 +81,17 @@ export default function App() {
         </button>
       </div>
 
-      {/* <SwitchTransition mode="out-in">
-        <CSSTransition key={`${val}`} name="fade">
-          {(setInstance) => <Red ref={setInstance} />}
+      <SwitchTransition mode="out-in">
+        <CSSTransition key={`${val}`} appear name="fade">
+          {(setInstance) => (val ? <Red ref={setInstance} /> : <Blue ref={setInstance} />)}
         </CSSTransition>
-      </SwitchTransition> */}
+      </SwitchTransition>
+
+      {/* <CSSTransition appear when={false} name="fade">
+        {(setInstance) => <Red ref={setInstance} />}
+      </CSSTransition> */}
 
       {/* {(setInstance) => (val ? <Red ref={setInstance} /> : <Blue ref={setInstance} />)} */}
-
-      {/* <AnimatePresence initial={false} mode="wait">
-        {val ? (
-          <motion.div
-            initial={{ x: 260, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 260, opacity: 0 }}
-            transition={{ duration: 2, type: 'tween', ease: 'easeOut' }}
-          >
-            <Red />
-          </motion.div>
-        ) : (
-          <motion.section
-            initial={{ x: 260, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 260, opacity: 0 }}
-            transition={{ duration: 2, type: 'tween', ease: 'easeOut' }}
-          >
-            <Blue />
-          </motion.section>
-        )}
-      </AnimatePresence> */}
     </div>
   )
 }
