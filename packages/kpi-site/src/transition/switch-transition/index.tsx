@@ -11,5 +11,9 @@ export default function SwitchTransition(props: SwitchTransitionProps) {
 
   useEffect(() => store.setInitial(false), [store])
 
-  return createElement(Fragment, undefined, store.elements)
+  let renderElement: any = store.elements
+
+  renderElement = renderElement.length > 1 ? renderElement : renderElement[0]
+
+  return createElement(Fragment, undefined, renderElement)
 }

@@ -8,15 +8,11 @@ class TransitionStore<E extends HTMLElement> {
     this.instance = el
   }
 
-  /** 记录更新次数 */
-  private $updateCount = 0
+  /** 是否初始化 */
+  isInitial = true
 
-  updateCounter = () => {
-    this.$updateCount += 1
-  }
-
-  get isInitial() {
-    return this.$updateCount < 2
+  setIsInitial = (isInitial: boolean) => {
+    this.isInitial = isInitial
   }
 
   private $running = false

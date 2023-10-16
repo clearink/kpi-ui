@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, useRef, useState } from 'react'
+import { forwardRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CSSTransition, SwitchTransition } from './transition'
 
@@ -55,7 +55,6 @@ const Blue = forwardRef((props: any, ref: any) => {
   )
 })
 export default function App() {
-  // const ref = useRef<HTMLDivElement>(null)
   const [val, set] = useState(true)
   const set1 = useState(true)[1]
 
@@ -81,17 +80,26 @@ export default function App() {
         </button>
       </div>
 
-      <SwitchTransition mode="out-in">
-        <CSSTransition key={`${val}`} appear name="fade">
-          {(setInstance) => (val ? <Red ref={setInstance} /> : <Blue ref={setInstance} />)}
+      {/* {!val && <CSSTransition name="fade">{(ref) => <Red ref={ref} />}</CSSTransition>} */}
+      {/* <SwitchTransition mode="out-in">
+        <CSSTransition name="fade" key={`${val}`}>
+          {(ref) => (val ? <Red ref={ref} /> : <Blue ref={ref} />)}
         </CSSTransition>
-      </SwitchTransition>
-
-      {/* <CSSTransition appear when={false} name="fade">
-        {(setInstance) => <Red ref={setInstance} />}
-      </CSSTransition> */}
-
-      {/* {(setInstance) => (val ? <Red ref={setInstance} /> : <Blue ref={setInstance} />)} */}
+      </SwitchTransition> */}
+      <CSSTransition appear when={val} name="fade">
+        {(ref) => <Red ref={ref} />}
+      </CSSTransition>
+      {/* <AnimatePresence mode="wait">
+        <motion.div
+          key={`${val}`}
+          initial={{ opacity: 0, x: 260 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: 260, opacity: 0 }}
+          transition={{ type: 'tween', duration: 2, ease: 'easeOut' }}
+        >
+          {val ? <Red /> : <Blue />}
+        </motion.div>
+      </AnimatePresence> */}
     </div>
   )
 }

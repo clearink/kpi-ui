@@ -1,7 +1,8 @@
 import { useEvent } from '@kpi/shared'
 import { useEffect } from 'react'
-import { addTransitionClass, delTransitionClass } from '../utils/classnames'
+import { addClassName, delClassName } from '../utils/classnames'
 import nextFrame from '../utils/next_frame'
+import reflow from '../utils/reflow'
 import useFormatClassNames from './use_format_class_names'
 import useFormatTimeouts from './use_format_timeouts'
 import useTransitionEvent from './use_transition_event'
@@ -12,11 +13,10 @@ import type { CSSTransitionProps, TransitionStep } from '../props'
 export default function useTransitionEffect<E extends HTMLElement>(
   store: ReturnType<typeof useTransitionStore<E>>,
   classNames: ReturnType<typeof useFormatClassNames>,
+  timeouts: ReturnType<typeof useFormatTimeouts>,
   props: CSSTransitionProps<E>
 ) {
   const { appear, when, addEndListener, onEnter, onEntering, onExit, onExiting } = props
-
-  const timeouts = useFormatTimeouts(props.duration)
 
   const [runCancel, makeEndHook, done] = useTransitionEvent(store, classNames, props)
 
@@ -26,7 +26,11 @@ export default function useTransitionEffect<E extends HTMLElement>(
 
     const { from, active, to } = classNames[step]
 
-    addTransitionClass(el, from, active)
+    addClassName(el, from)
+
+    reflow(el)
+
+    addClassName(el, active)
 
     store.running(true)
 
@@ -34,9 +38,9 @@ export default function useTransitionEffect<E extends HTMLElement>(
       if (step === 'exit') onExiting && onExiting(el)
       else onEntering && onEntering(el, step === 'appear')
 
-      delTransitionClass(el, from)
+      delClassName(el, from)
 
-      addTransitionClass(el, to)
+      addClassName(el, to)
 
       // 保存结束时的回调
       store.setEndHook(
@@ -52,20 +56,20 @@ export default function useTransitionEffect<E extends HTMLElement>(
       store.runEndHook()
 
       if (store.running()) runCancel(el, step)
-      else delTransitionClass(el, to)
+      else delClassName(el, to)
     }
   })
 
   useEffect(() => {
-    store.updateCounter()
+    const { isInitial, instance } = store
 
-    if (!store.instance) return
+    isInitial && store.setIsInitial(false)
 
-    const step = when ? 'enter' : 'exit'
+    if (!instance) return
 
-    if (!store.isInitial) return runTransition(store.instance, step)
+    if (!isInitial) return runTransition(instance, when ? 'enter' : 'exit')
 
-    if (appear && when) return runTransition(store.instance, 'appear')
+    if (appear && when) return runTransition(instance, 'appear')
 
     return store.runInitHook
   }, [appear, runTransition, store, when])
