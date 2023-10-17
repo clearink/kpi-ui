@@ -11,15 +11,15 @@ import useFormatTimeouts from './hooks/use_format_timeouts'
 export default function CSSTransition<E extends HTMLElement = HTMLElement>(
   props: CSSTransitionProps<E>
 ) {
-  const { children, appear, when, name, duration, classNames: $classNames } = props
+  const { children, appear, when, name, duration, classNames } = props
 
   const store = useTransitionStore<E>()
 
-  const classNames = useFormatClassNames(name, $classNames)
+  const classes = useFormatClassNames(name, classNames)
 
   const timeouts = useFormatTimeouts(duration)
 
-  useTransitionEffect(store, classNames, timeouts, props)
+  useTransitionEffect(store, classes, timeouts, props)
 
   const refCallback = useEvent((el: E | null) => {
     if (!el || store.instance === el) return
@@ -29,7 +29,7 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
     // 元素挂载前的操作
     const step = when ? 'enter' : 'exit'
     const appearInitial = appear && when && store.isInitial
-    const className = appearInitial ? classNames.appear.from : classNames[step].to
+    const className = appearInitial ? classes.appear.from : classes[step].to
 
     addClassName(el, className)
 

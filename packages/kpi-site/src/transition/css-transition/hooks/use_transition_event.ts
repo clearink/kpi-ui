@@ -1,12 +1,12 @@
 import { isUndefined, useEvent } from '@kpi/shared'
-import { addListener, addTimeout } from '../utils/listener'
+import batch from '../utils/batch'
 import { delClassName } from '../utils/classnames'
 import collectTimeoutInfo from '../utils/collect'
+import { addListener, addTimeout } from '../utils/listener'
 import useFormatClassNames from './use_format_class_names'
 import useTransitionStore from './use_transition_store'
 
 import type { CSSTransitionProps, TransitionStep } from '../props'
-import batch from '../utils/batch'
 
 // 结束状态
 export default function useTransitionEvent<E extends HTMLElement>(
@@ -17,8 +17,9 @@ export default function useTransitionEvent<E extends HTMLElement>(
   const { type, onEntered, onExited, onEnterCancel, onExitCancel } = props
 
   const runCancel = useEvent((el: E, step: TransitionStep) => {
-    const { from, active, to } = classNames[step]
-    delClassName(el, from, active, to)
+    const { from, active } = classNames[step]
+
+    delClassName(el, from, active)
 
     if (step === 'exit') onExitCancel && onExitCancel(el)
     else onEnterCancel && onEnterCancel(el, step === 'appear')
@@ -29,6 +30,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
     store.runEndHook()
 
     const { from, active } = classNames[step]
+
     delClassName(el, from, active)
 
     if (step === 'exit') onExited && onExited(el)

@@ -8,6 +8,7 @@ const Red = forwardRef((props: any, ref: any) => {
   return (
     <div
       ref={ref}
+      className="a"
       style={{
         width: 200,
         borderRadius: '4px',
@@ -80,15 +81,17 @@ export default function App() {
         </button>
       </div>
 
-      {/* {!val && <CSSTransition name="fade">{(ref) => <Red ref={ref} />}</CSSTransition>} */}
+      {/* 仅实现退场 */}
+      <SwitchTransition mode="out-in">
+        {!val && <CSSTransition name="fade">{(ref) => <Red ref={ref} />}</CSSTransition>}
+      </SwitchTransition>
+      {/* 转场 */}
       {/* <SwitchTransition mode="out-in">
         <CSSTransition name="fade" key={`${val}`}>
           {(ref) => (val ? <Red ref={ref} /> : <Blue ref={ref} />)}
         </CSSTransition>
       </SwitchTransition> */}
-      <CSSTransition appear when={val} name="fade">
-        {(ref) => <Red ref={ref} />}
-      </CSSTransition>
+
       {/* <AnimatePresence mode="wait">
         <motion.div
           key={`${val}`}

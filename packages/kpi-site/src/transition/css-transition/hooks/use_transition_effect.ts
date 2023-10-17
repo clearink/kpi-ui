@@ -21,6 +21,8 @@ export default function useTransitionEffect<E extends HTMLElement>(
   const [runCancel, makeEndHook, done] = useTransitionEvent(store, classNames, props)
 
   const runTransition = useEvent((el: E, step: TransitionStep) => {
+    store.running(true)
+
     if (step === 'exit') onExit && onExit(el)
     else onEnter && onEnter(el, step === 'appear')
 
@@ -28,11 +30,9 @@ export default function useTransitionEffect<E extends HTMLElement>(
 
     addClassName(el, from)
 
-    reflow(el)
+    step === 'exit' && reflow(el)
 
     addClassName(el, active)
-
-    store.running(true)
 
     const runFrameCleanup = nextFrame(() => {
       if (step === 'exit') onExiting && onExiting(el)
@@ -55,8 +55,9 @@ export default function useTransitionEffect<E extends HTMLElement>(
 
       store.runEndHook()
 
-      if (store.running()) runCancel(el, step)
-      else delClassName(el, to)
+      delClassName(el, to)
+
+      store.running() && runCancel(el, step)
     }
   })
 
