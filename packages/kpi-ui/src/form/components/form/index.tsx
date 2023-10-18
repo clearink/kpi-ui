@@ -7,7 +7,7 @@ import {
   useImperativeHandle,
   useCallback,
 } from 'react'
-import { Form as InternalForm, withDefaultProps } from '@kpi/internal'
+import { Form as InternalForm, withDefaults } from '@kpi/internal'
 import { DisabledContext, FormContext, SizeContext } from '../../../_internal/context'
 import { ConfigContext } from '../../../_internal/context/config'
 import { useFormClass } from '../../hooks/use_class'
@@ -85,7 +85,7 @@ function Form(props: FormProps, ref: ForwardedRef<FormInstance>) {
   )
 }
 
-export default withDefaultProps(forwardRef(Form), {
+export default withDefaults(forwardRef(Form), {
   layout: 'horizontal',
   requiredMark: true,
   colon: true,

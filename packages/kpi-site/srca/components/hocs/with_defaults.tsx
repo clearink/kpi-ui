@@ -12,10 +12,10 @@ type SomeDefault<T extends object> = Readonly<Partial<T>>
  * @param WrappedComponent 需要包装的组件
  * @param defaultProps 默认熟悉, 推荐 as const 使用, 避免多生成类型
  */
-export default function withDefaultProps<
-  P extends object,
-  D extends SomeDefault<P> = SomeDefault<P>
->(WrappedComponent: ComponentType<P>, defaultProps?: D) {
+export default function withDefaults<P extends object, D extends SomeDefault<P> = SomeDefault<P>>(
+  WrappedComponent: ComponentType<P>,
+  defaultProps?: D
+) {
   WrappedComponent.defaultProps = defaultProps
 
   // 生产环境去除 displayName

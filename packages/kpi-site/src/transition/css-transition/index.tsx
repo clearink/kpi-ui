@@ -1,11 +1,11 @@
 import { useEvent } from '@kpi/shared'
 import useFormatClassNames from './hooks/use_format_class_names'
+import useFormatTimeouts from './hooks/use_format_timeouts'
 import useTransitionEffect from './hooks/use_transition_effect'
 import useTransitionStore from './hooks/use_transition_store'
 import { addClassName, delClassName } from './utils/classnames'
 
 import type { CSSTransitionProps } from './props'
-import useFormatTimeouts from './hooks/use_format_timeouts'
 
 // 还是要添加 mountOnEnter 与 unmountOnExit
 export default function CSSTransition<E extends HTMLElement = HTMLElement>(
@@ -37,4 +37,19 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
   })
 
   return children(refCallback)
+}
+
+function test() {
+  const start = performance.now()
+
+  for (let i = 0; i < 3000; i++) {
+    const a = { a: 1, b: 2, c: 3, d: 4 }
+    const b = {}
+
+    Object.entries(a).forEach(([k, v]) => {
+      if (b[k] === undefined) b[k] = v
+    })
+  }
+
+  return performance.now() - start
 }

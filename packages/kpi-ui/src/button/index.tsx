@@ -1,7 +1,7 @@
 /* eslint-disable react/button-has-type */
 import { ForwardedRef, forwardRef, useImperativeHandle, type MouseEvent } from 'react'
 import { omit } from '@kpi/shared'
-import { withDefaultProps } from '@kpi/internal'
+import { withDefaults } from '@kpi/internal'
 import { usePrefixCls, useWave } from '../_internal/hooks'
 import useClass from './hooks/use_class'
 
@@ -50,7 +50,7 @@ function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
     </button>
   )
 }
-export default withDefaultProps(forwardRef(Button), {
+export default withDefaults(forwardRef(Button), {
   htmlType: 'button',
   type: 'default',
 } as const)

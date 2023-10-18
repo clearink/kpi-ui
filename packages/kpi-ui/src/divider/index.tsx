@@ -1,5 +1,5 @@
 import { capitalize, omit } from '@kpi/shared'
-import { withDefaultProps } from '@kpi/internal'
+import { withDefaults } from '@kpi/internal'
 import { usePrefixCls } from '../_internal/hooks'
 import useClass from './hooks/use_class'
 
@@ -37,7 +37,7 @@ function Divider(props: DividerProps) {
   )
 }
 
-export default withDefaultProps(Divider, {
+export default withDefaults(Divider, {
   dashed: false,
   orientation: 'center',
   plain: false,

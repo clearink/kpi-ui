@@ -1,4 +1,4 @@
-import { withDefaultProps } from '@kpi/internal'
+import { withDefaults } from '@kpi/internal'
 import { usePrefixCls } from '../_internal/hooks'
 import useClass from './hooks/use_class'
 import usePageChunk from './hooks/use_page_chunk'
@@ -19,7 +19,7 @@ function Pagination(props: PaginationProps) {
   return <div className={className}>pagination</div>
 }
 
-export default withDefaultProps(Pagination, {
+export default withDefaults(Pagination, {
   simple: false,
   total: 0,
   showJumper: false,

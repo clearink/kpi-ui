@@ -1,17 +1,11 @@
+import { AnyObject } from '../types'
 import { isUndefined } from './is'
 
-import type { AnyObject } from '../types'
+export default function shallowMerge<R, T extends AnyObject>(source: R, defaults: T) {
+  const result = { ...source } as Record<any, any>
 
-export default function shallowMerge<R, T extends AnyObject>(target: R, source: T) {
-  const shallow = { ...target }
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in defaults) if (isUndefined(result[key])) result[key] = defaults[key]
 
-  const keys = Object.keys(source)
-
-  for (let i = 0; i < keys.length; i += 1) {
-    const key = keys[i]
-
-    if (isUndefined(shallow[key])) shallow[key] = source[key]
-  }
-
-  return shallow as R & T
+  return result as R & T
 }

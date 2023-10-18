@@ -1,6 +1,6 @@
 import { useMemo, Fragment, ReactElement, type CSSProperties } from 'react'
 import { flattenChildren, omit } from '@kpi/shared'
-import { withDefaultProps } from '@kpi/internal'
+import { withDefaults } from '@kpi/internal'
 import { useFlexGapSupport, usePrefixCls } from '../_internal/hooks'
 import useSpaceGutter from './hooks/use_space_gutter'
 import useClass from './hooks/use_class'
@@ -61,7 +61,7 @@ function Space(props: SpaceProps) {
   )
 }
 
-export default withDefaultProps(Space, {
+export default withDefaults(Space, {
   direction: 'horizontal',
   size: 'small',
   wrap: false,

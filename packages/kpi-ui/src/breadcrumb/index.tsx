@@ -1,4 +1,4 @@
-import { withDefaultProps } from '@kpi/internal'
+import { withDefaults } from '@kpi/internal'
 import useClass from './hooks/use_class'
 // import { BreadcrumbProps } from './props';
 
@@ -8,4 +8,4 @@ function Breadcrumb() {
   return <div className={className}>breadcrumb</div>
 }
 
-export default withDefaultProps(Breadcrumb, {} as const)
+export default withDefaults(Breadcrumb, {} as const)

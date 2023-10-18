@@ -1,6 +1,6 @@
 import { CSSProperties, forwardRef, useMemo, type ForwardedRef } from 'react'
 import { omit } from '@kpi/shared'
-import { withDefaultProps } from '@kpi/internal'
+import { withDefaults } from '@kpi/internal'
 import { RowContext } from '../_internal/context'
 import { useFlexGapSupport, usePrefixCls } from '../_internal/hooks'
 import useClass from './hooks/use_class'
@@ -52,7 +52,7 @@ function Row(props: RowProps, ref: ForwardedRef<HTMLDivElement>) {
   )
 }
 
-export default withDefaultProps(forwardRef(Row), {
+export default withDefaults(forwardRef(Row), {
   gutter: 0,
   wrap: true,
 } as const)

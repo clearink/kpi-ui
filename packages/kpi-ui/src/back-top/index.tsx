@@ -1,4 +1,4 @@
-import { withDefaultProps } from '@kpi/internal'
+import { withDefaults } from '@kpi/internal'
 import { CSSProperties, MouseEventHandler, ReactNode } from 'react'
 import useClass from './hooks/use_class'
 
@@ -20,7 +20,7 @@ function BackTop(props: BackTopProps) {
   return <div className={className}>back-top</div>
 }
 
-export default withDefaultProps(BackTop, {
+export default withDefaults(BackTop, {
   duration: 200,
   threshold: 400,
 } as const)

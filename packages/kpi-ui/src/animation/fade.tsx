@@ -1,4 +1,4 @@
-import { withDefaultProps } from '@kpi/internal'
+import { withDefaults } from '@kpi/internal'
 import { isFunction, logger } from '@kpi/shared'
 import { cloneElement, isValidElement } from 'react'
 import { useTransition } from '../_internal/hooks'
@@ -26,4 +26,4 @@ function Fade(props: ZoomProps) {
   return cloneElement(children)
 }
 
-export default withDefaultProps(Fade)
+export default withDefaults(Fade)

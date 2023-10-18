@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { withDefaultProps } from '@kpi/internal'
+import { withDefaults } from '@kpi/internal'
 import { isFunction } from '@kpi/shared'
 import { cloneElement, useRef } from 'react'
 import { useTransition } from '../_internal/hooks'
@@ -49,4 +49,4 @@ function Collapse<T>(props: CollapseProps<T>) {
   return cloneElement(children, { ref: nodeRef ?? ref })
 }
 
-export default withDefaultProps(Collapse)
+export default withDefaults(Collapse)

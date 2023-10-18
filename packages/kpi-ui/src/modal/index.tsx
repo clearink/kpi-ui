@@ -1,5 +1,5 @@
 import { createPortal } from 'react-dom'
-import { withDefaultProps } from '@kpi/internal'
+import { withDefaults } from '@kpi/internal'
 
 import type { ModalProps } from './props'
 import Zoom from '../animation/zoom'
@@ -16,6 +16,6 @@ function Modal(props: ModalProps) {
   return protal
 }
 
-export default withDefaultProps(Modal, {
+export default withDefaults(Modal, {
   open: false,
 } as const)

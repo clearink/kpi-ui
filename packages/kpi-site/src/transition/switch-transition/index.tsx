@@ -1,4 +1,4 @@
-import { Fragment, createElement, useEffect } from 'react'
+import { Fragment, createElement } from 'react'
 import useSwitchChildren from './hooks/use_switch_children'
 import useTransitionStore from './hooks/use_transition_store'
 
@@ -9,11 +9,5 @@ export default function SwitchTransition(props: SwitchTransitionProps) {
 
   useSwitchChildren(store, props)
 
-  useEffect(() => store.setInitial(false), [store])
-
-  let renderElement: any = store.elements
-
-  renderElement = renderElement.length > 1 ? renderElement : renderElement[0]
-
-  return createElement(Fragment, undefined, renderElement)
+  return createElement(Fragment, undefined, store.elements)
 }

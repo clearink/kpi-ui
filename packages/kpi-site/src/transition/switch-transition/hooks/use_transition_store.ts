@@ -28,7 +28,7 @@ class TransitionStore {
 
     const props: Record<string, any> = { when }
 
-    if (!this.initial) props.appear = true
+    if (!this.isInitial) props.appear = true
 
     return cloneElement(element as ReactElement<CSS>, props)
   }
@@ -47,10 +47,10 @@ class TransitionStore {
 
   /** 是否为初始化 */
 
-  initial = true
+  isInitial = true
 
   setInitial = (val: boolean) => {
-    this.initial = val
+    this.isInitial = val
   }
 
   // TODO: 优化逻辑

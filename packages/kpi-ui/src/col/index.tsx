@@ -1,10 +1,11 @@
+import { withDefaults } from '@kpi/internal'
+import { isNumber, isUndefined, omit, useConstant } from '@kpi/shared'
 import { CSSProperties, forwardRef, useMemo, type ForwardedRef } from 'react'
-import { isNumber, isUndefined, omit } from '@kpi/shared'
-import { withDefaultProps } from '@kpi/internal'
-import useClass from './hooks/use_class'
-import { useFlexGapSupport, usePrefixCls } from '../_internal/hooks'
-import { RowContext } from '../_internal/context'
 import { BREAKPOINT_NAME, COL_FLEX_REG } from '../_internal/constant'
+import { RowContext } from '../_internal/context'
+import { usePrefixCls } from '../_internal/hooks'
+import { detectFlexGap } from '../_internal/utils'
+import useClass from './hooks/use_class'
 
 import type { ColProps } from './props'
 
@@ -28,7 +29,7 @@ function Col(props: ColProps, ref: ForwardedRef<HTMLDivElement>) {
 
   const className = useClass(name, props)
 
-  const gapSupport = useFlexGapSupport()
+  const gapSupport = useConstant(detectFlexGap)
 
   const { hGutter, vGutter } = RowContext.useState()
 
@@ -67,4 +68,4 @@ function Col(props: ColProps, ref: ForwardedRef<HTMLDivElement>) {
   )
 }
 
-export default withDefaultProps(forwardRef(Col), {} as const)
+export default withDefaults(forwardRef(Col), {} as const)

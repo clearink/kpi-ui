@@ -3,8 +3,6 @@ import {
   createElement,
   ForwardedRef,
   forwardRef,
-  ReactElement,
-  Ref,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -12,7 +10,7 @@ import {
   type FormEvent,
 } from 'react'
 import { FieldContext, FormContext } from '../../context'
-import withDefaultProps from '../../hocs'
+import withDefaults from '../../hocs'
 import { HOOK_MARK } from '../control'
 import useForm from '../hooks/use_form'
 
@@ -39,7 +37,7 @@ const excluded = [
 function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance>) {
   const {
     name,
-    component = 'form',
+    component,
     form,
     children: $children,
     onReset,
@@ -116,9 +114,8 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   )
 }
 
-export default withDefaultProps(forwardRef(Form), {
+export default withDefaults(forwardRef(Form), {
   preserve: true,
   validateTrigger: 'onChange',
-} as const) as <State = any>(
-  props: FormProps<State> & { ref?: Ref<FormInstance<State>> }
-) => ReactElement
+  component: 'form',
+} as const)
