@@ -10,17 +10,17 @@ class TransitionStore {
   constructor(public forceUpdate: () => void) {}
 
   // 负责展示的元素
-  elements: (ReactElement<CSS> | null)[] = []
+  elements: ReactElement<CSS>[] = []
 
   current: ReactElement<CSS> | null = null
 
   children: Switch['children'] | null = null
 
-  updateChildren = (children: Switch['children'] | null) => {
+  updateChildren = (children: Switch['children']) => {
     this.children = children
   }
 
-  makeElement = (element: Switch['children'], when: boolean) => {
+  makeElement = (element: ReactElement<CSS>, when: boolean) => {
     if (!isValidElement(element)) return null
 
     // 子元素不是 CSSTransition 也不处理
@@ -58,42 +58,24 @@ class TransitionStore {
     this.start()
 
     const resolve = () => {
-      if (isValidElement(this.children)) {
-        this.current = this.makeElement(this.children, true)
-        this.current = cloneElement(this.current!, {
-          onEntering: batch(this.current!.props.onEntering, this.stop),
-        })
-      } else {
-        this.stop()
-
-        this.current = null
-      }
+      this.current = this.makeElement(this.children!, true)
+      this.current = cloneElement(this.current!, {
+        onEntering: batch(this.current!.props.onEntering, this.stop),
+      })
 
       this.elements = [this.current]
 
       this.forceUpdate()
     }
 
-    if (this.current) {
-      this.elements = [
-        cloneElement(this.current, {
-          // 执行退场动画
-          when: false,
-          appear: true,
-          onExited: batch(this.current.props.onExited, resolve),
-        }),
-      ]
-    } else {
-      this.stop()
-      const a = this.makeElement(this.children, true)
-      if (!a) this.elements = [a]
-      else
-        this.elements = [
-          cloneElement(a, {
-            onEntering: batch(a.props.onEntering, resolve),
-          }),
-        ]
-    }
+    this.elements = [
+      cloneElement(this.current!, {
+        // 执行退场动画
+        when: false,
+        appear: true,
+        onExited: batch(this.current!.props.onExited, resolve),
+      }),
+    ]
   }
 
   startInOut = () => {
@@ -143,7 +125,7 @@ export default function useTransitionStore(props: Switch) {
 
     store.current = store.makeElement(children, true)
 
-    store.elements = [store.current]
+    store.elements = [store.current!]
 
     return store
   })

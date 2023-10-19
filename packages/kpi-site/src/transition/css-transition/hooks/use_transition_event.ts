@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { isUndefined, useEvent } from '@kpi/shared'
 import batch from '../utils/batch'
 import { delClassName } from '../utils/classnames'
@@ -11,34 +12,40 @@ import type { CSSTransitionProps, TransitionStep } from '../props'
 // 结束状态
 export default function useTransitionEvent<E extends HTMLElement>(
   store: ReturnType<typeof useTransitionStore<E>>,
-  classNames: ReturnType<typeof useFormatClassNames>,
+  classes: ReturnType<typeof useFormatClassNames>,
   props: CSSTransitionProps<E>
 ) {
-  const { type, onEntered, onExited, onEnterCancel, onExitCancel } = props
+  const { type, unmountOnExit, onEntered, onExited, onEnterCancel, onExitCancel } = props
 
   const runCancel = useEvent((el: E, step: TransitionStep) => {
-    const { from, active } = classNames[step]
+    const { from, active, to } = classes[step]
 
-    delClassName(el, from, active)
+    delClassName(el, from, active, to)
 
     if (step === 'exit') onExitCancel && onExitCancel(el)
     else onEnterCancel && onEnterCancel(el, step === 'appear')
   })
 
   const done = useEvent((el: E, step: TransitionStep) => {
-    store.running(false)
+    store.running = false
+
     store.runEndHook()
 
-    const { from, active } = classNames[step]
+    const { from, active, to } = classes[step]
 
-    delClassName(el, from, active)
+    delClassName(el, from, active, to)
 
-    if (step === 'exit') onExited && onExited(el)
-    else onEntered && onEntered(el, step === 'appear')
+    if (step !== 'exit') return onEntered && onEntered(el, step === 'appear')
+
+    onExited && onExited(el)
+
+    store.hidden()
+
+    unmountOnExit && store.destroy()
   })
 
   const makeEndHook = useEvent((el: E, step: TransitionStep, timeout?: number) => {
-    const resolve = () => done(el, step)
+    const resolve = done.bind(null, el, step)
 
     if (!isUndefined(timeout)) return addTimeout(timeout, resolve)
 

@@ -3,13 +3,13 @@ import type { RefCallback } from 'react'
 export type TransitionStep = 'enter' | 'appear' | 'exit'
 
 export interface CSSTransitionProps<E extends HTMLElement = HTMLElement> {
+  ssr?: true
   when?: boolean
   name?: string
   type?: 'transition' | 'animation'
   duration?: number | { appear?: number; enter?: number; exit?: number }
   appear?: boolean
-  mountOnEnter?: boolean
-  unmountOnExit?: boolean
+  unmountOnExit?: true
   children: (refCallback: RefCallback<E>) => JSX.Element
   // classNames
   classNames?: {

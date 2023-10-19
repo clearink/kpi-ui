@@ -1,8 +1,10 @@
-import { useEffect } from 'react'
+/* eslint-disable no-param-reassign */
+import { cloneElement, useEffect } from 'react'
 import useTransitionStore from './use_transition_store'
 import isSameElement from '../utils/same'
 
 import type { SwitchTransitionProps } from '../props'
+import batch from '../../css-transition/utils/batch'
 
 export default function useCalculateChange(
   store: ReturnType<typeof useTransitionStore>,
@@ -19,10 +21,23 @@ export default function useCalculateChange(
   if (isSameElement(store.current, children)) return
 
   if (mode === 'out-in') {
-    // 计算出当前需要显示的子元素
-  }
+    if (store.running) return
 
-  if (mode === 'out-in') !store.running && store.startOutIn()
-  else if (mode === 'in-out') store.startInOut()
+    // store.running = true
+    store.startOutIn()
+
+    // const resolve = () => {
+    //   const p: any = { when: true, unmountOnExit: true }
+
+    //   if (!store.isInitial) p.appear = true
+
+    //   store.current = cloneElement(store.children!, {
+    //     ...p,
+    //     onEntering: batch(store.children!.props.onEntering, store.stop),
+    //   })
+
+    //   store.forceUpdate()
+    // }
+  } else if (mode === 'in-out') store.startInOut()
   else store.startBoth()
 }

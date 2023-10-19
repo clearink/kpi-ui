@@ -1,17 +1,19 @@
-import { useMemo, Fragment, ReactElement, type CSSProperties } from 'react'
-import { flattenChildren, omit } from '@kpi/shared'
 import { withDefaults } from '@kpi/internal'
-import { useFlexGapSupport, usePrefixCls } from '../_internal/hooks'
-import useSpaceGutter from './hooks/use_space_gutter'
+import { flattenChildren, omit, useConstant } from '@kpi/shared'
+import { Fragment, ReactElement, type CSSProperties } from 'react'
+import { usePrefixCls } from '../_internal/hooks'
+import { detectFlexGap } from '../_internal/utils'
 import useClass from './hooks/use_class'
-import { SpaceProps } from './props'
+import useSpaceGutter from './hooks/use_space_gutter'
+
+import type { SpaceProps } from './props'
 
 const excluded = ['children', 'size', 'style', 'direction', 'wrap', 'split'] as const
 
 function Space(props: SpaceProps) {
   const { children: $children, size, style, direction, wrap, split } = props
 
-  const gapSupport = useFlexGapSupport()
+  const gapSupport = useConstant(detectFlexGap)
 
   const name = usePrefixCls('space')
 

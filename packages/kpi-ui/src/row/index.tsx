@@ -1,11 +1,13 @@
-import { CSSProperties, forwardRef, useMemo, type ForwardedRef } from 'react'
-import { omit } from '@kpi/shared'
 import { withDefaults } from '@kpi/internal'
+import { omit, useConstant } from '@kpi/shared'
+import { CSSProperties, forwardRef, useMemo, type ForwardedRef } from 'react'
 import { RowContext } from '../_internal/context'
-import { useFlexGapSupport, usePrefixCls } from '../_internal/hooks'
+import { usePrefixCls } from '../_internal/hooks'
+import { detectFlexGap } from '../_internal/utils'
 import useClass from './hooks/use_class'
 import useRowGutter from './hooks/use_row_gutter'
-import { RowProps } from './props'
+
+import type { RowProps } from './props'
 
 const excluded = ['children', 'style', 'gutter', 'align', 'justify', 'wrap', 'className'] as const
 
@@ -16,7 +18,7 @@ function Row(props: RowProps, ref: ForwardedRef<HTMLDivElement>) {
 
   const className = useClass(name, props)
 
-  const gapSupport = useFlexGapSupport()
+  const gapSupport = useConstant(detectFlexGap)
 
   const [hGutter, vGutter] = useRowGutter(gutter)
 

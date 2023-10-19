@@ -1,55 +1,104 @@
 import { useEvent } from '@kpi/shared'
+import { useEffect } from 'react'
 import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'
-import useTransitionEffect from './hooks/use_transition_effect'
+import useTransitionEvent from './hooks/use_transition_event'
 import useTransitionStore from './hooks/use_transition_store'
 import { addClassName, delClassName } from './utils/classnames'
+import nextFrame from './utils/next_frame'
+import reflow from './utils/reflow'
 
-import type { CSSTransitionProps } from './props'
+import type { CSSTransitionProps, TransitionStep } from './props'
 
-// 还是要添加 mountOnEnter 与 unmountOnExit
 export default function CSSTransition<E extends HTMLElement = HTMLElement>(
   props: CSSTransitionProps<E>
 ) {
-  const { children, appear, when, name, duration, classNames } = props
+  const {
+    children,
+    appear,
+    name,
+    when,
+    classNames,
+    ssr,
+    addEndListener,
+    onEnter,
+    onEntering,
+    onExit,
+    onExiting,
+    duration,
+  } = props
 
-  const store = useTransitionStore<E>()
+  const store = useTransitionStore<E>(props)
 
   const classes = useFormatClassNames(name, classNames)
 
   const timeouts = useFormatTimeouts(duration)
 
-  useTransitionEffect(store, classes, timeouts, props)
+  const [runCancel, makeEndHook, done] = useTransitionEvent(store, classes, props)
+
+  if (ssr && store.isInitial) reflow()
 
   const refCallback = useEvent((el: E | null) => {
-    if (!el || store.instance === el) return
+    if (!el) return
 
-    store.setInstance(el)
+    store.instance = el
 
-    // 元素挂载前的操作
-    const step = when ? 'enter' : 'exit'
-    const appearInitial = appear && when && store.isInitial
-    const className = appearInitial ? classes.appear.from : classes[step].to
-
-    addClassName(el, className)
-
-    store.setInitHook(() => delClassName(el, className))
+    if (appear || !when) store.hidden()
   })
 
-  return children(refCallback)
-}
+  const runTransition = useEvent((el: E, step: TransitionStep) => {
+    store.running = true
 
-function test() {
-  const start = performance.now()
+    store.unmount = false
 
-  for (let i = 0; i < 3000; i++) {
-    const a = { a: 1, b: 2, c: 3, d: 4 }
-    const b = {}
+    store.show()
 
-    Object.entries(a).forEach(([k, v]) => {
-      if (b[k] === undefined) b[k] = v
+    if (step === 'exit') onExit && onExit(el)
+    else onEnter && onEnter(el, step === 'appear')
+
+    const { from, active, to } = classes[step]
+
+    addClassName(el, from)
+
+    step === 'exit' && reflow(el)
+
+    addClassName(el, active)
+
+    const runFrameCleanup = nextFrame(() => {
+      if (step === 'exit') onExiting && onExiting(el)
+      else onEntering && onEntering(el, step === 'appear')
+
+      delClassName(el, from)
+
+      addClassName(el, to)
+
+      // 保存结束时的回调
+      store.endHook = addEndListener
+        ? addEndListener(el, step, done.bind(null, el, step))
+        : makeEndHook(el, step, timeouts[step])
     })
-  }
 
-  return performance.now() - start
+    return () => {
+      runFrameCleanup()
+
+      store.runEndHook()
+
+      store.running && runCancel(el, step)
+    }
+  })
+
+  // 只有 when 属性才能影响动画
+  useEffect(() => {
+    const { isInitial, instance } = store
+
+    if (isInitial) store.isInitial = false
+
+    if (!instance) return
+
+    if (!isInitial) return runTransition(instance, when ? 'enter' : 'exit')
+
+    if (appear && when) return runTransition(instance, 'appear')
+  }, [appear, runTransition, store, when])
+
+  return store.unmount && !when ? null : children(refCallback)
 }

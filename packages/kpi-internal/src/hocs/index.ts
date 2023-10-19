@@ -10,7 +10,7 @@ type SomeDefault<T extends object> = Readonly<Partial<T>>
 /**
  *
  * @param WrappedComponent 需要包装的组件
- * @param defaultProps 默认熟悉, 推荐 as const 使用, 避免多生成类型
+ * @param defaultProps 默认属性, 推荐 as const 使用, 避免多生成类型
  */
 export default function withDefaults<
   P extends Record<string, any>,

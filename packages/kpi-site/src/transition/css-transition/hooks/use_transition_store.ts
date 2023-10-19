@@ -1,53 +1,57 @@
-import { isUndefined, useConstant } from '@kpi/shared'
+import { useConstant, useForceUpdate } from '@kpi/shared'
+import { CSSTransitionProps } from '../props'
 
 class TransitionStore<E extends HTMLElement> {
-  /** 保存 dom 实例 */
+  constructor(public forceUpdate: () => void, public unmount: boolean) {}
+
   instance: E | null = null
 
-  setInstance = (el: E | null) => {
-    this.instance = el
-  }
-
-  /** 是否初始化 */
   isInitial = true
 
-  setIsInitial = (isInitial: boolean) => {
-    this.isInitial = isInitial
-  }
+  running = false
 
-  private $running = false
-
-  running = (val?: boolean) => {
-    if (!isUndefined(val)) this.$running = val
-
-    return this.$running
-  }
-
-  private $endHook: void | (() => void) = undefined
-
-  setEndHook = (callback?: void | (() => void)) => {
-    this.$endHook = callback
-  }
+  endHook: void | (() => void) = undefined
 
   runEndHook = () => {
-    this.$endHook && this.$endHook()
+    this.endHook && this.endHook()
 
-    this.setEndHook(undefined)
+    this.endHook = undefined
   }
 
-  private $initHook: void | (() => void) = undefined
+  hidden = () => {
+    const el = this.instance
 
-  setInitHook = (callback?: void | (() => void)) => {
-    this.$initHook = callback
+    if (!el) return
+
+    el.dataset.display = el.style.getPropertyValue('display')
+    el.dataset.priority = el.style.getPropertyPriority('display')
+    el.style.display = 'none'
   }
 
-  runInitHook = () => {
-    this.$initHook && this.$initHook()
+  show = () => {
+    const el = this.instance
 
-    this.setInitHook(undefined)
+    if (!el) return
+
+    const value = el.dataset.display || ''
+    const priority = el.dataset.priority || ''
+
+    el.style.setProperty('display', value, priority)
+  }
+
+  destroy = () => {
+    this.unmount = true
+
+    this.instance = null
+
+    this.forceUpdate()
   }
 }
 
-export default function useTransitionStore<E extends HTMLElement>() {
-  return useConstant(() => new TransitionStore<E>())
+export default function useTransitionStore<E extends HTMLElement>(props: CSSTransitionProps<E>) {
+  const { when, unmountOnExit: unmount } = props
+
+  const update = useForceUpdate()
+
+  return useConstant(() => new TransitionStore<E>(update, !!unmount && !when))
 }

@@ -6,7 +6,7 @@
 
 .fade-enter-active,
 .fade-exit-active {
-  transition: all 2s ease-out;
+  transition: all 0.3s ease-out;
 }
 
 .collapse-enter-from {
@@ -15,10 +15,8 @@
 
 .collapse-enter-active {
   overflow: hidden;
-  transition: height 2s cubic-bezier(0.645, 0.045, 0.355, 1),
-    opacity 2 cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: all 0.3s ease-in-out;
 }
-
 .collapse-enter-to {
   opacity: 1;
 }
@@ -29,8 +27,7 @@
 
 .collapse-exit-active {
   overflow: hidden;
-  transition: height 2s cubic-bezier(0.645, 0.045, 0.355, 1),
-    opacity 2s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: all 0.3s ease-in-out;
 }
 
 .collapse-exit-to {
