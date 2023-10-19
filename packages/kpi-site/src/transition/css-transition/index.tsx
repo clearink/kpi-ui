@@ -15,7 +15,6 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
 ) {
   const {
     children,
-    appear,
     name,
     when,
     classNames,
@@ -43,7 +42,7 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
 
     store.instance = el
 
-    if (appear || !when) store.hidden()
+    if (store.appear || !when) store.hidden()
   })
 
   const runTransition = useEvent((el: E, step: TransitionStep) => {
@@ -97,8 +96,8 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
 
     if (!isInitial) return runTransition(instance, when ? 'enter' : 'exit')
 
-    if (appear && when) return runTransition(instance, 'appear')
-  }, [appear, runTransition, store, when])
+    if (store.appear && when) return runTransition(instance, 'appear')
+  }, [runTransition, store, when])
 
   return store.unmount && !when ? null : children(refCallback)
 }

@@ -56,15 +56,9 @@ const Blue = forwardRef((props: any, ref: any) => {
   )
 })
 
-const reset = (el: HTMLElement) => {
-  el.style.maxHeight = ''
-  el.style.overflow = el.dataset.oldOverflow || ''
-  el.style.paddingTop = el.dataset.oldPaddingTop || ''
-  el.style.paddingBottom = el.dataset.oldPaddingBottom || ''
-}
 export default function App() {
   const [val, set] = useState(!true)
-  const set1 = useState(true)[1]
+  const [val1, set1] = useState(true)
 
   return (
     <div>
@@ -87,7 +81,7 @@ export default function App() {
         </button>
       </div>
 
-      <CSSTransition name="fade" when={val} unmountOnExit>
+      <CSSTransition name="fade" when={val} unmountOnExit={val1}>
         {(ref) => <Red ref={ref} />}
       </CSSTransition>
 
