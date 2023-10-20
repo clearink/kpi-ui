@@ -2,17 +2,7 @@ import { useConstant, useForceUpdate, usePrevious } from '@kpi/shared'
 import { CSSTransitionProps } from '../props'
 
 class TransitionStore<E extends HTMLElement> {
-  constructor(public forceUpdate: () => void, props: CSSTransitionProps<E>) {
-    const { appear, when, unmountOnExit } = props
-
-    this.appear = !!appear
-
-    this.unmount = !!unmountOnExit && !when
-  }
-
-  appear: boolean
-
-  unmount: boolean
+  constructor(public forceUpdate: () => void, public appear: boolean, public unmount: boolean) {}
 
   instance: E | null = null
 
@@ -59,15 +49,15 @@ class TransitionStore<E extends HTMLElement> {
 }
 
 export default function useTransitionStore<E extends HTMLElement>(props: CSSTransitionProps<E>) {
-  const { when, unmountOnExit } = props
+  const { when, appear, unmountOnExit } = props
 
   const update = useForceUpdate()
 
   const oldUnmount = usePrevious(unmountOnExit)
 
-  const store = useConstant(() => new TransitionStore<E>(update, props))
-
   const unmount = !!unmountOnExit && !when
+
+  const store = useConstant(() => new TransitionStore<E>(update, !!appear, unmount))
 
   if (!store.running && oldUnmount !== unmount) store.unmount = unmount
 

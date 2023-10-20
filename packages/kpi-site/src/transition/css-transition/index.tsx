@@ -38,8 +38,6 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
   if (ssr && store.isInitial) reflow()
 
   const refCallback = useEvent((el: E | null) => {
-    if (!el) return
-
     store.instance = el
 
     if (store.appear || !when) store.hidden()
@@ -86,7 +84,6 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
     }
   })
 
-  // 只有 when 属性才能影响动画
   useEffect(() => {
     const { isInitial, instance } = store
 
@@ -99,5 +96,5 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
     if (store.appear && when) return runTransition(instance, 'appear')
   }, [runTransition, store, when])
 
-  return store.unmount && !when ? null : children(refCallback)
+  return store.unmount ? null : children(refCallback)
 }

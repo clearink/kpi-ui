@@ -9,7 +9,6 @@ import useTransitionStore from './use_transition_store'
 
 import type { CSSTransitionProps, TransitionStep } from '../props'
 
-// 结束状态
 export default function useTransitionEvent<E extends HTMLElement>(
   store: ReturnType<typeof useTransitionStore<E>>,
   classes: ReturnType<typeof useFormatClassNames>,
