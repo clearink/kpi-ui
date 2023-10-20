@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { forwardRef, useEffect, useState } from 'react'
+import { forwardRef, useState } from 'react'
 import { CSSTransition, SwitchTransition } from './transition'
 
 import './style.css'
@@ -81,16 +81,12 @@ export default function App() {
         </button>
       </div>
 
-      <CSSTransition name="fade" when={val} unmountOnExit={val1}>
-        {(ref) => <Red ref={ref} />}
-      </CSSTransition>
-
       {/* 转场 */}
-      {/* <SwitchTransition mode="out-in">
+      <SwitchTransition mode="out-in">
         <CSSTransition name="fade" key={`${val}`}>
-          {(ref) => (val ? <Red ref={ref} /> : <Blue ref={ref} />)}
+          {val ? <Red /> : <Blue />}
         </CSSTransition>
-      </SwitchTransition> */}
+      </SwitchTransition>
 
       {/* <AnimatePresence mode="wait">
         <motion.div

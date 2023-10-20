@@ -1,5 +1,5 @@
 import { isFunction, isObject, useEvent } from '@kpi/shared'
-import { cloneElement, type Ref, useEffect } from 'react'
+import { cloneElement, useEffect, type Ref } from 'react'
 import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'
 import useTransitionEvent from './hooks/use_transition_event'
@@ -7,6 +7,7 @@ import useTransitionStore from './hooks/use_transition_store'
 import { addClassName, delClassName } from './utils/classnames'
 import nextFrame from './utils/next_frame'
 import reflow from './utils/reflow'
+import { APPEAR, ENTER, EXIT, isAppear, isExit } from './constants/status'
 
 import type { CSSTransitionProps, TransitionStep } from './props'
 
@@ -49,26 +50,22 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
   })
 
   const runTransition = useEvent((el: E, step: TransitionStep) => {
-    store.running = true
+    store.start(step)
 
-    store.unmount = false
-
-    store.show()
-
-    if (step === 'exit') onExit && onExit(el)
-    else onEnter && onEnter(el, step === 'appear')
+    if (isExit(step)) onExit && onExit(el)
+    else onEnter && onEnter(el, isAppear(step))
 
     const { from, active, to } = classes[step]
 
     addClassName(el, from)
 
-    step === 'exit' && reflow(el)
+    isExit(step) && reflow(el)
 
     addClassName(el, active)
 
     const runFrameCleanup = nextFrame(() => {
-      if (step === 'exit') onExiting && onExiting(el)
-      else onEntering && onEntering(el, step === 'appear')
+      if (isExit(step)) onExiting && onExiting(el)
+      else onEntering && onEntering(el, isAppear(step))
 
       delClassName(el, from)
 
@@ -94,11 +91,11 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
 
     if (isInitial) store.isInitial = false
 
-    if (!instance) return
+    if (!(instance && store.shouldTransition(isInitial, when))) return
 
-    if (!isInitial) return runTransition(instance, when ? 'enter' : 'exit')
+    if (!isInitial) return runTransition(instance, when ? ENTER : EXIT)
 
-    if (store.appear && when) return runTransition(instance, 'appear')
+    if (store.appear && when) return runTransition(instance, APPEAR)
   }, [runTransition, store, when])
 
   return store.unmount ? null : cloneElement(children, { ref: refCallback })

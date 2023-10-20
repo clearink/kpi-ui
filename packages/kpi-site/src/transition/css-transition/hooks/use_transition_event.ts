@@ -1,5 +1,5 @@
-/* eslint-disable no-param-reassign */
 import { isUndefined, useEvent } from '@kpi/shared'
+import { isAppear, isExit } from '../constants/status'
 import batch from '../utils/batch'
 import { delClassName } from '../utils/classnames'
 import collectTimeoutInfo from '../utils/collect'
@@ -21,20 +21,18 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     delClassName(el, from, active, to)
 
-    if (step === 'exit') onExitCancel && onExitCancel(el)
-    else onEnterCancel && onEnterCancel(el, step === 'appear')
+    if (isExit(step)) onExitCancel && onExitCancel(el)
+    else onEnterCancel && onEnterCancel(el, isAppear(step))
   })
 
   const done = useEvent((el: E, step: TransitionStep) => {
-    store.running = false
-
-    store.runEndHook()
+    store.finish(step)
 
     const { from, active, to } = classes[step]
 
     delClassName(el, from, active, to)
 
-    if (step !== 'exit') return onEntered && onEntered(el, step === 'appear')
+    if (!isExit(step)) return onEntered && onEntered(el, isAppear(step))
 
     onExited && onExited(el)
 

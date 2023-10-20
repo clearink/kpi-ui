@@ -1,8 +1,35 @@
 import { useConstant, useForceUpdate, usePrevious } from '@kpi/shared'
-import { CSSTransitionProps } from '../props'
+import {
+  ENTER,
+  ENTERED,
+  EXIT,
+  EXITED,
+  isEnter,
+  isEntered,
+  isExit,
+  isExited,
+} from '../constants/status'
+
+import type { CSSTransitionProps as CSS, TransitionStep } from '../props'
 
 class TransitionStore<E extends HTMLElement> {
-  constructor(public forceUpdate: () => void, public appear: boolean, public unmount: boolean) {}
+  constructor(public forceUpdate: () => void, props: CSS<E>) {
+    const { appear, when, unmountOnExit } = props
+
+    this.appear = !!appear
+
+    this.unmount = !!unmountOnExit && !when
+
+    if (!when) this.status = EXITED
+    else this.status = appear ? ENTER : ENTERED
+  }
+
+  // 避免严格模式时 appear=true when=false 额外多执行一次 exit 动画
+  status: typeof ENTER | typeof ENTERED | typeof EXIT | typeof EXITED
+
+  appear = false
+
+  unmount = false
 
   instance: E | null = null
 
@@ -46,10 +73,34 @@ class TransitionStore<E extends HTMLElement> {
 
     this.forceUpdate()
   }
+
+  start = (step: TransitionStep) => {
+    this.running = true
+
+    this.unmount = false
+
+    this.status = isExit(step) ? EXIT : ENTER
+
+    this.show()
+  }
+
+  finish = (step: TransitionStep) => {
+    this.running = false
+
+    this.status = isExit(step) ? EXITED : ENTERED
+
+    this.runEndHook()
+  }
+
+  shouldTransition = (isInitial: boolean, when?: boolean) => {
+    if (isInitial) return isEnter(this.status)
+
+    return when ? !isEntered(this.status) : !isExited(this.status)
+  }
 }
 
-export default function useTransitionStore<E extends HTMLElement>(props: CSSTransitionProps<E>) {
-  const { when, appear, unmountOnExit } = props
+export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>) {
+  const { when, unmountOnExit } = props
 
   const update = useForceUpdate()
 
@@ -57,7 +108,7 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSSTran
 
   const unmount = !!unmountOnExit && !when
 
-  const store = useConstant(() => new TransitionStore<E>(update, !!appear, unmount))
+  const store = useConstant(() => new TransitionStore<E>(update, props))
 
   if (!store.running && oldUnmount !== unmount) store.unmount = unmount
 

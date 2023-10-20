@@ -1,10 +1,8 @@
-/* eslint-disable no-param-reassign */
-import { cloneElement, useEffect } from 'react'
+import { useEffect } from 'react'
 import useTransitionStore from './use_transition_store'
 import isSameElement from '../utils/same'
 
 import type { SwitchTransitionProps } from '../props'
-import batch from '../../css-transition/utils/batch'
 
 export default function useCalculateChange(
   store: ReturnType<typeof useTransitionStore>,
