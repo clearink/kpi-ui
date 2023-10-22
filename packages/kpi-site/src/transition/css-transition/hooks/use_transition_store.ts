@@ -1,4 +1,4 @@
-import { useConstant, useForceUpdate, usePrevious } from '@kpi/shared'
+import { useConstant, useForceUpdate, useGetDerivedStateFromProps } from '@kpi/shared'
 import {
   ENTER,
   ENTERED,
@@ -45,14 +45,22 @@ class TransitionStore<E extends HTMLElement> {
     this.endHook = undefined
   }
 
-  hidden = () => {
+  prepareHidden = () => {
     const el = this.instance
 
     if (!el) return
 
     el.dataset.display = el.style.getPropertyValue('display')
     el.dataset.priority = el.style.getPropertyPriority('display')
+  }
+
+  hidden = () => {
+    const el = this.instance
+
+    if (!el) return
+
     el.style.display = 'none'
+    el.setAttribute('hidden', '')
   }
 
   show = () => {
@@ -64,6 +72,7 @@ class TransitionStore<E extends HTMLElement> {
     const priority = el.dataset.priority || ''
 
     el.style.setProperty('display', value, priority)
+    el.removeAttribute('hidden')
   }
 
   destroy = () => {
@@ -81,7 +90,7 @@ class TransitionStore<E extends HTMLElement> {
 
     this.status = isExit(step) ? EXIT : ENTER
 
-    this.show()
+    isExit(step) ? this.prepareHidden() : this.show()
   }
 
   finish = (step: TransitionStep) => {
@@ -102,15 +111,15 @@ class TransitionStore<E extends HTMLElement> {
 export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>) {
   const { when, unmountOnExit } = props
 
-  const update = useForceUpdate()
+  const forceUpdate = useForceUpdate()
 
-  const oldUnmount = usePrevious(unmountOnExit)
+  const store = useConstant(() => new TransitionStore<E>(forceUpdate, props))
 
-  const unmount = !!unmountOnExit && !when
+  useGetDerivedStateFromProps(unmountOnExit, () => {
+    if (store.isInitial || store.running) return
 
-  const store = useConstant(() => new TransitionStore<E>(update, props))
-
-  if (!store.running && oldUnmount !== unmount) store.unmount = unmount
+    store.unmount = !!unmountOnExit && !when
+  })
 
   return store
 }

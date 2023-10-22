@@ -30,13 +30,13 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
 
   const store = useTransitionStore<E>(props)
 
+  if (store.isInitial && ssr) reflow()
+
   const classes = useFormatClassNames(name, classNames)
 
   const timeouts = useFormatTimeouts(duration)
 
   const [runCancel, makeEndHook, done] = useTransitionEvent(store, classes, props)
-
-  if (ssr && store.isInitial) reflow()
 
   const refCallback = useEvent((el: E | null) => {
     store.instance = el
@@ -45,6 +45,8 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
 
     if (isFunction(original)) original(el)
     else if (isObject(original)) (original as any).current = el
+
+    store.prepareHidden()
 
     if (store.appear || !when) store.hidden()
   })
@@ -98,5 +100,5 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
     if (store.appear && when) return runTransition(instance, APPEAR)
   }, [runTransition, store, when])
 
-  return store.unmount ? null : cloneElement(children, { ref: refCallback })
+  return !when && store.unmount ? null : cloneElement(children, { ref: refCallback })
 }
