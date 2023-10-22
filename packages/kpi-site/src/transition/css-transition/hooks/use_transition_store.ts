@@ -1,4 +1,4 @@
-import { useConstant, useForceUpdate, useGetDerivedStateFromProps } from '@kpi/shared'
+import { useConstant, useForceUpdate, useWatch } from '@kpi/shared'
 import {
   ENTER,
   ENTERED,
@@ -60,7 +60,6 @@ class TransitionStore<E extends HTMLElement> {
     if (!el) return
 
     el.style.display = 'none'
-    el.setAttribute('hidden', '')
   }
 
   show = () => {
@@ -72,13 +71,10 @@ class TransitionStore<E extends HTMLElement> {
     const priority = el.dataset.priority || ''
 
     el.style.setProperty('display', value, priority)
-    el.removeAttribute('hidden')
   }
 
   destroy = () => {
     this.unmount = true
-
-    this.instance = null
 
     this.forceUpdate()
   }
@@ -115,7 +111,7 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
 
   const store = useConstant(() => new TransitionStore<E>(forceUpdate, props))
 
-  useGetDerivedStateFromProps(unmountOnExit, () => {
+  useWatch(unmountOnExit, () => {
     if (store.isInitial || store.running) return
 
     store.unmount = !!unmountOnExit && !when

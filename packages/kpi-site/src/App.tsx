@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { forwardRef, useState } from 'react'
-import { CSSTransition, SwitchTransition } from './transition'
+import { SwitchTransition } from './transition'
 
 import './style.css'
 
@@ -57,7 +57,7 @@ const Blue = forwardRef((props: any, ref: any) => {
 })
 
 export default function App() {
-  const [val, set] = useState(!true)
+  const [val, set] = useState(true)
   const [val1, set1] = useState(true)
 
   return (
@@ -82,10 +82,8 @@ export default function App() {
       </div>
 
       {/* 转场 */}
-      <SwitchTransition mode="out-in">
-        <CSSTransition name="fade" key={`${val}`}>
-          {val ? <Red /> : <Blue />}
-        </CSSTransition>
+      <SwitchTransition mode="out-in" name="fade" appear>
+        {val ? <Red key="red" /> : <Blue />}
       </SwitchTransition>
 
       {/* <AnimatePresence mode="wait">

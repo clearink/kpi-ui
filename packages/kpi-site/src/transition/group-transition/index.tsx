@@ -1,8 +1,21 @@
-import { Children, ReactElement } from 'react'
+import { omit } from '@kpi/shared'
+import { Children, Fragment, createElement } from 'react'
 import CSSTransition from '../css-transition'
 
-export default function GroupTransition() {
-  const children: ReactElement[] = []
+import type { GroupTransitionProps } from './props'
 
-  return Children.map(children, (child) => <CSSTransition>{child}</CSSTransition>)
+export default function GroupTransition<E extends HTMLElement = HTMLElement>(
+  props: GroupTransitionProps<E>
+) {
+  const { children } = props
+
+  const cssProps = omit(props, ['children', 'when', 'unmountOnExit'])
+
+  const elements = Children.map(children, (child) => (
+    <CSSTransition appear when {...cssProps}>
+      {child}
+    </CSSTransition>
+  ))
+
+  return createElement(Fragment, undefined, elements)
 }
