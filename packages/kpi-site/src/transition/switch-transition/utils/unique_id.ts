@@ -3,4 +3,4 @@ function uniqueId(prefix: string) {
   return () => `${prefix}-${id++}`
 }
 
-export default uniqueId('in')
+export default uniqueId('switch-transition-key')

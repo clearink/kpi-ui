@@ -4,9 +4,11 @@
   opacity: 0;
 }
 
-.fade-enter-active,
+.fade-enter-active {
+  transition: all 2s ease-out;
+}
 .fade-exit-active {
-  transition: all 0.3s ease-out;
+  transition: all 3s ease-out;
 }
 
 .collapse-enter-from {

@@ -1,6 +1,7 @@
 import { omit } from '@kpi/shared'
 import { Children, Fragment, createElement } from 'react'
-import CSSTransition from '../css-transition'
+import SwitchTransition from '../switch-transition'
+import useTransitionStore from './hooks/use_transition_store'
 
 import type { GroupTransitionProps } from './props'
 
@@ -9,13 +10,24 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
 ) {
   const { children } = props
 
-  const cssProps = omit(props, ['children', 'when', 'unmountOnExit'])
+  const store = useTransitionStore()
 
-  const elements = Children.map(children, (child) => (
-    <CSSTransition appear when {...cssProps}>
-      {child}
-    </CSSTransition>
-  ))
+  const cssProps = omit(props, ['children', 'when', 'unmountOnExit', 'appear'])
+
+  // 以 CSSTransition 实现 还是 以 SwitchTransition ?
+
+  // const elements = Children.map(children, (child) => (
+  //   <SwitchTransition<E> mode="out-in" {...cssProps} key={child.key} appear>
+  //     {child}
+  //   </SwitchTransition>
+  // ))
+
+  // 使用 FLIP
+
+  // 首先需要 diff 出进入，退出的动画
+
+  const elements = children
+  console.log(elements)
 
   return createElement(Fragment, undefined, elements)
 }

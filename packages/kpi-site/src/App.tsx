@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { forwardRef, useState } from 'react'
-import { SwitchTransition } from './transition'
+import { CSSTransition, GroupTransition, SwitchTransition } from './transition'
 
 import './style.css'
 
@@ -59,7 +59,7 @@ const Blue = forwardRef((props: any, ref: any) => {
 export default function App() {
   const [val, set] = useState(true)
   const [val1, set1] = useState(true)
-
+  const [list, setList] = useState(() => [1, 2, 3])
   return (
     <div>
       <div>
@@ -69,7 +69,7 @@ export default function App() {
             set((p) => !p)
           }}
         >
-          start
+          set
         </button>
         <button
           type="button"
@@ -79,12 +79,25 @@ export default function App() {
         >
           set1
         </button>
+        <button
+          type="button"
+          onClick={() => {
+            setList(list.length === 3 ? [2, 3, 4, 5] : [1, 2, 3])
+          }}
+        >
+          setList
+        </button>
       </div>
 
       {/* 转场 */}
-      <SwitchTransition mode="out-in" name="fade" appear>
-        {val ? <Red key="red" /> : <Blue />}
-      </SwitchTransition>
+      <SwitchTransition name="fade">{val ? <Red key="red" /> : <Blue />}</SwitchTransition>
+
+      {/* 列表 */}
+      {/* <GroupTransition name="fade">
+        {list.map((id) => (
+          <div key={id} style={{ width: 200, height: 50, background: 'red' }} />
+        ))}
+      </GroupTransition> */}
 
       {/* <AnimatePresence mode="wait">
         <motion.div

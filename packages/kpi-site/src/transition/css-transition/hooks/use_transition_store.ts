@@ -1,4 +1,5 @@
-import { useConstant, useForceUpdate, useWatch } from '@kpi/shared'
+import { useConstant, useForceUpdate, useDerivedState } from '@kpi/shared'
+import { useState } from 'react'
 import {
   ENTER,
   ENTERED,
@@ -111,8 +112,10 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
 
   const store = useConstant(() => new TransitionStore<E>(forceUpdate, props))
 
-  useWatch(unmountOnExit, () => {
+  useDerivedState(unmountOnExit, () => {
     if (store.isInitial || store.running) return
+
+    store.forceUpdate()
 
     store.unmount = !!unmountOnExit && !when
   })
