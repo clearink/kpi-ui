@@ -108,9 +108,5 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 export default function useTransitionStore<E extends HTMLElement = HTMLElement>(props: Switch<E>) {
   const forceUpdate = useForceUpdate()
 
-  const store = useConstant(() => new TransitionStore(forceUpdate, props))
-
-  store.setTransitionProps(props)
-
-  return store
+  return useConstant(() => new TransitionStore(forceUpdate, props))
 }

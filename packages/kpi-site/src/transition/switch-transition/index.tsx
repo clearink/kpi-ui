@@ -13,6 +13,8 @@ export default function SwitchTransition<E extends HTMLElement = HTMLElement>(
 
   const store = useTransitionStore(props)
 
+  store.setTransitionProps(props)
+
   const shouldTransition = !isSameElement(store.current, children)
 
   useDerivedState(shouldTransition, () => {

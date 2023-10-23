@@ -90,14 +90,16 @@ export default function App() {
       </div>
 
       {/* 转场 */}
-      <SwitchTransition name="fade">{val ? <Red key="red" /> : <Blue />}</SwitchTransition>
+      {/* <SwitchTransition mode="out-in" name="fade">
+        {val ? <Red key="red" /> : <Blue />}
+      </SwitchTransition> */}
 
       {/* 列表 */}
-      {/* <GroupTransition name="fade">
+      <GroupTransition name="fade">
         {list.map((id) => (
           <div key={id} style={{ width: 200, height: 50, background: 'red' }} />
         ))}
-      </GroupTransition> */}
+      </GroupTransition>
 
       {/* <AnimatePresence mode="wait">
         <motion.div
