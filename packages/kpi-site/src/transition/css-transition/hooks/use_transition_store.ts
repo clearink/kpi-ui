@@ -1,5 +1,4 @@
 import { useConstant, useForceUpdate, useDerivedState } from '@kpi/shared'
-import { useState } from 'react'
 import {
   ENTER,
   ENTERED,
