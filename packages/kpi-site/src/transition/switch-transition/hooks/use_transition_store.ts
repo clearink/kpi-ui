@@ -8,7 +8,7 @@ import makeUniqueId from '../../utils/unique_id'
 import type { CSSTransitionProps as CSS } from '../../css-transition/props'
 import type { SwitchTransitionProps as Switch } from '../props'
 
-const uniqueId = makeUniqueId('switch-transition-key')
+const uniqueId = makeUniqueId('switch-transition-key-')
 class TransitionStore<E extends HTMLElement = HTMLElement> {
   constructor(public forceUpdate: () => void, props: CSS<E>) {
     this.props = props

@@ -1,13 +1,18 @@
-import { isUndefined, omit, useConstant, useForceUpdate } from '@kpi/shared'
-import { Children, cloneElement, createElement, ReactElement } from 'react'
+import { isNullish, omit, useConstant, useForceUpdate } from '@kpi/shared'
+import { Key, ReactElement, Ref, cloneElement, createElement } from 'react'
 import CSSTransition from '../../css-transition'
-import mergeRefs from '../../css-transition/utils/merge_refs'
-import makeUniqueId from '../../utils/unique_id'
+import minus from '../utils/minus'
+import union from '../utils/union'
 
 import type { CSSTransitionProps as CSS } from '../../css-transition/props'
 import type { GroupTransitionProps as Group } from '../props'
+import inter from '../utils/inter'
+import runCounter from '../../utils/run_counter'
+import batch from '../../css-transition/utils/batch'
+import mergeRefs from '../../css-transition/utils/merge_refs'
+import { nextFrame, nextTick } from '../../utils/tick'
+import reflow from '../../css-transition/utils/reflow'
 
-const uniqueId = makeUniqueId('group-transition-key')
 class TransitionStore<E extends HTMLElement = HTMLElement> {
   constructor(public forceUpdate: () => void, props: Group<E>) {
     this.props = props
@@ -23,6 +28,8 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   elements: ReactElement<CSS<E>>[] = []
 
+  doms = new Map<Key | null, E>()
+
   setTransitionProps = (props: Group<E>) => {
     this.props = props
   }
@@ -30,71 +37,86 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
   makeElement = (element: JSX.Element, extra: Partial<CSS<E>>) => {
     const preset = omit(this.props, ['children']) as CSS<E>
 
-    Object.assign(preset, extra, { key: uniqueId() })
+    const { key } = element
 
-    return createElement(CSSTransition<E>, preset, element)
+    Object.assign(preset, extra, { unmountOnExit: true, key })
+
+    const cloned = cloneElement(element, {
+      ref: mergeRefs((element as any).ref, (el: E | null) => {
+        el ? this.doms.set(key, el) : this.doms.delete(key)
+      }),
+    })
+
+    return createElement(CSSTransition<E>, preset, cloned)
   }
 
   runTransition = () => {
     const { children } = this.props
 
-    const enters = diff(children, this.current).map((el) => el.key)
-    const exits = diff(this.current, children).map((el) => el.key)
+    const enters = minus(children, this.current).map((el) => el.key)
+    const exits = minus(this.current, children).map((el) => el.key)
     const moves = inter(this.current, children).map((el) => el.key)
 
-    const all = union(this.current, children)
+    this.runFlip(moves)
 
-    this.current = children
+    const onFinish = runCounter(enters.length + exits.length, () => {
+      this.elements = this.current.map((el) => this.makeElement(el, { when: true }))
+      this.forceUpdate()
+    })
 
-    this.elements = all.map((el) => {
-      // 之前遗留的数据
-      if (exits.includes(el.key)) {
-        return this.elements.find((ele) => ele.key === el.key)!
-      }
+    this.elements = union(this.current, children).map((el) => {
+      if (enters.includes(el.key))
+        return this.makeElement(el, {
+          when: true,
+          appear: true,
+          onEntered: batch(this.props.onEntered, onFinish),
+        })
 
-      // 需要新增的数据
-      if (enters.includes(el.key)) return this.makeElement(el, { when: true, appear: true })
+      if (exits.includes(el.key))
+        return this.makeElement(el, {
+          when: false,
+          onExited: batch(this.props.onExited, onFinish),
+        })
 
+      // moves FLIP
       return this.makeElement(el, { when: true })
     })
+
+    this.current = children
+  }
+
+  runFlip = (moves: (Key | null)[]) => {
+    const keys = moves.filter((key) => this.doms.has(key))
+
+    const prev = keys.map((key) => this.doms.get(key)!.getBoundingClientRect())
+    console.log('prev', prev)
+    nextTick(() => {
+      keys.forEach((key, i) => {
+        const dom = this.doms.get(key)!
+        const prevRect = prev[i]
+        const currRect = dom.getBoundingClientRect()
+        console.log(prevRect, currRect)
+        const x = prevRect.left - currRect.left
+        const y = prevRect.top - currRect.top
+
+        const str = dom.style.transform
+        dom.style.transform = `${str} translate(${x}px,${y}px)`
+        console.log(dom)
+        dom.classList.add('fade-move')
+        reflow(dom)
+      })
+    })
+  }
+
+  cleanup = null
+
+  runCleanup = () => {
+    return this.cleanup
   }
 }
 
 export default function useTransitionStore<E extends HTMLElement = HTMLElement>(props: Group<E>) {
   const forceUpdate = useForceUpdate()
 
-  return useConstant(() => {
-    return new TransitionStore(forceUpdate, props)
-  })
+  return useConstant(() => new TransitionStore(forceUpdate, props))
 }
-
-// 交集
-const inter = (a: JSX.Element[], b: JSX.Element[]) => {
-  const set = new Set(a.map((el) => el.key))
-
-  return b.filter((el) => set.has(el.key))
-}
-
-// a 相对于 b 的差集 （a有但是b没有）
-const diff = (a: JSX.Element[], b: JSX.Element[]) => {
-  const set = new Set(b.map((el) => el.key))
-  return a.filter((el) => !set.has(el.key))
-}
-
-// 并集 二者相加并去重
-const union = (a: JSX.Element[], b: JSX.Element[]) => {
-  const map = new Map(b.map((el, i) => [el.key, i]))
-
-  let maxIndex = 0
-
-  return a.reduce((result, el) => {
-    const index = map.get(el.key)
-
-    if (isUndefined(index)) result.splice(++maxIndex, 0, el)
-    else maxIndex = Math.max(index, maxIndex)
-
-    return result
-  }, b.concat())
-}
-
-// 问题 如何将 exit 元素插入到最适合的位置呢？

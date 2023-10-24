@@ -1,12 +1,18 @@
 .fade-enter-from,
 .fade-exit-to {
   transform: translateX(30px);
-  opacity: 0;
+  /* opacity: 0; */
 }
 
+.fade-exit {
+  position: absolute;
+}
+.fade-move {
+  transition: all 11s ease-in-out;
+}
 .fade-enter-active,
 .fade-exit-active {
-  transition: all 233s ease-in-out;
+  transition: all 11s ease-in-out;
 }
 
 .collapse-enter-from {
