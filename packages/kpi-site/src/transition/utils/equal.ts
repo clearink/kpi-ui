@@ -1,0 +1,15 @@
+import { isValidElement, ReactNode } from 'react'
+
+export function isElementEqual(current: ReactNode, next: ReactNode) {
+  if (current === next) return true
+
+  if (!isValidElement(current) || !isValidElement(next)) return false
+
+  return current.key === next.key
+}
+
+export function isElementsEqual(prev: JSX.Element[], next: JSX.Element[]) {
+  if (prev.length !== next.length) return false
+
+  return prev.every((el, i) => isElementEqual(el, next[i]))
+}

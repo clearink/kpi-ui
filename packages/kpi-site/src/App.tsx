@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { forwardRef, useState } from 'react'
+import { Children, forwardRef, useState } from 'react'
 import { CSSTransition, GroupTransition, SwitchTransition } from './transition'
 
 import './style.css'
@@ -59,7 +59,8 @@ const Blue = forwardRef((props: any, ref: any) => {
 export default function App() {
   const [val, set] = useState(true)
   const [val1, set1] = useState(true)
-  const [list, setList] = useState(() => [1, 2, 3])
+  const [list, setList] = useState(() => [3, 4, 5, 6, 7, 2, 8])
+
   return (
     <div>
       <div>
@@ -82,7 +83,7 @@ export default function App() {
         <button
           type="button"
           onClick={() => {
-            setList(list.length === 3 ? [2, 3, 4, 5] : [1, 2, 3])
+            setList(list.length === 4 ? [3, 4, 5, 6, 7, 2, 8] : [5, 3, 2, 1])
           }}
         >
           setList
@@ -97,7 +98,7 @@ export default function App() {
       {/* 列表 */}
       <GroupTransition name="fade">
         {list.map((id) => (
-          <div key={id} style={{ width: 200, height: 50, background: 'red' }} />
+          <div key={id}>{id}</div>
         ))}
       </GroupTransition>
 

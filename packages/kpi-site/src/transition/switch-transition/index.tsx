@@ -1,7 +1,7 @@
 import { useDerivedState } from '@kpi/shared'
 import { Fragment, createElement } from 'react'
+import { isElementEqual } from '../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
-import isSameElement from './utils/same'
 
 import type { SwitchTransitionProps } from './props'
 
@@ -15,7 +15,7 @@ export default function SwitchTransition<E extends HTMLElement = HTMLElement>(
 
   store.setTransitionProps(props)
 
-  const shouldTransition = !isSameElement(store.current, children)
+  const shouldTransition = !isElementEqual(store.current, children)
 
   useDerivedState(shouldTransition, () => {
     if (!shouldTransition) return

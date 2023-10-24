@@ -2,12 +2,13 @@ import { omit, useConstant, useForceUpdate } from '@kpi/shared'
 import { cloneElement, createElement, ReactElement } from 'react'
 import CSSTransition from '../../css-transition'
 import batch from '../../css-transition/utils/batch'
-import runCounter from '../utils/run_counter'
-import uniqueId from '../utils/unique_id'
+import runCounter from '../../utils/run_counter'
+import makeUniqueId from '../../utils/unique_id'
 
 import type { CSSTransitionProps as CSS } from '../../css-transition/props'
 import type { SwitchTransitionProps as Switch } from '../props'
 
+const uniqueId = makeUniqueId('switch-transition-key')
 class TransitionStore<E extends HTMLElement = HTMLElement> {
   constructor(public forceUpdate: () => void, props: CSS<E>) {
     this.props = props
@@ -30,12 +31,12 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     this.props = props
   }
 
-  makeElement = (element: ReactElement<CSS<E>>, extra: Partial<CSS>) => {
-    const preset = omit(this.props, ['mode', 'children'])
+  makeElement = (element: ReactElement<CSS<E>>, extra: Partial<CSS<E>>) => {
+    const preset = omit(this.props, ['mode', 'children']) as CSS<E>
 
     Object.assign(preset, extra, { key: uniqueId() })
 
-    return createElement(CSSTransition, preset as CSS, element)
+    return createElement(CSSTransition<E>, preset, element)
   }
 
   runOutInSwitch = () => {

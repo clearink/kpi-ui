@@ -116,9 +116,9 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
 
     if (store.isInitial || store.running || store.unmount === unmount) return
 
-    store.forceUpdate()
-
     store.unmount = unmount
+
+    store.forceUpdate()
   })
 
   return store
