@@ -112,11 +112,13 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
   const store = useConstant(() => new TransitionStore<E>(forceUpdate, props))
 
   useDerivedState(unmountOnExit, () => {
-    if (store.isInitial || store.running) return
+    const unmount = !!unmountOnExit && !when
+
+    if (store.isInitial || store.running || store.unmount === unmount) return
 
     store.forceUpdate()
 
-    store.unmount = !!unmountOnExit && !when
+    store.unmount = unmount
   })
 
   return store

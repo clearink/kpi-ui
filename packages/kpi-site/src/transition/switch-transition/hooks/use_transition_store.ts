@@ -40,7 +40,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   runOutInSwitch = () => {
     this.elements = [
-      cloneElement(this.elements[0] || this.current, {
+      cloneElement(this.elements[0], {
         when: false,
         appear: true,
         onExited: batch(this.props.onExited, () => {
