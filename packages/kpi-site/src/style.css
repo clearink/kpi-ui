@@ -1,18 +1,22 @@
+.a {
+  height: 20px;
+  width: 200px;
+  border: 1px solid;
+}
 .fade-enter-from,
 .fade-exit-to {
-  transform: translateX(30px);
-  /* opacity: 0; */
+  transform: translateX(60px);
+  opacity: 0;
 }
 
-.fade-exit {
-  position: absolute;
-}
-.fade-move {
-  transition: all 11s ease-in-out;
-}
+.fade-move,
 .fade-enter-active,
 .fade-exit-active {
-  transition: all 11s ease-in-out;
+  transition: all 122s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.fade-exit-active {
+  position: absolute;
 }
 
 .collapse-enter-from {

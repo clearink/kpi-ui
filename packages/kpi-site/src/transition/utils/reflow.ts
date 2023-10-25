@@ -1,5 +1,5 @@
 // 强制回流
 export default function reflow(el?: Element | null) {
   const dom = el || document.documentElement || document.body
-  return getComputedStyle(dom).opacity
+  return dom.scrollTop
 }

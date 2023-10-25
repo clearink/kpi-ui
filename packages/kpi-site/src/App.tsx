@@ -5,29 +5,17 @@ import { CSSTransition, GroupTransition, SwitchTransition } from './transition'
 import './style.css'
 
 const Red = forwardRef((props: any, ref: any) => {
+  console.log('red')
   return (
     <div
       ref={ref}
-      className="a"
       style={{
         width: 200,
+        height: 400,
         borderRadius: '4px',
         backgroundColor: 'red',
       }}
-    >
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-    </div>
+    />
   )
 })
 const Blue = forwardRef((props: any, ref: any) => {
@@ -36,23 +24,11 @@ const Blue = forwardRef((props: any, ref: any) => {
       ref={ref}
       style={{
         width: 200,
+        height: 400,
         borderRadius: '4px',
         backgroundColor: 'blue',
       }}
-    >
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-      <div style={{ height: 40 }} />
-    </div>
+    />
   )
 })
 
@@ -83,13 +59,39 @@ export default function App() {
         <button
           type="button"
           onClick={() => {
-            setList(list.length === 3 ? [2, 3, 4, 5] : [1, 2, 3])
+            const list2 = list.concat()
+            const idx = Math.round(Math.random() * list2.length)
+            list2.splice(idx, 0, Math.random())
+            setList(list2)
           }}
         >
-          setList
+          insert
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            const list2 = list.concat()
+            const idx = Math.round(Math.random() * list2.length)
+            list2.splice(idx, 1)
+            setList(list2)
+          }}
+        >
+          remove
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            const list2 = list.concat().sort(() => (Math.random() > 0.5 ? 1 : -1))
+            setList(list2)
+          }}
+        >
+          shuffle
         </button>
       </div>
 
+      {/* <CSSTransition name="fade" when={val}>
+        <Red />
+      </CSSTransition> */}
       {/* 转场 */}
       {/* <SwitchTransition mode="out-in" name="fade">
         {val ? <Red key="red" /> : <Blue />}
@@ -98,7 +100,9 @@ export default function App() {
       {/* 列表 */}
       <GroupTransition name="fade">
         {list.map((id) => (
-          <div key={id}>{id}</div>
+          <div key={id} className="a">
+            {id}
+          </div>
         ))}
       </GroupTransition>
 

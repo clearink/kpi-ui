@@ -1,5 +1,5 @@
-import { useDerivedState } from '@kpi/shared'
-import { createElement, Fragment } from 'react'
+import { useEvent } from '@kpi/shared'
+import { createElement, Fragment, useEffect } from 'react'
 import { isElementsEqual } from '../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
 
@@ -16,16 +16,15 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
 
   const shouldTransition = !isElementsEqual(store.current, children)
 
-  useDerivedState(shouldTransition, () => {
-    if (!shouldTransition) return
+  useEffect(() => {
+    const { isInitial } = store
 
-    store.runCleanup()
+    if (isInitial) store.isInitial = false
 
-    store.runTransition()
+    if (shouldTransition) return store.runTransition()
 
-    store.forceUpdate()
-  })
+    if (!isInitial) return store.runFlip()
+  }, [shouldTransition, store])
 
-  console.log(store.elements.map((el) => el.key))
   return createElement(Fragment, undefined, store.elements)
 }

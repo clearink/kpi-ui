@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 export type TransitionStep = 'enter' | 'appear' | 'exit'
 
 export interface CSSTransitionProps<E extends HTMLElement = HTMLElement> {
@@ -8,7 +10,7 @@ export interface CSSTransitionProps<E extends HTMLElement = HTMLElement> {
   duration?: number | { appear?: number; enter?: number; exit?: number }
   appear?: boolean
   unmountOnExit?: boolean
-  children: JSX.Element
+  children: ReactElement
   // classNames
   classNames?: {
     appear?: string

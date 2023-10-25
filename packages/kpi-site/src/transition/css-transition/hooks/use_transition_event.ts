@@ -1,7 +1,8 @@
 import { isUndefined, useEvent } from '@kpi/shared'
+import { delClassName } from '../../utils/dom_helper'
+import runCounter from '../../utils/run_counter'
 import { isAppear, isExit } from '../constants/status'
 import batch from '../utils/batch'
-import { delClassName } from '../utils/classnames'
 import collectTimeoutInfo from '../utils/collect'
 import { addListener, addTimeout } from '../utils/listener'
 import useFormatClassNames from './use_format_class_names'
@@ -54,34 +55,29 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     if (transition.timeout <= 0 && animation.timeout <= 0) return addTimeout(0, resolve)
 
-    const makeEndListener = (count: number) => {
-      let ended = 0
-      return () => ++ended >= count && resolve()
-    }
-
     if (type === 'transition' && transition.timeout > 0) {
       return batch(
-        addListener(el, 'transitionend', makeEndListener(transition.count)),
+        addListener(el, 'transitionend', runCounter(transition.count, resolve)),
         addTimeout(transition.timeout, resolve)
       )
     }
 
     if (type === 'animation' && animation.timeout > 0) {
       return batch(
-        addListener(el, 'animationend', makeEndListener(animation.count)),
+        addListener(el, 'animationend', runCounter(animation.count, resolve)),
         addTimeout(animation.timeout, resolve)
       )
     }
 
     if (transition.timeout > animation.timeout) {
       return batch(
-        addListener(el, 'transitionend', makeEndListener(transition.count)),
+        addListener(el, 'transitionend', runCounter(transition.count, resolve)),
         addTimeout(transition.timeout, resolve)
       )
     }
 
     return batch(
-      addListener(el, 'animationend', makeEndListener(animation.count)),
+      addListener(el, 'animationend', runCounter(animation.count, resolve)),
       addTimeout(animation.timeout, resolve)
     )
   })

@@ -1,4 +1,4 @@
-import { isValidElement, ReactNode } from 'react'
+import { isValidElement, type ReactElement, type ReactNode } from 'react'
 
 export function isElementEqual(current: ReactNode, next: ReactNode) {
   if (current === next) return true
@@ -8,7 +8,7 @@ export function isElementEqual(current: ReactNode, next: ReactNode) {
   return current.key === next.key
 }
 
-export function isElementsEqual(prev: JSX.Element[], next: JSX.Element[]) {
+export function isElementsEqual(prev: ReactElement[], next: ReactElement[]) {
   if (prev.length !== next.length) return false
 
   return prev.every((el, i) => isElementEqual(el, next[i]))
