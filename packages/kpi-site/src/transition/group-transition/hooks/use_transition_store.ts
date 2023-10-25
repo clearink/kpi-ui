@@ -1,19 +1,17 @@
-import { omit, pushItem, useConstant, useForceUpdate } from '@kpi/shared'
-import { cloneElement, createElement, Ref, type Key, type ReactElement } from 'react'
+import { omit, useConstant, useForceUpdate } from '@kpi/shared'
+import { createElement, type Key, type ReactElement } from 'react'
 import CSSTransition from '../../css-transition'
+import { isEnter, isEntered } from '../../css-transition/constants/status'
 import batch from '../../css-transition/utils/batch'
-import mergeRefs from '../../css-transition/utils/merge_refs'
+import { addTransitionClass } from '../../css-transition/utils/classnames'
+import { addClassName, delClassName } from '../../utils/dom_helper'
 import reflow from '../../utils/reflow'
-import { addClassName } from '../../utils/dom_helper'
 import runCounter from '../../utils/run_counter'
 import minus from '../utils/minus'
 import union from '../utils/union'
 
-import type { CSSTransitionProps as CSS } from '../../css-transition/props'
+import type { CSSTransitionProps as CSS, CSSTransitionRef } from '../../css-transition/props'
 import type { GroupTransitionProps as Group } from '../props'
-import { isEnter } from '../../css-transition/constants/status'
-
-const getCoords = () => {}
 
 class TransitionStore<E extends HTMLElement = HTMLElement> {
   constructor(public forceUpdate: () => void, props: Group<E>) {
@@ -30,7 +28,8 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   elements: ReactElement<CSS<E>>[] = []
 
-  doms = new Map<Key | null, E>()
+  // CSSTransition 实例
+  components = new Map<Key | null, CSSTransitionRef<E>>()
 
   coords = new Map<Key | null, DOMRect>()
 
@@ -43,27 +42,26 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
   collectCoords = () => {
     const coords = new Map<Key | null, DOMRect>()
 
-    this.doms.forEach((dom, key) => {
-      coords.set(key, dom.getBoundingClientRect())
+    this.components.forEach(({ instance }, key) => {
+      instance && coords.set(key, instance.getBoundingClientRect())
     })
 
     return coords
   }
 
-  makeElement = (element: ReactElement, extra: Partial<CSS<E>>) => {
-    const preset = omit(this.props, ['children']) as CSS<E>
-
-    const { key, ref } = element as ReactElement & { ref: Ref<E> }
-
-    Object.assign(preset, extra, { unmountOnExit: true, key })
-
-    const cloned = cloneElement(element, {
-      ref: mergeRefs(ref, (el: E | null) => {
-        el ? this.doms.set(key, el) : this.doms.delete(key)
+  makeElement = (element: ReactElement, extra: Partial<CSS>) => {
+    return createElement(
+      CSSTransition,
+      Object.assign(omit(this.props, ['children']) as CSS, extra, {
+        key: element.key,
+        unmountOnExit: true,
+        ref: (instance: CSSTransitionRef<E> | null) => {
+          if (!instance) this.components.delete(element.key)
+          else this.components.set(element.key, instance)
+        },
       }),
-    })
-
-    return createElement(CSSTransition<E>, preset, cloned)
+      element
+    )
   }
 
   runTransition = () => {
@@ -97,6 +95,8 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
       return this.makeElement(el, { when: true })
     })
 
+    console.log(this.elements)
+
     this.current = children
 
     this.forceUpdate()
@@ -105,17 +105,28 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
   runFlip = () => {
     const { name } = this.props
 
-    const newRects = this.collectCoords()
-
     const oldRects = this.coords
 
-    const moves: (() => void)[] = []
+    this.components.forEach((_, k) => {
+      const comp = this.components.get(k)
 
-    console.log(oldRects)
+      const instance = comp && comp.instance
+
+      if (!instance || !name) return
+
+      delClassName(instance, `${name}-move`)
+    })
+
+    const newRects = this.collectCoords()
+
+    const moves = new Map<Key | null, () => void>()
 
     oldRects.forEach((oldRect, key) => {
       const newRect = newRects.get(key)
-      const dom = this.doms.get(key)
+
+      const comp = this.components.get(key)
+
+      const dom = comp && comp.instance
 
       if (!newRect || !dom) return
 
@@ -130,14 +141,15 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
       dom.style.transform = `translate3d(${dx}px, ${dy}px, 0)`
       dom.style.transitionDuration = '0s'
 
-      moves.push(() => {
-        addClassName(dom, name && `${name}-move`)
+      moves.set(key, () => {
+        name && addClassName(dom, `${name}-move`)
         dom.style.transform = oldTransform
         dom.style.transitionDuration = oldDuration
       })
     })
 
     reflow()
+
     moves.forEach((fn) => fn())
   }
 }

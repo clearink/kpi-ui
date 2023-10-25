@@ -1,7 +1,10 @@
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
+import type { TransitionStore } from './hooks/use_transition_store'
 
 export type TransitionStep = 'enter' | 'appear' | 'exit'
+export type TransitionStatus = 'enter' | 'exit' | 'entered' | 'exited'
 
+export type CSSTransitionRef<E extends HTMLElement = HTMLElement> = TransitionStore<E>
 export interface CSSTransitionProps<E extends HTMLElement = HTMLElement> {
   ssr?: boolean
   when?: boolean

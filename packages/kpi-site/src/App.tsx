@@ -32,6 +32,7 @@ const Blue = forwardRef((props: any, ref: any) => {
   )
 })
 
+let idd = 3
 export default function App() {
   const [val, set] = useState(true)
   const [val1, set1] = useState(true)
@@ -51,17 +52,17 @@ export default function App() {
         <button
           type="button"
           onClick={() => {
-            set1((p) => !p)
+            setList(list.length === 3 ? [1, 5, 11, 4, 2, 3, 8, 9, 7, 6, 12, 10] : [1, 2, 3])
           }}
         >
-          set1
+          change
         </button>
         <button
           type="button"
           onClick={() => {
             const list2 = list.concat()
             const idx = Math.round(Math.random() * list2.length)
-            list2.splice(idx, 0, Math.random())
+            list2.splice(idx, 0, ++idd)
             setList(list2)
           }}
         >
@@ -89,7 +90,7 @@ export default function App() {
         </button>
       </div>
 
-      {/* <CSSTransition name="fade" when={val}>
+      {/* <CSSTransition name="fade" when={val} unmountOnExit>
         <Red />
       </CSSTransition> */}
       {/* 转场 */}
@@ -98,13 +99,15 @@ export default function App() {
       </SwitchTransition> */}
 
       {/* 列表 */}
-      <GroupTransition name="fade">
-        {list.map((id) => (
-          <div key={id} className="a">
-            {id}
-          </div>
-        ))}
-      </GroupTransition>
+      <ul>
+        <GroupTransition name="fade">
+          {list.map((id) => (
+            <div key={id} className="a">
+              {id}
+            </div>
+          ))}
+        </GroupTransition>
+      </ul>
 
       {/* <AnimatePresence mode="wait">
         <motion.div

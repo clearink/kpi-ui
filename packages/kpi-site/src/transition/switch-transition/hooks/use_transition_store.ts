@@ -18,25 +18,22 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     this.elements = [this.makeElement(this.current, { when: true })]
   }
 
-  // 最新的 props, 传递给 CSSTransition 组件
   props: Switch<E>
 
-  // 进行过渡之前的子元素
   current: ReactElement<CSS<E>>
 
-  // 展示在页面上的子元素
   elements: ReactElement<CSS<E>>[] = []
 
   setTransitionProps = (props: Switch<E>) => {
     this.props = props
   }
 
-  makeElement = (element: ReactElement<CSS<E>>, extra: Partial<CSS<E>>) => {
-    const preset = omit(this.props, ['mode', 'children']) as CSS<E>
+  makeElement = (element: ReactElement<CSS<E>>, extra: Partial<CSS>) => {
+    const preset = omit(this.props, ['mode', 'children']) as CSS
 
     Object.assign(preset, extra, { key: uniqueId() })
 
-    return createElement(CSSTransition<E>, preset, element)
+    return createElement(CSSTransition, preset, element)
   }
 
   runOutInSwitch = () => {

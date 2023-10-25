@@ -1,45 +1,22 @@
 .a {
-  height: 20px;
-  width: 200px;
-  border: 1px solid;
+  width: 100%;
+  height: 30px;
+  background-color: #f3f3f3;
+  border: 1px solid #666;
+  box-sizing: border-box;
 }
 .fade-enter-from,
 .fade-exit-to {
-  transform: translateX(60px);
+  transform: translateX(100px);
   opacity: 0;
 }
 
 .fade-move,
 .fade-enter-active,
 .fade-exit-active {
-  transition: all 122s cubic-bezier(0.55, 0, 0.1, 1);
+  transition: all 4s cubic-bezier(0.55, 0, 0.1, 1);
 }
 
 .fade-exit-active {
   position: absolute;
-}
-
-.collapse-enter-from {
-  opacity: 0;
-}
-
-.collapse-enter-active {
-  overflow: hidden;
-  transition: all 0.3s ease-in-out;
-}
-.collapse-enter-to {
-  opacity: 1;
-}
-
-.collapse-exit-from {
-  opacity: 1;
-}
-
-.collapse-exit-active {
-  overflow: hidden;
-  transition: all 0.3s ease-in-out;
-}
-
-.collapse-exit-to {
-  opacity: 0;
 }

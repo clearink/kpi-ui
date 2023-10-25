@@ -1,8 +1,8 @@
 import { isUndefined, useEvent } from '@kpi/shared'
-import { delClassName } from '../../utils/dom_helper'
 import runCounter from '../../utils/run_counter'
 import { isAppear, isExit } from '../constants/status'
 import batch from '../utils/batch'
+import { delTransitionClass } from '../utils/classnames'
 import collectTimeoutInfo from '../utils/collect'
 import { addListener, addTimeout } from '../utils/listener'
 import useFormatClassNames from './use_format_class_names'
@@ -20,7 +20,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
   const runCancel = useEvent((el: E, step: TransitionStep) => {
     const { from, active, to } = classes[step]
 
-    delClassName(el, from, active, to)
+    delTransitionClass(el, from, active, to)
 
     if (isExit(step)) onExitCancel && onExitCancel(el)
     else onEnterCancel && onEnterCancel(el, isAppear(step))
@@ -31,7 +31,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     const { from, active, to } = classes[step]
 
-    delClassName(el, from, active, to)
+    delTransitionClass(el, from, active, to)
 
     if (!isExit(step)) return onEntered && onEntered(el, isAppear(step))
 

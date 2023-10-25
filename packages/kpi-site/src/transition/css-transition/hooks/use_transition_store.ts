@@ -10,9 +10,9 @@ import {
   isExited,
 } from '../constants/status'
 
-import type { CSSTransitionProps as CSS, TransitionStep } from '../props'
+import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
 
-class TransitionStore<E extends HTMLElement> {
+export class TransitionStore<E extends HTMLElement> {
   constructor(public forceUpdate: () => void, props: CSS<E>) {
     const { appear, when, unmountOnExit } = props
 
@@ -24,8 +24,7 @@ class TransitionStore<E extends HTMLElement> {
     else this.status = appear ? ENTER : ENTERED
   }
 
-  // 避免严格模式时 appear=true when=false 额外多执行一次 exit 动画
-  status: typeof ENTER | typeof ENTERED | typeof EXIT | typeof EXITED
+  status: TransitionStatus
 
   appear = false
 

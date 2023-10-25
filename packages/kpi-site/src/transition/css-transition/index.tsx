@@ -1,17 +1,20 @@
 import { isFunction, isObject, useEvent } from '@kpi/shared'
-import { cloneElement, useEffect, type ReactElement, type Ref } from 'react'
-import { addClassName, delClassName } from '../utils/dom_helper'
+import type { ReactElement, Ref } from 'react'
+import { cloneElement, forwardRef, useEffect, useImperativeHandle } from 'react'
 import reflow from '../utils/reflow'
+import { nextFrame } from '../utils/tick'
 import { APPEAR, ENTER, EXIT, isAppear, isExit } from './constants/status'
 import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'
 import useTransitionEvent from './hooks/use_transition_event'
 import useTransitionStore from './hooks/use_transition_store'
+import { addTransitionClass, delTransitionClass } from './utils/classnames'
 
-import type { CSSTransitionProps, TransitionStep } from './props'
+import type { CSSTransitionProps, CSSTransitionRef, TransitionStep } from './props'
 
-export default function CSSTransition<E extends HTMLElement = HTMLElement>(
-  props: CSSTransitionProps<E>
+function CSSTransition<E extends HTMLElement = HTMLElement>(
+  props: CSSTransitionProps<E>,
+  ref: Ref<CSSTransitionRef<E>>
 ) {
   const {
     children,
@@ -34,6 +37,8 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
   const classes = useFormatClassNames(name, classNames)
 
   const timeouts = useFormatTimeouts(duration)
+
+  useImperativeHandle(ref, () => store, [store])
 
   const [runCancel, makeEndHook, done] = useTransitionEvent(store, classes, props)
 
@@ -58,29 +63,29 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
 
     const { from, active, to } = classes[step]
 
-    addClassName(el, from)
+    addTransitionClass(el, from)
 
     isExit(step) && reflow(el)
 
-    addClassName(el, active)
+    addTransitionClass(el, active)
 
-    /** ================== Entering / Exiting =================== */
+    const runFrameCleanup = nextFrame(() => {
+      if (isExit(step)) onExiting && onExiting(el)
+      else onEntering && onEntering(el, isAppear(step))
 
-    reflow(el)
+      delTransitionClass(el, from)
 
-    if (isExit(step)) onExiting && onExiting(el)
-    else onEntering && onEntering(el, isAppear(step))
+      addTransitionClass(el, to)
 
-    delClassName(el, from)
-
-    addClassName(el, to)
-
-    // 保存结束时的回调
-    store.endHook = addEndListener
-      ? addEndListener(el, step, done.bind(null, el, step))
-      : makeEndHook(el, step, timeouts[step])
+      // 保存结束时的回调
+      store.endHook = addEndListener
+        ? addEndListener(el, step, done.bind(null, el, step))
+        : makeEndHook(el, step, timeouts[step])
+    })
 
     return () => {
+      runFrameCleanup()
+
       store.runEndHook()
 
       store.running && runCancel(el, step)
@@ -101,3 +106,5 @@ export default function CSSTransition<E extends HTMLElement = HTMLElement>(
 
   return !when && store.unmount ? null : cloneElement(children, { ref: refCallback })
 }
+
+export default forwardRef(CSSTransition)
