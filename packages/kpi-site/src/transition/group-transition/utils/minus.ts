@@ -1,8 +1,8 @@
-import type { ReactElement } from 'react'
+import type { Key } from 'react'
 
 // 差集
-export default function minus(a: ReactElement[], b: ReactElement[]) {
-  const set = new Set(b.map((el) => el.key))
+export default function minus<T extends Key | null>(a: T[], b: T[]) {
+  const set = new Set(b)
 
-  return a.filter((el) => !set.has(el.key))
+  return a.filter((key) => !set.has(key))
 }
