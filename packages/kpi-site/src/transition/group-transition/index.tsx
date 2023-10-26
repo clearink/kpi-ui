@@ -1,4 +1,3 @@
-import { useEvent } from '@kpi/shared'
 import { createElement, Fragment, useEffect } from 'react'
 import { isElementsEqual } from '../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
@@ -26,5 +25,5 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
     if (!isInitial) return store.runFlip()
   }, [shouldTransition, store])
 
-  return createElement(Fragment, undefined, store.elements)
+  return createElement(Fragment, undefined, [...store.elements.values()])
 }

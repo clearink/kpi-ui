@@ -12,6 +12,7 @@ import {
 
 import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
 
+const explicit = Symbol.for('explicit-display')
 export class TransitionStore<E extends HTMLElement> {
   constructor(public forceUpdate: () => void, props: CSS<E>) {
     const { appear, when, unmountOnExit } = props
@@ -45,12 +46,14 @@ export class TransitionStore<E extends HTMLElement> {
   }
 
   prepareHidden = () => {
-    const el = this.instance
+    const el = this.instance as null | (E & { [explicit]: { display: string; priority: string } })
 
     if (!el) return
 
-    el.dataset.display = el.style.getPropertyValue('display')
-    el.dataset.priority = el.style.getPropertyPriority('display')
+    const display = el.style.getPropertyValue('display')
+    const priority = el.style.getPropertyPriority('display')
+
+    el[explicit] = { display, priority }
   }
 
   hidden = () => {
@@ -62,14 +65,13 @@ export class TransitionStore<E extends HTMLElement> {
   }
 
   show = () => {
-    const el = this.instance
+    const el = this.instance as null | (E & { [explicit]: { display: string; priority: string } })
 
     if (!el) return
 
-    const value = el.dataset.display || ''
-    const priority = el.dataset.priority || ''
+    const { display, priority } = el[explicit]
 
-    el.style.setProperty('display', value, priority)
+    el.style.setProperty('display', display, priority)
   }
 
   destroy = () => {

@@ -1,6 +1,7 @@
 import { isFunction, isObject, useEvent } from '@kpi/shared'
 import type { ReactElement, Ref } from 'react'
 import { cloneElement, forwardRef, useEffect, useImperativeHandle } from 'react'
+import { addTransitionClass, delTransitionClass } from '../utils/classnames'
 import reflow from '../utils/reflow'
 import { nextFrame } from '../utils/tick'
 import { APPEAR, ENTER, EXIT, isAppear, isExit } from './constants/status'
@@ -8,7 +9,6 @@ import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'
 import useTransitionEvent from './hooks/use_transition_event'
 import useTransitionStore from './hooks/use_transition_store'
-import { addTransitionClass, delTransitionClass } from './utils/classnames'
 
 import type { CSSTransitionProps, CSSTransitionRef, TransitionStep } from './props'
 

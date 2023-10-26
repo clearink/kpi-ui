@@ -1,5 +1,5 @@
 .a {
-  width: 100%;
+  width: 300px;
   height: 30px;
   background-color: #f3f3f3;
   border: 1px solid #666;
@@ -7,14 +7,13 @@
 }
 .fade-enter-from,
 .fade-exit-to {
-  transform: translateX(100px);
-  opacity: 0;
+  transform: translateX(30px);
 }
 
 .fade-move,
 .fade-enter-active,
 .fade-exit-active {
-  transition: all 4s cubic-bezier(0.55, 0, 0.1, 1);
+  transition: all 123s cubic-bezier(0.55, 0, 0.1, 1);
 }
 
 .fade-exit-active {
