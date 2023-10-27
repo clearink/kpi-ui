@@ -1,4 +1,4 @@
-import { omit, useConstant, useForceUpdate } from '@kpi/shared'
+import { logger, omit, pushItem, useConstant, useForceUpdate } from '@kpi/shared'
 import { cloneElement, createElement, type Key, type ReactElement } from 'react'
 import CSSTransition from '../../css-transition'
 import batch from '../../css-transition/utils/batch'
@@ -7,8 +7,7 @@ import { addListener, addTimeout } from '../../utils/listener'
 import reflow from '../../utils/reflow'
 import runCounter from '../../utils/run_counter'
 import makeUniqueId from '../../utils/unique_id'
-import minus from '../utils/minus'
-import union from '../utils/union'
+import { minus, union } from '../utils/diff'
 
 import type { CSSTransitionProps as CSS, CSSTransitionRef } from '../../css-transition/props'
 import type { GroupTransitionProps as Group } from '../props'
@@ -20,9 +19,9 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
     this.current = props.children
 
-    this.elements = this.current.map((el) => {
-      return [el.key, this.makeElement(el, { when: true })]
-    })
+    this.keys = this.current.map((el) => el.key)
+
+    this.elements = this.current.map((el) => this.makeElement(el, { when: true }))
   }
 
   props: Group<E>
@@ -31,17 +30,9 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   current: ReactElement[] = []
 
-  // 展示的元素, GroupTransition 组件需要劫持 children 的展示逻辑
-  // 对于 exits 元素, 需要插入到合适的位置
-  elements: [Key | null, ReactElement<CSS>][] = []
+  keys: (Key | null)[] = []
 
-  get keys() {
-    return this.elements.map((item) => item[0])
-  }
-
-  get nodes() {
-    return this.elements.map((item) => item[1])
-  }
+  elements: ReactElement<CSS>[] = []
 
   // CSSTransition 实例
   components = new Map<Key | null, CSSTransitionRef>()
@@ -70,33 +61,44 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
   }
 
   makeElement = (element: ReactElement, extra: Partial<CSS>) => {
-    return createElement(
-      CSSTransition,
-      Object.assign(omit(this.props, ['children']) as CSS, extra, {
-        key: uniqueId(),
-        unmountOnExit: true,
-        ref: (instance: CSSTransitionRef | null) => {
-          if (!instance) this.components.delete(element.key)
-          else this.components.set(element.key, instance)
-        },
-      }),
-      element
-    )
+    const preset = omit(this.props, ['children']) as CSS
+
+    const ref = (instance: CSSTransitionRef | null) => {
+      if (!instance) this.components.delete(element.key)
+      else this.components.set(element.key, instance)
+    }
+
+    Object.assign(preset, extra, { key: uniqueId(), unmountOnExit: true, ref })
+
+    return createElement(CSSTransition, preset, element)
   }
 
   runTransition = () => {
-    const { keys, props, elements } = this
+    const { children } = this.props
 
-    const { children } = props
+    const { keys } = this
+    // const keys = this.current.map((el) => el.key)
 
-    // 最新的子元素 keys
-    const newKeys = children.map((el) => el.key)
+    const [enters, exits] = minus(keys, children)
 
-    // 新增元素
-    const enters = minus(newKeys, keys)
+    console.log(enters, exits)
+    this.keys = union(keys, children)
+    this.elements = union(keys, children).reduce((result, key) => {
+      if (enters.includes(key)) {
+        const element = children.find((el) => el.key === key)
 
-    // 离开元素
-    const exits = minus(keys, newKeys)
+        if (!element) return result
+
+        return pushItem(result, this.makeElement(element, { when: true, appear: true }))
+      }
+
+      const index = this.keys.findIndex((k) => k === key)
+      const element = this.elements[index]
+
+      if (!element) return result
+
+      return pushItem(result, cloneElement(element, { when: !exits.includes(key) }))
+    }, [] as ReactElement[])
 
     // const onFinish = runCounter(enters.length + exits.length, () => {
     //   this.elements = this.current.map((el) => {
@@ -107,31 +109,11 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     //   this.forceUpdate()
     // })
 
-    const all = union(keys, newKeys)
-    console.log('exits', exits, all)
-    this.elements = union(keys, newKeys).map((key) => {
-      if (enters.includes(key)) {
-        const el = children.find((item) => item.key === key)!
-        return [
-          key,
-          this.makeElement(el, {
-            when: true,
-            appear: true,
-          }),
-        ]
-      }
-      const element = elements.find(([k]) => k === key)![1]
-
-      const when = !exits.includes(key)
-
-      return [key, cloneElement(element, { when })]
-    })
-
     // 只获取当前元素的位置信息
 
     this.previous = this.current
 
-    this.coords = this.collectCoords(this.current.map((el) => el.key))
+    this.coords = this.collectCoords(this.previous.map((el) => el.key))
 
     this.current = children
 

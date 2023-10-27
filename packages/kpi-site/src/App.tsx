@@ -37,7 +37,7 @@ let idd = 3
 export default function App() {
   const [val, set] = useState(true)
   const [val1, set1] = useState(true)
-  const [list, setList] = useState(() => [1, 5, 11, 4, 2, 3, 8, 9, 7, 6, 12, 10])
+  const [list, setList] = useState(() => [1, 2, 3])
 
   return (
     <div>

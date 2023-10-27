@@ -25,5 +25,5 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
     if (!isInitial) return store.runFlip()
   }, [shouldTransition, store])
 
-  return createElement(Fragment, undefined, store.nodes)
+  return createElement(Fragment, undefined, store.elements)
 }

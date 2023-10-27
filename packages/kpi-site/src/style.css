@@ -13,7 +13,7 @@
 .fade-move,
 .fade-enter-active,
 .fade-exit-active {
-  transition: all 1s cubic-bezier(0.55, 0, 0.1, 1);
+  transition: all 423121s cubic-bezier(0.55, 0, 0.1, 1);
 }
 
 .fade-exit-active {
