@@ -133,26 +133,20 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
     const { name, moveClass } = this.props
 
-    // TODO: 检查 moveClass 是否生效
-    const oldRects = this.coords
-
-    const newRects = this.collectCoords()
-
     const moves = new Map<Key | null, () => void>()
 
     // TODO: 优化 flip 逻辑
-    this.previous.forEach(({ key }) => {
-      const newRect = newRects.get(key)
-      const oldRect = oldRects.get(key)
+    this.collectCoords().forEach((newCoord, key) => {
+      const oldCoord = this.coords.get(key)!
 
       const comp = this.components.get(key)
 
       const dom = comp && comp.instance
 
-      if (!newRect || !dom || !oldRect) return
+      if (!dom) return
 
-      const dx = oldRect.left - newRect.left
-      const dy = oldRect.top - newRect.top
+      const dx = oldCoord.left - newCoord.left
+      const dy = oldCoord.top - newCoord.top
 
       if (!dx && !dy) return
 
