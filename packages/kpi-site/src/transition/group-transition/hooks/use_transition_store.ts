@@ -143,12 +143,11 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
       const dom = comp && comp.instance
 
-      if (!dom) return
-
       const dx = oldCoord.left - newCoord.left
+
       const dy = oldCoord.top - newCoord.top
 
-      if (!dx && !dy) return
+      if (!dom || (!dx && !dy)) return
 
       const oldTransform = dom.style.transform
       const oldDuration = dom.style.transitionDuration
