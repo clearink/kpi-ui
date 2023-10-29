@@ -7,13 +7,14 @@
 }
 .fade-enter-from,
 .fade-exit-to {
-  transform: translateX(30px);
+  transform: translateX(230px);
+  /* opacity: 0; */
 }
 
 .fade-move,
 .fade-enter-active,
 .fade-exit-active {
-  transition: all 423121s cubic-bezier(0.55, 0, 0.1, 1);
+  transition: all 4s cubic-bezier(0.55, 0, 0.1, 1);
 }
 
 .fade-exit-active {

@@ -8,7 +8,7 @@ import {
   isEntered,
   isExit,
   isExited,
-} from '../constants/status'
+} from '../../constants/status'
 
 import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
 

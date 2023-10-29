@@ -19,7 +19,7 @@ import type { FormInstance, FormProps } from '../props'
 
 const excluded = [
   'name',
-  'component',
+  'tag',
   'form',
   'children',
   'onReset',
@@ -35,15 +35,7 @@ const excluded = [
 ] as const
 
 function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance>) {
-  const {
-    name,
-    component,
-    form,
-    children: $children,
-    onReset,
-    initialValues,
-    validateTrigger,
-  } = props
+  const { name, tag, form, children: $children, onReset, initialValues, validateTrigger } = props
 
   const formInstance = useForm(form) as InternalFormInstance
 
@@ -102,13 +94,13 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     </FieldContext.Provider>
   )
 
-  if (component === null) return children
+  if (tag === null) return children
 
   // 表单剩余字段
   const formProps = omit(props, excluded)
 
   return createElement(
-    component as any,
+    tag as any,
     { ...formProps, onSubmit: handleSubmit, onReset: handleReset },
     children
   )
@@ -117,5 +109,5 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
 export default withDefaults(forwardRef(Form), {
   preserve: true,
   validateTrigger: 'onChange',
-  component: 'form',
+  tag: 'form',
 } as const)

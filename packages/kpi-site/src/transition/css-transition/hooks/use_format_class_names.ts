@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import fallback from '../utils/fallback'
 
 import type { CSSTransitionProps } from '../props'
 
@@ -9,21 +8,21 @@ export default function useFormatClassNames(
 ) {
   return useMemo(() => {
     const enter = {
-      from: fallback(classNames.enter, name && `${name}-enter-from`),
-      active: fallback(classNames.enterActive, name && `${name}-enter-active`),
-      to: fallback(classNames.enterTo, name && `${name}-enter-to`),
+      from: classNames.enter ?? (name && `${name}-enter-from`),
+      active: classNames.enterActive ?? (name && `${name}-enter-active`),
+      to: classNames.enterTo ?? (name && `${name}-enter-to`),
     }
 
     const appear = {
-      from: fallback(classNames.appear, enter.from),
-      active: fallback(classNames.appearActive, enter.active),
-      to: fallback(classNames.appearTo, enter.to),
+      from: classNames.appear ?? enter.from,
+      active: classNames.appearActive ?? enter.active,
+      to: classNames.appearTo ?? enter.to,
     }
 
     const exit = {
-      from: fallback(classNames.exit, name && `${name}-exit-from`),
-      active: fallback(classNames.exitActive, name && `${name}-exit-active`),
-      to: fallback(classNames.exitTo, name && `${name}-exit-to`),
+      from: classNames.exit ?? (name && `${name}-exit-from`),
+      active: classNames.exitActive ?? (name && `${name}-exit-active`),
+      to: classNames.exitTo ?? (name && `${name}-exit-to`),
     }
 
     return { appear, enter, exit }

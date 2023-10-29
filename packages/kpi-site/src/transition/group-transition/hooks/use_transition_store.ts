@@ -1,5 +1,6 @@
-import { logger, omit, pushItem, useConstant, useForceUpdate } from '@kpi/shared'
+import { omit, pushItem, useConstant, useForceUpdate } from '@kpi/shared'
 import { cloneElement, createElement, type Key, type ReactElement } from 'react'
+import { isExited } from '../../constants/status'
 import CSSTransition from '../../css-transition'
 import batch from '../../css-transition/utils/batch'
 import { addTransitionClass, delTransitionClass } from '../../utils/classnames'
@@ -7,21 +8,27 @@ import { addListener, addTimeout } from '../../utils/listener'
 import reflow from '../../utils/reflow'
 import runCounter from '../../utils/run_counter'
 import makeUniqueId from '../../utils/unique_id'
-import { minus, union } from '../utils/diff'
+import diff from '../utils/diff'
+import union from '../utils/union'
 
 import type { CSSTransitionProps as CSS, CSSTransitionRef } from '../../css-transition/props'
 import type { GroupTransitionProps as Group } from '../props'
 
-const uniqueId = makeUniqueId('-')
+const uniqueId = makeUniqueId('gt-')
+
 class TransitionStore<E extends HTMLElement = HTMLElement> {
   constructor(public forceUpdate: () => void, props: Group<E>) {
     this.props = props
 
+    this.previous = props.children
+
     this.current = props.children
 
-    this.keys = this.current.map((el) => el.key)
+    this.elements = this.current.reduce((result, el) => {
+      return result.set(el.key, this.makeElement(el, { when: true }))
+    }, new Map())
 
-    this.elements = this.current.map((el) => this.makeElement(el, { when: true }))
+    this.nodes = Array.from(this.elements.values())
   }
 
   props: Group<E>
@@ -30,24 +37,23 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   current: ReactElement[] = []
 
-  keys: (Key | null)[] = []
+  // 展示用
+  nodes: ReactElement<CSS>[] = []
 
-  elements: ReactElement<CSS>[] = []
+  elements = new Map<Key | null, ReactElement<CSS>>()
 
-  // CSSTransition 实例
   components = new Map<Key | null, CSSTransitionRef>()
 
-  // 因为需要得到上一次的布局信息，
   coords = new Map<Key | null, DOMRect>()
 
   isInitial = true
 
-  setTransitionProps = (props: Group<E>) => {
+  syncTransitionProps = (props: Group<E>) => {
     this.props = props
   }
 
-  collectCoords = (keys: (Key | null)[]) => {
-    const set = new Set(keys)
+  collectCoords = () => {
+    const set = new Set(this.previous.map((el) => el.key))
 
     const coords = new Map<Key | null, DOMRect>()
 
@@ -74,63 +80,67 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
   }
 
   runTransition = () => {
-    const { children } = this.props
+    const { children, onExited } = this.props
 
-    const { keys } = this
-    // const keys = this.current.map((el) => el.key)
+    const [enters, exits] = diff(this.current, children)
 
-    const [enters, exits] = minus(keys, children)
+    const onFinish = runCounter(enters.size + exits.size, () => {
+      // 拿到最新值
+      const { onExitComplete } = this.props
 
-    console.log(enters, exits)
-    this.keys = union(keys, children)
-    this.elements = union(keys, children).reduce((result, key) => {
-      if (enters.includes(key)) {
-        const element = children.find((el) => el.key === key)
+      this.elements.forEach((_, key) => {
+        const comp = this.components.get(key)
+        if (comp && !isExited(comp.status)) return
+        this.elements.delete(key)
+      })
 
-        if (!element) return result
+      this.nodes = Array.from(this.elements.values())
 
-        return pushItem(result, this.makeElement(element, { when: true, appear: true }))
+      onExitComplete && onExitComplete()
+
+      this.forceUpdate()
+    })
+
+    this.elements = union(this.elements, enters, children).reduce((result, [key, el]) => {
+      if (enters.has(key)) {
+        const element = this.makeElement(el, { when: true, appear: true })
+        return result.set(key, element)
       }
 
-      const index = this.keys.findIndex((k) => k === key)
-      const element = this.elements[index]
+      // 清空回调函数
+      if (!exits.has(key)) return result.set(key, cloneElement(el, { onExited }))
 
-      if (!element) return result
+      const element = cloneElement(el, { when: false, onExited: batch(onExited, onFinish) })
+      return result.set(key, element)
+    }, new Map())
 
-      return pushItem(result, cloneElement(element, { when: !exits.includes(key) }))
-    }, [] as ReactElement[])
-
-    // const onFinish = runCounter(enters.length + exits.length, () => {
-    //   this.elements = this.current.map((el) => {
-    //     const element = this.elements.find(([key]) => el.key === key)![1]
-    //     return [el.key, element]
-    //   })
-
-    //   this.forceUpdate()
-    // })
+    this.nodes = Array.from(this.elements.values())
 
     // 只获取当前元素的位置信息
 
     this.previous = this.current
-
-    this.coords = this.collectCoords(this.previous.map((el) => el.key))
 
     this.current = children
 
     this.forceUpdate()
   }
 
+  cancels: (() => void)[] = []
+
   runFlip = () => {
-    this.runCleanupHook()
+    this.cancels.forEach((fn) => fn())
+    this.cancels.length = 0
 
-    const { name } = this.props
+    const { name, moveClass } = this.props
 
+    // TODO: 检查 moveClass 是否生效
     const oldRects = this.coords
 
-    const newRects = this.collectCoords(this.previous.map((el) => el.key))
+    const newRects = this.collectCoords()
 
     const moves = new Map<Key | null, () => void>()
-    // need prevChildren
+
+    // TODO: 优化 flip 逻辑
     this.previous.forEach(({ key }) => {
       const newRect = newRects.get(key)
       const oldRect = oldRects.get(key)
@@ -156,24 +166,22 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
         addTransitionClass(dom, name && `${name}-move`)
         dom.style.transform = oldTransform
         dom.style.transitionDuration = oldDuration
+        const cb = () => {
+          delTransitionClass(dom, name && `${name}-move`)
+          dom.removeEventListener('transitionend', cb)
+        }
+        dom.addEventListener('transitionend', cb)
+      })
+
+      // TODO: 完善 cancels 逻辑
+      this.cancels.push(() => {
+        delTransitionClass(dom, name && `${name}-move`)
       })
     })
 
     reflow()
 
     moves.forEach((fn) => fn())
-  }
-
-  runCleanupHook = () => {
-    const { name } = this.props
-
-    // 需要清除上次的东西
-    // 还有事件处理函数等
-    this.previous.forEach((el) => {
-      const comp = this.components.get(el.key)
-      const dom = comp && comp.instance
-      dom && name && delTransitionClass(dom, `${name}-move`)
-    })
   }
 }
 

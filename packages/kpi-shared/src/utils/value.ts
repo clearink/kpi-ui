@@ -1,36 +1,35 @@
-/* eslint-disable no-bitwise */
-import { isUndefined } from './is'
-
 import type { AnyObject } from '../types'
 
+/**
+ * @description 不处理原型数据
+ */
 export function omit<T extends AnyObject, K extends keyof T>(
-  obj: T,
+  source: T,
   excluded: readonly K[]
 ): Omit<T, K> {
-  const result = {} as T
+  const target = {} as T
 
-  const keys = Object.keys(obj) as K[]
+  const keys = Object.keys(source) as K[]
 
-  for (let i = 0; i < keys.length; i += 1) {
+  for (let i = 0; i < keys.length; i++) {
     const key = keys[i]
-
-    if (excluded.indexOf(key) < 0) result[key] = obj[key]
+    if (!excluded.includes(key)) target[key] = source[key]
   }
-  return result
+
+  return target
 }
 
-export function pick<T, K extends keyof T>(
-  obj: T,
-  keys: readonly K[],
-  allowUndefined = false
+export function pick<T extends AnyObject, K extends keyof T>(
+  source: T,
+  keys: readonly K[]
 ): Pick<T, K> {
   const result = {} as T
 
   for (let i = 0; i < keys.length; i += 1) {
     const key = keys[i]
-
-    if (!isUndefined(obj[key]) || allowUndefined) result[key] = obj[key]
+    if (key in source) result[key] = source[key]
   }
+
   return result
 }
 

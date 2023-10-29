@@ -1,28 +1,18 @@
-import type { Key, ReactElement } from 'react'
+import type { ReactElement } from 'react'
 
-export function minus(ids: (Key | null)[], children: ReactElement[]) {
-  const keys = children.map((el) => el.key)
+/**
+ * @description 找出本次变更需要进行入场和离场动画的元素
+ */
+export default function diff(prev: ReactElement[], next: ReactElement[]) {
+  const oldKeys = prev.map((el) => el.key)
+
+  const newKeys = next.map((el) => el.key)
+
   // old 没有 new 有
-  const enters = keys.filter((key) => !ids.includes(key))
+  const enters = newKeys.filter((key) => !oldKeys.includes(key))
 
   // old 有 new 没有
-  const exits = ids.filter((id) => !keys.includes(id))
+  const exits = oldKeys.filter((id) => !newKeys.includes(id))
 
-  return [enters, exits] as const
-}
-
-// 并集且有序
-export function union(ids: (Key | null)[], children: ReactElement[]) {
-  let lastIndex = -1
-
-  const keys = children.map((el) => el.key)
-
-  return ids.reduce((result, key) => {
-    const index = result.findIndex((item) => item === key)
-
-    if (index < 0) result.splice(++lastIndex, 0, key)
-    else lastIndex = Math.max(index, lastIndex)
-
-    return result
-  }, keys)
+  return [new Set(enters), new Set(exits)] as const
 }

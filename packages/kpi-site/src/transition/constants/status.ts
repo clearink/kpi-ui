@@ -13,3 +13,5 @@ export const isEnter = (status: string) => status === ENTER
 export const isEntered = (status: string) => status === ENTERED
 
 export const isExited = (status: string) => status === EXITED
+
+export const isNotEnter = (status: string) => status === EXIT || status === ENTERED

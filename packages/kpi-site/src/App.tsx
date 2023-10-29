@@ -1,12 +1,11 @@
 /* eslint-disable no-param-reassign */
 import { Children, forwardRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { CSSTransition, GroupTransition, SwitchTransition } from './transition'
 
+import { CSSTransition, GroupTransition, SwitchTransition } from './transition'
 import './style.css'
 
 const Red = forwardRef((props: any, ref: any) => {
-  console.log('red')
   return (
     <div
       ref={ref}
@@ -33,23 +32,13 @@ const Blue = forwardRef((props: any, ref: any) => {
   )
 })
 
-let idd = 3
+const idd = 3
 export default function App() {
-  const [val, set] = useState(true)
-  const [val1, set1] = useState(true)
+  const [when, setWhen] = useState(true)
   const [list, setList] = useState(() => [1, 2, 3])
-
   return (
     <div>
       <div>
-        <button
-          type="button"
-          onClick={() => {
-            set((p) => !p)
-          }}
-        >
-          set
-        </button>
         <button
           type="button"
           onClick={() => {
@@ -59,6 +48,34 @@ export default function App() {
           change
         </button>
         <button
+          type="button"
+          onClick={() => {
+            setList((p) => [...p, Math.round(Math.random() * 100000)])
+          }}
+        >
+          push
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setList((p) => {
+              const a = p.concat()
+              a.pop()
+              return a
+            })
+          }}
+        >
+          pop
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setWhen((p) => !p)
+          }}
+        >
+          force update
+        </button>
+        {/* <button
           type="button"
           onClick={() => {
             const list2 = list.concat()
@@ -88,16 +105,8 @@ export default function App() {
           }}
         >
           shuffle
-        </button>
+        </button> */}
       </div>
-
-      {/* <CSSTransition name="fade" when={val} unmountOnExit>
-        <Red />
-      </CSSTransition> */}
-      {/* 转场 */}
-      {/* <SwitchTransition mode="out-in" name="fade">
-        {val ? <Red key="red" /> : <Blue />}
-      </SwitchTransition> */}
 
       {/* 列表 */}
       <ul>

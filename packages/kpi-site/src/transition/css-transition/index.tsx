@@ -3,8 +3,7 @@ import type { ReactElement, Ref } from 'react'
 import { cloneElement, forwardRef, useEffect, useImperativeHandle } from 'react'
 import { addTransitionClass, delTransitionClass } from '../utils/classnames'
 import reflow from '../utils/reflow'
-import { nextFrame } from '../utils/tick'
-import { APPEAR, ENTER, EXIT, isAppear, isExit } from './constants/status'
+import { APPEAR, ENTER, EXIT, isAppear, isExit } from '../constants/status'
 import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'
 import useTransitionEvent from './hooks/use_transition_event'
@@ -69,23 +68,23 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
 
     addTransitionClass(el, active)
 
-    const runFrameCleanup = nextFrame(() => {
-      if (isExit(step)) onExiting && onExiting(el)
-      else onEntering && onEntering(el, isAppear(step))
+    /** ================== Entering / Exiting =================== */
 
-      delTransitionClass(el, from)
+    reflow(el)
 
-      addTransitionClass(el, to)
+    if (isExit(step)) onExiting && onExiting(el)
+    else onEntering && onEntering(el, isAppear(step))
 
-      // 保存结束时的回调
-      store.endHook = addEndListener
-        ? addEndListener(el, step, done.bind(null, el, step))
-        : makeEndHook(el, step, timeouts[step])
-    })
+    delTransitionClass(el, from)
+
+    addTransitionClass(el, to)
+
+    // 保存结束时的回调
+    store.endHook = addEndListener
+      ? addEndListener(el, step, done.bind(null, el, step))
+      : makeEndHook(el, step, timeouts[step])
 
     return () => {
-      runFrameCleanup()
-
       store.runEndHook()
 
       store.running && runCancel(el, step)
