@@ -41,7 +41,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
 
   useImperativeHandle(ref, () => formInstance)
 
-  const internalHook = useMemo(() => formInstance.getInternalHooks(HOOK_MARK), [formInstance])
+  const internalHook = useMemo(() => formInstance.getInternalHooks(HOOK_MARK)!, [formInstance])
 
   // 用于多表单联动
   const parent = FormContext.useState()
@@ -50,25 +50,25 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     return parent.register(formInstance, name)
   }, [formInstance, name, parent])
 
-  internalHook?.setFormProps(props, parent)
+  internalHook.setFormProps(props, parent)
 
   // 设置初始值, 仅在挂载前设置一次
-  useConstant(() => internalHook?.setInitialValues(initialValues))
+  useConstant(() => internalHook.setInitialValues(initialValues))
 
   // 事件处理
   const handleSubmit = useEvent((e?: FormEvent) => {
-    isFunction(e?.preventDefault) && e?.preventDefault()
-    isFunction(e?.stopPropagation) && e?.stopPropagation()
+    e && e.preventDefault()
+    e && e.stopPropagation()
 
     formInstance.submitForm()
   })
 
   const handleReset = useEvent((e: FormEvent) => {
-    isFunction(e?.preventDefault) && e?.preventDefault()
-    isFunction(e?.stopPropagation) && e?.stopPropagation()
+    e && e.preventDefault()
+    e && e.stopPropagation()
 
     formInstance.resetFields()
-    onReset?.(e)
+    onReset && onReset(e)
   })
 
   const fieldContext = useMemo(() => {
@@ -81,7 +81,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     const prev = toArray(prevFields.current, true)
     const next = toArray(props.fields, true)
 
-    if (!isEqual(prev, next)) internalHook?.setFields(next)
+    if (!isEqual(prev, next)) internalHook.setFields(next)
 
     prevFields.current = next
   }, [internalHook, props.fields])

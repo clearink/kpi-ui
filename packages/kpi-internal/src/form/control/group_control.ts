@@ -27,7 +27,7 @@ import type {
 } from '../internal_props'
 import type { FormContextState } from '../../context'
 
-export const HOOK_MARK = '_$KPI$_'
+export const HOOK_MARK = Symbol.for('_$KPI$_')
 
 export default class FormGroupControl<State = any> {
   $props: FormPropsControl
@@ -89,7 +89,7 @@ export default class FormGroupControl<State = any> {
   }
 
   // 内部属性
-  _getInternalHooks = (secret: string): InternalHookReturn | undefined => {
+  _getInternalHooks = (secret: symbol): InternalHookReturn | undefined => {
     const matched = secret === HOOK_MARK
 
     logger(!matched, '`getInternalHooks` is internal usage. Should not call directly.')

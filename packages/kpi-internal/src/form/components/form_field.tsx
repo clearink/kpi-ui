@@ -15,7 +15,7 @@ function InternalFormField(props: InternalProps) {
   // 父级表单方法
   const formInstance = FieldContext.useState()
 
-  const internalHook = useMemo(() => formInstance.getInternalHooks(HOOK_MARK), [formInstance])
+  const internalHook = useMemo(() => formInstance.getInternalHooks(HOOK_MARK)!, [formInstance])
 
   const [control, resetCount] = useFormFieldControl()
 
@@ -23,20 +23,20 @@ function InternalFormField(props: InternalProps) {
   control.setFieldProps(props)
 
   // 设置初始值,减少一次 re-render
-  useConstant(() => internalHook?.ensureInitialized(control))
+  useConstant(() => internalHook.ensureInitialized(control))
 
   // 注册子字段 销毁时移除该字段
   const registerField = useEvent(() => {
     if (shouldUpdate === true) control.forceUpdate()
 
-    return internalHook?.registerField(control)
+    return internalHook.registerField(control)
   })
   useEffect(registerField, [registerField])
 
   // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
   const key = useDeepMemo(() => name, [name])
   const memorized = useDeepMemo(() => dependencies, [dependencies])
-  const subscribe = useEvent(() => internalHook?.subscribe(control))
+  const subscribe = useEvent(() => internalHook.subscribe(control))
   useEffect(subscribe, [subscribe, memorized, key])
 
   // 数据注入

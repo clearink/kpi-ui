@@ -1,0 +1,17 @@
+.err-list-enter-from,
+.err-list-exit-to {
+  opacity: 0;
+  transform: translate3d(0, -5px, 0);
+}
+
+.err-list-move,
+.err-list-enter-active,
+.err-list-exit-active {
+  overflow: hidden;
+  transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
+    transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
+    height 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.err-list-exit-active {
+  position: absolute;
+}

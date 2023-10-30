@@ -1,9 +1,11 @@
+/* eslint-disable no-param-reassign */
+import { useDebounceValue } from '@kpi/shared'
 import cls from 'classnames'
 import { useMemo } from 'react'
-import { AnimatePresence, domAnimation, LazyMotion, m } from 'framer-motion'
-import { useDebounceValue } from '@kpi/shared'
 import { usePrefixCls } from '../../../_internal/hooks'
+import { GroupTransition } from '../../../transition'
 import { makeErrorEntity } from '../../utils/error'
+import handlers from '../../utils/handlers'
 
 import type { ErrorListProps } from '../../props'
 
@@ -26,24 +28,15 @@ function ErrorList(props: ErrorListProps) {
 
   return (
     <div className={cls(prefixCls, className)}>
-      <LazyMotion features={domAnimation}>
-        <AnimatePresence onExitComplete={onExitComplete}>
-          {transitionList.map((item) => {
-            return (
-              <m.div
-                key={item.key}
-                className={cls({ [`${prefixCls}--${item.status}`]: item.status })}
-                initial={{ opacity: 0, height: 0, y: -5 }}
-                animate={{ opacity: 1, height: 'auto', y: 0 }}
-                exit={{ opacity: 0, height: 0, y: -5 }}
-                transition={{ duration: 0.3, ease: [0.645, 0.045, 0.355, 1] }}
-              >
-                {item.error}
-              </m.div>
-            )
-          })}
-        </AnimatePresence>
-      </LazyMotion>
+      <GroupTransition name="err-list" appear onExitComplete={onExitComplete} {...handlers}>
+        {transitionList.map((item) => {
+          return (
+            <div key={item.key} className={cls({ [`${prefixCls}--${item.status}`]: item.status })}>
+              {item.error}
+            </div>
+          )
+        })}
+      </GroupTransition>
     </div>
   )
 }

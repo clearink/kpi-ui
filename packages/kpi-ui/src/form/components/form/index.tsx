@@ -60,7 +60,7 @@ function Form(props: FormProps, ref: ForwardedRef<FormInstance>) {
 
   const onFailedWithEffect = useCallback(
     (errors: any) => {
-      onFailed?.(errors)
+      onFailed && onFailed(errors)
       if (scrollToFirstError) {
         // formInstance.scrollToField()
       }

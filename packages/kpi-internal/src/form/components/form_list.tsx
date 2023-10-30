@@ -37,11 +37,11 @@ export default function FormList(props: FormListProps) {
 
   const shouldUpdate = useEvent((prev: any, next: any, type: ActionType) => {
     const path = toArray(name)
-    const prevList = getIn(prev, path) as any[]
-    const nextList = getIn(next, path) as any[]
+    const prevList = (getIn(prev, path) || []) as any[]
+    const nextList = (getIn(next, path) || []) as any[]
     // 用户主动触发的默认不更新 或者 setFieldValue
     if (type === 'setFields' || type === 'fieldEvent') {
-      return rawType(prevList) !== rawType(nextList) || prevList?.length !== nextList?.length
+      return rawType(prevList) !== rawType(nextList) || prevList.length !== nextList.length
     }
 
     return prevList !== nextList

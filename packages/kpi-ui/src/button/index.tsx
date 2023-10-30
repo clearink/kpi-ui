@@ -33,7 +33,7 @@ function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     if (disabled || loading) e.preventDefault()
-    else onClick?.(e)
+    else onClick && onClick(e)
   }
 
   const attrs = omit(props, excluded)

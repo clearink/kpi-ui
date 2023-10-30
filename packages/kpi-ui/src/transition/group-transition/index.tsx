@@ -17,7 +17,9 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
   const shouldTransition = !isElementsEqual(store.current, children)
 
   useDerivedState(shouldTransition, () => {
-    if (!shouldTransition) store.coords = store.getCoords()
+    if (shouldTransition) return
+
+    store.coords = store.getCoords()
   })
 
   useEffect(() => {

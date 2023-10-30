@@ -25,8 +25,5 @@ export type { FormProps, FormItemProps, FormListProps, FormInstance } from './fo
 
 export { default as Grid } from './grid'
 
-export { default as Animation } from './animation'
-export type { CollapseProps, ZoomProps } from './animation/props'
-
 export { default as Modal } from './modal'
 export type { ModalProps } from './modal/props'

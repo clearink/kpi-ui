@@ -1,4 +1,4 @@
-import { max } from './math'
+import { max } from '../css-transition/utils/math'
 
 const ms = (s: string) => (parseFloat(s) || 0) * 1e3
 
@@ -6,7 +6,7 @@ export default function collectTimeoutInfo(
   collection: CSSStyleDeclaration,
   type: 'transition' | 'animation'
 ) {
-  const style = (property: string): string[] => (collection[property] || '').split(', ')
+  const style = (property: string): string[] => `${collection[property] || ''}`.split(', ')
 
   const delays = style(`${type}Delay`)
   const durations = style(`${type}Duration`)

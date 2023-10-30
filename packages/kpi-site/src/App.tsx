@@ -1,8 +1,7 @@
 /* eslint-disable no-param-reassign */
-import { Children, forwardRef, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { forwardRef, useState } from 'react'
 
-import { CSSTransition, GroupTransition, SwitchTransition } from './transition'
+import { GroupTransition } from './transition'
 import './style.css'
 
 const Red = forwardRef((props: any, ref: any) => {
@@ -32,17 +31,16 @@ const Blue = forwardRef((props: any, ref: any) => {
   )
 })
 
-const idd = 3
 export default function App() {
+  const [list, setList] = useState<string[]>(() => [])
   const [when, setWhen] = useState(true)
-  const [list, setList] = useState(() => [1, 2, 3])
   return (
     <div>
       <div>
         <button
           type="button"
           onClick={() => {
-            setList(list.length === 3 ? [1, 5, 11, 4, 2, 3, 8, 9, 7, 6, 12, 10] : [1, 2, 3])
+            // setList(list.toString() === '1,2,3' ? [2, 4] : [1, 2, 3])
           }}
         >
           change
@@ -50,86 +48,110 @@ export default function App() {
         <button
           type="button"
           onClick={() => {
-            const a = list.concat()
-            const index = Math.round(Math.random() * a.length)
-            a.splice(index, 0, Math.round(Math.random() * 100000))
-            setList(a)
-          }}
-        >
-          insert
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setList((p) => {
-              const a = p.concat()
-              a.pop()
-              return a
-            })
-          }}
-        >
-          pop
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            setList((p) => p.concat().sort(() => (Math.random() > 0.5 ? 1 : -1)))
-          }}
-        >
-          shuffle
-        </button>
-        <button
-          type="button"
-          onClick={() => {
             setWhen((p) => !p)
           }}
         >
-          force update
+          toggle
         </button>
-        {/* <button
-          type="button"
-          onClick={() => {
-            const list2 = list.concat()
-            const idx = Math.round(Math.random() * list2.length)
-            list2.splice(idx, 0, ++idd)
-            setList(list2)
-          }}
-        >
-          insert
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            const list2 = list.concat()
-            const idx = Math.round(Math.random() * list2.length)
-            list2.splice(idx, 1)
-            setList(list2)
-          }}
-        >
-          remove
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            const list2 = list.concat().sort(() => (Math.random() > 0.5 ? 1 : -1))
-            setList(list2)
-          }}
-        >
-          shuffle
-        </button> */}
       </div>
 
       {/* 列表 */}
-      <ul>
-        <GroupTransition name="fade">
-          {list.map((id) => (
-            <div key={id} className="a">
-              {id}
-            </div>
-          ))}
-        </GroupTransition>
-      </ul>
+      <input
+        onChange={(e) => {
+          const val = e.target.value
+          setList(val === '1' ? ['is required field'] : ['should must 34'])
+        }}
+      />
+      {list.length > 0 && (
+        <div>
+          <GroupTransition
+            name="err-list"
+            appear
+            onEnter={(el) => {
+              const dom = el as any
+              dom._height = el.scrollHeight
+              dom.style.height = '0px'
+            }}
+            onEntering={(el) => {
+              const dom = el as any
+              dom.style.height = `${dom._height}px`
+            }}
+            onEntered={(el) => {
+              el.style.height = ''
+            }}
+            onEnterCancel={(el) => {
+              el.style.height = ''
+            }}
+            onExit={(el) => {
+              el.style.height = `${el.scrollHeight}px`
+            }}
+            onExiting={(el) => {
+              el.style.height = '0px'
+            }}
+            onExitCancel={(el) => {
+              el.style.height = ''
+            }}
+          >
+            {list.map((id) => (
+              <div key={id} className="a">
+                {id}
+              </div>
+            ))}
+          </GroupTransition>
+          <div>end</div>
+        </div>
+      )}
     </div>
   )
 }
+
+// import { Button, Form, Space } from '@kpi/ui'
+// import { useState } from 'react'
+// import kv from '@kpi/validate'
+// import './style.css'
+
+// function Input(props: any) {
+//   return <input {...props} value={props.value || ''} style={{ height: 32 }} />
+// }
+
+// export default function App() {
+//   const [noStyle, setNoStyle] = useState(false)
+//   const [noRule, setNoRule] = useState(false)
+//   const [inputNumber, setInputNumber] = useState(30)
+
+//   return (
+//     <div>
+//       {/* <p style={{ fontSize: 20, textAlign: 'center', marginBottom: 20 }}>
+//         测试 {inputNumber || 0} 个输入框场景下 Form 组件的性能
+//       </p>
+//       <Space style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+//         <Button type="primary" onClick={() => setNoStyle((p) => !p)}>
+//           NoStyle: {noStyle ? 'true' : 'false'}
+//         </Button>
+//         <Button type="primary" onClick={() => setNoRule((p) => !p)}>
+//           NoRule: {noRule ? 'true' : 'false'}
+//         </Button>
+//         <span>input number</span>
+//         <Input value={inputNumber} onChange={(e) => setInputNumber(parseInt(e.target.value, 10))} />
+//       </Space>
+//       <Form
+//         style={{
+//           width: 600,
+//           margin: '0 auto',
+//         }}
+//       >
+//         {Array.from({ length: inputNumber }, (_, i) => (
+//           <Form.Item
+//             key={i}
+//             label="123123"
+//             noStyle={noStyle}
+//             name={['username', i]}
+//             rule={kv.string().min(3).max(4).required()}
+//           >
+//             <Input placeholder={`username-${i}`} />
+//           </Form.Item>
+//         ))}
+//       </Form> */}
+//     </div>
+//   )
+// }
