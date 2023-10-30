@@ -50,10 +50,13 @@ export default function App() {
         <button
           type="button"
           onClick={() => {
-            setList((p) => [...p, Math.round(Math.random() * 100000)])
+            const a = list.concat()
+            const index = Math.round(Math.random() * a.length)
+            a.splice(index, 0, Math.round(Math.random() * 100000))
+            setList(a)
           }}
         >
-          push
+          insert
         </button>
         <button
           type="button"
@@ -66,6 +69,15 @@ export default function App() {
           }}
         >
           pop
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setList((p) => p.concat().sort(() => (Math.random() > 0.5 ? 1 : -1)))
+          }}
+        >
+          shuffle
         </button>
         <button
           type="button"

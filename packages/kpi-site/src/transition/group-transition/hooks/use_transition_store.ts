@@ -1,6 +1,6 @@
 import { omit, pushItem, useConstant, useForceUpdate } from '@kpi/shared'
 import { cloneElement, createElement, type Key, type ReactElement } from 'react'
-import { isExited } from '../../constants/status'
+import { ENTER, isExit, isExited } from '../../constants/status'
 import CSSTransition from '../../css-transition'
 import batch from '../../css-transition/utils/batch'
 import { addTransitionClass, delTransitionClass } from '../../utils/classnames'
@@ -24,9 +24,9 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
     this.current = props.children
 
-    this.elements = this.current.reduce((result, el) => {
-      return result.set(el.key, this.makeElement(el, { when: true }))
-    }, new Map())
+    this.current.forEach((el) => {
+      this.elements.set(el.key, this.makeElement(el, { when: true }))
+    })
 
     this.nodes = Array.from(this.elements.values())
   }
@@ -79,44 +79,45 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     return createElement(CSSTransition, preset, element)
   }
 
+  onExitedEffect = () => {
+    let isCompleted = true
+
+    this.elements.forEach((_, key) => {
+      const comp = this.components.get(key) || { status: ENTER }
+
+      if (isExited(comp.status)) this.elements.delete(key)
+
+      if (isCompleted && isExit(comp.status)) isCompleted = false
+    })
+
+    this.nodes = Array.from(this.elements.values())
+
+    if (!isCompleted) return
+
+    const { onExitComplete } = this.props
+
+    onExitComplete && onExitComplete()
+
+    this.forceUpdate()
+  }
+
   runTransition = () => {
     const { children, onExited } = this.props
 
     const [enters, exits] = diff(this.current, children)
 
-    const onFinish = runCounter(enters.size + exits.size, () => {
-      // 拿到最新值
-      const { onExitComplete } = this.props
-
-      this.elements.forEach((_, key) => {
-        const comp = this.components.get(key)
-        if (comp && !isExited(comp.status)) return
-        this.elements.delete(key)
-      })
-
-      this.nodes = Array.from(this.elements.values())
-
-      onExitComplete && onExitComplete()
-
-      this.forceUpdate()
-    })
-
     this.elements = union(this.elements, enters, children).reduce((result, [key, el]) => {
-      if (enters.has(key)) {
-        const element = this.makeElement(el, { when: true, appear: true })
-        return result.set(key, element)
-      }
+      if (enters.has(key))
+        return result.set(key, this.makeElement(el, { when: true, appear: true }))
 
-      // 清空回调函数
-      if (!exits.has(key)) return result.set(key, cloneElement(el, { onExited }))
+      const props: Partial<CSS> = { onExited: batch(onExited, this.onExitedEffect) }
 
-      const element = cloneElement(el, { when: false, onExited: batch(onExited, onFinish) })
-      return result.set(key, element)
+      if (exits.has(key)) props.when = false
+
+      return result.set(key, cloneElement(el, props))
     }, new Map())
 
     this.nodes = Array.from(this.elements.values())
-
-    // 只获取当前元素的位置信息
 
     this.previous = this.current
 
@@ -137,7 +138,9 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
     // TODO: 优化 flip 逻辑
     this.collectCoords().forEach((newCoord, key) => {
-      const oldCoord = this.coords.get(key)!
+      const oldCoord = this.coords.get(key)
+
+      if (!oldCoord) return
 
       const comp = this.components.get(key)
 

@@ -1,8 +1,7 @@
-import { createElement, Fragment, useEffect } from 'react'
 import { useDerivedState } from '@kpi/shared'
+import { createElement, Fragment, useEffect } from 'react'
 import { isElementsEqual } from '../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
-import { nextFrame, nextTick } from '../utils/tick'
 
 import type { GroupTransitionProps } from './props'
 
@@ -18,8 +17,7 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
   const shouldTransition = !isElementsEqual(store.current, children)
 
   useDerivedState(shouldTransition, () => {
-    if (shouldTransition || store.isInitial) return
-    store.coords = store.collectCoords()
+    if (!shouldTransition) store.coords = store.collectCoords()
   })
 
   useEffect(() => {
