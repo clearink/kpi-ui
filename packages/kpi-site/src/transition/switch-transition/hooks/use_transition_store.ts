@@ -1,7 +1,7 @@
 import { omit, useConstant, useForceUpdate } from '@kpi/shared'
 import { cloneElement, createElement, ReactElement } from 'react'
 import CSSTransition from '../../css-transition'
-import batch from '../../css-transition/utils/batch'
+import batch from '../../utils/batch'
 import runCounter from '../../utils/run_counter'
 import makeUniqueId from '../../utils/unique_id'
 

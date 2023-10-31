@@ -3,7 +3,7 @@ import { delTransitionClass } from '../../utils/classnames'
 import { addListener, addTimeout } from '../../utils/listener'
 import runCounter from '../../utils/run_counter'
 import { isAppear, isExit } from '../../constants/status'
-import batch from '../utils/batch'
+import batch from '../../utils/batch'
 import collectTimeoutInfo from '../../utils/collect'
 import useFormatClassNames from './use_format_class_names'
 import useTransitionStore from './use_transition_store'
@@ -15,16 +15,8 @@ export default function useTransitionEvent<E extends HTMLElement>(
   classes: ReturnType<typeof useFormatClassNames>,
   props: CSSTransitionProps<E>
 ) {
-  const { type, unmountOnExit, onEntered, onExited, onEnterCancel, onExitCancel } = props
-
-  const runCancel = useEvent((el: E, step: TransitionStep) => {
-    const { from, active, to } = classes[step]
-
-    delTransitionClass(el, from, active, to)
-
-    if (isExit(step)) onExitCancel && onExitCancel(el)
-    else onEnterCancel && onEnterCancel(el, isAppear(step))
-  })
+  const { type, unmountOnExit, addEndListener, onEntered, onExited, onEnterCancel, onExitCancel } =
+    props
 
   const done = useEvent((el: E, step: TransitionStep) => {
     store.finish(step)
@@ -42,8 +34,19 @@ export default function useTransitionEvent<E extends HTMLElement>(
     unmountOnExit && store.destroy()
   })
 
+  const runCancel = useEvent((el: E, step: TransitionStep) => {
+    const { from, active, to } = classes[step]
+
+    delTransitionClass(el, from, active, to)
+
+    if (isExit(step)) onExitCancel && onExitCancel(el)
+    else onEnterCancel && onEnterCancel(el, isAppear(step))
+  })
+
   const makeEndHook = useEvent((el: E, step: TransitionStep, timeout?: number) => {
     const resolve = done.bind(null, el, step)
+
+    if (addEndListener) return addEndListener(el, step, resolve)
 
     if (!isUndefined(timeout)) return addTimeout(timeout, resolve)
 
@@ -82,5 +85,5 @@ export default function useTransitionEvent<E extends HTMLElement>(
     )
   })
 
-  return [runCancel, makeEndHook, done] as const
+  return [runCancel, makeEndHook] as const
 }

@@ -2,7 +2,7 @@ import { omit, useConstant, useForceUpdate } from '@kpi/shared'
 import { cloneElement, createElement, type Key, type ReactElement } from 'react'
 import { ENTER, isExit, isExited } from '../../constants/status'
 import CSSTransition from '../../css-transition'
-import batch from '../../css-transition/utils/batch'
+import batch from '../../utils/batch'
 import { addTransitionClass, delTransitionClass } from '../../utils/classnames'
 import reflow from '../../utils/reflow'
 import makeUniqueId from '../../utils/unique_id'
@@ -30,6 +30,10 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   props: Group<E>
 
+  setTransitionProps = (props: Group<E>) => {
+    this.props = props
+  }
+
   previous: ReactElement[] = []
 
   current: ReactElement[] = []
@@ -43,12 +47,6 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   coords = new Map<Key | null, DOMRect>()
 
-  isInitial = true
-
-  setTransitionProps = (props: Group<E>) => {
-    this.props = props
-  }
-
   getCoords = () => {
     return this.previous.reduce((map, el) => {
       const comp = this.components.get(el.key)
@@ -59,6 +57,16 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
       return rect ? map.set(el.key, rect) : map
     }, new Map<Key | null, DOMRect>())
+  }
+
+  updateCoords = () => {
+    this.coords = this.getCoords()
+  }
+
+  isInitial = true
+
+  setIsInitial = (isInitial: boolean) => {
+    this.isInitial = isInitial
   }
 
   make = (element: ReactElement, extra: Partial<CSS>) => {

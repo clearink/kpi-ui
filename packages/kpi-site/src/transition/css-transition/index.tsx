@@ -40,10 +40,10 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
 
   useImperativeHandle(ref, () => store, [store])
 
-  const [runCancel, makeEndHook, done] = useTransitionEvent(store, classes, props)
+  const [runCancel, makeEndHook] = useTransitionEvent(store, classes, props)
 
   const refCallback = useEvent((el: E | null) => {
-    store.instance = el
+    store.setInstance(el)
 
     const original = (children as ReactElement & { ref: Ref<any> }).ref
 
@@ -78,9 +78,7 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
       addTransitionClass(el, to)
 
       // 保存结束时的回调
-      store.endHook = addEndListener
-        ? addEndListener(el, step, done.bind(null, el, step))
-        : makeEndHook(el, step, timeouts[step])
+      store.setEndHook(makeEndHook(el, step, timeouts[step]))
     })
 
     return () => {
@@ -95,7 +93,7 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
   useEffect(() => {
     const { isInitial, instance } = store
 
-    if (isInitial) store.isInitial = false
+    if (isInitial) store.setIsInitial(false)
 
     if (!(instance && store.shouldTransition(isInitial, when))) return
 

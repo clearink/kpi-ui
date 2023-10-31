@@ -33,11 +33,23 @@ export class TransitionStore<E extends HTMLElement> {
 
   instance: E | null = null
 
+  setInstance = (instance: E | null) => {
+    this.instance = instance
+  }
+
   isInitial = true
+
+  setIsInitial = (isInitial: boolean) => {
+    this.isInitial = isInitial
+  }
 
   running = false
 
   endHook: void | (() => void) = undefined
+
+  setEndHook = (endHook: void | (() => void)) => {
+    this.endHook = endHook
+  }
 
   runEndHook = () => {
     this.endHook && this.endHook()
