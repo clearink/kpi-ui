@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { useDebounceValue } from '@kpi/shared'
 import cls from 'classnames'
 import { useMemo } from 'react'
@@ -14,8 +13,8 @@ function ErrorList(props: ErrorListProps) {
 
   const prefixCls = usePrefixCls('form-item-message')
 
-  const errors = useDebounceValue(10, props.errors ?? [])
-  const warnings = useDebounceValue(10, props.warnings ?? [])
+  const errors = useDebounceValue(10, props.errors || [])
+  const warnings = useDebounceValue(10, props.warnings || [])
 
   const transitionList = useMemo(() => {
     if (help) return [makeErrorEntity(help, helpStatus, 'help')]

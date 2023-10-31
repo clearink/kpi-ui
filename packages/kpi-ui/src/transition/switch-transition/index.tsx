@@ -13,7 +13,7 @@ export default function SwitchTransition<E extends HTMLElement = HTMLElement>(
 
   const store = useTransitionStore(props)
 
-  store.syncTransitionProps(props)
+  store.setTransitionProps(props)
 
   const shouldTransition = !isElementEqual(store.current, children)
 

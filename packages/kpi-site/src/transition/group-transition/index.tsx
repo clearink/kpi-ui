@@ -12,7 +12,7 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
 
   const store = useTransitionStore(props)
 
-  store.syncTransitionProps(props)
+  store.setTransitionProps(props)
 
   const shouldTransition = !isElementsEqual(store.current, children)
 

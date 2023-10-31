@@ -12,14 +12,12 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
 
   const store = useTransitionStore(props)
 
-  store.syncTransitionProps(props)
+  store.setTransitionProps(props)
 
   const shouldTransition = !isElementsEqual(store.current, children)
 
   useDerivedState(shouldTransition, () => {
-    if (shouldTransition) return
-
-    store.coords = store.getCoords()
+    if (!shouldTransition) store.coords = store.getCoords()
   })
 
   useEffect(() => {

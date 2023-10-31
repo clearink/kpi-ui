@@ -4,10 +4,10 @@ import { ENTER, isExit, isExited } from '../../constants/status'
 import CSSTransition from '../../css-transition'
 import batch from '../../css-transition/utils/batch'
 import { addTransitionClass, delTransitionClass } from '../../utils/classnames'
+import reflow from '../../utils/reflow'
 import makeUniqueId from '../../utils/unique_id'
 import diff from '../utils/diff'
 import shouldFlip from '../utils/should'
-import reflow from '../../utils/reflow'
 import union from '../utils/union'
 
 import type { CSSTransitionProps as CSS, CSSTransitionRef } from '../../css-transition/props'
@@ -45,7 +45,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   isInitial = true
 
-  syncTransitionProps = (props: Group<E>) => {
+  setTransitionProps = (props: Group<E>) => {
     this.props = props
   }
 
@@ -61,7 +61,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     }, new Map<Key | null, DOMRect>())
   }
 
-  private make = (element: ReactElement, extra: Partial<CSS>) => {
+  make = (element: ReactElement, extra: Partial<CSS>) => {
     const preset = omit(this.props, ['children']) as CSS
 
     const ref = (instance: CSSTransitionRef | null) => {
@@ -74,7 +74,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     return createElement(CSSTransition, preset, element)
   }
 
-  private runExitedEffect = () => {
+  runExitedEffect = () => {
     let isCompleted = true
 
     this.elements.forEach((_, key) => {
@@ -122,7 +122,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     this.forceUpdate()
   }
 
-  private cancels: (() => void)[] = []
+  cancels: (() => void)[] = []
 
   runFlip = () => {
     const { name, moveClass } = this.props
@@ -140,15 +140,15 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     this.getCoords().forEach((newCoord, key) => {
       const oldCoord = this.coords.get(key)
 
-      if (!oldCoord) return
-
       const dom = (this.components.get(key) || {}).instance
+
+      if (!oldCoord || !dom) return
 
       const dx = oldCoord.left - newCoord.left
 
       const dy = oldCoord.top - newCoord.top
 
-      if (!dom || (!dx && !dy)) return
+      if (!dx && !dy) return
 
       const oldTransform = dom.style.transform
       const oldDuration = dom.style.transitionDuration
@@ -164,7 +164,6 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
         const handler = () => {
           delTransitionClass(dom, cls)
-
           dom.removeEventListener('transitionend', handler)
         }
 

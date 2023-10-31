@@ -15,7 +15,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
     this.current = props.children
 
-    this.elements = [this.makeElement(this.current, { when: true })]
+    this.elements = [this.make(this.current, { when: true })]
   }
 
   props: Switch<E>
@@ -24,11 +24,11 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   elements: ReactElement<CSS<E>>[] = []
 
-  syncTransitionProps = (props: Switch<E>) => {
+  setTransitionProps = (props: Switch<E>) => {
     this.props = props
   }
 
-  makeElement = (element: ReactElement<CSS<E>>, extra: Partial<CSS>) => {
+  make = (element: ReactElement<CSS<E>>, extra: Partial<CSS>) => {
     const preset = omit(this.props, ['mode', 'children']) as CSS
 
     Object.assign(preset, extra, { key: uniqueId() })
@@ -44,7 +44,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
         onExited: batch(this.props.onExited, () => {
           this.current = this.props.children
 
-          this.elements = [this.makeElement(this.current, { when: true, appear: true })]
+          this.elements = [this.make(this.current, { when: true, appear: true })]
 
           this.forceUpdate()
         }),
@@ -60,7 +60,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
         onEntered: this.props.onEntered,
         onExited: this.props.onExited,
       }),
-      this.makeElement(this.current, {
+      this.make(this.current, {
         when: true,
         appear: true,
         onEntered: batch(this.props.onEntered, () => {
@@ -95,7 +95,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
         onEntered: this.props.onEntered,
         onExited: batch(this.props.onExited, resolve),
       }),
-      this.makeElement(this.current, {
+      this.make(this.current, {
         when: true,
         appear: true,
         onEntered: batch(this.props.onEntered, resolve),

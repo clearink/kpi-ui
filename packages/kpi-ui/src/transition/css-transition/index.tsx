@@ -56,12 +56,12 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
   })
 
   const runTransition = useEvent((el: E, step: TransitionStep) => {
+    const { from, active, to } = classes[step]
+
     store.start(step)
 
     if (isExit(step)) onExit && onExit(el)
     else onEnter && onEnter(el, isAppear(step))
-
-    const { from, active, to } = classes[step]
 
     addTransitionClass(el, from)
 
