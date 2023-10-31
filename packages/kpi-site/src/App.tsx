@@ -10,7 +10,7 @@ function Input(props: any) {
 export default function App() {
   const [noStyle, setNoStyle] = useState(false)
   const [noRule, setNoRule] = useState(false)
-  const [inputNumber, setInputNumber] = useState(3000)
+  const [inputNumber, setInputNumber] = useState(300)
 
   return (
     <div>
@@ -40,7 +40,7 @@ export default function App() {
             label="123123"
             noStyle={noStyle}
             name={['username', i]}
-            rule={kv.string().min(3).required()}
+            rule={kv.string().min(3).max(6).required()}
           >
             <Input placeholder={`username-${i}`} />
           </Form.Item>

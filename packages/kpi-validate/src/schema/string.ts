@@ -43,7 +43,7 @@ export default class StringSchema extends BaseSchema<string | undefined> {
 
   max(max: number, message: Message = string.max) {
     const rule = (value: string) => value.length <= max
-    return this._refine('min', makeRule(rule, message, { max }))
+    return this._refine('max', makeRule(rule, message, { max }))
   }
 
   length(length: number, message: Message = string.length) {

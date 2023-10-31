@@ -22,7 +22,6 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
     when,
     classNames,
     ssr,
-    addEndListener,
     onEnter,
     onEntering,
     onExit,

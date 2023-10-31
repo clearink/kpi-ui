@@ -1,4 +1,4 @@
-import { max } from '../css-transition/utils/math'
+import { max } from './math'
 
 const ms = (s: string) => (parseFloat(s) || 0) * 1e3
 

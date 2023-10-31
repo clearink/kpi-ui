@@ -17,13 +17,13 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
   const shouldTransition = !isElementsEqual(store.current, children)
 
   useDerivedState(shouldTransition, () => {
-    if (!shouldTransition) store.coords = store.getCoords()
+    if (!shouldTransition) store.updateCoords()
   })
 
   useEffect(() => {
     const { isInitial } = store
 
-    if (isInitial) store.isInitial = false
+    if (isInitial) store.setIsInitial(false)
 
     if (shouldTransition) return store.runTransition()
 

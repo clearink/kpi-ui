@@ -1,11 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 
 export default function usePrevious<T>(value: T) {
-  const ref = useRef(value)
+  const ref = useRef({ value, previous: value })
 
-  useEffect(() => {
-    ref.current = value
-  })
-
-  return ref.current
+  return useMemo(() => {
+    if (ref.current.value !== value) {
+      ref.current.previous = ref.current.value
+      ref.current.value = value
+    }
+    return ref.current[0]
+  }, [value])
 }
