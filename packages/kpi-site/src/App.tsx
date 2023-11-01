@@ -1,7 +1,7 @@
 import { Button, Form, Space } from '@kpi/ui'
 import { useState } from 'react'
 import kv from '@kpi/validate'
-import './style.css'
+import './style.scss'
 
 function Input(props: any) {
   return <input {...props} value={props.value || ''} style={{ height: 32 }} />

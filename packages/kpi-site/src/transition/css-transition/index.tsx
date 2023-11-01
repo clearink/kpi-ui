@@ -59,20 +59,20 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
 
     store.start(step)
 
+    addTransitionClass(el, from)
+
     if (isExit(step)) onExit && onExit(el)
     else onEnter && onEnter(el, isAppear(step))
-
-    addTransitionClass(el, from)
 
     isExit(step) && reflow(el)
 
     addTransitionClass(el, active)
 
     const runFrameCleanup = nextFrame(() => {
+      delTransitionClass(el, from)
+
       if (isExit(step)) onExiting && onExiting(el)
       else onEntering && onEntering(el, isAppear(step))
-
-      delTransitionClass(el, from)
 
       addTransitionClass(el, to)
 
