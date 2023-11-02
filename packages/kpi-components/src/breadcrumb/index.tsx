@@ -1,0 +1,11 @@
+import { withDefaults } from '@kpi-ui/internal'
+import useClass from './hooks/use_class'
+// import { BreadcrumbProps } from './props';
+
+// TODO: 待开发
+function Breadcrumb() {
+  const className = useClass()
+  return <div className={className}>breadcrumb</div>
+}
+
+export default withDefaults(Breadcrumb, {} as const)

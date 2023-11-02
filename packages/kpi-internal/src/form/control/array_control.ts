@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { isUndefined, toArray } from '@kpi/shared'
+import { isUndefined, toArray } from '@kpi-ui/utils'
 import { HOOK_MARK } from './group_control'
 import { isValidIndex } from '../utils/path'
 

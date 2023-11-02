@@ -1,5 +1,5 @@
 import type { ComponentType, ReactElement, FormEvent, FormHTMLAttributes, ReactNode } from 'react'
-import type { BaseSchema } from '@kpi/validate'
+import type { BaseSchema } from '@kpi-ui/validator'
 import type { AnyObject } from '../types'
 import type {
   InternalFieldData,

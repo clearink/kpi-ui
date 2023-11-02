@@ -1,5 +1,5 @@
 import { cloneElement, type ReactElement } from 'react'
-import { logger } from '@kpi/shared'
+import { logger } from '@kpi-ui/utils'
 import normalizeChildren from '../utils/children'
 import collectInjectProps from '../utils/collect'
 

@@ -1,11 +1,8 @@
 {
-  "name": "@kpi/internal",
-  "version": "0.0.0",
+  "name": "@kpi-ui/internal",
+  "version": "0.0.1",
   "description": "kpi ui internal components",
-  "main": "lib/index.js",
-  "module": "esm/index.js",
-  "types": "esm/index.d.ts",
-  "unpkg": "dist/index.min.js",
+  "main": "src/index.js",
   "keywords": [
     "kpi-ui",
     "internal",
@@ -24,8 +21,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.20.13",
-    "@kpi/shared": "workspace:*",
-    "@kpi/validate": "workspace:*"
+    "@kpi-ui/hooks": "workspace:*",
+    "@kpi-ui/utils": "workspace:*",
+    "@kpi-ui/validator": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",

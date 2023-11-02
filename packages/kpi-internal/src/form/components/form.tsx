@@ -1,4 +1,5 @@
-import { isEqual, isFunction, omit, toArray, useConstant, useEvent } from '@kpi/shared'
+import { useConstant, useEvent } from '@kpi-ui/hooks'
+import { isEqual, isFunction, omit, toArray } from '@kpi-ui/utils'
 import {
   createElement,
   ForwardedRef,

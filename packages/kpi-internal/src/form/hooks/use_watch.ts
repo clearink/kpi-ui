@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { logger, useEvent, isEqual, toArray, useDeepMemo } from '@kpi/shared'
+import { useDeepMemo, useEvent } from '@kpi-ui/hooks'
+import { logger, isEqual, toArray } from '@kpi-ui/utils'
 import { FieldContext } from '../../context'
 import { HOOK_MARK } from '../control'
 

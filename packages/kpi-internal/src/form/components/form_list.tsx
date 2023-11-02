@@ -1,14 +1,5 @@
-import {
-  isArray,
-  isFunction,
-  isNullish,
-  logger,
-  rawType,
-  toArray,
-  useConstant,
-  useDeepMemo,
-  useEvent,
-} from '@kpi/shared'
+import { useConstant, useDeepMemo, useEvent } from '@kpi-ui/hooks'
+import { isArray, isFunction, isNullish, logger, rawType, toArray } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 import { FieldContext } from '../../context'
 import { FormArrayControl } from '../control'

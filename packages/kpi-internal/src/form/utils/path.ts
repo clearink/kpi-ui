@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { toArray } from '@kpi/shared'
+import { toArray } from '@kpi-ui/utils'
 
 import type { NamePath } from '../props'
 

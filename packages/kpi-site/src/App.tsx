@@ -1,6 +1,6 @@
-import { Button, Form, Space } from '@kpi/ui'
+import { Button, Form, Space } from '@kpi-ui/components'
 import { useState } from 'react'
-import kv from '@kpi/validate'
+import kv from '@kpi-ui/validator'
 import './style.scss'
 
 function Input(props: any) {
@@ -40,7 +40,12 @@ export default function App() {
             label="123123"
             noStyle={noStyle}
             name={['username', i]}
-            rule={kv.string().min(3).max(6).required()}
+            rule={kv
+              .string()
+              // .min(3, <div style={{ height: 40 }}>12312123123</div>)
+              .min(3)
+              .max(6)
+              .required()}
           >
             <Input placeholder={`username-${i}`} />
           </Form.Item>

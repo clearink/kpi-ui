@@ -1,4 +1,4 @@
-import { flattenChildren, isFunction } from '@kpi/shared'
+import { flattenChildren, isFunction } from '@kpi-ui/utils'
 import { isValidElement, type ReactElement } from 'react'
 
 import type { AnyObject } from '../../types'

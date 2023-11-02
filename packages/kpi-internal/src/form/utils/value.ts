@@ -1,5 +1,13 @@
 /* eslint-disable no-param-reassign */
-import { isNumber, isArray, isObject, isNullish, isObjectLike, rawType, hasOwn } from '@kpi/shared'
+import {
+  isNumber,
+  isArray,
+  isObject,
+  isNullish,
+  isObjectLike,
+  rawType,
+  hasOwn,
+} from '@kpi-ui/utils'
 
 import type { InternalNamePath } from '../internal_props'
 

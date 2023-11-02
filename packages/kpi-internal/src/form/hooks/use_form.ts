@@ -1,4 +1,4 @@
-import { useMounted } from '@kpi/shared'
+import { useMounted } from '@kpi-ui/hooks'
 import { useReducer, useRef } from 'react'
 import { FormFieldControl, FormGroupControl } from '../control'
 

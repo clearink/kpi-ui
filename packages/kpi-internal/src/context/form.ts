@@ -1,4 +1,4 @@
-import { logger } from '@kpi/shared'
+import { logger } from '@kpi-ui/utils'
 import ctxHelper from './helper'
 
 import type { FieldData, FormInstance } from '../form/props'

@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { hasOwn, isFunction, isObjectLike, toArray } from '@kpi/shared'
+import { hasOwn, isFunction, isObjectLike, toArray } from '@kpi-ui/utils'
 
 import type { AnyObject } from '../../types'
 import type { FormFieldControl } from '../control'

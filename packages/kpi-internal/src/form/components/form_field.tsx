@@ -1,5 +1,6 @@
 import { Fragment, useMemo, useEffect } from 'react'
-import { useDeepMemo, useEvent, isUndefined, toArray, useConstant } from '@kpi/shared'
+import { useDeepMemo, useEvent, useConstant } from '@kpi-ui/hooks'
+import { isUndefined, toArray } from '@kpi-ui/utils'
 import { HOOK_MARK } from '../control'
 import useInjectField from '../hooks/use_inject_field'
 import { useFormFieldControl } from '../hooks/use_form'

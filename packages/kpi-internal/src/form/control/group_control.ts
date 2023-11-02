@@ -8,7 +8,7 @@ import {
   toArray,
   pushItem,
   removeItem,
-} from '@kpi/shared'
+} from '@kpi-ui/utils'
 import BaseControl from './base_control'
 import { _getName } from '../utils/path'
 import { setIn, getIn, deleteIn, mergeValue, cloneWithPath, hasOwnWithPath } from '../utils/value'

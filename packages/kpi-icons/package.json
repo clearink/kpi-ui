@@ -1,9 +1,8 @@
 {
-  "name": "@kpi/icons",
-  "version": "0.0.0",
-  "description": "kpi ui icons",
+  "name": "@kpi-ui/icons",
+  "version": "0.0.1",
+  "description": "icons",
   "keywords": [
-    "kpu-ui",
     "icons"
   ],
   "author": "clearink",

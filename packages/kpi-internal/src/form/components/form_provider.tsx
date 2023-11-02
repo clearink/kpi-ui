@@ -1,5 +1,6 @@
 import { ReactNode, useMemo, useRef } from 'react'
-import { useEvent, omit } from '@kpi/shared'
+import { useEvent } from '@kpi-ui/hooks'
+import { omit } from '@kpi-ui/utils'
 import { FormContext } from '../../context'
 
 import type { FormInstance, Forms } from '../props'
