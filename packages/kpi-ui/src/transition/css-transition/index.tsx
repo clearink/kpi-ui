@@ -22,7 +22,6 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
     when,
     classNames,
     ssr,
-    addEndListener,
     onEnter,
     onEntering,
     onExit,
@@ -62,20 +61,20 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
 
     addTransitionClass(el, from)
 
-    if (isExit(step)) onExit && onExit(el)
-    else onEnter && onEnter(el, isAppear(step))
-
     isExit(step) && reflow(el)
 
     addTransitionClass(el, active)
 
+    if (isExit(step)) onExit && onExit(el)
+    else onEnter && onEnter(el, isAppear(step))
+
     const runFrameCleanup = nextFrame(() => {
       delTransitionClass(el, from)
 
+      addTransitionClass(el, to)
+
       if (isExit(step)) onExiting && onExiting(el)
       else onEntering && onEntering(el, isAppear(step))
-
-      addTransitionClass(el, to)
 
       // 保存结束时的回调
       store.setEndHook(makeEndHook(el, step, timeouts[step]))

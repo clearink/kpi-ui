@@ -9,8 +9,8 @@
 
   &-enter-active,
   &-exit-active {
-    transition: opacity 10.3s cubic-bezier(0.645, 0.045, 0.355, 1),
-      transform 10.3s cubic-bezier(0.645, 0.045, 0.355, 1),
-      height 10.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transition: opacity 0.35s cubic-bezier(0.645, 0.045, 0.355, 1),
+      transform 0.25s cubic-bezier(0.645, 0.045, 0.355, 1),
+      height 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   }
 }
