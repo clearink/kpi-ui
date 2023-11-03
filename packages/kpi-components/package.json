@@ -17,9 +17,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.20.13",
-    "@kpi-ui/internal": "workspace:*",
-    "@kpi-ui/utils": "workspace:*",
-    "@kpi-ui/hooks": "workspace:*",
+    "@kpi-ui/internal": "workspace:^",
+    "@kpi-ui/utils": "workspace:^",
+    "@kpi-ui/hooks": "workspace:^",
     "classnames": "^2.3.1"
   },
   "devDependencies": {

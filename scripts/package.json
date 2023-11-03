@@ -1,0 +1,19 @@
+{
+  "name": "@kpi-ui/scripts",
+  "version": "0.0.1",
+  "private": "true",
+  "description": "kpi ui lib shared utils",
+  "bin": "bin/index.js",
+  "author": "clearink",
+  "license": "ISC",
+  "scripts": {
+    "compile": "babel src --out-dir lib --watch --extensions .ts,.js,.tsx,.jsx"
+  },
+  "dependencies": {
+    "gulp": "^4.0.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.0",
+    "@types/gulp": "^4.0.16"
+  }
+}

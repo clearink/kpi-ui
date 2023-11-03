@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.20.13",
-    "@kpi-ui/utils": "workspace:*"
+    "@kpi-ui/utils": "workspace:^"
   },
   "devDependencies": {
     "rollup": "^3.12.0",

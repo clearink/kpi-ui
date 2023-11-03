@@ -14,10 +14,10 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "@kpi-ui/hooks": "workspace:*",
-    "@kpi-ui/utils": "workspace:*",
-    "@kpi-ui/components": "workspace:*",
-    "@kpi-ui/validator": "workspace:*",
+    "@kpi-ui/components": "workspace:^",
+    "@kpi-ui/hooks": "workspace:^",
+    "@kpi-ui/utils": "workspace:^",
+    "@kpi-ui/validator": "workspace:^",
     "@loadable/component": "^5.15.2",
     "@react-spring/web": "^9.7.1",
     "framer-motion": "^10.6.0",

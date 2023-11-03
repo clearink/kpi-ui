@@ -1,0 +1,23 @@
+{
+  "comments": false,
+  "presets": [
+    "@babel/preset-env",
+
+    ["@babel/preset-react", { "runtime": "automatic" }],
+    "@babel/preset-typescript"
+  ],
+  "plugins": ["@babel/plugin-transform-runtime"],
+  "assumptions": {
+    "pureGetters": true,
+    "ignoreToPrimitiveHint": true,
+    "setComputedProperties": true,
+    "objectRestNoSymbols": true,
+    "constantReexports": true,
+    "ignoreFunctionLength": true,
+    "setSpreadProperties": true,
+    "constantSuper": true,
+    "setClassMethods": true,
+    "skipForOfIteratorClosing": true,
+    "superIsCallableConstructor": true
+  }
+}

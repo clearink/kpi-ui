@@ -21,9 +21,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.20.13",
-    "@kpi-ui/hooks": "workspace:*",
-    "@kpi-ui/utils": "workspace:*",
-    "@kpi-ui/validator": "workspace:*"
+    "@kpi-ui/hooks": "workspace:^",
+    "@kpi-ui/utils": "workspace:^",
+    "@kpi-ui/validator": "workspace:^"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",

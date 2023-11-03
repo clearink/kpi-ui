@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.20.13",
-    "@kpi-ui/utils": "workspace:*"
+    "@kpi-ui/utils": "workspace:^"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",

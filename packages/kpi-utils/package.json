@@ -2,13 +2,27 @@
   "name": "@kpi-ui/utils",
   "version": "0.0.1",
   "description": "kpi ui lib shared utils",
-  "main": "src/index.ts",
+  "main": "lib/index.js",
+  "module": "es/index.mjs",
+  "types": "es/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./es/index.d.ts",
+      "import": "./es/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "keywords": [
     "kpi-ui",
     "utils"
   ],
   "author": "clearink",
   "license": "ISC",
+  "scripts": {
+    "build:code": "node ../../scripts/lib/index.js",
+    "build:type": ""
+  },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
