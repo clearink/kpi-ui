@@ -22,7 +22,8 @@
   "scripts": {
     "build:code": "node ../../scripts/lib/index.js",
     "build:type": "",
-    "compile": "node rollup.config.js"
+    "compile": "rollup --config rollup.config.js",
+    "www": "node rollup.config.js"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
