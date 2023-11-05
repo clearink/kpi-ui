@@ -21,7 +21,8 @@
   "license": "ISC",
   "scripts": {
     "build:code": "node ../../scripts/lib/index.js",
-    "build:type": ""
+    "build:type": "",
+    "compile": "node rollup.config.js"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
@@ -35,6 +36,6 @@
     "@types/react": "^18.0.27",
     "@types/react-is": "^17.0.3",
     "rollup": "^3.12.0",
-    "typescript": "^4.5.4"
+    "typescript": "^5.0.2"
   }
 }
