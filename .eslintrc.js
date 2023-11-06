@@ -1,20 +1,18 @@
 module.exports = {
   root: true,
-  ignorePatterns: ['rollup.config.js', 'lib', 'es'],
+  env: { browser: true, es2020: true },
   extends: [
-    'airbnb',
-    'airbnb/hooks',
-    'airbnb-typescript',
+    'eslint:recommended',
+    'plugin:jsx-a11y/recommended',
     'plugin:react/jsx-runtime',
-    'plugin:prettier/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
   ],
+  ignorePatterns: ['dist', '.eslintrc.js', 'lib', 'es'],
   parser: '@typescript-eslint/parser',
+  plugins: ['react-refresh'],
   rules: {
     // eslint
-    'no-continue': 'off',
-    'no-underscore-dangle': 'off',
-    'consistent-return': 'off',
-    'no-plusplus': 'off',
     'no-restricted-syntax': [
       'error',
       {
@@ -46,9 +44,6 @@ module.exports = {
       },
     ],
 
-    // import
-    'import/extensions': 'off',
-
     // typescript
     '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/no-use-before-define': [
@@ -68,6 +63,7 @@ module.exports = {
         allowTaggedTemplates: true,
       },
     ],
+    '@typescript-eslint/no-explicit-any': 'off',
 
     // jsx-a11y
     'jsx-a11y/alt-text': 'warn',

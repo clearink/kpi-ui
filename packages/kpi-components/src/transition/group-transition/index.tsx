@@ -27,7 +27,7 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
 
     if (shouldTransition) return store.runTransition()
 
-    if (!isInitial) return store.runFlip()
+    if (!isInitial && store.props.flip) return store.runFlip()
   }, [shouldTransition, store])
 
   return createElement(tag ?? Fragment, undefined, store.nodes)

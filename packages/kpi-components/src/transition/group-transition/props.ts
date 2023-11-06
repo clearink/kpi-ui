@@ -7,4 +7,5 @@ export interface GroupTransitionProps<E extends HTMLElement = HTMLElement>
   moveClass?: string
   tag?: keyof HTMLElementTagNameMap
   onExitComplete?: () => void
+  flip?: boolean
 }

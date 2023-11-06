@@ -2,42 +2,22 @@
   "name": "@kpi-ui/internal",
   "version": "0.0.1",
   "description": "kpi ui internal components",
-  "main": "lib/index.js",
-  "module": "es/index.js",
-  "types": "es/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./es/index.d.ts",
-      "import": "./es/index.js",
-      "require": "./lib/index.js"
-    },
-    "./package.json": "./package.json"
-  },
-  "keywords": [
-    "kpi-ui",
-    "internal",
-    "components"
-  ],
-  "author": "clearink",
-  "license": "ISC",
-  "scripts": {
-    "compile:es": "kpi-scripts compile:code -f es -d es && tsc --declarationDir es",
-    "compile:lib": "kpi-scripts compile:code -f cjs -d lib && tsc --declarationDir lib",
-    "ccc": "npm run compile:es && npm run compile:lib"
-  },
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "license": "MIT",
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.20.13",
     "@kpi-ui/hooks": "workspace:^",
-    "@kpi-ui/utils": "workspace:^",
-    "@kpi-ui/validator": "workspace:^"
+    "@kpi-ui/utils": "workspace:^"
   },
   "devDependencies": {
-    "@kpi-ui/scripts": "workspace:^",
-    "@types/react": "^18.0.27",
-    "typescript": "^5.0.2"
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@kpi-ui/validator": "workspace:^"
   }
 }

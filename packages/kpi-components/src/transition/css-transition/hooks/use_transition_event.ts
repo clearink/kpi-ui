@@ -38,10 +38,10 @@ export default function useTransitionEvent<E extends HTMLElement>(
   const runCancel = useEvent((el: E, step: TransitionStep) => {
     const { from, active, to } = classes[step]
 
-    delTransitionClass(el, from, active, to)
-
     if (isExit(step)) onExitCancel && onExitCancel(el)
     else onEnterCancel && onEnterCancel(el, isAppear(step))
+
+    delTransitionClass(el, from, active, to)
   })
 
   const makeEndHook = useEvent((el: E, step: TransitionStep, timeout?: number) => {

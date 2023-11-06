@@ -1,6 +1,7 @@
 import { Button, Form, Space } from '@kpi-ui/components'
 import { useState } from 'react'
 import kv from '@kpi-ui/validator'
+import '@kpi-ui/components/src/style'
 
 function Input(props: any) {
   return <input {...props} value={props.value || ''} style={{ height: 32 }} />
@@ -24,7 +25,10 @@ export default function App() {
           NoRule: {noRule ? 'true' : 'false'}
         </Button>
         <span>input number</span>
-        <Input value={inputNumber} onChange={(e) => setInputNumber(parseInt(e.target.value, 10))} />
+        <Input
+          value={inputNumber}
+          onChange={(e: any) => setInputNumber(parseInt(e.target.value, 10))}
+        />
       </Space>
       <Form
         tag="div"

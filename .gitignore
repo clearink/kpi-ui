@@ -5,3 +5,5 @@ dist
 # bundle files
 packages/*/lib/
 packages/*/es/
+scripts/es/
+scripts/lib/

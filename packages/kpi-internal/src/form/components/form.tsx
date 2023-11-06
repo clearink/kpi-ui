@@ -38,7 +38,7 @@ const excluded = [
 function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance>) {
   const { name, tag, form, children: $children, onReset, initialValues, validateTrigger } = props
 
-  const formInstance = useForm(form) as InternalFormInstance
+  const formInstance = useForm(form) as InternalFormInstance<State>
 
   useImperativeHandle(ref, () => formInstance)
 

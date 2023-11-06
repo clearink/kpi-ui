@@ -1,4 +1,4 @@
-// // 二次封装 _internal/components/form
+// 二次封装 _internal/components/form
 import { Form as InternalForm } from '@kpi-ui/internal'
 import $Form from './components/form'
 import ErrorList from './components/error-list'

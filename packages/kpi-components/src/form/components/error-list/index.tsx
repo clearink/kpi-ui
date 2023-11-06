@@ -27,7 +27,7 @@ function ErrorList(props: ErrorListProps) {
 
   return (
     <div className={cls(prefixCls, className)}>
-      <GroupTransition name="kpi-1err-list" appear onExitComplete={onExitComplete} {...handlers}>
+      <GroupTransition name="kpi-err-list" appear onExitComplete={onExitComplete} {...handlers}>
         {transitionList.map((item) => {
           return (
             <div key={item.key} className={cls({ [`${prefixCls}--${item.status}`]: item.status })}>
