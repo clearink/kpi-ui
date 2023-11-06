@@ -5,7 +5,7 @@
   "compilerOptions": {
     "noEmit": false,
     "declaration": true,
-    "declarationDir": "esm",
+    "declarationDir": "es",
     "emitDeclarationOnly": true
   }
 }

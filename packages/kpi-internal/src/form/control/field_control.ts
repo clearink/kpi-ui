@@ -106,6 +106,7 @@ export default class FormFieldControl extends BaseControl {
   public metaUpdate = (meta: Partial<FieldMeta>) => {
     const prev = this.meta
     // 同步全部
+    if (!isNullish(meta.dirty)) this._dirty = meta.dirty
     !isNullish(meta.dirty) && (this._dirty = meta.dirty)
     !isNullish(meta.touched) && (this._touched = meta.touched)
     !isNullish(meta.errors) && (this._errors = meta.errors)

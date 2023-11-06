@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  ignorePatterns: ['rollup.config.js', 'lib', 'esm', 'types'],
+  ignorePatterns: ['rollup.config.js', 'lib', 'es'],
   extends: [
     'airbnb',
     'airbnb/hooks',

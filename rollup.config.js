@@ -52,7 +52,6 @@ module.exports = defineConfig([
         extensions,
         comments: false,
         configFile: false,
-        // browserslistConfigFile,
         presets: [
           '@babel/preset-env',
           ['@babel/preset-react', { runtime: 'automatic' }],
