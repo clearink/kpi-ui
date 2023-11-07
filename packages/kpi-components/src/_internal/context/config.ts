@@ -1,4 +1,4 @@
-import { ctxHelper } from '@kpi-ui/internal'
+import { ctxHelper } from '../utils'
 
 import type { ConfigConsumerProps } from '../../config-provider/props'
 import type { SizeType, DisabledType } from '../../types'

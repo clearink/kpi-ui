@@ -1,5 +1,5 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
-import { omit } from '@kpi-ui/utils'
+import { withoutProperties } from '@kpi-ui/utils'
 import { cloneElement, createElement, ReactElement } from 'react'
 import CSSTransition from '../../css-transition'
 import batch from '../../utils/batch'
@@ -30,7 +30,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
   }
 
   make = (element: ReactElement<CSS<E>>, extra: Partial<CSS>) => {
-    const preset = omit(this.props, ['mode', 'children']) as CSS
+    const preset = withoutProperties(this.props, ['mode', 'children']) as CSS
 
     Object.assign(preset, extra, { key: uniqueId() })
 

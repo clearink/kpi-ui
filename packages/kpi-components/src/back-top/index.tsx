@@ -1,5 +1,5 @@
-import { withDefaults } from '@kpi-ui/internal'
 import { CSSProperties, MouseEventHandler, ReactNode } from 'react'
+import { withDefaults } from '../_internal/utils'
 import useClass from './hooks/use_class'
 
 export interface BackTopProps {

@@ -5,7 +5,7 @@ import { object } from '../locales/default'
 import { Invalid, Valid } from '../make_rule'
 
 import type { Context } from '../interface'
-import type { AnyObject, MayBe, NonUndefined, Full } from '../types'
+import type { MayBe, NonUndefined, Full } from '../types'
 
 export type ObjectShape = Record<string, BaseSchema>
 
@@ -21,7 +21,7 @@ export type GroupPartial<T extends ObjectShape> = {
   [P in RequiredKeys<T>]: NonUndefined<T[P]['_Out']>
 }
 
-export type MakePartial<T extends MayBe<ObjectShape>> = T extends AnyObject
+export type MakePartial<T extends MayBe<ObjectShape>> = T extends Record<string, any>
   ? Full<GroupPartial<T>>
   : T
 

@@ -1,4 +1,4 @@
-import { withDefaults } from '@kpi-ui/internal'
+import { withDefaults } from '../_internal/utils'
 import useClass from './hooks/use_class'
 // import { BreadcrumbProps } from './props';
 

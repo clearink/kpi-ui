@@ -1,5 +1,5 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
-import { omit } from '@kpi-ui/utils'
+import { withoutProperties } from '@kpi-ui/utils'
 import { cloneElement, createElement, type Key, type ReactElement } from 'react'
 import { ENTER, isExit, isExited } from '../../constants/status'
 import CSSTransition from '../../css-transition'
@@ -8,7 +8,6 @@ import { addTransitionClass, delTransitionClass } from '../../utils/classnames'
 import reflow from '../../utils/reflow'
 import makeUniqueId from '../../utils/unique_id'
 import diff from '../utils/diff'
-import shouldFlip from '../utils/should'
 import union from '../utils/union'
 
 import type { CSSTransitionProps as CSS, CSSTransitionRef } from '../../css-transition/props'
@@ -60,10 +59,6 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     }, new Map<Key | null, DOMRect>())
   }
 
-  updateCoords = () => {
-    this.coords = this.getCoords()
-  }
-
   isInitial = true
 
   setIsInitial = (isInitial: boolean) => {
@@ -71,7 +66,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
   }
 
   make = (element: ReactElement, extra: Partial<CSS>) => {
-    const preset = omit(this.props, ['children']) as CSS
+    const preset = withoutProperties(this.props, ['children']) as CSS
 
     const ref = (instance: CSSTransitionRef | null) => {
       if (!instance) this.components.delete(element.key)
@@ -133,14 +128,14 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   cancels: (() => void)[] = []
 
+  shouldFlip = () => {
+    const { name, flip } = this.props
+
+    return flip && name
+  }
+
   runFlip = () => {
-    const { name, moveClass } = this.props
-
-    const cls = moveClass || (name && `${name}-move`)
-
-    const store = this.components.get((this.previous[0] || {}).key)
-
-    if (!shouldFlip(cls, (store || {}).instance)) return
+    const { name } = this.props
 
     this.cancels.forEach((fn) => fn())
 
@@ -166,13 +161,13 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
       dom.style.transitionDuration = '0s'
 
       moves.push(() => {
-        addTransitionClass(dom, cls)
+        addTransitionClass(dom, name && `${name}-move`)
 
         dom.style.transform = oldTransform
         dom.style.transitionDuration = oldDuration
 
         const handler = () => {
-          delTransitionClass(dom, cls)
+          delTransitionClass(dom, name && `${name}-move`)
           dom.removeEventListener('transitionend', handler)
         }
 

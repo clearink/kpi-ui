@@ -1,8 +1,8 @@
-import { ctxHelper } from '@kpi-ui/internal'
-import type { FieldMeta } from '@kpi-ui/internal'
-import { noop } from '../constant'
+import { noop } from '@kpi-ui/utils'
+import { ctxHelper } from '../utils'
 
 import type { ColProps } from '../../col/props'
+import type { FieldMeta } from '../../form/_internal/components'
 import type {
   FormInstance,
   FormLabelAlign,

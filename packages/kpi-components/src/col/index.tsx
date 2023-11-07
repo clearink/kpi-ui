@@ -1,11 +1,9 @@
-import { withDefaults } from '@kpi-ui/internal'
-import { isNumber, isUndefined, omit } from '@kpi-ui/utils'
-import { useConstant } from '@kpi-ui/hooks'
-import { CSSProperties, forwardRef, useMemo, type ForwardedRef } from 'react'
+import { isNumber, isUndefined, withoutProperties } from '@kpi-ui/utils'
+import { forwardRef, useMemo, type ForwardedRef } from 'react'
 import { BREAKPOINT_NAME, COL_FLEX_REG } from '../_internal/constant'
 import { RowContext } from '../_internal/context'
 import { usePrefixCls } from '../_internal/hooks'
-import { detectFlexGap } from '../_internal/utils'
+import { withDefaults } from '../_internal/utils'
 import useClass from './hooks/use_class'
 
 import type { ColProps } from './props'
@@ -30,27 +28,13 @@ function Col(props: ColProps, ref: ForwardedRef<HTMLDivElement>) {
 
   const className = useClass(name, props)
 
-  const gapSupport = useConstant(detectFlexGap)
-
-  const { hGutter, vGutter } = RowContext.useState()
+  const hGutter = RowContext.useState()
 
   const gapStyle = useMemo(() => {
-    const [h, v] = [hGutter / 2, vGutter / 2]
+    const h = hGutter / 2
 
-    const style: CSSProperties = {}
-
-    if (h) {
-      gapStyle.paddingLeft = h
-      gapStyle.paddingRight = h
-    }
-
-    if (v && !gapSupport) {
-      gapStyle.paddingTop = v
-      gapStyle.paddingBottom = v
-    }
-
-    return style
-  }, [gapSupport, hGutter, vGutter])
+    return h ? { paddingLeft: h, paddingRight: h } : {}
+  }, [hGutter])
 
   const flex = useMemo(() => {
     if (isUndefined($flex)) return undefined
@@ -60,7 +44,7 @@ function Col(props: ColProps, ref: ForwardedRef<HTMLDivElement>) {
     if (COL_FLEX_REG.test($flex)) return `0 0 ${$flex}`
   }, [$flex])
 
-  const attrs = omit(props, excluded)
+  const attrs = withoutProperties(props, excluded)
 
   return (
     <div className={className} ref={ref} style={{ flex, ...gapStyle, ...$style }} {...attrs}>

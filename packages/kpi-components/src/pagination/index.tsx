@@ -1,5 +1,5 @@
-import { withDefaults } from '@kpi-ui/internal'
 import { usePrefixCls } from '../_internal/hooks'
+import { withDefaults } from '../_internal/utils'
 import useClass from './hooks/use_class'
 import usePageChunk from './hooks/use_page_chunk'
 import { PaginationProps } from './props'

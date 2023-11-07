@@ -1,5 +1,3 @@
-import type { AnyObject } from './types'
-
 type ValueType =
   | 'Object'
   | 'Undefined'
@@ -31,7 +29,8 @@ export const isFunction = (obj: any): obj is (...args: any[]) => any => typeof o
 
 export const isObject = (obj: any): obj is object => validateType(obj, 'Object')
 
-export const isObjectLike = (obj: any): obj is AnyObject => obj !== null && typeof obj === 'object'
+export const isObjectLike = (obj: any): obj is Record<string, any> =>
+  obj !== null && typeof obj === 'object'
 
 export const isNumber = (obj: any): obj is number => validateType(obj, 'Number')
 

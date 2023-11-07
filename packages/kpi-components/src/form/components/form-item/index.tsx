@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { Form as InternalForm } from '@kpi-ui/internal'
 import { useDebounceState, useIsomorphicEffect } from '@kpi-ui/hooks'
-import { isUndefined, omit, pick, toArray } from '@kpi-ui/utils'
+import { isUndefined, withoutProperties, pick, toArray } from '@kpi-ui/utils'
 
 import type { FieldMeta } from '@kpi-ui/internal'
 import Row from '../../../row'
@@ -68,7 +68,7 @@ function CommonFormItem(props: FormItemProps) {
   const handleMetaChange = useCallback(
     (fieldMeta: FieldMeta) => {
       const next = fieldMeta as FieldMeta & { mounted: boolean }
-      if (next.mounted) setMeta(omit(next, ['mounted']))
+      if (next.mounted) setMeta(withoutProperties(next, ['mounted']))
     },
     [setMeta]
   )
@@ -77,7 +77,7 @@ function CommonFormItem(props: FormItemProps) {
   const handleSubMetaChange = useCallback(
     (fieldMeta: FieldMeta) => {
       const next = fieldMeta as FieldMeta & { mounted: boolean }
-      if (next.mounted) setSubMeta(omit(next, ['mounted']))
+      if (next.mounted) setSubMeta(withoutProperties(next, ['mounted']))
     },
     [setSubMeta]
   )

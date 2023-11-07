@@ -1,10 +1,8 @@
-import { withDefaults } from '@kpi-ui/internal'
-import { useConstant } from '@kpi-ui/hooks'
-import { omit } from '@kpi-ui/utils'
+import { withoutProperties } from '@kpi-ui/utils'
 import { CSSProperties, forwardRef, useMemo, type ForwardedRef } from 'react'
 import { RowContext } from '../_internal/context'
 import { usePrefixCls } from '../_internal/hooks'
-import { detectFlexGap } from '../_internal/utils'
+import { withDefaults } from '../_internal/utils'
 import useClass from './hooks/use_class'
 import useRowGutter from './hooks/use_row_gutter'
 
@@ -19,11 +17,7 @@ function Row(props: RowProps, ref: ForwardedRef<HTMLDivElement>) {
 
   const className = useClass(name, props)
 
-  const gapSupport = useConstant(detectFlexGap)
-
   const [hGutter, vGutter] = useRowGutter(gutter)
-
-  const contextState = useMemo(() => ({ hGutter, vGutter }), [hGutter, vGutter])
 
   const gapStyle = useMemo(() => {
     const [h, v] = [hGutter / -2, vGutter / -2]
@@ -34,23 +28,21 @@ function Row(props: RowProps, ref: ForwardedRef<HTMLDivElement>) {
       style.marginLeft = h
       style.marginRight = h
     }
-    if (v && gapSupport) {
+
+    if (v) {
       style.marginLeft = h
       style.marginRight = h
       style.rowGap = vGutter
-    } else if (v) {
-      style.marginTop = v
-      style.marginBottom = v
     }
 
     return style
-  }, [gapSupport, hGutter, vGutter])
+  }, [hGutter, vGutter])
 
-  const attrs = omit(props, excluded)
+  const attrs = withoutProperties(props, excluded)
 
   return (
     <div className={className} ref={ref} {...attrs} style={{ ...gapStyle, ...$style }}>
-      <RowContext.Provider value={contextState}>{children}</RowContext.Provider>
+      <RowContext.Provider value={hGutter}>{children}</RowContext.Provider>
     </div>
   )
 }

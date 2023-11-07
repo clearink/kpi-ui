@@ -1,6 +1,6 @@
-import { capitalize, omit } from '@kpi-ui/utils'
-import { withDefaults } from '@kpi-ui/internal'
+import { capitalize, withoutProperties } from '@kpi-ui/utils'
 import { usePrefixCls } from '../_internal/hooks'
+import { withDefaults } from '../_internal/utils'
 import useClass from './hooks/use_class'
 
 import type { DividerProps } from './props'
@@ -24,7 +24,7 @@ function Divider(props: DividerProps) {
 
   const innerStyle = { [`margin${capitalize(orientation)}`]: orientationMargin }
 
-  const attrs = omit(props, excluded)
+  const attrs = withoutProperties(props, excluded)
 
   return (
     <div className={className} {...attrs}>

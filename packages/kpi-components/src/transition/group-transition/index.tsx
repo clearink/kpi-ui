@@ -17,7 +17,8 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
   const shouldTransition = !isElementsEqual(store.current, children)
 
   useDerivedState(shouldTransition, () => {
-    if (!shouldTransition) store.updateCoords()
+    if (shouldTransition || !store.shouldFlip()) return
+    store.coords = store.getCoords()
   })
 
   useEffect(() => {
@@ -27,7 +28,7 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
 
     if (shouldTransition) return store.runTransition()
 
-    if (!isInitial && store.props.flip) return store.runFlip()
+    if (!isInitial && store.shouldFlip()) store.runFlip()
   }, [shouldTransition, store])
 
   return createElement(tag ?? Fragment, undefined, store.nodes)

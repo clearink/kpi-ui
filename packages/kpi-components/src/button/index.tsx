@@ -1,8 +1,8 @@
 /* eslint-disable react/button-has-type */
+import { withoutProperties } from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef, useImperativeHandle, type MouseEvent } from 'react'
-import { omit } from '@kpi-ui/utils'
-import { withDefaults } from '@kpi-ui/internal'
 import { usePrefixCls, useWave } from '../_internal/hooks'
+import { withDefaults } from '../_internal/utils'
 import useClass from './hooks/use_class'
 
 import type { ButtonProps } from './props'
@@ -36,7 +36,7 @@ function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
     else onClick && onClick(e)
   }
 
-  const attrs = omit(props, excluded)
+  const attrs = withoutProperties(props, excluded)
 
   return (
     <button

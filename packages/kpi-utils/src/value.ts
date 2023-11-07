@@ -1,9 +1,4 @@
-import type { AnyObject } from './types'
-
-/**
- * @description 不处理原型数据
- */
-export function omit<T extends AnyObject, K extends keyof T>(
+export function withoutProperties<T extends Record<string, any>, K extends keyof T>(
   source: T,
   excluded: readonly K[]
 ): Omit<T, K> {
@@ -19,7 +14,7 @@ export function omit<T extends AnyObject, K extends keyof T>(
   return target
 }
 
-export function pick<T extends AnyObject, K extends keyof T>(
+export function pick<T extends Record<string, any>, K extends keyof T>(
   source: T,
   keys: readonly K[]
 ): Pick<T, K> {
@@ -33,6 +28,6 @@ export function pick<T extends AnyObject, K extends keyof T>(
   return result
 }
 
-export function hasOwn<O extends unknown>(obj: O, key: keyof any) {
+export function hasOwn<O>(obj: O, key: keyof any) {
   return Object.prototype.hasOwnProperty.call(obj, key)
 }

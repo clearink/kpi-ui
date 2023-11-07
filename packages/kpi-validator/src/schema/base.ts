@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { hasOwn, isNull, isNullish, isUndefined, omit } from '@kpi-ui/utils'
+import { hasOwn, isNull, isNullish, isUndefined, withoutProperties } from '@kpi-ui/utils'
 import { base, union } from '../locales/default'
 import SchemaContext from '../context'
 import { Invalid, makeRule, Valid } from '../make_rule'
@@ -69,6 +69,7 @@ export default abstract class BaseSchema<Out = any, In = Out> {
   }
 
   isRequired() {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let tail = this
 
     while (tail && hasOwn(tail, 'unwrap')) {
@@ -257,7 +258,7 @@ export class UnionSchema<
 
     const results: UnionInnerReturn<Out> = await Promise.all(
       this.inner.map(async (schema) => {
-        const ctx = SchemaContext.ensure(omit(context, ['issue']))
+        const ctx = SchemaContext.ensure(withoutProperties(context, ['issue']))
         try {
           return [ctx, await schema._validate(value, ctx)]
         } catch (error) {

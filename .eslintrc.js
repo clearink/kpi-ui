@@ -64,6 +64,7 @@ module.exports = {
       },
     ],
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-empty-function': 'off',
 
     // jsx-a11y
     'jsx-a11y/alt-text': 'warn',

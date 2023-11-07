@@ -12,6 +12,7 @@ export interface CSSTransitionProps<E extends HTMLElement = HTMLElement> {
   type?: 'transition' | 'animation'
   duration?: number | { appear?: number; enter?: number; exit?: number }
   appear?: boolean
+  mountOnEnter?: boolean
   unmountOnExit?: boolean
   children: ReactElement
   // classNames

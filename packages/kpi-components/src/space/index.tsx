@@ -1,9 +1,8 @@
-import { withDefaults } from '@kpi-ui/internal'
 import { useConstant } from '@kpi-ui/hooks'
-import { flattenChildren, omit } from '@kpi-ui/utils'
+import { flattenChildren, withoutProperties } from '@kpi-ui/utils'
 import { Fragment, ReactElement, type CSSProperties } from 'react'
 import { usePrefixCls } from '../_internal/hooks'
-import { detectFlexGap } from '../_internal/utils'
+import { withDefaults } from '../_internal/utils'
 import useClass from './hooks/use_class'
 import useSpaceGutter from './hooks/use_space_gutter'
 
@@ -12,9 +11,7 @@ import type { SpaceProps } from './props'
 const excluded = ['children', 'size', 'style', 'direction', 'wrap', 'split'] as const
 
 function Space(props: SpaceProps) {
-  const { children: $children, size, style, direction, wrap, split } = props
-
-  const gapSupport = useConstant(detectFlexGap)
+  const { children: $children, size, style, split } = props
 
   const name = usePrefixCls('space')
 
@@ -23,42 +20,24 @@ function Space(props: SpaceProps) {
   // 水平 垂直 间距
   const [hGutter, vGutter] = useSpaceGutter(size, !!split)
 
-  // 垂直排列
-  const vertical = direction === 'vertical'
-
-  const wrapGapStyle: CSSProperties = {}
-  if (gapSupport) {
-    wrapGapStyle.rowGap = vGutter
-    wrapGapStyle.columnGap = hGutter
-  } else if (wrap || vertical) {
-    wrapGapStyle.marginBottom = -vGutter
-  }
+  const wrapGapStyle: CSSProperties = { rowGap: vGutter, columnGap: hGutter }
 
   // 处理 children
   const children = flattenChildren($children).map((child, index, childList) => {
     const isEndItem = childList.length - index === 1
-    const marginRight = isEndItem || vertical ? undefined : hGutter
-    const paddingBottom = wrap || vertical ? vGutter : undefined
-    const gapStyle = gapSupport ? undefined : { marginRight, paddingBottom }
     const key = (child as ReactElement)?.key || index
     return (
       <Fragment key={key}>
-        <div className={`${name}-item`} style={gapStyle}>
-          {child}
-        </div>
-        {split && !isEndItem && (
-          <span className={`${name}-item-split`} style={gapStyle}>
-            {split}
-          </span>
-        )}
+        <div className={`${name}-item`}>{child}</div>
+        {split && !isEndItem && <span className={`${name}-item-split`}>{split}</span>}
       </Fragment>
     )
   })
 
-  const rest = omit(props, excluded)
+  const attrs = withoutProperties(props, excluded)
 
   return (
-    <div className={className} style={{ ...wrapGapStyle, ...style }} {...rest}>
+    <div className={className} style={{ ...wrapGapStyle, ...style }} {...attrs}>
       {children}
     </div>
   )

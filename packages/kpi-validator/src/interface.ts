@@ -1,5 +1,4 @@
 import type SchemaContext from './context'
-import type { AnyObject } from './types'
 
 export type Name = string | number
 
@@ -15,7 +14,9 @@ export interface SchemaIssue {
   path: Name[]
 }
 
-export type Message = SchemaIssue['message'] | ((params: AnyObject) => SchemaIssue['message'])
+export type Message =
+  | SchemaIssue['message']
+  | ((params: Record<string, any>) => SchemaIssue['message'])
 
 export type ValidType<T> = { status: 'valid'; value: T }
 export type InValidType = { status: 'invalid' }

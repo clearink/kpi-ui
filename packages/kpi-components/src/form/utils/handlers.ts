@@ -1,8 +1,7 @@
-import reflow from '../../transition/utils/reflow'
-
 type E = HTMLDivElement & { _height?: number; _original?: string }
 
 const reset = (el: E) => {
+  el.style.height = el._original || ''
   delete el._height
   delete el._original
 }
@@ -13,19 +12,16 @@ const inject = (el: E) => {
 }
 
 const handlers = {
-  onEnter: (el: E, appearing: boolean) => {
-    appearing && inject(el)
+  onEnter: (el: E) => {
+    inject(el)
     el.style.height = '0px'
-    reflow(el)
   },
   onEntering: (el: E) => {
     el.style.height = `${el._height}px`
   },
-  onEntered: (el: E) => {
-    el.style.height = el._original || ''
-    reset(el)
-  },
-  onEnterCancel: (el: E) => {
+  onEntered: reset,
+  onEnterCancel: (el: E, appearing: boolean) => {
+    if (appearing) return reset(el)
     el.style.height = `${el.clientHeight}px`
   },
   onExit: (el: E) => {
