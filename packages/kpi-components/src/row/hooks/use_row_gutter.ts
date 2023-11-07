@@ -4,10 +4,10 @@ import { useBreakpoint, matchBreakpoint } from '../../_internal/hooks'
 import type { RowProps } from '../props'
 
 export default function useRowGutter(gutter: RowProps['gutter']) {
-  const $gutter = isArray(gutter) ? gutter : [gutter, 0]
+  const tuple = isArray(gutter) ? gutter : [gutter, 0]
 
   const matches = useBreakpoint((query) => {
-    return $gutter.some((gap) => {
+    return tuple.some((gap) => {
       if (isNumber(gap)) return false
 
       const oldGap = matchBreakpoint(matches, gap)
@@ -17,7 +17,7 @@ export default function useRowGutter(gutter: RowProps['gutter']) {
     })
   })
 
-  return $gutter.map((gap) => {
+  return tuple.map((gap) => {
     if (isNumber(gap)) return gap
     return matchBreakpoint(matches, gap) ?? 0
   })

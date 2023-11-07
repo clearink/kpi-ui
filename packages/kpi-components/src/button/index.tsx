@@ -3,7 +3,7 @@ import { withoutProperties } from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef, useImperativeHandle, type MouseEvent } from 'react'
 import { usePrefixCls, useWave } from '../_internal/hooks'
 import { withDefaults } from '../_internal/utils'
-import useClass from './hooks/use_class'
+import useFormatClass from './hooks/use_format_class'
 
 import type { ButtonProps } from './props'
 
@@ -25,7 +25,7 @@ function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
 
   const name = usePrefixCls('button')
 
-  const className = useClass(name, props)
+  const classes = useFormatClass(name, props)
 
   useImperativeHandle(ref, () => internalRef.current!)
 
@@ -39,13 +39,7 @@ function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
   const attrs = withoutProperties(props, excluded)
 
   return (
-    <button
-      className={className}
-      ref={internalRef}
-      type={htmlType}
-      onClick={handleClick}
-      {...attrs}
-    >
+    <button className={classes} ref={internalRef} type={htmlType} onClick={handleClick} {...attrs}>
       <span>{children}</span>
     </button>
   )

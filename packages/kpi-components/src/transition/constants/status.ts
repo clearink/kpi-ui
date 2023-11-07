@@ -1,15 +1,15 @@
-export const APPEAR = 'appear'
-export const ENTER = 'enter'
-export const ENTERED = 'entered'
-export const EXIT = 'exit'
-export const EXITED = 'exited'
+export const APPEAR = 0
+export const ENTER = 1
+export const ENTERED = 2
+export const EXIT = 3
+export const EXITED = 4
 
-export const isExit = (status: string) => status === EXIT
+export const isExit = (status: number) => status === EXIT
 
-export const isAppear = (status: string) => status === APPEAR
+export const isAppear = (status: number) => status === APPEAR
 
-export const isEnter = (status: string) => status === ENTER
+export const isEnter = (status: number) => status === ENTER
 
-export const isEntered = (status: string) => status === ENTERED
+export const isEntered = (status: number) => status === ENTERED
 
-export const isExited = (status: string) => status === EXITED
+export const isExited = (status: number) => status === EXITED

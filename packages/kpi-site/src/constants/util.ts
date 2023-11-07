@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable class-methods-use-this */
 type Key = string | number | symbol
 
 type Value = any
@@ -31,23 +29,17 @@ type GenerateEnums<T extends readonly ConstantItem[]> = T extends readonly [infe
 export default class Constant<T extends readonly ConstantItem[]> {
   readonly options: ConstantOption<T>[] = []
 
-  // 用 key 去匹配 sequenceItem
   get: (key: T[number][0]) => ConstantOption<T>
 
-  // 以后台返回的 value 去匹配 sequence
-  // 也可以传递函数执行 options.find
   match(callback: (item: ConstantOption<T>) => boolean): ConstantOption<T> | undefined
   match(value: Value): ConstantOption<T> | undefined
   match(value: Value, key: T[number][0]): ConstantOption<T>
   match(): any {}
 
-  // 以后台返回的 value 根据 key 检查是否匹配 用于判断
   when: (value: any, condition: T[number][0] | T[number][0][]) => boolean
 
-  // 扩展某些属性
   extend: <R extends object>(fn: (instance: this) => R) => this & R
 
-  // 将 key 映射成 value, value 映射成 label 方便前端使用
   injectEnums: () => this & GenerateEnums<T>
 
   constructor(public readonly sequences: T) {
@@ -63,6 +55,7 @@ export default class Constant<T extends readonly ConstantItem[]> {
       this.options.push(item)
 
       k_map.set(key, item)
+
       v_map.set(value, item)
     })
 
@@ -87,6 +80,7 @@ export default class Constant<T extends readonly ConstantItem[]> {
     this.injectEnums = () => {
       k_map.forEach(({ key, value, label }) => {
         const properties = { [key]: { value }, [value]: { value: label } }
+
         Object.defineProperties(this, properties)
       })
       return this as this & GenerateEnums<T>

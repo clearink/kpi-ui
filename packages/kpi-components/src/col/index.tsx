@@ -1,10 +1,11 @@
-import { isNumber, isUndefined, withoutProperties } from '@kpi-ui/utils'
-import { forwardRef, useMemo, type ForwardedRef } from 'react'
-import { BREAKPOINT_NAME, COL_FLEX_REG } from '../_internal/constant'
-import { RowContext } from '../_internal/context'
+import { withoutProperties } from '@kpi-ui/utils'
+import { forwardRef, type ForwardedRef } from 'react'
+import { BREAKPOINT_NAME } from '../_internal/constants'
 import { usePrefixCls } from '../_internal/hooks'
 import { withDefaults } from '../_internal/utils'
-import useClass from './hooks/use_class'
+import { RowContext } from '../_shared/context'
+import useColFlex from './hooks/use_col_flex'
+import useFormatClass from './hooks/use_format_class'
 
 import type { ColProps } from './props'
 
@@ -22,35 +23,25 @@ const excluded = [
 ] as const
 
 function Col(props: ColProps, ref: ForwardedRef<HTMLDivElement>) {
-  const { children, style: $style, flex: $flex } = props
+  const { children, style } = props
 
   const name = usePrefixCls('col')
 
-  const className = useClass(name, props)
+  const classes = useFormatClass(name, props)
 
-  const hGutter = RowContext.useState()
+  const gutter = RowContext.useState() / 2
 
-  const gapStyle = useMemo(() => {
-    const h = hGutter / 2
+  const gapStyle = gutter ? { paddingLeft: gutter, paddingRight: gutter } : undefined
 
-    return h ? { paddingLeft: h, paddingRight: h } : {}
-  }, [hGutter])
-
-  const flex = useMemo(() => {
-    if (isUndefined($flex)) return undefined
-
-    if (isNumber($flex)) return `${$flex} ${$flex} auto`
-
-    if (COL_FLEX_REG.test($flex)) return `0 0 ${$flex}`
-  }, [$flex])
+  const flex = useColFlex(props.flex)
 
   const attrs = withoutProperties(props, excluded)
 
   return (
-    <div className={className} ref={ref} style={{ flex, ...gapStyle, ...$style }} {...attrs}>
+    <div className={classes} ref={ref} style={{ flex, ...gapStyle, ...style }} {...attrs}>
       {children}
     </div>
   )
 }
 
-export default withDefaults(forwardRef(Col), {} as const)
+export default withDefaults(forwardRef(Col))

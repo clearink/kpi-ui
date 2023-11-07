@@ -1,23 +1,12 @@
-import { CSSProperties, MouseEventHandler, ReactNode } from 'react'
 import { withDefaults } from '../_internal/utils'
-import useClass from './hooks/use_class'
+import useFormatClass from './hooks/use_format_class'
 
-export interface BackTopProps {
-  // 动作时长
-  duration?: number
-  target?: () => HTMLElement | Window | Document
-  onClick?: MouseEventHandler<HTMLElement>
-  style?: CSSProperties
-  className?: string
-  children?: ReactNode
-  // 滚动阈值
-  threshold?: number
-}
+import type { BackTopProps } from './props'
 
 function BackTop(props: BackTopProps) {
-  const className = useClass(props)
+  const classes = useFormatClass(props)
 
-  return <div className={className}>back-top</div>
+  return <div className={classes}>back-top</div>
 }
 
 export default withDefaults(BackTop, {

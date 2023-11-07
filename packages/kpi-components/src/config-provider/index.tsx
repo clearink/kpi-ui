@@ -1,5 +1,4 @@
-import { DisabledContext, SizeContext } from '../_internal/context'
-import { ConfigContext } from '../_internal/context/config'
+import { DisabledContext, SizeContext, ConfigContext } from '../_shared/context'
 
 import type { ConfigProviderProps } from './props'
 

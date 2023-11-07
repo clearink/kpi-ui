@@ -1,7 +1,7 @@
 import { isFunction } from '@kpi-ui/utils'
-import { BREAKPOINT_MAP, INIT_MATCHES } from '../../constant/breakpoint'
+import { BREAKPOINT_MAP, INIT_MATCHES } from '../../constants/breakpoint'
 
-import type { ScreenMatch } from '../../constant/breakpoint'
+import type { ScreenMatch } from '../../constants/breakpoint'
 
 class BreakpointObserver {
   // 订阅事件

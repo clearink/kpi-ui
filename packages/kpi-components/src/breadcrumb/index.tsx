@@ -1,11 +1,12 @@
 import { withDefaults } from '../_internal/utils'
-import useClass from './hooks/use_class'
+import useFormatClass from './hooks/use_format_class'
 // import { BreadcrumbProps } from './props';
 
 // TODO: 待开发
 function Breadcrumb() {
-  const className = useClass()
-  return <div className={className}>breadcrumb</div>
+  const classes = useFormatClass()
+
+  return <div className={classes}>breadcrumb</div>
 }
 
 export default withDefaults(Breadcrumb, {} as const)

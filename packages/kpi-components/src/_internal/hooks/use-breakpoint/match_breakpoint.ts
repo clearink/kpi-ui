@@ -1,7 +1,7 @@
 import { hasOwn } from '@kpi-ui/utils'
-import { BREAKPOINT_NAME } from '../../constant'
+import { BREAKPOINT_NAME } from '../../constants'
 
-import type { ScreenMatch } from '../../constant'
+import type { ScreenMatch } from '../../constants'
 
 // 匹配相应的断点数据
 export default function matchBreakpoint<Q extends unknown>(

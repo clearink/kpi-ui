@@ -1,9 +1,9 @@
 import { withoutProperties } from '@kpi-ui/utils'
-import { CSSProperties, forwardRef, useMemo, type ForwardedRef } from 'react'
-import { RowContext } from '../_internal/context'
+import { CSSProperties, forwardRef, type ForwardedRef } from 'react'
 import { usePrefixCls } from '../_internal/hooks'
 import { withDefaults } from '../_internal/utils'
-import useClass from './hooks/use_class'
+import { RowContext } from '../_shared/context'
+import useFormatClass from './hooks/use_format_class'
 import useRowGutter from './hooks/use_row_gutter'
 
 import type { RowProps } from './props'
@@ -11,37 +11,28 @@ import type { RowProps } from './props'
 const excluded = ['children', 'style', 'gutter', 'align', 'justify', 'wrap', 'className'] as const
 
 function Row(props: RowProps, ref: ForwardedRef<HTMLDivElement>) {
-  const { children, style: $style, gutter } = props
+  const { children, style, gutter } = props
 
   const name = usePrefixCls('row')
 
-  const className = useClass(name, props)
+  const classes = useFormatClass(name, props)
 
   const [hGutter, vGutter] = useRowGutter(gutter)
 
-  const gapStyle = useMemo(() => {
-    const [h, v] = [hGutter / -2, vGutter / -2]
+  const [h, v] = [hGutter / -2, vGutter / -2]
 
-    const style: CSSProperties = {}
+  const gap: CSSProperties = {}
 
-    if (h) {
-      style.marginLeft = h
-      style.marginRight = h
-    }
+  if (h) gap.marginLeft = h
 
-    if (v) {
-      style.marginLeft = h
-      style.marginRight = h
-      style.rowGap = vGutter
-    }
+  if (h) gap.marginRight = h
 
-    return style
-  }, [hGutter, vGutter])
+  if (v) gap.rowGap = vGutter
 
   const attrs = withoutProperties(props, excluded)
 
   return (
-    <div className={className} ref={ref} {...attrs} style={{ ...gapStyle, ...$style }}>
+    <div className={classes} ref={ref} {...attrs} style={{ ...gap, ...style }}>
       <RowContext.Provider value={hGutter}>{children}</RowContext.Provider>
     </div>
   )

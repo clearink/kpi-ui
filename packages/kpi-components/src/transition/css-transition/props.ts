@@ -1,8 +1,10 @@
 import type { ReactElement } from 'react'
+import { APPEAR, ENTER, ENTERED, EXIT, EXITED } from '../constants/status'
 import type { TransitionStore } from './hooks/use_transition_store'
 
-export type TransitionStep = 'enter' | 'appear' | 'exit'
-export type TransitionStatus = 'enter' | 'exit' | 'entered' | 'exited'
+export type TransitionStep = typeof APPEAR | typeof ENTER | typeof EXIT
+
+export type TransitionStatus = typeof ENTER | typeof EXIT | typeof ENTERED | typeof EXITED
 
 export type CSSTransitionRef<E extends HTMLElement = HTMLElement> = TransitionStore<E>
 export interface CSSTransitionProps<E extends HTMLElement = HTMLElement> {

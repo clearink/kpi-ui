@@ -3,7 +3,7 @@ import { flattenChildren, withoutProperties } from '@kpi-ui/utils'
 import { Fragment, ReactElement, type CSSProperties } from 'react'
 import { usePrefixCls } from '../_internal/hooks'
 import { withDefaults } from '../_internal/utils'
-import useClass from './hooks/use_class'
+import useFormatClass from './hooks/use_format_class'
 import useSpaceGutter from './hooks/use_space_gutter'
 
 import type { SpaceProps } from './props'
@@ -15,12 +15,12 @@ function Space(props: SpaceProps) {
 
   const name = usePrefixCls('space')
 
-  const className = useClass(name, props)
+  const classes = useFormatClass(name, props)
 
   // 水平 垂直 间距
-  const [hGutter, vGutter] = useSpaceGutter(size, !!split)
+  const [h, v] = useSpaceGutter(size, !!split)
 
-  const wrapGapStyle: CSSProperties = { rowGap: vGutter, columnGap: hGutter }
+  const gap: CSSProperties = { rowGap: v, columnGap: h }
 
   // 处理 children
   const children = flattenChildren($children).map((child, index, childList) => {
@@ -37,7 +37,7 @@ function Space(props: SpaceProps) {
   const attrs = withoutProperties(props, excluded)
 
   return (
-    <div className={className} style={{ ...wrapGapStyle, ...style }} {...attrs}>
+    <div className={classes} style={{ ...gap, ...style }} {...attrs}>
       {children}
     </div>
   )

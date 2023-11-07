@@ -3,7 +3,7 @@ import { useEvent } from '@kpi-ui/hooks'
 import { isUndefined } from '@kpi-ui/utils'
 import observer from './breakpoint_observer'
 
-import type { ScreenMatch } from '../../constant/breakpoint'
+import type { ScreenMatch } from '../../constants/breakpoint'
 
 // 基础响应式断点 hooks
 export default function useBreakpoint(shouldUpdate?: (query: ScreenMatch<boolean>) => boolean) {

@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react'
-import type { Breakpoint } from '../_internal/constant'
+import type { Breakpoint } from '../_internal/constants'
 import type { LiteralUnion } from '../types'
 
 export type FlexType = number | LiteralUnion<'none' | 'auto', string>
