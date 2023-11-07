@@ -2,8 +2,8 @@ import { logger, noop } from '@kpi-ui/utils'
 import { ctxHelper } from '../../_internal/utils'
 
 import type { AnyObject } from '../../types'
-import type { InternalFormInstance } from '../_internal/form/internal_props'
-import type { FieldData, FormInstance } from '../_internal/form/props'
+import type { InternalFormInstance } from './form/internal_props'
+import type { FieldData, FormInstance } from './form/props'
 
 // TODO: 目前还不确定
 export interface FormContextState {

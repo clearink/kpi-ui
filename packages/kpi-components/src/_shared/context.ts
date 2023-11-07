@@ -1,3 +1,3 @@
-export * from '../row/_internal/context'
+export * from '../row/_shared/context'
 
-export * from '../config-provider/_internal/context'
+export * from '../config-provider/_shared/context'

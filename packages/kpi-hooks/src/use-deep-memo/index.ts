@@ -1,6 +1,5 @@
 import { useRef, type DependencyList } from 'react'
-import isEqual from 'react-fast-compare'
-
+import { isEqual } from '@kpi-ui/utils'
 export interface MemoizeCache<T> {
   deps?: DependencyList
   value?: T
