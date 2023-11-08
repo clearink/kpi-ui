@@ -1,11 +1,11 @@
-// 二次封装 _internal/components/form
-import InternalForm from './_shared/form'
+// 二次封装 form-internal 组件
+import InternalForm from '../form-internal'
 import $Form from './components/form'
 import ErrorList from './components/error-list'
-import FormItem from './components/form-item'
-import FormList from './components/form-list'
-import useForm from './hooks/use_form'
-import useFormInstance from './hooks/use_instance'
+import FormItem from './components/item'
+import FormList from './components/list'
+import useForm from './components/form/hooks/use_form'
+import useFormInstance from './components/form/hooks/use_instance'
 
 type CompoundedComponent = typeof $Form & {
   Item: typeof FormItem
@@ -26,3 +26,10 @@ Form.useFormInstance = useFormInstance
 Form.useWatch = InternalForm.useWatch
 
 export default Form
+
+// type CompoundedComponent = typeof InternalFormItem & {
+//   useStatus: typeof useFormItemStatus
+// }
+
+// const FormItem = InternalFormItem as CompoundedComponent
+// FormItem.useStatus = useFormItemStatus

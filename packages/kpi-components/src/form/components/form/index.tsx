@@ -1,22 +1,22 @@
+import { withDefaults } from '@kpi-ui/utils'
 import {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  type ForwardedRef,
   type ReactElement,
   type Ref,
-  type ForwardedRef,
-  useMemo,
-  forwardRef,
-  useImperativeHandle,
-  useCallback,
 } from 'react'
-import InternalForm from '../../../form-internal'
-
-import { useFormClass } from '../../hooks/use_class'
-import useForm from '../../hooks/use_form'
-
-import type { FormInstance, FormProps } from '../../props'
 import { ConfigContext, DisabledContext, SizeContext } from '../../../_shared/context'
+import InternalForm from '../../../form-internal'
 import { FormContext, FormContextState } from '../../_shared/context'
+import useFormatClass from './hooks/use_format_class'
+import useForm from './hooks/use_form'
 
-function Form(props: FormProps, ref: ForwardedRef<FormInstance>) {
+import type { FormInstance, FormProps } from './props'
+
+function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance<State>>) {
   const { form: contextFormConfig } = ConfigContext.useState()
   const contextDisabled = DisabledContext.useState()
   const contextSize = SizeContext.useState()
@@ -38,7 +38,7 @@ function Form(props: FormProps, ref: ForwardedRef<FormInstance>) {
     ...rest
   } = props
 
-  const className = useFormClass(props, size, requiredMark)
+  const classes = useFormatClass(props, size, requiredMark)
 
   const formInstance = useForm(form)
 
@@ -72,10 +72,10 @@ function Form(props: FormProps, ref: ForwardedRef<FormInstance>) {
     <DisabledContext.Provider value={disabled}>
       <SizeContext.Provider value={size}>
         <FormContext.Provider value={formContext}>
-          <InternalForm
+          <InternalForm<State>
             {...rest}
             name={name}
-            className={className}
+            className={classes}
             form={formInstance}
             onFailed={onFailedWithEffect}
           />

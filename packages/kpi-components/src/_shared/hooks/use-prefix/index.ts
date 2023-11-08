@@ -1,4 +1,4 @@
-import { ConfigContext } from '../../context/config'
+import { ConfigContext } from '../../context'
 
 export default function usePrefixCls(name?: string) {
   const { prefixCls = 'kpi' } = ConfigContext.useState()

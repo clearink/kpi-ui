@@ -1,6 +1,6 @@
 @import '../core/index.scss'; // 引入 BEM
 
-@include b(err-list) {
+@include b(form-error) {
   &-enter-from,
   &-exit-to {
     opacity: 0;

@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { APPEAR, ENTER, EXIT } from '../../constants/status'
 
 import type { CSSTransitionProps } from '../props'
 
@@ -25,7 +26,7 @@ export default function useFormatClassNames(
       to: classNames.exitTo ?? (name && `${name}-exit-to`),
     }
 
-    return { appear, enter, exit }
+    return { [APPEAR]: appear, [ENTER]: enter, [EXIT]: exit }
   }, [
     classNames.appear,
     classNames.appearActive,

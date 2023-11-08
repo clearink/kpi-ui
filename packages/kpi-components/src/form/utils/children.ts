@@ -1,14 +1,11 @@
-import { cloneElement, isValidElement } from 'react'
 import { isFunction, isNullish, isString } from '@kpi-ui/utils'
-
-import type { FormContextState } from '../../_internal/context'
-import type {
-  FormInstance,
-  FormItemLabelExtraProps,
-  FormItemLabelProps,
-  FormItemProps,
-} from '../props'
+import { cloneElement, isValidElement } from 'react'
 import isInvalidUsage from './usage'
+
+import type { FormContextState } from '../_shared/context'
+import type { FormInstance } from '../components/form/props'
+import type { FormItemLabelExtraProps, FormItemLabelProps } from '../components/item-label/props'
+import type { FormItemProps } from '../components/item/props'
 
 // 格式化 FormItemLabel
 export function normalizeLabelChildren(

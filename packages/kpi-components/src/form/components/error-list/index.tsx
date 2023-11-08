@@ -1,19 +1,20 @@
 import { useDebounceValue } from '@kpi-ui/hooks'
 import cls from 'classnames'
 import { useMemo } from 'react'
-import { usePrefixCls } from '../../../_internal/hooks'
+import { usePrefixCls } from '../../../_shared/hooks'
 import { GroupTransition } from '../../../transition'
 import { makeErrorEntity } from '../../utils/error'
 import handlers from '../../utils/handlers'
 
-import type { ErrorListProps } from '../../props'
+import type { FormErrorListProps } from './props'
 
-function ErrorList(props: ErrorListProps) {
+export default function FormErrorList(props: FormErrorListProps) {
   const { className, onExitComplete, help, helpStatus } = props
 
   const prefixCls = usePrefixCls('form-item-message')
 
   const errors = useDebounceValue(20, props.errors || [])
+
   const warnings = useDebounceValue(20, props.warnings || [])
 
   const transitionList = useMemo(() => {
@@ -26,18 +27,21 @@ function ErrorList(props: ErrorListProps) {
   }, [errors, help, helpStatus, warnings])
 
   return (
-    <div className={cls(prefixCls, className)}>
-      <GroupTransition name="kpi-err-list" appear onExitComplete={onExitComplete} {...handlers}>
-        {transitionList.map((item) => {
-          return (
-            <div key={item.key} className={cls({ [`${prefixCls}--${item.status}`]: item.status })}>
-              {item.error}
-            </div>
-          )
-        })}
-      </GroupTransition>
-    </div>
+    <GroupTransition
+      tag="div"
+      className={cls(prefixCls, className)}
+      name="kpi-form-error"
+      appear
+      onExitComplete={onExitComplete}
+      {...handlers}
+    >
+      {transitionList.map((item) => {
+        return (
+          <div key={item.key} className={cls({ [`${prefixCls}--${item.status}`]: item.status })}>
+            {item.error}
+          </div>
+        )
+      })}
+    </GroupTransition>
   )
 }
-
-export default ErrorList

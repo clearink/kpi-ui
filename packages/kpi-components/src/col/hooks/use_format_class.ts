@@ -1,6 +1,6 @@
 import cls from 'classnames'
 import { isObject, isUndefined } from '@kpi-ui/utils'
-import { BREAKPOINT_NAME } from '../../_internal/constants'
+import { BREAKPOINT_NAME } from '../../_shared/hooks/use-breakpoint/breakpoint'
 
 import type { ColProps } from '../props'
 

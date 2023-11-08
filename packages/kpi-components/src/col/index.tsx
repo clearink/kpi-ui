@@ -1,9 +1,8 @@
-import { withoutProperties } from '@kpi-ui/utils'
+import { withDefaults, withoutProperties } from '@kpi-ui/utils'
 import { forwardRef, type ForwardedRef } from 'react'
-import { BREAKPOINT_NAME } from '../_internal/constants'
-import { usePrefixCls } from '../_internal/hooks'
-import { withDefaults } from '../_internal/utils'
 import { RowContext } from '../_shared/context'
+import { usePrefixCls } from '../_shared/hooks'
+import { BREAKPOINT_NAME } from '../_shared/hooks/use-breakpoint/breakpoint'
 import useColFlex from './hooks/use_col_flex'
 import useFormatClass from './hooks/use_format_class'
 

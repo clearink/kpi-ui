@@ -1,7 +1,7 @@
-import { isValidElement } from 'react'
 import { isFunction, logger, toArray } from '@kpi-ui/utils'
+import { isValidElement } from 'react'
 
-import type { FormItemProps } from '../props'
+import type { FormItemProps } from '../components/item/props'
 
 /**
  * 1. shouldUpdate 与 dependencies // 同时存在 "`shouldUpdate` and `dependencies` shouldn't be used together."

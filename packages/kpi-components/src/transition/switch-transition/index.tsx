@@ -1,5 +1,4 @@
 import { useDerivedState } from '@kpi-ui/hooks'
-import { Fragment, createElement } from 'react'
 import { isElementEqual } from '../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
 
@@ -27,5 +26,5 @@ export default function SwitchTransition<E extends HTMLElement = HTMLElement>(
     store.forceUpdate()
   })
 
-  return createElement(Fragment, undefined, store.elements)
+  return store.elements
 }

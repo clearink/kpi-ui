@@ -1,6 +1,11 @@
 import type { ReactNode } from 'react'
 import type { RequiredMark } from '../form/props'
-import type { DisabledType, SizeType } from '../types'
+
+export type SizeType = 'small' | 'middle' | 'large' | undefined
+
+export type DisabledType = true | false | undefined
+
+export type Size = SizeType | number
 
 export interface ConfigConsumerProps {
   prefixCls?: string

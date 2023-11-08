@@ -1,9 +1,35 @@
 import { useDerivedState } from '@kpi-ui/hooks'
-import { createElement, Fragment, useEffect } from 'react'
+import { isNullish, withoutProperties } from '@kpi-ui/utils'
+import { createElement, useEffect } from 'react'
 import { isElementsEqual } from '../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
 
 import type { GroupTransitionProps } from './props'
+
+const excluded = [
+  'ssr',
+  'when',
+  'name',
+  'type',
+  'duration',
+  'appear',
+  'mountOnEnter',
+  'unmountOnExit',
+  'children',
+  'classNames',
+  'addEndListener',
+  'onEnter',
+  'onEntering',
+  'onEntered',
+  'onEnterCancel',
+  'onExit',
+  'onExiting',
+  'onExited',
+  'onExitCancel',
+  'tag',
+  'onExitComplete',
+  'flip',
+] as const
 
 export default function GroupTransition<E extends HTMLElement = HTMLElement>(
   props: GroupTransitionProps<E>
@@ -31,5 +57,9 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
     if (!isInitial && store.shouldFlip()) store.runFlip()
   }, [shouldTransition, store])
 
-  return createElement(tag ?? Fragment, undefined, store.nodes)
+  if (isNullish(tag)) return store.nodes
+
+  const attrs = withoutProperties(props, excluded)
+
+  return createElement(tag, attrs, store.nodes)
 }

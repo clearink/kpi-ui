@@ -11,6 +11,11 @@ module.exports = {
   ignorePatterns: ['dist', '.eslintrc.js', 'lib', 'es'],
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
   rules: {
     // eslint
     'no-restricted-syntax': [

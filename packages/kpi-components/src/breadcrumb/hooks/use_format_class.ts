@@ -1,5 +1,5 @@
 import cls from 'classnames'
-import { usePrefixCls } from '../../_internal/hooks'
+import { usePrefixCls } from '../../_shared/hooks'
 // import { BreadcrumbProps } from '../props';
 
 export default function useFormatClass() {

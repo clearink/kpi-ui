@@ -1,0 +1,43 @@
+import { CSSProperties, ReactNode } from 'react'
+import { ExternalFormFieldProps } from '../../../form-internal/props'
+import { ValidateStatus } from '../../props'
+import { FormInstance } from '../form/props'
+import { FormItemInputProps } from '../item-input/props'
+import { FormItemLabelProps } from '../item-label/props'
+
+export interface FormItemProps<State = any>
+  extends FormItemLabelProps,
+    FormItemInputProps,
+    Omit<ExternalFormFieldProps<State>, 'children' | 'onMetaChange'> {
+  children?: ReactNode | ((form: FormInstance<State>) => ReactNode)
+
+  /**
+   * @zh `label` 标签的文本
+   */
+  label?: ReactNode
+
+  /**
+   * @zh 为 `true` 时不带样式，作为纯字段控件使用
+   */
+  noStyle?: boolean
+
+  /**
+   * @zh 必填样式设置。如不设置，则会根据校验规则自动生成
+   * @default false
+   */
+  required?: boolean
+
+  /**
+   * @zh 校验状态，如不设置，则会根据校验规则自动生成，可选：'success' 'warning' 'error' 'validating'
+   */
+  validateStatus?: ValidateStatus
+
+  className?: string
+
+  style?: CSSProperties
+
+  /**
+   * @zh 隐藏控件
+   */
+  hidden?: boolean
+}

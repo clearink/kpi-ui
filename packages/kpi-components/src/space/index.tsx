@@ -1,8 +1,6 @@
-import { useConstant } from '@kpi-ui/hooks'
-import { flattenChildren, withoutProperties } from '@kpi-ui/utils'
+import { flattenChildren, withDefaults, withoutProperties } from '@kpi-ui/utils'
 import { Fragment, ReactElement, type CSSProperties } from 'react'
-import { usePrefixCls } from '../_internal/hooks'
-import { withDefaults } from '../_internal/utils'
+import { usePrefixCls } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 import useSpaceGutter from './hooks/use_space_gutter'
 

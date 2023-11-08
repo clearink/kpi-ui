@@ -1,4 +1,4 @@
-import { withDefaults } from '../_internal/utils'
+import { withDefaults } from '@kpi-ui/utils'
 import useFormatClass from './hooks/use_format_class'
 // import { BreadcrumbProps } from './props';
 

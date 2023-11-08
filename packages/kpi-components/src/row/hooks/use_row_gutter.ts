@@ -1,5 +1,5 @@
 import { isArray, isNumber } from '@kpi-ui/utils'
-import { useBreakpoint, matchBreakpoint } from '../../_internal/hooks'
+import { useBreakpoint, matchBreakpoint } from '../../_shared/hooks'
 
 import type { RowProps } from '../props'
 

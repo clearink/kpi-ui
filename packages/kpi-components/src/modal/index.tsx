@@ -1,5 +1,5 @@
+import { withDefaults } from '@kpi-ui/utils'
 import { createPortal } from 'react-dom'
-import { withDefaults } from '../_internal/utils'
 
 import type { ModalProps } from './props'
 

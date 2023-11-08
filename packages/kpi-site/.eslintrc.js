@@ -6,4 +6,7 @@ module.exports = {
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,
   },
+  rules: {
+    'react-refresh/only-export-components': 'warn',
+  },
 }

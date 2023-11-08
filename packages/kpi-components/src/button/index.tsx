@@ -1,8 +1,7 @@
 /* eslint-disable react/button-has-type */
-import { withoutProperties } from '@kpi-ui/utils'
+import { withDefaults, withoutProperties } from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef, useImperativeHandle, type MouseEvent } from 'react'
-import { usePrefixCls, useWave } from '../_internal/hooks'
-import { withDefaults } from '../_internal/utils'
+import { usePrefixCls, useWave } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 
 import type { ButtonProps } from './props'

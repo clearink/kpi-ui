@@ -1,6 +1,5 @@
-import { capitalize, withoutProperties } from '@kpi-ui/utils'
-import { usePrefixCls } from '../_internal/hooks'
-import { withDefaults } from '../_internal/utils'
+import { capitalize, withDefaults, withoutProperties } from '@kpi-ui/utils'
+import { usePrefixCls } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 
 import type { DividerProps } from './props'

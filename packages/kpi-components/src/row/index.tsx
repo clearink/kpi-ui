@@ -1,8 +1,7 @@
-import { withoutProperties } from '@kpi-ui/utils'
+import { withDefaults, withoutProperties } from '@kpi-ui/utils'
 import { CSSProperties, forwardRef, type ForwardedRef } from 'react'
-import { usePrefixCls } from '../_internal/hooks'
-import { withDefaults } from '../_internal/utils'
 import { RowContext } from '../_shared/context'
+import { usePrefixCls } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 import useRowGutter from './hooks/use_row_gutter'
 

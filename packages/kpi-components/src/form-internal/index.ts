@@ -1,11 +1,11 @@
-import InternalForm from './_internal/components/form'
-import Field from './_internal/components/field'
-import List from './_internal/components/list'
-import Provider from './_internal/components/provider'
-import useForm from './_internal/components/form/hooks/use_form'
-import useWatch from './_internal/components/form/hooks/use_watch'
+import Field from './components/field'
+import InternalForm from './components/form'
+import useForm from './components/form/hooks/use_form'
+import useWatch from './components/form/hooks/use_watch'
+import List from './components/list'
+import Provider from './components/provider'
 
-type FormType = typeof InternalForm & {
+type ExternalFormType = typeof InternalForm & {
   Field: typeof Field
   List: typeof List
   useForm: typeof useForm
@@ -13,7 +13,7 @@ type FormType = typeof InternalForm & {
   Provider: typeof Provider
 }
 
-const Form = InternalForm as FormType
+const Form = InternalForm as ExternalFormType
 
 Form.Field = Field
 
@@ -23,6 +23,6 @@ Form.useForm = useForm
 
 Form.useWatch = useWatch
 
-export { useForm, List, Field, useWatch, Provider }
+export { Form, Field, List, Provider, useForm, useWatch }
 
 export default Form

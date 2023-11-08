@@ -1,4 +1,4 @@
-import { useBreakpoint } from '../_internal/hooks'
+import { useBreakpoint } from '../_shared/hooks'
 import Row from '../row'
 import Col from '../col'
 
