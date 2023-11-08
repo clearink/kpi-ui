@@ -9,12 +9,13 @@ import {
   useMemo,
   type FormEvent,
 } from 'react'
-import { FieldContext, FormContext } from '../../context'
-import { HOOK_MARK } from '../control'
-import useForm from '../../hooks/use_form'
 
-import type { InternalFormInstance } from '../internal_props'
-import type { FormInstance, FormProps } from './props'
+import useForm from './hooks/use_form'
+import { InternalFormInstanceContext, InternalFormContext } from '../../_shared/context'
+import { HOOK_MARK } from './control'
+
+import type { InternalFormProps } from './props'
+import type { InternalFormInstance } from './control/props'
 
 const excluded = [
   'name',
@@ -33,26 +34,34 @@ const excluded = [
   'onFailed',
 ] as const
 
-function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance>) {
+function InternalForm<S = any>(
+  props: InternalFormProps<S>,
+  ref: ForwardedRef<InternalFormInstance>
+) {
   const { name, tag, form, fields, children, onReset, initialValues, validateTrigger } = props
 
-  const instance = useForm(form) as InternalFormInstance<State>
+  const instance = useForm(form) as InternalFormInstance<S>
+
+  // 用于多表单联动
+  const parentForm = InternalFormContext.useState()
 
   useImperativeHandle(ref, () => instance)
 
   const internalHook = useMemo(() => instance.getInternalHooks(HOOK_MARK)!, [instance])
 
-  // 用于多表单联动
-  const parent = FormContext.useState()
-
-  useEffect(() => parent.register(instance, name), [instance, name, parent])
-
-  internalHook.setFormProps(props, parent)
+  internalHook.setInternalFormMisc(props, parentForm)
 
   // 设置初始值, 仅在挂载前设置一次
   useConstant(() => internalHook.setInitialValues(initialValues))
 
-  // 事件处理
+  useEffect(() => parentForm.register(instance, name), [instance, name, parentForm])
+
+  // 同步 fields 字段
+  useDerivedState(fields, {
+    compare: isEqual,
+    listener: () => internalHook.setFields(toArray(fields)),
+  })
+
   const handleSubmit = useEvent((e?: FormEvent) => {
     e && e.preventDefault()
     e && e.stopPropagation()
@@ -65,38 +74,33 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     e && e.stopPropagation()
 
     instance.resetFields()
+
     onReset && onReset(e)
   })
 
-  const fieldContext = useMemo(() => {
+  const instanceContext = useMemo(() => {
     return { ...instance, validateTrigger, formName: name }
   }, [instance, validateTrigger, name])
 
-  // 同步 fields 字段
-  useDerivedState(fields, {
-    compare: (curr, prev) => isEqual(toArray(curr), toArray(prev)),
-    listener: () => internalHook.setFields(fields),
-  })
-
   const elements = (
-    <FieldContext.Provider value={fieldContext}>
+    <InternalFormInstanceContext.Provider value={instanceContext}>
       {isFunction(children) ? children(instance.getFieldsValue(true), instance) : children}
-    </FieldContext.Provider>
+    </InternalFormInstanceContext.Provider>
   )
 
   if (tag === null) return elements
 
   // 表单剩余字段
-  const formProps = withoutProperties(props, excluded)
+  const attrs = {
+    ...withoutProperties(props, excluded),
+    onSubmit: handleSubmit,
+    onReset: handleReset,
+  }
 
-  return createElement(
-    tag as any,
-    { ...formProps, onSubmit: handleSubmit, onReset: handleReset },
-    elements
-  )
+  return createElement(tag as any, attrs, elements)
 }
 
-export default withDefaults(forwardRef(Form), {
+export default withDefaults(forwardRef(InternalForm), {
   preserve: true,
   validateTrigger: 'onChange',
   tag: 'form',

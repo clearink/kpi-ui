@@ -7,15 +7,14 @@ import {
   useImperativeHandle,
   useCallback,
 } from 'react'
-import { Form as InternalForm } from '@kpi-ui/internal'
-import { withDefaults } from '../../../_internal/utils'
-import { DisabledContext, FormContext, SizeContext } from '../../../_internal/context'
-import { ConfigContext } from '../../../_internal/context/config'
+import InternalForm from '../../../form-internal'
+
 import { useFormClass } from '../../hooks/use_class'
 import useForm from '../../hooks/use_form'
 
 import type { FormInstance, FormProps } from '../../props'
-import type { FormContextState } from '../../../_internal/context'
+import { ConfigContext, DisabledContext, SizeContext } from '../../../_shared/context'
+import { FormContext, FormContextState } from '../../_shared/context'
 
 function Form(props: FormProps, ref: ForwardedRef<FormInstance>) {
   const { form: contextFormConfig } = ConfigContext.useState()

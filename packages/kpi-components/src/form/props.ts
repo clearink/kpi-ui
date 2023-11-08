@@ -1,25 +1,15 @@
 import type { CSSProperties, ReactNode } from 'react'
-import type {
-  FormInstance as $FormInstance,
-  FormProps as $FormProps,
-  FormFieldProps as $FormFieldProps,
-  FormListProps as $FormListProps,
-  NamePath as $NamePath,
-  ListField as $ListField,
-  FormArrayHelpers as $FormArrayHelpers,
-  FieldData as $FieldData,
-} from '@kpi-ui/internal'
+
 import type { ColProps } from '../col/props'
 import type { SizeType } from '../types'
-
-export type NamePath = $NamePath
+import type { ExternalFormInstance } from '../form-internal/props'
 
 export type FormLabelAlign = 'left' | 'right'
 export type ValidateStatus = 'success' | 'warning' | 'error' | 'validating' | ''
 export type RequiredMark = boolean | 'optional'
 export type FormLayout = 'horizontal' | 'inline' | 'vertical'
 
-export interface FormProps<State = any> extends Omit<$FormProps<State>, 'form'> {
+export interface FormProps<State = any> extends Omit<ExternalFormInstance<State>, 'form'> {
   /**
    * @zh 是否显示 label 后面的冒号 (只有在属性 layout 为 horizontal 时有效)
    */
@@ -45,7 +35,7 @@ export interface FormProps<State = any> extends Omit<$FormProps<State>, 'form'> 
   disabled?: boolean
 
   // TODO: 待确定
-  scrollToFirstError?: {} | boolean
+  scrollToFirstError?: boolean
 
   /**
    * @zh 必选项标记

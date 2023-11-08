@@ -6,20 +6,16 @@ export interface DerivedOptions<S> {
   listener: () => void
 }
 
-const shallowEqual = (a: any, b: any) => a === b
-
 function useDerivedState<S>(current: S, callback: () => void): void
 function useDerivedState<S>(current: S, options: DerivedOptions<S>): void
 function useDerivedState<S>(current: S, arg: DerivedOptions<S> | (() => void)): void {
   const ref = useRef(current)
 
-  const compare = isFunction(arg) ? shallowEqual : arg.compare
-
-  const listener = isFunction(arg) ? arg : arg.listener
+  const compare = isFunction(arg) ? Object.is : arg.compare
 
   if (compare(current, ref.current)) return
 
-  listener()
+  isFunction(arg) ? arg() : arg.listener()
 
   ref.current = current
 }

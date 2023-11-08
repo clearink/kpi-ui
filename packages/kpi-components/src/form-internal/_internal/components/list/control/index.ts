@@ -1,23 +1,24 @@
-/* eslint-disable class-methods-use-this */
 import { isUndefined, toArray } from '@kpi-ui/utils'
-import { HOOK_MARK } from './group_control'
-import { isValidIndex } from '../utils/path'
+import { isValidIndex } from '../../../utils/path'
+import { HOOK_MARK } from '../../form/control'
 
-import type { InternalFormInstance, InternalNamePath } from '../internal_props'
-import type { FormArrayHelpers, FormFieldProps } from '../props'
+import type { InternalNamePath } from '../../../props'
+import type { InternalFormFieldProps } from '../../field/props'
+import type { InternalFormInstance } from '../../form/control/props'
+import type { FormListHelpers } from './props'
 
 // FormArray 管理 key
-export default class FormArrayControl {
+export default class FormListControl {
   private _context: InternalFormInstance | null = null
 
   private _listPath: InternalNamePath = []
 
-  private _rule: FormFieldProps['rule'] = undefined
+  private _rule: InternalFormFieldProps['rule'] = undefined
 
   // 记录每一个 field 的唯一标识, 调用 remove 后会被移除
   private _keys: number[] = []
 
-  private _id: number = 0 // 类似数据库自增id 添加字段时会被调用
+  private _id = 0 // 类似数据库自增id 添加字段时会被调用
 
   public ensureFieldKey = (index: number) => {
     const origin = this._keys[index]
@@ -28,7 +29,7 @@ export default class FormArrayControl {
     return this._keys[index]
   }
 
-  public _getFeatures = (): FormArrayHelpers => {
+  public getFeatures = (): FormListHelpers => {
     return {
       append: this.append,
       prepend: this.prepend,
@@ -40,10 +41,10 @@ export default class FormArrayControl {
     }
   }
 
-  public setFormInstance = (
+  public setInternalFormListMisc = (
     context: InternalFormInstance,
     listPath: InternalNamePath,
-    rule: FormFieldProps['rule']
+    rule: InternalFormFieldProps['rule']
   ) => {
     this._context = context
     this._listPath = listPath
@@ -52,7 +53,7 @@ export default class FormArrayControl {
 
   private getFieldList = (): any[] => {
     const array = this._context?.getFieldValue(this._listPath)
-    return toArray(array, true)
+    return toArray(array)
   }
 
   private dispatchEvent = (value: any[]) => {

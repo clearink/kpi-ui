@@ -8,8 +8,7 @@ import {
   rawType,
   hasOwn,
 } from '@kpi-ui/utils'
-
-import type { InternalNamePath } from '../internal_props'
+import type { InternalNamePath } from '../props'
 
 function internalSetIn<V = any>(source: V, paths: InternalNamePath, value: any): V {
   if (paths.length === 0) return value

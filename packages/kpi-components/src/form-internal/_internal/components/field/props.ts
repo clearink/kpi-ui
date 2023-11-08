@@ -1,28 +1,38 @@
 import type { ReactElement } from 'react'
 import type { AnyObject } from '../../../../types'
+import type {
+  FormActionType,
+  InternalFieldMeta,
+  ExternalNamePath,
+  InternalNamePath,
+  ExternalFieldMeta,
+} from '../../props'
+import type { ExternalFormInstance } from '../form/control/props'
 
-export type NamePath = (string | number)[]
-
-export interface FormFieldProps<State = any> {
+export interface InternalFormFieldProps<S = any> {
   /**
    * @zh 字段路径
    */
-  name?: NamePath
+  name: InternalNamePath
 
   children?:
     | ReactElement
-    | ((control: AnyObject, meta: FieldMeta, formInstance: FormInstance<State>) => React.ReactNode)
+    | ((
+        control: AnyObject,
+        meta: InternalFieldMeta,
+        formInstance: ExternalFormInstance<S>
+      ) => React.ReactNode)
 
   /**
    * @zh 自定义字段更新逻辑，说明[见下](#shouldUpdate)
    * @default false
    */
-  shouldUpdate?: boolean | ((prev: State, next: State, action: ActionType) => boolean)
+  shouldUpdate?: boolean | ((prev: S, next: S, action: FormActionType) => boolean)
 
   /**
    * @zh 校验规则，设置字段的校验逻辑
    */
-  rule?: BaseSchema<any>
+  rule?: any // BaseSchema<any>
 
   /**
    * @zh 字段删除时仍然保留数据
@@ -32,7 +42,7 @@ export interface FormFieldProps<State = any> {
   /**
    * @zh 设置依赖字段
    */
-  dependencies?: NamePath[]
+  dependencies?: ExternalNamePath[]
 
   /**
    * @zh 注入属性名称(名称待优化)
@@ -61,7 +71,7 @@ export interface FormFieldProps<State = any> {
   /**
    * @zh 设置子元素默认值，如果与 Form 的 initialValues 冲突则以 Form 为准
    */
-  initialValue?: State
+  initialValue?: S
 
   /**
    * @zh 设置如何将 event 的值转换成字段值
@@ -76,13 +86,20 @@ export interface FormFieldProps<State = any> {
   /**
    * @zh 组件获取值后进行转换，再放入 Form 中。不支持异步
    */
-  formatter?: (next: any, prev: any, values: State) => any
+  formatter?: (next: any, prev: any, values: S) => any
 
   /**
    * @zh 字段状态变更通知
    */
-  onMetaChange?: (meta: FieldMeta) => void
+  onMetaChange?: (meta: ExternalFieldMeta) => void
 
   /** @private 内部使用 */
   isListField?: boolean
+}
+
+export interface ExternalFormFieldProps<S = any> extends Omit<InternalFormFieldProps<S>, 'name'> {
+  /**
+   * @zh 字段路径
+   */
+  name?: ExternalNamePath
 }

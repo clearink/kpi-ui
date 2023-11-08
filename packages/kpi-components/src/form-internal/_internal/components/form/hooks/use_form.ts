@@ -1,18 +1,15 @@
-import { useMounted } from '@kpi-ui/hooks'
-import { useReducer, useRef } from 'react'
-import { FormFieldControl, FormGroupControl } from '../control'
+import { useConstant, useForceUpdate, useMounted } from '@kpi-ui/hooks'
+import FormGroupControl from '../control'
 
-import type { FormInstance } from '../props'
+import type { ExternalFormInstance } from '../control/props'
 
-export default function useForm<State = any>(form?: FormInstance<State>) {
+export default function useForm<S = any>(form?: ExternalFormInstance<S>) {
   const mounted = useMounted()
-  const instance = useRef<FormInstance<State>>()
-  // 强制更新视图
-  const forceUpdate = useReducer((count) => count + 1, 0)[1]
 
-  if (instance.current) return instance.current
+  const forceUpdate = useForceUpdate()
 
-  instance.current = form ?? new FormGroupControl(forceUpdate, mounted).injectForm()
-
-  return instance.current
+  return useConstant<ExternalFormInstance<S>>(() => {
+    if (form) return form
+    return new FormGroupControl(() => mounted() && forceUpdate()).injectForm()
+  })
 }

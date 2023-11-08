@@ -44,3 +44,19 @@ export const isSymbol = (obj: any): obj is symbol => validateType(obj, 'Symbol')
 
 export const isPromiseLike = (obj: any): obj is PromiseLike<any> =>
   validateType(obj, 'Promise') || (isObjectLike(obj) && isFunction(obj.then))
+
+// export const is = {
+//   null: isNull,
+//   array: Array.isArray,
+//   undefined: isUndefined,
+//   nullish: isNullish,
+//   function: isFunction,
+//   object: isObject,
+//   objectLike: isObjectLike,
+//   number: isNumber,
+//   string: isString,
+//   boolean: isBoolean,
+//   date: isDate,
+//   symbol: isSymbol,
+//   promiseLike: isPromiseLike,
+// }

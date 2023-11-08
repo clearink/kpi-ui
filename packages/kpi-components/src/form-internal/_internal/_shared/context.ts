@@ -1,23 +1,26 @@
 import { ctxHelper, logger, noop } from '@kpi-ui/utils'
 
-export interface FormContextState {
-  register: (form: FormInstance, name?: string) => () => void
-  triggerFormChange: (name: string, changedFields: FieldData[]) => void
+import type { AnyObject } from '../../../types'
+import type { ExternalFieldData } from '../../props'
+import type { ExternalFormInstance, InternalFormInstance } from '../components/form/control/props'
+
+export interface InternalFormContextState {
+  register: (form: ExternalFormInstance, name?: string) => () => void
+  triggerFormChange: (name: string, changedFields: ExternalFieldData[]) => void
   triggerFormFinish: (name: string, values: AnyObject) => void
 }
 
 // Form 组件传递数据给 Form.Field
-export const FormContext = ctxHelper<FormContextState>({
+export const InternalFormContext = ctxHelper<InternalFormContextState>({
   register: () => noop,
   triggerFormChange: noop,
   triggerFormFinish: noop,
 })
 
-// 将formControl实例传递给field组件
 const notFoundContext: any = () =>
   logger(true, 'Can not find FormContext. Please make sure you wrap Field under Form.')
 
-export const FieldContext = ctxHelper<InternalFormInstance>({
+export const InternalFormInstanceContext = ctxHelper<InternalFormInstance>({
   getFieldError: notFoundContext,
   getFieldsError: notFoundContext,
   getFieldValue: notFoundContext,
@@ -32,20 +35,18 @@ export const FieldContext = ctxHelper<InternalFormInstance>({
   isFieldsTouched: notFoundContext,
   isFieldValidating: notFoundContext,
   isFieldsValidating: notFoundContext,
-  getInternalHooks: () => {
-    return {
-      setPreserve: notFoundContext,
-      setInitialValues: notFoundContext,
-      registerField: notFoundContext,
-      setFields: notFoundContext,
-      registerWatch: notFoundContext,
-      subscribe: notFoundContext,
-      ensureInitialized: notFoundContext,
-      getControl: notFoundContext,
-      metaUpdate: notFoundContext,
-      setFormProps: notFoundContext,
-      dispatch: notFoundContext,
-      registerSubscribe: notFoundContext,
-    }
-  },
+  getInternalHooks: () => ({
+    setPreserve: notFoundContext,
+    setInitialValues: notFoundContext,
+    registerField: notFoundContext,
+    setFields: notFoundContext,
+    registerWatch: notFoundContext,
+    subscribe: notFoundContext,
+    ensureInitialized: notFoundContext,
+    getControl: notFoundContext,
+    metaUpdate: notFoundContext,
+    setInternalFormMisc: notFoundContext,
+    dispatch: notFoundContext,
+    registerSubscribe: notFoundContext,
+  }),
 })

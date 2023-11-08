@@ -1,35 +1,37 @@
-/* eslint-disable max-classes-per-file, class-methods-use-this */
-import { isEqual, isFunction, isNullish, isUndefined, toArray } from '@kpi-ui/utils'
-import type { Options, SchemaIssue } from '@kpi-ui/validator'
-import BaseControl from './base_control'
-import { getIn } from '../utils/value'
-import { _getName } from '../utils/path'
+import { isEqual, isFunction, isNullish, isUndefined, noop, toArray } from '@kpi-ui/utils'
+import { _getName } from '../../../utils/path'
+import { getIn } from '../../../utils/value'
 
-import type { FormInitialControl } from './group_control'
-import type { NamePath } from '../props'
 import type {
-  UpdateFieldActionType as ActionType,
-  InternalFormFieldProps,
-  FieldMeta,
+  FormActionType,
+  ExternalNamePath,
+  InternalFieldMeta,
   InternalNamePath,
-} from '../internal_props'
+} from '../../../props'
 
-export default class FormFieldControl extends BaseControl {
-  public _key: string = ''
+import type { InternalFormFieldProps } from '../props'
+
+type SchemaIssue = any
+type Options = any
+
+export class FormFieldControl {
+  public _key = ''
 
   public _name: InternalNamePath = []
 
   public _handler: InternalFormFieldProps['shouldUpdate']
+
+  public forceUpdate: () => void
 
   public constructor(
     _forceUpdate: () => void,
     private _reset: () => void,
     private mounted: () => boolean
   ) {
-    super(_forceUpdate, mounted)
+    this.forceUpdate = () => mounted() && _forceUpdate()
   }
 
-  public shouldUpdate = (prev: any, next: any, type: ActionType) => {
+  public shouldUpdate = (prev: any, next: any, type: FormActionType) => {
     const { _key: key, _name: name, _handler: handler } = this
 
     if (isUndefined(handler) && key) return getIn(prev, name) !== getIn(next, name)
@@ -39,8 +41,10 @@ export default class FormFieldControl extends BaseControl {
 
   public _props: Partial<InternalFormFieldProps> = {}
 
-  public setFieldProps = (props: Partial<InternalFormFieldProps>) => {
-    this._props = { ...props }
+  public setInternalFieldProps = (props: Partial<InternalFormFieldProps>) => {
+    // TODO: 需要验证直接赋值与浅赋值之间是否有性能问题
+    this._props = props
+    // this._props = { ...props }
 
     this._handler = props.shouldUpdate
 
@@ -51,10 +55,10 @@ export default class FormFieldControl extends BaseControl {
     this._name = props.name ?? []
   }
 
-  private _parent: FormInitialControl | null = null
+  private _getInitial: (() => any) | undefined
 
-  public setParent = (parent: FormInitialControl) => {
-    this._parent = parent
+  public setGetInitial = (getInitial: () => any) => {
+    this._getInitial = getInitial
   }
 
   // 字段是否 touch 过
@@ -66,11 +70,7 @@ export default class FormFieldControl extends BaseControl {
   public get dirty() {
     if (this._dirty || !isUndefined(this._props.initialValue)) return true
 
-    const parent = this._parent
-
-    if (!parent) return false
-
-    return !isUndefined(parent.getInitialValue(this._name))
+    return !!(this._getInitial && !isUndefined(this._getInitial()))
   }
 
   public _validating = false
@@ -79,7 +79,7 @@ export default class FormFieldControl extends BaseControl {
 
   public _warnings: string[] = []
 
-  public get meta(): FieldMeta {
+  public get meta(): InternalFieldMeta {
     return {
       name: this._name,
       dirty: this.dirty,
@@ -103,15 +103,13 @@ export default class FormFieldControl extends BaseControl {
     this.mounted() && this._reset()
   }
 
-  public metaUpdate = (meta: Partial<FieldMeta>) => {
+  public metaUpdate = (meta: Partial<InternalFieldMeta>) => {
     const prev = this.meta
     // 同步全部
-    if (!isNullish(meta.dirty)) this._dirty = meta.dirty
     !isNullish(meta.dirty) && (this._dirty = meta.dirty)
     !isNullish(meta.touched) && (this._touched = meta.touched)
     !isNullish(meta.errors) && (this._errors = meta.errors)
     !isNullish(meta.warnings) && (this._warnings = meta.warnings)
-
     !isNullish(meta.validating) && (this._validating = meta.validating)
 
     this.lastValidate = this._validating ? Promise.resolve([]) : null
@@ -125,7 +123,7 @@ export default class FormFieldControl extends BaseControl {
 
     const { onMetaChange, children } = this._props
 
-    onMetaChange?.({ ...current, mounted } as FieldMeta)
+    onMetaChange?.({ ...current, mounted })
 
     isFunction(children) && this.forceUpdate()
   }
@@ -158,7 +156,7 @@ export default class FormFieldControl extends BaseControl {
 }
 
 // 不合法的字段
-export class InvalidField {
+export class InvalidFieldControl {
   public _name: InternalNamePath
 
   public _errors: string[] = []
@@ -167,7 +165,7 @@ export class InvalidField {
 
   public _props: Partial<InternalFormFieldProps> = {}
 
-  constructor(name: NamePath) {
+  constructor(name: ExternalNamePath) {
     this._name = toArray(name)
   }
 }

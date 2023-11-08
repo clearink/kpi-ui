@@ -1,8 +1,8 @@
 import { useConstant, useForceUpdate, useMounted } from '@kpi-ui/hooks'
 import { useReducer } from 'react'
-import FormFieldControl from '../control'
+import { FormFieldControl } from '../control'
 
-export default function useFormFieldControl() {
+export default function useFieldControl() {
   const mounted = useMounted()
   // 重置次数
   const [resetCount, resetField] = useReducer((count) => count + 1, 0)

@@ -1,26 +1,25 @@
-import { Fragment, useMemo, useEffect } from 'react'
-import { useDeepMemo, useEvent, useConstant } from '@kpi-ui/hooks'
+import { useConstant, useDeepMemo, useEvent } from '@kpi-ui/hooks'
 import { isUndefined, toArray } from '@kpi-ui/utils'
-import { HOOK_MARK } from '../control'
+import { Fragment, useEffect, useMemo } from 'react'
+import { InternalFormInstanceContext } from '../../_shared/context'
+import { _getName } from '../../utils/path'
+import { HOOK_MARK } from '../form/control'
+import useFieldControl from './hooks/use_field_control'
 import useInjectField from './hooks/use_inject_field'
-import { useFormFieldControl } from '../../hooks/use_form'
-import { FieldContext } from '../../context'
-import { _getName } from '../utils/path'
 
-import type { FormFieldProps } from './props'
+import type { ExternalFormFieldProps, InternalFormFieldProps } from './props'
 
-function FormField(props: FormFieldProps) {
+function InternalFormField(props: InternalFormFieldProps) {
   const { name, dependencies, shouldUpdate } = props
 
   // 父级表单方法
-  const formInstance = FieldContext.useState()
+  const instance = InternalFormInstanceContext.useState()
 
-  const internalHook = useMemo(() => formInstance.getInternalHooks(HOOK_MARK)!, [formInstance])
+  const internalHook = useMemo(() => instance.getInternalHooks(HOOK_MARK)!, [instance])
 
-  const [control, resetCount] = useFormFieldControl()
+  const [control, resetCount] = useFieldControl()
 
-  // 同步props性到 fieldControl
-  control.setFieldProps(props)
+  control.setInternalFieldProps(props)
 
   // 设置初始值,减少一次 re-render
   useConstant(() => internalHook.ensureInitialized(control))
@@ -40,20 +39,19 @@ function FormField(props: FormFieldProps) {
   useEffect(subscribe, [subscribe, memorized, key])
 
   // 数据注入
-  const children = useInjectField(props, formInstance, control, internalHook)
+  const children = useInjectField(props, instance, control, internalHook)
 
   return <Fragment key={resetCount}>{children}</Fragment>
 }
 
-export default function WrapperFormField(props: FormFieldProps) {
+export default function WrapperFormField(props: ExternalFormFieldProps) {
   const { name, isListField } = props
-  // 用于 Form.List 组件
-  const { parentNamePath = [] } = FieldContext.useState()
 
-  // 预处理一下 name 字段
-  const namePath = isUndefined(name) ? [] : parentNamePath.concat(toArray(name))
+  const { listPath = [] } = InternalFormInstanceContext.useState()
 
-  const key = isListField ? 'keep' : _getName(namePath)
+  const path = isUndefined(name) ? [] : listPath.concat(toArray(name))
 
-  return <FormField key={key} {...props} name={namePath} />
+  const key = isListField ? 'keep' : _getName(path)
+
+  return <InternalFormField key={key} {...props} name={path} />
 }

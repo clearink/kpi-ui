@@ -1,31 +1,36 @@
 import {
-  isFunction,
   hasOwn,
   isBoolean,
+  isFunction,
   isUndefined,
   logger,
-  toArray,
+  noop,
   pushItem,
   removeItem,
-  noop,
+  toArray,
 } from '@kpi-ui/utils'
-import BaseControl from './base_control'
-import { _getName } from '../utils/path'
-import { setIn, getIn, deleteIn, mergeValue, cloneWithPath, hasOwnWithPath } from '../utils/value'
-import { InvalidField } from './field_control'
+import { _getName } from '../../../utils/path'
+import {
+  cloneWithPath,
+  deleteIn,
+  getIn,
+  hasOwnWithPath,
+  mergeValue,
+  setIn,
+} from '../../../utils/value'
+import { type FormFieldControl, InvalidFieldControl } from '../../field/control'
 
-import type FormFieldControl from './field_control'
-import type { FieldData, FormProps, NamePath } from '../props'
+import type { InternalFormContextState } from '../../../_shared/context'
 import type {
-  ControlsByNameReturn,
-  FieldMeta,
-  WatchCallBack,
-  InternalFormInstance,
-  InternalHookReturn,
-  UpdateFieldAction as Action,
+  ExternalFieldData,
+  ExternalNamePath,
+  FormAction,
+  InternalFieldMeta,
   InternalNamePath,
-} from '../internal_props'
-import type { FormContextState } from '../../context'
+  WatchCallBack,
+} from '../../../props'
+import type { InternalFormProps } from '../props'
+import type { ControlFindReturn, InternalFormInstance, InternalHookReturn } from './props'
 
 export const HOOK_MARK = Symbol.for('_$KPI$_')
 
@@ -40,8 +45,8 @@ export default class FormGroupControl<State = any> {
 
   $dispatch: FormDispatchControl<State>
 
-  constructor(_forceUpdate: () => void, mounted: () => boolean) {
-    this.$props = new FormPropsControl(_forceUpdate, mounted)
+  constructor(public forceUpdate: () => void) {
+    this.$props = new FormPropsControl(forceUpdate)
 
     this.$controls = new FormControlsControl(this.$props)
 
@@ -100,7 +105,7 @@ export default class FormGroupControl<State = any> {
     const { $watch, $dependencies } = $dispatch
 
     return {
-      setFormProps: $props.setFormProps,
+      setInternalFormMisc: $props.setInternalFormMisc,
       setInitialValues: $initial.setInitialValues,
       registerField: $dispatch.registerField,
       registerWatch: $watch.registerWatch,
@@ -116,18 +121,22 @@ export default class FormGroupControl<State = any> {
 /** ==================================================== */
 /** 负责 formProps                                       */
 /** ==================================================== */
-export class FormPropsControl extends BaseControl {
-  _props: Partial<FormProps> = {}
+export class FormPropsControl {
+  _props: Partial<InternalFormProps> = {}
 
-  _parent: FormContextState | undefined
+  _parent: InternalFormContextState | undefined
 
   get useRenderProps() {
     return isFunction(this._props.children)
   }
 
-  setFormProps = (props: Partial<FormProps>, parent: FormContextState) => {
-    this._props = { ...props }
+  constructor(public forceUpdate: () => void) {}
+
+  setInternalFormMisc = (props: Partial<InternalFormProps>, parent: InternalFormContextState) => {
     this._parent = parent
+    // TODO: 需要验证直接赋值与浅赋值之间是否有性能问题
+    this._props = props
+    // this._props = { ...props }
   }
 }
 
@@ -215,15 +224,15 @@ export class FormInitialControl<State = any> {
 
   constructor(private $state: FormStateControl<State>) {}
 
-  private getFieldValue = (namePath: NamePath) => {
+  private getFieldValue = (namePath: ExternalNamePath) => {
     return this.$state.getFieldValue(namePath)
   }
 
-  private setFieldValue = (namePath: NamePath, value: any) => {
+  private setFieldValue = (namePath: ExternalNamePath, value: any) => {
     return this.$state.setFieldValue(namePath, value)
   }
 
-  private deleteFieldValue = (namePath?: NamePath) => {
+  private deleteFieldValue = (namePath?: ExternalNamePath) => {
     return this.$state.deleteFieldValue(namePath)
   }
 
@@ -231,7 +240,7 @@ export class FormInitialControl<State = any> {
     this._initial = initial || {}
   }
 
-  getInitialValue = (name: NamePath) => {
+  getInitialValue = (name: ExternalNamePath) => {
     return getIn(this._initial, toArray(name))
   }
 
@@ -256,7 +265,7 @@ export class FormInitialControl<State = any> {
   }
 
   // 初始化表单数据
-  initialFieldsValue = (nameList?: NamePath[]) => {
+  initialFieldsValue = (nameList?: ExternalNamePath[]) => {
     // 不传nameList则清空state
     if (isUndefined(nameList)) return this.deleteFieldValue()
 
@@ -283,7 +292,7 @@ export class FormControlsControl {
   private pushControl = (control: FormFieldControl, $initial: FormInitialControl) => {
     const key = control._key
 
-    control.setParent($initial)
+    control.setGetInitial(() => $initial.getInitialValue(control._name))
 
     const { list, map } = this._controls
 
@@ -317,8 +326,8 @@ export class FormControlsControl {
   // 获取相同name的字段,不传参数认为获取全部有name的字段
   getControlsByName = <R extends boolean>(
     removeInvalid: R,
-    nameList?: NamePath[]
-  ): ControlsByNameReturn<R> => {
+    nameList?: ExternalNamePath[]
+  ): ControlFindReturn<R> => {
     if (isUndefined(nameList)) return this.getControls(true)
 
     const controls = this._controls.map
@@ -328,7 +337,7 @@ export class FormControlsControl {
 
       const cache = controls.get(key)
 
-      if (!cache && !removeInvalid) result.push(new InvalidField(path))
+      if (!cache && !removeInvalid) result.push(new InvalidFieldControl(path))
 
       cache?.forEach((control) => result.push(control))
 
@@ -337,7 +346,7 @@ export class FormControlsControl {
   }
 
   // 获取校验字段
-  getValidateControls = (nameList?: NamePath[]) => {
+  getValidateControls = (nameList?: ExternalNamePath[]) => {
     return this.getControlsByName(true, nameList).filter((control) => !!control._props.rule)
   }
 
@@ -369,18 +378,18 @@ export class FormControlsControl {
   }
 
   // 设置 FormField 的 meta 属性
-  metaUpdate = (namePath: NamePath, meta: Partial<FieldMeta>) => {
+  metaUpdate = (namePath: ExternalNamePath, meta: Partial<InternalFieldMeta>) => {
     this.getControlsByName(true, [namePath]).forEach((control) => {
       control.metaUpdate(meta)
     })
   }
 
-  getFieldError = (namePath: NamePath) => {
+  getFieldError = (namePath: ExternalNamePath) => {
     const controls = this.getFieldsError([namePath])
     return controls[0].errors
   }
 
-  getFieldsError = (nameList?: NamePath[]) => {
+  getFieldsError = (nameList?: ExternalNamePath[]) => {
     const allFields = this.getControlsByName(false, nameList)
 
     return allFields.map((field) => {
@@ -390,22 +399,22 @@ export class FormControlsControl {
     })
   }
 
-  isFieldTouched = (namePath: NamePath) => {
+  isFieldTouched = (namePath: ExternalNamePath) => {
     return this.isFieldsTouched([namePath])
   }
 
   // 检查全部字段是否都被触摸过
-  isFieldsTouched = (nameList?: NamePath[]) => {
+  isFieldsTouched = (nameList?: ExternalNamePath[]) => {
     const allFields = this.getControlsByName(true, nameList)
 
     return allFields.some((field) => !field._touched)
   }
 
-  isFieldValidating = (namePath: NamePath) => {
+  isFieldValidating = (namePath: ExternalNamePath) => {
     return this.isFieldsValidating([namePath])
   }
 
-  isFieldsValidating = (nameList?: NamePath[]) => {
+  isFieldsValidating = (nameList?: ExternalNamePath[]) => {
     const allFields = this.getControlsByName(true, nameList)
 
     return allFields.some((field) => !field._validating)
@@ -424,7 +433,7 @@ export class FormStateControl<State = any> {
     return this._state
   }
 
-  setFieldValue = (namePath: NamePath, value: any) => {
+  setFieldValue = (namePath: ExternalNamePath, value: any) => {
     const prev = this._state
     const path = toArray(namePath)
 
@@ -436,7 +445,7 @@ export class FormStateControl<State = any> {
   }
 
   // 设置多个字段值
-  setFieldsData = (fields: FieldData[]) => {
+  setFieldsData = (fields: ExternalFieldData[]) => {
     const prev = this._state
 
     fields.forEach((field) => hasOwn(field, 'value') && this.setFieldValue(field.name, field.value))
@@ -444,7 +453,7 @@ export class FormStateControl<State = any> {
     return [prev, this._state] as const
   }
 
-  getFieldValue = (namePath: NamePath) => {
+  getFieldValue = (namePath: ExternalNamePath) => {
     return getIn(this._state, toArray(namePath))
   }
 
@@ -455,7 +464,7 @@ export class FormStateControl<State = any> {
     return [prev, this._state] as const
   }
 
-  getFieldsValue = (fields?: NamePath[] | true) => {
+  getFieldsValue = (fields?: ExternalNamePath[] | true) => {
     if (fields === true) return this._state
 
     const noFields = isUndefined(fields)
@@ -476,7 +485,7 @@ export class FormStateControl<State = any> {
     }, {} as State)
   }
 
-  getFields = (nameList?: NamePath[]) => {
+  getFields = (nameList?: ExternalNamePath[]) => {
     return this.$controls.getControlsByName(true, nameList).map((control) => {
       const name = control._name
       const value = this.getFieldValue(name)
@@ -485,7 +494,7 @@ export class FormStateControl<State = any> {
     })
   }
 
-  deleteFieldValue = (namePath?: NamePath) => {
+  deleteFieldValue = (namePath?: ExternalNamePath) => {
     const prev = this._state
 
     if (isUndefined(namePath)) this._state = {} as State
@@ -537,7 +546,7 @@ export class FormDispatchControl<State = any> {
   }
 
   // 调度方法
-  dispatch = (action: Action) => {
+  dispatch = (action: FormAction) => {
     const { $state, $controls, $initial } = this
 
     // 由用户事件主动触发
@@ -637,12 +646,12 @@ export class FormDispatchControl<State = any> {
   }
 
   // 设置一组字段状态
-  setFields = (fields: FieldData[]) => {
+  setFields = (fields: ExternalFieldData[]) => {
     this.dispatch({ type: 'setFields', fields })
   }
 
   // 设置字段值
-  setFieldValue = (name: NamePath, value: any) => {
+  setFieldValue = (name: ExternalNamePath, value: any) => {
     this.dispatch({ type: 'setFields', fields: [{ name, value }] })
   }
 
@@ -652,7 +661,7 @@ export class FormDispatchControl<State = any> {
   }
 
   // 重置字段
-  resetFields = (nameList?: NamePath[]) => {
+  resetFields = (nameList?: ExternalNamePath[]) => {
     this.dispatch({ type: 'resetFields', nameList })
   }
 
@@ -666,14 +675,14 @@ export class FormDispatchControl<State = any> {
   }
 
   // 校验指定字段
-  validateField = (namePath: NamePath) => {
+  validateField = (namePath: ExternalNamePath) => {
     return this.validateFields([namePath])
   }
 
   private lastValidate: null | Promise<void[]> = null
 
   // 校验多个字段, 不传默认校验全部
-  validateFields = (fields?: NamePath[]) => {
+  validateFields = (fields?: ExternalNamePath[]) => {
     const { getFieldValue, getFieldsValue } = this.$state
     const { getFieldsError, getValidateControls } = this.$controls
 

@@ -1,13 +1,10 @@
 /* eslint-disable no-param-reassign */
 import { hasOwn, isFunction, isObjectLike, toArray } from '@kpi-ui/utils'
 
-import type { AnyObject } from '../../types'
-import type { FormFieldControl } from '../control'
-import type {
-  InternalFormFieldProps,
-  InternalFormInstance,
-  InternalHookReturn,
-} from '../internal_props'
+import type { AnyObject } from '../../../types'
+import type { InternalFormFieldProps } from '../components/field/props'
+import type { InternalFormInstance, InternalHookReturn } from '../components/form/control/props'
+import type { FormFieldControl } from '../components/field/control'
 
 // 从event中获取字段值函数
 function defaultGetValueFromEvent(valuePropName: string) {
