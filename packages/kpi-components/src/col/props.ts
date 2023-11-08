@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react'
-import type { Breakpoint } from '../_internal/constants'
+import type { Breakpoint } from '../_shared/hooks/use-breakpoint/breakpoint'
 import type { LiteralUnion } from '../types'
 
 export type FlexType = number | LiteralUnion<'none' | 'auto', string>
@@ -13,7 +13,5 @@ export interface ColSize {
   span?: ColSpanType
 }
 export type ResponsiveColSize = Record<Breakpoint, ColSpanType | ColSize>
-export interface ColProps
-  extends ColSize,
-    HTMLAttributes<HTMLDivElement>,
-    Partial<ResponsiveColSize> {}
+
+export type ColProps = ColSize & HTMLAttributes<HTMLDivElement> & Partial<ResponsiveColSize>

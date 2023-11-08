@@ -12,8 +12,8 @@ const inject = (el: E) => {
 }
 
 const handlers = {
-  onEnter: (el: E) => {
-    inject(el)
+  onEnter: (el: E, appearing: boolean) => {
+    appearing && inject(el)
     el.style.height = '0px'
   },
   onEntering: (el: E) => {
@@ -21,7 +21,6 @@ const handlers = {
   },
   onEntered: reset,
   onEnterCancel: (el: E, appearing: boolean) => {
-    if (appearing) return reset(el)
     el.style.height = `${el.clientHeight}px`
   },
   onExit: (el: E) => {

@@ -8,6 +8,6 @@ export default function usePrevious<T>(value: T) {
       ref.current.previous = ref.current.value
       ref.current.value = value
     }
-    return ref.current[0]
+    return ref.current.previous
   }, [value])
 }

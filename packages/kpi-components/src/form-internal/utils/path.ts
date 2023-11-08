@@ -3,7 +3,7 @@ import { rawType, toArray } from '@kpi-ui/utils'
 import type { ExternalNamePath } from '../props'
 
 export function _getName(namePath: ExternalNamePath) {
-  return toArray(namePath).reduce<string>((str, path, i) => {
+  return toArray(namePath).reduce<string>((str, path) => {
     return `${str}_${rawType(str)}:${path}`
   }, '')
 }

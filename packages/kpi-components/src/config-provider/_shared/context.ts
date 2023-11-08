@@ -1,7 +1,6 @@
 import { ctxHelper } from '@kpi-ui/utils'
 
-import type { ConfigConsumerProps } from '../props'
-import type { SizeType, DisabledType } from '../../types'
+import type { ConfigConsumerProps, DisabledType, SizeType } from '../props'
 
 export const SizeContext = ctxHelper<SizeType>(undefined)
 

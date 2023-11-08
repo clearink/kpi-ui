@@ -10,8 +10,8 @@ export default function union(
   let lastIndex = -1
 
   const sequences = children
-    .map((el) => [el.key, enters.has(el.key) ? el : map.get(el.key)!] as const)
-    .filter((item) => !isNullish(item[1]))
+    .map((el) => [el.key, enters.has(el.key) ? el : map.get(el.key)!])
+    .filter((item) => !isNullish(item[1])) as [Key | null, ReactElement][]
 
   return Array.from(map).reduce((result, [key, el]) => {
     const index = result.findIndex((item) => item[0] === key)

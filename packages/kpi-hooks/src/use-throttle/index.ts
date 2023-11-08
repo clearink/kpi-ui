@@ -3,8 +3,6 @@ import useEvent from '../use-event'
 import useMounted from '../use-mounted'
 import { isUndefined } from '@kpi-ui/utils'
 
-import type { AnyFunction } from '@kpi-ui/utils'
-
 // 节流 函数
 export function throttle(fn: (...args: any[]) => any, delay: number) {
   let timer: undefined | number
@@ -22,7 +20,7 @@ export function throttle(fn: (...args: any[]) => any, delay: number) {
 }
 
 // 节流 hook
-export function useThrottleCallback<Fn extends AnyFunction>(delay: number, fn: Fn) {
+export function useThrottleCallback<Fn extends (...args: any[]) => any>(delay: number, fn: Fn) {
   const callback = useEvent(fn)
 
   const [throttled, clear] = useMemo(() => throttle(callback, delay), [callback, delay])

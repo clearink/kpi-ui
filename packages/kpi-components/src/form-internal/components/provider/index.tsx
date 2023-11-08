@@ -1,4 +1,4 @@
-import { useConstant, useEvent } from '@kpi-ui/hooks'
+import { useEvent } from '@kpi-ui/hooks'
 import { noop, withoutProperties } from '@kpi-ui/utils'
 import { useMemo, useRef } from 'react'
 import { InternalFormContext, type InternalFormContextState } from '../../_shared/context'

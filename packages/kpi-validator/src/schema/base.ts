@@ -157,7 +157,7 @@ export class EffectSchema<
 
   // 改变后才进行校验
   static preprocess<S extends BaseSchema, Next = S['_Out']>(
-    schema,
+    schema: S,
     handler: (value: S['_Out']) => Next | Promise<Next>
   ) {
     return new EffectSchema(schema, { type: 'preprocess', handler })
