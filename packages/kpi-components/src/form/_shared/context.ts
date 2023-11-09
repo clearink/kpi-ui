@@ -36,3 +36,12 @@ export const FormItemContext = ctxHelper<FormItemContextState>({})
 
 // 收集 noStyle 字段的错误到最近的Form.Item组件上
 export const NoStyleContext = ctxHelper<(meta: FieldMeta) => void>(noop)
+
+export interface FormItemLayoutStableContextState {
+  getOuterInstance: () => HTMLDivElement | null
+  getInnerInstance: () => HTMLDivElement | null
+}
+export const FormItemLayoutStableContext = ctxHelper<FormItemLayoutStableContextState>({
+  getOuterInstance: () => null,
+  getInnerInstance: () => null,
+})

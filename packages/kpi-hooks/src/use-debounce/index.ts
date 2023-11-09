@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import useEvent from '../use-event'
 import useMounted from '../use-mounted'
 
+type Fn = (...args: any[]) => any
+
 // 防抖 函数
-export function debounce(fn: (...args: any[]) => any, delay: number) {
+export function debounce<F extends Fn>(fn: F, delay: number) {
   let timer: undefined | number
 
   function inner(this: unknown, ...args: any[]) {
@@ -11,11 +13,11 @@ export function debounce(fn: (...args: any[]) => any, delay: number) {
     timer = window.setTimeout(() => fn.apply(this, args), delay)
   }
 
-  return [inner, () => clearTimeout(timer)] as const
+  return [inner as F, () => clearTimeout(timer)] as const
 }
 
 // 防抖 hook
-export function useDebounceCallback<F extends (...args: any[]) => any>(delay: number, fn: F) {
+export function useDebounceCallback<F extends Fn>(delay: number, fn: F) {
   const callback = useEvent(fn)
 
   const [debounced, clear] = useMemo(() => debounce(callback, delay), [callback, delay])
@@ -27,7 +29,7 @@ export function useDebounceCallback<F extends (...args: any[]) => any>(delay: nu
 }
 
 // 防抖 value
-export function useDebounceValue<Value = any>(delay: number, value: Value) {
+export function useDebounceValue<Value>(delay: number, value: Value) {
   const [state, setState] = useState(value)
 
   const mounted = useMounted()
@@ -41,7 +43,7 @@ export function useDebounceValue<Value = any>(delay: number, value: Value) {
   return state
 }
 
-export function useDebounceState<S = undefined>(delay: number, initialState: S | (() => S)) {
+export function useDebounceState<S>(delay: number, initialState: S | (() => S)) {
   const [state, set] = useState(initialState)
 
   const setState = useDebounceCallback(delay, set)

@@ -25,6 +25,7 @@ export const date = DateSchema.create
 export const union = UnionSchema.create
 export const refine = EffectSchema.refinement
 export const { refinement, transform, preprocess } = EffectSchema
+export { default as hasRequired } from './utils/required'
 
 export default {
   string,

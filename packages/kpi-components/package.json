@@ -5,6 +5,9 @@
   "main": "src/index.ts",
   "module": "src/index.ts",
   "license": "MIT",
+  "scripts": {
+    "lint": "eslint ./src --ext .js,.ts,.jsx,.tsx"
+  },
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
@@ -12,12 +15,19 @@
   "dependencies": {
     "@kpi-ui/hooks": "workspace:^",
     "@kpi-ui/utils": "workspace:^",
+    "@kpi-ui/validator": "workspace:^",
     "classnames": "^2.3.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "eslint": "^8.45.0",
+    "eslint-plugin-jsx-a11y": "^6.6.0",
+    "eslint-plugin-react": "^7.30.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "typescript": "^5.0.2"
   }
 }

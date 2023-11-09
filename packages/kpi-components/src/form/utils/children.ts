@@ -4,13 +4,11 @@ import isInvalidUsage from './usage'
 
 import type { FormContextState } from '../_shared/context'
 import type { FormInstance } from '../components/form/props'
-import type { FormItemLabelExtraProps, FormItemLabelProps } from '../components/item-label/props'
+import type { FormItemLabelProps } from '../components/item-label/props'
 import type { FormItemProps } from '../components/item/props'
 
 // 格式化 FormItemLabel
-export function normalizeLabelChildren(
-  mergedProps: FormItemLabelProps & FormItemLabelExtraProps & FormContextState
-) {
+export function normalizeLabelChildren(mergedProps: FormItemLabelProps & FormContextState) {
   const { colon, label, requiredMark, required, tooltip, layout } = mergedProps
   const hasColon = layout !== 'vertical' && colon
 
@@ -35,21 +33,21 @@ export function normalizeLabelChildren(
 // 格式化 FormItem.Children
 export function normalizeItemChildren(
   props: FormItemProps,
-  formInstance: FormInstance,
-  formItemId?: string
+  formInstance: FormInstance | undefined,
+  itemFor: string | undefined
 ) {
   const { children } = props
 
   // 用法不合法不渲染数据
   if (isInvalidUsage(props)) return () => undefined
 
-  if (isValidElement<HTMLInputElement>(children)) {
-    if (isNullish(formItemId)) return children
-    if (!isNullish(children.props.id)) return children
-    return cloneElement(children, { id: formItemId })
-  }
+  if (isFunction(children)) return () => children(formInstance!)
 
-  if (isFunction(children)) return () => children(formInstance)
+  if (!isValidElement<HTMLInputElement>(children)) return () => children
 
-  return () => children
+  const originalFor = children.props.id
+
+  if (isNullish(itemFor) || !isNullish(originalFor)) return children
+
+  return cloneElement(children, { id: itemFor })
 }

@@ -1,13 +1,13 @@
-import { CSSProperties, ReactNode } from 'react'
-import { ExternalFormFieldProps } from '../../../form-internal/props'
-import { ValidateStatus } from '../../props'
-import { FormInstance } from '../form/props'
-import { FormItemInputProps } from '../item-input/props'
-import { FormItemLabelProps } from '../item-label/props'
+import type { CSSProperties, ReactNode } from 'react'
+import type { ExternalFormFieldProps } from '../../../form-internal/props'
+import type { ValidateStatus } from '../../props'
+import type { FormInstance } from '../form/props'
+import type { FormItemInputProps } from '../item-input/props'
+import type { FormItemLabelProps } from '../item-label/props'
 
 export interface FormItemProps<State = any>
-  extends FormItemLabelProps,
-    FormItemInputProps,
+  extends Omit<FormItemLabelProps, 'prefixCls' | 'required'>,
+    Pick<FormItemInputProps, 'wrapperCol' | 'extra' | 'help'>,
     Omit<ExternalFormFieldProps<State>, 'children' | 'onMetaChange'> {
   children?: ReactNode | ((form: FormInstance<State>) => ReactNode)
 

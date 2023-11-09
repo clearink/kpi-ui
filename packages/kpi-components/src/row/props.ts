@@ -14,6 +14,6 @@ export type Gutter = number | Partial<Record<Breakpoint, number>>
 export interface RowProps extends HTMLAttributes<HTMLDivElement> {
   align?: AlignType
   justify?: JustifyType
-  gutter: Gutter | [Gutter, Gutter]
-  wrap: boolean
+  gutter?: Gutter | [Gutter, Gutter]
+  wrap?: boolean
 }

@@ -18,7 +18,7 @@ export class FormFieldControl {
 
   public _name: InternalNamePath = []
 
-  public _handler: InternalFormFieldProps['shouldUpdate']
+  public _shouldHook: InternalFormFieldProps['shouldUpdate']
 
   public forceUpdate: () => void
 
@@ -31,7 +31,7 @@ export class FormFieldControl {
   }
 
   public shouldUpdate = (prev: any, next: any, type: FormActionType) => {
-    const { _key: key, _name: name, _handler: handler } = this
+    const { _key: key, _name: name, _shouldHook: handler } = this
 
     if (isUndefined(handler) && key) return getIn(prev, name) !== getIn(next, name)
 
@@ -41,17 +41,15 @@ export class FormFieldControl {
   public _props: Partial<InternalFormFieldProps> = {}
 
   public setInternalFieldProps = (props: Partial<InternalFormFieldProps>) => {
-    // TODO: 需要验证直接赋值与浅赋值之间是否有性能问题
     this._props = props
-    // this._props = { ...props }
 
-    this._handler = props.shouldUpdate
+    this._shouldHook = props.shouldUpdate
 
     if (this._name === props.name) return
 
-    this._key = _getName(props.name!)
+    this._key = _getName(props.name)
 
-    this._name = props.name ?? []
+    this._name = props.name || []
   }
 
   private _getInitial: (() => any) | undefined

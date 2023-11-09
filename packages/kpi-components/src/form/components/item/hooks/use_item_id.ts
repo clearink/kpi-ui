@@ -1,17 +1,15 @@
 import { useMemo } from 'react'
-import { isUndefined, toArray } from '@kpi-ui/utils'
+import { isNullish, toArray } from '@kpi-ui/utils'
 
 import type { FormItemProps } from '../props'
 
 // 唯一id
-export default function useFormItemId(name: FormItemProps['name'], formName?: string) {
+export default function useItemId(name: FormItemProps['name'], formName?: string) {
   return useMemo(() => {
-    const namePath = toArray(name)
-    if (!namePath.length) return undefined
+    if (isNullish(name)) return undefined
 
-    const id = namePath.join('_')
-    if (isUndefined(formName)) return id
+    const id = toArray(name).join('_')
 
-    return `${formName}_${id}`
+    return isNullish(formName) ? id : `${formName}_${id}`
   }, [formName, name])
 }

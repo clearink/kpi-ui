@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import type { ReactNode } from 'react'
 import type { AnyObject } from '../../../types'
 import type {
   FormActionType,
@@ -8,6 +8,7 @@ import type {
   ExternalFieldMeta,
 } from '../../props'
 import type { ExternalFormInstance } from '../form/control/props'
+import type { BaseSchema } from '@kpi-ui/validator'
 
 export interface InternalFormFieldProps<S = any> {
   /**
@@ -16,7 +17,7 @@ export interface InternalFormFieldProps<S = any> {
   name: InternalNamePath
 
   children?:
-    | ReactElement
+    | ReactNode
     | ((
         control: AnyObject,
         meta: InternalFieldMeta,
@@ -32,7 +33,7 @@ export interface InternalFormFieldProps<S = any> {
   /**
    * @zh 校验规则，设置字段的校验逻辑
    */
-  rule?: any // BaseSchema<any>
+  rule?: BaseSchema<any>
 
   /**
    * @zh 字段删除时仍然保留数据
@@ -86,7 +87,7 @@ export interface InternalFormFieldProps<S = any> {
   /**
    * @zh 组件获取值后进行转换，再放入 Form 中。不支持异步
    */
-  formatter?: (next: any, prev: any, values: S) => any
+  formatter?: (next: any, prev: any, getValues: () => S) => any
 
   /**
    * @zh 字段状态变更通知

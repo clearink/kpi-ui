@@ -64,11 +64,11 @@ export interface InternalFormProps<S = any>
    */
   onFieldsChange?: (
     changedFields: InternalFieldData[],
-    getAllFields: () => InternalFieldData[]
+    getFields: () => InternalFieldData[]
   ) => void
 
   /**
    * @zh 字段值更时的回调, 仅在用户操作表单时触发
    */
-  onValuesChange?: (changedValues: any, getAllValues: () => S) => void
+  onValuesChange?: (changedValues: any, getValues: () => S) => void
 }

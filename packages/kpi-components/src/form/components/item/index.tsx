@@ -1,19 +1,17 @@
-import { useDebounceState, useIsomorphicEffect } from '@kpi-ui/hooks'
-import { isUndefined, pick, toArray, withoutProperties } from '@kpi-ui/utils'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { isNullish, pick } from '@kpi-ui/utils'
+import { createElement, useMemo, useRef } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import InternalForm from '../../../form-internal'
 import Row from '../../../row'
-import { FormContext, NoStyleContext } from '../../_shared/context'
+import { FormContext, FormItemLayoutStableContext, NoStyleContext } from '../../_shared/context'
 import { normalizeItemChildren } from '../../utils/children'
-import { makeEmptyMeta } from '../../utils/error'
 import FormItemInput from '../item-input'
 import FormItemLabel from '../item-label'
 import useFormatClass from './hooks/use_format_class'
 import useFormItemId from './hooks/use_item_id'
 
-import type { FieldMeta, ValidateStatus } from '../../props'
 import type { FormItemProps } from './props'
+import { hasRequired } from '@kpi-ui/validator'
 
 const labelIncluded = [
   'colon',
@@ -26,126 +24,82 @@ const labelIncluded = [
   'requiredMark',
   'tooltip',
 ] as const
-const inputIncluded = ['wrapperCol', 'extra', 'help'] as const
+const inputIncluded = ['wrapperCol', 'extra', 'help', 'validateStatus'] as const
 
 // 仅用于 noStyle 模式
 function NoStyleFormItem(props: FormItemProps) {
   const { form: formInstance, formName } = FormContext.useState()
 
-  const topMetaChange = NoStyleContext.useState()
+  const handleMetaChange = NoStyleContext.useState()
 
-  const formItemId = useFormItemId(props.name, formName)
+  const itemId = useFormItemId(props.name, formName)
 
   return (
-    <InternalForm.Field {...props} onMetaChange={topMetaChange}>
-      {normalizeItemChildren(props, formInstance!, formItemId)}
+    <InternalForm.Field {...props} onMetaChange={handleMetaChange}>
+      {normalizeItemChildren(props, formInstance, itemId)}
     </InternalForm.Field>
   )
 }
 
 function CommonFormItem(props: FormItemProps) {
-  const { name, rule, label, style, help, validateStatus: $status } = props
+  const { name, rule, label, style } = props
 
   const { formName, form: formInstance } = FormContext.useState()
 
   const prefixCls = usePrefixCls('form-item')
 
-  const formItemId = useFormItemId(name, formName)
+  const itemId = useFormItemId(name, formName)
 
-  // if (isValidElement(children)) {
-  //   // TODO: 检测是否支持 ref 获取 dom 用于实现 scrollToField
-  // }
-  const [meta, setMeta] = useDebounceState(45, makeEmptyMeta)
-  const handleMetaChange = useCallback(
-    (meta: FieldMeta) => {
-      if (!meta.mounted) return
-      setMeta(withoutProperties(meta, ['mounted']))
-    },
-    [setMeta]
-  )
+  const classes = useFormatClass(prefixCls, props)
 
-  const [subMeta, setSubMeta] = useDebounceState(45, makeEmptyMeta)
-  const handleSubMetaChange = useCallback(
-    (meta: FieldMeta) => {
-      if (!meta.mounted) return
-      setSubMeta(withoutProperties(meta, ['mounted']))
-    },
-    [setSubMeta]
-  )
+  const required = useMemo(() => !isNullish(name) && hasRequired(rule), [name, rule])
 
-  const status = useMemo<ValidateStatus>(() => {
-    let inner: ValidateStatus = ''
-    if (!isUndefined($status)) inner = $status
-    else if (meta.validating) inner = 'validating'
-    else if (meta.errors.length) inner = 'error'
-    else if (meta.warnings.length) inner = 'warning'
-    else if (meta.touched) inner = 'success'
-    return inner
-  }, [meta, $status])
+  const outer = useRef<HTMLDivElement>(null)
 
-  const classes = useFormatClass(props, status, prefixCls)
+  const inner = useRef<HTMLDivElement>(null)
 
-  const required = useMemo(() => {
-    return toArray(name).length <= 0 ? false : rule && rule.isRequired()
-  }, [name, rule])
-
-  const mergedErrors = meta.errors.concat(subMeta.errors)
-  const mergedWarnings = meta.warnings.concat(subMeta.warnings)
-  const hasError = !!(help || mergedErrors.length || mergedWarnings.length)
-
-  const ref = useRef<HTMLDivElement>(null)
-  const [marginBottom, setMarginBottom] = useState<number>()
-
-  const handleExitComplete = useCallback(() => {
-    !hasError && setMarginBottom(undefined)
-  }, [hasError])
-
-  useIsomorphicEffect(() => {
-    if (hasError && ref.current) {
-      const styles = getComputedStyle(ref.current)
-      setMarginBottom(parseInt(styles.marginBottom, 10))
+  const layoutStableContext = useMemo(() => {
+    return {
+      getOuterInstance: () => outer.current,
+      getInnerInstance: () => inner.current,
     }
-  }, [hasError])
+  }, [])
 
   const labelProps = pick(props, labelIncluded)
 
   const inputProps = pick(props, inputIncluded)
 
+  // if (isValidElement(children)) {
+  //   // TODO: 检测是否支持 ref 获取 dom 用于实现 scrollToField
+  // }
+
   return (
-    <div className={classes} style={style} ref={ref}>
-      <Row className={`${prefixCls}__row`}>
+    <div className={classes} style={style} ref={outer}>
+      <Row className={`${prefixCls}__row`} ref={inner}>
         {!!label && (
           <FormItemLabel
-            htmlFor={formItemId}
-            required={required}
+            htmlFor={itemId}
             prefixCls={prefixCls}
+            required={required}
             {...labelProps}
           />
         )}
-
-        <FormItemInput
-          prefixCls={prefixCls}
-          marginBottom={marginBottom}
-          onExitComplete={handleExitComplete}
-          {...inputProps}
-          validateStatus={status}
-          errors={mergedErrors}
-          warnings={mergedWarnings}
-        >
-          <NoStyleContext.Provider value={handleSubMetaChange}>
-            <InternalForm.Field {...props} onMetaChange={handleMetaChange}>
-              {normalizeItemChildren(props, formInstance!, formItemId)}
-            </InternalForm.Field>
-          </NoStyleContext.Provider>
-        </FormItemInput>
+        <FormItemLayoutStableContext.Provider value={layoutStableContext}>
+          <FormItemInput {...inputProps} prefixCls={prefixCls}>
+            {(onMetaChange, onSubMetaChange) => (
+              <NoStyleContext.Provider value={onSubMetaChange}>
+                <InternalForm.Field {...props} onMetaChange={onMetaChange}>
+                  {normalizeItemChildren(props, formInstance, itemId)}
+                </InternalForm.Field>
+              </NoStyleContext.Provider>
+            )}
+          </FormItemInput>
+        </FormItemLayoutStableContext.Provider>
       </Row>
-      {!!marginBottom && <div style={{ marginBottom: -marginBottom }} />}
     </div>
   )
 }
 
 export default function FormItem<State = any>(props: FormItemProps<State>) {
-  if (props.noStyle) return <NoStyleFormItem {...props} />
-
-  return <CommonFormItem {...props} />
+  return createElement(props.noStyle ? NoStyleFormItem : CommonFormItem, props)
 }

@@ -1,4 +1,4 @@
-import { useConstant, useDeepMemo, useEvent } from '@kpi-ui/hooks'
+import { useConstant, useDeepMemo } from '@kpi-ui/hooks'
 import { isUndefined, toArray } from '@kpi-ui/utils'
 import { Fragment, useEffect, useMemo } from 'react'
 import { InternalFormInstanceContext } from '../../_shared/context'
@@ -10,36 +10,29 @@ import useInjectField from './hooks/use_inject_field'
 import type { ExternalFormFieldProps, InternalFormFieldProps } from './props'
 
 function InternalFormField(props: InternalFormFieldProps) {
-  const { name, dependencies, shouldUpdate } = props
-
   // 父级表单方法
   const instance = InternalFormInstanceContext.useState()
 
-  const internalHook = useMemo(() => instance.getInternalHooks(HOOK_MARK)!, [instance])
+  const internalHooks = useMemo(() => instance.getInternalHooks(HOOK_MARK)!, [instance])
 
   const [control, resetCount] = useFieldControl()
 
   control.setInternalFieldProps(props)
 
   // 设置初始值,减少一次 re-render
-  useConstant(() => internalHook.ensureInitialized(control))
+  useConstant(() => internalHooks.ensureInitialized(control))
 
   // 注册子字段 销毁时移除该字段
-  const registerField = useEvent(() => {
-    if (shouldUpdate === true) control.forceUpdate()
-
-    return internalHook.registerField(control)
-  })
-  useEffect(registerField, [registerField])
+  useEffect(() => internalHooks.registerField(control), [internalHooks, control])
 
   // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
-  const key = useDeepMemo(() => name, [name])
-  const memorized = useDeepMemo(() => dependencies, [dependencies])
-  const subscribe = useEvent(() => internalHook.subscribe(control))
-  useEffect(subscribe, [subscribe, memorized, key])
+  // 当 dependencies 改变时，重新订阅
+  // name 属性变化会直接重新mount，在此处不用考虑
+  const key = useDeepMemo(() => props.dependencies, [props.dependencies])
+  useEffect(() => internalHooks.subscribe(control), [key, internalHooks, control])
 
   // 数据注入
-  const children = useInjectField(props, instance, control, internalHook)
+  const children = useInjectField(props, instance, control, internalHooks)
 
   return <Fragment key={resetCount}>{children}</Fragment>
 }

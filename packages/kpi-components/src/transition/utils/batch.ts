@@ -1,6 +1,8 @@
 import { isFunction } from '@kpi-ui/utils'
 
-export default function batch(...funcs: (Function | undefined | null)[]) {
+import type { AnyFunction, MayBe } from '../../types'
+
+export default function batch(...funcs: MayBe<AnyFunction>[]) {
   const filtered = funcs.filter(isFunction)
 
   return function batched(this: any, ...args: any) {

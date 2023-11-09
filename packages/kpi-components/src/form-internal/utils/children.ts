@@ -9,7 +9,7 @@ import type { InternalFormInstance } from '../components/form/control/props'
 /** 格式化 Form.Field children */
 export default function normalizeChildren(
   collectInject: () => AnyObject,
-  formInstance: InternalFormInstance,
+  instance: InternalFormInstance,
   control: FormFieldControl
 ) {
   return function normalizeInner(_children: InternalFormFieldProps['children']): {
@@ -18,7 +18,7 @@ export default function normalizeChildren(
     children: ReactNode
   } {
     if (isFunction(_children)) {
-      const element = _children(collectInject(), control.meta, formInstance)
+      const element = _children(collectInject(), control.meta, instance)
       return { ...normalizeInner(element as ReactElement), functional: true }
     }
     // 去除 fragment，nullish 后

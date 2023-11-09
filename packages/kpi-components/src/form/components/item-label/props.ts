@@ -11,9 +11,8 @@ export interface FormItemLabelProps {
   labelWrap?: boolean
   // TODO: 待完善
   tooltip?: any
-}
 
-export interface FormItemLabelExtraProps {
+  // extra
   prefixCls: string
-  required?: boolean
+  required: boolean
 }

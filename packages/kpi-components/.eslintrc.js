@@ -8,6 +8,6 @@ module.exports = {
   },
   rules: {
     'react/require-default-props': 'off',
-    'react/no-unused-prop-types': 1,
+    'react/no-unused-prop-types': 'off',
   },
 }

@@ -7,10 +7,14 @@
 
 @include b(row) {
   display: flex;
-  flex-flow: row wrap;
+  flex-direction: row;
   &::before,
   &::after {
     display: flex;
+  }
+
+  @include m(wrap) {
+    flex-wrap: wrap;
   }
 
   @include m(start) {

@@ -7,9 +7,9 @@
     "ui"
   ],
   "author": "clearink",
-  "license": "ISC",
+  "license": "MIT",
   "scripts": {
-    "lint": "eslint -c .eslintrc.js --ext .js,.ts,.jsx,.tsx ./packages/kpi-site/src/*",
+    "lint": "eslint -c .eslintrc.js --ext .js,.ts,.jsx,.tsx ./packages/**/src/*",
     "dev": "pnpm -F @kpi-ui/site dev"
   },
   "devDependencies": {

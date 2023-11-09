@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { hasOwn, isFunction, isObjectLike, toArray } from '@kpi-ui/utils'
 
 import type { AnyObject } from '../../types'
@@ -21,9 +20,9 @@ function defaultGetValueProps(valuePropName: string) {
 /** 收集注入到Form.Field children 的属性 */
 export default function collectInjectProps(
   props: InternalFormFieldProps,
-  formInstance: InternalFormInstance,
+  instance: InternalFormInstance,
   control: FormFieldControl,
-  internalHook?: InternalHookReturn
+  internalHooks?: InternalHookReturn
 ) {
   const {
     name,
@@ -41,7 +40,7 @@ export default function collectInjectProps(
     // name 不合法不应该提供下列数据
     if (!control._key) return childProps
 
-    const value = formInstance.getFieldValue(name)
+    const value = instance.getFieldValue(name)
 
     const injectProps = {
       ...childProps,
@@ -50,19 +49,19 @@ export default function collectInjectProps(
       [trigger]: (...args: any[]) => {
         let next = getValueFromEvent(...args)
 
-        if (isFunction(formatter)) next = formatter(next, value, formInstance.getFieldsValue())
+        if (isFunction(formatter)) next = formatter(next, value, () => instance.getFieldsValue())
 
-        internalHook && internalHook.metaUpdate(name, { touched: true, dirty: true })
+        internalHooks && internalHooks.metaUpdate(name, { touched: true, dirty: true })
 
-        internalHook && internalHook.dispatch({ type: 'fieldEvent', control, value: next })
+        internalHooks && internalHooks.dispatch({ type: 'fieldEvent', control, value: next })
 
         // originTrigger
-        childProps[trigger!] && childProps[trigger!](...args)
+        childProps[trigger] && childProps[trigger](...args)
       },
     }
 
     // 校验触发时机
-    const triggerList = toArray(validateTrigger ?? formInstance.validateTrigger)
+    const triggerList = toArray(validateTrigger ?? instance.validateTrigger)
 
     const init = { ...injectProps }
 
@@ -71,7 +70,7 @@ export default function collectInjectProps(
 
       result[triggerName] = (...args: any[]) => {
         injectProps[triggerName] && injectProps[triggerName](...args)
-        rule && formInstance.validateField(name)
+        rule && instance.validateField(name)
       }
 
       return result

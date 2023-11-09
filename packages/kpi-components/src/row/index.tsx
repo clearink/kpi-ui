@@ -16,7 +16,7 @@ function Row(props: RowProps, ref: ForwardedRef<HTMLDivElement>) {
 
   const classes = useFormatClass(name, props)
 
-  const [hGutter, vGutter] = useRowGutter(gutter)
+  const [hGutter, vGutter] = useRowGutter(gutter!)
 
   const [h, v] = [hGutter / -2, vGutter / -2]
 

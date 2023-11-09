@@ -57,7 +57,7 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
     if (!isInitial && store.shouldFlip()) store.runFlip()
   }, [shouldTransition, store])
 
-  if (isNullish(tag)) return store.nodes
+  if (isNullish(tag)) return <>{store.nodes}</>
 
   const attrs = withoutProperties(props, excluded)
 

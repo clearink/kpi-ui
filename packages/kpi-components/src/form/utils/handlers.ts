@@ -20,7 +20,7 @@ const handlers = {
     el.style.height = `${el._height}px`
   },
   onEntered: reset,
-  onEnterCancel: (el: E, appearing: boolean) => {
+  onEnterCancel: (el: E) => {
     el.style.height = `${el.clientHeight}px`
   },
   onExit: (el: E) => {

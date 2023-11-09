@@ -1,7 +1,7 @@
 import { isString } from '@kpi-ui/utils'
 import { type ReactNode } from 'react'
 
-import type { FieldMeta, ValidateStatus } from '../props'
+import type { ValidateStatus } from '../props'
 
 export function makeErrorEntity(
   error: string | ReactNode,
@@ -13,17 +13,5 @@ export function makeErrorEntity(
     key: isString(error) ? error : `${type}__${index}`,
     error,
     status,
-  }
-}
-
-export function makeEmptyMeta(): FieldMeta {
-  return {
-    name: [],
-    dirty: false,
-    touched: false,
-    validating: false,
-    errors: [],
-    warnings: [],
-    mounted: false,
   }
 }

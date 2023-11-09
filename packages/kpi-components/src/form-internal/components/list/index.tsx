@@ -1,5 +1,5 @@
 import { useConstant, useDeepMemo, useEvent } from '@kpi-ui/hooks'
-import { isArray, isFunction, logger, rawType, toArray } from '@kpi-ui/utils'
+import { isArray, isFunction, isUndefined, logger, rawType, toArray } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 import { InternalFormInstanceContext } from '../../_shared/context'
 import { getIn } from '../../utils/value'
@@ -11,6 +11,8 @@ import type { InternalFormListProps } from './props'
 
 export default function InternalFormList(props: InternalFormListProps) {
   const { name, rule, initialValue, preserve, children } = props
+
+  logger(isUndefined(name), 'Form.List', 'Miss `name` prop.')
 
   const instance = InternalFormInstanceContext.useState()
 

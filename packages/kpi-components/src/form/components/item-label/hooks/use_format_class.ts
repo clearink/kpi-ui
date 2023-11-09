@@ -1,19 +1,23 @@
 import cls from 'classnames'
 
 import type { FormContextState } from '../../../_shared/context'
-import type { FormItemLabelExtraProps, FormItemLabelProps } from '../props'
+import type { FormItemLabelProps } from '../props'
 
-export default function useFormatClass(
-  mergedProps: FormItemLabelProps & FormContextState & FormItemLabelExtraProps
-) {
-  const { prefixCls, layout, required, colon, labelAlign, labelCol, requiredMark } = mergedProps
+export default function useFormatClass(mergedProps: FormItemLabelProps & FormContextState) {
+  const { prefixCls, layout, required, colon, labelWrap, labelAlign, labelCol, requiredMark } =
+    mergedProps
 
   const baseClassName = `${prefixCls}__label`
 
-  const colCls = cls(baseClassName, labelCol && labelCol.className, {
-    [`${baseClassName}--${labelAlign}`]: labelAlign,
-    [`${baseClassName}--colon`]: colon,
-  })
+  const colCls = cls(
+    baseClassName,
+    {
+      [`${baseClassName}--${labelAlign}`]: labelAlign,
+      [`${baseClassName}--wrap`]: labelWrap,
+      [`${baseClassName}--colon`]: colon,
+    },
+    labelCol && labelCol.className
+  )
 
   const labelCls = cls({
     [`${baseClassName}--required`]: required,

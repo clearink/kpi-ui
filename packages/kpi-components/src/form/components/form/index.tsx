@@ -1,7 +1,6 @@
 import { withDefaults } from '@kpi-ui/utils'
 import {
   forwardRef,
-  useCallback,
   useImperativeHandle,
   useMemo,
   type ForwardedRef,
@@ -15,6 +14,7 @@ import useFormatClass from './hooks/use_format_class'
 import useForm from './hooks/use_form'
 
 import type { FormInstance, FormProps } from './props'
+import { useEvent } from '@kpi-ui/hooks'
 
 function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance<State>>) {
   const { form: contextFormConfig } = ConfigContext.useState()
@@ -58,15 +58,11 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     }
   }, [name, labelAlign, labelWrap, labelCol, wrapperCol, colon, requiredMark, formInstance, layout])
 
-  const onFailedWithEffect = useCallback(
-    (errors: any) => {
-      onFailed && onFailed(errors)
-      if (scrollToFirstError) {
-        // formInstance.scrollToField()
-      }
-    },
-    [onFailed, scrollToFirstError]
-  )
+  const onFailedWithEffect = useEvent((errors: any) => {
+    onFailed && onFailed(errors)
+    if (!scrollToFirstError) return
+    // formInstance.scrollToField()
+  })
 
   return (
     <DisabledContext.Provider value={disabled}>

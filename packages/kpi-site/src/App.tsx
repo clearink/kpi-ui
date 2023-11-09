@@ -4,14 +4,14 @@ import kv from '@kpi-ui/validator'
 import '@kpi-ui/components/src/style'
 
 function Input(props: any) {
+  // console.log(props)
   return <input {...props} value={props.value || ''} style={{ height: 32 }} />
 }
 
 export default function App() {
   const [noStyle, setNoStyle] = useState(false)
   const [noRule, setNoRule] = useState(false)
-  const [inputNumber, setInputNumber] = useState(300)
-
+  const [inputNumber, setInputNumber] = useState(3)
   return (
     <div>
       <p style={{ fontSize: 20, textAlign: 'center', marginBottom: 20 }}>

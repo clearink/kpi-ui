@@ -1,19 +1,25 @@
-import { isString, shallowMerge } from '@kpi-ui/utils'
+import { isString, shallowMergeWithPick } from '@kpi-ui/utils'
 import { memo } from 'react'
 import Col from '../../../col'
 import { FormContext } from '../../_shared/context'
 import { normalizeLabelChildren } from '../../utils/children'
 import useFormatClass from './hooks/use_format_class'
 
-import type { FormItemLabelExtraProps, FormItemLabelProps } from './props'
+import type { FormItemLabelProps } from './props'
 
-function FormItemLabel(props: FormItemLabelProps & FormItemLabelExtraProps) {
-  // 合并同名字段值
-  const mergedProps = shallowMerge(props, FormContext.useState())
-
-  const { htmlFor, labelCol, label } = mergedProps
+// 46-50
+function FormItemLabel(props: FormItemLabelProps) {
+  const mergedProps = shallowMergeWithPick(props, FormContext.useState(), [
+    'colon',
+    'labelAlign',
+    'labelCol',
+    'labelWrap',
+    'requiredMark',
+  ])
 
   const [labelColClassName, labelClassName] = useFormatClass(mergedProps)
+
+  const { htmlFor, labelCol, label } = mergedProps
 
   const htmlTitle = isString(label) ? label : undefined
 
@@ -25,4 +31,5 @@ function FormItemLabel(props: FormItemLabelProps & FormItemLabelExtraProps) {
     </Col>
   )
 }
+
 export default memo(FormItemLabel)

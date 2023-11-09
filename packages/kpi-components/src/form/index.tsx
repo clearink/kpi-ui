@@ -1,35 +1,34 @@
-// 二次封装 form-internal 组件
-import InternalForm from '../form-internal'
-import $Form from './components/form'
+import { List, useWatch } from '../form-internal'
 import ErrorList from './components/error-list'
-import FormItem from './components/item'
-import FormList from './components/list'
+import Form from './components/form'
 import useForm from './components/form/hooks/use_form'
 import useFormInstance from './components/form/hooks/use_instance'
+import FormItem from './components/item'
+import useFormItemStatus from './components/item/hooks/use_item_status'
 
-type CompoundedComponent = typeof $Form & {
-  Item: typeof FormItem
-  List: typeof FormList
+type CompoundedFormItemType = typeof FormItem & {
+  useItemStatus: typeof useFormItemStatus
+}
+
+type CompoundedFormType = typeof Form & {
+  Item: CompoundedFormItemType
+  List: typeof List
   ErrorList: typeof ErrorList
   useForm: typeof useForm
   useFormInstance: typeof useFormInstance
-  useWatch: typeof InternalForm.useWatch
+  useWatch: typeof useWatch
 }
 
-const Form = $Form as CompoundedComponent
+const CompoundedForm = Form as CompoundedFormType
 
-Form.Item = FormItem
-Form.List = FormList
-Form.ErrorList = ErrorList
-Form.useForm = useForm
-Form.useFormInstance = useFormInstance
-Form.useWatch = InternalForm.useWatch
+const CompoundedFormItem = FormItem as CompoundedFormItemType
 
-export default Form
+CompoundedFormItem.useItemStatus = useFormItemStatus
+CompoundedForm.Item = CompoundedFormItem
+CompoundedForm.List = List
+CompoundedForm.ErrorList = ErrorList
+CompoundedForm.useForm = useForm
+CompoundedForm.useFormInstance = useFormInstance
+CompoundedForm.useWatch = useWatch
 
-// type CompoundedComponent = typeof InternalFormItem & {
-//   useStatus: typeof useFormItemStatus
-// }
-
-// const FormItem = InternalFormItem as CompoundedComponent
-// FormItem.useStatus = useFormItemStatus
+export default CompoundedForm

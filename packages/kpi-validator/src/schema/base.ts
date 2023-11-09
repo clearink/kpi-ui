@@ -68,23 +68,6 @@ export default abstract class BaseSchema<Out = any, In = Out> {
     return EffectSchema.required(this, makeRule(rule, message)) as any
   }
 
-  isRequired() {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let tail = this
-
-    while (tail && hasOwn(tail, 'unwrap')) {
-      if (!(tail instanceof EffectSchema)) break
-
-      const type = tail._type
-      if (type === 'required') return true
-      if (type === 'nullable') return false
-
-      tail = tail.unwrap()
-    }
-
-    return false
-  }
-
   // 可以传 null
   nullable(): EffectSchema<this, Out | null> {
     return EffectSchema.nullable(this) as any
@@ -122,7 +105,7 @@ export default abstract class BaseSchema<Out = any, In = Out> {
 
   // 数据预处理
   preprocess<Next>(handler: (value: any) => Next | Promise<Next>): EffectSchema<this, Next> {
-    return EffectSchema.preprocess(this, handler)
+    return EffectSchema.preprocess(this, handler) as any
   }
 }
 

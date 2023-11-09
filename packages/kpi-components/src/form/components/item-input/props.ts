@@ -1,19 +1,17 @@
 import type { ReactNode } from 'react'
 import type { ColProps } from '../../../col/props'
-import type { ValidateStatus } from '../../props'
+import type { FieldMeta, ValidateStatus } from '../../props'
 
 export interface FormItemInputProps {
   wrapperCol?: ColProps
   extra?: ReactNode
   help?: ReactNode
-}
 
-export interface FormItemInputExtraProps {
+  // extra
   prefixCls: string
-  marginBottom?: number
   validateStatus?: ValidateStatus
-  children?: ReactNode
-  errors: ReactNode[]
-  warnings: ReactNode[]
-  onExitComplete: () => void
+  children: (
+    onMetaChange: (meta: FieldMeta) => void,
+    onSubMetaChange: (meta: FieldMeta) => void
+  ) => ReactNode
 }

@@ -3,7 +3,7 @@ import { useBreakpoint, matchBreakpoint } from '../../_shared/hooks'
 
 import type { RowProps } from '../props'
 
-export default function useRowGutter(gutter: RowProps['gutter']) {
+export default function useRowGutter(gutter: NonNullable<RowProps['gutter']>) {
   const tuple = isArray(gutter) ? gutter : [gutter, 0]
 
   const matches = useBreakpoint((query) => {

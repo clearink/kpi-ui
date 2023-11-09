@@ -10,15 +10,16 @@ import type { InternalFormInstance, InternalHookReturn } from '../../form/contro
 // 向 Form.Field 包裹的组件内部注入数据
 export default function useInjectField(
   props: InternalFormFieldProps,
-  formInstance: InternalFormInstance,
+  instance: InternalFormInstance,
   control: FormFieldControl,
-  internalHook?: InternalHookReturn
+  internalHooks?: InternalHookReturn
 ) {
   // 收集注册到子组件的数据
-  const handleCollect = collectInjectProps(props, formInstance, control, internalHook)
+
+  const handleCollect = collectInjectProps(props, instance, control, internalHooks)
 
   // 处理 children
-  const handleNormalize = normalizeChildren(handleCollect, formInstance, control)
+  const handleNormalize = normalizeChildren(handleCollect, instance, control)
 
   const { functional, children, valid } = handleNormalize(props.children)
 

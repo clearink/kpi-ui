@@ -26,5 +26,5 @@ export default function SwitchTransition<E extends HTMLElement = HTMLElement>(
     store.forceUpdate()
   })
 
-  return store.elements
+  return <>{store.elements}</>
 }

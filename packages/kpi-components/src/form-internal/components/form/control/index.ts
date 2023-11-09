@@ -134,9 +134,7 @@ export class FormPropsControl {
 
   setInternalFormMisc = (props: Partial<InternalFormProps>, parent: InternalFormContextState) => {
     this._parent = parent
-    // TODO: 需要验证直接赋值与浅赋值之间是否有性能问题
     this._props = props
-    // this._props = { ...props }
   }
 }
 
@@ -339,7 +337,7 @@ export class FormControlsControl {
 
       if (!cache && !removeInvalid) result.push(new InvalidFieldControl(path))
 
-      cache?.forEach((control) => result.push(control))
+      cache && cache.forEach((control) => result.push(control))
 
       return result
     }, [] as any[])
@@ -527,6 +525,7 @@ export class FormDispatchControl<State = any> {
 
   // 注册字段
   registerField = (control: FormFieldControl) => {
+    if (control._shouldHook === true) control.forceUpdate()
     return this.$controls.registerField(control, this)
   }
 
@@ -618,7 +617,7 @@ export class FormDispatchControl<State = any> {
 
         if (control._key === field._key) return true
 
-        if (!control._handler) return false
+        if (!control._shouldHook) return false
 
         return control.shouldUpdate(prev, next, type)
       })
