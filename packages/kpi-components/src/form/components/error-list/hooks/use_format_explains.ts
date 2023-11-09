@@ -1,6 +1,6 @@
 import { useDebounceValue } from '@kpi-ui/hooks'
-import { isString, pushItem } from '@kpi-ui/utils'
-import { ReactNode, useMemo } from 'react'
+import { fallback, isString, pushItem } from '@kpi-ui/utils'
+import { useMemo, type ReactNode } from 'react'
 
 import type { ValidateStatus } from '../../../props'
 import type { FormErrorListProps } from '../props'
@@ -13,7 +13,7 @@ const makeExplains = (
   return items.map((item, index) => ({
     key: isString(item) ? item : `${type}_${index}`,
     value: item,
-    status,
+    status: fallback(status, type),
   }))
 }
 
@@ -27,9 +27,6 @@ export default function useFormatExplains(props: FormErrorListProps) {
   return useMemo(() => {
     if (help) return makeExplains('help', [help], helpStatus)
 
-    return pushItem(
-      makeExplains('error', errors, 'error'),
-      makeExplains('warning', warnings, 'warning')
-    )
+    return pushItem(makeExplains('error', errors), makeExplains('warning', warnings))
   }, [errors, help, helpStatus, warnings])
 }
