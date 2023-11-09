@@ -10,6 +10,7 @@ export interface FormItemInputProps {
   // extra
   prefixCls: string
   validateStatus?: ValidateStatus
+  getWrapper: () => HTMLDivElement | null
   children: (
     onMetaChange: (meta: FieldMeta) => void,
     onSubMetaChange: (meta: FieldMeta) => void

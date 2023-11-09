@@ -11,7 +11,7 @@ function Input(props: any) {
 export default function App() {
   const [noStyle, setNoStyle] = useState(false)
   const [noRule, setNoRule] = useState(false)
-  const [inputNumber, setInputNumber] = useState(3)
+  const [inputNumber, setInputNumber] = useState(3000)
   return (
     <div>
       <p style={{ fontSize: 20, textAlign: 'center', marginBottom: 20 }}>
@@ -40,7 +40,7 @@ export default function App() {
         {Array.from({ length: inputNumber }, (_, i) => (
           <Form.Item
             key={i}
-            label="123123"
+            label={`username_${i}`}
             noStyle={noStyle}
             name={['username', i]}
             rule={kv

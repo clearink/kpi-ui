@@ -1,30 +1,17 @@
-import { useDebounceValue } from '@kpi-ui/hooks'
 import cls from 'classnames'
-import { useMemo } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { GroupTransition } from '../../../transition'
-import { makeErrorEntity } from '../../utils/error'
 import handlers from '../../utils/handlers'
+import useFormatExplains from './hooks/use_format_explains'
 
 import type { FormErrorListProps } from './props'
 
 export default function FormErrorList(props: FormErrorListProps) {
-  const { className, onExitComplete, help, helpStatus } = props
+  const { className, onExitComplete } = props
 
   const prefixCls = usePrefixCls('form-item-message')
 
-  const errors = useDebounceValue(20, props.errors || [])
-
-  const warnings = useDebounceValue(20, props.warnings || [])
-
-  const transitionList = useMemo(() => {
-    if (help) return [makeErrorEntity(help, helpStatus, 'help')]
-
-    return [
-      ...errors.map((error, index) => makeErrorEntity(error, 'error', 'error', index)),
-      ...warnings.map((warning, index) => makeErrorEntity(warning, 'warning', 'warning', index)),
-    ]
-  }, [errors, help, helpStatus, warnings])
+  const explains = useFormatExplains(props)
 
   return (
     <GroupTransition
@@ -35,10 +22,10 @@ export default function FormErrorList(props: FormErrorListProps) {
       onExitComplete={onExitComplete}
       {...handlers}
     >
-      {transitionList.map((item) => {
+      {explains.map((item) => {
         return (
           <div key={item.key} className={cls({ [`${prefixCls}--${item.status}`]: item.status })}>
-            {item.error}
+            {item.value}
           </div>
         )
       })}

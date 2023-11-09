@@ -13,12 +13,8 @@
     margin-bottom: $form-item-margin-bottom;
     vertical-align: top;
 
-    @include e(row) {
-      display: flex;
-    }
     @include e(label) {
       display: inline-block;
-      flex-grow: 0;
       overflow: hidden;
       white-space: nowrap;
       text-align: right;
@@ -38,13 +34,15 @@
 
       @include m(has-colon) {
         &::after {
-          content: ':';
-          position: relative;
-          top: -0.5px;
-          margin-left: $form-item-label-colon-margin-left;
-          margin-right: $form-item-label-colon-margin-right;
+          content: ':' !important;
         }
       }
+
+      @include m(wrap) {
+        white-space: unset;
+        overflow: unset;
+      }
+
       > label {
         height: $form-item-label-height;
         position: relative;
@@ -53,6 +51,13 @@
         max-width: 100%;
         color: $form-item-label-color;
         font-size: $form-item-label-font-size;
+        &::after {
+          content: '\a0';
+          position: relative;
+          top: -0.5px;
+          margin-left: $form-item-label-colon-margin-left;
+          margin-right: $form-item-label-colon-margin-right;
+        }
       }
     }
 

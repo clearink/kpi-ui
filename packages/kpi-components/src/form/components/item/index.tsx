@@ -1,9 +1,10 @@
 import { isNullish, pick } from '@kpi-ui/utils'
-import { createElement, useMemo, useRef } from 'react'
+import { hasRequired } from '@kpi-ui/validator'
+import { createElement, useCallback, useMemo, useRef } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import InternalForm from '../../../form-internal'
 import Row from '../../../row'
-import { FormContext, FormItemLayoutStableContext, NoStyleContext } from '../../_shared/context'
+import { FormContext, NoStyleContext } from '../../_shared/context'
 import { normalizeItemChildren } from '../../utils/children'
 import FormItemInput from '../item-input'
 import FormItemLabel from '../item-label'
@@ -11,7 +12,6 @@ import useFormatClass from './hooks/use_format_class'
 import useFormItemId from './hooks/use_item_id'
 
 import type { FormItemProps } from './props'
-import { hasRequired } from '@kpi-ui/validator'
 
 const labelIncluded = [
   'colon',
@@ -54,16 +54,9 @@ function CommonFormItem(props: FormItemProps) {
 
   const required = useMemo(() => !isNullish(name) && hasRequired(rule), [name, rule])
 
-  const outer = useRef<HTMLDivElement>(null)
+  const wrapper = useRef<HTMLDivElement>(null)
 
-  const inner = useRef<HTMLDivElement>(null)
-
-  const layoutStableContext = useMemo(() => {
-    return {
-      getOuterInstance: () => outer.current,
-      getInnerInstance: () => inner.current,
-    }
-  }, [])
+  const getWrapper = useCallback(() => wrapper.current, [])
 
   const labelProps = pick(props, labelIncluded)
 
@@ -74,29 +67,20 @@ function CommonFormItem(props: FormItemProps) {
   // }
 
   return (
-    <div className={classes} style={style} ref={outer}>
-      <Row className={`${prefixCls}__row`} ref={inner}>
-        {!!label && (
-          <FormItemLabel
-            htmlFor={itemId}
-            prefixCls={prefixCls}
-            required={required}
-            {...labelProps}
-          />
+    <Row className={classes} style={style} ref={wrapper}>
+      {!!label && (
+        <FormItemLabel htmlFor={itemId} prefixCls={prefixCls} required={required} {...labelProps} />
+      )}
+      <FormItemInput {...inputProps} prefixCls={prefixCls} getWrapper={getWrapper}>
+        {(onMetaChange, onSubMetaChange) => (
+          <NoStyleContext.Provider value={onSubMetaChange}>
+            <InternalForm.Field {...props} onMetaChange={onMetaChange}>
+              {normalizeItemChildren(props, formInstance, itemId)}
+            </InternalForm.Field>
+          </NoStyleContext.Provider>
         )}
-        <FormItemLayoutStableContext.Provider value={layoutStableContext}>
-          <FormItemInput {...inputProps} prefixCls={prefixCls}>
-            {(onMetaChange, onSubMetaChange) => (
-              <NoStyleContext.Provider value={onSubMetaChange}>
-                <InternalForm.Field {...props} onMetaChange={onMetaChange}>
-                  {normalizeItemChildren(props, formInstance, itemId)}
-                </InternalForm.Field>
-              </NoStyleContext.Provider>
-            )}
-          </FormItemInput>
-        </FormItemLayoutStableContext.Provider>
-      </Row>
-    </div>
+      </FormItemInput>
+    </Row>
   )
 }
 

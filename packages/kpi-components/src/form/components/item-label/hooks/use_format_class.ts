@@ -9,7 +9,7 @@ export default function useFormatClass(mergedProps: FormItemLabelProps & FormCon
 
   const baseClassName = `${prefixCls}__label`
 
-  const colCls = cls(
+  const colClasses = cls(
     baseClassName,
     {
       [`${baseClassName}--${labelAlign}`]: labelAlign,
@@ -19,11 +19,11 @@ export default function useFormatClass(mergedProps: FormItemLabelProps & FormCon
     labelCol && labelCol.className
   )
 
-  const labelCls = cls({
+  const labelClasses = cls({
     [`${baseClassName}--required`]: required,
     [`${baseClassName}--required-optional`]: requiredMark === 'optional',
     [`${baseClassName}--has-colon`]: colon && layout !== 'vertical',
   })
 
-  return [colCls, labelCls] as const
+  return [colClasses, labelClasses] as const
 }

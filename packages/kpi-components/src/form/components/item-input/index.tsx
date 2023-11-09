@@ -1,10 +1,10 @@
 import { useEvent } from '@kpi-ui/hooks'
 import { shallowMergeWithPick } from '@kpi-ui/utils'
-import cls from 'classnames'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Col from '../../../col'
-import { FormContext, FormItemContext, FormItemLayoutStableContext } from '../../_shared/context'
+import { FormContext, FormItemContext } from '../../_shared/context'
 import FormErrorList from '../error-list'
+import useFormatClass from './hooks/use_format_class'
 import useFormatStatus from './hooks/use_format_status'
 import useMetaState from './hooks/use_meta_state'
 
@@ -13,21 +13,23 @@ import type { FormItemInputProps } from './props'
 function FormItemInput(props: FormItemInputProps) {
   const merged = shallowMergeWithPick(props, FormContext.useState(), ['wrapperCol'])
 
-  const { children, extra, wrapperCol, prefixCls, help } = merged
-
-  const layoutStableContext = FormItemLayoutStableContext.useState()
+  const { children, extra, wrapperCol, prefixCls, help, getWrapper } = merged
 
   const [meta, onMetaChange] = useMetaState()
 
   const [subMeta, onSubMetaChange] = useMetaState()
 
-  const status = useFormatStatus(meta, merged.validateStatus)
-
-  const formItemContext = useMemo(() => ({ validateStatus: status }), [status])
+  const inner = useRef<HTMLDivElement>(null)
 
   const holder = useRef<HTMLDivElement>(null)
 
-  const [running, setRunning] = useState(false)
+  const [inLayout, setInLayout] = useState(false)
+
+  const status = useFormatStatus(meta, merged.validateStatus)
+
+  const classes = useFormatClass(prefixCls, status, wrapperCol)
+
+  const formItemContext = useMemo(() => ({ validateStatus: status }), [status])
 
   const errors = meta.errors.concat(subMeta.errors)
 
@@ -35,43 +37,45 @@ function FormItemInput(props: FormItemInputProps) {
 
   const hasError = !!(help || errors.length || warnings.length)
 
-  const showErrorList = !!(errors.length || warnings.length || running)
+  const showErrorList = !!(errors.length || warnings.length || inLayout)
 
   const handleExitComplete = useEvent(() => {
-    const inner = layoutStableContext.getInnerInstance()
+    const innerInstance = inner.current
 
-    const instance = holder.current
+    const holderInstance = holder.current
 
-    if (!inner || !instance || hasError) return
+    if (!innerInstance || !holderInstance || hasError) return
 
-    inner.style.marginBottom = ''
+    innerInstance.style.marginBottom = ''
 
-    instance.style.height = ''
+    holderInstance.style.height = ''
 
-    setRunning(false)
+    setInLayout(false)
   })
 
   useEffect(() => {
-    const outer = layoutStableContext.getOuterInstance()
+    const wrapperInstance = getWrapper()
 
-    const inner = layoutStableContext.getInnerInstance()
+    const innerInstance = inner.current
 
-    const instance = holder.current
+    const holderInstance = holder.current
 
-    if (!hasError || !outer || !inner || !instance) return
+    if (!hasError || !wrapperInstance || !innerInstance || !holderInstance) return
 
-    const marginBottom = parseFloat(getComputedStyle(outer).marginBottom)
+    const styles = getComputedStyle(wrapperInstance)
 
-    inner.style.marginBottom = `-${marginBottom}px`
+    const marginBottom = parseFloat(styles.marginBottom)
 
-    instance.style.height = `${marginBottom}px`
+    innerInstance.style.marginBottom = `-${marginBottom}px`
 
-    setRunning(true)
-  }, [layoutStableContext, hasError])
+    holderInstance.style.height = `${marginBottom}px`
+
+    setInLayout(true)
+  }, [getWrapper, hasError])
 
   return (
     <FormItemContext.Provider value={formItemContext}>
-      <Col {...wrapperCol} className={cls(`${prefixCls}__control`, wrapperCol?.className)}>
+      <Col flex={1} {...wrapperCol} className={classes} ref={inner}>
         <div className={`${prefixCls}__control-input`}>
           {children(onMetaChange, onSubMetaChange)}
         </div>

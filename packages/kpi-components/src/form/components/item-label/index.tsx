@@ -15,17 +15,18 @@ function FormItemLabel(props: FormItemLabelProps) {
     'labelCol',
     'labelWrap',
     'requiredMark',
+    'layout',
   ])
 
-  const [labelColClassName, labelClassName] = useFormatClass(mergedProps)
+  const [colClasses, labelClasses] = useFormatClass(mergedProps)
 
   const { htmlFor, labelCol, label } = mergedProps
 
   const htmlTitle = isString(label) ? label : undefined
 
   return (
-    <Col {...labelCol} className={labelColClassName}>
-      <label className={labelClassName} htmlFor={htmlFor} title={htmlTitle}>
+    <Col flex="110px" {...labelCol} className={colClasses}>
+      <label className={labelClasses} htmlFor={htmlFor} title={htmlTitle}>
         {normalizeLabelChildren(mergedProps)}
       </label>
     </Col>
