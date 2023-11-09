@@ -1,4 +1,4 @@
-import { isNullish, pick } from '@kpi-ui/utils'
+import { isBoolean, isNullish, isUndefined, pick } from '@kpi-ui/utils'
 import { hasRequired } from '@kpi-ui/validator'
 import { createElement, useCallback, useMemo, useRef } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
@@ -42,7 +42,7 @@ function NoStyleFormItem(props: FormItemProps) {
 }
 
 function CommonFormItem(props: FormItemProps) {
-  const { name, rule, label, style } = props
+  const { name, rule, label, style, required } = props
 
   const { formName, form: formInstance } = FormContext.useState()
 
@@ -52,7 +52,10 @@ function CommonFormItem(props: FormItemProps) {
 
   const classes = useFormatClass(prefixCls, props)
 
-  const required = useMemo(() => !isNullish(name) && hasRequired(rule), [name, rule])
+  const isRequired = useMemo(() => {
+    if (!isUndefined(required)) return required
+    return !isNullish(name) && hasRequired(rule)
+  }, [name, required, rule])
 
   const wrapper = useRef<HTMLDivElement>(null)
 
@@ -69,7 +72,12 @@ function CommonFormItem(props: FormItemProps) {
   return (
     <Row className={classes} style={style} ref={wrapper}>
       {!!label && (
-        <FormItemLabel htmlFor={itemId} prefixCls={prefixCls} required={required} {...labelProps} />
+        <FormItemLabel
+          htmlFor={itemId}
+          prefixCls={prefixCls}
+          required={isRequired}
+          {...labelProps}
+        />
       )}
       <FormItemInput {...inputProps} prefixCls={prefixCls} getWrapper={getWrapper}>
         {(onMetaChange, onSubMetaChange) => (

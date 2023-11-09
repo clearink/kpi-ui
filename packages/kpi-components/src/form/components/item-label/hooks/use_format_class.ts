@@ -9,21 +9,16 @@ export default function useFormatClass(mergedProps: FormItemLabelProps & FormCon
 
   const baseClassName = `${prefixCls}__label`
 
-  const colClasses = cls(
+  return cls(
     baseClassName,
     {
       [`${baseClassName}--${labelAlign}`]: labelAlign,
       [`${baseClassName}--wrap`]: labelWrap,
       [`${baseClassName}--colon`]: colon,
+      [`${baseClassName}--required`]: required,
+      [`${baseClassName}--required-optional`]: requiredMark === 'optional',
+      [`${baseClassName}--has-colon`]: colon && layout !== 'vertical',
     },
     labelCol && labelCol.className
   )
-
-  const labelClasses = cls({
-    [`${baseClassName}--required`]: required,
-    [`${baseClassName}--required-optional`]: requiredMark === 'optional',
-    [`${baseClassName}--has-colon`]: colon && layout !== 'vertical',
-  })
-
-  return [colClasses, labelClasses] as const
 }

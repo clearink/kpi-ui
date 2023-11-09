@@ -18,15 +18,15 @@ function FormItemLabel(props: FormItemLabelProps) {
     'layout',
   ])
 
-  const [colClasses, labelClasses] = useFormatClass(mergedProps)
+  const classes = useFormatClass(mergedProps)
 
   const { htmlFor, labelCol, label } = mergedProps
 
   const htmlTitle = isString(label) ? label : undefined
 
   return (
-    <Col flex="110px" {...labelCol} className={colClasses}>
-      <label className={labelClasses} htmlFor={htmlFor} title={htmlTitle}>
+    <Col flex="110px" {...labelCol} className={classes}>
+      <label htmlFor={htmlFor} title={htmlTitle}>
         {normalizeLabelChildren(mergedProps)}
       </label>
     </Col>
