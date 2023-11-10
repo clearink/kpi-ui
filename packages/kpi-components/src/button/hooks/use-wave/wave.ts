@@ -40,7 +40,7 @@ export default class Wave {
     this.node = null
   }
 
-  createWave() {
+  create() {
     const { container } = this
     if (!container) return
 

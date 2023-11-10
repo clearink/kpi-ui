@@ -1,8 +1,13 @@
 import cls from 'classnames'
 import { ButtonProps } from '../props'
 
-export default function useFormatClass(prefixCls: string, props: ButtonProps) {
-  const { className, type, block, danger, shape, size, ghost, loading } = props
+export default function useFormatClass(
+  prefixCls: string,
+  props: ButtonProps,
+  fallbacks: Pick<ButtonProps, 'size'>
+) {
+  const { className, type, block, danger, shape, ghost, loading } = props
+  const { size } = fallbacks
 
   return cls(prefixCls, {
     [`${prefixCls}--${type}`]: type,

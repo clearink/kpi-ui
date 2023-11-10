@@ -10,7 +10,7 @@ export default function useWave<H extends HTMLElement>() {
     if (!dom) return
 
     const wave = new Wave(dom)
-    const handler = () => wave.createWave()
+    const handler = () => wave.create()
     dom.addEventListener('click', handler, true)
 
     return () => {

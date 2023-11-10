@@ -1,7 +1,8 @@
-import { Button, Form, Space } from '@kpi-ui/components'
+import { Button, Form, Row, Col } from '@kpi-ui/components'
 import { useState } from 'react'
-import kv from '@kpi-ui/validator'
+
 import '@kpi-ui/components/src/style'
+import './style.scss'
 
 function Input(props: any) {
   // console.log(props)
@@ -9,51 +10,38 @@ function Input(props: any) {
 }
 
 export default function App() {
-  const [noStyle, setNoStyle] = useState(false)
-  const [noRule, setNoRule] = useState(false)
   const [inputNumber, setInputNumber] = useState(3000)
   return (
     <div>
-      <p style={{ fontSize: 20, textAlign: 'center', marginBottom: 20 }}>
-        测试 {inputNumber || 0} 个输入框场景下 Form 组件的性能
-      </p>
-      <Space style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-        <Button type="primary" onClick={() => setNoStyle((p) => !p)}>
-          NoStyle: {noStyle ? 'true' : 'false'}
-        </Button>
-        <Button type="primary" onClick={() => setNoRule((p) => !p)}>
-          NoRule: {noRule ? 'true' : 'false'}
-        </Button>
-        <span>input number</span>
-        <Input
-          value={inputNumber}
-          onChange={(e: any) => setInputNumber(parseInt(e.target.value, 10))}
-        />
-      </Space>
-      <Form
-        tag="div"
-        style={{
-          width: 600,
-          margin: '0 auto',
-        }}
-      >
-        {Array.from({ length: inputNumber }, (_, i) => (
-          <Form.Item
-            key={i}
-            label={`username_${i}`}
-            noStyle={noStyle}
-            name={['username', i]}
-            rule={kv
-              .string()
-              // .min(3, <div style={{ height: 40 }}>12312123123</div>)
-              .min(3)
-              .max(6)
-              .required()}
-          >
-            <Input placeholder={`username-${i}`} />
-          </Form.Item>
-        ))}
-      </Form>
+      {/* <p style={{ fontSize: 20, textAlign: 'center', marginBottom: 20 }}>
+        测试 {inputNumber || 0} 个 Col, Row 组件的性能
+      </p> */}
+      <Button>123</Button>
+      <Button type="primary" size="large">
+        123
+      </Button>
+      {/* {Array.from({ length: inputNumber }, (_, i) => (
+        <Row key={i} className="row" gutter={10}>
+          <Col className="col" span={4}>
+            <div className="a"></div>
+          </Col>
+          <Col className="col" span={4}>
+            <div className="a"></div>
+          </Col>
+          <Col className="col" span={4}>
+            <div className="a"></div>
+          </Col>
+          <Col className="col" span={4}>
+            <div className="a"></div>
+          </Col>
+          <Col className="col" span={4}>
+            <div className="a"></div>
+          </Col>
+          <Col className="col" span={4}>
+            <div className="a"></div>
+          </Col>
+        </Row>
+      ))} */}
     </div>
   )
 }

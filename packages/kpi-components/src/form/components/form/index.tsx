@@ -1,5 +1,5 @@
 import { useEvent } from '@kpi-ui/hooks'
-import { shallowMergeWithFallback, withDefaults } from '@kpi-ui/utils'
+import { shallowMergeWithFallback, withDefaults, withoutProperties } from '@kpi-ui/utils'
 import {
   forwardRef,
   useImperativeHandle,
@@ -9,13 +9,27 @@ import {
   type Ref,
 } from 'react'
 import { ConfigContext, DisabledContext, SizeContext } from '../../../_shared/context'
+import { usePrefixCls } from '../../../_shared/hooks'
 import InternalForm from '../../../form-internal'
 import { FormContext, FormContextState } from '../../_shared/context'
 import useForm from './hooks/use_form'
 import useFormatClass from './hooks/use_format_class'
 
 import type { FormInstance, FormProps } from './props'
-import { usePrefixCls } from '../../../_shared/hooks'
+
+const excluded = [
+  'form',
+  'colon',
+  'layout',
+  'labelAlign',
+  'labelWrap',
+  'labelCol',
+  'wrapperCol',
+  'size',
+  'disabled',
+  'scrollToFirstError',
+  'requiredMark',
+] as const
 
 function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance<State>>) {
   const {
@@ -28,7 +42,6 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     layout,
     onFailed,
     scrollToFirstError,
-    ...rest
   } = props
 
   const fallbacks = shallowMergeWithFallback(
@@ -79,12 +92,14 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     // formInstance.scrollToField()
   })
 
+  const attrs = withoutProperties(props, excluded)
+
   return (
     <DisabledContext.Provider value={fallbacks.disabled}>
       <SizeContext.Provider value={fallbacks.size}>
         <FormContext.Provider value={formContext}>
           <InternalForm<State>
-            {...rest}
+            {...attrs}
             name={name}
             className={classes}
             form={formInstance}

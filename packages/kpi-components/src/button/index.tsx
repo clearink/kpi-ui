@@ -1,11 +1,11 @@
-/* eslint-disable react/button-has-type */
-import { withDefaults, withoutProperties } from '@kpi-ui/utils'
-import { ForwardedRef, forwardRef, useImperativeHandle, type MouseEvent, useRef } from 'react'
+import { shallowMergeWithFallback, withDefaults, withoutProperties } from '@kpi-ui/utils'
+import { ForwardedRef, forwardRef, useImperativeHandle, useRef, type MouseEvent } from 'react'
+import { SizeContext } from '../_shared/context'
 import { usePrefixCls } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 
 import type { ButtonProps } from './props'
-import Wave from '../animation/wave'
+import useWave from './hooks/use-wave'
 
 const excluded = [
   'children',
@@ -23,13 +23,15 @@ const excluded = [
 function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
   const { children, htmlType, onClick, loading, disabled } = props
 
+  const fallbacks = shallowMergeWithFallback(props, { size: SizeContext.useState() }, ['size'])
+
   const prefixCls = usePrefixCls('button')
 
-  const classes = useFormatClass(prefixCls, props)
+  const classes = useFormatClass(prefixCls, props, fallbacks)
+
+  const internalRef = useWave<HTMLButtonElement>()
 
   useImperativeHandle(ref, () => internalRef.current!)
-
-  const internalRef = useRef<HTMLButtonElement>(null)
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     if (disabled || loading) e.preventDefault()

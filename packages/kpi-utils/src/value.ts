@@ -24,7 +24,7 @@ export function pick<T extends Record<string, any>, K extends keyof T>(
   for (let i = 0; i < keys.length; i += 1) {
     const key = keys[i]
 
-    if (!(detectPrototype && key in source)) continue
+    if (detectPrototype && !(key in source)) continue
 
     result[key] = source[key]
   }

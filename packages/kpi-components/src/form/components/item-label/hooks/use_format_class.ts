@@ -6,11 +6,11 @@ import type { FormItemLabelProps } from '../props'
 export default function useFormatClass(
   prefixCls: string,
   props: FormItemLabelProps,
-  fallbacked: FormContextState
+  fallbacks: FormContextState
 ) {
   const { required } = props
 
-  const { colon, labelAlign, labelCol, labelWrap, requiredMark, layout } = fallbacked
+  const { colon, labelAlign, labelCol, labelWrap, requiredMark, layout } = fallbacks
 
   return cls(
     prefixCls,
