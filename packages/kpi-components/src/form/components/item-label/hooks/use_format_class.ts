@@ -3,21 +3,24 @@ import cls from 'classnames'
 import type { FormContextState } from '../../../_shared/context'
 import type { FormItemLabelProps } from '../props'
 
-export default function useFormatClass(mergedProps: FormItemLabelProps & FormContextState) {
-  const { prefixCls, layout, required, colon, labelWrap, labelAlign, labelCol, requiredMark } =
-    mergedProps
+export default function useFormatClass(
+  prefixCls: string,
+  props: FormItemLabelProps,
+  fallbacked: FormContextState
+) {
+  const { required } = props
 
-  const baseClassName = `${prefixCls}__label`
+  const { colon, labelAlign, labelCol, labelWrap, requiredMark, layout } = fallbacked
 
   return cls(
-    baseClassName,
+    prefixCls,
     {
-      [`${baseClassName}--${labelAlign}`]: labelAlign,
-      [`${baseClassName}--wrap`]: labelWrap,
-      [`${baseClassName}--colon`]: colon,
-      [`${baseClassName}--required`]: required,
-      [`${baseClassName}--required-optional`]: requiredMark === 'optional',
-      [`${baseClassName}--has-colon`]: colon && layout !== 'vertical',
+      [`${prefixCls}--${labelAlign}`]: labelAlign,
+      [`${prefixCls}--wrap`]: labelWrap,
+      [`${prefixCls}--colon`]: colon,
+      [`${prefixCls}--required`]: required,
+      [`${prefixCls}--required-optional`]: requiredMark === 'optional',
+      [`${prefixCls}--has-colon`]: colon && layout !== 'vertical',
     },
     labelCol && labelCol.className
   )

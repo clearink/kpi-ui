@@ -24,9 +24,9 @@ const excluded = [
 function Col(props: ColProps, ref: ForwardedRef<HTMLDivElement>) {
   const { children, style } = props
 
-  const name = usePrefixCls('col')
+  const prefixCls = usePrefixCls('col')
 
-  const classes = useFormatClass(name, props)
+  const classes = useFormatClass(prefixCls, props)
 
   const gutter = RowContext.useState() / 2
 

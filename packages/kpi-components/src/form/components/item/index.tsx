@@ -20,7 +20,6 @@ const labelIncluded = [
   'labelAlign',
   'labelCol',
   'labelWrap',
-  'required',
   'requiredMark',
   'tooltip',
 ] as const
@@ -42,7 +41,7 @@ function NoStyleFormItem(props: FormItemProps) {
 }
 
 function CommonFormItem(props: FormItemProps) {
-  const { name, rule, label, style, required } = props
+  const { name, rule, label, style, required: _required } = props
 
   const { formName, form: formInstance } = FormContext.useState()
 
@@ -52,14 +51,15 @@ function CommonFormItem(props: FormItemProps) {
 
   const classes = useFormatClass(prefixCls, props)
 
-  const isRequired = useMemo(() => {
-    if (!isUndefined(required)) return required
+  const required = useMemo(() => {
+    if (!isUndefined(_required)) return _required
+
     return !isNullish(name) && hasRequired(rule)
-  }, [name, required, rule])
+  }, [_required, name, rule])
 
-  const wrapper = useRef<HTMLDivElement>(null)
+  const outer = useRef<HTMLDivElement>(null)
 
-  const getWrapper = useCallback(() => wrapper.current, [])
+  const getOuter = useCallback(() => outer.current, [])
 
   const labelProps = pick(props, labelIncluded)
 
@@ -70,16 +70,9 @@ function CommonFormItem(props: FormItemProps) {
   // }
 
   return (
-    <Row className={classes} style={style} ref={wrapper}>
-      {!!label && (
-        <FormItemLabel
-          htmlFor={itemId}
-          prefixCls={prefixCls}
-          required={isRequired}
-          {...labelProps}
-        />
-      )}
-      <FormItemInput {...inputProps} prefixCls={prefixCls} getWrapper={getWrapper}>
+    <Row className={classes} style={style} ref={outer}>
+      {!!label && <FormItemLabel htmlFor={itemId} required={required} {...labelProps} />}
+      <FormItemInput {...inputProps} getOuter={getOuter}>
         {(onMetaChange, onSubMetaChange) => (
           <NoStyleContext.Provider value={onSubMetaChange}>
             <InternalForm.Field {...props} onMetaChange={onMetaChange}>

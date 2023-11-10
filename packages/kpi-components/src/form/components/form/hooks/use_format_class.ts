@@ -1,23 +1,19 @@
 import cls from 'classnames'
-import { usePrefixCls } from '../../../../_shared/hooks'
 
-import type { SizeType } from '../../../../config-provider/props'
-import type { RequiredMark } from '../../../props'
 import type { FormProps } from '../props'
 
 export default function useFormatClass(
+  prefixCls: string,
   props: FormProps,
-  contextSize: SizeType,
-  requiredMark?: RequiredMark
+  fallbacks: Pick<FormProps, 'size' | 'disabled' | 'colon' | 'requiredMark'>
 ) {
-  const { layout, size = contextSize, className } = props
+  const { layout, className } = props
+  const { size, requiredMark } = fallbacks
 
-  const name = usePrefixCls('form')
-
-  return cls(name, {
-    [`${name}--${layout}`]: layout,
-    [`${name}--hide-required-mark`]: requiredMark === false,
-    [`${name}--${size}`]: size,
+  return cls(prefixCls, {
+    [`${prefixCls}--${layout}`]: layout,
+    [`${prefixCls}--hide-required-mark`]: !requiredMark,
+    [`${prefixCls}--${size}`]: size,
     [className!]: className,
   })
 }

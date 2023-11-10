@@ -13,6 +13,5 @@ export interface FormItemLabelProps {
   tooltip?: any
 
   // extra
-  prefixCls: string
   required: boolean
 }

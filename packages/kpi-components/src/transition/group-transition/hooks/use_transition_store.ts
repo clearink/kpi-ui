@@ -1,6 +1,6 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { withoutProperties } from '@kpi-ui/utils'
-import { cloneElement, createElement, type Key, type ReactElement } from 'react'
+import { cloneElement, createElement, type ReactElement } from 'react'
 import { ENTER, isExit, isExited } from '../../constants/status'
 import CSSTransition from '../../css-transition'
 import batch from '../../utils/batch'
@@ -41,11 +41,11 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
   // 展示用
   nodes: ReactElement<CSS>[] = []
 
-  elements = new Map<Key | null, ReactElement<CSS>>()
+  elements = new Map<ReactElement['key'], ReactElement<CSS>>()
 
-  components = new Map<Key | null, CSSTransitionRef>()
+  components = new Map<ReactElement['key'], CSSTransitionRef>()
 
-  coords = new Map<Key | null, DOMRect>()
+  coords = new Map<ReactElement['key'], DOMRect>()
 
   getCoords = () => {
     return this.previous.reduce((map, el) => {
@@ -56,7 +56,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
       const rect = instance && instance.getBoundingClientRect()
 
       return rect ? map.set(el.key, rect) : map
-    }, new Map<Key | null, DOMRect>())
+    }, new Map<ReactElement['key'], DOMRect>())
   }
 
   isInitial = true

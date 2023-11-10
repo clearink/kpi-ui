@@ -7,9 +7,5 @@ export default function useFormatClass(
   status: ValidateStatus,
   wrapperCol: FormItemInputProps['wrapperCol']
 ) {
-  return cls(
-    `${prefixCls}__control`,
-    status && `${prefixCls}--has-${status}`,
-    wrapperCol && wrapperCol.className
-  )
+  return cls(prefixCls, status && `${prefixCls}--has-${status}`, wrapperCol && wrapperCol.className)
 }

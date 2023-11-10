@@ -8,8 +8,11 @@ import type { FormItemLabelProps } from '../components/item-label/props'
 import type { FormItemProps } from '../components/item/props'
 
 // 格式化 FormItemLabel
-export function normalizeLabelChildren(mergedProps: FormItemLabelProps & FormContextState) {
-  const { colon, label, requiredMark, required, tooltip, layout } = mergedProps
+export function normalizeLabelChildren(props: FormItemLabelProps, fallbacked: FormContextState) {
+  const { required, tooltip, label } = props
+
+  const { colon, requiredMark, layout } = fallbacked
+
   const hasColon = layout !== 'vertical' && colon
 
   let labelNode = label

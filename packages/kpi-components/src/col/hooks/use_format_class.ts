@@ -4,7 +4,7 @@ import { BREAKPOINT_NAME } from '../../_shared/hooks/use-breakpoint/breakpoint'
 
 import type { ColProps } from '../props'
 
-export default function useFormatClass(name: string, props: ColProps) {
+export default function useFormatClass(prefixCls: string, props: ColProps) {
   const { className, span, offset, pull, push, order } = props
 
   const extraClass = BREAKPOINT_NAME.reduce((res, size) => {
@@ -13,25 +13,25 @@ export default function useFormatClass(name: string, props: ColProps) {
     if (isUndefined(breakpoint)) return res
 
     if (isObject(breakpoint)) {
-      res[`${name}-${size}-${breakpoint.span}`] = breakpoint.span
-      res[`${name}-${size}-${breakpoint.offset}`] = breakpoint.offset
-      res[`${name}-${size}-${breakpoint.pull}`] = breakpoint.pull
-      res[`${name}-${size}-${breakpoint.push}`] = breakpoint.push
-      res[`${name}-${size}-${breakpoint.order}`] = breakpoint.order
+      res[`${prefixCls}-${size}-${breakpoint.span}`] = breakpoint.span
+      res[`${prefixCls}-${size}-${breakpoint.offset}`] = breakpoint.offset
+      res[`${prefixCls}-${size}-${breakpoint.pull}`] = breakpoint.pull
+      res[`${prefixCls}-${size}-${breakpoint.push}`] = breakpoint.push
+      res[`${prefixCls}-${size}-${breakpoint.order}`] = breakpoint.order
       return res
     }
 
-    res[`${name}-${size}-${breakpoint}`] = breakpoint
+    res[`${prefixCls}-${size}-${breakpoint}`] = breakpoint
 
     return res
   }, {})
 
-  return cls(name, extraClass, {
-    [`${name}-${span}`]: !isUndefined(span),
-    [`${name}-offset-${offset}`]: offset,
-    [`${name}-pull-${pull}`]: pull,
-    [`${name}-push-${push}`]: push,
-    [`${name}-order-${order}`]: order,
+  return cls(prefixCls, extraClass, {
+    [`${prefixCls}-${span}`]: !isUndefined(span),
+    [`${prefixCls}-offset-${offset}`]: offset,
+    [`${prefixCls}-pull-${pull}`]: pull,
+    [`${prefixCls}-push-${push}`]: push,
+    [`${prefixCls}-order-${order}`]: order,
     [className!]: className,
   })
 }

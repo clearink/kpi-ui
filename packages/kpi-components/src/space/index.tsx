@@ -9,11 +9,11 @@ import type { SpaceProps } from './props'
 const excluded = ['children', 'size', 'style', 'direction', 'wrap', 'split'] as const
 
 function Space(props: SpaceProps) {
-  const { children: $children, size, style, split } = props
+  const { children: _children, size, style, split } = props
 
-  const name = usePrefixCls('space')
+  const prefixCls = usePrefixCls('space')
 
-  const classes = useFormatClass(name, props)
+  const classes = useFormatClass(prefixCls, props)
 
   // 水平 垂直 间距
   const [h, v] = useSpaceGutter(size, !!split)
@@ -21,7 +21,7 @@ function Space(props: SpaceProps) {
   const gap: CSSProperties = { rowGap: v, columnGap: h }
 
   // 处理 children
-  const children = flattenChildren($children).map((child, index, childList) => {
+  const children = flattenChildren(_children).map((child, index, childList) => {
     const isEndItem = childList.length - index === 1
     const key = (child as ReactElement)?.key || index
     return (

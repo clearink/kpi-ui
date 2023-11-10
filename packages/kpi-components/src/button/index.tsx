@@ -23,9 +23,9 @@ const excluded = [
 function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
   const { children, htmlType, onClick, loading, disabled } = props
 
-  const name = usePrefixCls('button')
+  const prefixCls = usePrefixCls('button')
 
-  const classes = useFormatClass(name, props)
+  const classes = useFormatClass(prefixCls, props)
 
   useImperativeHandle(ref, () => internalRef.current!)
 

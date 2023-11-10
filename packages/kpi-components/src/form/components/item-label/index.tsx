@@ -1,15 +1,14 @@
-import { isString, shallowMergeWithPick } from '@kpi-ui/utils'
-import { memo } from 'react'
+import { isString, shallowMergeWithFallback } from '@kpi-ui/utils'
 import Col from '../../../col'
 import { FormContext } from '../../_shared/context'
 import { normalizeLabelChildren } from '../../utils/children'
 import useFormatClass from './hooks/use_format_class'
 
 import type { FormItemLabelProps } from './props'
+import { usePrefixCls } from '../../../_shared/hooks'
 
-// 46-50
 function FormItemLabel(props: FormItemLabelProps) {
-  const mergedProps = shallowMergeWithPick(props, FormContext.useState(), [
+  const merged = shallowMergeWithFallback(props, FormContext.useState(), [
     'colon',
     'labelAlign',
     'labelCol',
@@ -18,19 +17,23 @@ function FormItemLabel(props: FormItemLabelProps) {
     'layout',
   ])
 
-  const classes = useFormatClass(mergedProps)
+  const prefixCls = usePrefixCls('form-item__label')
 
-  const { htmlFor, labelCol, label } = mergedProps
+  const classes = useFormatClass(prefixCls, props, merged)
+
+  const { htmlFor, label } = props
+
+  const { labelCol } = merged
 
   const htmlTitle = isString(label) ? label : undefined
 
   return (
-    <Col flex="110px" {...labelCol} className={classes}>
+    <Col {...labelCol} className={classes}>
       <label htmlFor={htmlFor} title={htmlTitle}>
-        {normalizeLabelChildren(mergedProps)}
+        {normalizeLabelChildren(props, merged)}
       </label>
     </Col>
   )
 }
 
-export default memo(FormItemLabel)
+export default FormItemLabel

@@ -15,33 +15,11 @@
 
     @include e(label) {
       display: inline-block;
+      flex-grow: 0;
       overflow: hidden;
       white-space: nowrap;
       text-align: right;
       vertical-align: middle;
-
-      @include m(required) {
-        &::before {
-          content: '*';
-          display: inline-block;
-          margin-right: 4px;
-          color: $form-item-label-required-color;
-          font-size: $form-item-label-font-size;
-          font-family: SimSun, sans-serif;
-          line-height: 1;
-        }
-      }
-
-      @include m(has-colon) {
-        &::after {
-          content: ':' !important;
-        }
-      }
-
-      @include m(wrap) {
-        white-space: unset;
-        overflow: unset;
-      }
 
       > label {
         height: $form-item-label-height;
@@ -58,6 +36,29 @@
           margin-left: $form-item-label-colon-margin-left;
           margin-right: $form-item-label-colon-margin-right;
         }
+      }
+
+      @include m(required) {
+        > label::before {
+          content: '*';
+          display: inline-block;
+          margin-right: 4px;
+          color: $form-item-label-required-color;
+          font-size: $form-item-label-font-size;
+          font-family: SimSun, sans-serif;
+          line-height: 1;
+        }
+      }
+
+      @include m(has-colon) {
+        > label::after {
+          content: ':' !important;
+        }
+      }
+
+      @include m(wrap) {
+        white-space: unset;
+        overflow: unset;
       }
     }
 

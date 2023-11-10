@@ -1,7 +1,7 @@
 import cls from 'classnames'
 import { PaginationProps } from '../props'
 
-export default function useFormatClass(name: string, props: PaginationProps) {
+export default function useFormatClass(prefixCls: string, props: PaginationProps) {
   const { className } = props
-  return cls(name, className)
+  return cls(prefixCls, className)
 }

@@ -1,4 +1,5 @@
-import { withDefaults } from '@kpi-ui/utils'
+import { useEvent } from '@kpi-ui/hooks'
+import { shallowMergeWithFallback, withDefaults } from '@kpi-ui/utils'
 import {
   forwardRef,
   useImperativeHandle,
@@ -10,17 +11,13 @@ import {
 import { ConfigContext, DisabledContext, SizeContext } from '../../../_shared/context'
 import InternalForm from '../../../form-internal'
 import { FormContext, FormContextState } from '../../_shared/context'
-import useFormatClass from './hooks/use_format_class'
 import useForm from './hooks/use_form'
+import useFormatClass from './hooks/use_format_class'
 
 import type { FormInstance, FormProps } from './props'
-import { useEvent } from '@kpi-ui/hooks'
+import { usePrefixCls } from '../../../_shared/hooks'
 
 function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance<State>>) {
-  const { form: contextFormConfig } = ConfigContext.useState()
-  const contextDisabled = DisabledContext.useState()
-  const contextSize = SizeContext.useState()
-
   const {
     name,
     labelAlign,
@@ -31,14 +28,22 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     layout,
     onFailed,
     scrollToFirstError,
-    size = contextSize,
-    disabled = contextDisabled,
-    colon = contextFormConfig?.colon,
-    requiredMark = contextFormConfig?.requiredMark,
     ...rest
   } = props
 
-  const classes = useFormatClass(props, size, requiredMark)
+  const fallbacks = shallowMergeWithFallback(
+    props,
+    {
+      size: SizeContext.useState(),
+      disabled: DisabledContext.useState(),
+      ...ConfigContext.useState().form,
+    },
+    ['size', 'disabled', 'colon', 'requiredMark']
+  )
+
+  const prefixCls = usePrefixCls('form')
+
+  const classes = useFormatClass(prefixCls, props, fallbacks)
 
   const formInstance = useForm(form)
 
@@ -51,12 +56,22 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
       labelWrap,
       labelCol,
       wrapperCol,
-      colon,
-      requiredMark,
+      colon: fallbacks.colon,
+      requiredMark: fallbacks.requiredMark,
       form: formInstance,
       layout,
     }
-  }, [name, labelAlign, labelWrap, labelCol, wrapperCol, colon, requiredMark, formInstance, layout])
+  }, [
+    fallbacks.colon,
+    fallbacks.requiredMark,
+    formInstance,
+    labelAlign,
+    labelCol,
+    labelWrap,
+    layout,
+    name,
+    wrapperCol,
+  ])
 
   const onFailedWithEffect = useEvent((errors: any) => {
     onFailed && onFailed(errors)
@@ -65,8 +80,8 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   })
 
   return (
-    <DisabledContext.Provider value={disabled}>
-      <SizeContext.Provider value={size}>
+    <DisabledContext.Provider value={fallbacks.disabled}>
+      <SizeContext.Provider value={fallbacks.size}>
         <FormContext.Provider value={formContext}>
           <InternalForm<State>
             {...rest}

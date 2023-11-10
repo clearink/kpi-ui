@@ -12,9 +12,9 @@ const excluded = ['children', 'style', 'gutter', 'align', 'justify', 'wrap', 'cl
 function Row(props: RowProps, ref: ForwardedRef<HTMLDivElement>) {
   const { children, style, gutter } = props
 
-  const name = usePrefixCls('row')
+  const prefixCls = usePrefixCls('row')
 
-  const classes = useFormatClass(name, props)
+  const classes = useFormatClass(prefixCls, props)
 
   const [hGutter, vGutter] = useRowGutter(gutter!)
 

@@ -177,14 +177,14 @@ export class EffectSchema<
       // 先校验 后转换
       const ret = await this.schema._validate(value, context)
       if (ret.status === 'invalid') return ret
-      const $value = await options.handler(value)
-      return Valid($value)
+      const result = await options.handler(value)
+      return Valid(result)
     }
     // 预处理
     if (options.type === 'preprocess') {
       // 先转换 后校验
-      const $value = await options.handler(value)
-      return this.schema._validate($value, context)
+      const result = await options.handler(value)
+      return this.schema._validate(result, context)
     }
 
     if (options.type === 'nullable') {

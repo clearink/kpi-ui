@@ -8,9 +8,8 @@ export interface FormItemInputProps {
   help?: ReactNode
 
   // extra
-  prefixCls: string
   validateStatus?: ValidateStatus
-  getWrapper: () => HTMLDivElement | null
+  getOuter: () => HTMLDivElement | null
   children: (
     onMetaChange: (meta: FieldMeta) => void,
     onSubMetaChange: (meta: FieldMeta) => void

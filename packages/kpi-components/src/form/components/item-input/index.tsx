@@ -1,6 +1,7 @@
 import { useEvent } from '@kpi-ui/hooks'
-import { shallowMergeWithPick } from '@kpi-ui/utils'
+import { shallowMergeWithFallback } from '@kpi-ui/utils'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { usePrefixCls } from '../../../_shared/hooks'
 import Col from '../../../col'
 import { FormContext, FormItemContext } from '../../_shared/context'
 import FormErrorList from '../error-list'
@@ -11,9 +12,9 @@ import useMetaState from './hooks/use_meta_state'
 import type { FormItemInputProps } from './props'
 
 function FormItemInput(props: FormItemInputProps) {
-  const merged = shallowMergeWithPick(props, FormContext.useState(), ['wrapperCol'])
+  const { children, validateStatus: _status, extra, help, getOuter } = props
 
-  const { children, extra, wrapperCol, prefixCls, help, getWrapper } = merged
+  const { wrapperCol } = shallowMergeWithFallback(props, FormContext.useState(), ['wrapperCol'])
 
   const [meta, onMetaChange] = useMetaState()
 
@@ -25,7 +26,9 @@ function FormItemInput(props: FormItemInputProps) {
 
   const [inLayout, setInLayout] = useState(false)
 
-  const status = useFormatStatus(meta, merged.validateStatus)
+  const status = useFormatStatus(meta, _status)
+
+  const prefixCls = usePrefixCls('form-item__control')
 
   const classes = useFormatClass(prefixCls, status, wrapperCol)
 
@@ -40,48 +43,46 @@ function FormItemInput(props: FormItemInputProps) {
   const showErrorList = !!(errors.length || warnings.length || inLayout)
 
   const handleExitComplete = useEvent(() => {
-    const innerInstance = inner.current
+    const $inner = inner.current
 
-    const holderInstance = holder.current
+    const $holder = holder.current
 
-    if (!innerInstance || !holderInstance || hasError) return
+    if (!$inner || !$holder || hasError) return
 
-    innerInstance.style.marginBottom = ''
+    $inner.style.marginBottom = ''
 
-    holderInstance.style.height = ''
+    $holder.style.height = ''
 
     setInLayout(false)
   })
 
   useEffect(() => {
-    const wrapperInstance = getWrapper()
+    const $outer = getOuter()
 
-    const innerInstance = inner.current
+    const $inner = inner.current
 
-    const holderInstance = holder.current
+    const $holder = holder.current
 
-    if (!hasError || !wrapperInstance || !innerInstance || !holderInstance) return
+    if (!hasError || !$outer || !$inner || !$holder) return
 
-    const styles = getComputedStyle(wrapperInstance)
+    const styles = getComputedStyle($outer)
 
     const marginBottom = parseFloat(styles.marginBottom)
 
-    innerInstance.style.marginBottom = `-${marginBottom}px`
+    $inner.style.marginBottom = `-${marginBottom}px`
 
-    holderInstance.style.height = `${marginBottom}px`
+    $holder.style.height = `${marginBottom}px`
 
     setInLayout(true)
-  }, [getWrapper, hasError])
+  }, [getOuter, hasError])
 
   return (
     <FormItemContext.Provider value={formItemContext}>
-      <Col flex={1} {...wrapperCol} className={classes} ref={inner}>
-        <div className={`${prefixCls}__control-input`}>
-          {children(onMetaChange, onSubMetaChange)}
-        </div>
+      <Col {...wrapperCol} className={classes} ref={inner}>
+        <div className={`${prefixCls}-input`}>{children(onMetaChange, onSubMetaChange)}</div>
 
         {showErrorList ? (
-          <div className={`${prefixCls}__control-status`}>
+          <div className={`${prefixCls}-status`}>
             <FormErrorList
               help={help}
               errors={errors}

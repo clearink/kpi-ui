@@ -7,8 +7,10 @@ import type { PaginationProps } from './props'
 
 function Pagination(props: PaginationProps) {
   const { simple } = props
-  const name = usePrefixCls('pagination')
-  const classes = useFormatClass(name, props)
+
+  const prefixCls = usePrefixCls('pagination')
+
+  const classes = useFormatClass(prefixCls, props)
 
   const [current, chunkCount] = usePageChunk(props)
 

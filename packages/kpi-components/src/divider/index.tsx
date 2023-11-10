@@ -17,9 +17,9 @@ const excluded = [
 function Divider(props: DividerProps) {
   const { children, orientation, orientationMargin } = props
 
-  const name = usePrefixCls('divider')
+  const prefixCls = usePrefixCls('divider')
 
-  const classes = useFormatClass(name, props)
+  const classes = useFormatClass(prefixCls, props)
 
   const innerStyle = { [`margin${capitalize(orientation)}`]: orientationMargin }
 

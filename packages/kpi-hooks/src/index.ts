@@ -1,5 +1,4 @@
 export { default as useEvent } from './use-event'
-export { default as usePropShim } from './use-prop-shim'
 export { default as useResizeObserver } from './use-resize-observer'
 export { default as useMounted } from './use-mounted'
 export { default as useMountEffect } from './use-mount-effect'

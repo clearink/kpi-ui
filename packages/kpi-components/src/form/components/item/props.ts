@@ -6,7 +6,7 @@ import type { FormItemInputProps } from '../item-input/props'
 import type { FormItemLabelProps } from '../item-label/props'
 
 export interface FormItemProps<State = any>
-  extends Omit<FormItemLabelProps, 'prefixCls' | 'required'>,
+  extends Omit<FormItemLabelProps, 'required'>,
     Pick<FormItemInputProps, 'wrapperCol' | 'extra' | 'help'>,
     Omit<ExternalFormFieldProps<State>, 'children' | 'onMetaChange'> {
   children?: ReactNode | ((form: FormInstance<State>) => ReactNode)
