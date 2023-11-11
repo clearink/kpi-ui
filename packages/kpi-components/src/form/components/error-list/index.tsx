@@ -1,7 +1,7 @@
 import cls from 'classnames'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { GroupTransition } from '../../../transition'
-import handlers from '../../utils/handlers'
+import handlers from '../../utils/transition_handlers'
 import useFormatExplains from './hooks/use_format_explains'
 
 import type { FormErrorListProps } from './props'

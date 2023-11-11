@@ -1,7 +1,7 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { withoutProperties } from '@kpi-ui/utils'
 import { cloneElement, createElement, type ReactElement } from 'react'
-import { ENTER, isExit, isExited } from '../../constants/status'
+import { ENTER, isExit, isExited } from '../../_shared/constant'
 import CSSTransition from '../../css-transition'
 import batch from '../../utils/batch'
 import { addTransitionClass, delTransitionClass } from '../../utils/classnames'

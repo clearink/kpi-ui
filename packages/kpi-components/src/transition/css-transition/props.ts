@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { APPEAR, ENTER, ENTERED, EXIT, EXITED } from '../constants/status'
+import { APPEAR, ENTER, ENTERED, EXIT, EXITED } from '../_shared/constant'
 import type { TransitionStore } from './hooks/use_transition_store'
 
 export type TransitionStep = typeof APPEAR | typeof ENTER | typeof EXIT

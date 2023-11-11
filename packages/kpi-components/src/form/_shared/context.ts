@@ -1,13 +1,7 @@
 import { ctxHelper, noop } from '@kpi-ui/utils'
 
 import type { ColProps } from '../../col/props'
-import type {
-  FieldMeta,
-  FormLabelAlign,
-  FormLayout,
-  RequiredMark,
-  ValidateStatus,
-} from '../../form/props'
+import type { FieldMeta, FormLabelAlign, FormLayout, RequiredMark, ValidateStatus } from '../props'
 import type { FormInstance } from '../components/form/props'
 
 export interface FormContextState {
@@ -30,6 +24,7 @@ export const FormContext = ctxHelper<FormContextState>({
 export interface FormItemContextState {
   validateStatus?: ValidateStatus
 }
+
 export const FormItemContext = ctxHelper<FormItemContextState>({})
 
 // 收集子字段的 errors 与 warnings

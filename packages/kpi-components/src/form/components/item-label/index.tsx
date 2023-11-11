@@ -1,11 +1,11 @@
 import { isString, shallowMergeWithFallback } from '@kpi-ui/utils'
+import { usePrefixCls } from '../../../_shared/hooks'
 import Col from '../../../col'
 import { FormContext } from '../../_shared/context'
-import { normalizeLabelChildren } from '../../utils/children'
+import normalizeLabelChildren from '../../utils/normalize_label'
 import useFormatClass from './hooks/use_format_class'
 
 import type { FormItemLabelProps } from './props'
-import { usePrefixCls } from '../../../_shared/hooks'
 
 function FormItemLabel(props: FormItemLabelProps) {
   const fallbacks = shallowMergeWithFallback(props, FormContext.useState(), [

@@ -1,11 +1,11 @@
 import { shallowMergeWithFallback, withDefaults, withoutProperties } from '@kpi-ui/utils'
-import { ForwardedRef, forwardRef, useImperativeHandle, useRef, type MouseEvent } from 'react'
+import { ForwardedRef, forwardRef, useImperativeHandle, type MouseEvent } from 'react'
 import { SizeContext } from '../_shared/context'
 import { usePrefixCls } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
+import useWave from './hooks/use-wave'
 
 import type { ButtonProps } from './props'
-import useWave from './hooks/use-wave'
 
 const excluded = [
   'children',

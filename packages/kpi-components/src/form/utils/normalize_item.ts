@@ -1,6 +1,7 @@
-import { isFunction, logger, toArray } from '@kpi-ui/utils'
-import { isValidElement } from 'react'
+import { isFunction, isNullish, logger, toArray } from '@kpi-ui/utils'
+import { cloneElement, isValidElement } from 'react'
 
+import type { FormInstance } from '../components/form/props'
 import type { FormItemProps } from '../components/item/props'
 
 /**
@@ -9,8 +10,7 @@ import type { FormItemProps } from '../components/item/props'
  * 3. render props && !(shouldUpdate || dependencies) // render props 只能与 shouldUpdate ，dependencies 一起使用
  * 4. 使用 dependencies 时必须设置 name 或者使用 render props
  */
-// 用法是否不合法
-export default function isInvalidUsage(props: FormItemProps) {
+export function isInvalidUsage(props: FormItemProps) {
   const { name, shouldUpdate, children, dependencies = [] } = props
 
   const hasName = toArray(name).length
@@ -58,4 +58,25 @@ export default function isInvalidUsage(props: FormItemProps) {
     return false
   }
   return false
+}
+
+export default function normalizeItemChildren(
+  props: FormItemProps,
+  formInstance?: FormInstance,
+  itemId?: string
+) {
+  const { children } = props
+
+  // 用法不合法不渲染数据
+  if (isInvalidUsage(props)) return () => null
+
+  if (isFunction(children)) return () => children(formInstance!)
+
+  if (!isValidElement<HTMLInputElement>(children)) return () => children
+
+  const originalFor = children.props.id
+
+  if (isNullish(itemId) || !isNullish(originalFor)) return children
+
+  return cloneElement(children, { id: itemId })
 }
