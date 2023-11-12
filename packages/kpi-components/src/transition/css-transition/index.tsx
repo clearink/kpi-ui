@@ -112,5 +112,5 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
 }
 
 export default forwardRef(CSSTransition) as <E extends HTMLElement>(
-  props: CSSTransitionProps<E> & { ref?: CSSTransitionRef<E> }
+  props: CSSTransitionProps<E> & { ref?: Ref<CSSTransitionRef<E>> }
 ) => JSX.Element

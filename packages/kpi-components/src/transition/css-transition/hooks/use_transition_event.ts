@@ -1,7 +1,7 @@
 import { useEvent } from '@kpi-ui/hooks'
 import { isUndefined } from '@kpi-ui/utils'
 import { isAppear, isExit } from '../../_shared/constant'
-import batch from '../../utils/batch'
+import { batch } from '../../_shared/utils'
 import { delTransitionClass } from '../../utils/classnames'
 import collectTimeoutInfo from '../../utils/collect'
 import { addListener, addTimeout } from '../../utils/listener'

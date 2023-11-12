@@ -23,13 +23,13 @@ function InternalFormField(props: InternalFormFieldProps) {
   useConstant(() => internalHooks.ensureInitialized(control))
 
   // 注册子字段 销毁时移除该字段
-  useEffect(() => internalHooks.registerField(control), [internalHooks, control])
+  useEffect(() => internalHooks.registerField(control), [control, internalHooks])
 
   // 监听依赖字段, 当依赖字段变更时，会执行 control 自身的校验函数
   // 当 dependencies 改变时，重新订阅
   // name 属性变化会直接重新mount，在此处不用考虑
   const key = useDeepMemo(() => props.dependencies, [props.dependencies])
-  useEffect(() => internalHooks.subscribe(control), [key, internalHooks, control])
+  useEffect(() => internalHooks.subscribe(control), [control, internalHooks, key])
 
   // 数据注入
   const children = useInjectField(props, instance, control, internalHooks)

@@ -1,4 +1,4 @@
-import { useConstant, useDeepMemo, useEvent } from '@kpi-ui/hooks'
+import { useConstant, useDeepMemo } from '@kpi-ui/hooks'
 import { isArray, isFunction, isUndefined, logger, rawType, toArray } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 import { InternalFormInstanceContext } from '../../_shared/context'
@@ -6,7 +6,6 @@ import { getIn } from '../../utils/value'
 import InternalFormField from '../field'
 import FormListControl from './control'
 
-import type { FormActionType } from '../../props'
 import type { InternalFormListProps } from './props'
 
 export default function InternalFormList(props: InternalFormListProps) {
@@ -28,21 +27,21 @@ export default function InternalFormList(props: InternalFormListProps) {
 
   const helpers = useMemo(() => control.getFeatures(), [control])
 
-  const shouldUpdate = useEvent((prev: any, next: any, type: FormActionType) => {
-    const path = toArray(name)
+  // const shouldUpdate = (prev: any, next: any, type: FormActionType) => {
+  //   const path = toArray(name)
 
-    const prevList = getIn(prev, path)
+  //   const prevList = getIn(prev, path)
 
-    const nextList = getIn(next, path)
+  //   const nextList = getIn(next, path)
 
-    // 用户主动触发的默认不更新 或者 setFieldValue
-    if (type !== 'setFields' && type !== 'fieldEvent') return prevList !== nextList
+  //   // 用户主动触发的默认不更新 或者 setFieldValue
+  //   if (type !== 'setFields' && type !== 'fieldEvent') return prevList !== nextList
 
-    // 数据类型不同
-    if (rawType(prevList) !== rawType(nextList)) return true
+  //   // 数据类型不同
+  //   if (rawType(prevList) !== rawType(nextList)) return true
 
-    return isArray(nextList) && prevList.length !== nextList.length
-  })
+  //   return isArray(nextList) && prevList.length !== nextList.length
+  // }
 
   const invalidChildren = !isFunction(children)
 
@@ -56,8 +55,22 @@ export default function InternalFormList(props: InternalFormListProps) {
         name={[]}
         rule={rule}
         initialValue={initialValue}
-        shouldUpdate={shouldUpdate}
         preserve={preserve}
+        shouldUpdate={(prev, next, type) => {
+          const path = toArray(name)
+
+          const prevList = getIn(prev, path)
+
+          const nextList = getIn(next, path)
+
+          // 用户主动触发的默认不更新 或者 setFieldValue
+          if (type !== 'setFields' && type !== 'fieldEvent') return prevList !== nextList
+
+          // 数据类型不同
+          if (rawType(prevList) !== rawType(nextList)) return true
+
+          return isArray(nextList) && prevList.length !== nextList.length
+        }}
       >
         {({ value }: any, meta) => {
           const fields = toArray(value, true).map((_, index) => ({

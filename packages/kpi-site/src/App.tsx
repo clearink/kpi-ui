@@ -1,4 +1,6 @@
-import { Button, Form, Row, Col } from '@kpi-ui/components'
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import { Button, LayoutTransition, SwitchTransition } from '@kpi-ui/components'
 import { useState } from 'react'
 
 import '@kpi-ui/components/src/style'
@@ -10,38 +12,25 @@ function Input(props: any) {
 }
 
 export default function App() {
-  const [inputNumber, setInputNumber] = useState(3000)
+  const [active, setActive] = useState(0)
   return (
-    <div>
-      {/* <p style={{ fontSize: 20, textAlign: 'center', marginBottom: 20 }}>
-        测试 {inputNumber || 0} 个 Col, Row 组件的性能
-      </p> */}
-      <Button>123</Button>
-      <Button type="primary" size="large">
-        123
-      </Button>
-      {/* {Array.from({ length: inputNumber }, (_, i) => (
-        <Row key={i} className="row" gutter={10}>
-          <Col className="col" span={4}>
-            <div className="a"></div>
-          </Col>
-          <Col className="col" span={4}>
-            <div className="a"></div>
-          </Col>
-          <Col className="col" span={4}>
-            <div className="a"></div>
-          </Col>
-          <Col className="col" span={4}>
-            <div className="a"></div>
-          </Col>
-          <Col className="col" span={4}>
-            <div className="a"></div>
-          </Col>
-          <Col className="col" span={4}>
-            <div className="a"></div>
-          </Col>
-        </Row>
-      ))} */}
+    <div className="window">
+      <nav>
+        <ul>
+          {Array.from({ length: 3 }, (_, i) => {
+            return (
+              <li key={i} className={i === active ? 'selected' : ''} onClick={() => setActive(i)}>
+                {i}
+                {i === active ? (
+                  <LayoutTransition id="underline">
+                    <div className="underline"></div>
+                  </LayoutTransition>
+                ) : null}
+              </li>
+            )
+          })}
+        </ul>
+      </nav>
     </div>
   )
 }

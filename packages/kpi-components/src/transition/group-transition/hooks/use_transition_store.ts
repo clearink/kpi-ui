@@ -2,8 +2,8 @@ import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { withoutProperties } from '@kpi-ui/utils'
 import { cloneElement, createElement, type ReactElement } from 'react'
 import { ENTER, isExit, isExited } from '../../_shared/constant'
+import { batch } from '../../_shared/utils'
 import CSSTransition from '../../css-transition'
-import batch from '../../utils/batch'
 import { addTransitionClass, delTransitionClass } from '../../utils/classnames'
 import reflow from '../../utils/reflow'
 import makeUniqueId from '../../utils/unique_id'
@@ -110,7 +110,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
       if (enters.has(key)) return result.set(key, this.make(el, { when: true, appear: true }))
 
-      const props: Partial<CSS> = { onExited: batch(onExited, this.runExitedEffect) }
+      const props: Partial<CSS<E>> = { onExited: batch(onExited, this.runExitedEffect) }
 
       if (exits.has(key)) props.when = false
 
