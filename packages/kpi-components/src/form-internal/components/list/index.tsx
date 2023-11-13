@@ -27,22 +27,6 @@ export default function InternalFormList(props: InternalFormListProps) {
 
   const helpers = useMemo(() => control.getFeatures(), [control])
 
-  // const shouldUpdate = (prev: any, next: any, type: FormActionType) => {
-  //   const path = toArray(name)
-
-  //   const prevList = getIn(prev, path)
-
-  //   const nextList = getIn(next, path)
-
-  //   // 用户主动触发的默认不更新 或者 setFieldValue
-  //   if (type !== 'setFields' && type !== 'fieldEvent') return prevList !== nextList
-
-  //   // 数据类型不同
-  //   if (rawType(prevList) !== rawType(nextList)) return true
-
-  //   return isArray(nextList) && prevList.length !== nextList.length
-  // }
-
   const invalidChildren = !isFunction(children)
 
   logger(invalidChildren, 'Form.List only accepts function as children.')

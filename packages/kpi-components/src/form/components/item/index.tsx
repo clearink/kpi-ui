@@ -71,7 +71,7 @@ function CommonFormItem(props: FormItemProps) {
 
   return (
     <Row className={classes} style={style} ref={outer}>
-      {!!label && <FormItemLabel htmlFor={itemId} required={required} {...labelProps} />}
+      {!isNullish(label) && <FormItemLabel htmlFor={itemId} required={required} {...labelProps} />}
       <FormItemInput {...inputProps} getOuter={getOuter}>
         {(onMetaChange, onSubMetaChange) => (
           <NoStyleContext.Provider value={onSubMetaChange}>

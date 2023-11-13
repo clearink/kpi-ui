@@ -1,6 +1,5 @@
-import { useEvent } from '@kpi-ui/hooks'
-import { shallowMergeWithFallback } from '@kpi-ui/utils'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { isNullish, shallowMergeWithFallback } from '@kpi-ui/utils'
+import { useEffect, useMemo, useState } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import Col from '../../../col'
 import { FormContext, FormItemContext } from '../../_shared/context'
@@ -20,11 +19,7 @@ function FormItemInput(props: FormItemInputProps) {
 
   const [subMeta, onSubMetaChange] = useMetaState()
 
-  const inner = useRef<HTMLDivElement>(null)
-
-  const holder = useRef<HTMLDivElement>(null)
-
-  const [inLayout, setInLayout] = useState(false)
+  const [offset, setOffset] = useState(0)
 
   const status = useFormatStatus(meta, _status)
 
@@ -40,61 +35,39 @@ function FormItemInput(props: FormItemInputProps) {
 
   const hasError = !!(help || errors.length || warnings.length)
 
-  const showErrorList = !!(errors.length || warnings.length || inLayout)
-
-  const handleExitComplete = useEvent(() => {
-    const $inner = inner.current
-
-    const $holder = holder.current
-
-    if (!$inner || !$holder || hasError) return
-
-    $inner.style.marginBottom = ''
-
-    $holder.style.height = ''
-
-    setInLayout(false)
-  })
+  const showErrorList = !!(errors.length || warnings.length || offset)
 
   useEffect(() => {
     const $outer = getOuter()
 
-    const $inner = inner.current
-
-    const $holder = holder.current
-
-    if (!hasError || !$outer || !$inner || !$holder) return
+    if (!hasError || !$outer) return
 
     const styles = getComputedStyle($outer)
 
-    const marginBottom = parseFloat(styles.marginBottom)
-
-    $inner.style.marginBottom = `-${marginBottom}px`
-
-    $holder.style.height = `${marginBottom}px`
-
-    setInLayout(true)
+    setOffset(parseFloat(styles.marginBottom))
   }, [getOuter, hasError])
 
   return (
     <FormItemContext.Provider value={formItemContext}>
-      <Col {...wrapperCol} className={classes} ref={inner}>
+      <Col {...wrapperCol} className={classes}>
         <div className={`${prefixCls}-input`}>{children(onMetaChange, onSubMetaChange)}</div>
 
-        {showErrorList ? (
+        {showErrorList && (
           <div className={`${prefixCls}-status`}>
+            {!!offset && <div className={`${prefixCls}-holder`} style={{ height: offset }} />}
             <FormErrorList
               help={help}
               errors={errors}
               warnings={warnings}
               helpStatus={status}
-              onExitComplete={handleExitComplete}
+              onExitComplete={() => !hasError && setOffset(0)}
             />
-            <div className={`${prefixCls}__layout-stable`} ref={holder} />
           </div>
-        ) : null}
+        )}
 
-        {extra ? <div className={`${prefixCls}__control-extra`}>{extra}</div> : null}
+        {!isNullish(extra) && <div className={`${prefixCls}__control-extra`}>{extra}</div>}
+
+        {!!offset && <div className={`${prefixCls}-offset`} style={{ marginBottom: -offset }} />}
       </Col>
     </FormItemContext.Provider>
   )

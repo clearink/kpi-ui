@@ -70,7 +70,7 @@ export default class ArraySchema<
     return this._refine('min', makeRule(rule, message, { min }))
   }
 
-  max(max: number, message: Message = array.min) {
+  max(max: number, message: Message = array.max) {
     const rule = (value: any[]) => value.length <= max
     return this._refine('max', makeRule(rule, message, { max }))
   }
