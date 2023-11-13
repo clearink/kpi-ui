@@ -1,4 +1,4 @@
-import { useConstant, useDerivedState, useEvent } from '@kpi-ui/hooks'
+import { useConstant, useDerivedState } from '@kpi-ui/hooks'
 import { isEqual, isFunction, toArray, withDefaults, withoutProperties } from '@kpi-ui/utils'
 import {
   ForwardedRef,
@@ -62,21 +62,21 @@ function InternalForm<State = any>(
     listener: () => internalHook.setFields(toArray(fields)),
   })
 
-  const handleSubmit = useEvent((e?: FormEvent) => {
+  const handleSubmit = (e?: FormEvent) => {
     e && e.preventDefault()
     e && e.stopPropagation()
 
     instance.submitForm()
-  })
+  }
 
-  const handleReset = useEvent((e: FormEvent) => {
+  const handleReset = (e: FormEvent) => {
     e && e.preventDefault()
     e && e.stopPropagation()
 
     instance.resetFields()
 
     onReset && onReset(e)
-  })
+  }
 
   const instanceContext = useMemo(() => {
     return { ...instance, validateTrigger, formName: name }

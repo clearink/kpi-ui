@@ -19,7 +19,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
   const { type, unmountOnExit, addEndListener, onEntered, onExited, onEnterCancel, onExitCancel } =
     props
 
-  const done = useEvent((el: E, step: TransitionStep) => {
+  const done = (el: E, step: TransitionStep) => {
     store.finish(step)
 
     const { from, active, to } = classes[step]
@@ -33,18 +33,18 @@ export default function useTransitionEvent<E extends HTMLElement>(
     store.hidden()
 
     unmountOnExit && store.destroy()
-  })
+  }
 
-  const runCancel = useEvent((el: E, step: TransitionStep) => {
+  const runCancel = (el: E, step: TransitionStep) => {
     const { from, active, to } = classes[step]
 
     if (isExit(step)) onExitCancel && onExitCancel(el)
     else onEnterCancel && onEnterCancel(el, isAppear(step))
 
     delTransitionClass(el, from, active, to)
-  })
+  }
 
-  const makeEndHook = useEvent((el: E, step: TransitionStep, timeout?: number) => {
+  const makeEndHook = (el: E, step: TransitionStep, timeout?: number) => {
     const resolve = done.bind(null, el, step)
 
     if (addEndListener) return addEndListener(el, step, resolve)
@@ -84,7 +84,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
       addListener(el, 'animationend', runCounter(animation.count, resolve)),
       addTimeout(animation.timeout, resolve)
     )
-  })
+  }
 
   return [runCancel, makeEndHook] as const
 }

@@ -8,7 +8,7 @@ export interface InternalFormProps<S = any>
    * @zh 设置 Form 渲染元素，为 null 则不创建 DOM 节点
    * @default form
    */
-  tag?: string | null | ComponentType
+  tag?: keyof HTMLElementTagNameMap | ComponentType | null
 
   /**
    * @zh 校验成功后的回调

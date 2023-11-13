@@ -798,8 +798,6 @@ export class FormDispatchControl<State = any> {
   triggerOnFailed = (errors: any) => {
     const { onFailed } = this.$props._props
 
-    if (!onFailed) return
-
-    onFailed(errors)
+    onFailed && onFailed(errors)
   }
 }
