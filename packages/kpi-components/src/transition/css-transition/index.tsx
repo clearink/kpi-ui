@@ -29,11 +29,12 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
     when,
     classNames,
     ssr,
+    duration,
     onEnter,
     onEntering,
     onExit,
     onExiting,
-    duration,
+    onElementChange,
   } = props
 
   const store = useTransitionStore<E>(props)
@@ -49,12 +50,14 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
   const [runCancel, makeEndHook] = useTransitionEvent(store, classes, props)
 
   const refCallback = useEvent((el: E | null) => {
-    store.setInstance(el)
-
     const original = (children as ReactElement & { ref: Ref<any> }).ref
 
     if (isFunction(original)) original(el)
     else if (isObject(original)) (original as any).current = el
+
+    onElementChange && onElementChange(el, store.instance)
+
+    store.setInstance(el)
 
     store.prepareHidden()
 

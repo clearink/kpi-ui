@@ -1,21 +1,25 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { LayoutContext } from '../_shared/context'
 import CSSTransition from '../css-transition'
+
 import type { LayoutTransitionProps } from './props'
 import type { CSSTransitionRef } from '../css-transition/props'
 
 function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTransitionProps<E>) {
   const { children, id } = props
 
-  const $transition = useRef<CSSTransitionRef<E>>(null)
-
   const layoutContext = LayoutContext.useState()
+
+  const $transition = useRef<CSSTransitionRef<E>>(null)
 
   const handlers = useMemo(
     () => ({
+      onElementChange: (_: any, previous: E | null) => {
+        if (!previous) return
+        // 保存上一次的位置信息
+        layoutContext.register(previous.getBoundingClientRect(), id)
+      },
       onEnter: (el: E, appearing: boolean) => {
-        if (!layoutContext.exist(id) || !appearing) layoutContext.register($transition.current, id)
-
         const coords = layoutContext.coords(id)
 
         if (!coords || !appearing) return
@@ -25,8 +29,6 @@ function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTran
         el.style.transform = `translate3d(${coords.x - rect.x}px,${coords.y - rect.y}px,0) scale(${
           coords.width / rect.width
         },${coords.height / rect.height})`
-
-        console.log(el.style.transform)
       },
       onEntering: (el: E) => {
         el.style.transformOrigin = '50% 50% 0px'
@@ -39,7 +41,6 @@ function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTran
         el.style.transformOrigin = ''
         el.style.transform = ''
         el.style.transition = ''
-        layoutContext.register($transition.current, id)
       },
       onExit: (el: E) => {
         console.log('exited', el)

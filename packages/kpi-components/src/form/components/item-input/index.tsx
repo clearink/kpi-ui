@@ -65,7 +65,7 @@ function FormItemInput(props: FormItemInputProps) {
           </div>
         )}
 
-        {!isNullish(extra) && <div className={`${prefixCls}__control-extra`}>{extra}</div>}
+        {!isNullish(extra) && <div className={`${prefixCls}-extra`}>{extra}</div>}
 
         {!!offset && <div className={`${prefixCls}-offset`} style={{ marginBottom: -offset }} />}
       </Col>
