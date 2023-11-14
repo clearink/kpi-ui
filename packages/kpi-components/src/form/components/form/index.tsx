@@ -1,5 +1,5 @@
 import { useEvent } from '@kpi-ui/hooks'
-import { shallowMergeWithFallback, withDefaults, withoutProperties } from '@kpi-ui/utils'
+import { pickWithFallback, withDefaults, withoutProperties } from '@kpi-ui/utils'
 import {
   forwardRef,
   useImperativeHandle,
@@ -44,7 +44,7 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     scrollToFirstError,
   } = props
 
-  const fallbacks = shallowMergeWithFallback(
+  const fallbacks = pickWithFallback(
     props,
     {
       size: SizeContext.useState(),

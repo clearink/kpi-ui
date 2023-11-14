@@ -1,4 +1,4 @@
-import { isString, shallowMergeWithFallback } from '@kpi-ui/utils'
+import { isString, pickWithFallback } from '@kpi-ui/utils'
 import { usePrefixCls } from '../../../_shared/hooks'
 import Col from '../../../col'
 import { FormContext } from '../../_shared/context'
@@ -8,7 +8,7 @@ import useFormatClass from './hooks/use_format_class'
 import type { FormItemLabelProps } from './props'
 
 function FormItemLabel(props: FormItemLabelProps) {
-  const fallbacks = shallowMergeWithFallback(props, FormContext.useState(), [
+  const fallbacks = pickWithFallback(props, FormContext.useState(), [
     'colon',
     'labelAlign',
     'labelCol',

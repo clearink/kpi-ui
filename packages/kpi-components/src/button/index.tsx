@@ -1,4 +1,4 @@
-import { shallowMergeWithFallback, withDefaults, withoutProperties } from '@kpi-ui/utils'
+import { pickWithFallback, withDefaults, withoutProperties } from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef, useImperativeHandle, type MouseEvent } from 'react'
 import { SizeContext } from '../_shared/context'
 import { usePrefixCls } from '../_shared/hooks'
@@ -23,7 +23,7 @@ const excluded = [
 function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
   const { children, htmlType, onClick, loading, disabled } = props
 
-  const fallbacks = shallowMergeWithFallback(props, { size: SizeContext.useState() }, ['size'])
+  const fallbacks = pickWithFallback(props, { size: SizeContext.useState() }, ['size'])
 
   const prefixCls = usePrefixCls('button')
 

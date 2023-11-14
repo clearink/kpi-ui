@@ -1,9 +1,4 @@
-import {
-  flattenChildren,
-  shallowMergeWithFallback,
-  withDefaults,
-  withoutProperties,
-} from '@kpi-ui/utils'
+import { flattenChildren, pickWithFallback, withDefaults, withoutProperties } from '@kpi-ui/utils'
 import { Fragment, ReactElement, type CSSProperties } from 'react'
 import { SizeContext } from '../_shared/context'
 import { usePrefixCls } from '../_shared/hooks'
@@ -17,7 +12,7 @@ const excluded = ['children', 'size', 'style', 'direction', 'wrap', 'split'] as 
 function Space(props: SpaceProps) {
   const { children: _children, style, split } = props
 
-  const { size } = shallowMergeWithFallback(props, { size: SizeContext.useState() }, ['size'])
+  const { size } = pickWithFallback(props, { size: SizeContext.useState() }, ['size'])
 
   const prefixCls = usePrefixCls('space')
 

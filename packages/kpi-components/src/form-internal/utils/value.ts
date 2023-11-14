@@ -109,6 +109,7 @@ export function cloneWithPath<V>(source: V, paths: InternalNamePath) {
 export function hasOwnWithPath<V>(source: V, paths: InternalNamePath) {
   for (let i = 0; i < paths.length; i += 1) {
     const key = paths[i]
+
     if (!hasOwn(source, key)) return false
 
     source = source[key]

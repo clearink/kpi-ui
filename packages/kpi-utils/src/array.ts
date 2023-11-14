@@ -15,12 +15,10 @@ export function toArray<T>(candidate?: T | T[] | null, strict = false): T[] {
 export function pushItem<T>(array: T[], items: T | T[]) {
   if (!isArray(items)) array.push(items)
   else for (let i = 0; i < items.length; i += 1) array.push(items[i])
-
   return array
 }
 
 export function removeItem<T>(array: T[], value: T) {
   const index = array.indexOf(value)
-
   index > -1 && array.splice(index, 1)
 }
