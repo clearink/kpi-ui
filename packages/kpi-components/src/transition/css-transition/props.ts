@@ -40,5 +40,4 @@ export interface CSSTransitionProps<E extends HTMLElement = HTMLElement> {
   onExiting?: (el: E) => void
   onExited?: (el: E) => void
   onExitCancel?: (el: E) => void
-  onElementChange?: (current: E | null, previous: E | null) => void
 }

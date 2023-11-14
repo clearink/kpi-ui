@@ -34,7 +34,6 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
     onEntering,
     onExit,
     onExiting,
-    onElementChange,
   } = props
 
   const store = useTransitionStore<E>(props)
@@ -54,8 +53,6 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
 
     if (isFunction(original)) original(el)
     else if (isObject(original)) (original as any).current = el
-
-    onElementChange && onElementChange(el, store.instance)
 
     store.setInstance(el)
 
