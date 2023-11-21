@@ -1,6 +1,6 @@
 import { isFunction } from '@kpi-ui/utils'
 
-import type { AnyFunction, MayBe } from '../../../types'
+import type { AnyFunction, MayBe } from '../../types'
 
 export default function batch<T extends MayBe<AnyFunction>>(...funcs: T[]) {
   const filtered = funcs.filter(isFunction) as AnyFunction[]

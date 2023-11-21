@@ -1,4 +1,4 @@
-import { max } from './math'
+import { max } from '../../utils/math'
 
 const ms = (s: string) => (parseFloat(s) || 0) * 1e3
 

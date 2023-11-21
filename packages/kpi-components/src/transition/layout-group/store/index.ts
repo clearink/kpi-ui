@@ -1,3 +1,4 @@
+// TODO: 优化 store 逻辑
 export default class LayoutTransitionStore {
   map = new Map<string, DOMRect>()
 

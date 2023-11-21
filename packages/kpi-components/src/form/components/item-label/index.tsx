@@ -2,7 +2,7 @@ import { isString, pickWithFallback } from '@kpi-ui/utils'
 import { usePrefixCls } from '../../../_shared/hooks'
 import Col from '../../../col'
 import { FormContext } from '../../_shared/context'
-import normalizeLabelChildren from '../../utils/normalize_label'
+import normalizeChildren from './utils/normalize_children'
 import useFormatClass from './hooks/use_format_class'
 
 import type { FormItemLabelProps } from './props'
@@ -28,7 +28,7 @@ function FormItemLabel(props: FormItemLabelProps) {
   return (
     <Col {...fallbacks.labelCol} className={classes}>
       <label htmlFor={htmlFor} title={htmlTitle}>
-        {normalizeLabelChildren(props, fallbacks)}
+        {normalizeChildren(props, fallbacks)}
       </label>
     </Col>
   )

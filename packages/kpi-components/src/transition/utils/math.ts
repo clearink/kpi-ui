@@ -1,11 +1,19 @@
 export function max(numbers: number[]) {
-  return numbers.reduce((result, number) => {
-    return result < number ? number : result
-  }, -Infinity)
+  let num = -Infinity
+
+  for (let i = 0; i < numbers.length; i++) {
+    if (num < numbers[i]) num = numbers[i]
+  }
+
+  return num
 }
 
 export function min(numbers: number[]) {
-  return numbers.reduce((result, number) => {
-    return result > number ? number : result
-  }, Infinity)
+  let num = Infinity
+
+  for (let i = 0; i < numbers.length; i++) {
+    if (num > numbers[i]) num = numbers[i]
+  }
+
+  return num
 }

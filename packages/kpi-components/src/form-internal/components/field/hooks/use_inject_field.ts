@@ -1,7 +1,7 @@
 import { cloneElement, type ReactElement } from 'react'
 import { logger } from '@kpi-ui/utils'
-import collectInjectProps from '../../../utils/collect'
-import normalizeChildren from '../../../utils/children'
+import collectInjectProps from '../utils/collect'
+import normalizeChildren from '../utils/children'
 
 import type { FormFieldControl } from '../control'
 import type { InternalFormFieldProps } from '../props'

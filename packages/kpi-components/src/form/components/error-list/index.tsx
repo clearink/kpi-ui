@@ -1,7 +1,7 @@
 import cls from 'classnames'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { GroupTransition } from '../../../transition'
-import handlers from '../../utils/transition_handlers'
+import handlers from './utils/transition_handlers'
 import useFormatExplains from './hooks/use_format_explains'
 
 import type { FormErrorListProps } from './props'
@@ -22,13 +22,11 @@ export default function FormErrorList(props: FormErrorListProps) {
       onExitComplete={onExitComplete}
       {...handlers}
     >
-      {explains.map((item) => {
-        return (
-          <div key={item.key} className={cls({ [`${prefixCls}--${item.status}`]: item.status })}>
-            {item.value}
-          </div>
-        )
-      })}
+      {explains.map((item) => (
+        <div key={item.key} className={cls({ [`${prefixCls}--${item.status}`]: item.status })}>
+          {item.value}
+        </div>
+      ))}
     </GroupTransition>
   )
 }

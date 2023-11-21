@@ -5,7 +5,7 @@ import { usePrefixCls } from '../../../_shared/hooks'
 import InternalForm from '../../../form-internal'
 import Row from '../../../row'
 import { FormContext, NoStyleContext } from '../../_shared/context'
-import normalizeItemChildren from '../../utils/normalize_item'
+import normalizeChildren from './utils/normalize_children'
 import FormItemInput from '../item-input'
 import FormItemLabel from '../item-label'
 import useFormatClass from './hooks/use_format_class'
@@ -35,7 +35,7 @@ function NoStyleFormItem(props: FormItemProps) {
 
   return (
     <InternalForm.Field {...props} onMetaChange={handleMetaChange}>
-      {normalizeItemChildren(props, formInstance, itemId)}
+      {normalizeChildren(props, formInstance, itemId)}
     </InternalForm.Field>
   )
 }
@@ -76,7 +76,7 @@ function CommonFormItem(props: FormItemProps) {
         {(onMetaChange, onSubMetaChange) => (
           <NoStyleContext.Provider value={onSubMetaChange}>
             <InternalForm.Field {...props} onMetaChange={onMetaChange}>
-              {normalizeItemChildren(props, formInstance, itemId)}
+              {normalizeChildren(props, formInstance, itemId)}
             </InternalForm.Field>
           </NoStyleContext.Provider>
         )}

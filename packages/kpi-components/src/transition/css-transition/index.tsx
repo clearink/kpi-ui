@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { APPEAR, ENTER, EXIT, isAppear, isExit } from '../_shared/constant'
 import { reflow } from '../_shared/utils'
-import { addTransitionClass, delTransitionClass } from '../utils/classnames'
+import { addTransitionClass, delTransitionClass } from './utils/classnames'
 import { nextFrame } from '../utils/tick'
 import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'

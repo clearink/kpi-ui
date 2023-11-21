@@ -1,9 +1,9 @@
 import { hasOwn, isFunction, isObjectLike, toArray } from '@kpi-ui/utils'
 
-import type { AnyObject } from '../../types'
-import type { InternalFormFieldProps } from '../components/field/props'
-import type { InternalFormInstance, InternalHookReturn } from '../components/form/control/props'
-import type { FormFieldControl } from '../components/field/control'
+import type { AnyObject } from '../../../../types'
+import type { InternalFormFieldProps } from '../props'
+import type { InternalFormInstance, InternalHookReturn } from '../../form/control/props'
+import type { FormFieldControl } from '../control'
 
 // 从event中获取字段值函数
 function defaultGetValueFromEvent(valuePropName: string) {

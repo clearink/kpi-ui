@@ -12,25 +12,32 @@ function Input(props: any) {
 }
 
 export default function App() {
-  const [active, setActive] = useState(0)
+  const [active, setActive] = useState(1)
   return (
     <div className="window">
-      <nav>
-        <ul>
-          {Array.from({ length: 3 }, (_, i) => {
-            return (
-              <li key={i} className={i === active ? 'selected' : ''} onClick={() => setActive(i)}>
-                {i}
-                {i === active ? (
-                  <LayoutTransition id="underline">
-                    <div className="underline"></div>
-                  </LayoutTransition>
-                ) : null}
-              </li>
-            )
-          })}
-        </ul>
-      </nav>
+      <div className="left">
+        {active === 1 && (
+          <LayoutTransition id="underline">
+            <div className="underline"></div>
+          </LayoutTransition>
+        )}
+      </div>
+      <div className="center">
+        <Button
+          onClick={() => {
+            setActive(active === 1 ? 2 : 1)
+          }}
+        >
+          change
+        </Button>
+      </div>
+      <div className="right">
+        {active === 2 && (
+          <LayoutTransition id="underline">
+            <div className="underline"></div>
+          </LayoutTransition>
+        )}
+      </div>
     </div>
   )
 }
