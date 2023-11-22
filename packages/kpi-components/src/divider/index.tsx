@@ -1,8 +1,9 @@
-import { capitalize, withDefaults, withoutProperties } from '@kpi-ui/utils'
+import { withDefaults, withoutProperties } from '@kpi-ui/utils'
 import { usePrefixCls } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 
 import type { DividerProps } from './props'
+import { useMemo } from 'react'
 
 const excluded = [
   'children',
@@ -21,14 +22,17 @@ function Divider(props: DividerProps) {
 
   const classes = useFormatClass(prefixCls, props)
 
-  const innerStyle = { [`margin${capitalize(orientation)}`]: orientationMargin }
+  const innerStyle = useMemo(() => {
+    if (orientation === 'left') return { marginLeft: orientationMargin }
+    if (orientation === 'right') return { marginRight: orientationMargin }
+  }, [orientation, orientationMargin])
 
   const attrs = withoutProperties(props, excluded)
 
   return (
     <div className={classes} {...attrs}>
       {children && (
-        <span className={`${name}__inner-text`} style={innerStyle}>
+        <span className={`${prefixCls}__inner-text`} style={innerStyle}>
           {children}
         </span>
       )}

@@ -5,17 +5,14 @@ import { DividerProps } from '../props'
 export default function useFormatClass(prefixCls: string, props: DividerProps) {
   const { type, dashed, orientation, children, plain, className, orientationMargin } = props
 
-  // 自定义边距
-  const customMargin =
-    (orientation === 'left' || orientation === 'right') && !isUndefined(orientationMargin)
-
   return cls(prefixCls, {
     [`${prefixCls}--${type}`]: type,
     [`${prefixCls}--dashed`]: dashed,
     [`${prefixCls}--plain`]: plain,
     [`${prefixCls}--with-text`]: children,
     [`${prefixCls}--text-${orientation}`]: orientation,
-    [`${prefixCls}--custom-margin`]: customMargin,
+    [`${prefixCls}--custom-margin`]:
+      (orientation === 'left' || orientation === 'right') && !isUndefined(orientationMargin),
     [className!]: className,
   })
 }

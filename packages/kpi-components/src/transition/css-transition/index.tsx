@@ -8,7 +8,7 @@ import {
   type ReactElement,
   type Ref,
 } from 'react'
-import { APPEAR, ENTER, EXIT, isAppear, isExit } from '../_shared/constant'
+import { APPEAR, ENTER, EXIT, isAppear, isExit } from '../constant'
 import { reflow } from '../_shared/utils'
 import { addTransitionClass, delTransitionClass } from './utils/classnames'
 import { nextFrame } from '../utils/tick'

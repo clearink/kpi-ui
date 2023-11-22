@@ -1,8 +1,8 @@
 /* eslint-disable max-classes-per-file */
-import { hasOwn, isNull, isNullish, isUndefined, withoutProperties } from '@kpi-ui/utils'
-import { base, union } from '../locales/default'
+import { isNull, isNullish, isUndefined, withoutProperties } from '@kpi-ui/utils'
 import SchemaContext from '../context'
-import { Invalid, makeRule, Valid } from '../make_rule'
+import { base, union } from '../locales/default'
+import { Invalid, Valid, makeRule } from '../make_rule'
 
 import type {
   Context,

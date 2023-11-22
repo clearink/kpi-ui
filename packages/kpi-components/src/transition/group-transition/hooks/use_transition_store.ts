@@ -1,7 +1,7 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { withoutProperties } from '@kpi-ui/utils'
 import { cloneElement, createElement, type ReactElement } from 'react'
-import { ENTER, isExit, isExited } from '../../_shared/constant'
+import { ENTER, isExit, isExited } from '../../constant'
 import { batch } from '../../_shared/utils'
 import CSSTransition from '../../css-transition'
 import { addTransitionClass, delTransitionClass } from '../../css-transition/utils/classnames'
@@ -128,10 +128,8 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   cancels: (() => void)[] = []
 
-  shouldFlip = () => {
-    const { name, flip } = this.props
-
-    return flip && name
+  get shouldFlip() {
+    return !!(this.props.flip && this.props.name)
   }
 
   runFlip = () => {

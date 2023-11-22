@@ -1,3 +1,4 @@
+import { isUndefined } from '@kpi-ui/utils'
 import { EffectSchema } from '../schema/base'
 
 import type BaseSchema from '../schema/base'
@@ -5,12 +6,14 @@ import type BaseSchema from '../schema/base'
 export default function hasRequired(schema?: BaseSchema) {
   let tail = schema
 
-  while (tail && 'unwrap' in tail) {
-    if (!(tail instanceof EffectSchema)) break
-    if (tail._type === 'required') return true
-    if (tail._type === 'nullable') return false
+  let required: boolean | undefined
+
+  while (tail instanceof EffectSchema) {
+    if (tail._type === 'required' && isUndefined(required)) required = true
+    else if (tail._type === 'nullable') required = false
+
     tail = tail.unwrap()
   }
 
-  return false
+  return !!required
 }

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { APPEAR, ENTER, EXIT } from '../../_shared/constant'
+import { APPEAR, ENTER, EXIT } from '../../constant'
 
 import type { CSSTransitionProps } from '../props'
 

@@ -1,13 +1,12 @@
-import { useMemo, useRef } from 'react'
+import useConstant from '../use-constant'
 
 export default function usePrevious<T>(value: T) {
-  const ref = useRef({ value, previous: value })
+  const store = useConstant(() => ({ value, previous: value }))
 
-  return useMemo(() => {
-    if (ref.current.value !== value) {
-      ref.current.previous = ref.current.value
-      ref.current.value = value
-    }
-    return ref.current.previous
-  }, [value])
+  if (store.value !== value) {
+    store.previous = store.value
+    store.value = value
+  }
+
+  return store.previous
 }

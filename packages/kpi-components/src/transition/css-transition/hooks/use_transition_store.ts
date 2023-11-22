@@ -1,14 +1,5 @@
 import { useConstant, useForceUpdate, useDerivedState } from '@kpi-ui/hooks'
-import {
-  ENTER,
-  ENTERED,
-  EXIT,
-  EXITED,
-  isEnter,
-  isEntered,
-  isExit,
-  isExited,
-} from '../../_shared/constant'
+import { ENTER, ENTERED, EXIT, EXITED, isEnter, isEntered, isExit, isExited } from '../../constant'
 
 import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
 

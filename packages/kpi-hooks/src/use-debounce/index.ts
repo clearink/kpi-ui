@@ -10,7 +10,7 @@ export function debounce<F extends Fn>(fn: F, delay: number) {
 
   function inner(this: unknown, ...args: any[]) {
     clearTimeout(timer)
-    timer = window.setTimeout(() => fn.apply(this, args), delay)
+    timer = setTimeout(() => fn.apply(this, args), delay) as unknown as number
   }
 
   return [inner as F, () => clearTimeout(timer)] as const

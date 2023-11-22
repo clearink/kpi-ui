@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import type { APPEAR, ENTER, ENTERED, EXIT, EXITED } from '../_shared/constant'
+import type { APPEAR, ENTER, ENTERED, EXIT, EXITED } from '../constant'
 import type { TransitionStore } from './hooks/use_transition_store'
 
 export type TransitionStep = typeof APPEAR | typeof ENTER | typeof EXIT
@@ -14,6 +14,7 @@ export interface CSSTransitionProps<E extends HTMLElement = HTMLElement> {
   type?: 'transition' | 'animation'
   duration?: number | { appear?: number; enter?: number; exit?: number }
   appear?: boolean
+  // TODO: 补上这块逻辑
   mountOnEnter?: boolean
   unmountOnExit?: boolean
   children: ReactElement
