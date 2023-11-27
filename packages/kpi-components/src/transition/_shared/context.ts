@@ -1,4 +1,14 @@
-import { ctxHelper } from '@kpi-ui/utils'
-import LayoutTransitionStore from '../layout-group/store'
+import { ctxHelper, noop } from '@kpi-ui/utils'
+import type { LayoutGroupProps, ElementLayoutState } from '../layout-group/props'
 
-export const LayoutContext = ctxHelper(new LayoutTransitionStore())
+export interface LayoutContextState
+  extends Required<Pick<LayoutGroupProps, 'onReady' | 'onRunning' | 'onFinish'>> {
+  states: Map<string, ElementLayoutState>
+}
+
+export const LayoutContext = ctxHelper<LayoutContextState>({
+  states: new Map(),
+  onReady: noop,
+  onRunning: noop,
+  onFinish: noop,
+})

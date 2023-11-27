@@ -1,10 +1,13 @@
-import { cloneElement, isValidElement, useMemo, useRef } from 'react'
+import { useEvent } from '@kpi-ui/hooks'
+import { withoutProperties } from '@kpi-ui/utils'
+import { cloneElement, isValidElement, useRef } from 'react'
 import { LayoutContext } from '../_shared/context'
 import CSSTransition from '../css-transition'
 
-import type { LayoutTransitionProps } from './props'
 import type { CSSTransitionRef } from '../css-transition/props'
-import { useEvent } from '@kpi-ui/hooks'
+import type { LayoutTransitionProps } from './props'
+
+const excluded = ['id', 'children', 'appear'] as const
 
 function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTransitionProps<E>) {
   const { children, id } = props
@@ -15,48 +18,33 @@ function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTran
 
   const $instance = useRef<E | null>()
 
-  const refCallback = (el: E | null) => {
+  const refCallback = useEvent((el: E | null) => {
     if (!el && $instance.current) {
-      layoutContext.register($instance.current.getBoundingClientRect(), id)
+      layoutContext.states.set(id, {
+        rect: $instance.current.getBoundingClientRect(),
+        style: getComputedStyle($instance.current),
+      })
     }
+
     $instance.current = el
-  }
-
-  const handlers = useMemo(
-    () => ({
-      onEnter: (el: E, appearing: boolean) => {
-        const coords = layoutContext.coords(id)
-
-        if (!coords || !appearing) return
-
-        const rect = el.getBoundingClientRect()
-
-        el.style.transform = `translate3d(${coords.x - rect.x}px,${coords.y - rect.y}px,0) scale(${
-          coords.width / rect.width
-        },${coords.height / rect.height})`
-
-        console.log(el.style.transform, coords, rect)
-      },
-      onEntering: (el: E) => {
-        el.style.transformOrigin = '50% 50% 0px'
-        el.style.opacity = '1'
-        el.style.transform = `translate3d(0px,0px,0) scale(1, 1)`
-        el.style.transition = 'transform 111110.3s ease-in-out'
-      },
-      onEntered: (el: E) => {
-        el.style.opacity = ''
-        el.style.transformOrigin = ''
-        el.style.transform = ''
-        el.style.transition = ''
-      },
-    }),
-    [layoutContext, id]
-  )
+  })
 
   if (!isValidElement(children)) return children
 
+  const attrs = withoutProperties(props, excluded)
+
   return (
-    <CSSTransition {...props} {...handlers} when appear unmountOnExit ref={$transition}>
+    <CSSTransition
+      ref={$transition}
+      {...attrs}
+      onEnter={(el, appearing) => {
+        attrs.onEnter && attrs.onEnter(el, appearing)
+        if (appearing) layoutContext.onReady(el, layoutContext.states.get(id))
+      }}
+      when
+      appear
+      unmountOnExit
+    >
       {cloneElement(children as any, { ref: refCallback })}
     </CSSTransition>
   )

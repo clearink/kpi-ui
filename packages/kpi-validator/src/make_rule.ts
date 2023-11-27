@@ -5,7 +5,7 @@ export const Valid = <T>(value: T) => ({ status: 'valid', value } as const)
 
 export const Invalid = (context: Context) => {
   return (message: Message, params?: any) => {
-    if (context.abortEarly === true && !context.issue.isEmpty) {
+    if (context.abortEarly && !context.issue.isEmpty) {
       return Promise.reject(context.issue)
     }
     context.issue.addIssue(message, context.path, params)
@@ -20,8 +20,8 @@ export function makeRule<T = any>(
   params?: any
 ) {
   return async (value: T, context: Context): Promise<RuleReturn<T>> => {
-    const res = await handler(value!)
-    if (res) return Valid(value!)
+    const res = await handler(value)
+    if (res) return Valid(value)
     return Invalid(context)(message, { value, ...params })
   }
 }

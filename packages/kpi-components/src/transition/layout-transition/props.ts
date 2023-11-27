@@ -1,3 +1,4 @@
+import { LayoutContextState } from '../_shared/context'
 import type { CSSTransitionProps } from '../css-transition/props'
 
 export interface LayoutTransitionProps<E extends HTMLElement = HTMLElement>
@@ -6,5 +7,4 @@ export interface LayoutTransitionProps<E extends HTMLElement = HTMLElement>
    * @zh 唯一id,用于区分元素
    */
   id: string
-  beforeLayout?: () => void
 }
