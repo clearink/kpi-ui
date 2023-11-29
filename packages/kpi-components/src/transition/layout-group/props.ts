@@ -1,12 +1,28 @@
-import type { ReactNode } from 'react'
+import type { CSSProperties, ComponentType, ReactNode } from 'react'
 
-export interface ElementLayoutState {
+export interface LayoutSharedData {
   rect: DOMRect
   style: CSSStyleDeclaration
 }
 export interface LayoutGroupProps<E extends HTMLElement = HTMLElement> {
+  tag?: keyof HTMLElementTagNameMap | ComponentType
+
   children: ReactNode
-  onReady?: (el: E, state: ElementLayoutState | undefined) => void
-  onRunning?: (el: E) => void
-  onFinish?: (el: E) => void
+
+  onEnter?: (params: {
+    el: E
+    offset: [number, number]
+    scale: [number, number]
+    state: LayoutSharedData
+  }) => void
+
+  onEntering?: (el: E) => void
+
+  onEntered?: (el: E) => void
+
+  style?: CSSProperties
+
+  className?: string
+
+  [key: string]: any
 }

@@ -7,7 +7,7 @@ import CSSTransition from '../css-transition'
 import type { CSSTransitionRef } from '../css-transition/props'
 import type { LayoutTransitionProps } from './props'
 
-const excluded = ['id', 'children', 'appear'] as const
+const excluded = ['id', 'children'] as const
 
 function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTransitionProps<E>) {
   const { children, id } = props
@@ -37,13 +37,33 @@ function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTran
     <CSSTransition
       ref={$transition}
       {...attrs}
-      onEnter={(el, appearing) => {
-        attrs.onEnter && attrs.onEnter(el, appearing)
-        if (appearing) layoutContext.onReady(el, layoutContext.states.get(id))
-      }}
       when
       appear
       unmountOnExit
+      onEnter={(el, appearing) => {
+        attrs.onEnter && attrs.onEnter(el, appearing)
+
+        const state = layoutContext.states.get(id)
+
+        if (!appearing || !state) return
+
+        const rect = el.getBoundingClientRect()
+
+        const sx = state.rect.width / rect.width
+        const sy = state.rect.height / rect.height
+        const ox = state.rect.x - rect.x + (state.rect.width - rect.width) / 2
+        const oy = state.rect.y - rect.y + (state.rect.height - rect.height) / 2
+
+        layoutContext.onEnter({ el, offset: [ox, oy], scale: [sx, sy], state })
+      }}
+      onEntering={(el, appearing) => {
+        attrs.onEntering && attrs.onEntering(el, appearing)
+        layoutContext.onEntering(el)
+      }}
+      onEntered={(el, appearing) => {
+        attrs.onEntered && attrs.onEntered(el, appearing)
+        layoutContext.onEntered(el)
+      }}
     >
       {cloneElement(children as any, { ref: refCallback })}
     </CSSTransition>
