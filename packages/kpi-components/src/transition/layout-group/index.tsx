@@ -1,30 +1,33 @@
 import { useEvent } from '@kpi-ui/hooks'
 import { isNullish, withoutProperties } from '@kpi-ui/utils'
 import { createElement, useMemo } from 'react'
-import { LayoutContext, type LayoutContextState } from '../_shared/context'
+import { LayoutContext } from '../_shared/context'
 
 import type { LayoutGroupProps } from './props'
 
-const excluded = ['tag', 'children', 'onEnter', 'onEntering', 'onEntered'] as const
+const excluded = ['tag', 'children', 'onReady', 'onRunning', 'onFinish'] as const
 
-function LayoutGroup(props: LayoutGroupProps) {
+function LayoutGroup<
+  E extends HTMLElement = HTMLElement,
+  R extends Record<string, any> = Record<string, any>
+>(props: LayoutGroupProps<E, R>) {
   const {
     tag,
     children: _children,
-    onEnter: _onEnter,
-    onEntering: _onEntering,
-    onEntered: _onEntered,
+    onReady: _onReady,
+    onRunning: _onRunning,
+    onFinish: _onFinish,
   } = props
 
-  const onEnter = useEvent((params) => _onEnter && _onEnter(params))
+  const onReady = useEvent((params) => _onReady && _onReady(params))
 
-  const onEntering = useEvent((el) => _onEntering && _onEntering(el))
+  const onRunning = useEvent((el) => _onRunning && _onRunning(el))
 
-  const onEntered = useEvent((el) => _onEntered && _onEntered(el))
+  const onFinish = useEvent((el) => _onFinish && _onFinish(el))
 
-  const layoutContext = useMemo<LayoutContextState>(() => {
-    return { states: new Map(), onEnter, onEntering, onEntered }
-  }, [onEntering, onEnter, onEntered])
+  const layoutContext = useMemo(() => {
+    return { states: new Map(), onReady, onRunning, onFinish }
+  }, [onFinish, onReady, onRunning])
 
   const children = (
     <LayoutContext.Provider value={layoutContext}>{_children}</LayoutContext.Provider>
@@ -34,7 +37,7 @@ function LayoutGroup(props: LayoutGroupProps) {
 
   const attrs = withoutProperties(props, excluded)
 
-  return createElement(tag as any, attrs, children)
+  return createElement(tag, attrs, children)
 }
 
 export default LayoutGroup

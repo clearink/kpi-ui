@@ -1,10 +1,10 @@
 import { withDefaults } from '@kpi-ui/utils'
 import { usePrefixCls } from '../_shared/hooks'
+import { LayoutGroup, LayoutTransition } from '../transition'
 import useFormatClass from './hooks/use_format_class'
 import usePageChunk from './hooks/use_page_chunk'
 
 import type { PaginationProps } from './props'
-import { LayoutGroup, LayoutTransition } from '../transition'
 
 function Pagination(props: PaginationProps) {
   const { onChange } = props
@@ -21,14 +21,14 @@ function Pagination(props: PaginationProps) {
     <LayoutGroup
       tag="div"
       className={classes}
-      onEnter={({ el, offset, scale }) => {
+      onReady={({ el, offset, scale }) => {
         el.style.transform = `translate3d(${offset[0]}px, ${offset[1]}px, 0) scale(${scale[0]}, ${scale[1]})`
       }}
-      onEntering={(el) => {
+      onRunning={(el) => {
         el.style.transform = `translate3d(0, 0, 0) scale(1, 1)`
         el.style.transition = `transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1)`
       }}
-      onEntered={(el) => {
+      onFinish={(el) => {
         el.style.transform = ''
         el.style.transition = ''
       }}

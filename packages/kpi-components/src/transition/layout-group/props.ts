@@ -1,24 +1,26 @@
 import type { CSSProperties, ComponentType, ReactNode } from 'react'
 
-export interface LayoutSharedData {
+export interface SharedLayoutState {
   rect: DOMRect
-  style: CSSStyleDeclaration
 }
-export interface LayoutGroupProps<E extends HTMLElement = HTMLElement> {
+export interface LayoutGroupProps<
+  E extends HTMLElement = HTMLElement,
+  R extends Record<string, any> = Record<string, any>
+> {
   tag?: keyof HTMLElementTagNameMap | ComponentType
 
   children: ReactNode
 
-  onEnter?: (params: {
+  onReady?: (params: {
     el: E
     offset: [number, number]
     scale: [number, number]
-    state: LayoutSharedData
+    state: SharedLayoutState & R
   }) => void
 
-  onEntering?: (el: E) => void
+  onRunning?: (el: E) => void
 
-  onEntered?: (el: E) => void
+  onFinish?: (el: E) => void
 
   style?: CSSProperties
 
