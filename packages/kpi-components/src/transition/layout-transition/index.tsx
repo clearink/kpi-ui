@@ -8,10 +8,10 @@ import coords from './utils/coords'
 import type { CSSTransitionRef } from '../css-transition/props'
 import type { LayoutTransitionProps } from './props'
 
-const excluded = ['id', 'children', 'getCustomState'] as const
+const excluded = ['id', 'children', 'addCustomState'] as const
 
 function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTransitionProps<E>) {
-  const { children, id, getCustomState: getState } = props
+  const { children, id, addCustomState: addState } = props
 
   const layoutContext = LayoutContext.useState()
 
@@ -24,9 +24,9 @@ function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTran
 
     const pre = $instance.current
 
-    const get = fallback(getState, noop)
+    const add = fallback(addState, noop)!
 
-    if (!el && pre) states.set(id, { ...get!(pre), rect: coords(pre) })
+    if (!el && pre) states.set(id, { ...add(pre), rect: coords(pre) })
 
     $instance.current = el
   })

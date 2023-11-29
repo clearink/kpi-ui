@@ -7,5 +7,5 @@ export interface LayoutTransitionProps<E extends HTMLElement = HTMLElement>
    */
   id: string
 
-  getCustomState?: (el: E) => any
+  addCustomState?: (el: E) => any
 }
