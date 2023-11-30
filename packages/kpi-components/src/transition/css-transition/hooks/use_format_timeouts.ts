@@ -1,12 +1,15 @@
-import { isNumber, pick } from '@kpi-ui/utils'
+import { isNullish, isNumber } from '@kpi-ui/utils'
 import { useMemo } from 'react'
+import { APPEAR, ENTER, EXIT } from '../../constant'
 
 import type { CSSTransitionProps } from '../props'
 
 export default function useFormatTimeouts(duration: CSSTransitionProps['duration']) {
   return useMemo(() => {
-    if (isNumber(duration)) return { appear: duration, enter: duration, exit: duration }
+    if (isNumber(duration)) return { [APPEAR]: duration, [ENTER]: duration, [EXIT]: duration }
 
-    return pick(duration ?? {}, ['appear', 'enter', 'exit'])
+    if (isNullish(duration)) return {}
+
+    return { [APPEAR]: duration.appear, [ENTER]: duration.enter, [EXIT]: duration.exit }
   }, [duration])
 }

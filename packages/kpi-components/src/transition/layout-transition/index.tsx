@@ -51,8 +51,8 @@ function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTran
 
         const rect = el.getBoundingClientRect()
 
-        const sx = state.rect.width / rect.width
-        const sy = state.rect.height / rect.height
+        const sx = rect.width ? state.rect.width / rect.width : 1
+        const sy = rect.height ? state.rect.height / rect.height : 1
         const ox = state.rect.x - rect.x + (state.rect.width - rect.width) / 2
         const oy = state.rect.y - rect.y + (state.rect.height - rect.height) / 2
 
