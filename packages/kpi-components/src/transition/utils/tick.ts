@@ -1,3 +1,5 @@
+import { isFunction } from '@kpi-ui/utils'
+
 export function nextFrame(callback: () => void) {
   const ids: number[] = Array(2)
 
@@ -9,7 +11,7 @@ export function nextFrame(callback: () => void) {
 }
 
 export function nextTick(callback: () => void) {
-  const id = requestAnimationFrame(callback)
-
-  return () => cancelAnimationFrame(id)
+  if (isFunction(queueMicrotask)) queueMicrotask(callback)
+  // TODO: 考虑 MutationObserver  setTimeout
+  else Promise.resolve().then(callback)
 }

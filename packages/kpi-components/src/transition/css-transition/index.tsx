@@ -7,11 +7,12 @@ import {
   useImperativeHandle,
   type ReactElement,
   type Ref,
+  useLayoutEffect,
 } from 'react'
 import { APPEAR, ENTER, EXIT, isAppear, isExit } from '../constant'
 import { reflow } from '../_shared/utils'
 import { addTransitionClass, delTransitionClass } from './utils/classnames'
-import { nextFrame } from '../utils/tick'
+import { nextFrame, nextTick } from '../utils/tick'
 import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'
 import useTransitionEvent from './hooks/use_transition_event'
@@ -51,19 +52,24 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
   const refCallback = useEvent((el: E | null) => {
     const original = (children as ReactElement & { ref: Ref<any> }).ref
 
+    if (isFunction(original)) original(el)
+    else if (isObject(original)) (original as any).current = el
+
     store.setInstance(el)
 
     store.prepareHidden()
 
-    if (store.appear || !when) store.hidden()
+    if (!store.appear && when) return
 
-    if (isFunction(original)) original(el)
-    else if (isObject(original)) (original as any).current = el
+    // console.log('ref callback', !when && store.unmount)
+    // if (!when && store.unmount) nextTick(store.hidden)
+    // else
+    store.hidden()
   })
 
   const runTransition = useEvent((el: E, step: TransitionStep) => {
     const { from, active, to } = classes[step]
-
+    console.log('runTransition', performance.now(), el)
     store.start(step)
 
     addTransitionClass(el, from)

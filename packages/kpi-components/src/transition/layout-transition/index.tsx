@@ -42,7 +42,7 @@ function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTran
       unmountOnExit
       onEnter={(el, appearing) => {
         attrs.onEnter && attrs.onEnter(el, appearing)
-        console.log('appearing', appearing, el)
+
         const state = layoutContext.states.get(id)
 
         if (!appearing || !state) return

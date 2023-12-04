@@ -1,4 +1,4 @@
-import { LayoutGroup, LayoutTransition, CSSTransition } from '@kpi-ui/components'
+import { LayoutGroup, LayoutTransition, CSSTransition, Button } from '@kpi-ui/components'
 import { useState } from 'react'
 
 import '@kpi-ui/components/src/style'
@@ -6,24 +6,20 @@ import './style.scss'
 
 const files = [
   {
-    name: 'DRJ_3407+(Small)+(2)+-+kopie.JPG',
-    title: 'DRJ 3407+(Small)+(2)+ +kopie',
-    type: 'image/jpeg',
-    size: 82091,
-    width: 300,
-    height: 300,
-    src: 'http://envoy-s3-irl.imgix.net/teamleader/andi-kruger/fuut-fuut/MaFnjF_DRJ_3407%2B(Small)%2B(2)%2B-%2Bkopie.JPG?w=1500&fit=max&auto=format&dpr=1&ixlib=react-9.0.2',
-    ratio: 1,
+    id: 1,
+    style: {
+      width: 200,
+      height: 200,
+      backgroundColor: 'red',
+    },
   },
   {
-    name: 'nike-sb-stefan-janoski-max.jpg',
-    title: 'nike sb stefan janoski max',
-    type: 'image/jpeg',
-    size: 157902,
-    width: 575,
-    height: 390,
-    src: 'http://envoy-s3-irl.imgix.net/teamleader/andi-kruger/fuut-fuut/QtQW2c_nike-sb-stefan-janoski-max.jpg?w=1500&fit=max&auto=format&dpr=1&ixlib=react-9.0.2',
-    ratio: 1.4743589743589745,
+    id: 2,
+    style: {
+      width: 200,
+      height: 200,
+      backgroundColor: 'blue',
+    },
   },
 ]
 
@@ -50,20 +46,9 @@ export default function App() {
         }}
       >
         <div>
-          {files.map((_, i) => (
-            <LayoutTransition key={i} id={`file-${i}`}>
-              <div
-                className="thumb"
-                onClick={() => setSelected(i)}
-                style={{
-                  borderRadius: 20,
-                  background: 'white',
-                  height: '200px',
-                  width: '200px',
-                }}
-              >
-                <img src={files[i].src} />
-              </div>
+          {files.map((file, i) => (
+            <LayoutTransition key={file.id} id={`file-${file.id}`}>
+              <div className="thumb" onClick={() => setSelected(i)} style={file.style}></div>
             </LayoutTransition>
           ))}
         </div>
@@ -96,6 +81,7 @@ export default function App() {
         >
           <div
             className="item"
+            data-id="item"
             onClick={(e) => {
               e.target === e.currentTarget && setSelected(false)
             }}
@@ -106,13 +92,11 @@ export default function App() {
                 className="container"
                 style={{
                   borderRadius: 0,
-                  height: item?.height,
-                  width: item?.width,
-                  backgroundColor: 'mediumaquamarine',
+                  height: item?.style.height,
+                  width: item?.style.width,
+                  backgroundColor: item?.style.backgroundColor,
                 }}
-              >
-                <img src={item?.src} />
-              </div>
+              ></div>
             </LayoutTransition>
           </div>
         </CSSTransition>
@@ -120,18 +104,25 @@ export default function App() {
     </main>
   )
 }
-// import { Pagination } from '@kpi-ui/components'
-// import { useState } from 'react'
-
-// import '@kpi-ui/components/src/style'
-// import './style.scss'
 
 // export default function App() {
-//   const [cur, set] = useState(1)
+//   const [cur, set] = useState(!true)
 
 //   return (
-//     <div className="window">
-//       <Pagination current={cur} total={50} onChange={(next) => set(next)}></Pagination>
+//     <div className="aaa">
+//       <Button
+//         onClick={() => {
+//           set((p) => !p)
+//         }}
+//       >
+//         set
+//       </Button>
+//       <CSSTransition name="fade" appear when={cur}>
+//         <div className="a"></div>
+//       </CSSTransition>
 //     </div>
+//     // <div className="window">
+//     //   <Pagination current={cur} total={50} onChange={(next) => set(next)}></Pagination>
+//     // </div>
 //   )
 // }

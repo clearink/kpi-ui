@@ -24,7 +24,6 @@ export default function useTransitionEvent<E extends HTMLElement>(
     const { from, active, to } = classes[step]
 
     delTransitionClass(el, from, active, to)
-
     if (!isExit(step)) return onEntered && onEntered(el, isAppear(step))
 
     onExited && onExited(el)
