@@ -1,13 +1,15 @@
 import { ctxHelper, noop } from '@kpi-ui/utils'
-import type { LayoutGroupProps, SharedLayoutState } from '../layout-group/props'
+import LayoutGroupStore from '../layout-group/store'
+
+import type { LayoutGroupProps } from '../layout-group/props'
 
 export interface LayoutContextState
   extends Required<Pick<LayoutGroupProps, 'onReady' | 'onRunning' | 'onFinish'>> {
-  states: Map<string, SharedLayoutState>
+  states: LayoutGroupStore
 }
 
 export const LayoutContext = ctxHelper<LayoutContextState>({
-  states: new Map(),
+  states: new LayoutGroupStore(),
   onReady: noop,
   onRunning: noop,
   onFinish: noop,

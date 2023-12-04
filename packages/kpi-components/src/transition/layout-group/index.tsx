@@ -2,6 +2,7 @@ import { useEvent } from '@kpi-ui/hooks'
 import { isNullish, withoutProperties } from '@kpi-ui/utils'
 import { createElement, useMemo } from 'react'
 import { LayoutContext } from '../_shared/context'
+import LayoutGroupStore from './store'
 
 import type { LayoutGroupProps } from './props'
 
@@ -26,7 +27,7 @@ function LayoutGroup<
   const onFinish = useEvent((el) => _onFinish && _onFinish(el))
 
   const layoutContext = useMemo(() => {
-    return { states: new Map(), onReady, onRunning, onFinish }
+    return { states: new LayoutGroupStore(), onReady, onRunning, onFinish }
   }, [onFinish, onReady, onRunning])
 
   const children = (

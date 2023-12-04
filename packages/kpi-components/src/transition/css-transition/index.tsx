@@ -51,14 +51,14 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
   const refCallback = useEvent((el: E | null) => {
     const original = (children as ReactElement & { ref: Ref<any> }).ref
 
-    if (isFunction(original)) original(el)
-    else if (isObject(original)) (original as any).current = el
-
     store.setInstance(el)
 
     store.prepareHidden()
 
     if (store.appear || !when) store.hidden()
+
+    if (isFunction(original)) original(el)
+    else if (isObject(original)) (original as any).current = el
   })
 
   const runTransition = useEvent((el: E, step: TransitionStep) => {

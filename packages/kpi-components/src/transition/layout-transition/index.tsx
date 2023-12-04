@@ -1,5 +1,5 @@
 import { useEvent } from '@kpi-ui/hooks'
-import { fallback, noop, withDefaults, withoutProperties } from '@kpi-ui/utils'
+import { fallback, noop, withoutProperties } from '@kpi-ui/utils'
 import { cloneElement, isValidElement, useRef } from 'react'
 import { LayoutContext } from '../_shared/context'
 import CSSTransition from '../css-transition'
@@ -11,24 +11,22 @@ import type { LayoutTransitionProps } from './props'
 const excluded = ['id', 'children', 'addCustomState'] as const
 
 function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTransitionProps<E>) {
-  const { children, id, addCustomState: addState } = props
+  const { children, id, addCustomState: add } = props
 
   const layoutContext = LayoutContext.useState()
 
   const $transition = useRef<CSSTransitionRef<E>>(null)
 
-  const $instance = useRef<E | null>()
+  const $instance = useRef<E | null>(null)
 
-  const refCallback = useEvent((el: E | null) => {
+  const refCallback = useEvent((current: E | null) => {
     const { states } = layoutContext
 
-    const pre = $instance.current
+    states.save<E>(id, $instance.current, current, (el) => {
+      return { ...fallback(add, noop)!(el), rect: coords(el) }
+    })
 
-    const add = fallback(addState, noop)!
-
-    if (!el && pre) states.set(id, { ...add(pre), rect: coords(pre) })
-
-    $instance.current = el
+    $instance.current = current
   })
 
   if (!isValidElement(children)) return children
@@ -44,7 +42,7 @@ function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTran
       unmountOnExit
       onEnter={(el, appearing) => {
         attrs.onEnter && attrs.onEnter(el, appearing)
-
+        console.log('appearing', appearing, el)
         const state = layoutContext.states.get(id)
 
         if (!appearing || !state) return
@@ -73,3 +71,8 @@ function LayoutTransition<E extends HTMLElement = HTMLElement>(props: LayoutTran
 }
 
 export default LayoutTransition
+
+/**
+ * 目前是错误记录了位置信息，在此需要将情况列出来
+ * 1. 挂载与卸载时需要分别获取一次数据？
+ */
