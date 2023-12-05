@@ -40,4 +40,4 @@ function Row(props: RowProps, ref: ForwardedRef<HTMLDivElement>) {
 export default withDefaults(forwardRef(Row), {
   gutter: 0,
   wrap: true,
-} as const)
+})

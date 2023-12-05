@@ -13,4 +13,4 @@ function Modal(props: ModalProps) {
 
 export default withDefaults(Modal, {
   open: false,
-} as const)
+})

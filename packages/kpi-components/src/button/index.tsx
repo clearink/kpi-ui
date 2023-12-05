@@ -51,4 +51,4 @@ function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
 export default withDefaults(forwardRef(Button), {
   htmlType: 'button',
   type: 'default',
-} as const)
+})

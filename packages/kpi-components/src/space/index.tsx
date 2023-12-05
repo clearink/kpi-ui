@@ -48,4 +48,4 @@ export default withDefaults(Space, {
   direction: 'horizontal',
   size: 'small',
   wrap: false,
-} as const)
+})

@@ -1,5 +1,5 @@
 import { useEvent } from '@kpi-ui/hooks'
-import { isFunction, isObject } from '@kpi-ui/utils'
+import { isFunction, isObject, withDefaults } from '@kpi-ui/utils'
 import {
   cloneElement,
   forwardRef,
@@ -7,12 +7,11 @@ import {
   useImperativeHandle,
   type ReactElement,
   type Ref,
-  useLayoutEffect,
 } from 'react'
 import { APPEAR, ENTER, EXIT, isAppear, isExit } from '../constant'
 import { reflow } from '../_shared/utils'
 import { addTransitionClass, delTransitionClass } from './utils/classnames'
-import { nextFrame, nextTick } from '../utils/tick'
+import { nextFrame } from '../utils/tick'
 import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'
 import useTransitionEvent from './hooks/use_transition_event'
@@ -59,17 +58,12 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
 
     store.prepareHidden()
 
-    if (!store.appear && when) return
-
-    // console.log('ref callback', !when && store.unmount)
-    // if (!when && store.unmount) nextTick(store.hidden)
-    // else
-    store.hidden()
+    if (store.appear || !when) store.hidden()
   })
 
   const runTransition = useEvent((el: E, step: TransitionStep) => {
     const { from, active, to } = classes[step]
-    console.log('runTransition', performance.now(), el)
+
     store.start(step)
 
     addTransitionClass(el, from)

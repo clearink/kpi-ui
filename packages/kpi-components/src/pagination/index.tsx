@@ -1,8 +1,9 @@
 import { withDefaults } from '@kpi-ui/utils'
 import { usePrefixCls } from '../_shared/hooks'
-import { LayoutGroup, LayoutTransition } from '../transition'
+import { CSSTransition } from '../transition'
 import useFormatClass from './hooks/use_format_class'
 import usePageChunk from './hooks/use_page_chunk'
+import useSharedLayout from './hooks/use_shared_layout'
 
 import type { PaginationProps } from './props'
 
@@ -15,24 +16,11 @@ function Pagination(props: PaginationProps) {
 
   const [current, chunkCount] = usePageChunk(props)
 
-  // 渲染 prev list next size jumper
+  const shared = useSharedLayout<HTMLDivElement>()
 
+  // 渲染 prev list next size jumper
   return (
-    <LayoutGroup
-      tag="div"
-      className={classes}
-      onReady={({ el, offset, scale }) => {
-        el.style.transform = `translate3d(${offset[0]}px, ${offset[1]}px, 0) scale(${scale[0]}, ${scale[1]})`
-      }}
-      onRunning={(el) => {
-        el.style.transform = `translate3d(0, 0, 0) scale(1, 1)`
-        el.style.transition = `transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1)`
-      }}
-      onFinish={(el) => {
-        el.style.transform = ''
-        el.style.transition = ''
-      }}
-    >
+    <div className={classes}>
       {Array.from({ length: chunkCount }, (_, i) => {
         return (
           <div
@@ -46,14 +34,38 @@ function Pagination(props: PaginationProps) {
               {['你好', 'hello world'][i % 2]}
             </a>
             {current === i + 1 && (
-              <LayoutTransition id="pagination">
-                <div className={`${prefixCls}__active`}></div>
-              </LayoutTransition>
+              <CSSTransition
+                appear
+                when
+                unmountOnExit
+                onEnter={(el, appearing) => {
+                  if (!appearing || !shared.rect) return
+
+                  const rect = el.getBoundingClientRect()
+
+                  const sx = rect.width ? shared.rect.width / rect.width : 1
+                  const sy = rect.height ? shared.rect.height / rect.height : 1
+                  const ox = shared.rect.x - rect.x + (shared.rect.width - rect.width) / 2
+                  const oy = shared.rect.y - rect.y + (shared.rect.height - rect.height) / 2
+
+                  el.style.transform = `translate3d(${ox}px, ${oy}px, 0) scale(${sx}, ${sy})`
+                }}
+                onEntering={(el) => {
+                  el.style.transform = `translate3d(0, 0, 0) scale(1, 1)`
+                  el.style.transition = `transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1)`
+                }}
+                onEntered={(el) => {
+                  el.style.transform = ''
+                  el.style.transition = ''
+                }}
+              >
+                <div ref={shared.refCallback} className={`${prefixCls}__active`}></div>
+              </CSSTransition>
             )}
           </div>
         )
       })}
-    </LayoutGroup>
+    </div>
   )
 }
 
@@ -66,4 +78,4 @@ export default withDefaults(Pagination, {
   defaultCurrent: 1,
   defaultPageSize: 10,
   totalBoundaryShowSizeChanger: 50,
-} as const)
+})

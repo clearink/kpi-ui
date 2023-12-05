@@ -45,4 +45,4 @@ export default withDefaults(Divider, {
   orientation: 'center',
   plain: false,
   type: 'horizontal',
-} as const)
+})

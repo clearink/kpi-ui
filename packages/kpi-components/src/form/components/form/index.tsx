@@ -1,13 +1,6 @@
 import { useEvent } from '@kpi-ui/hooks'
 import { pickWithFallback, withDefaults, withoutProperties } from '@kpi-ui/utils'
-import {
-  forwardRef,
-  useImperativeHandle,
-  useMemo,
-  type ForwardedRef,
-  type ReactElement,
-  type Ref,
-} from 'react'
+import { forwardRef, useImperativeHandle, useMemo, type ForwardedRef, type Ref } from 'react'
 import { ConfigContext, DisabledContext, SizeContext } from '../../../_shared/context'
 import { usePrefixCls } from '../../../_shared/hooks'
 import InternalForm from '../../../form-internal'
@@ -115,6 +108,4 @@ export default withDefaults(forwardRef(Form), {
   layout: 'horizontal',
   requiredMark: true,
   colon: true,
-} as const) as <State = any>(
-  props: FormProps<State> & { ref?: Ref<FormInstance<State>> }
-) => ReactElement
+}) as <State = any>(props: FormProps<State> & { ref?: Ref<FormInstance<State>> }) => JSX.Element

@@ -8,5 +8,5 @@
 
 ## TODO
 
-1. 重新梳理项目结构
-2. 舍弃之前的打包，编译方式。全部采用rollup打包
+1. 完成 Pagination 组件
+2. 放弃 ant design 样式, 仅采用 ant design api. [设计稿地址](https://www.figma.com/file/EMPOindzRJTKt1Gx6Egojq/Yike-design?type=design&node-id=0-278&mode=design)

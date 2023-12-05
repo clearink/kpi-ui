@@ -1,4 +1,4 @@
-import { withDefaults, withoutProperties } from '@kpi-ui/utils'
+import { withoutProperties } from '@kpi-ui/utils'
 import { forwardRef, type ForwardedRef } from 'react'
 import { RowContext } from '../_shared/context'
 import { usePrefixCls } from '../_shared/hooks'
@@ -43,4 +43,4 @@ function Col(props: ColProps, ref: ForwardedRef<HTMLDivElement>) {
   )
 }
 
-export default withDefaults(forwardRef(Col))
+export default forwardRef(Col)

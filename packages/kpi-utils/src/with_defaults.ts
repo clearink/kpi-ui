@@ -5,9 +5,9 @@ import type { ComponentType } from 'react'
  * @param WrappedComponent 需要包装的组件
  * @param defaultProps 默认属性
  */
-export default function withDefaults<P extends ComponentType<any>>(
-  WrappedComponent: P,
-  defaultProps?: P['defaultProps']
+export default function withDefaults<S>(
+  WrappedComponent: ComponentType<S>,
+  defaultProps?: Partial<S>
 ) {
   WrappedComponent.defaultProps = defaultProps
 

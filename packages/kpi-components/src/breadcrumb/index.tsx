@@ -1,4 +1,3 @@
-import { withDefaults } from '@kpi-ui/utils'
 import useFormatClass from './hooks/use_format_class'
 // import { BreadcrumbProps } from './props';
 
@@ -9,4 +8,4 @@ function Breadcrumb() {
   return <div className={classes}>breadcrumb</div>
 }
 
-export default withDefaults(Breadcrumb, {} as const)
+export default Breadcrumb
