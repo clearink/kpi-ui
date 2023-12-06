@@ -7,31 +7,51 @@ import type { SizeType } from '../config-provider/props'
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /**
    * @zh 按钮颜色
+   * @default 'default'
    */
-  color?: 'xxx' | 'xx'
+  color?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'
+
   /**
-   * @zh 按钮形状
+   * @zh 变体(在不影响布局属性的情况下所派生出的类型)
+   * @default 'outlined'
    */
-  variant?: 'xx' | 'xx'
+  variant?: 'filled' | 'outlined' | 'dashed' | 'text'
 
+  /**
+   * @zh 形状
+   * @default 'default'
+   */
   shape?: 'default' | 'circle' | 'round'
-  /** 按钮大小 */
-  size?: SizeType
-  /** 加载中 */
-  loading?: boolean | { delay: number }
-  /** 禁用 */
-  disabled?: boolean
-  /** 警告按钮 */
-  danger?: boolean
-  /** 块级 */
-  block?: boolean
-  /** 幽灵按钮 */
-  ghost?: boolean
-  /** 图标 */
-  icon?: ReactNode
-  htmlType?: 'submit' | 'reset' | 'button'
-  children?: ReactNode
 
-  href?: string
-  target?: string
+  /**
+   * @zh 按钮大小
+   */
+  size?: SizeType
+
+  /**
+   * @zh 加载中
+   */
+  loading?: boolean | { delay: number }
+
+  /**
+   * @zh 禁用
+   */
+  disabled?: boolean
+
+  /**
+   * @zh 块级格式
+   */
+  block?: boolean
+
+  /**
+   * @zh 幽灵按钮
+   */
+  ghost?: boolean
+
+  /**
+   * @zh 前缀图标
+   */
+  icon?: ReactNode
+
+  children?: ReactNode
 }
