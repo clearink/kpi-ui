@@ -13,9 +13,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
   /**
    * @zh 变体(在不影响布局属性的情况下所派生出的类型)
-   * @default 'outlined'
+   * @default 'bordered'
    */
-  variant?: 'filled' | 'outlined' | 'dashed' | 'text'
+  variant?: 'filled' | 'bordered' | 'dashed' | 'text' | 'link'
 
   /**
    * @zh 形状
@@ -53,5 +53,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
    */
   icon?: ReactNode
 
+  /**
+   * @zh 子元素
+   */
   children?: ReactNode
 }
