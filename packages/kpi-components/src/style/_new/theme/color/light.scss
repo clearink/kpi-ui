@@ -1,0 +1,96 @@
+@import './palette.scss';
+
+// 亮色模式
+:root {
+  // Layout
+  --#{$prefix}-color-layout--background: #{$color-white};
+  --#{$prefix}-color-layout--foreground: #{#11181c};
+  --#{$prefix}-color-layout--divider: #{rgba(17, 17, 17, 0.15)};
+  --#{$prefix}-color-layout--focus: #{map-get($color-blue, 500)};
+
+  // Content
+  --#{$prefix}-color-content-1: #{$color-white};
+  --#{$prefix}-color-content-2: #{map-get($color-zinc, 100)};
+  --#{$prefix}-color-content-3: #{map-get($color-zinc, 200)};
+  --#{$prefix}-color-content-4: #{map-get($color-zinc, 300)};
+
+  // Base
+  --#{$prefix}-color-base--default: #{map-get($color-zinc, 300)};
+  --#{$prefix}-color-base--primary: #{map-get($color-blue, 500)};
+  --#{$prefix}-color-base--secondary: #{map-get($color-purple, 500)};
+  --#{$prefix}-color-base--success: #{map-get($color-green, 500)};
+  --#{$prefix}-color-base--warning: #{map-get($color-yellow, 500)};
+  --#{$prefix}-color-base--danger: #{map-get($color-red, 500)};
+
+  // Default
+  --#{$prefix}-color-default-50: #{map-get($color-zinc, 50)};
+  --#{$prefix}-color-default-100: #{map-get($color-zinc, 100)};
+  --#{$prefix}-color-default-200: #{map-get($color-zinc, 200)};
+  --#{$prefix}-color-default-300: #{map-get($color-zinc, 300)};
+  --#{$prefix}-color-default-400: #{map-get($color-zinc, 400)};
+  --#{$prefix}-color-default-500: #{map-get($color-zinc, 500)};
+  --#{$prefix}-color-default-600: #{map-get($color-zinc, 600)};
+  --#{$prefix}-color-default-700: #{map-get($color-zinc, 700)};
+  --#{$prefix}-color-default-800: #{map-get($color-zinc, 800)};
+  --#{$prefix}-color-default-900: #{map-get($color-zinc, 900)};
+
+  // Primary
+  --#{$prefix}-color-primary-50: #{map-get($color-blue, 50)};
+  --#{$prefix}-color-primary-100: #{map-get($color-blue, 100)};
+  --#{$prefix}-color-primary-200: #{map-get($color-blue, 200)};
+  --#{$prefix}-color-primary-300: #{map-get($color-blue, 300)};
+  --#{$prefix}-color-primary-400: #{map-get($color-blue, 400)};
+  --#{$prefix}-color-primary-500: #{map-get($color-blue, 500)};
+  --#{$prefix}-color-primary-600: #{map-get($color-blue, 600)};
+  --#{$prefix}-color-primary-700: #{map-get($color-blue, 700)};
+  --#{$prefix}-color-primary-800: #{map-get($color-blue, 800)};
+  --#{$prefix}-color-primary-900: #{map-get($color-blue, 900)};
+
+  // Secondary
+  --#{$prefix}-color-secondary-50: #{map-get($color-purple, 50)};
+  --#{$prefix}-color-secondary-100: #{map-get($color-purple, 100)};
+  --#{$prefix}-color-secondary-200: #{map-get($color-purple, 200)};
+  --#{$prefix}-color-secondary-300: #{map-get($color-purple, 300)};
+  --#{$prefix}-color-secondary-400: #{map-get($color-purple, 400)};
+  --#{$prefix}-color-secondary-500: #{map-get($color-purple, 500)};
+  --#{$prefix}-color-secondary-600: #{map-get($color-purple, 600)};
+  --#{$prefix}-color-secondary-700: #{map-get($color-purple, 700)};
+  --#{$prefix}-color-secondary-800: #{map-get($color-purple, 800)};
+  --#{$prefix}-color-secondary-900: #{map-get($color-purple, 900)};
+
+  // Success
+  --#{$prefix}-color-success-50: #{map-get($color-green, 50)};
+  --#{$prefix}-color-success-100: #{map-get($color-green, 100)};
+  --#{$prefix}-color-success-200: #{map-get($color-green, 200)};
+  --#{$prefix}-color-success-300: #{map-get($color-green, 300)};
+  --#{$prefix}-color-success-400: #{map-get($color-green, 400)};
+  --#{$prefix}-color-success-500: #{map-get($color-green, 500)};
+  --#{$prefix}-color-success-600: #{map-get($color-green, 600)};
+  --#{$prefix}-color-success-700: #{map-get($color-green, 700)};
+  --#{$prefix}-color-success-800: #{map-get($color-green, 800)};
+  --#{$prefix}-color-success-900: #{map-get($color-green, 900)};
+
+  // Warning
+  --#{$prefix}-color-warning-50: #{map-get($color-yellow, 50)};
+  --#{$prefix}-color-warning-100: #{map-get($color-yellow, 100)};
+  --#{$prefix}-color-warning-200: #{map-get($color-yellow, 200)};
+  --#{$prefix}-color-warning-300: #{map-get($color-yellow, 300)};
+  --#{$prefix}-color-warning-400: #{map-get($color-yellow, 400)};
+  --#{$prefix}-color-warning-500: #{map-get($color-yellow, 500)};
+  --#{$prefix}-color-warning-600: #{map-get($color-yellow, 600)};
+  --#{$prefix}-color-warning-700: #{map-get($color-yellow, 700)};
+  --#{$prefix}-color-warning-800: #{map-get($color-yellow, 800)};
+  --#{$prefix}-color-warning-900: #{map-get($color-yellow, 900)};
+
+  // Danger
+  --#{$prefix}-color-danger-50: #{map-get($color-red, 50)};
+  --#{$prefix}-color-danger-100: #{map-get($color-red, 100)};
+  --#{$prefix}-color-danger-200: #{map-get($color-red, 200)};
+  --#{$prefix}-color-danger-300: #{map-get($color-red, 300)};
+  --#{$prefix}-color-danger-400: #{map-get($color-red, 400)};
+  --#{$prefix}-color-danger-500: #{map-get($color-red, 500)};
+  --#{$prefix}-color-danger-600: #{map-get($color-red, 600)};
+  --#{$prefix}-color-danger-700: #{map-get($color-red, 700)};
+  --#{$prefix}-color-danger-800: #{map-get($color-red, 800)};
+  --#{$prefix}-color-danger-900: #{map-get($color-red, 900)};
+}

@@ -1,13 +1,13 @@
+import { pickWithFallback } from '@kpi-ui/utils'
 import cls from 'classnames'
-import { ButtonProps } from '../props'
+import { SizeContext } from '../../_shared/context'
 
-export default function useFormatClass(
-  prefixCls: string,
-  props: ButtonProps,
-  fallbacks: Pick<ButtonProps, 'size'>
-) {
+import type { ButtonProps } from '../props'
+
+export default function useFormatClass(prefixCls: string, props: ButtonProps) {
   const { className, type, block, danger, shape, ghost, loading } = props
-  const { size } = fallbacks
+
+  const { size } = pickWithFallback(props, { size: SizeContext.useState() }, ['size'])
 
   return cls(prefixCls, {
     [`${prefixCls}--${type}`]: type,

@@ -1,0 +1,29 @@
+$breakpoint-xs: 575px;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-xxl: 1600px;
+
+$map-break-point: (
+  xs: $breakpoint-xs,
+  sm: $breakpoint-sm,
+  md: $breakpoint-md,
+  lg: $breakpoint-lg,
+  xl: $breakpoint-xl,
+  xxl: $breakpoint-xxl,
+);
+
+@mixin media($break-point: md, $type: min) {
+  $width: map-get($map-break-point, $break-point);
+
+  @if $width {
+    @media screen and (#{$type}-width: $width) {
+      @content;
+    }
+  } @else {
+    @media screen and (#{$type}-width: $break-point) {
+      @content;
+    }
+  }
+}
