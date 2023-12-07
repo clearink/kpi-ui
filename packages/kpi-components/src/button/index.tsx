@@ -7,20 +7,20 @@ import useWave from './hooks/use-wave'
 import type { ButtonProps } from './props'
 
 const excluded = [
-  'children',
-  'htmlType',
-  'onClick',
-  'loading',
-  'type',
-  'block',
-  'danger',
+  'theme',
+  'variant',
   'shape',
   'size',
+  'loading',
+  'disabled',
+  'block',
   'ghost',
+  'icon',
+  'children',
 ] as const
 
 function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
-  const { children, htmlType, onClick, loading, disabled } = props
+  const { children, onClick, loading, disabled } = props
 
   const prefixCls = usePrefixCls('button')
 
@@ -38,7 +38,7 @@ function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
   const attrs = withoutProperties(props, excluded)
 
   return (
-    <button className={classes} ref={internalRef} type={htmlType} onClick={handleClick} {...attrs}>
+    <button {...attrs} className={classes} ref={internalRef} onClick={handleClick}>
       <span>{children}</span>
       {/* <Wave when={shouldRunWave} /> */}
     </button>
@@ -46,6 +46,7 @@ function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
 }
 
 export default withDefaults(forwardRef(Button), {
-  htmlType: 'button',
-  type: 'default',
+  theme: 'default',
+  variant: 'default',
+  type: 'button',
 })

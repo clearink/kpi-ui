@@ -1,123 +1,157 @@
-// 尺寸
-$btn-height-base: $height-base;
-$btn-height-lg: $height-lg;
-$btn-height-sm: $height-sm;
+/* ********************** */
+// Font
+$kpi-btn-font-weight: 400;
 
-// 字体大小
-$btn-font-size-base: $font-size-base;
-$btn-font-size-sm: $font-size-base;
-$btn-font-size-lg: $font-size-lg;
+// Border
+$kpi-btn-border-width: 1px;
 
-// 图标大小
-// TODO: 待完善
-$btn-icon-text-space: 8px;
+$kpi-btn-transition: all 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
 
-// padding
-$btn-px-base: $padding-md - 1px;
-$btn-px-lg: $btn-px-base;
-$btn-px-sm: $padding-xs - 1px;
+$kpi-btn-primary-shadow: var(--#{$prefix}-shadow--small);
 
-//---------------- 颜色 -----------------------------
+/** Size **/
 
-// theme default
-$btn-default-text: $text-color;
-$btn-default-bg: $bg-color-component;
-$btn-default-border: $border-color-base;
-// hover
-$btn-default-text-hover: $primary-color-hover;
-$btn-default-border-hover: $primary-color-hover;
-// active
-$btn-default-text-active: $primary-color-active;
-$btn-default-border-active: $primary-color-active;
+// small
+$kpi-btn-size-height-small: var(--#{$prefix}-units--unit-6);
+// $kpi-btn-size-radius-small: var(--#{$prefix}-radius-small);
 
-// theme primary
-$btn-primary-color: $primary-color; // 字体颜色
+// middle
+$kpi-btn-size-height-middle: var(--#{$prefix}-units--unit-8);
+$kpi-btn-size-padding-middle: var(--#{$prefix}-units--unit-4);
+$kpi-btn-size-font-middle: var(--#{$prefix}-font-size-middle);
+// $kpi-btn-size-radius-middle: var(--#{$prefix}-radius-small);
+// large
+$kpi-btn-size-height-large: var(--#{$prefix}-units--unit-10);
+// $kpi-btn-size-radius-large: var(--#{$prefix}-radius-large);
 
-$btn-primary-text: $white; // 字体颜色
-$btn-primary-bg: $primary-color;
-$btn-primary-border: $primary-color;
-// hover
+/** shape **/
 
-$btn-primary-bg-hover: $primary-color-hover;
-$btn-primary-border-hover: $primary-color-hover;
-// active
-$btn-primary-bg-active: $primary-color-active;
-$btn-primary-border-active: $primary-color-active;
+// default
+$kpi-btn-shape-default: var(--#{$prefix}-radius-small);
 
-// theme danger
-$btn-danger-color: $error-color;
-$btn-danger-color-hover: $error-color-hover;
-$btn-danger-color-active: $error-color-active;
-
-$btn-danger-text: $error-color;
-$btn-danger-bg:  $bg-color-component;
-$btn-danger-border: $error-color;
-// hover
-$btn-danger-text-hover: $error-color-hover;
-$btn-danger-border-hover: $error-color-hover;
-// active
-$btn-danger-text-active: $error-color-active;
-$btn-danger-border-active: $error-color-active;
-
-
-// link
-$btn-link-color: $primary-color;
-$btn-link-color-hover: $primary-color-hover;
-$btn-link-color-active: $primary-color-active;
-$btn-link-bg: transparent;
-$btn-link-border: transparent;
-
-// disabled
-$btn-disabled-text: $disabled-color;
-$btn-disabled-bg: $disabled-bg;
-$btn-disabled-border: $border-color-base;
-
-// ghost
-$btn-ghost-color: $white;
-$btn-ghost-color-hover: $primary-color-hover;
-$btn-ghost-color-active: $primary-color-active;
-
-$btn-ghost-border: $bg-color-component;
-
-$btn-ghost-bg: transparent;
-
-// 边框
-$btn-border-width: $border-width-base;
-$btn-border-style: $border-style-base;
-$btn-border-radius: $border-radius-base;
-$btn-border-radius-sm: $border-radius-sm;
-
-// 阴影
-$btn-font-weight: 400;
-$btn-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
-$btn-primary-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
-$btn-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
-
-// font
-$btn-font-size-base: $font-size-base;
-$btn-font-size-sm: $font-size-base;
-$btn-font-size-lg: $font-size-lg;
-
-// padding
-$btn-px-base: $padding-md - 1px;
-$btn-px-lg: $btn-px-base;
-$btn-px-sm: $padding-xs - 1px;
-
-// line height
-$btn-line-height: $line-height-base;
+// round
+$kpi-btn-shape-round: var(--#{$prefix}-radius-large);
 
 // circle
-$btn-circle-size: $btn-height-base;
-$btn-circle-size-lg: $btn-height-lg;
-$btn-circle-size-sm: $btn-height-sm;
+$kpi-btn-shape-circle: var(--#{$prefix}-radius-full);
 
-// square
-$btn-square-size: $btn-height-base;
-$btn-square-size-lg: $btn-height-lg;
-$btn-square-size-sm: $btn-height-sm;
-$btn-square-only-icon-size: $font-size-base + 2px;
-$btn-square-only-icon-size-sm: $font-size-base;
-$btn-square-only-icon-size-lg: $btn-font-size-lg + 2px;
+// /* ********************** */
+// // 尺寸
+// $btn-height-base: $height-base;
+// $btn-height-lg: $height-lg;
+// $btn-height-sm: $height-sm;
 
-// TODO: move animation.scss
-$ease-in-out: cubic-bezier(0.65, 0.05, 0.36, 1);
+// // 字体大小
+// $btn-font-size-base: $font-size-base;
+// $btn-font-size-sm: $font-size-base;
+// $btn-font-size-lg: $font-size-lg;
+
+// // 图标大小
+// // TODO: 待完善
+// $btn-icon-text-space: 8px;
+
+// // padding
+// $btn-px-base: $padding-md - 1px;
+// $btn-px-lg: $btn-px-base;
+// $btn-px-sm: $padding-xs - 1px;
+
+// //---------------- 颜色 -----------------------------
+
+// // theme default
+// $btn-default-text: $text-color;
+// $btn-default-bg: $bg-color-component;
+// $btn-default-border: $border-color-base;
+// // hover
+// $btn-default-text-hover: $primary-color-hover;
+// $btn-default-border-hover: $primary-color-hover;
+// // active
+// $btn-default-text-active: $primary-color-active;
+// $btn-default-border-active: $primary-color-active;
+
+// // theme primary
+// $btn-primary-color: $primary-color; // 字体颜色
+
+// $btn-primary-text: $white; // 字体颜色
+// $btn-primary-bg: $primary-color;
+// $btn-primary-border: $primary-color;
+// // hover
+
+// $btn-primary-bg-hover: $primary-color-hover;
+// $btn-primary-border-hover: $primary-color-hover;
+// // active
+// $btn-primary-bg-active: $primary-color-active;
+// $btn-primary-border-active: $primary-color-active;
+
+// // theme danger
+// $btn-danger-color: $error-color;
+// $btn-danger-color-hover: $error-color-hover;
+// $btn-danger-color-active: $error-color-active;
+
+// $btn-danger-text: $error-color;
+// $btn-danger-bg: $bg-color-component;
+// $btn-danger-border: $error-color;
+// // hover
+// $btn-danger-text-hover: $error-color-hover;
+// $btn-danger-border-hover: $error-color-hover;
+// // active
+// $btn-danger-text-active: $error-color-active;
+// $btn-danger-border-active: $error-color-active;
+
+// // link
+// $btn-link-color: $primary-color;
+// $btn-link-color-hover: $primary-color-hover;
+// $btn-link-color-active: $primary-color-active;
+// $btn-link-bg: transparent;
+// $btn-link-border: transparent;
+
+// // disabled
+// $btn-disabled-text: $disabled-color;
+// $btn-disabled-bg: $disabled-bg;
+// $btn-disabled-border: $border-color-base;
+
+// // ghost
+// $btn-ghost-color: $white;
+// $btn-ghost-color-hover: $primary-color-hover;
+// $btn-ghost-color-active: $primary-color-active;
+
+// $btn-ghost-border: $bg-color-component;
+
+// $btn-ghost-bg: transparent;
+
+// // 边框
+// $btn-border-width: $border-width-base;
+// $btn-border-style: $border-style-base;
+// $btn-border-radius: $border-radius-base;
+// $btn-border-radius-sm: $border-radius-sm;
+
+// // 阴影
+// $btn-font-weight: 400;
+// $btn-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+// $btn-primary-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+// $btn-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+
+// // font
+// $btn-font-size-base: $font-size-base;
+// $btn-font-size-sm: $font-size-base;
+// $btn-font-size-lg: $font-size-lg;
+
+// // padding
+// $btn-px-base: $padding-md - 1px;
+// $btn-px-lg: $btn-px-base;
+// $btn-px-sm: $padding-xs - 1px;
+
+// // line height
+// $btn-line-height: $line-height-base;
+
+// // circle
+// $btn-circle-size: $btn-height-base;
+// $btn-circle-size-lg: $btn-height-lg;
+// $btn-circle-size-sm: $btn-height-sm;
+
+// // square
+// $btn-square-size: $btn-height-base;
+// $btn-square-size-lg: $btn-height-lg;
+// $btn-square-size-sm: $btn-height-sm;
+// $btn-square-only-icon-size: $font-size-base + 2px;
+// $btn-square-only-icon-size-sm: $font-size-base;
+// $btn-square-only-icon-size-lg: $btn-font-size-lg + 2px;

@@ -1,4 +1,4 @@
-import { Pagination } from '@kpi-ui/components'
+import { Button } from '@kpi-ui/components'
 import { useState } from 'react'
 
 import '@kpi-ui/components/src/style'
@@ -9,7 +9,20 @@ export default function App() {
 
   return (
     <div className="window">
-      <Pagination current={cur} total={50} onChange={(next) => set(next)}></Pagination>
+      <div>
+        {(['default', 'secondary', 'success', 'warning', 'danger'] as const).map((theme) => (
+          <>
+            <p>{theme}: </p>
+            <div style={{ gap: 10, display: 'inline-flex', flexWrap: 'wrap' }}>
+              {(['default', 'filled', 'dashed', 'text', 'link'] as const).map((variant) => (
+                <Button theme={theme} variant={variant}>
+                  variant: {variant}
+                </Button>
+              ))}
+            </div>
+          </>
+        ))}
+      </div>
     </div>
   )
 }

@@ -1,0 +1,229 @@
+@use 'sass:color';
+@use 'sass:math';
+@import './palette.scss';
+
+// 前缀
+$prefix: kpi;
+$prefix-icon: #{$prefix}-icon;
+
+// 基础颜色
+$red-base: #f5222d;
+$volcano-base: #fa541c;
+$orange-base: #fa8c16;
+$gold-base: #faad14;
+$yellow-base: #fadb14;
+$lime-base: #a0d911;
+$green-base: #52c41a;
+$cyan-base: #13c2c2;
+$blue-base: #1890ff;
+$geekblue-base: #2f54eb;
+$purple-base: #722ed1;
+$magenta-base: #eb2f96;
+
+$outline-opacity: 0.2;
+// ---------------- 颜色色板 ----------------
+// ---------------- 功能色 ----------------
+// 品牌色
+$primary-color: $blue-base;
+$primary-color-hover: palette($primary-color, 5);
+$primary-color-active: palette($primary-color, 7);
+$primary-color-outline: rgba($primary-color, $outline-opacity);
+$primary-color-bg: palette($primary-color, 1);
+$primary-color-border: palette($primary-color, 3);
+
+// 提示色
+$info-color: $primary-color;
+$info-color-bg: palette($info-color, 1);
+$info-color-border: palette($info-color, 3);
+
+// 成功色
+$success-color: $green-base;
+$success-color-hover: palette($success-color, 5);
+$success-color-active: palette($success-color, 7);
+$success-color-outline: rgba($success-color, $outline-opacity);
+$success-color-bg: palette($success-color, 1);
+$success-color-border: palette($success-color, 3);
+
+// 警告色
+$warning-color: $gold-base;
+$warning-color-hover: palette($warning-color, 5);
+$warning-color-active: palette($warning-color, 7);
+$warning-color-outline: rgba($warning-color, $outline-opacity);
+$warning-color-bg: palette($warning-color, 1);
+$warning-color-border: palette($warning-color, 3);
+
+// 危险色
+$error-color: palette($red-base, 5);
+$error-color-hover: palette($error-color, 5);
+$error-color-active: palette($error-color, 7);
+$error-color-outline: rgba($error-color, $outline-opacity);
+$error-color-bg: palette($error-color, 1);
+$error-color-border: palette($error-color, 3);
+
+// 黑白
+$black: #000;
+$white: #fff;
+
+// ---------------- background ----------------
+// 背景色
+$bg-color-body: #fff;
+$bg-color-component: #fff;
+$bg-color-base: #f5f5f5;
+$bg-color--light: #fafafa;
+$bg-color-selection: $primary-color;
+
+// ---------------- font ----------------
+$heading-color: fade-out($black, 1 - 0.85); // 标题
+$text-color: fade-out($black, 1 - 0.85); // 基础
+$text-color-secondary: fade-out($black, 1 - 0.45); // 次级
+
+// 字体
+$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+  'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+  'Noto Color Emoji';
+$code-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+
+// font-size   12 14 16 20 24 30 38 46 56 68
+// line-height 20 22 24 28 32 38 46 54 64 76
+
+$font-size-sm: 12px;
+$font-size-base: 14px;
+$font-size-lg: $font-size-base + 2px;
+$heading-1-size: math.ceil($font-size-base * 2.71);
+$heading-2-size: math.ceil($font-size-base * 2.14);
+$heading-3-size: math.ceil($font-size-base * 1.71);
+$heading-4-size: math.ceil($font-size-base * 1.42);
+$heading-5-size: math.ceil($font-size-base * 1.14);
+$line-height-base: 1.5715; // 行高
+// 渲染配置
+$font-variant: tabular-nums;
+$font-feature-settings: 'tnum';
+
+// ---------------- border ----------------
+$border-radius-base: 2px;
+$border-radius-sm: $border-radius-base;
+$border-color-base: hsv_to_rgb(0, 0, 85%);
+$border-color-split: hsv_to_rgb(0, 0, 94%); // 分割线
+$border-color-inverse: $white;
+$border-width-base: 1px;
+$border-style-base: solid;
+
+// ---------------- divider ----------------
+$divider-width: 1px;
+$divider-color: fade-out($black, 1 - 0.06);
+
+// ---------------- outline ----------------
+$outline-width-base: 2px;
+$outline-width-blur: 0;
+$outline-color: $primary-color;
+
+// ---------------- disable ----------------
+$disabled-color: fade-out($black, 1 - 0.25); // 禁用
+$disabled-bg: $bg-color-base;
+$disabled-active-bg: color.mix(#fff, $black, 90%);
+$disabled-active-dark: fade-out($white, 1 - 0.35); // 禁用
+
+// ---------------- padding ----------------
+$padding-lg: 24px; // containers
+$padding-md: 16px; // small containers and buttons
+$padding-sm: 12px; // form controls and items
+$padding-xs: 8px; // small items
+$padding-xss: 4px; // mini items
+
+$padding-x-base: $padding-sm;
+$padding-x-sm: $padding-xs;
+
+// ---------------- margin ----------------
+$margin-lg: 24px;
+$margin-md: 16px;
+$margin-sm: 12px;
+$margin-xs: 8px;
+$margin-xss: 4px;
+
+// ---------------- height ----------------
+$height-base: 32px;
+$height-lg: 40px;
+$height-sm: 24px;
+
+// ---------------- link ----------------
+$link-color: $primary-color;
+$link-color-hover: palette($link-color, 5);
+$link-color-active: palette($link-color, 7);
+$link-decoration: none;
+$link-decoration-hover: none;
+$link-decoration-focus: none;
+$link-outline-focus: none;
+
+// ---------------- animation ----------------
+// TODO: 后续完善
+
+// ---------------- shadow ----------------
+$shadow-color: rgba(#000, 0.15);
+
+// 1. 阴影向下: 主要用于组件内部或组件本身, 用于常规的场景
+// 2. 阴影向上: 底部导航或工具栏
+// 3. 阴影向左: 右侧导航栏,抽屉或者固定表格栏
+// 4. 阴影向右: 左边导航栏、抽屉组件或固定表格栏
+
+$shadow-color-base: rgba(#000, 0.15);
+// level-1
+$shadow-1-up: 0 -1px 2px -2px rgba($black, 0.16), 0 -3px 6px 0 rgba($black, 0.12),
+  0 -5px 12px 4px rgba($black, 0.09);
+
+$shadow-1-down: 0 1px 2px -2px rgba($black, 0.16), 0 3px 6px 0 rgba($black, 0.12),
+  0 5px 12px 4px rgba($black, 0.09);
+
+$shadow-1-left: -1 0 2px -2px rgba($black, 0.16), 3px 0 6px 0 rgba($black, 0.12),
+  -5px 0 12px 4px rgba($black, 0.09);
+
+$shadow-1-right: 1px 0 2px -2px rgba($black, 0.16), 3px 0 6px 0 rgba($black, 0.12),
+  5px 0 12px 4px rgba($black, 0.09);
+
+// level-2
+$shadow-2-up: 0 -3px 6px -4px rgba($black, 0.12), 0 -6px 16px 0 rgba($black, 0.08),
+  0 -9px 28px 8px rgba($black, 0.05);
+
+$shadow-2-down: 0 3px 6px -4px rgba($black, 0.12), 0 6px 16px 0 rgba($black, 0.08),
+  0 9px 28px 8px rgba($black, 0.05);
+
+$shadow-2-left: -3px 0 6px -4px rgba($black, 0.12), -6px 0 16px 0 rgba($black, 0.08),
+  -9px 0 28px 8px rgba($black, 0.05);
+
+$shadow-2-right: 3px 0 6px -4px rgba($black, 0.12), 6px 0 16px 0 rgba($black, 0.08),
+  9px 0 28px 8px rgba($black, 0.05);
+
+// level-3
+$shadow-3-up: 0 -6px 16px -8px rgba($black, 0.08), 0 -9px 28px 0 rgba($black, 0.05),
+  0 -12px 48px 16px rgba($black, 0.03);
+
+$shadow-3-down: 0 6px 16px -8px rgba($black, 0.08), 0 9px 28px 0 rgba($black, 0.05),
+  0 12px 48px 16px rgba($black, 0.03);
+
+$shadow-3-left: -6px 0 16px -8px rgba($black, 0.08), -9px 0 28px 0 rgba($black, 0.05),
+  -12px 0 48px 16px rgba($black, 0.03);
+$shadow-3-right: 6px 0 16px -8px rgba($black, 0.08), 9px 0 28px 0 rgba($black, 0.05),
+  12px 0 48px 16px rgba($black, 0.03);
+
+// 响应式断点
+$breakpoint-xs: 575px;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-xxl: 1600px;
+
+// Animation
+$ease-base-out: cubic-bezier(0.7, 0.3, 0.1, 1);
+$ease-base-in: cubic-bezier(0.9, 0, 0.3, 0.7);
+$ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+$ease-in: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+$ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+$ease-out-back: cubic-bezier(0.12, 0.4, 0.29, 1.46);
+$ease-in-back: cubic-bezier(0.71, -0.46, 0.88, 0.6);
+$ease-in-out-back: cubic-bezier(0.71, -0.46, 0.29, 1.46);
+$ease-out-circ: cubic-bezier(0.08, 0.82, 0.17, 1);
+$ease-in-circ: cubic-bezier(0.6, 0.04, 0.98, 0.34);
+$ease-in-out-circ: cubic-bezier(0.78, 0.14, 0.15, 0.86);
+$ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+$ease-in-quint: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+$ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);

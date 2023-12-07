@@ -1,68 +1,84 @@
 @use 'sass:math';
 @import './variable';
-// 主题。暂时不考虑 暗色模式、紧凑模式等
-@mixin btn-theme(
-  $text-color,
-  $bg-color,
-  $border-color,
-  $text-color-hover,
-  $bg-color-hover,
-  $border-color-hover,
-  $text-color-active,
-  $bg-color-active,
-  $border-color-active
-) {
-  @include btn-color($text-color, $bg-color, $border-color);
+
+@mixin btn-text-color($text) {
+  color: map-get($text, 'default');
+
   &:hover,
   &:focus {
-    @include btn-color($text-color-hover, $bg-color-hover, $border-color-hover);
+    color: map-get($text, 'hover');
   }
-  &:active {
-    @include btn-color($text-color-active, $bg-color-active, $border-color-active);
-  }
-}
-@mixin btn-disabled($color: $btn-disabled-text, $bg: $btn-disabled-bg, $border: $btn-disabled-border) {
-  &[disabled] {
-    &,
-    &:hover,
-    &:focus,
-    &:active {
-      @include btn-color($color, $bg, $border);
-      text-shadow: none;
-      box-shadow: none;
-    }
-  }
-}
-// 大小
-@mixin btn-size($height, $font-size, $px, $radius) {
-  $diff: math.div($height - $font-size * $btn-line-height, 2);
-  $py: max(math.div(round($diff * 10), 10) - $btn-border-width, 0);
 
+  &:active {
+    color: map-get($text, 'active');
+  }
+}
+
+@mixin btn-border-color($border) {
+  border-color: map-get($border, 'default');
+
+  &:hover,
+  &:focus {
+    border-color: map-get($border, 'hover');
+  }
+
+  &:active {
+    border-color: map-get($border, 'active');
+  }
+}
+
+@mixin btn-bg-color($bg) {
+  background-color: map-get($bg, 'default');
+
+  &:hover,
+  &:focus {
+    background-color: map-get($bg, 'hover');
+  }
+
+  &:active {
+    background-color: map-get($bg, 'active');
+  }
+}
+
+@mixin btn-size($height, $padding, $font) {
   height: $height;
-  padding: $py $px;
-  font-size: $font-size;
+  padding: 0 $padding;
+  font-size: $font;
+}
+
+@mixin btn-shape($radius) {
   border-radius: $radius;
 }
-// 颜色
-@mixin btn-color($text, $bg, $border) {
-  color: $text;
-  border-color: $border;
-  @if ($bg) {
-    background-color: $bg;
-  }
-}
+
+// @mixin btn-disabled(
+//   $color: $btn-disabled-text,
+//   $bg: $btn-disabled-bg,
+//   $border: $btn-disabled-border
+// ) {
+//   &[disabled] {
+//     &,
+//     &:hover,
+//     &:focus,
+//     &:active {
+//       @include btn-color($color, $bg, $border);
+//       text-shadow: none;
+//       box-shadow: none;
+//     }
+//   }
+// }
+// // 大小
 
 @mixin btn-base() {
   position: relative;
   display: inline-block;
-  font-weight: $btn-font-weight;
+  font-weight: $kpi-btn-font-weight;
   white-space: nowrap;
   text-align: center;
   background-image: none;
-  border: $btn-border-width $btn-border-style transparent;
-  box-shadow: $btn-shadow;
+  border: $kpi-btn-border-width solid transparent;
+  // box-shadow: var(--#{$prefix}-shadow--small);
   cursor: pointer;
-  transition: all 0.3s $ease-in-out;
+  transition: $kpi-btn-transition;
   user-select: none;
   touch-action: manipulation;
   > span {

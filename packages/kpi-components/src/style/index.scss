@@ -1,15 +1,17 @@
-// 组件主题
-@import './themes/index';
-// core
-@import './core/index';
-
 // normalize
 @import './preset/normalize.scss';
 
 // 预设样式
-@import './preset/index';
-// 动画
-@import './animations/index';
+@import './preset/preset.scss';
 
-// 新的样式系统
-@import './_new/theme/index.scss';
+// 变量
+@import './variables.scss';
+
+// BEM
+@import './mixins/bem.scss';
+
+// reset-mixin
+@import './mixins/reset.scss';
+
+// 动画
+@import './animations/index.scss';

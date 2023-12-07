@@ -1,0 +1,389 @@
+@use 'sass:color';
+@use 'sass:map';
+@use 'sass:math';
+@import './palette.scss';
+
+// Shadow
+@mixin kpi-shadow($theme) {
+  @if $theme== 'light' {
+    --#{$prefix}-shadow--small: 0 0 5px 0 #{rgba($color-black, 0.02)},
+      0 2px 10px 0 #{rgba($color-black, 0.06)}, 0 0 1px 0 #{rgba($color-black, 0.3)};
+    --#{$prefix}-shadow--middle: 0px 0px 15px 0px #{rgba($color-black, 0.03)},
+      0px 2px 30px 0px #{rgba($color-black, 0.08)}, 0px 0px 1px 0px #{rgba($color-black, 0.3)};
+    --#{$prefix}-shadow--large: 0px 0px 30px 0px #{rgba($color-black, 0.04)},
+      0px 30px 60px 0px #{rgba($color-black, 0.12)}, 0px 0px 1px 0px #{rgba($color-black, 0.3)};
+  } @else {
+    --#{$prefix}-shadow--small: 0px 0px 5px 0px #{rgba($color-black, 0.05)},
+      0px 2px 10px 0px #{rgba($color-black, 0.2)}, inset 0px 0px 1px 0px #{rgba($color-white, 0.15)};
+    --#{$prefix}-shadow--middle: 0px 0px 15px 0px #{rgba($color-black, 0.06)},
+      0px 2px 30px 0px #{rgba($color-black, 0.22)},
+      inset 0px 0px 1px 0px #{rgba($color-white, 0.15)};
+    --#{$prefix}-shadow--large: 0px 0px 30px 0px #{rgba($color-black, 0.07)},
+      0px 30px 60px 0px #{rgba($color-black, 0.26)},
+      inset 0px 0px 1px 0px #{rgba($color-white, 0.15)};
+  }
+}
+
+// Radius
+@mixin kpi-radius() {
+  --#{$prefix}-radius-small: 4px;
+  --#{$prefix}-radius-middle: 6px;
+  --#{$prefix}-radius-large: 8px;
+  --#{$prefix}-radius-full: 50%;
+}
+
+// Border
+@mixin kpi-border() {
+  --#{$prefix}-border: 1px;
+  --#{$prefix}-border-color--split: #{map-get($color-zinc, 50)};
+}
+
+// Units
+@mixin kpi-units() {
+  --#{$prefix}-units--unit-0: 0;
+  --#{$prefix}-units--unit-1: 4px;
+  --#{$prefix}-units--unit-2: 8px;
+  --#{$prefix}-units--unit-3: 12px;
+  --#{$prefix}-units--unit-3_5: 14px;
+  --#{$prefix}-units--unit-4: 16px;
+  --#{$prefix}-units--unit-5: 20px;
+  --#{$prefix}-units--unit-6: 24px;
+  --#{$prefix}-units--unit-7: 28px;
+  --#{$prefix}-units--unit-8: 32px;
+  --#{$prefix}-units--unit-9: 36px;
+  --#{$prefix}-units--unit-10: 40px;
+  --#{$prefix}-units--unit-11: 44px;
+  --#{$prefix}-units--unit-12: 48px;
+  --#{$prefix}-units--unit-13: 52px;
+  --#{$prefix}-units--unit-14: 56px;
+  --#{$prefix}-units--unit-15: 60px;
+  --#{$prefix}-units--unit-16: 64px;
+  --#{$prefix}-units--unit-17: 68px;
+  --#{$prefix}-units--unit-18: 72px;
+  --#{$prefix}-units--unit-20: 80px;
+  --#{$prefix}-units--unit-24: 96px;
+  --#{$prefix}-units--unit-28: 112px;
+  --#{$prefix}-units--unit-32: 128px;
+  --#{$prefix}-units--unit-36: 144px;
+  --#{$prefix}-units--unit-40: 160px;
+  --#{$prefix}-units--unit-44: 176px;
+  --#{$prefix}-units--unit-48: 192px;
+  --#{$prefix}-units--unit-52: 208px;
+  --#{$prefix}-units--unit-56: 224px;
+  --#{$prefix}-units--unit-60: 240px;
+  --#{$prefix}-units--unit-64: 256px;
+  --#{$prefix}-units--unit-72: 288px;
+  --#{$prefix}-units--unit-80: 320px;
+  --#{$prefix}-units--unit-96: 384px;
+  --#{$prefix}-units--unit-xs: 8px;
+  --#{$prefix}-units--unit-sm: 12px;
+  --#{$prefix}-units--unit-md: 16px;
+  --#{$prefix}-units--unit-lg: 22px;
+  --#{$prefix}-units--unit-xl: 36px;
+  --#{$prefix}-units--unit-2xl: 48px;
+  --#{$prefix}-units--unit-3xl: 80px;
+  --#{$prefix}-units--unit-4xl: 120px;
+  --#{$prefix}-units--unit-5xl: 224px;
+  --#{$prefix}-units--unit-6xl: 288px;
+  --#{$prefix}-units--unit-7xl: 384px;
+  --#{$prefix}-units--unit-8xl: 512px;
+  --#{$prefix}-units--unit-9xl: 640px;
+}
+
+// Typography
+@mixin kpi-typography() {
+  // FontFamily
+  --#{$prefix}-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --#{$prefix}-code-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+
+  // Other
+  --#{$prefix}-font-variant: tabular-nums;
+  --#{$prefix}-font-feature-settings: 'tnum';
+
+  // FontSize
+  --#{$prefix}-font-size-small: 12px;
+  --#{$prefix}-font-size-middle: 14px; // default
+  --#{$prefix}-font-size-large: 16px;
+
+  // LineHeight
+  --#{$prefix}-line-height: 1.5715;
+}
+
+@mixin kpi-opacity-hover($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-opacity-hover: 0.8;
+  } @else {
+    --#{$prefix}-opacity-hover: 0.9;
+  }
+}
+
+@mixin kpi-color-background($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-color-background-default: #{$color-white};
+  } @else {
+    --#{$prefix}-color-background-default: #{$color-black};
+  }
+}
+
+@mixin kpi-color-divider($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-color-divider-default: #{rgba(17, 17, 17, 0.15)};
+  } @else {
+    --#{$prefix}-color-divider-default: #{rgba(255, 255, 255, 0.15)};
+  }
+}
+
+@mixin kpi-color-focus($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-color-focus-default: #{map-get($color-blue, 500)};
+  } @else {
+    --#{$prefix}-color-focus-default: #{map-get($color-blue, 500)};
+  }
+}
+
+@mixin kpi-color-overlay($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-color-overlay-default: #{$color-black};
+  } @else {
+    --#{$prefix}-color-overlay-default: #{$color-black};
+  }
+}
+
+@mixin kpi-color-foreground($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-color-foreground-default: #{#11181c};
+    --#{$prefix}-color-foreground-50: #{map-get($color-zinc, 50)};
+    --#{$prefix}-color-foreground-100: #{map-get($color-zinc, 100)};
+    --#{$prefix}-color-foreground-200: #{map-get($color-zinc, 200)};
+    --#{$prefix}-color-foreground-300: #{map-get($color-zinc, 300)};
+    --#{$prefix}-color-foreground-400: #{map-get($color-zinc, 400)};
+    --#{$prefix}-color-foreground-500: #{map-get($color-zinc, 500)};
+    --#{$prefix}-color-foreground-600: #{map-get($color-zinc, 600)};
+    --#{$prefix}-color-foreground-700: #{map-get($color-zinc, 700)};
+    --#{$prefix}-color-foreground-800: #{map-get($color-zinc, 800)};
+    --#{$prefix}-color-foreground-900: #{map-get($color-zinc, 900)};
+  } @else {
+    --#{$prefix}-color-foreground-default: #{#ecedee};
+    --#{$prefix}-color-foreground-50: #{map-get($color-zinc, 900)};
+    --#{$prefix}-color-foreground-100: #{map-get($color-zinc, 800)};
+    --#{$prefix}-color-foreground-200: #{map-get($color-zinc, 700)};
+    --#{$prefix}-color-foreground-300: #{map-get($color-zinc, 600)};
+    --#{$prefix}-color-foreground-400: #{map-get($color-zinc, 500)};
+    --#{$prefix}-color-foreground-500: #{map-get($color-zinc, 400)};
+    --#{$prefix}-color-foreground-600: #{map-get($color-zinc, 300)};
+    --#{$prefix}-color-foreground-700: #{map-get($color-zinc, 200)};
+    --#{$prefix}-color-foreground-800: #{map-get($color-zinc, 100)};
+    --#{$prefix}-color-foreground-900: #{map-get($color-zinc, 50)};
+  }
+}
+
+@mixin kpi-color-content($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-color-content1-default: #{$color-white};
+    --#{$prefix}-color-content1-foreground: #{#11181c};
+
+    --#{$prefix}-color-content2-default: #{map-get($color-zinc, 100)};
+    --#{$prefix}-color-content2-foreground: #{map-get($color-zinc, 800)};
+
+    --#{$prefix}-color-content3-default: #{map-get($color-zinc, 200)};
+    --#{$prefix}-color-content3-foreground: #{map-get($color-zinc, 700)};
+
+    --#{$prefix}-color-content4-default: #{map-get($color-zinc, 300)};
+    --#{$prefix}-color-content4-foreground: #{map-get($color-zinc, 600)};
+  } @else {
+    --#{$prefix}-color-content1-default: #{map-get($color-zinc, 900)};
+    --#{$prefix}-color-content1-foreground: #{map-get($color-zinc, 50)};
+
+    --#{$prefix}-color-content2-default: #{map-get($color-zinc, 800)};
+    --#{$prefix}-color-content2-foreground: #{map-get($color-zinc, 100)};
+
+    --#{$prefix}-color-content3-default: #{map-get($color-zinc, 700)};
+    --#{$prefix}-color-content3-foreground: #{map-get($color-zinc, 200)};
+
+    --#{$prefix}-color-content4-default: #{map-get($color-zinc, 600)};
+    --#{$prefix}-color-content4-foreground: #{map-get($color-zinc, 300)};
+  }
+}
+
+@mixin kpi-color-default($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-color-default-default: #{map-get($color-zinc, 300)};
+    --#{$prefix}-color-default-foreground: #{$color-black};
+    --#{$prefix}-color-default-50: #{map-get($color-zinc, 50)};
+    --#{$prefix}-color-default-100: #{map-get($color-zinc, 100)};
+    --#{$prefix}-color-default-200: #{map-get($color-zinc, 200)};
+    --#{$prefix}-color-default-300: #{map-get($color-zinc, 300)};
+    --#{$prefix}-color-default-400: #{map-get($color-zinc, 400)};
+    --#{$prefix}-color-default-500: #{map-get($color-zinc, 500)};
+    --#{$prefix}-color-default-600: #{map-get($color-zinc, 600)};
+    --#{$prefix}-color-default-700: #{map-get($color-zinc, 700)};
+    --#{$prefix}-color-default-800: #{map-get($color-zinc, 800)};
+    --#{$prefix}-color-default-900: #{map-get($color-zinc, 900)};
+  } @else {
+    --#{$prefix}-color-default-default: #{map-get($color-zinc, 700)};
+    --#{$prefix}-color-default-foreground: #{$color-white};
+    --#{$prefix}-color-default-50: #{map-get($color-zinc, 900)};
+    --#{$prefix}-color-default-50: #{map-get($color-zinc, 900)};
+    --#{$prefix}-color-default-100: #{map-get($color-zinc, 800)};
+    --#{$prefix}-color-default-200: #{map-get($color-zinc, 700)};
+    --#{$prefix}-color-default-300: #{map-get($color-zinc, 600)};
+    --#{$prefix}-color-default-400: #{map-get($color-zinc, 500)};
+    --#{$prefix}-color-default-500: #{map-get($color-zinc, 400)};
+    --#{$prefix}-color-default-600: #{map-get($color-zinc, 300)};
+    --#{$prefix}-color-default-700: #{map-get($color-zinc, 200)};
+    --#{$prefix}-color-default-800: #{map-get($color-zinc, 100)};
+    --#{$prefix}-color-default-900: #{map-get($color-zinc, 50)};
+  }
+}
+
+@mixin kpi-color-primary($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-color-primary-default: #{map-get($color-blue, 500)};
+    --#{$prefix}-color-primary-foreground: #{$color-white};
+    --#{$prefix}-color-primary-50: #{map-get($color-blue, 50)};
+    --#{$prefix}-color-primary-100: #{map-get($color-blue, 100)};
+    --#{$prefix}-color-primary-200: #{map-get($color-blue, 200)};
+    --#{$prefix}-color-primary-300: #{map-get($color-blue, 300)};
+    --#{$prefix}-color-primary-400: #{map-get($color-blue, 400)};
+    --#{$prefix}-color-primary-500: #{map-get($color-blue, 500)};
+    --#{$prefix}-color-primary-600: #{map-get($color-blue, 600)};
+    --#{$prefix}-color-primary-700: #{map-get($color-blue, 700)};
+    --#{$prefix}-color-primary-800: #{map-get($color-blue, 800)};
+    --#{$prefix}-color-primary-900: #{map-get($color-blue, 900)};
+  } @else {
+    --#{$prefix}-color-primary-default: #{map-get($color-blue, 500)};
+    --#{$prefix}-color-primary-foreground: #{$color-white};
+    --#{$prefix}-color-primary-50: #{map-get($color-blue, 900)};
+    --#{$prefix}-color-primary-100: #{map-get($color-blue, 800)};
+    --#{$prefix}-color-primary-200: #{map-get($color-blue, 700)};
+    --#{$prefix}-color-primary-300: #{map-get($color-blue, 600)};
+    --#{$prefix}-color-primary-400: #{map-get($color-blue, 500)};
+    --#{$prefix}-color-primary-500: #{map-get($color-blue, 400)};
+    --#{$prefix}-color-primary-600: #{map-get($color-blue, 300)};
+    --#{$prefix}-color-primary-700: #{map-get($color-blue, 200)};
+    --#{$prefix}-color-primary-800: #{map-get($color-blue, 100)};
+    --#{$prefix}-color-primary-900: #{map-get($color-blue, 50)};
+  }
+}
+
+@mixin kpi-color-secondary($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-color-secondary-default: #{map-get($color-purple, 500)};
+    --#{$prefix}-color-secondary-foreground: #{$color-white};
+    --#{$prefix}-color-secondary-50: #{map-get($color-purple, 50)};
+    --#{$prefix}-color-secondary-100: #{map-get($color-purple, 100)};
+    --#{$prefix}-color-secondary-200: #{map-get($color-purple, 200)};
+    --#{$prefix}-color-secondary-300: #{map-get($color-purple, 300)};
+    --#{$prefix}-color-secondary-400: #{map-get($color-purple, 400)};
+    --#{$prefix}-color-secondary-500: #{map-get($color-purple, 500)};
+    --#{$prefix}-color-secondary-600: #{map-get($color-purple, 600)};
+    --#{$prefix}-color-secondary-700: #{map-get($color-purple, 700)};
+    --#{$prefix}-color-secondary-800: #{map-get($color-purple, 800)};
+    --#{$prefix}-color-secondary-900: #{map-get($color-purple, 900)};
+  } @else {
+    --#{$prefix}-color-secondary-default: #{map-get($color-purple, 400)};
+    --#{$prefix}-color-secondary-foreground: #{$color-white};
+    --#{$prefix}-color-secondary-50: #{map-get($color-purple, 900)};
+    --#{$prefix}-color-secondary-100: #{map-get($color-purple, 800)};
+    --#{$prefix}-color-secondary-200: #{map-get($color-purple, 700)};
+    --#{$prefix}-color-secondary-300: #{map-get($color-purple, 600)};
+    --#{$prefix}-color-secondary-400: #{map-get($color-purple, 500)};
+    --#{$prefix}-color-secondary-500: #{map-get($color-purple, 400)};
+    --#{$prefix}-color-secondary-600: #{map-get($color-purple, 300)};
+    --#{$prefix}-color-secondary-700: #{map-get($color-purple, 200)};
+    --#{$prefix}-color-secondary-800: #{map-get($color-purple, 100)};
+    --#{$prefix}-color-secondary-900: #{map-get($color-purple, 50)};
+  }
+}
+
+@mixin kpi-color-success($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-color-success-default: #{map-get($color-green, 500)};
+    --#{$prefix}-color-success-foreground: #{$color-black};
+    --#{$prefix}-color-success-50: #{map-get($color-green, 50)};
+    --#{$prefix}-color-success-100: #{map-get($color-green, 100)};
+    --#{$prefix}-color-success-200: #{map-get($color-green, 200)};
+    --#{$prefix}-color-success-300: #{map-get($color-green, 300)};
+    --#{$prefix}-color-success-400: #{map-get($color-green, 400)};
+    --#{$prefix}-color-success-500: #{map-get($color-green, 500)};
+    --#{$prefix}-color-success-600: #{map-get($color-green, 600)};
+    --#{$prefix}-color-success-700: #{map-get($color-green, 700)};
+    --#{$prefix}-color-success-800: #{map-get($color-green, 800)};
+    --#{$prefix}-color-success-900: #{map-get($color-green, 900)};
+  } @else {
+    --#{$prefix}-color-success-default: #{map-get($color-green, 500)};
+    --#{$prefix}-color-success-foreground: #{$color-black};
+    --#{$prefix}-color-success-50: #{map-get($color-green, 900)};
+    --#{$prefix}-color-success-100: #{map-get($color-green, 800)};
+    --#{$prefix}-color-success-200: #{map-get($color-green, 700)};
+    --#{$prefix}-color-success-300: #{map-get($color-green, 600)};
+    --#{$prefix}-color-success-400: #{map-get($color-green, 500)};
+    --#{$prefix}-color-success-500: #{map-get($color-green, 400)};
+    --#{$prefix}-color-success-600: #{map-get($color-green, 300)};
+    --#{$prefix}-color-success-700: #{map-get($color-green, 200)};
+    --#{$prefix}-color-success-800: #{map-get($color-green, 100)};
+    --#{$prefix}-color-success-900: #{map-get($color-green, 50)};
+  }
+}
+
+@mixin kpi-color-warning($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-color-warning-default: #{map-get($color-yellow, 500)};
+    --#{$prefix}-color-warning-foreground: #{$color-black};
+    --#{$prefix}-color-warning-50: #{map-get($color-yellow, 50)};
+    --#{$prefix}-color-warning-100: #{map-get($color-yellow, 100)};
+    --#{$prefix}-color-warning-200: #{map-get($color-yellow, 200)};
+    --#{$prefix}-color-warning-300: #{map-get($color-yellow, 300)};
+    --#{$prefix}-color-warning-400: #{map-get($color-yellow, 400)};
+    --#{$prefix}-color-warning-500: #{map-get($color-yellow, 500)};
+    --#{$prefix}-color-warning-600: #{map-get($color-yellow, 600)};
+    --#{$prefix}-color-warning-700: #{map-get($color-yellow, 700)};
+    --#{$prefix}-color-warning-800: #{map-get($color-yellow, 800)};
+    --#{$prefix}-color-warning-900: #{map-get($color-yellow, 900)};
+  } @else {
+    --#{$prefix}-color-warning-default: #{map-get($color-yellow, 500)};
+    --#{$prefix}-color-warning-foreground: #{$color-black};
+    --#{$prefix}-color-warning-50: #{map-get($color-yellow, 900)};
+    --#{$prefix}-color-warning-100: #{map-get($color-yellow, 800)};
+    --#{$prefix}-color-warning-200: #{map-get($color-yellow, 700)};
+    --#{$prefix}-color-warning-300: #{map-get($color-yellow, 600)};
+    --#{$prefix}-color-warning-400: #{map-get($color-yellow, 500)};
+    --#{$prefix}-color-warning-500: #{map-get($color-yellow, 400)};
+    --#{$prefix}-color-warning-600: #{map-get($color-yellow, 300)};
+    --#{$prefix}-color-warning-700: #{map-get($color-yellow, 200)};
+    --#{$prefix}-color-warning-800: #{map-get($color-yellow, 100)};
+    --#{$prefix}-color-warning-900: #{map-get($color-yellow, 50)};
+  }
+}
+
+@mixin kpi-color-danger($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-color-danger-default: #{map-get($color-red, 500)};
+    --#{$prefix}-color-danger-foreground: #{$color-white};
+    --#{$prefix}-color-danger-50: #{map-get($color-red, 50)};
+    --#{$prefix}-color-danger-100: #{map-get($color-red, 100)};
+    --#{$prefix}-color-danger-200: #{map-get($color-red, 200)};
+    --#{$prefix}-color-danger-300: #{map-get($color-red, 300)};
+    --#{$prefix}-color-danger-400: #{map-get($color-red, 400)};
+    --#{$prefix}-color-danger-500: #{map-get($color-red, 500)};
+    --#{$prefix}-color-danger-600: #{map-get($color-red, 600)};
+    --#{$prefix}-color-danger-700: #{map-get($color-red, 700)};
+    --#{$prefix}-color-danger-800: #{map-get($color-red, 800)};
+    --#{$prefix}-color-danger-900: #{map-get($color-red, 900)};
+  } @else {
+    --#{$prefix}-color-danger-default: #{map-get($color-red, 500)};
+    --#{$prefix}-color-danger-foreground: #{$color-white};
+    --#{$prefix}-color-danger-50: #{map-get($color-red, 900)};
+    --#{$prefix}-color-danger-100: #{map-get($color-red, 800)};
+    --#{$prefix}-color-danger-200: #{map-get($color-red, 700)};
+    --#{$prefix}-color-danger-300: #{map-get($color-red, 600)};
+    --#{$prefix}-color-danger-400: #{map-get($color-red, 500)};
+    --#{$prefix}-color-danger-500: #{map-get($color-red, 400)};
+    --#{$prefix}-color-danger-600: #{map-get($color-red, 300)};
+    --#{$prefix}-color-danger-700: #{map-get($color-red, 200)};
+    --#{$prefix}-color-danger-800: #{map-get($color-red, 100)};
+    --#{$prefix}-color-danger-900: #{map-get($color-red, 50)};
+  }
+}

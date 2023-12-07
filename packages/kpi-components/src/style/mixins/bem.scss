@@ -1,7 +1,7 @@
 @use 'sass:selector';
 @use 'sass:string';
 @use 'sass:list';
-@import '../../variables.scss';
+@import '../variables.scss';
 
 $block-separator: '-';
 $element-separator: '__';

@@ -1,0 +1,110 @@
+@import './mode.scss';
+
+// 亮色模式
+:root,
+:root[data-theme='light'] {
+  // Units
+  @include kpi-units();
+
+  // Radius
+  @include kpi-radius();
+
+  // Typography
+  @include kpi-typography();
+
+  // Shadow
+  @include kpi-shadow('light');
+
+  // Opacity
+  @include kpi-opacity-hover('light');
+
+  // Background
+  @include kpi-color-background('light');
+
+  // Divider
+  @include kpi-color-divider('light');
+
+  // Focus
+  @include kpi-color-focus('light');
+
+  // Overlay
+  @include kpi-color-overlay('light');
+
+  // Foreground
+  @include kpi-color-foreground('light');
+
+  // Content
+  @include kpi-color-content('light');
+
+  // Default
+  @include kpi-color-default('light');
+
+  // Primary
+  @include kpi-color-primary('light');
+
+  // Secondary
+  @include kpi-color-secondary('light');
+
+  // Success
+  @include kpi-color-success('light');
+
+  // Warning
+  @include kpi-color-warning('light');
+
+  // Danger
+  @include kpi-color-danger('light');
+}
+
+// 深色模式
+:root[data-theme='dark'] {
+  // Units
+  @include kpi-units();
+
+  // Radius
+  @include kpi-radius();
+
+  // Typography
+  @include kpi-typography();
+
+  // Shadow
+  @include kpi-shadow('dark');
+
+  // Opacity
+  @include kpi-opacity-hover('dark');
+
+  // Background
+  @include kpi-color-background('dark');
+
+  // Divider
+  @include kpi-color-divider('dark');
+
+  // Focus
+  @include kpi-color-focus('dark');
+
+  // Overlay
+  @include kpi-color-overlay('dark');
+
+  // Foreground
+  @include kpi-color-foreground('dark');
+
+  // Content
+  @include kpi-color-content('dark');
+
+  // Default
+  @include kpi-color-default('dark');
+
+  // Primary
+  @include kpi-color-primary('dark');
+
+  // Secondary
+  @include kpi-color-secondary('dark');
+
+  // Success
+  @include kpi-color-success('dark');
+
+  // Warning
+  @include kpi-color-warning('dark');
+
+  // Danger
+  @include kpi-color-danger('dark');
+}

@@ -1,24 +1,30 @@
 import { pickWithFallback } from '@kpi-ui/utils'
 import cls from 'classnames'
-import { SizeContext } from '../../_shared/context'
+import { DisabledContext, SizeContext } from '../../_shared/context'
 
 import type { ButtonProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: ButtonProps) {
-  const { className, type, block, danger, shape, ghost, loading } = props
+  const { className, theme, variant, block, shape, ghost, loading } = props
 
-  const { size } = pickWithFallback(props, { size: SizeContext.useState() }, ['size'])
+  const { size, disabled } = pickWithFallback(
+    props,
+    {
+      size: SizeContext.useState(),
+      disabled: DisabledContext.useState(),
+    },
+    ['size', 'disabled']
+  )
 
   return cls(prefixCls, {
-    [`${prefixCls}--${type}`]: type,
-    [`${prefixCls}--block`]: block,
-    [`${prefixCls}--danger`]: danger,
-    [`${prefixCls}--circle`]: shape === 'circle',
-    [`${prefixCls}--round`]: shape === 'round',
-    [`${prefixCls}--lg`]: size === 'large',
-    [`${prefixCls}--sm`]: size === 'small',
-    [`${prefixCls}--ghost`]: ghost,
+    [`${prefixCls}--theme-${theme}`]: theme,
+    [`${prefixCls}--variant-${variant}`]: variant,
+    [`${prefixCls}--shape-${shape}`]: shape,
+    [`${prefixCls}--size-${size}`]: size,
     [`${prefixCls}--loading`]: loading,
+    [`${prefixCls}--block`]: block,
+    [`${prefixCls}--ghost`]: ghost,
+    [`${prefixCls}--disabled`]: disabled,
     [className!]: className,
   })
 }
