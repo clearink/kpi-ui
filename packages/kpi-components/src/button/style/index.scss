@@ -264,8 +264,8 @@
     @include btn-bg-color(
       (
         default: transparent,
-        hover: var(--#{$prefix}-color-default-200),
-        active: var(--#{$prefix}-color-default-default),
+        hover: var(--#{$prefix}-color-default-100),
+        active: var(--#{$prefix}-color-default-300),
       )
     );
 
@@ -318,10 +318,6 @@
         active: var(--#{$prefix}-color-primary-700),
       )
     );
-
-    > span:hover {
-      text-decoration: underline;
-    }
 
     @include btn-border-color(
       (

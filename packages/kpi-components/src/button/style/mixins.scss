@@ -4,8 +4,7 @@
 @mixin btn-text-color($text) {
   color: map-get($text, 'default');
 
-  &:hover,
-  &:focus {
+  &:hover {
     color: map-get($text, 'hover');
   }
 
@@ -17,8 +16,7 @@
 @mixin btn-border-color($border) {
   border-color: map-get($border, 'default');
 
-  &:hover,
-  &:focus {
+  &:hover {
     border-color: map-get($border, 'hover');
   }
 
@@ -30,8 +28,7 @@
 @mixin btn-bg-color($bg) {
   background-color: map-get($bg, 'default');
 
-  &:hover,
-  &:focus {
+  &:hover {
     background-color: map-get($bg, 'hover');
   }
 
@@ -89,13 +86,11 @@
   }
 
   &,
-  &:active,
-  &:focus {
+  &:active {
     outline: 0;
   }
 
   &:hover,
-  &:focus,
   &:active,
   &:not([disabled]):hover {
     text-decoration: none;
@@ -112,4 +107,13 @@
       pointer-events: none;
     }
   }
+}
+
+@mixin btn-color() {
+}
+
+@mixin btn-color-hover() {
+}
+
+@mixin btn-color-active() {
 }
