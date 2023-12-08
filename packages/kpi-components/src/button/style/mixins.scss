@@ -1,39 +1,39 @@
 @use 'sass:math';
 @import './variable';
 
-@mixin btn-text-color($text) {
-  color: map-get($text, 'default');
+@mixin btn-text-color($default, $hover, $active) {
+  color: $default;
 
   &:hover {
-    color: map-get($text, 'hover');
+    color: $hover;
   }
 
   &:active {
-    color: map-get($text, 'active');
+    color: $active;
   }
 }
 
-@mixin btn-border-color($border) {
-  border-color: map-get($border, 'default');
+@mixin btn-border-color($default, $hover, $active) {
+  border-color: $default;
 
   &:hover {
-    border-color: map-get($border, 'hover');
+    border-color: $hover;
   }
 
   &:active {
-    border-color: map-get($border, 'active');
+    border-color: $active;
   }
 }
 
-@mixin btn-bg-color($bg) {
-  background-color: map-get($bg, 'default');
+@mixin btn-bg-color($default, $hover, $active) {
+  background-color: $default;
 
   &:hover {
-    background-color: map-get($bg, 'hover');
+    background-color: $hover;
   }
 
   &:active {
-    background-color: map-get($bg, 'active');
+    background-color: $active;
   }
 }
 
@@ -63,7 +63,6 @@
 //     }
 //   }
 // }
-// // 大小
 
 @mixin btn-base() {
   position: relative;
@@ -107,13 +106,4 @@
       pointer-events: none;
     }
   }
-}
-
-@mixin btn-color() {
-}
-
-@mixin btn-color-hover() {
-}
-
-@mixin btn-color-active() {
 }

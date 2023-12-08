@@ -14,228 +14,177 @@
 
   // theme
   @include btn-text-color(
-    (
-      default: var(--#{$prefix}-color-foreground-default),
-      hover: var(--#{$prefix}-color-primary-default),
-      active: var(--#{$prefix}-color-primary-600),
-    )
+    var(--#{$prefix}-color-foreground-default),
+    var(--#{$prefix}-color-primary-400),
+    var(--#{$prefix}-color-primary-600)
   );
 
   @include btn-border-color(
-    (
-      default: var(--#{$prefix}-color-foreground-400),
-      hover: var(--#{$prefix}-color-primary-default),
-      active: var(--#{$prefix}-color-primary-600),
-    )
+    var(--#{$prefix}-color-foreground-400),
+    var(--#{$prefix}-color-primary-400),
+    var(--#{$prefix}-color-primary-600)
   );
 
   @include btn-bg-color(
-    (
-      default: transparent,
-      hover: transparent,
-      active: transparent,
-    )
+    var(--#{$prefix}-color-background-default),
+    var(--#{$prefix}-color-background-default),
+    var(--#{$prefix}-color-background-default)
   );
 
   @include m(theme-secondary) {
     @include btn-text-color(
-      (
-        default: var(--#{$prefix}-color-secondary-default),
-        hover: var(--#{$prefix}-color-secondary-400),
-        active: var(--#{$prefix}-color-secondary-600),
-      )
+      var(--#{$prefix}-color-secondary-default),
+      var(--#{$prefix}-color-secondary-300),
+      var(--#{$prefix}-color-secondary-700)
     );
 
     @include btn-border-color(
-      (
-        default: var(--#{$prefix}-color-secondary-default),
-        hover: var(--#{$prefix}-color-secondary-400),
-        active: var(--#{$prefix}-color-secondary-600),
-      )
+      var(--#{$prefix}-color-secondary-default),
+      var(--#{$prefix}-color-secondary-300),
+      var(--#{$prefix}-color-secondary-700)
     );
   }
 
   @include m(theme-success) {
     @include btn-text-color(
-      (
-        default: var(--#{$prefix}-color-success-default),
-        hover: var(--#{$prefix}-color-success-400),
-        active: var(--#{$prefix}-color-success-600),
-      )
+      var(--#{$prefix}-color-success-default),
+      var(--#{$prefix}-color-success-300),
+      var(--#{$prefix}-color-success-700)
     );
 
     @include btn-border-color(
-      (
-        default: var(--#{$prefix}-color-success-default),
-        hover: var(--#{$prefix}-color-success-400),
-        active: var(--#{$prefix}-color-success-600),
-      )
+      var(--#{$prefix}-color-success-default),
+      var(--#{$prefix}-color-success-300),
+      var(--#{$prefix}-color-success-700)
     );
   }
 
   @include m(theme-warning) {
     @include btn-text-color(
-      (
-        default: var(--#{$prefix}-color-warning-default),
-        hover: var(--#{$prefix}-color-warning-400),
-        active: var(--#{$prefix}-color-warning-600),
-      )
+      var(--#{$prefix}-color-warning-default),
+      var(--#{$prefix}-color-warning-300),
+      var(--#{$prefix}-color-warning-700)
     );
 
     @include btn-border-color(
-      (
-        default: var(--#{$prefix}-color-warning-default),
-        hover: var(--#{$prefix}-color-warning-400),
-        active: var(--#{$prefix}-color-warning-600),
-      )
+      var(--#{$prefix}-color-warning-default),
+      var(--#{$prefix}-color-warning-300),
+      var(--#{$prefix}-color-warning-700)
     );
   }
 
   @include m(theme-danger) {
     @include btn-text-color(
-      (
-        default: var(--#{$prefix}-color-danger-default),
-        hover: var(--#{$prefix}-color-danger-400),
-        active: var(--#{$prefix}-color-danger-600),
-      )
+      var(--#{$prefix}-color-danger-default),
+      var(--#{$prefix}-color-danger-300),
+      var(--#{$prefix}-color-danger-700)
     );
 
     @include btn-border-color(
-      (
-        default: var(--#{$prefix}-color-danger-default),
-        hover: var(--#{$prefix}-color-danger-400),
-        active: var(--#{$prefix}-color-danger-600),
-      )
+      var(--#{$prefix}-color-danger-default),
+      var(--#{$prefix}-color-danger-300),
+      var(--#{$prefix}-color-danger-700)
     );
   }
 
   // variant
   @include m(variant-filled) {
+    // theme-default dark 模式下 default 与 400 重复
     @include btn-text-color(
-      (
-        default: var(--#{$prefix}-color-primary-foreground),
-        hover: var(--#{$prefix}-color-primary-foreground),
-        active: var(--#{$prefix}-color-primary-foreground),
-      )
+      var(--#{$prefix}-color-primary-foreground),
+      var(--#{$prefix}-color-primary-foreground),
+      var(--#{$prefix}-color-primary-foreground)
     );
 
     @include btn-border-color(
-      (
-        default: var(--#{$prefix}-color-primary-default),
-        hover: var(--#{$prefix}-color-primary-400),
-        active: var(--#{$prefix}-color-primary-600),
-      )
+      var(--#{$prefix}-color-primary-default),
+      var(--#{$prefix}-color-primary-300),
+      var(--#{$prefix}-color-primary-600)
     );
 
     @include btn-bg-color(
-      (
-        default: var(--#{$prefix}-color-primary-default),
-        hover: var(--#{$prefix}-color-primary-400),
-        active: var(--#{$prefix}-color-primary-600),
-      )
+      var(--#{$prefix}-color-primary-default),
+      var(--#{$prefix}-color-primary-300),
+      var(--#{$prefix}-color-primary-600)
     );
 
     @include m(theme-secondary) {
       @include btn-text-color(
-        (
-          default: var(--#{$prefix}-color-secondary-foreground),
-          hover: var(--#{$prefix}-color-secondary-foreground),
-          active: var(--#{$prefix}-color-secondary-foreground),
-        )
+        var(--#{$prefix}-color-secondary-foreground),
+        var(--#{$prefix}-color-secondary-foreground),
+        var(--#{$prefix}-color-secondary-foreground)
       );
 
       @include btn-border-color(
-        (
-          default: var(--#{$prefix}-color-secondary-default),
-          hover: var(--#{$prefix}-color-secondary-400),
-          active: var(--#{$prefix}-color-secondary-600),
-        )
+        var(--#{$prefix}-color-secondary-default),
+        var(--#{$prefix}-color-secondary-300),
+        var(--#{$prefix}-color-secondary-600)
       );
 
       @include btn-bg-color(
-        (
-          default: var(--#{$prefix}-color-secondary-default),
-          hover: var(--#{$prefix}-color-secondary-400),
-          active: var(--#{$prefix}-color-secondary-600),
-        )
+        var(--#{$prefix}-color-secondary-default),
+        var(--#{$prefix}-color-secondary-300),
+        var(--#{$prefix}-color-secondary-600)
       );
     }
 
     @include m(theme-success) {
       @include btn-text-color(
-        (
-          default: var(--#{$prefix}-color-success-foreground),
-          hover: var(--#{$prefix}-color-success-foreground),
-          active: var(--#{$prefix}-color-success-foreground),
-        )
+        var(--#{$prefix}-color-success-foreground),
+        var(--#{$prefix}-color-success-foreground),
+        var(--#{$prefix}-color-success-foreground)
       );
 
       @include btn-border-color(
-        (
-          default: var(--#{$prefix}-color-success-default),
-          hover: var(--#{$prefix}-color-success-400),
-          active: var(--#{$prefix}-color-success-600),
-        )
+        var(--#{$prefix}-color-success-default),
+        var(--#{$prefix}-color-success-300),
+        var(--#{$prefix}-color-success-600)
       );
 
       @include btn-bg-color(
-        (
-          default: var(--#{$prefix}-color-success-default),
-          hover: var(--#{$prefix}-color-success-400),
-          active: var(--#{$prefix}-color-success-600),
-        )
+        var(--#{$prefix}-color-success-default),
+        var(--#{$prefix}-color-success-300),
+        var(--#{$prefix}-color-success-600)
       );
     }
 
     @include m(theme-warning) {
       @include btn-text-color(
-        (
-          default: var(--#{$prefix}-color-warning-foreground),
-          hover: var(--#{$prefix}-color-warning-foreground),
-          active: var(--#{$prefix}-color-warning-foreground),
-        )
+        var(--#{$prefix}-color-warning-foreground),
+        var(--#{$prefix}-color-warning-foreground),
+        var(--#{$prefix}-color-warning-foreground)
       );
 
       @include btn-border-color(
-        (
-          default: var(--#{$prefix}-color-warning-default),
-          hover: var(--#{$prefix}-color-warning-400),
-          active: var(--#{$prefix}-color-warning-600),
-        )
+        var(--#{$prefix}-color-warning-default),
+        var(--#{$prefix}-color-warning-300),
+        var(--#{$prefix}-color-warning-600)
       );
 
       @include btn-bg-color(
-        (
-          default: var(--#{$prefix}-color-warning-default),
-          hover: var(--#{$prefix}-color-warning-400),
-          active: var(--#{$prefix}-color-warning-600),
-        )
+        var(--#{$prefix}-color-warning-default),
+        var(--#{$prefix}-color-warning-300),
+        var(--#{$prefix}-color-warning-600)
       );
     }
 
     @include m(theme-danger) {
       @include btn-text-color(
-        (
-          default: var(--#{$prefix}-color-danger-foreground),
-          hover: var(--#{$prefix}-color-danger-foreground),
-          active: var(--#{$prefix}-color-danger-foreground),
-        )
+        var(--#{$prefix}-color-danger-foreground),
+        var(--#{$prefix}-color-danger-foreground),
+        var(--#{$prefix}-color-danger-foreground)
       );
 
       @include btn-border-color(
-        (
-          default: var(--#{$prefix}-color-danger-default),
-          hover: var(--#{$prefix}-color-danger-400),
-          active: var(--#{$prefix}-color-danger-600),
-        )
+        var(--#{$prefix}-color-danger-default),
+        var(--#{$prefix}-color-danger-300),
+        var(--#{$prefix}-color-danger-600)
       );
 
       @include btn-bg-color(
-        (
-          default: var(--#{$prefix}-color-danger-default),
-          hover: var(--#{$prefix}-color-danger-400),
-          active: var(--#{$prefix}-color-danger-600),
-        )
+        var(--#{$prefix}-color-danger-default),
+        var(--#{$prefix}-color-danger-300),
+        var(--#{$prefix}-color-danger-600)
       );
     }
   }
@@ -246,132 +195,92 @@
 
   @include m(variant-text) {
     @include btn-text-color(
-      (
-        default: var(--#{$prefix}-color-foreground-default),
-        hover: var(--#{$prefix}-color-foreground-default),
-        active: var(--#{$prefix}-color-foreground-default),
-      )
+      var(--#{$prefix}-color-foreground-default),
+      var(--#{$prefix}-color-foreground-default),
+      var(--#{$prefix}-color-foreground-default)
     );
 
-    @include btn-border-color(
-      (
-        default: transparent,
-        hover: transparent,
-        active: transparent,
-      )
-    );
+    @include btn-border-color(transparent, transparent, transparent);
 
     @include btn-bg-color(
-      (
-        default: transparent,
-        hover: var(--#{$prefix}-color-default-100),
-        active: var(--#{$prefix}-color-default-300),
-      )
+      transparent,
+      var(--#{$prefix}-color-default-100),
+      var(--#{$prefix}-color-default-300)
     );
 
     @include m(theme-secondary) {
       @include btn-text-color(
-        (
-          default: var(--#{$prefix}-color-secondary-default),
-          hover: var(--#{$prefix}-color-secondary-default),
-          active: var(--#{$prefix}-color-secondary-default),
-        )
+        var(--#{$prefix}-color-secondary-default),
+        var(--#{$prefix}-color-secondary-default),
+        var(--#{$prefix}-color-secondary-default)
       );
     }
 
     @include m(theme-success) {
       @include btn-text-color(
-        (
-          default: var(--#{$prefix}-color-success-default),
-          hover: var(--#{$prefix}-color-success-default),
-          active: var(--#{$prefix}-color-success-default),
-        )
+        var(--#{$prefix}-color-success-default),
+        var(--#{$prefix}-color-success-default),
+        var(--#{$prefix}-color-success-default)
       );
     }
 
     @include m(theme-warning) {
       @include btn-text-color(
-        (
-          default: var(--#{$prefix}-color-warning-default),
-          hover: var(--#{$prefix}-color-warning-default),
-          active: var(--#{$prefix}-color-warning-default),
-        )
+        var(--#{$prefix}-color-warning-default),
+        var(--#{$prefix}-color-warning-default),
+        var(--#{$prefix}-color-warning-default)
       );
     }
 
     @include m(theme-danger) {
       @include btn-text-color(
-        (
-          default: var(--#{$prefix}-color-danger-default),
-          hover: var(--#{$prefix}-color-danger-default),
-          active: var(--#{$prefix}-color-danger-default),
-        )
+        var(--#{$prefix}-color-danger-default),
+        var(--#{$prefix}-color-danger-default),
+        var(--#{$prefix}-color-danger-default)
       );
     }
   }
 
   @include m(variant-link) {
     @include btn-text-color(
-      (
-        default: var(--#{$prefix}-color-foreground-default),
-        hover: var(--#{$prefix}-color-primary-300),
-        active: var(--#{$prefix}-color-primary-700),
-      )
+      var(--#{$prefix}-color-primary-default),
+      ar(--#{$prefix}-color-primary-300),
+      var(--#{$prefix}-color-primary-700)
     );
 
-    @include btn-border-color(
-      (
-        default: transparent,
-        hover: transparent,
-        active: transparent,
-      )
-    );
+    @include btn-border-color(transparent, transparent, transparent);
 
-    @include btn-bg-color(
-      (
-        default: transparent,
-        hover: transparent,
-        active: transparent,
-      )
-    );
+    @include btn-bg-color(transparent, transparent, transparent);
 
     @include m(theme-secondary) {
       @include btn-text-color(
-        (
-          default: var(--#{$prefix}-color-secondary-default),
-          hover: var(--#{$prefix}-color-secondary-300),
-          active: var(--#{$prefix}-color-secondary-700),
-        )
+        var(--#{$prefix}-color-secondary-default),
+        var(--#{$prefix}-color-secondary-300),
+        var(--#{$prefix}-color-secondary-700)
       );
     }
 
     @include m(theme-success) {
       @include btn-text-color(
-        (
-          default: var(--#{$prefix}-color-success-default),
-          hover: var(--#{$prefix}-color-success-300),
-          active: var(--#{$prefix}-color-success-700),
-        )
+        var(--#{$prefix}-color-success-default),
+        var(--#{$prefix}-color-success-300),
+        var(--#{$prefix}-color-success-700)
       );
     }
 
     @include m(theme-warning) {
       @include btn-text-color(
-        (
-          default: var(--#{$prefix}-color-warning-default),
-          hover: var(--#{$prefix}-color-warning-300),
-          active: var(--#{$prefix}-color-warning-700),
-        )
+        var(--#{$prefix}-color-warning-default),
+        var(--#{$prefix}-color-warning-300),
+        var(--#{$prefix}-color-warning-700)
       );
     }
 
     @include m(theme-danger) {
       @include btn-text-color(
-        (
-          default: var(--#{$prefix}-color-danger-default),
-          hover: var(--#{$prefix}-color-danger-300),
-          active: var(--#{$prefix}-color-danger-700),
-        )
+        var(--#{$prefix}-color-danger-default),
+        var(--#{$prefix}-color-danger-300),
+        var(--#{$prefix}-color-danger-700)
       );
     }
   }
@@ -380,13 +289,16 @@
 
   @include btn-shape($kpi-btn-shape-default);
 
-  @include m(shape-default) {
-  }
-
   @include m(shape-round) {
+    @include btn-shape($kpi-btn-shape-round);
   }
 
   @include m(shape-circle) {
+    @include btn-shape($kpi-btn-shape-circle);
+
+    min-width: $kpi-btn-size-height-middle;
+    padding: 0;
+    // @include btn-size($kpi-btn-size-height-middle, 0, $kpi-btn-size-font-middle);
   }
 
   // size
@@ -401,12 +313,6 @@
   }
 
   @include m(size-middle) {
-    // @include btn-size(
-    //   $btn-height-base,
-    //   $btn-font-size-base,
-    //   $btn-px-base,
-    //   $btn-border-radius
-    // );
   }
 
   @include m(size-large) {
@@ -422,5 +328,40 @@
   }
 
   @include m(disabled) {
+  }
+}
+
+@include b(wave) {
+  border-radius: inherit;
+  pointer-events: none;
+  --wave-color: var(--#{$prefix}-color-primary-default);
+
+  @include e(item) {
+    position: absolute;
+    inset: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: 0 0 0 0 var(--wave-color);
+    opacity: 0.2;
+    animation: wave-animate 1.5s cubic-bezier(0.08, 0.82, 0.17, 1);
+  }
+
+  $wave-width: 16px;
+  @keyframes wave-animate {
+    0% {
+      box-shadow: 0 0 0 0 var(--wave-color);
+    }
+    30% {
+      box-shadow: 0 0 0 6px var(--wave-color);
+    }
+    100% {
+      box-shadow: 0 0 0 8px var(--wave-color);
+      opacity: 0;
+    }
   }
 }

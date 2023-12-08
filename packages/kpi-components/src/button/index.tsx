@@ -12,7 +12,6 @@ const excluded = [
   'shape',
   'size',
   'loading',
-  'disabled',
   'block',
   'ghost',
   'icon',
