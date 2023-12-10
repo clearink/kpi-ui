@@ -9,7 +9,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
    * @zh 按钮主题
    * @default 'default'
    */
-  theme?: 'default' | 'secondary' | 'success' | 'warning' | 'danger'
+  theme?: 'default' | 'success' | 'warning' | 'danger' | 'info'
 
   /**
    * @zh 变体(在不影响布局属性的情况下所派生出的类型)

@@ -1,36 +1,11 @@
-/* ********************** */
-// Font
-$kpi-btn-font-weight: 400;
-
-// Border
 $kpi-btn-border-width: 1px;
+
+$kpi-btn-padding-default: 5px 16px;
+
+$kpi-btn-border-style: solid;
 
 $kpi-btn-transition: all 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
 
-$kpi-btn-primary-shadow: var(--#{$prefix}-shadow--small);
+$kpi-btn-size-default: var(--#{$prefix}-component-size-default);
 
-/** Size **/
-
-// small
-$kpi-btn-size-height-small: var(--#{$prefix}-units--unit-6);
-// $kpi-btn-size-radius-small: var(--#{$prefix}-radius-small);
-
-// middle
-$kpi-btn-size-height-middle: var(--#{$prefix}-units--unit-8);
-$kpi-btn-size-padding-middle: var(--#{$prefix}-units--unit-4);
-$kpi-btn-size-font-middle: var(--#{$prefix}-font-size-middle);
-// $kpi-btn-size-radius-middle: var(--#{$prefix}-radius-small);
-// large
-$kpi-btn-size-height-large: var(--#{$prefix}-units--unit-10);
-// $kpi-btn-size-radius-large: var(--#{$prefix}-radius-large);
-
-/** shape **/
-
-// default
-$kpi-btn-shape-default: var(--#{$prefix}-radius-small);
-
-// round
-$kpi-btn-shape-round: var(--#{$prefix}-radius-large);
-
-// circle
-$kpi-btn-shape-circle: var(--#{$prefix}-radius-full);
+$kpi-btn-font-weight: var(--#{$prefix}-font-weight-regular);

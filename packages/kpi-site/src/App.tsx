@@ -18,25 +18,28 @@ export default function App() {
         theme change
       </button>
       <div>
-        {(['default', 'secondary', 'success', 'warning', 'danger'] as const).map((theme) => (
+        {(['default', 'success', 'warning', 'danger', 'info'] as const).map((theme) => (
           <div key={theme} style={{ margin: 20 }}>
-            <p>{theme}</p>
+            <p>theme-{theme}</p>
             {(['default', 'filled', 'dashed', 'text', 'link'] as const).map((variant) => (
               <div key={variant} style={{ margin: 20 }}>
-                <p>{theme}</p>
-                {(['default', 'round', 'circle'] as const).map((shape) => (
+                <p>variant-{variant}</p>
+                <Button theme={theme} variant={variant} key={variant}>
+                  {variant}
+                </Button>
+                {/* {(['default', 'round', 'circle'] as const).map((shape) => (
                   <div
                     key={shape}
                     style={{ margin: 20, gap: 10, display: 'inline-flex', flexWrap: 'wrap' }}
                   >
-                    <p>{shape}</p>
+                    <p>shape-{shape}</p>
                     {(['small', 'middle', 'large'] as const).map((size) => (
                       <Button theme={theme} variant={variant} shape={shape} size={size} key={size}>
                         {size}
                       </Button>
                     ))}
                   </div>
-                ))}
+                ))} */}
               </div>
             ))}
           </div>

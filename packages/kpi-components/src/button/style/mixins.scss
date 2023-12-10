@@ -43,37 +43,23 @@
   font-size: $font;
 }
 
-@mixin btn-shape($radius) {
+@mixin btn-radius($radius) {
   border-radius: $radius;
 }
 
-// @mixin btn-disabled(
-//   $color: $btn-disabled-text,
-//   $bg: $btn-disabled-bg,
-//   $border: $btn-disabled-border
-// ) {
-//   &[disabled] {
-//     &,
-//     &:hover,
-//     &:focus,
-//     &:active {
-//       @include btn-color($color, $bg, $border);
-//       text-shadow: none;
-//       box-shadow: none;
-//     }
-//   }
-// }
-
 @mixin btn-base() {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: $kpi-btn-size-default;
   font-weight: $kpi-btn-font-weight;
+  padding: $kpi-btn-padding-default;
   white-space: nowrap;
   text-align: center;
   background-image: none;
-  border: $kpi-btn-border-width solid transparent;
-  // box-shadow: var(--#{$prefix}-shadow--small);
   cursor: pointer;
+  border: $kpi-btn-border-width $kpi-btn-border-style transparent;
   transition: $kpi-btn-transition;
   user-select: none;
   touch-action: manipulation;

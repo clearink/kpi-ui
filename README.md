@@ -8,5 +8,4 @@
 
 ## TODO
 
-1. 完成 Pagination 组件
-2. 放弃 ant design 样式, 仅采用 ant design api. [设计稿地址](https://www.figma.com/file/EMPOindzRJTKt1Gx6Egojq/Yike-design?type=design&node-id=0-278&mode=design)
+1. 放弃 ant design 样式, 采用 element-ui design. [设计稿地址](https://www.figma.com/file/Qq5pscLDZauext9P45XpRG/Element-Plus-Design-System---UI-Kit-(Community)?node-id=90%3A28387&mode=dev)

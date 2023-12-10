@@ -1,114 +1,185 @@
+@use 'sass:color';
+
+/* element design color palette */
+
 $color-white: #ffffff;
 $color-black: #000000;
 
-// Blue
-$color-blue: (
-  50: #e6f1fe,
-  100: #e6f1fe,
-  200: #99c7fb,
-  300: #66aaf9,
-  400: #338ef7,
-  500: #006fee,
-  600: #005bc4,
-  700: #004493,
-  800: #002e62,
-  900: #001731,
+$color-primary: (
+  // light
+  'light-dark-2': #337ecc,
+  'light-default': #409eff,
+  'light-light-3': #79bbff,
+  'light-light-5': #9fceff,
+  'light-light-7': #c6e2ff,
+  'light-light-8': #d9ecff,
+  'light-light-9': #ecf5ff,
+  // dark
+  'dark-dark-2': #66b1ff,
+  'dark-default': #409eff,
+  'dark-light-3': #3375b9,
+  'dark-light-5': #2a598a,
+  'dark-light-7': #213d5b,
+  'dark-light-8': #1d3043,
+  'dark-light-9': #18222c
 );
 
-// Purple
-$color-purple: (
-  50: #f2eafa,
-  100: #e4d4f4,
-  200: #c9a9e9,
-  300: #ae7ede,
-  400: #9353d3,
-  500: #7828c8,
-  600: #6020a0,
-  700: #481878,
-  800: #301050,
-  900: #180828,
+$color-success: (
+  // light
+  'light-dark-2': #529b2e,
+  'light-default': #67c23a,
+  'light-light-3': #95d475,
+  'light-light-5': #b3e09c,
+  'light-light-7': #d1edc4,
+  'light-light-8': #e1f3d8,
+  'light-light-9': #f0f9eb,
+  // dark
+  'dark-dark-2': #85ce61,
+  'dark-default': #67c23a,
+  'dark-light-3': #4e8e2f,
+  'dark-light-5': #3e6b27,
+  'dark-light-7': #2d481f,
+  'dark-light-8': #25371c,
+  'dark-light-9': #1c2518
 );
 
-// Green
-$color-green: (
-  50: #e8faf0,
-  100: #d1f4e0,
-  200: #a2e9c1,
-  300: #74dfa2,
-  400: #45d483,
-  500: #17c964,
-  600: #12a150,
-  700: #0e793c,
-  800: #095028,
-  900: #052814,
+$color-warning: (
+  // light
+  'light-dark-2': #b88230,
+  'light-default': #e6a23c,
+  'light-light-3': #eebe77,
+  'light-light-5': #f2d09d,
+  'light-light-7': #f8e3c5,
+  'light-light-8': #faecd8,
+  'light-light-9': #fcf6ec,
+  // dark
+  'dark-dark-2': #ebb563,
+  'dark-default': #e6a23c,
+  'dark-light-3': #a77730,
+  'dark-light-5': #7d5b28,
+  'dark-light-7': #533f20,
+  'dark-light-8': #3e301c,
+  'dark-light-9': #292218
 );
 
-// Red
-$color-red: (
-  50: #fee7ef,
-  100: #fdd0df,
-  200: #faa0bf,
-  300: #f871a0,
-  400: #f54180,
-  500: #f31260,
-  600: #c20e4d,
-  700: #920b3a,
-  800: #610726,
-  900: #310413,
+$color-error: (
+  // light
+  'light-dark-2': #c45656,
+  'light-default': #f56c6c,
+  'light-light-3': #f89898,
+  'light-light-5': #fab5b5,
+  'light-light-7': #fcd3d3,
+  'light-light-8': #fde2e2,
+  'light-light-9': #fef0f0,
+  // dark
+  'dark-dark-2': #f78989,
+  'dark-default': #f56c6c,
+  'dark-light-3': #b25252,
+  'dark-light-5': #854040,
+  'dark-light-7': #582e2e,
+  'dark-light-8': #412626,
+  'dark-light-9': #2b1d1d
 );
 
-// Pink
-$color-pink: (
-  50: #ffedfa,
-  100: #ffdcf5,
-  200: #ffb8eb,
-  300: #ff95e1,
-  400: #ff71d7,
-  500: #ff4ecd,
-  600: #cc3ea4,
-  700: #992f7b,
-  800: #661f52,
-  900: #331029,
+$color-info: (
+  // light
+  'light-dark-2': #73767a,
+  'light-default': #909399,
+  'light-light-3': #b1b3b8,
+  'light-light-5': #c7c9cc,
+  'light-light-7': #dedfe0,
+  'light-light-8': #e9e9eb,
+  'light-light-9': #f4f4f5,
+  // dark
+  'dark-dark-2': #a6a9ad,
+  'dark-default': #909399,
+  'dark-light-3': #6b6d71,
+  'dark-light-5': #525457,
+  'dark-light-7': #393a3c,
+  'dark-light-8': #2d2d2f,
+  'dark-light-9': #202121
 );
 
-// Yellow
-$color-yellow: (
-  50: #fefce8,
-  100: #fdedd3,
-  200: #fbdba7,
-  300: #f9c97c,
-  400: #f7b750,
-  500: #f5a524,
-  600: #c4841d,
-  700: #936316,
-  800: #62420e,
-  900: #312107,
+$color-text: (
+  // light
+  'light-primary': #303133,
+  'light-regular': #606266,
+  'light-secondary': #909399,
+  'light-placeholder': #a8abb2,
+  'light-disabled': #c0c4cc,
+  // dark
+  'dark-primary': #e5eaf3,
+  'dark-regular': #cfd3dc,
+  'dark-secondary': #a3a6ad,
+  'dark-placeholder': #8d9095,
+  'dark-disabled': #6c6e72
 );
 
-// Cyan
-$color-cyan: (
-  50: #f0fcff,
-  100: #e6fafe,
-  200: #d7f8fe,
-  300: #c3f4fd,
-  400: #a5eefd,
-  500: #7ee7fc,
-  600: #06b7db,
-  700: #09aacd,
-  800: #0e8aaa,
-  900: #053b48,
+$color-fill: (
+  // light
+  'light-darker': #e6e8eb,
+  'light-dark': #ebedf0,
+  'light-default': #f0f2f5,
+  'light-light': #f5f7fa,
+  'light-lighter': #fafafa,
+  'light-extra-light': #fafcff,
+  'light-blank': #ffffff,
+  // dark
+  'dark-darker': #424243,
+  'dark-dark': #39393a,
+  'dark-default': #303030,
+  'dark-light': #262727,
+  'dark-lighter': #1d1d1d,
+  'dark-extra-light': #191919,
+  'dark-blank': #{rgba($color-black, 0)}
 );
 
-// Zinc
-$color-zinc: (
-  50: #fafafa,
-  100: #f4f4f5,
-  200: #e4e4e7,
-  300: #d4d4d8,
-  400: #a1a1aa,
-  500: #71717a,
-  600: #52525b,
-  700: #3f3f46,
-  800: #27272a,
-  900: #18181b,
+$color-border: (
+  // light
+  'light-darker': #cdd0d6,
+  'light-dark': #d4d7de,
+  'light-default': #dcdfe6,
+  'light-light': #e4e7ed,
+  'light-lighter': #ebeef5,
+  'light-extra-light': #f2f5fc,
+  // dark
+  'dark-darker': #636466,
+  'dark-dark': #58585b,
+  'dark-default': #4c4d4f,
+  'dark-light': #414243,
+  'dark-lighter': #363637,
+  'dark-extra-light': #2b2b2c
+);
+
+$color-background: (
+  // light
+  'light-page': #f2f3f5,
+  'light-default': #fff,
+  'light-overlay': #fff,
+  'light-transparent': #{rgba($color-white, 0)},
+  // dark
+  'dark-page': #0a0a0a,
+  'dark-default': #141414,
+  'dark-overlay': #1d1e1f,
+  'dark-transparent': #{rgba($color-black, 0)}
+);
+
+$color-mask: (
+  // light
+  'light-default': #{rgba($color-white, 0.9)},
+  'light-extra-light': #{rgba($color-white, 0.3)},
+  // dark
+  'dark-default': #{rgba($color-black, 0.8)},
+  'dark-extra-light': #{rgba($color-black, 0.3)}
+);
+
+$color-overlay: (
+  // light
+  'light-default': #{rgba($color-black, 0.8)},
+  'light-light': #{rgba($color-black, 0.7)},
+  'light-lighter': #{rgba($color-black, 0.5)},
+  // dark
+  'dark-default': #{rgba($color-black, 0.8)},
+  'dark-light': #{rgba($color-black, 0.7)},
+  'dark-lighter': #{rgba($color-black, 0.5)}
 );

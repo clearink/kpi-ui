@@ -12,179 +12,160 @@
 
   @include btn-base();
 
+  @include btn-radius(var(--#{$prefix}-border-radius-default));
+
   // theme
   @include btn-text-color(
-    var(--#{$prefix}-color-foreground-default),
-    var(--#{$prefix}-color-primary-400),
-    var(--#{$prefix}-color-primary-600)
+    var(--#{$prefix}-color-text-regular),
+    var(--#{$prefix}-color-primary-default),
+    var(--#{$prefix}-color-primary-default)
   );
 
   @include btn-border-color(
-    var(--#{$prefix}-color-foreground-400),
-    var(--#{$prefix}-color-primary-400),
-    var(--#{$prefix}-color-primary-600)
+    var(--#{$prefix}-color-border-default),
+    var(--#{$prefix}-color-primary-light-7),
+    var(--#{$prefix}-color-primary-default)
   );
 
   @include btn-bg-color(
-    var(--#{$prefix}-color-background-default),
-    var(--#{$prefix}-color-background-default),
-    var(--#{$prefix}-color-background-default)
+    var(--#{$prefix}-color-background-transparent),
+    var(--#{$prefix}-color-background-transparent),
+    var(--#{$prefix}-color-background-transparent)
   );
-
-  @include m(theme-secondary) {
-    @include btn-text-color(
-      var(--#{$prefix}-color-secondary-default),
-      var(--#{$prefix}-color-secondary-300),
-      var(--#{$prefix}-color-secondary-700)
-    );
-
-    @include btn-border-color(
-      var(--#{$prefix}-color-secondary-default),
-      var(--#{$prefix}-color-secondary-300),
-      var(--#{$prefix}-color-secondary-700)
-    );
-  }
 
   @include m(theme-success) {
     @include btn-text-color(
       var(--#{$prefix}-color-success-default),
-      var(--#{$prefix}-color-success-300),
-      var(--#{$prefix}-color-success-700)
+      var(--#{$prefix}-color-success-dark-2),
+      var(--#{$prefix}-color-success-dark-2)
     );
 
     @include btn-border-color(
       var(--#{$prefix}-color-success-default),
-      var(--#{$prefix}-color-success-300),
-      var(--#{$prefix}-color-success-700)
+      var(--#{$prefix}-color-success-light-3),
+      var(--#{$prefix}-color-success-dark-2)
     );
   }
 
   @include m(theme-warning) {
     @include btn-text-color(
       var(--#{$prefix}-color-warning-default),
-      var(--#{$prefix}-color-warning-300),
-      var(--#{$prefix}-color-warning-700)
+      var(--#{$prefix}-color-warning-dark-2),
+      var(--#{$prefix}-color-warning-dark-2)
     );
 
     @include btn-border-color(
       var(--#{$prefix}-color-warning-default),
-      var(--#{$prefix}-color-warning-300),
-      var(--#{$prefix}-color-warning-700)
+      var(--#{$prefix}-color-warning-light-3),
+      var(--#{$prefix}-color-warning-dark-2)
     );
   }
 
   @include m(theme-danger) {
     @include btn-text-color(
-      var(--#{$prefix}-color-danger-default),
-      var(--#{$prefix}-color-danger-300),
-      var(--#{$prefix}-color-danger-700)
+      var(--#{$prefix}-color-error-default),
+      var(--#{$prefix}-color-error-dark-2),
+      var(--#{$prefix}-color-error-dark-2)
     );
 
     @include btn-border-color(
-      var(--#{$prefix}-color-danger-default),
-      var(--#{$prefix}-color-danger-300),
-      var(--#{$prefix}-color-danger-700)
+      var(--#{$prefix}-color-error-default),
+      var(--#{$prefix}-color-error-light-3),
+      var(--#{$prefix}-color-error-dark-2)
+    );
+  }
+
+  @include m(theme-info) {
+    @include btn-text-color(
+      var(--#{$prefix}-color-info-default),
+      var(--#{$prefix}-color-info-dark-2),
+      var(--#{$prefix}-color-v-dark-2)
+    );
+
+    @include btn-border-color(
+      var(--#{$prefix}-color-info-default),
+      var(--#{$prefix}-color-info-light-3),
+      var(--#{$prefix}-color-info-dark-2)
     );
   }
 
   // variant
   @include m(variant-filled) {
-    // theme-default dark 模式下 default 与 400 重复
-    @include btn-text-color(
-      var(--#{$prefix}-color-primary-foreground),
-      var(--#{$prefix}-color-primary-foreground),
-      var(--#{$prefix}-color-primary-foreground)
-    );
+    @include btn-text-color($color-white, $color-white, $color-white);
 
     @include btn-border-color(
       var(--#{$prefix}-color-primary-default),
-      var(--#{$prefix}-color-primary-300),
-      var(--#{$prefix}-color-primary-600)
+      var(--#{$prefix}-color-primary-light-3),
+      var(--#{$prefix}-color-primary-dark-2)
     );
 
     @include btn-bg-color(
       var(--#{$prefix}-color-primary-default),
-      var(--#{$prefix}-color-primary-300),
-      var(--#{$prefix}-color-primary-600)
+      var(--#{$prefix}-color-primary-light-3),
+      var(--#{$prefix}-color-primary-dark-2)
     );
 
-    @include m(theme-secondary) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-secondary-foreground),
-        var(--#{$prefix}-color-secondary-foreground),
-        var(--#{$prefix}-color-secondary-foreground)
-      );
-
-      @include btn-border-color(
-        var(--#{$prefix}-color-secondary-default),
-        var(--#{$prefix}-color-secondary-300),
-        var(--#{$prefix}-color-secondary-600)
-      );
-
-      @include btn-bg-color(
-        var(--#{$prefix}-color-secondary-default),
-        var(--#{$prefix}-color-secondary-300),
-        var(--#{$prefix}-color-secondary-600)
-      );
-    }
-
     @include m(theme-success) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-success-foreground),
-        var(--#{$prefix}-color-success-foreground),
-        var(--#{$prefix}-color-success-foreground)
-      );
+      @include btn-text-color($color-white, $color-white, $color-white);
 
       @include btn-border-color(
         var(--#{$prefix}-color-success-default),
-        var(--#{$prefix}-color-success-300),
-        var(--#{$prefix}-color-success-600)
+        var(--#{$prefix}-color-success-light-3),
+        var(--#{$prefix}-color-success-dark-2)
       );
 
       @include btn-bg-color(
         var(--#{$prefix}-color-success-default),
-        var(--#{$prefix}-color-success-300),
-        var(--#{$prefix}-color-success-600)
+        var(--#{$prefix}-color-success-light-3),
+        var(--#{$prefix}-color-success-dark-2)
       );
     }
 
     @include m(theme-warning) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-warning-foreground),
-        var(--#{$prefix}-color-warning-foreground),
-        var(--#{$prefix}-color-warning-foreground)
-      );
+      @include btn-text-color($color-white, $color-white, $color-white);
 
       @include btn-border-color(
         var(--#{$prefix}-color-warning-default),
-        var(--#{$prefix}-color-warning-300),
-        var(--#{$prefix}-color-warning-600)
+        var(--#{$prefix}-color-warning-light-3),
+        var(--#{$prefix}-color-warning-dark-2)
       );
 
       @include btn-bg-color(
         var(--#{$prefix}-color-warning-default),
-        var(--#{$prefix}-color-warning-300),
-        var(--#{$prefix}-color-warning-600)
+        var(--#{$prefix}-color-warning-light-3),
+        var(--#{$prefix}-color-warning-dark-2)
       );
     }
 
     @include m(theme-danger) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-danger-foreground),
-        var(--#{$prefix}-color-danger-foreground),
-        var(--#{$prefix}-color-danger-foreground)
-      );
+      @include btn-text-color($color-white, $color-white, $color-white);
 
       @include btn-border-color(
-        var(--#{$prefix}-color-danger-default),
-        var(--#{$prefix}-color-danger-300),
-        var(--#{$prefix}-color-danger-600)
+        var(--#{$prefix}-color-error-default),
+        var(--#{$prefix}-color-error-light-3),
+        var(--#{$prefix}-color-error-dark-2)
       );
 
       @include btn-bg-color(
-        var(--#{$prefix}-color-danger-default),
-        var(--#{$prefix}-color-danger-300),
-        var(--#{$prefix}-color-danger-600)
+        var(--#{$prefix}-color-error-default),
+        var(--#{$prefix}-color-error-light-3),
+        var(--#{$prefix}-color-error-dark-2)
+      );
+    }
+
+    @include m(theme-info) {
+      @include btn-text-color($color-white, $color-white, $color-white);
+
+      @include btn-border-color(
+        var(--#{$prefix}-color-info-default),
+        var(--#{$prefix}-color-info-light-3),
+        var(--#{$prefix}-color-info-dark-2)
+      );
+
+      @include btn-bg-color(
+        var(--#{$prefix}-color-info-default),
+        var(--#{$prefix}-color-info-light-3),
+        var(--#{$prefix}-color-info-dark-2)
       );
     }
   }
@@ -195,26 +176,18 @@
 
   @include m(variant-text) {
     @include btn-text-color(
-      var(--#{$prefix}-color-foreground-default),
-      var(--#{$prefix}-color-foreground-default),
-      var(--#{$prefix}-color-foreground-default)
+      var(--#{$prefix}-color-text-regular),
+      var(--#{$prefix}-color-primary-default),
+      var(--#{$prefix}-color-primary-default)
     );
 
     @include btn-border-color(transparent, transparent, transparent);
 
     @include btn-bg-color(
       transparent,
-      var(--#{$prefix}-color-default-100),
-      var(--#{$prefix}-color-default-300)
+      var(--#{$prefix}-color-fill-light),
+      var(--#{$prefix}-color-fill-default)
     );
-
-    @include m(theme-secondary) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-secondary-default),
-        var(--#{$prefix}-color-secondary-default),
-        var(--#{$prefix}-color-secondary-default)
-      );
-    }
 
     @include m(theme-success) {
       @include btn-text-color(
@@ -239,6 +212,14 @@
         var(--#{$prefix}-color-danger-default)
       );
     }
+
+    @include m(theme-info) {
+      @include btn-text-color(
+        var(--#{$prefix}-color-info-default),
+        var(--#{$prefix}-color-info-default),
+        var(--#{$prefix}-color-info-default)
+      );
+    }
   }
 
   @include m(variant-link) {
@@ -251,14 +232,6 @@
     @include btn-border-color(transparent, transparent, transparent);
 
     @include btn-bg-color(transparent, transparent, transparent);
-
-    @include m(theme-secondary) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-secondary-default),
-        var(--#{$prefix}-color-secondary-300),
-        var(--#{$prefix}-color-secondary-700)
-      );
-    }
 
     @include m(theme-success) {
       @include btn-text-color(
@@ -283,52 +256,60 @@
         var(--#{$prefix}-color-danger-700)
       );
     }
+
+    @include m(theme-info) {
+      @include btn-text-color(
+        var(--#{$prefix}-color-info-default),
+        var(--#{$prefix}-color-info-300),
+        var(--#{$prefix}-color-info-700)
+      );
+    }
   }
 
-  // shape
+  // // shape
 
-  @include btn-shape($kpi-btn-shape-default);
+  // @include btn-shape($kpi-btn-shape-default);
 
-  @include m(shape-round) {
-    @include btn-shape($kpi-btn-shape-round);
-  }
+  // @include m(shape-round) {
+  //   @include btn-shape($kpi-btn-shape-round);
+  // }
 
-  @include m(shape-circle) {
-    @include btn-shape($kpi-btn-shape-circle);
+  // @include m(shape-circle) {
+  //   @include btn-shape($kpi-btn-shape-circle);
 
-    min-width: $kpi-btn-size-height-middle;
-    padding: 0;
-    // @include btn-size($kpi-btn-size-height-middle, 0, $kpi-btn-size-font-middle);
-  }
+  //   min-width: $kpi-btn-size-height-middle;
+  //   padding: 0;
+  //   // @include btn-size($kpi-btn-size-height-middle, 0, $kpi-btn-size-font-middle);
+  // }
 
-  // size
+  // // size
 
-  @include btn-size(
-    $kpi-btn-size-height-middle,
-    $kpi-btn-size-padding-middle,
-    $kpi-btn-size-font-middle
-  );
+  // @include btn-size(
+  //   $kpi-btn-size-height-middle,
+  //   $kpi-btn-size-padding-middle,
+  //   $kpi-btn-size-font-middle
+  // );
 
-  @include m(size-small) {
-  }
+  // @include m(size-small) {
+  // }
 
-  @include m(size-middle) {
-  }
+  // @include m(size-middle) {
+  // }
 
-  @include m(size-large) {
-  }
+  // @include m(size-large) {
+  // }
 
-  @include m(loading) {
-  }
+  // @include m(loading) {
+  // }
 
-  @include m(block) {
-  }
+  // @include m(block) {
+  // }
 
-  @include m(ghost) {
-  }
+  // @include m(ghost) {
+  // }
 
-  @include m(disabled) {
-  }
+  // @include m(disabled) {
+  // }
 }
 
 @include b(wave) {
