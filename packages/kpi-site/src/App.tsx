@@ -1,50 +1,55 @@
-import { Button } from '@kpi-ui/components'
-
+import { Button, Form, Space } from '@kpi-ui/components'
+import { useState } from 'react'
+import kv from '@kpi-ui/validator'
 import '@kpi-ui/components/src/style'
-import './style.scss'
+
+function Input(props: any) {
+  // console.log(props)
+  return <input {...props} value={props.value || ''} style={{ height: 32 }} />
+}
 
 export default function App() {
+  const [noStyle, setNoStyle] = useState(false)
+  const [noRule, setNoRule] = useState(false)
+  const [inputNumber, setInputNumber] = useState(3000)
   return (
-    <div className="window">
-      <button
-        onClick={() => {
-          const root = document.documentElement || document.querySelector('html')
-          const body = document.body
-          const old = root.dataset.theme || 'light'
-          root.dataset.theme = old === 'light' ? 'dark' : 'light'
-          body.style.backgroundColor = old === 'light' ? '#000' : '#fff'
+    <div>
+      <p style={{ fontSize: 20, textAlign: 'center', marginBottom: 20 }}>
+        测试 {inputNumber || 0} 个输入框场景下 Form 组件的性能
+      </p>
+      <Space style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+        <Button onClick={() => setNoStyle((p) => !p)}>NoStyle: {noStyle ? 'true' : 'false'}</Button>
+        <Button onClick={() => setNoRule((p) => !p)}>NoRule: {noRule ? 'true' : 'false'}</Button>
+        <span>input number</span>
+        <Input
+          value={inputNumber}
+          onChange={(e: any) => setInputNumber(parseInt(e.target.value, 10))}
+        />
+      </Space>
+      <Form
+        tag="div"
+        style={{
+          width: 600,
+          margin: '0 auto',
         }}
       >
-        theme change
-      </button>
-      <div>
-        {(['default', 'success', 'warning', 'danger', 'info'] as const).map((theme) => (
-          <div key={theme} style={{ margin: 20 }}>
-            <p>theme-{theme}</p>
-            {(['default', 'filled', 'dashed', 'text', 'link'] as const).map((variant) => (
-              <div key={variant} style={{ margin: 20 }}>
-                <p>variant-{variant}</p>
-                <Button theme={theme} variant={variant} key={variant}>
-                  {variant}
-                </Button>
-                {/* {(['default', 'round', 'circle'] as const).map((shape) => (
-                  <div
-                    key={shape}
-                    style={{ margin: 20, gap: 10, display: 'inline-flex', flexWrap: 'wrap' }}
-                  >
-                    <p>shape-{shape}</p>
-                    {(['small', 'middle', 'large'] as const).map((size) => (
-                      <Button theme={theme} variant={variant} shape={shape} size={size} key={size}>
-                        {size}
-                      </Button>
-                    ))}
-                  </div>
-                ))} */}
-              </div>
-            ))}
-          </div>
+        {Array.from({ length: inputNumber }, (_, i) => (
+          <Form.Item
+            key={i}
+            label={`username_${i}`}
+            noStyle={noStyle}
+            name={['username', i]}
+            rule={kv
+              .string()
+              // .min(3, <div style={{ height: 40 }}>12312123123</div>)
+              .min(3)
+              .max(6)
+              .required()}
+          >
+            <Input placeholder={`username-${i}`} />
+          </Form.Item>
         ))}
-      </div>
+      </Form>
     </div>
   )
 }

@@ -1,4 +1,5 @@
-@import '../../style/themes/index.scss';
+@use 'sass:math';
+
 $name: #{$prefix}-col;
 
 @mixin generate-grid($size: null, $count: 24) {

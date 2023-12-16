@@ -2,6 +2,11 @@
 @use 'sass:map';
 @import './palette.scss';
 
+@mixin kpi-color-semantic() {
+  --#{$prefix}-color-white: #fff;
+  --#{$prefix}-color-black: #000;
+}
+
 @mixin kpi-color-primary($theme) {
   --#{$prefix}-color-primary-dark-2: #{map-get($color-primary, #{$theme}-dark-2)};
   --#{$prefix}-color-primary-default: #{map-get($color-primary, #{$theme}-default)};
@@ -32,14 +37,14 @@
   --#{$prefix}-color-warning-light-9: #{map-get($color-warning, #{$theme}-light-9)};
 }
 
-@mixin kpi-color-error($theme) {
-  --#{$prefix}-color-error-dark-2: #{map-get($color-error, #{$theme}-dark-2)};
-  --#{$prefix}-color-error-default: #{map-get($color-error, #{$theme}-default)};
-  --#{$prefix}-color-error-light-3: #{map-get($color-error, #{$theme}-light-3)};
-  --#{$prefix}-color-error-light-5: #{map-get($color-error, #{$theme}-light-5)};
-  --#{$prefix}-color-error-light-7: #{map-get($color-error, #{$theme}-light-7)};
-  --#{$prefix}-color-error-light-8: #{map-get($color-error, #{$theme}-light-8)};
-  --#{$prefix}-color-error-light-9: #{map-get($color-error, #{$theme}-light-9)};
+@mixin kpi-color-danger($theme) {
+  --#{$prefix}-color-danger-dark-2: #{map-get($color-danger, #{$theme}-dark-2)};
+  --#{$prefix}-color-danger-default: #{map-get($color-danger, #{$theme}-default)};
+  --#{$prefix}-color-danger-light-3: #{map-get($color-danger, #{$theme}-light-3)};
+  --#{$prefix}-color-danger-light-5: #{map-get($color-danger, #{$theme}-light-5)};
+  --#{$prefix}-color-danger-light-7: #{map-get($color-danger, #{$theme}-light-7)};
+  --#{$prefix}-color-danger-light-8: #{map-get($color-danger, #{$theme}-light-8)};
+  --#{$prefix}-color-danger-light-9: #{map-get($color-danger, #{$theme}-light-9)};
 }
 
 @mixin kpi-color-info($theme) {

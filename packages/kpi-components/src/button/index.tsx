@@ -45,7 +45,7 @@ function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
 }
 
 export default withDefaults(forwardRef(Button), {
-  theme: 'default',
+  theme: 'primary',
   variant: 'default',
   type: 'button',
 })

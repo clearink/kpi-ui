@@ -1,0 +1,7 @@
+@mixin pseudo($type...) {
+  @each $selector in $type {
+    &#{$selector} {
+      @content;
+    }
+  }
+}

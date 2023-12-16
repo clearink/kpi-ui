@@ -7,7 +7,18 @@ import useSpaceGutter from './hooks/use_space_gutter'
 
 import type { SpaceProps } from './props'
 
-const excluded = ['children', 'size', 'style', 'direction', 'wrap', 'split'] as const
+const excluded = [
+  'align',
+  'direction',
+  'size',
+  'split',
+  'wrap',
+  'children',
+  'style',
+  'split',
+  'wrap',
+  'className',
+] as const
 
 function Space(props: SpaceProps) {
   const { children: _children, style, split } = props
@@ -38,7 +49,7 @@ function Space(props: SpaceProps) {
   const attrs = withoutProperties(props, excluded)
 
   return (
-    <div className={classes} style={{ ...gap, ...style }} {...attrs}>
+    <div {...attrs} className={classes} style={{ ...gap, ...style }}>
       {children}
     </div>
   )

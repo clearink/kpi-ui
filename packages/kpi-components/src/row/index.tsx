@@ -31,7 +31,7 @@ function Row(props: RowProps, ref: ForwardedRef<HTMLDivElement>) {
   const attrs = withoutProperties(props, excluded)
 
   return (
-    <div className={classes} ref={ref} {...attrs} style={{ ...gap, ...style }}>
+    <div {...attrs} className={classes} ref={ref} style={{ ...gap, ...style }}>
       <RowContext.Provider value={hGutter}>{children}</RowContext.Provider>
     </div>
   )

@@ -12,7 +12,7 @@ export default function useFormatClass(prefixCls: string, props: SpaceProps) {
   }, [_align, direction])
 
   return cls(prefixCls, {
-    [`${prefixCls}--${direction}`]: direction,
+    [`${prefixCls}--${direction}`]: direction && direction !== 'horizontal',
     [`${prefixCls}--align-${align}`]: align,
     [`${prefixCls}--wrap`]: wrap,
     [className!]: className,

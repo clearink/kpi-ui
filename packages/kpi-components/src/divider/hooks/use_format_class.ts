@@ -3,16 +3,16 @@ import { isUndefined } from '@kpi-ui/utils'
 import { DividerProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: DividerProps) {
-  const { type, dashed, orientation, children, plain, className, orientationMargin } = props
+  const { direction, dashed, align, children, plain, className, margin } = props
 
   return cls(prefixCls, {
-    [`${prefixCls}--${type}`]: type,
+    [`${prefixCls}--${direction}`]: direction,
     [`${prefixCls}--dashed`]: dashed,
     [`${prefixCls}--plain`]: plain,
     [`${prefixCls}--with-text`]: children,
-    [`${prefixCls}--text-${orientation}`]: orientation,
+    [`${prefixCls}--align-${align}`]: align,
     [`${prefixCls}--custom-margin`]:
-      (orientation === 'left' || orientation === 'right') && !isUndefined(orientationMargin),
+      (align === 'left' || align === 'right') && !isUndefined(margin),
     [className!]: className,
   })
 }

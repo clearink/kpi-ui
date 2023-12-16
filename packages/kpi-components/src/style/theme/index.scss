@@ -1,16 +1,19 @@
 @import './mode.scss';
-@import './palette.scss';
 @import './typography.scss';
 
-// 亮色模式
-:root,
-:root[data-theme='light'] {
+:root {
+  @include kpi-color-semantic();
+
   @include kpi-typography();
 
   @include kpi-radius();
 
   @include kpi-component-size();
+}
 
+// 亮色模式
+:root,
+:root[data-theme='light'] {
   @include kpi-shadow('light');
 
   @include kpi-color-primary('light');
@@ -19,7 +22,7 @@
 
   @include kpi-color-warning('light');
 
-  @include kpi-color-error('light');
+  @include kpi-color-danger('light');
 
   @include kpi-color-info('light');
 
@@ -38,12 +41,6 @@
 
 // 深色模式
 :root[data-theme='dark'] {
-  @include kpi-typography();
-
-  @include kpi-radius();
-
-  @include kpi-component-size();
-
   @include kpi-shadow('dark');
 
   @include kpi-color-primary('dark');
@@ -52,7 +49,7 @@
 
   @include kpi-color-warning('dark');
 
-  @include kpi-color-error('dark');
+  @include kpi-color-danger('dark');
 
   @include kpi-color-info('dark');
 

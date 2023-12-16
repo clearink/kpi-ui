@@ -1,11 +1,9 @@
-@use 'sass:math';
-
-// 优化打包性能引入除了 preset 的内容
+// 优化打包性能引入除了 preset 的内容, 顺序不可该变
 @import '../../style/variables.scss'; // 引入 变量
-@import '../../style/mixins/bem.scss'; // 引入 BEM reset
-@import '../../style/mixins/reset.scss'; // 引入 reset
+@import '../../style/mixins/index.scss'; // 引入 BEM reset
 
-@import './mixins';
+@import './tokens.scss';
+@import './mixins.scss';
 
 @include b(button) {
   @include reset-component();
@@ -14,159 +12,182 @@
 
   @include btn-radius(var(--#{$prefix}-border-radius-default));
 
-  // theme
-  @include btn-text-color(
-    var(--#{$prefix}-color-text-regular),
-    var(--#{$prefix}-color-primary-default),
-    var(--#{$prefix}-color-primary-default)
-  );
+  color: var(--#{$prefix}-color-text-regular);
+  border-color: var(--#{$prefix}-color-border-default);
+  background-color: var(--#{$prefix}-color-background-default);
 
-  @include btn-border-color(
-    var(--#{$prefix}-color-border-default),
-    var(--#{$prefix}-color-primary-light-7),
-    var(--#{$prefix}-color-primary-default)
-  );
+  @include pseudo(':hover') {
+    color: var(--#{$prefix}-color-primary-default);
+    border-color: var(--#{$prefix}-color-primary-light-7);
+    background-color: var(--#{$prefix}-color-background-default);
+  }
 
-  @include btn-bg-color(
-    var(--#{$prefix}-color-background-transparent),
-    var(--#{$prefix}-color-background-transparent),
-    var(--#{$prefix}-color-background-transparent)
-  );
+  @include pseudo(':active') {
+    color: var(--#{$prefix}-color-primary-default);
+    border-color: var(--#{$prefix}-color-primary-default);
+    background-color: var(--#{$prefix}-color-background-default);
+  }
+
+  @include pseudo(':focus-visible') {
+    outline-color: var(--#{$prefix}-color-primary-light-3);
+    outline-offset: $kpi-btn-outline-offset;
+  }
 
   @include m(theme-success) {
-    @include btn-text-color(
-      var(--#{$prefix}-color-success-default),
-      var(--#{$prefix}-color-success-dark-2),
-      var(--#{$prefix}-color-success-dark-2)
-    );
+    color: var(--#{$prefix}-color-success-default);
+    border-color: var(--#{$prefix}-color-success-default);
 
-    @include btn-border-color(
-      var(--#{$prefix}-color-success-default),
-      var(--#{$prefix}-color-success-light-3),
-      var(--#{$prefix}-color-success-dark-2)
-    );
+    @include pseudo(':hover') {
+      color: var(--#{$prefix}-color-success-dark-2);
+      border-color: var(--#{$prefix}-color-success-light-3);
+    }
+
+    @include pseudo(':active') {
+      color: var(--#{$prefix}-color-success-dark-2);
+      border-color: var(--#{$prefix}-color-success-dark-2);
+    }
+
+    @include pseudo(':focus-visible') {
+      outline-color: var(--#{$prefix}-color-success-light-3);
+      outline-offset: $kpi-btn-outline-offset;
+    }
   }
 
   @include m(theme-warning) {
-    @include btn-text-color(
-      var(--#{$prefix}-color-warning-default),
-      var(--#{$prefix}-color-warning-dark-2),
-      var(--#{$prefix}-color-warning-dark-2)
-    );
+    color: var(--#{$prefix}-color-warning-default);
+    border-color: var(--#{$prefix}-color-warning-default);
 
-    @include btn-border-color(
-      var(--#{$prefix}-color-warning-default),
-      var(--#{$prefix}-color-warning-light-3),
-      var(--#{$prefix}-color-warning-dark-2)
-    );
+    @include pseudo(':hover') {
+      color: var(--#{$prefix}-color-warning-dark-2);
+      border-color: var(--#{$prefix}-color-warning-light-3);
+    }
+
+    @include pseudo(':active') {
+      color: var(--#{$prefix}-color-warning-dark-2);
+      border-color: var(--#{$prefix}-color-warning-dark-2);
+    }
+
+    @include pseudo(':focus-visible') {
+      outline-color: var(--#{$prefix}-color-warning-light-3);
+      outline-offset: $kpi-btn-outline-offset;
+    }
   }
 
   @include m(theme-danger) {
-    @include btn-text-color(
-      var(--#{$prefix}-color-error-default),
-      var(--#{$prefix}-color-error-dark-2),
-      var(--#{$prefix}-color-error-dark-2)
-    );
+    color: var(--#{$prefix}-color-danger-default);
+    border-color: var(--#{$prefix}-color-danger-default);
 
-    @include btn-border-color(
-      var(--#{$prefix}-color-error-default),
-      var(--#{$prefix}-color-error-light-3),
-      var(--#{$prefix}-color-error-dark-2)
-    );
+    @include pseudo(':hover') {
+      color: var(--#{$prefix}-color-danger-dark-2);
+      border-color: var(--#{$prefix}-color-danger-light-3);
+    }
+
+    @include pseudo(':active') {
+      color: var(--#{$prefix}-color-danger-dark-2);
+      border-color: var(--#{$prefix}-color-danger-dark-2);
+    }
+
+    @include pseudo(':focus-visible') {
+      outline-color: var(--#{$prefix}-color-danger-light-3);
+      outline-offset: $kpi-btn-outline-offset;
+    }
   }
 
   @include m(theme-info) {
-    @include btn-text-color(
-      var(--#{$prefix}-color-info-default),
-      var(--#{$prefix}-color-info-dark-2),
-      var(--#{$prefix}-color-v-dark-2)
-    );
+    color: var(--#{$prefix}-color-info-default);
+    border-color: var(--#{$prefix}-color-info-default);
 
-    @include btn-border-color(
-      var(--#{$prefix}-color-info-default),
-      var(--#{$prefix}-color-info-light-3),
-      var(--#{$prefix}-color-info-dark-2)
-    );
+    @include pseudo(':hover') {
+      color: var(--#{$prefix}-color-info-dark-2);
+      border-color: var(--#{$prefix}-color-info-light-3);
+    }
+
+    @include pseudo(':active') {
+      color: var(--#{$prefix}-color-info-dark-2);
+      border-color: var(--#{$prefix}-color-info-dark-2);
+    }
+
+    @include pseudo(':focus-visible') {
+      outline-color: var(--#{$prefix}-color-info-light-3);
+      outline-offset: $kpi-btn-outline-offset;
+    }
   }
 
   // variant
   @include m(variant-filled) {
-    @include btn-text-color($color-white, $color-white, $color-white);
+    color: $color-white;
+    border-color: var(--#{$prefix}-color-primary-default);
+    background-color: var(--#{$prefix}-color-primary-default);
 
-    @include btn-border-color(
-      var(--#{$prefix}-color-primary-default),
-      var(--#{$prefix}-color-primary-light-3),
-      var(--#{$prefix}-color-primary-dark-2)
-    );
-
-    @include btn-bg-color(
-      var(--#{$prefix}-color-primary-default),
-      var(--#{$prefix}-color-primary-light-3),
-      var(--#{$prefix}-color-primary-dark-2)
-    );
+    @include pseudo(':hover') {
+      color: $color-white;
+      border-color: var(--#{$prefix}-color-primary-light-3);
+      background-color: var(--#{$prefix}-color-primary-light-3);
+    }
+    @include pseudo(':active') {
+      color: $color-white;
+      border-color: var(--#{$prefix}-color-primary-dark-2);
+      background-color: var(--#{$prefix}-color-primary-dark-2);
+    }
 
     @include m(theme-success) {
-      @include btn-text-color($color-white, $color-white, $color-white);
+      border-color: var(--#{$prefix}-color-success-default);
+      background-color: var(--#{$prefix}-color-success-default);
 
-      @include btn-border-color(
-        var(--#{$prefix}-color-success-default),
-        var(--#{$prefix}-color-success-light-3),
-        var(--#{$prefix}-color-success-dark-2)
-      );
+      @include pseudo(':hover') {
+        border-color: var(--#{$prefix}-color-success-light-3);
+        background-color: var(--#{$prefix}-color-success-light-3);
+      }
 
-      @include btn-bg-color(
-        var(--#{$prefix}-color-success-default),
-        var(--#{$prefix}-color-success-light-3),
-        var(--#{$prefix}-color-success-dark-2)
-      );
+      @include pseudo(':active') {
+        border-color: var(--#{$prefix}-color-success-dark-2);
+        background-color: var(--#{$prefix}-color-success-dark-2);
+      }
     }
 
     @include m(theme-warning) {
-      @include btn-text-color($color-white, $color-white, $color-white);
+      border-color: var(--#{$prefix}-color-warning-default);
+      background-color: var(--#{$prefix}-color-warning-default);
 
-      @include btn-border-color(
-        var(--#{$prefix}-color-warning-default),
-        var(--#{$prefix}-color-warning-light-3),
-        var(--#{$prefix}-color-warning-dark-2)
-      );
+      @include pseudo(':hover') {
+        border-color: var(--#{$prefix}-color-warning-light-3);
+        background-color: var(--#{$prefix}-color-warning-light-3);
+      }
 
-      @include btn-bg-color(
-        var(--#{$prefix}-color-warning-default),
-        var(--#{$prefix}-color-warning-light-3),
-        var(--#{$prefix}-color-warning-dark-2)
-      );
+      @include pseudo(':active') {
+        border-color: var(--#{$prefix}-color-warning-dark-2);
+        background-color: var(--#{$prefix}-color-warning-dark-2);
+      }
     }
 
     @include m(theme-danger) {
-      @include btn-text-color($color-white, $color-white, $color-white);
+      border-color: var(--#{$prefix}-color-danger-default);
+      background-color: var(--#{$prefix}-color-danger-default);
 
-      @include btn-border-color(
-        var(--#{$prefix}-color-error-default),
-        var(--#{$prefix}-color-error-light-3),
-        var(--#{$prefix}-color-error-dark-2)
-      );
+      @include pseudo(':hover') {
+        border-color: var(--#{$prefix}-color-danger-light-3);
+        background-color: var(--#{$prefix}-color-danger-light-3);
+      }
 
-      @include btn-bg-color(
-        var(--#{$prefix}-color-error-default),
-        var(--#{$prefix}-color-error-light-3),
-        var(--#{$prefix}-color-error-dark-2)
-      );
+      @include pseudo(':active') {
+        border-color: var(--#{$prefix}-color-danger-dark-2);
+        background-color: var(--#{$prefix}-color-danger-dark-2);
+      }
     }
 
     @include m(theme-info) {
-      @include btn-text-color($color-white, $color-white, $color-white);
+      border-color: var(--#{$prefix}-color-info-default);
+      background-color: var(--#{$prefix}-color-info-default);
 
-      @include btn-border-color(
-        var(--#{$prefix}-color-info-default),
-        var(--#{$prefix}-color-info-light-3),
-        var(--#{$prefix}-color-info-dark-2)
-      );
+      @include pseudo(':hover') {
+        border-color: var(--#{$prefix}-color-info-light-3);
+        background-color: var(--#{$prefix}-color-info-light-3);
+      }
 
-      @include btn-bg-color(
-        var(--#{$prefix}-color-info-default),
-        var(--#{$prefix}-color-info-light-3),
-        var(--#{$prefix}-color-info-dark-2)
-      );
+      @include pseudo(':active') {
+        border-color: var(--#{$prefix}-color-info-dark-2);
+        background-color: var(--#{$prefix}-color-info-dark-2);
+      }
     }
   }
 
@@ -175,141 +196,161 @@
   }
 
   @include m(variant-text) {
-    @include btn-text-color(
-      var(--#{$prefix}-color-text-regular),
-      var(--#{$prefix}-color-primary-default),
-      var(--#{$prefix}-color-primary-default)
-    );
+    color: var(--#{$prefix}-color-text-regular);
+    border-color: transparent;
+    background-color: transparent;
 
-    @include btn-border-color(transparent, transparent, transparent);
+    @include pseudo(':hover') {
+      color: var(--#{$prefix}-color-text-regular);
+      border-color: transparent;
+      background-color: var(--#{$prefix}-color-fill-light);
+    }
 
-    @include btn-bg-color(
-      transparent,
-      var(--#{$prefix}-color-fill-light),
-      var(--#{$prefix}-color-fill-default)
-    );
+    @include pseudo(':active') {
+      color: var(--#{$prefix}-color-text-regular);
+      border-color: transparent;
+      background-color: var(--#{$prefix}-color-fill-default);
+    }
 
     @include m(theme-success) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-success-default),
-        var(--#{$prefix}-color-success-default),
-        var(--#{$prefix}-color-success-default)
-      );
+      color: var(--#{$prefix}-color-success-default);
     }
 
     @include m(theme-warning) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-warning-default),
-        var(--#{$prefix}-color-warning-default),
-        var(--#{$prefix}-color-warning-default)
-      );
+      color: var(--#{$prefix}-color-warning-default);
     }
 
     @include m(theme-danger) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-danger-default),
-        var(--#{$prefix}-color-danger-default),
-        var(--#{$prefix}-color-danger-default)
-      );
+      color: var(--#{$prefix}-color-danger-default);
     }
 
     @include m(theme-info) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-info-default),
-        var(--#{$prefix}-color-info-default),
-        var(--#{$prefix}-color-info-default)
-      );
+      color: var(--#{$prefix}-color-info-default);
     }
   }
 
   @include m(variant-link) {
-    @include btn-text-color(
-      var(--#{$prefix}-color-primary-default),
-      ar(--#{$prefix}-color-primary-300),
-      var(--#{$prefix}-color-primary-700)
-    );
+    color: var(--#{$prefix}-color-primary-default);
+    border-color: transparent;
+    background-color: transparent;
 
-    @include btn-border-color(transparent, transparent, transparent);
+    @include pseudo(':hover') {
+      color: var(--#{$prefix}-color-primary-light-3);
+      border-color: transparent;
+      background-color: transparent;
+    }
 
-    @include btn-bg-color(transparent, transparent, transparent);
+    @include pseudo(':active') {
+      color: var(--#{$prefix}-color-primary-dark-2);
+      border-color: transparent;
+      background-color: transparent;
+    }
 
     @include m(theme-success) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-success-default),
-        var(--#{$prefix}-color-success-300),
-        var(--#{$prefix}-color-success-700)
-      );
+      color: var(--#{$prefix}-color-success-default);
+
+      @include pseudo(':hover') {
+        color: var(--#{$prefix}-color-success-light-3);
+      }
+
+      @include pseudo(':active') {
+        color: var(--#{$prefix}-color-success-dark-2);
+      }
     }
 
     @include m(theme-warning) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-warning-default),
-        var(--#{$prefix}-color-warning-300),
-        var(--#{$prefix}-color-warning-700)
-      );
+      color: var(--#{$prefix}-color-warning-default);
+
+      @include pseudo(':hover') {
+        color: var(--#{$prefix}-color-warning-light-3);
+      }
+
+      @include pseudo(':active') {
+        color: var(--#{$prefix}-color-warning-dark-2);
+      }
     }
 
     @include m(theme-danger) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-danger-default),
-        var(--#{$prefix}-color-danger-300),
-        var(--#{$prefix}-color-danger-700)
-      );
+      color: var(--#{$prefix}-color-danger-default);
+
+      @include pseudo(':hover') {
+        color: var(--#{$prefix}-color-danger-light-3);
+      }
+
+      @include pseudo(':active') {
+        color: var(--#{$prefix}-color-danger-dark-2);
+      }
     }
 
     @include m(theme-info) {
-      @include btn-text-color(
-        var(--#{$prefix}-color-info-default),
-        var(--#{$prefix}-color-info-300),
-        var(--#{$prefix}-color-info-700)
-      );
+      color: var(--#{$prefix}-color-info-default);
+
+      @include pseudo(':hover') {
+        color: var(--#{$prefix}-color-info-light-3);
+      }
+
+      @include pseudo(':active') {
+        color: var(--#{$prefix}-color-info-dark-2);
+      }
     }
   }
 
-  // // shape
+  // size
+  @include btn-size($kpi-btn-height-default, $kpi-btn-padding-default, $kpi-btn-font-size-default);
 
-  // @include btn-shape($kpi-btn-shape-default);
+  @include m(size-small) {
+    @include btn-size($kpi-btn-height-small, $kpi-btn-padding-small, $kpi-btn-font-size-small);
+  }
 
-  // @include m(shape-round) {
-  //   @include btn-shape($kpi-btn-shape-round);
-  // }
+  @include m(size-large) {
+    @include btn-size($kpi-btn-height-large, $kpi-btn-padding-large, $kpi-btn-font-size-large);
+  }
 
-  // @include m(shape-circle) {
-  //   @include btn-shape($kpi-btn-shape-circle);
+  // shape
+  @include btn-radius(var(--#{$prefix}-border-radius-default));
 
-  //   min-width: $kpi-btn-size-height-middle;
-  //   padding: 0;
-  //   // @include btn-size($kpi-btn-size-height-middle, 0, $kpi-btn-size-font-middle);
-  // }
+  @include m(shape-round) {
+    @include btn-radius(var(--#{$prefix}-border-radius-round));
+  }
 
-  // // size
+  @include m(shape-circle) {
+    padding: 0;
+    width: $kpi-btn-height-default;
+    @include btn-radius(var(--#{$prefix}-border-radius-circle));
 
-  // @include btn-size(
-  //   $kpi-btn-size-height-middle,
-  //   $kpi-btn-size-padding-middle,
-  //   $kpi-btn-size-font-middle
-  // );
+    @include m(size-small) {
+      width: $kpi-btn-height-small;
+    }
 
-  // @include m(size-small) {
-  // }
+    @include m(size-large) {
+      width: $kpi-btn-height-large;
+    }
+  }
 
-  // @include m(size-middle) {
-  // }
+  @include m(block) {
+    width: 100%;
+  }
 
-  // @include m(size-large) {
-  // }
+  @include m(ghost) {
+    background-color: transparent;
+
+    @include pseudo(':hover') {
+      background-color: transparent;
+    }
+
+    @include pseudo(':active') {
+      background-color: transparent;
+    }
+  }
 
   // @include m(loading) {
   // }
 
-  // @include m(block) {
-  // }
-
-  // @include m(ghost) {
-  // }
-
-  // @include m(disabled) {
-  // }
+  @include m(disabled) {
+    color: $kpi-btn-color-text-disabled;
+    border-color: var(--#{$prefix}-color-border-default);
+    background-color: var(--#{$prefix}-color-background-default);
+  }
 }
 
 @include b(wave) {

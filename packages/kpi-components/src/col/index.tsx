@@ -37,7 +37,7 @@ function Col(props: ColProps, ref: ForwardedRef<HTMLDivElement>) {
   const attrs = withoutProperties(props, excluded)
 
   return (
-    <div className={classes} ref={ref} style={{ flex, ...gapStyle, ...style }} {...attrs}>
+    <div {...attrs} className={classes} ref={ref} style={{ flex, ...gapStyle, ...style }}>
       {children}
     </div>
   )

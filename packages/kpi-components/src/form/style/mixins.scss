@@ -1,0 +1,7 @@
+@mixin form-item-tip() {
+  clear: both;
+  overflow: hidden;
+  color: var(--#{$prefix}-color-text-secondary);
+  font-size: var(--#{$prefix}-font-size-extra-small);
+  line-height: $form-item-message-line-height;
+}

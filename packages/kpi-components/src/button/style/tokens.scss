@@ -1,0 +1,29 @@
+$kpi-btn-border: 1px solid transparent;
+
+$kpi-btn-font-weight: var(--#{$prefix}-font-weight-regular);
+
+$kpi-btn-padding-small: 0 7px;
+
+$kpi-btn-padding-default: 0 15px;
+
+$kpi-btn-padding-large: 0px 19px;
+
+$kpi-btn-height-small: var(--#{$prefix}-component-size-small);
+
+$kpi-btn-height-default: var(--#{$prefix}-component-size-default);
+
+$kpi-btn-height-large: var(--#{$prefix}-component-size-large);
+
+$kpi-btn-font-size-small: var(--#{$prefix}-font-size-extra-small);
+
+$kpi-btn-font-size-default: var(--#{$prefix}-font-size-default);
+
+$kpi-btn-font-size-large: var(--#{$prefix}-font-size-default);
+
+$kpi-btn-transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), outline 0s, outline-offset 0s;
+
+$kpi-btn-color-text-disabled: var(--#{$prefix}-color-text-placeholder);
+
+$kpi-btn-outline-width: 3px;
+
+$kpi-btn-outline-offset: 1px;

@@ -17,10 +17,10 @@ export default function useFormatClass(prefixCls: string, props: ButtonProps) {
   )
 
   return cls(prefixCls, {
-    [`${prefixCls}--theme-${theme}`]: theme,
-    [`${prefixCls}--variant-${variant}`]: variant,
-    [`${prefixCls}--shape-${shape}`]: shape,
-    [`${prefixCls}--size-${size}`]: size,
+    [`${prefixCls}--theme-${theme}`]: theme && theme !== 'primary',
+    [`${prefixCls}--variant-${variant}`]: variant && variant !== 'default',
+    [`${prefixCls}--shape-${shape}`]: shape && shape !== 'default',
+    [`${prefixCls}--size-${size}`]: size && size !== 'middle',
     [`${prefixCls}--loading`]: loading,
     [`${prefixCls}--block`]: block,
     [`${prefixCls}--ghost`]: ghost,

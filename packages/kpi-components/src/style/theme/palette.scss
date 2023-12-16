@@ -1,10 +1,5 @@
 @use 'sass:color';
 
-/* element design color palette */
-
-$color-white: #ffffff;
-$color-black: #000000;
-
 $color-primary: (
   // light
   'light-dark-2': #337ecc,
@@ -62,7 +57,7 @@ $color-warning: (
   'dark-light-9': #292218
 );
 
-$color-error: (
+$color-danger: (
   // light
   'light-dark-2': #c45656,
   'light-default': #f56c6c,

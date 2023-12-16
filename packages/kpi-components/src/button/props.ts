@@ -7,9 +7,9 @@ import type { SizeType } from '../config-provider/props'
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /**
    * @zh 按钮主题
-   * @default 'default'
+   * @default 'primary'
    */
-  theme?: 'default' | 'success' | 'warning' | 'danger' | 'info'
+  theme?: 'primary' | 'success' | 'warning' | 'danger' | 'info'
 
   /**
    * @zh 变体(在不影响布局属性的情况下所派生出的类型)
@@ -17,6 +17,11 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
    */
   variant?: 'default' | 'filled' | 'dashed' | 'text' | 'link'
 
+  /**
+   * @zh 虚线
+   * @default false
+   */
+  dashed?: boolean
   /**
    * @zh 形状
    * @default 'default'

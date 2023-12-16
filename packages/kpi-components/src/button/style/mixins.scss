@@ -1,78 +1,25 @@
 @use 'sass:math';
-@import './variable';
-
-@mixin btn-text-color($default, $hover, $active) {
-  color: $default;
-
-  &:hover {
-    color: $hover;
-  }
-
-  &:active {
-    color: $active;
-  }
-}
-
-@mixin btn-border-color($default, $hover, $active) {
-  border-color: $default;
-
-  &:hover {
-    border-color: $hover;
-  }
-
-  &:active {
-    border-color: $active;
-  }
-}
-
-@mixin btn-bg-color($default, $hover, $active) {
-  background-color: $default;
-
-  &:hover {
-    background-color: $hover;
-  }
-
-  &:active {
-    background-color: $active;
-  }
-}
-
-@mixin btn-size($height, $padding, $font) {
-  height: $height;
-  padding: 0 $padding;
-  font-size: $font;
-}
-
-@mixin btn-radius($radius) {
-  border-radius: $radius;
-}
 
 @mixin btn-base() {
   position: relative;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  height: $kpi-btn-size-default;
   font-weight: $kpi-btn-font-weight;
-  padding: $kpi-btn-padding-default;
   white-space: nowrap;
   text-align: center;
   background-image: none;
   cursor: pointer;
-  border: $kpi-btn-border-width $kpi-btn-border-style transparent;
+  border: $kpi-btn-border;
   transition: $kpi-btn-transition;
   user-select: none;
   touch-action: manipulation;
+  outline: transparent solid $kpi-btn-outline-width;
   > span {
     display: inline-block;
   }
   > .#{$prefix-icon} {
     line-height: 1;
-  }
-
-  &,
-  &:active {
-    outline: 0;
   }
 
   &:hover,
@@ -81,15 +28,20 @@
     text-decoration: none;
   }
 
-  &:not([disabled]):active {
-    outline: 0;
-    box-shadow: none;
-  }
-
   &[disabled] {
     cursor: not-allowed;
     > * {
       pointer-events: none;
     }
   }
+}
+
+@mixin btn-size($height, $padding, $font) {
+  height: $height;
+  padding: $padding;
+  font-size: $font;
+}
+
+@mixin btn-radius($radius) {
+  border-radius: $radius;
 }
