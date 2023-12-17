@@ -17,7 +17,7 @@ export default function FormErrorList(props: FormErrorListProps) {
     <GroupTransition
       tag="div"
       className={cls(prefixCls, className)}
-      name="kpi-form-error"
+      name={`${prefixCls}-error`}
       appear
       onExitComplete={onExitComplete}
       {...handlers}

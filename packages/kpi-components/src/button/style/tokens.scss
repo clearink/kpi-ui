@@ -20,7 +20,8 @@ $kpi-btn-font-size-default: var(--#{$prefix}-font-size-default);
 
 $kpi-btn-font-size-large: var(--#{$prefix}-font-size-default);
 
-$kpi-btn-transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1), outline 0s, outline-offset 0s;
+$kpi-btn-transition: all var(--#{$prefix}-motion-duration-mid) var(--#{prefix}-motion-in-out),
+  outline 0s, outline-offset 0s;
 
 $kpi-btn-color-text-disabled: var(--#{$prefix}-color-text-placeholder);
 

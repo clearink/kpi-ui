@@ -7,7 +7,7 @@ import useRowGutter from './hooks/use_row_gutter'
 
 import type { RowProps } from './props'
 
-const excluded = ['children', 'style', 'gutter', 'align', 'justify', 'wrap', 'className'] as const
+const excluded = ['children', 'gutter', 'align', 'justify', 'wrap'] as const
 
 function Row(props: RowProps, ref: ForwardedRef<HTMLDivElement>) {
   const { children, style, gutter } = props

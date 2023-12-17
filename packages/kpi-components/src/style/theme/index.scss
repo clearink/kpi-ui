@@ -9,6 +9,8 @@
   @include kpi-radius();
 
   @include kpi-component-size();
+
+  @include kpi-motion();
 }
 
 // 亮色模式

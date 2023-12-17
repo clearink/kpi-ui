@@ -1,12 +1,5 @@
 import type { FormFieldControl } from './components/field/control'
 
-export type * from './components/form/props'
-export type * from './components/form/control/props'
-export type * from './components/field/props'
-export type * from './components/list/props'
-export type * from './components/list/control/props'
-export type * from './components/provider/props'
-
 export type InternalNamePath = (string | number)[]
 
 export type ExternalNamePath = string | number | InternalNamePath

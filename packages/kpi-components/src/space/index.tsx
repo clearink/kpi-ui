@@ -14,10 +14,8 @@ const excluded = [
   'split',
   'wrap',
   'children',
-  'style',
   'split',
   'wrap',
-  'className',
 ] as const
 
 function Space(props: SpaceProps) {

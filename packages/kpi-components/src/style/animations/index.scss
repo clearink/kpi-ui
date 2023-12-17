@@ -1,16 +1,2 @@
-@import '../mixins/bem.scss'; // 引入 BEM
-
-@include b(form-error) {
-  &-enter-from,
-  &-exit-to {
-    opacity: 0;
-    transform: translate3d(0, -5px, 0);
-  }
-
-  &-enter-active,
-  &-exit-active {
-    transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
-      transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
-      height 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-  }
-}
+@import './form.scss';
+@import './badge.scss';

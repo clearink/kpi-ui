@@ -1,0 +1,14 @@
+@import '../mixins/bem.scss'; // 引入 BEM
+
+@include b(form-item-message-error) {
+  &-enter-from,
+  &-exit-to {
+    opacity: 0;
+    transform: translate3d(0, -5px, 0);
+  }
+
+  &-enter-active,
+  &-exit-active {
+    transition: all var(--#{$prefix}-motion-duration-slow) var(--#{$prefix}-motion-in-out);
+  }
+}

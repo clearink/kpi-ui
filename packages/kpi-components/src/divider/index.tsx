@@ -5,15 +5,7 @@ import useFormatClass from './hooks/use_format_class'
 
 import type { DividerProps } from './props'
 
-const excluded = [
-  'children',
-  'className',
-  'dashed',
-  'align',
-  'margin',
-  'plain',
-  'direction',
-] as const
+const excluded = ['children', 'dashed', 'align', 'margin', 'plain', 'direction'] as const
 
 function Divider(props: DividerProps) {
   const { children, direction, align, margin } = props

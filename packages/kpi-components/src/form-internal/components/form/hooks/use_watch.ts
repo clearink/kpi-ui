@@ -1,5 +1,5 @@
 import { useDeepMemo, useEvent } from '@kpi-ui/hooks'
-import { isEqual, logger, toArray } from '@kpi-ui/utils'
+import { logger, shallowEqual, toArray } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { InternalFormInstanceContext } from '../../../_shared/context'
 import { HOOK_MARK } from '../control'
@@ -23,7 +23,8 @@ export default function useWatchValue<T>(namePath?: ExternalNamePath, form?: Ext
   const registerWatch = useEvent(() =>
     internalHook?.registerWatch(() => {
       const nextValue = instance?.getFieldValue(currentPath)
-      if (!isEqual(nextValue, value)) setValue(nextValue)
+      // 只浅比较
+      if (!shallowEqual(nextValue, value)) setValue(nextValue)
     })
   )
 

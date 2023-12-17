@@ -1,0 +1,23 @@
+@import '../mixins/bem.scss'; // 引入 BEM
+
+@include b(badge-scroll-number) {
+  &-enter-from {
+    opacity: 0;
+    transform: translate3d(0, 5px, 0);
+  }
+
+  &-exit-to {
+    opacity: 0;
+    transform: translate3d(0, -5px, 0);
+  }
+
+  &-move,
+  &-enter-active,
+  &-exit-active {
+    transition: all var(--#{$prefix}-motion-duration-slow) var(--#{$prefix}-motion-out-back);
+  }
+
+  &-exit-active {
+    position: absolute;
+  }
+}

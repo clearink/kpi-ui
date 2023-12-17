@@ -6,6 +6,8 @@
 @import './mixins.scss';
 
 @include b(row) {
+  @include reset-component();
+
   display: flex;
   flex-direction: row;
   &::before,

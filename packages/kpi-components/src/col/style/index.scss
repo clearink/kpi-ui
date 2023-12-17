@@ -6,6 +6,8 @@
 @import './mixins.scss';
 
 @include b(col) {
+  @include reset-component();
+
   position: relative;
   max-width: 100%;
   min-height: 1px;

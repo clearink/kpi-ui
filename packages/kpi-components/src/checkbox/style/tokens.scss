@@ -1,0 +1,12 @@
+$kpi-checkbox-border: 1px solid var(--#{$prefix}-color-border-default);
+
+$kpi-checkbox-inner-width: var(--#{$prefix}-component-size-extra-small);
+
+$kpi-checkbox-inner-height: var(--#{$prefix}-component-size-extra-small);
+
+$kpi-checkbox-arrow-width: calc($kpi-checkbox-inner-width / 14 * 5);
+
+$kpi-checkbox-arrow-height: calc($kpi-checkbox-inner-height / 14 * 8);
+
+$kpi-checkbox-transition: all var(--#{$prefix}-motion-duration-slow)
+  var(--#{prefix}-motion-out-back);

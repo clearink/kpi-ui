@@ -5,7 +5,7 @@ import useWatch from './components/form/hooks/use_watch'
 import List from './components/list'
 import Provider from './components/provider'
 
-type ExternalFormType = typeof InternalForm & {
+type CompoundedFormType = typeof InternalForm & {
   Field: typeof Field
   List: typeof List
   useForm: typeof useForm
@@ -13,7 +13,7 @@ type ExternalFormType = typeof InternalForm & {
   Provider: typeof Provider
 }
 
-const Form = InternalForm as ExternalFormType
+const Form = InternalForm as CompoundedFormType
 
 Form.Field = Field
 

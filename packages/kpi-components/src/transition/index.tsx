@@ -1,3 +1,3 @@
-export { default as CSSTransition } from './css-transition'
-export { default as SwitchTransition } from './switch-transition'
-export { default as GroupTransition } from './group-transition'
+export { default as CSSTransition } from './components/css-transition'
+export { default as SwitchTransition } from './components/switch-transition'
+export { default as GroupTransition } from './components/group-transition'

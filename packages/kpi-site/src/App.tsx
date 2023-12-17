@@ -1,55 +1,28 @@
-import { Button, Form, Space } from '@kpi-ui/components'
+import { GroupTransition, SwitchTransition } from '@kpi-ui/components'
 import { useState } from 'react'
-import kv from '@kpi-ui/validator'
 import '@kpi-ui/components/src/style'
 
-function Input(props: any) {
-  // console.log(props)
-  return <input {...props} value={props.value || ''} style={{ height: 32 }} />
-}
+import './style.scss'
+import Badge from '@kpi-ui/components/src/badge/components/badge'
 
 export default function App() {
-  const [noStyle, setNoStyle] = useState(false)
-  const [noRule, setNoRule] = useState(false)
-  const [inputNumber, setInputNumber] = useState(3000)
+  const [num, set] = useState(1)
   return (
     <div>
-      <p style={{ fontSize: 20, textAlign: 'center', marginBottom: 20 }}>
-        测试 {inputNumber || 0} 个输入框场景下 Form 组件的性能
-      </p>
-      <Space style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-        <Button onClick={() => setNoStyle((p) => !p)}>NoStyle: {noStyle ? 'true' : 'false'}</Button>
-        <Button onClick={() => setNoRule((p) => !p)}>NoRule: {noRule ? 'true' : 'false'}</Button>
-        <span>input number</span>
-        <Input
-          value={inputNumber}
-          onChange={(e: any) => setInputNumber(parseInt(e.target.value, 10))}
-        />
-      </Space>
-      <Form
-        tag="div"
-        style={{
-          width: 600,
-          margin: '0 auto',
+      <button onClick={() => set((p) => p - 10)}>minus</button>
+      <button onClick={() => set((p) => p + 10)}>plus</button>
+      <button
+        onClick={() => {
+          const newCount = Math.floor(Math.random() * 100)
+          set(newCount)
         }}
       >
-        {Array.from({ length: inputNumber }, (_, i) => (
-          <Form.Item
-            key={i}
-            label={`username_${i}`}
-            noStyle={noStyle}
-            name={['username', i]}
-            rule={kv
-              .string()
-              // .min(3, <div style={{ height: 40 }}>12312123123</div>)
-              .min(3)
-              .max(6)
-              .required()}
-          >
-            <Input placeholder={`username-${i}`} />
-          </Form.Item>
-        ))}
-      </Form>
+        random
+      </button>
+
+      <Badge count={num}>
+        <div>123</div>
+      </Badge>
     </div>
   )
 }

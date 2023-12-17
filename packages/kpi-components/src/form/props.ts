@@ -1,4 +1,5 @@
-import type { ExternalNamePath, ExternalFieldMeta } from '../form-internal/props'
+// 内部使用
+import type { ExternalNamePath, ExternalFieldMeta } from '../form-internal/_shared/props'
 
 export type NamePath = ExternalNamePath
 

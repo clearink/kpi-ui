@@ -12,7 +12,6 @@ const excluded = [
   'children',
   'style',
   'flex',
-  'className',
   'span',
   'offset',
   'order',

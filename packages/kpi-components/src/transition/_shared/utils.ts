@@ -1,2 +1,4 @@
 export { default as batch } from '../utils/batch'
 export { default as reflow } from '../utils/reflow'
+export { default as makeUniqueId } from '../utils/unique_id'
+export { min, max } from '../utils/math'
