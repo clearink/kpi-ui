@@ -16,10 +16,12 @@ export interface ConfigConsumerProps {
     requiredMark?: RequiredMark
     colon?: boolean
   }
+  wave?: {
+    disabled?: boolean
+    showEffect?: (target: HTMLElement, event: MouseEvent) => void
+  }
 }
 
 export interface ConfigProviderProps extends ConfigConsumerProps {
   children?: ReactNode
-  componentSize?: SizeType
-  componentDisabled?: DisabledType
 }

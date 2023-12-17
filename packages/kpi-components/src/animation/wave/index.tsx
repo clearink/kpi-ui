@@ -14,3 +14,7 @@ export default function Wave(props: WaveProps) {
     </CSSTransition>
   )
 }
+
+/**
+ * 理论上需要可配置 wave 的表现形式
+ */
