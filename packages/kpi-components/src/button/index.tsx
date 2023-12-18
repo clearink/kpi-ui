@@ -1,8 +1,9 @@
 import { withDefaults, withoutProperties } from '@kpi-ui/utils'
-import { ForwardedRef, forwardRef, type MouseEvent, useMemo } from 'react'
+import { ForwardedRef, forwardRef, type MouseEvent } from 'react'
 import { usePrefixCls } from '../_shared/hooks'
+import TouchEffect from '../touch-effect'
 import useFormatClass from './hooks/use_format_class'
-import Wave from '../animation/wave'
+import { isBorderedVariant } from './utils/helpers'
 
 import type { ButtonProps } from './props'
 
@@ -32,15 +33,15 @@ function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
 
   const attrs = withoutProperties(props, excluded)
 
-  const disabledWave = variant === 'link' || variant === 'text' || !!loading
-
-  return (
-    <Wave disabled={disabledWave}>
-      <button {...attrs} className={classes} ref={ref} onClick={handleClick}>
-        <span>{children}</span>
-      </button>
-    </Wave>
+  const renderNode = (
+    <button {...attrs} className={classes} ref={ref} onClick={handleClick}>
+      <span>{children}</span>
+    </button>
   )
+
+  if (!isBorderedVariant(variant)) return renderNode
+
+  return <TouchEffect disabled={!!loading}>{renderNode}</TouchEffect>
 }
 
 export default withDefaults(forwardRef(Button), {

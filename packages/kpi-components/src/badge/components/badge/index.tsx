@@ -6,7 +6,7 @@ import useFormatClass from './hooks/use_format_class'
 import type { BadgeProps } from './props'
 
 function Badge(props: BadgeProps) {
-  const { children, count, max } = props
+  const { children, count, maxCount } = props
 
   const prefixCls = usePrefixCls('badge')
 
@@ -16,12 +16,12 @@ function Badge(props: BadgeProps) {
     <span className={classes}>
       {children}
       <sup className={`${prefixCls}__indicator`}>
-        {isNumber(count) && <ScrollNumber value={count} max={max!} />}
+        {isNumber(count) && <ScrollNumber value={count} maxCount={maxCount!} />}
       </sup>
     </span>
   )
 }
 
 export default withDefaults(Badge, {
-  max: 99,
+  maxCount: 99,
 })

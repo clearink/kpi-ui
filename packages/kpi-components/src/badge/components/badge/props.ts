@@ -5,7 +5,7 @@ export interface BadgeProps {
   count?: ReactNode
   dot?: boolean
   offset?: [number, number]
-  max?: number
+  maxCount?: number
   hidden?: boolean
   size?: 'default' | 'small'
   status?: 'success' | 'processing' | 'default' | 'error' | 'warning'

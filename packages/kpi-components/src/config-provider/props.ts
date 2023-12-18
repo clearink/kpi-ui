@@ -7,6 +7,11 @@ export type DisabledType = true | false | undefined
 
 export type Size = SizeType | number
 
+export interface TouchEffectContextState {
+  disabled?: boolean | ((event: MouseEvent) => boolean)
+  showEffect?: (event: MouseEvent) => void
+}
+
 export interface ConfigConsumerProps {
   prefixCls?: string
   space?: {
@@ -16,10 +21,7 @@ export interface ConfigConsumerProps {
     requiredMark?: RequiredMark
     colon?: boolean
   }
-  wave?: {
-    disabled?: boolean
-    showEffect?: (target: HTMLElement, event: MouseEvent) => void
-  }
+  touch?: TouchEffectContextState
 }
 
 export interface ConfigProviderProps extends ConfigConsumerProps {

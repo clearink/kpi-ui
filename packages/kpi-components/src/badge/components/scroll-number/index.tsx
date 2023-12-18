@@ -6,17 +6,17 @@ import { min } from '../../../_shared/utils'
 import type { ScrollNumberProps } from './props'
 
 export default function ScrollNumber(props: ScrollNumberProps) {
-  const { value, max } = props
+  const { value, maxCount } = props
 
   const prefixCls = usePrefixCls('badge')
 
   const list = useMemo(() => {
-    const chars = String(min([value, max])).split('')
+    const chars = String(min([value, maxCount])).split('')
 
-    if (value > max) chars.push('+')
+    if (value > maxCount) chars.push('+')
 
     return chars.map((value, index) => ({ key: `${index}-${value}`, value }))
-  }, [value, max])
+  }, [value, maxCount])
 
   return (
     <GroupTransition name={`${prefixCls}-scroll-number`} flip>
