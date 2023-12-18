@@ -18,7 +18,12 @@ export default function useWatchValue<T>(namePath?: ExternalNamePath, form?: Ext
 
   const currentPath = useDeepMemo(() => toArray(namePath), [namePath])
 
-  logger(!instance, 'useWatch requires a form instance since it can not auto detect from context.')
+  if (process.env.NODE_ENV !== 'production') {
+    logger(
+      !instance,
+      'useWatch requires a form instance since it can not auto detect from context.'
+    )
+  }
 
   const registerWatch = useEvent(() =>
     internalHook?.registerWatch(() => {

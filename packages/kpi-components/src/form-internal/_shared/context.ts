@@ -1,7 +1,7 @@
 import { ctxHelper, logger, noop } from '@kpi-ui/utils'
 
 import type { AnyObject } from '../../types'
-import type { ExternalFieldData, ExternalFormInstance, InternalFormInstance } from '../props'
+import type { ExternalFieldData, ExternalFormInstance, InternalFormInstance } from './props'
 
 export interface InternalFormContextState {
   register: (form: ExternalFormInstance, name?: string) => () => void
@@ -16,8 +16,11 @@ export const InternalFormContext = ctxHelper<InternalFormContextState>({
   triggerFormFinish: noop,
 })
 
-const notFoundContext: any = () =>
-  logger(true, 'Can not find FormContext. Please make sure you wrap Field under Form.')
+const notFoundContext: any = () => {
+  if (process.env.NODE_ENV !== 'production') {
+    logger(true, 'Can not find FormContext. Please make sure you wrap Field under Form.')
+  }
+}
 
 export const InternalFormInstanceContext = ctxHelper<InternalFormInstance>({
   getFieldError: notFoundContext,

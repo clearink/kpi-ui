@@ -23,7 +23,9 @@ export default function useInjectField(
 
   const { functional, children, valid } = handleNormalize(props.children)
 
-  logger(!functional && !valid, 'Form.Field `children` is not valid react element.')
+  if (process.env.NODE_ENV !== 'production') {
+    logger(!functional && !valid, 'Form.Field `children` is not valid react element.')
+  }
 
   if (functional || !valid) return children
 

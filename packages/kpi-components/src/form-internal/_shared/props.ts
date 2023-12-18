@@ -1,4 +1,4 @@
-export type { ExternalFieldMeta, ExternalNamePath } from '../props'
+export type { ExternalFieldMeta, ExternalNamePath, ExternalFieldData } from '../props'
 export type * from '../components/form/props'
 export type * from '../components/form/control/props'
 export type * from '../components/field/props'

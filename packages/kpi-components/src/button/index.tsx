@@ -1,8 +1,8 @@
 import { withDefaults, withoutProperties } from '@kpi-ui/utils'
-import { ForwardedRef, forwardRef, useImperativeHandle, type MouseEvent } from 'react'
+import { ForwardedRef, forwardRef, type MouseEvent, useMemo } from 'react'
 import { usePrefixCls } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
-import useWave from './hooks/use-wave'
+import Wave from '../animation/wave'
 
 import type { ButtonProps } from './props'
 
@@ -19,15 +19,11 @@ const excluded = [
 ] as const
 
 function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
-  const { children, onClick, loading, disabled } = props
+  const { children, onClick, loading, disabled, variant } = props
 
   const prefixCls = usePrefixCls('button')
 
   const classes = useFormatClass(prefixCls, props)
-
-  const internalRef = useWave<HTMLButtonElement>()
-
-  useImperativeHandle(ref, () => internalRef.current!)
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     if (disabled || loading) e.preventDefault()
@@ -36,11 +32,14 @@ function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
 
   const attrs = withoutProperties(props, excluded)
 
+  const disabledWave = variant === 'link' || variant === 'text' || !!loading
+
   return (
-    <button {...attrs} className={classes} ref={internalRef} onClick={handleClick}>
-      <span>{children}</span>
-      {/* <Wave when={shouldRunWave} /> */}
-    </button>
+    <Wave disabled={disabledWave}>
+      <button {...attrs} className={classes} ref={ref} onClick={handleClick}>
+        <span>{children}</span>
+      </button>
+    </Wave>
   )
 }
 

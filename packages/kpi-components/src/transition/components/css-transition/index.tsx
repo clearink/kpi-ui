@@ -1,17 +1,8 @@
 import { useEvent } from '@kpi-ui/hooks'
-import { isFunction, isObject } from '@kpi-ui/utils'
-import {
-  cloneElement,
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  type ReactElement,
-  type Ref,
-} from 'react'
-import { APPEAR, ENTER, EXIT, isAppear, isExit } from '../../constant'
+import { addClassNames, delClassNames, nextFrame, fillRef } from '@kpi-ui/utils'
+import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref } from 'react'
 import { reflow } from '../../_shared/utils'
-import { addTransitionClass, delTransitionClass } from './utils/classnames'
-import { nextFrame } from '../../utils/tick'
+import { APPEAR, ENTER, EXIT, isAppear, isExit } from '../../constant'
 import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'
 import useTransitionEvent from './hooks/use_transition_event'
@@ -49,10 +40,7 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
   const [runCancel, makeEndHook] = useTransitionEvent(store, classes, props)
 
   const refCallback = useEvent((el: E | null) => {
-    const original = (children as ReactElement & { ref: Ref<any> }).ref
-
-    if (isFunction(original)) original(el)
-    else if (isObject(original)) (original as any).current = el
+    fillRef(el, (children as any).ref)
 
     if (el && !store.mounted) store.setMounted(true)
 
@@ -68,19 +56,19 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
 
     store.start(step)
 
-    addTransitionClass(el, from)
+    addClassNames(el, from)
 
     isExit(step) && reflow(el)
 
-    addTransitionClass(el, active)
+    addClassNames(el, active)
 
     if (isExit(step)) onExit && onExit(el)
     else onEnter && onEnter(el, isAppear(step))
 
     const runFrameCleanup = nextFrame(() => {
-      delTransitionClass(el, from)
+      delClassNames(el, from)
 
-      addTransitionClass(el, to)
+      addClassNames(el, to)
 
       if (isExit(step)) onExiting && onExiting(el)
       else onEntering && onEntering(el, isAppear(step))

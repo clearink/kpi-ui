@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import noop from './noop'
 
 // 日志记录 仅提示一次
 const cache = new Set<string>()
+
 function logger(condition: boolean, ...message: string[]) {
   if (!condition) return
 

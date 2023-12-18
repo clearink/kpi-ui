@@ -97,8 +97,9 @@ export default class FormGroupControl<State = any> {
   _getInternalHooks = (secret: symbol): InternalHookReturn | undefined => {
     const matched = secret === HOOK_MARK
 
-    logger(!matched, '`getInternalHooks` is internal usage. Should not call directly.')
-
+    if (process.env.NODE_ENV !== 'production') {
+      logger(!matched, '`getInternalHooks` is internal usage. Should not call directly.')
+    }
     if (!matched) return undefined
 
     const { $props, $initial, $dispatch, $controls } = this
@@ -256,8 +257,12 @@ export class FormInitialControl<State = any> {
 
     if (isUndefined(initialValue)) return [prev, prev]
 
-    const invalid = !isUndefined(topInitial) && !isUndefined($initialValue)
-    logger(invalid, "form has initialValues, don't set field initialValue")
+    if (process.env.NODE_ENV !== 'production') {
+      logger(
+        !isUndefined(topInitial) && !isUndefined($initialValue),
+        "form has initialValues, don't set field initialValue"
+      )
+    }
 
     return this.setFieldValue(namePath, initialValue)
   }
@@ -641,7 +646,9 @@ export class FormDispatchControl<State = any> {
       })
     }
 
-    logger(true, 'invalid action type')
+    if (process.env.NODE_ENV !== 'production') {
+      logger(true, 'invalid action type')
+    }
   }
 
   // 设置一组字段状态

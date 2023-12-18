@@ -370,7 +370,7 @@
     pointer-events: none;
     box-shadow: 0 0 0 0 var(--wave-color);
     opacity: 0.2;
-    animation: wave-animate 1.5s var(--#{prefix}-motion-out-circ);
+    animation: wave-animate 1.5s var(--#{$prefix}-motion-out-circ);
   }
 
   $wave-width: 16px;

@@ -1,7 +1,6 @@
-import { isUndefined } from '@kpi-ui/utils'
+import { delClassNames, isUndefined } from '@kpi-ui/utils'
 import { isAppear, isExit } from '../../../constant'
 import { batch } from '../../../_shared/utils'
-import { delTransitionClass } from '../utils/classnames'
 import collectTimeoutInfo from '../utils/collect'
 import { addListener, addTimeout } from '../utils/listener'
 import runCounter from '../../../utils/run_counter'
@@ -23,7 +22,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     const { from, active, to } = classes[step]
 
-    delTransitionClass(el, from, active, to)
+    delClassNames(el, from, active, to)
     if (!isExit(step)) return onEntered && onEntered(el, isAppear(step))
 
     onExited && onExited(el)
@@ -39,7 +38,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
     if (isExit(step)) onExitCancel && onExitCancel(el)
     else onEnterCancel && onEnterCancel(el, isAppear(step))
 
-    delTransitionClass(el, from, active, to)
+    delClassNames(el, from, active, to)
   }
 
   const makeEndHook = (el: E, step: TransitionStep, timeout?: number) => {

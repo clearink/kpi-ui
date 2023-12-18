@@ -11,7 +11,9 @@ import type { InternalFormListProps } from './props'
 export default function InternalFormList(props: InternalFormListProps) {
   const { name, rule, initialValue, preserve, children } = props
 
-  logger(isUndefined(name), 'Form.List', 'Miss `name` prop.')
+  if (process.env.NODE_ENV !== 'production') {
+    logger(isUndefined(name), 'Form.List', 'Miss `name` prop.')
+  }
 
   const instance = InternalFormInstanceContext.useState()
 
@@ -29,8 +31,9 @@ export default function InternalFormList(props: InternalFormListProps) {
 
   const invalidChildren = !isFunction(children)
 
-  logger(invalidChildren, 'Form.List only accepts function as children.')
-
+  if (process.env.NODE_ENV !== 'production') {
+    logger(invalidChildren, 'Form.List only accepts function as children.')
+  }
   if (invalidChildren) return null
 
   return (
@@ -63,7 +66,9 @@ export default function InternalFormList(props: InternalFormListProps) {
             isListField: true,
           }))
 
-          if (!isArray(value)) logger(true, `'${listPath.join(' > ')}' is not an array`)
+          if (process.env.NODE_ENV !== 'production') {
+            logger(!isArray(value), `'${listPath.join(' > ')}' is not an array`)
+          }
 
           return children(fields, helpers, meta)
         }}
