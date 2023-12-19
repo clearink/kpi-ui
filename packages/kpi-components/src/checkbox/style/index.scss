@@ -13,13 +13,6 @@
   align-items: center;
   cursor: pointer;
 
-  @include e(input) {
-    outline: none;
-    border: $kpi-checkbox-border;
-    border-radius: var(--#{$prefix}-border-radius-small);
-    transition: $kpi-checkbox-transition;
-  }
-
   @include e(original) {
     position: absolute;
     opacity: 0;
@@ -30,17 +23,23 @@
     z-index: -1;
   }
 
-  @include e(inner) {
+  .kpi-checkbox__original:focus-visible + .kpi-checkbox__input {
+    outline-color: var(--#{$prefix}-color-primary-light-3);
+    outline-offset: $kpi-btn-outline-offset;
+  }
+
+  @include e(input) {
     position: relative;
     display: inline-block;
     box-sizing: border-box;
     border: $kpi-checkbox-border;
     border-radius: var(--#{$prefix}-border-radius-small);
-    width: $kpi-checkbox-inner-width;
-    height: $kpi-checkbox-inner-height;
+    width: $kpi-checkbox-input-width;
+    height: $kpi-checkbox-input-height;
     background-color: var(--#{$prefix}-color-fill-blank);
-    transition: $kpi-checkbox-transition;
+    transition: $kpi-checkbox-input-transition;
     z-index: 1;
+    outline: transparent solid $kpi-checkbox-outline-width;
 
     @include pseudo('::after') {
       content: '';
@@ -53,7 +52,7 @@
       border-left: 0;
       left: calc($kpi-checkbox-arrow-width / 2);
       top: 50%;
-      transition: $kpi-checkbox-transition;
+      transition: $kpi-checkbox-arrow-transition;
       transform: scale(0) rotate(45deg) translate(-50%, -50%);
     }
   }
@@ -64,13 +63,13 @@
   }
 
   @include pseudo(':hover') {
-    @include b(checkbox__inner) {
+    @include b(checkbox__input) {
       border-color: var(--#{$prefix}-color-primary-default);
     }
   }
 
   @include m(checked) {
-    @include b(checkbox__inner) {
+    @include b(checkbox__input) {
       border-color: var(--#{$prefix}-color-primary-default);
       background-color: var(--#{$prefix}-color-primary-default);
 
@@ -80,7 +79,7 @@
     }
 
     @include pseudo(':hover') {
-      @include b(checkbox__inner) {
+      @include b(checkbox__input) {
         border-color: var(--#{$prefix}-color-primary-light-3);
         background-color: var(--#{$prefix}-color-primary-light-3);
       }

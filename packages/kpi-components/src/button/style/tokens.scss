@@ -20,7 +20,7 @@ $kpi-btn-font-size-default: var(--#{$prefix}-font-size-default);
 
 $kpi-btn-font-size-large: var(--#{$prefix}-font-size-default);
 
-$kpi-btn-transition: all var(--#{$prefix}-motion-duration-mid) var(--#{$prefix}-motion-in-out),
+$kpi-btn-transition: all var(--#{$prefix}-motion-duration-slow) var(--#{$prefix}-motion-in-out),
   outline 0s, outline-offset 0s;
 
 $kpi-btn-color-text-disabled: var(--#{$prefix}-color-text-placeholder);

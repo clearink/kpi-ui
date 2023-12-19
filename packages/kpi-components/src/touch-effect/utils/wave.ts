@@ -30,13 +30,13 @@ export default function wave(info: TouchEffectInfo) {
 
   const waveColor = getWaveColor(target)
 
-  const wave = document.createElement('div')
+  const div = document.createElement('div')
 
-  waveColor && wave.style.setProperty('--wave-color', waveColor)
+  waveColor && div.style.setProperty('--wave-color', waveColor)
 
-  wave.className = className
+  div.className = className
 
-  wave.addEventListener('animationend', () => wave.remove())
+  div.addEventListener('animationend', () => div.remove())
 
-  target.insertBefore(wave, target.firstChild)
+  target.insertBefore(div, target.firstChild)
 }

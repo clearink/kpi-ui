@@ -18,13 +18,13 @@
 
   @include pseudo(':hover') {
     color: var(--#{$prefix}-color-primary-default);
-    border-color: var(--#{$prefix}-color-primary-light-7);
+    border-color: var(--#{$prefix}-color-primary-default);
     background-color: var(--#{$prefix}-color-background-default);
   }
 
   @include pseudo(':active') {
-    color: var(--#{$prefix}-color-primary-default);
-    border-color: var(--#{$prefix}-color-primary-default);
+    color: var(--#{$prefix}-color-primary-dark-2);
+    border-color: var(--#{$prefix}-color-primary-dark-2);
     background-color: var(--#{$prefix}-color-background-default);
   }
 
@@ -38,7 +38,7 @@
     border-color: var(--#{$prefix}-color-success-default);
 
     @include pseudo(':hover') {
-      color: var(--#{$prefix}-color-success-dark-2);
+      color: var(--#{$prefix}-color-success-light-3);
       border-color: var(--#{$prefix}-color-success-light-3);
     }
 
@@ -58,7 +58,7 @@
     border-color: var(--#{$prefix}-color-warning-default);
 
     @include pseudo(':hover') {
-      color: var(--#{$prefix}-color-warning-dark-2);
+      color: var(--#{$prefix}-color-warning-light-3);
       border-color: var(--#{$prefix}-color-warning-light-3);
     }
 
@@ -78,7 +78,7 @@
     border-color: var(--#{$prefix}-color-danger-default);
 
     @include pseudo(':hover') {
-      color: var(--#{$prefix}-color-danger-dark-2);
+      color: var(--#{$prefix}-color-danger-light-3);
       border-color: var(--#{$prefix}-color-danger-light-3);
     }
 
@@ -98,7 +98,7 @@
     border-color: var(--#{$prefix}-color-info-default);
 
     @include pseudo(':hover') {
-      color: var(--#{$prefix}-color-info-dark-2);
+      color: var(--#{$prefix}-color-info-light-3);
       border-color: var(--#{$prefix}-color-info-light-3);
     }
 

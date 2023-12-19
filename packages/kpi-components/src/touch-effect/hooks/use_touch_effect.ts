@@ -1,25 +1,11 @@
-import { useEvent, useUnmountEffect } from '@kpi-ui/hooks'
 import { isFunction } from '@kpi-ui/utils'
-import { useRef, type RefObject } from 'react'
+import { type RefObject } from 'react'
 import { usePrefixCls } from '../../_shared/hooks'
 import { TouchEffectContext } from '../_shared/context'
 import wave from '../utils/wave'
+import useRafCallback from './use_raf_callback'
 
 import type { TouchEffectProps } from '../props'
-
-function useRafCallback<F extends (...args: any[]) => void>(fn: F) {
-  const id = useRef<number>(-1)
-
-  const callback = useEvent((...args: any[]) => {
-    cancelAnimationFrame(id.current)
-
-    id.current = requestAnimationFrame(() => fn(...args))
-  })
-
-  useUnmountEffect(() => cancelAnimationFrame(id.current))
-
-  return callback as F
-}
 
 export default function useTouchEffect(
   $container: RefObject<HTMLElement>,
@@ -37,12 +23,11 @@ export default function useTouchEffect(
     let target: HTMLElement | null = null
 
     if (isFunction(selector)) target = selector(root)
-    else if (selector) target = root.querySelector<HTMLElement>(selector)
+    else if (selector) target = root.querySelector(selector)
 
     const info = { event, className, component, target: target || root }
 
-    if (!isFunction(disabled) && disabled) return
-    if (isFunction(disabled) && disabled(info)) return
+    if (disabled && (!isFunction(disabled) || disabled(info))) return
 
     effect ? effect(info) : wave(info)
   })
