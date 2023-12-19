@@ -1,0 +1,37 @@
+@import '../mixins/bem.scss'; // 引入 BEM
+
+@include b(touch-effect) {
+  --wave-color: var(--#{$prefix}-color-primary-default);
+
+  position: absolute;
+  background-color: transparent;
+  pointer-events: none;
+  border-radius: inherit;
+  box-sizing: border-box;
+  box-shadow: 0 0 0 0 var(--wave-color);
+  opacity: 0.3;
+
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+
+  animation-name: #{$prefix}-wave;
+
+  animation-timing-function: var(--#{$prefix}-motion-out-circ);
+
+  animation-duration: 2s;
+
+  @keyframes #{$prefix}-wave {
+    0% {
+      box-shadow: 0 0 0 0 var(--wave-color);
+    }
+    20% {
+      box-shadow: 0 0 0 6px var(--wave-color);
+    }
+    100% {
+      box-shadow: 0 0 0 6px var(--wave-color);
+      opacity: 0;
+    }
+  }
+}

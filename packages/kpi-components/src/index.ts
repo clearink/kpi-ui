@@ -38,3 +38,6 @@ export type * from './transition/_shared/props'
 
 export { default as Badge } from './badge'
 export type { BadgeProps } from './badge/_shared/props'
+
+export { default as ConfigProvider } from './config-provider'
+export type * from './config-provider/_shared/props'

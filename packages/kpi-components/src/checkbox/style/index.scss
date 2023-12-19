@@ -7,17 +7,17 @@
 
 @include b(checkbox) {
   @include reset-component();
+  position: relative;
 
   display: inline-flex;
   align-items: center;
   cursor: pointer;
 
   @include e(input) {
-    position: relative;
-    display: inline-flex;
-    white-space: nowrap;
-    cursor: pointer;
     outline: none;
+    border: $kpi-checkbox-border;
+    border-radius: var(--#{$prefix}-border-radius-small);
+    transition: $kpi-checkbox-transition;
   }
 
   @include e(original) {
@@ -33,9 +33,9 @@
   @include e(inner) {
     position: relative;
     display: inline-block;
+    box-sizing: border-box;
     border: $kpi-checkbox-border;
     border-radius: var(--#{$prefix}-border-radius-small);
-    box-sizing: border-box;
     width: $kpi-checkbox-inner-width;
     height: $kpi-checkbox-inner-height;
     background-color: var(--#{$prefix}-color-fill-blank);

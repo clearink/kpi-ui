@@ -1,4 +1,4 @@
-import { isValidElement, type ReactElement, type ReactNode, type Ref } from 'react'
+import { isValidElement, Component, type ReactElement, type ReactNode, type Ref } from 'react'
 import { isFragment, isMemo } from 'react-is'
 import { isFunction, isNullish } from './is'
 
@@ -8,8 +8,6 @@ export function fillRef<T>(el: T, ref?: Ref<T>) {
 }
 
 export function mergeRefs<T>(...refs: (Ref<T> | undefined)[]) {
-  if (refs.length <= 1) return refs[0]
-
   return (el: T | null) => {
     refs.forEach((ref) => fillRef(el, ref))
   }
@@ -20,7 +18,7 @@ export function supportRef(el: ReactNode): el is ReactElement {
 
   const type = isMemo(el) ? el.type.type : el.type
 
-  if (isFunction(type) && !type.prototype?.render) return false
+  if (isFunction(type) && !(type instanceof Component)) return false
 
   return true
 }

@@ -41,7 +41,11 @@ function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
 
   if (!isBorderedVariant(variant)) return renderNode
 
-  return <TouchEffect disabled={!!loading}>{renderNode}</TouchEffect>
+  return (
+    <TouchEffect component="Button" disabled={!!loading}>
+      {renderNode}
+    </TouchEffect>
+  )
 }
 
 export default withDefaults(forwardRef(Button), {

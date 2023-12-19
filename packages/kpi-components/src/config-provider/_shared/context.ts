@@ -1,13 +1,3 @@
-import { ctxHelper } from '@kpi-ui/utils'
-
-import type { ConfigConsumerProps, DisabledType, SizeType, TouchEffectContextState } from '../props'
-
-export const SizeContext = ctxHelper<SizeType>(undefined)
-
-export const DisabledContext = ctxHelper<DisabledType>(undefined)
-
-export const ConfigContext = ctxHelper<ConfigConsumerProps>({
-  prefixCls: 'kpi',
-})
-
-export const TouchEffectContext = ctxHelper<TouchEffectContextState>({})
+export { DisabledContext, type DisabledType } from '../contexts/disabled'
+export { SizeContext, type SizeType } from '../contexts/size'
+export { ConfigContext } from '../contexts/config'

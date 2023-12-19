@@ -1,16 +1,18 @@
-import { DisabledContext, SizeContext, ConfigContext } from '../_shared/context'
+import { TouchEffectContext } from '../_shared/context'
+import { DisabledContext } from './contexts/disabled'
+import { SizeContext } from './contexts/size'
 
 import type { ConfigProviderProps } from './props'
 
 function ConfigProvider(props: ConfigProviderProps) {
-  const { children, ...restProps } = props
+  const { children, touchEffect = {} } = props
+
   return (
-    <ConfigContext.Provider value={restProps}>
-      {children}
-      {/* <DisabledContext.Provider value={componentDisabled}>
-        <SizeContext.Provider value={componentSize}>{children}</SizeContext.Provider>
-      </DisabledContext.Provider> */}
-    </ConfigContext.Provider>
+    <TouchEffectContext.Provider value={touchEffect}>
+      <DisabledContext.Provider value={undefined}>
+        <SizeContext.Provider value={undefined}>{children}</SizeContext.Provider>
+      </DisabledContext.Provider>
+    </TouchEffectContext.Provider>
   )
 }
 

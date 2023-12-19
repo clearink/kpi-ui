@@ -1,21 +1,42 @@
-export default function Wave(container: HTMLElement | null) {
-  if (!container) return
+import type { TouchEffectInfo } from '../_shared/context'
 
-  const holder = document.createElement('div')
+// 白色，透明 不合格
+function isValidColor(color: string) {
+  const matches = color.split(/[(rgba?()),\s]/g).filter(Boolean)
+  if (matches.length === 3) {
+    return !['255,255,255'].includes(matches.join(','))
+  }
+  if (matches.length === 4) {
+    return matches[3] !== '0'
+  }
+  return false
+}
 
-  holder.style.cssText = 'position: absolute; top: 0; left: 0'
+function getWaveColor(node: HTMLElement) {
+  const computed = getComputedStyle(node)
 
-  container.insertBefore(holder, container.firstChild)
+  const color =
+    computed.getPropertyValue('border-top-color') || // Firefox Compatible
+    computed.getPropertyValue('border-color') ||
+    computed.getPropertyValue('background-color')
 
-  container.style.setProperty('--wave-color', 'red')
+  return isValidColor(color) ? color : ''
+}
 
-  const wave = document.createElement('span')
+export default function wave(info: TouchEffectInfo) {
+  const { target, className } = info
 
-  wave.className = 'kpi-wave__item'
+  if (!target) return
 
-  wave.addEventListener('animationend', () => {
-    container.removeChild(holder)
-  })
+  const waveColor = getWaveColor(target)
 
-  holder.appendChild(wave)
+  const wave = document.createElement('div')
+
+  waveColor && wave.style.setProperty('--wave-color', waveColor)
+
+  wave.className = className
+
+  wave.addEventListener('animationend', () => wave.remove())
+
+  target.insertBefore(wave, target.firstChild)
 }

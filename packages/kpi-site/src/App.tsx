@@ -13,7 +13,9 @@ export default function App() {
       <Button ref={ref} variant="filled" onClick={() => set((p) => p - 10)}>
         minus
       </Button>
-      <Button onClick={() => set((p) => p + 10)}>plus</Button>
+      <Button theme="danger" onClick={() => set((p) => p + 10)}>
+        plus
+      </Button>
       <button
         onClick={() => {
           const newCount = Math.floor(Math.random() * 100)
