@@ -2,89 +2,89 @@
 
 $color-primary: (
   // light
-  'light-dark-2': #337ecc,
-  'light-default': #409eff,
-  'light-light-3': #79bbff,
-  'light-light-5': #9fceff,
-  'light-light-7': #c6e2ff,
-  'light-light-8': #d9ecff,
-  'light-light-9': #ecf5ff,
+  'light-dark-2': #0062d6,
+  'light-default': #0077fa,
+  'light-light-3': #3295fb,
+  'light-light-5': #65b2fc,
+  'light-light-7': #98cdfd,
+  'light-light-8': #cbe7fe,
+  'light-light-9': #eaf5ff,
   // dark
-  'dark-dark-2': #66b1ff,
-  'dark-default': #409eff,
-  'dark-light-3': #3375b9,
-  'dark-light-5': #2a598a,
-  'dark-light-7': #213d5b,
-  'dark-light-8': #1d3043,
-  'dark-light-9': #18222c
+  'dark-dark-2': #7fc1ff,
+  'dark-default': #54a9ff,
+  'dark-light-3': #2990ff,
+  'dark-light-5': #1d75db,
+  'dark-light-7': #135cb8,
+  'dark-light-8': #0a4694,
+  'dark-light-9': #053170
 );
 
 $color-success: (
   // light
-  'light-dark-2': #529b2e,
-  'light-default': #67c23a,
-  'light-light-3': #95d475,
-  'light-light-5': #b3e09c,
-  'light-light-7': #d1edc4,
-  'light-light-8': #e1f3d8,
-  'light-light-9': #f0f9eb,
+  'light-dark-2': #30953b,
+  'light-default': #3bb346,
+  'light-light-3': #5ac262,
+  'light-light-5': #7dd182,
+  'light-light-7': #a4e0a7,
+  'light-light-8': #d0f0d1,
+  'light-light-9': #ecf7ec,
   // dark
-  'dark-dark-2': #85ce61,
-  'dark-default': #67c23a,
-  'dark-light-3': #4e8e2f,
-  'dark-light-5': #3e6b27,
-  'dark-light-7': #2d481f,
-  'dark-light-8': #25371c,
-  'dark-light-9': #1c2518
+  'dark-dark-2': #7fd184,
+  'dark-default': #5dc264,
+  'dark-light-3': #3eb349,
+  'dark-light-5': #32953d,
+  'dark-light-7': #277731,
+  'dark-light-8': #1c5a25,
+  'dark-light-9': #123c19
 );
 
 $color-warning: (
   // light
-  'light-dark-2': #b88230,
-  'light-default': #e6a23c,
-  'light-light-3': #eebe77,
-  'light-light-5': #f2d09d,
-  'light-light-7': #f8e3c5,
-  'light-light-8': #faecd8,
-  'light-light-9': #fcf6ec,
+  'light-dark-2': #d26700,
+  'light-default': #fc8800,
+  'light-light-3': #fda633,
+  'light-light-5': #fdc165,
+  'light-light-7': #fed998,
+  'light-light-8': #feeecc,
+  'light-light-9': #fff8ea,
   // dark
-  'dark-dark-2': #ebb563,
-  'dark-default': #e6a23c,
-  'dark-light-3': #a77730,
-  'dark-light-5': #7d5b28,
-  'dark-light-7': #533f20,
-  'dark-light-8': #3e301c,
-  'dark-light-9': #292218
+  'dark-dark-2': #ffc772,
+  'dark-default': #ffae43,
+  'dark-light-3': #ff9214,
+  'dark-light-5': #d56f0f,
+  'dark-light-7': #aa500a,
+  'dark-light-8': #803506,
+  'dark-light-9': #551f03
 );
 
 $color-danger: (
   // light
-  'light-dark-2': #c45656,
-  'light-default': #f56c6c,
-  'light-light-3': #f89898,
-  'light-light-5': #fab5b5,
-  'light-light-7': #fcd3d3,
-  'light-light-8': #fde2e2,
-  'light-light-9': #fef0f0,
+  'light-dark-2': #d52515,
+  'light-default': #f93920,
+  'light-light-3': #fa664c,
+  'light-light-5': #fb9078,
+  'light-light-7': #fdb7a5,
+  'light-light-8': #feddd2,
+  'light-light-9': #fef2ed,
   // dark
-  'dark-dark-2': #f78989,
-  'dark-default': #f56c6c,
-  'dark-light-3': #b25252,
-  'dark-light-5': #854040,
-  'dark-light-7': #582e2e,
-  'dark-light-8': #412626,
-  'dark-light-9': #2b1d1d
+  'dark-dark-2': #fd9983,
+  'dark-default': #fc725a,
+  'dark-light-3': #fb4932,
+  'dark-light-5': #d73324,
+  'dark-light-7': #b42019,
+  'dark-light-8': #901110,
+  'dark-light-9': #6c090b
 );
 
 $color-info: (
   // light
-  'light-dark-2': #73767a,
-  'light-default': #909399,
-  'light-light-3': #b1b3b8,
-  'light-light-5': #c7c9cc,
-  'light-light-7': #dedfe0,
-  'light-light-8': #e9e9eb,
-  'light-light-9': #f4f4f5,
+  'light-dark-2': #555b61,
+  'light-default': #6b7075,
+  'light-light-3': #888d92,
+  'light-light-5': #a7abb0,
+  'light-light-7': #c6cacd,
+  'light-light-8': #e6e8ea,
+  'light-light-9': #f9f9f9,
   // dark
   'dark-dark-2': #a6a9ad,
   'dark-default': #909399,

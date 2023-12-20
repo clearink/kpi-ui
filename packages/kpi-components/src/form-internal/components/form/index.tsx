@@ -1,5 +1,12 @@
 import { useConstant, useDerivedState } from '@kpi-ui/hooks'
-import { isEqual, isFunction, toArray, withDefaults, withoutProperties } from '@kpi-ui/utils'
+import {
+  isEqual,
+  isFunction,
+  isNullish,
+  toArray,
+  withDefaults,
+  withoutProperties,
+} from '@kpi-ui/utils'
 import {
   ForwardedRef,
   createElement,
@@ -88,7 +95,7 @@ function InternalForm<State = any>(
     </InternalFormInstanceContext.Provider>
   )
 
-  if (tag === null) return elements
+  if (isNullish(tag)) return elements
 
   // 表单剩余字段
   const attrs = {

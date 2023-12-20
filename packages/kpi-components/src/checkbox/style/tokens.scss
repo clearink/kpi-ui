@@ -1,7 +1,5 @@
 $kpi-checkbox-outline-width: 2px;
 
-$kpi-checkbox-border: 1px solid var(--#{$prefix}-color-border-default);
-
 $kpi-checkbox-input-width: var(--#{$prefix}-component-size-extra-small);
 
 $kpi-checkbox-input-height: var(--#{$prefix}-component-size-extra-small);
@@ -10,9 +8,12 @@ $kpi-checkbox-arrow-width: calc($kpi-checkbox-input-width / 14 * 5);
 
 $kpi-checkbox-arrow-height: calc($kpi-checkbox-input-height / 14 * 8);
 
-$kpi-checkbox-arrow-transition: all var(--#{$prefix}-motion-duration-slow)
-  var(--#{$prefix}-motion-out-back);
+$kpi-checkbox-arrow-transition-enter: all var(--#{$prefix}-motion-duration-fast)
+    var(--#{$prefix}-motion-in-back),
+  opacity var(--#{$prefix}-motion-duration-fast);
 
-$kpi-checkbox-input-transition: all var(--#{$prefix}-motion-duration-slow)
+$kpi-checkbox-arrow-transition-exit: all var(--#{$prefix}-motion-duration-mid)
     var(--#{$prefix}-motion-out-back),
-  outline 0s, outline-offset 0s;
+  opacity var(--#{$prefix}-motion-duration-fast);
+
+$kpi-checkbox-input-transition: all var(--#{$prefix}-motion-duration-slow);

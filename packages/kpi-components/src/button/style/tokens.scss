@@ -1,7 +1,5 @@
 $kpi-btn-border: 1px solid transparent;
 
-$kpi-btn-font-weight: var(--#{$prefix}-font-weight-regular);
-
 $kpi-btn-padding-small: 0 7px;
 
 $kpi-btn-padding-default: 0 15px;
@@ -22,8 +20,6 @@ $kpi-btn-font-size-large: var(--#{$prefix}-font-size-default);
 
 $kpi-btn-transition: all var(--#{$prefix}-motion-duration-slow) var(--#{$prefix}-motion-in-out),
   outline 0s, outline-offset 0s;
-
-$kpi-btn-color-text-disabled: var(--#{$prefix}-color-text-placeholder);
 
 $kpi-btn-outline-width: 3px;
 

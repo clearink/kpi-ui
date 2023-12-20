@@ -8,4 +8,4 @@
 
 ## TODO
 
-1. 完成 checkbox 组件
+1. 完成 Modal 组件

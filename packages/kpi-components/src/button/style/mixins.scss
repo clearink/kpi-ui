@@ -5,7 +5,7 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  font-weight: $kpi-btn-font-weight;
+  font-weight: var(--#{$prefix}-font-weight-regular);
   white-space: nowrap;
   text-align: center;
   background-image: none;
