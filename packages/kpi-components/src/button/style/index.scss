@@ -111,6 +111,10 @@
     --#{$prefix}-btn-color-text-hover: #{$color-white};
     --#{$prefix}-btn-color-text-active: #{$color-white};
 
+    --#{$prefix}-btn-color-border-default: transparent;
+    --#{$prefix}-btn-color-border-hover: transparent;
+    --#{$prefix}-btn-color-border-active: transparent;
+
     --#{$prefix}-btn-color-bg-default: var(--#{$prefix}-color-primary-default);
     --#{$prefix}-btn-color-bg-hover: var(--#{$prefix}-color-primary-light-3);
     --#{$prefix}-btn-color-bg-active: var(--#{$prefix}-color-primary-dark-2);

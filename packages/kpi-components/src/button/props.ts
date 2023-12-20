@@ -1,12 +1,12 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
-import type { SizeType } from '../config-provider/props'
+import type { SizeType } from '../config-provider/_shared/props'
 
 /**
  * @desc >支持原生 button 的其他所有属性
  */
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /**
-   * @zh 按钮主题
+   * @zh  按钮主题
    * @default 'primary'
    */
   theme?: 'primary' | 'success' | 'warning' | 'danger' | 'info'

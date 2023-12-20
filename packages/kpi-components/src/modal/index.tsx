@@ -1,16 +1,22 @@
 import { withDefaults } from '@kpi-ui/utils'
 import { createPortal } from 'react-dom'
+import { CSSTransition } from '../transition'
 
 import type { ModalProps } from './props'
 
 function Modal(props: ModalProps) {
-  const { open } = props
-  const className = ''
-  const element = <div className={className}>modal component</div>
-  const protal = createPortal(element, document.body)
-  return protal
+  const element = (
+    <CSSTransition appear when={props.open} name="kpi-dialog-motion">
+      <div>modal component</div>
+    </CSSTransition>
+  )
+  return createPortal(element, document.body)
 }
 
 export default withDefaults(Modal, {
   open: false,
 })
+
+/**
+ * 需要干什么?
+ */

@@ -13,14 +13,15 @@ function isValidColor(color: string) {
 }
 
 function getWaveColor(node: HTMLElement) {
-  const computed = getComputedStyle(node)
+  const { borderTopColor, borderColor, backgroundColor } = getComputedStyle(node)
 
-  const color =
-    computed.getPropertyValue('border-top-color') || // Firefox Compatible
-    computed.getPropertyValue('border-color') ||
-    computed.getPropertyValue('background-color')
+  if (isValidColor(borderTopColor)) return borderTopColor
 
-  return isValidColor(color) ? color : ''
+  if (isValidColor(borderColor)) return borderColor
+
+  if (isValidColor(backgroundColor)) return backgroundColor
+
+  return ''
 }
 
 export default function wave(info: TouchEffectInfo) {
