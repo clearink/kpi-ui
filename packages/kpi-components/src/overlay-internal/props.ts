@@ -1,7 +1,9 @@
-export type GetContainerType = string | null | (() => Element | DocumentFragment | null)
+export type ContainerType = Element | DocumentFragment | null | undefined
+
+export type GetContainerType = string | ContainerType | (() => ContainerType)
 
 export interface OverlayProps {
-  getContainer?: GetContainerType
+  container?: GetContainerType
 
   children?: React.ReactNode
 
@@ -10,4 +12,6 @@ export interface OverlayProps {
   lockScreen?: boolean
 
   destroyOnClose?: boolean
+
+  motion?: string
 }

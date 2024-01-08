@@ -1,4 +1,4 @@
-import { isFunction } from '@kpi-ui/utils'
+import { isBoolean, isFunction } from '@kpi-ui/utils'
 import { type RefObject } from 'react'
 import { usePrefixCls } from '../../_shared/hooks'
 import { TouchEffectContext } from '../_shared/context'
@@ -18,6 +18,8 @@ export default function useTouchEffect(
   const { disabled, effect } = TouchEffectContext.useState()
 
   return useRafCallback((event: MouseEvent) => {
+    if (isBoolean(disabled) && disabled) return
+
     const root = $container.current!
 
     let target: HTMLElement | null = null
@@ -27,7 +29,7 @@ export default function useTouchEffect(
 
     const info = { event, className, component, target: target || root }
 
-    if (disabled && (!isFunction(disabled) || disabled(info))) return
+    if (isFunction(disabled) && disabled(info)) return
 
     effect ? effect(info) : wave(info)
   })

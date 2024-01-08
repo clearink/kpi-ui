@@ -20,8 +20,6 @@ function getWaveColor(node: HTMLElement) {
   if (isValidColor(borderColor)) return borderColor
 
   if (isValidColor(backgroundColor)) return backgroundColor
-
-  return ''
 }
 
 export default function wave(info: TouchEffectInfo) {
@@ -31,9 +29,11 @@ export default function wave(info: TouchEffectInfo) {
 
   const waveColor = getWaveColor(target)
 
+  if (!waveColor) return
+
   const div = document.createElement('div')
 
-  waveColor && div.style.setProperty('--wave-color', waveColor)
+  div.style.setProperty('--wave-color', waveColor)
 
   div.className = className
 
