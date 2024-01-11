@@ -6,24 +6,3 @@
   margin: 100px;
   position: relative;
 }
-.badge-scroll-number {
-  &-enter-from {
-    opacity: 0;
-    transform: translate(0, 5px);
-  }
-
-  &-move,
-  &-enter-active {
-    transition: all 1s ease-in-out;
-  }
-
-  &-exit-active {
-    transition: all 1s ease-in-out;
-    position: absolute;
-  }
-
-  &-exit-to {
-    opacity: 0;
-    transform: translate(0, -5px);
-  }
-}

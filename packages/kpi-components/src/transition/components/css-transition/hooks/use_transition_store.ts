@@ -144,11 +144,3 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
 
   return store
 }
-
-/**
- *       onExit onEnter change
- * val    T       T      F
- * val    T       F      F
- * val    F       T      T
- * val    F       F      T
- */

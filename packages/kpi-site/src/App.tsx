@@ -1,10 +1,8 @@
 import { Modal, Button, Checkbox } from '@kpi-ui/components'
 import { useEffect, useRef, useState } from 'react'
 import '@kpi-ui/components/src/style'
-import Overlay from '@kpi-ui/components/src/overlay-internal'
 
 import './style.scss'
-import { useConstant } from '../../kpi-hooks/src'
 
 export default function App() {
   const [open, set] = useState(false)
@@ -20,9 +18,9 @@ export default function App() {
       >
         minus
       </Button>
-      <Overlay getContainer={() => ref.current}>
+      <Modal open={open} container={ref.current!} forceRender destroyOnClose>
         <div>div</div>
-      </Overlay>
+      </Modal>
       <div className="container" ref={ref}></div>
     </div>
   )

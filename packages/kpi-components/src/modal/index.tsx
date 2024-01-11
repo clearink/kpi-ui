@@ -1,21 +1,23 @@
 import { withDefaults } from '@kpi-ui/utils'
-import { createPortal } from 'react-dom'
-import { CSSTransition } from '../transition'
+import Overlay from '../overlay-internal'
 
 import type { ModalProps } from './props'
 
 function Modal(props: ModalProps) {
-  const element = (
-    <CSSTransition appear when={props.open} name="kpi-dialog-motion">
+  return (
+    <Overlay
+      open={props.open}
+      forceRender={props.forceRender}
+      destroyOnClose={props.destroyOnClose}
+      container={props.container}
+      transition="kpi-slide-bottom"
+    >
       <div>modal component</div>
-    </CSSTransition>
+    </Overlay>
   )
-  return createPortal(element, document.body)
 }
 
-export default withDefaults(Modal, {
-  open: false,
-})
+export default withDefaults(Modal)
 
 /**
  * 需要干什么?

@@ -1,59 +1,37 @@
-import { isFunction, isNullish, isString } from '@kpi-ui/utils'
+import { isNullish, withDefaults } from '@kpi-ui/utils'
 import { createPortal } from 'react-dom'
+import { CSSTransition } from '../transition'
+import useRenderLimit from './hooks/use_render_limit'
+import getContainer from './utils/get_container'
 
-import type { ContainerType, OverlayProps } from './props'
-import { useEffect, useMemo, useState } from 'react'
-import { useDerivedState, useEvent, useForceUpdate } from '@kpi-ui/hooks'
+import type { OverlayProps } from './props'
 
-// 提供给 drawer. modal 使用
-export default function Overlay(props: OverlayProps) {
-  const { children: _children } = props
+function Overlay(props: OverlayProps) {
+  const { open, forceRender, destroyOnClose, children: _children, transition } = props
 
-  const container = useOverlayContainer(props)
+  if (!useRenderLimit(2)) return null
 
-  const children = isNullish(container) ? _children : createPortal(_children, container)
-  console.log('children', children)
-  return <div className="kpi-overlay">{children}</div>
+  const container = getContainer(props.container)
+
+  console.log('container', container)
+
+  // forceRender && !open ? false : !forceRender 虽然能解决 forceRender 的问题
+  // 但是不能解决 unmountOnExit
+  const children = (
+    <CSSTransition
+      appear
+      when={open}
+      mountOnEnter={forceRender && !open ? false : !forceRender}
+      unmountOnExit={forceRender && !open ? false : destroyOnClose}
+      name={transition}
+    >
+      <div className="kpi-overlay">{_children}</div>
+    </CSSTransition>
+  )
+
+  if (container === false) return children
+
+  return createPortal(children, isNullish(container) ? document.body : container)
 }
 
-function useOverlayContainer(props: OverlayProps) {
-  const forceUpdate = useForceUpdate()
-
-  // 获取最新的 container 数据
-  const getContainer = useEvent(() => {
-    const { container } = props
-    if (isNullish(container)) return null
-
-    if (isString(container)) return document.querySelector<HTMLElement>(container)
-
-    if (isFunction(container)) return container()
-
-    return container
-  })
-
-  const [container, setContainer] = useState<ContainerType>(null)
-
-  // 不能直接去计算,因为第一次ref获取的元素为null,需要延迟计算
-  // useEffect(() => {
-  //   if(open)
-  // }, [])
-
-  return getContainer()
-}
-
-/**
- * antd 此处有bug, 当open=false 时会渲染在 body下面, open=true时会渲染在 .fake-container 元素下
- *   <Modal
-        title="Basic Modal"
-        open={isModalOpen}
-        onOk={handleOk}
-        forceRender
-        onCancel={handleCancel}
-        getContainer={ref.current!}
-      >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Modal>
-      <div className="fake-container" ref={ref}></div>
- */
+export default withDefaults(Overlay)

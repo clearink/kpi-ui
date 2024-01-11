@@ -1,0 +1,38 @@
+@import '../mixins/bem.scss'; // 引入 BEM
+
+@include b(fade-in) {
+}
+
+@include b(zoom-in-center) {
+}
+
+@include b(zoom-in-top) {
+}
+
+@include b(zoom-in-bottom) {
+}
+
+@include b(slide-left) {
+}
+
+@include b(slide-right) {
+}
+
+@include b(slide-top) {
+}
+
+@include b(slide-bottom) {
+  &-enter-from {
+    opacity: 0;
+    transform: translate3d(0, -25px, 0);
+  }
+  &-exit-to {
+    opacity: 0;
+    transform: translate3d(0, -25px, 0);
+  }
+
+  &-enter-active,
+  &-exit-active {
+    transition: all var(--#{$prefix}-motion-duration-slow) var(--#{$prefix}-motion-in-out-circ);
+  }
+}
