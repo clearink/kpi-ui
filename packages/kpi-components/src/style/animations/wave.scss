@@ -1,6 +1,6 @@
-@import '../mixins/bem.scss'; // 引入 BEM
+@import '../variables.scss'; // 引入变量
 
-@include b(touch-effect) {
+.#{$prefix}-touch-effect {
   --wave-color: var(--#{$prefix}-color-primary-default);
 
   background-color: transparent;

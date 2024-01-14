@@ -1,27 +1,48 @@
-@import '../mixins/bem.scss'; // 引入 BEM
+@import '../variables.scss'; //引入变量
 
-@include b(fade-in) {
+.#{$prefix}-fade-in {
+  &-enter-from,
+  &-exit-to {
+    opacity: 0;
+  }
+
+  &-enter-active,
+  &-exit-active {
+    transition: all var(--#{$prefix}-motion-duration-slow) var(--#{$prefix}-motion-in-out-circ);
+  }
 }
 
-@include b(zoom-in-center) {
+.#{$prefix}-zoom-in-center {
 }
 
-@include b(zoom-in-top) {
+.#{$prefix}-zoom-in-top {
+  &-enter-from,
+  &-exit-to {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+
+  &-enter-active,
+  &-exit-active {
+    opacity: 1;
+    transform: scaleY(1);
+    transition: all var(--#{$prefix}-motion-duration-slow) var(--#{$prefix}-motion-in-back);
+  }
 }
 
-@include b(zoom-in-bottom) {
+.#{$prefix}-zoom-in-bottom {
 }
 
-@include b(slide-left) {
+.#{$prefix}-slide-left {
 }
 
-@include b(slide-right) {
+.#{$prefix}-slide-right {
 }
 
-@include b(slide-top) {
+.#{$prefix}-slide-top {
 }
 
-@include b(slide-bottom) {
+.#{$prefix}-slide-bottom {
   &-enter-from {
     opacity: 0;
     transform: translate3d(0, -25px, 0);

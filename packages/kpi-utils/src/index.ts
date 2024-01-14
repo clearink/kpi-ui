@@ -14,3 +14,7 @@ export { default as isEqual } from 'react-fast-compare'
 export { fillRef, mergeRefs, supportRef } from './ref'
 export { addClassNames, delClassNames } from './classnames'
 export { nextFrame } from './raf'
+
+// dom
+export { default as isBrowser } from './is_browser'
+export { default as contains } from './contains'

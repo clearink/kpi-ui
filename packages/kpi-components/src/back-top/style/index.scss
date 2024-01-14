@@ -1,9 +1,12 @@
 // 优化打包性能引入除了 preset 的内容
-@import '../../style/core/index.scss'; // 引入 BEM
-@import '../../style/themes/index.scss'; // 引入 变量
-@import './variable';
-@import './mixins';
+@import '../../style/variables.scss'; // 引入 变量
+@import '../../style/mixins/index.scss'; // 引入 reset
 
-@include b(back-top) {
+@import './tokens.scss';
+@import './mixins.scss';
+
+$comp: #{$prefix}-back-top;
+
+.#{$comp} {
   @include reset-component();
 }

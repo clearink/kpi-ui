@@ -3,7 +3,7 @@ import { pickWithFallback, withDefaults, withoutProperties } from '@kpi-ui/utils
 import { forwardRef, useImperativeHandle, useMemo, type ForwardedRef, type Ref } from 'react'
 import { ConfigContext, DisabledContext, SizeContext } from '../../../_shared/context'
 import { usePrefixCls } from '../../../_shared/hooks'
-import InternalForm from '../../../form-internal'
+import InternalForm from '../../../_internal/form'
 import { FormContext, FormContextState } from '../../_shared/context'
 import useForm from './hooks/use_form'
 import useFormatClass from './hooks/use_format_class'

@@ -1,84 +1,87 @@
 // 优化打包性能引入除了 preset 的内容, 顺序不可该变
 @import '../../style/variables.scss'; // 引入 变量
-@import '../../style/mixins/index.scss'; // 引入 BEM reset
+@import '../../style/mixins/index.scss'; // 引入 reset
 
 @import './tokens.scss';
 @import './mixins.scss';
 
-@include b(divider) {
+$comp: #{$prefix}-divider;
+
+.#{$comp} {
   @include reset-component();
 
   border-top: $kpi-divider-border;
+}
 
-  @include e(inner-text) {
-    display: inline-block;
-    padding: $kpi-divider-margin-inner-text;
-  }
+.#{$comp}__inner-text {
+  display: inline-block;
+  padding: $kpi-divider-margin-inner-text;
+}
 
-  @include m(horizontal) {
-    display: flex;
-    clear: both;
-    width: 100%;
-    min-width: 100%;
-    margin: $kpi-divider-margin-horizontal;
+.#{$comp}--horizontal {
+  display: flex;
+  clear: both;
+  width: 100%;
+  min-width: 100%;
+  margin: $kpi-divider-margin-horizontal;
 
-    @include m(with-text) {
-      // 设定了文字
-      margin: $kpi-divider-margin-with-text;
-      color: $kpi-divider-color-text;
-      font-weight: 500;
-      font-size: 16px;
-      white-space: nowrap;
-      border-top: none;
-      text-align: center;
-
-      @include pseudo('::before', '::after') {
-        content: '';
-        position: relative;
-        top: 50%;
-        transform: translateY(50%);
-        border-top: $kpi-divider-border;
-      }
-
-      @include m(plain) {
-        font-size: 14px;
-        font-weight: 400;
-      }
-    }
-  }
-
-  @include m(dashed) {
-    border-top-style: dashed;
-  }
-
-  @include m(align-left) {
-    @include divider-percent(5%);
-
-    @include m(custom-margin) {
-      @include divider-percent(0%);
-    }
-  }
-
-  @include m(align-center) {
-    @include divider-percent(50%);
-  }
-
-  @include m(align-right) {
-    @include divider-percent(95%);
-
-    @include m(custom-margin) {
-      @include divider-percent(100%);
-    }
-  }
-
-  @include m(vertical) {
-    position: relative;
-    top: -0.06em;
-    display: inline-block;
-    height: 0.9em;
-    margin: $kpi-divider-margin-vertical;
-    vertical-align: middle;
+  &.#{$comp}--with-text {
+    // 设定了文字
+    margin: $kpi-divider-margin-with-text;
+    color: $kpi-divider-color-text;
+    font-weight: 500;
+    font-size: 16px;
+    white-space: nowrap;
     border-top: none;
-    border-left: $kpi-divider-border;
+    text-align: center;
+
+    &::before,
+    &::after {
+      content: '';
+      position: relative;
+      top: 50%;
+      transform: translateY(50%);
+      border-top: $kpi-divider-border;
+    }
+
+    &.#{$comp}-plain {
+      font-size: 14px;
+      font-weight: 400;
+    }
   }
+}
+
+.#{$comp}--dashed {
+  border-top-style: dashed;
+}
+
+.#{$comp}--align-left {
+  @include divider-percent(5%);
+
+  &.#{$comp}--custom-margin {
+    @include divider-percent(0%);
+  }
+}
+
+.#{$comp}--align-center {
+  @include divider-percent(50%);
+}
+
+.#{$comp}--align-right {
+  @include divider-percent(95%);
+
+  &.#{$comp}--custom-margin {
+    @include divider-percent(100%);
+  }
+}
+
+.#{$comp}--vertical {
+  position: relative;
+  top: -0.06em;
+  display: inline-block;
+  height: 0.9em;
+  margin: $kpi-divider-margin-vertical;
+  vertical-align: middle;
+  border-top: none;
+  border-left: $kpi-divider-border;
 }

@@ -1,7 +1,7 @@
 import { withDefaults, withoutProperties } from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef, type MouseEvent } from 'react'
+import TouchEffect from '../_internal/touch-effect'
 import { usePrefixCls } from '../_shared/hooks'
-import TouchEffect from '../touch-effect'
 import useFormatClass from './hooks/use_format_class'
 import { isBorderedVariant } from './utils/helpers'
 

@@ -17,3 +17,5 @@ $kpi-checkbox-arrow-transition-exit: all var(--#{$prefix}-motion-duration-mid)
   opacity var(--#{$prefix}-motion-duration-fast);
 
 $kpi-checkbox-input-transition: all var(--#{$prefix}-motion-duration-slow);
+
+$kpi-checkbox-outline-offset: 1px;

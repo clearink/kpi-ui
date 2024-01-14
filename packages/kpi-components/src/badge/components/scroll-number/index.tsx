@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { GroupTransition } from '../../../transition'
+import { GroupTransition } from '../../../_internal/transition'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { min } from '../../../_shared/utils'
 

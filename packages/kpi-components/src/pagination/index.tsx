@@ -1,6 +1,6 @@
 import { withDefaults } from '@kpi-ui/utils'
 import { usePrefixCls } from '../_shared/hooks'
-import { CSSTransition } from '../transition'
+import { CSSTransition } from '../_internal/transition'
 import useFormatClass from './hooks/use_format_class'
 import usePageChunk from './hooks/use_page_chunk'
 import useSharedLayout from './hooks/use_shared_layout'

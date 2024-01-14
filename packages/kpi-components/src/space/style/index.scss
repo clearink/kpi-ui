@@ -1,36 +1,37 @@
 // 优化打包性能引入除了 preset 的内容, 顺序不可该变
 @import '../../style/variables.scss'; // 引入 变量
-@import '../../style/mixins/index.scss'; // 引入 BEM reset
+@import '../../style/mixins/index.scss'; // 引入 reset
 
 @import './tokens.scss';
 @import './mixins.scss';
 
-@include b(space) {
+$comp: #{$prefix}-space;
+
+.#{$comp} {
   @include reset-component();
-
   display: inline-flex;
+}
 
-  @include m(align-start) {
-    align-items: flex-start;
-  }
+.#{$comp}--align-start {
+  align-items: flex-start;
+}
 
-  @include m(align-center) {
-    align-items: center;
-  }
+.#{$comp}--align-center {
+  align-items: center;
+}
 
-  @include m(align-baseline) {
-    align-items: baseline;
-  }
+.#{$comp}--align-baseline {
+  align-items: baseline;
+}
 
-  @include m(align-end) {
-    align-items: flex-end;
-  }
+.#{$comp}--align-end {
+  align-items: flex-end;
+}
 
-  @include m(vertical) {
-    flex-direction: column;
-  }
+.#{$comp}--vertical {
+  flex-direction: column;
+}
 
-  @include m(wrap) {
-    flex-wrap: wrap;
-  }
+.#{$comp}--wrap {
+  flex-wrap: wrap;
 }

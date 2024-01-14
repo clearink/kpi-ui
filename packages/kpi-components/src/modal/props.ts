@@ -1,4 +1,4 @@
-import { OverlayProps } from '../overlay-internal/props'
+import { OverlayProps } from '../_internal/overlay/props'
 
 export interface ModalProps extends OverlayProps {
   beforeClose?: () => void
@@ -8,4 +8,6 @@ export interface ModalProps extends OverlayProps {
   beforeOpen?: () => void
 
   afterOpen?: () => void
+
+  onOpenChange?: (open: boolean) => void
 }

@@ -1,7 +1,7 @@
-import { Modal, Button, Checkbox } from '@kpi-ui/components'
-import { useEffect, useRef, useState } from 'react'
-import '@kpi-ui/components/src/style'
+import { Modal, Button } from '@kpi-ui/components'
+import { useRef, useState } from 'react'
 
+import '@kpi-ui/components/src/style'
 import './style.scss'
 
 export default function App() {
@@ -18,9 +18,10 @@ export default function App() {
       >
         minus
       </Button>
-      <Modal open={open} container={ref.current!} forceRender destroyOnClose>
+      <Modal open={open} onOpenChange={set}>
         <div>div</div>
       </Modal>
+
       <div className="container" ref={ref}></div>
     </div>
   )

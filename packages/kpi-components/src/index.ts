@@ -33,9 +33,6 @@ export type { ModalProps } from './modal/_shared/props'
 export { default as Checkbox } from './checkbox'
 export type { CheckboxProps } from './checkbox/_shared/props'
 
-export * from './transition'
-export type * from './transition/_shared/props'
-
 export { default as Badge } from './badge'
 export type { BadgeProps } from './badge/_shared/props'
 

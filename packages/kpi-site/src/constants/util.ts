@@ -40,12 +40,14 @@ export default class Constant<T extends readonly ConstantItem[]> {
 
   extend: <R extends object>(fn: (instance: this) => R) => this & R
 
-  injectEnums: () => this & GenerateEnums<T>
+  readonly enums: GenerateEnums<T>
 
   constructor(public readonly sequences: T) {
     const k_map = new Map<T[number][0], ConstantOption<T>>()
 
     const v_map = new Map<Value, ConstantOption<T>>()
+
+    this.enums = {} as GenerateEnums<T>
 
     sequences.forEach((sequence) => {
       const [key, value, label, extra] = sequence
@@ -53,6 +55,10 @@ export default class Constant<T extends readonly ConstantItem[]> {
       const item: any = { key, value, label, ...extra }
 
       this.options.push(item)
+
+      const properties = { [key]: { value }, [value]: { value: label } }
+
+      Object.defineProperties(this.enums, properties)
 
       k_map.set(key, item)
 
@@ -75,15 +81,6 @@ export default class Constant<T extends readonly ConstantItem[]> {
       const keys = Array.isArray(condition) ? condition : [condition]
 
       return keys.some((key) => this.get(key).value === value)
-    }
-
-    this.injectEnums = () => {
-      k_map.forEach(({ key, value, label }) => {
-        const properties = { [key]: { value }, [value]: { value: label } }
-
-        Object.defineProperties(this, properties)
-      })
-      return this as this & GenerateEnums<T>
     }
   }
 }

@@ -1,7 +1,7 @@
 import { useControllableState } from '@kpi-ui/hooks'
-import { fallback, isNullish, withDefaults, withoutProperties } from '@kpi-ui/utils'
+import { isNullish, withDefaults, withoutProperties } from '@kpi-ui/utils'
+import TouchEffect from '../../../_internal/touch-effect'
 import { usePrefixCls } from '../../../_shared/hooks'
-import TouchEffect from '../../../touch-effect'
 import useFormatClass from './hooks/use_format_class'
 
 import type { CheckboxProps } from './props'

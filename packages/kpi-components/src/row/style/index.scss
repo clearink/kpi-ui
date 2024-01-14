@@ -1,11 +1,13 @@
 // 优化打包性能引入除了 preset 的内容, 顺序不可该变
 @import '../../style/variables.scss'; // 引入 变量
-@import '../../style/mixins/index.scss'; // 引入 BEM reset
+@import '../../style/mixins/index.scss'; // 引入 reset
 
 @import './tokens.scss';
 @import './mixins.scss';
 
-@include b(row) {
+$comp: #{$prefix}-row;
+
+.#{$comp} {
   @include reset-component();
 
   display: flex;
@@ -14,40 +16,40 @@
   &::after {
     display: flex;
   }
+}
 
-  @include m(wrap) {
-    flex-wrap: wrap;
-  }
+.#{$comp}--wrap {
+  flex-wrap: wrap;
+}
 
-  @include m(start) {
-    justify-content: flex-start;
-  }
-  @include m(end) {
-    justify-content: flex-end;
-  }
-  @include m(center) {
-    justify-content: center;
-  }
-  @include m(space-around) {
-    justify-content: space-around;
-  }
-  @include m(space-between) {
-    justify-content: space-between;
-  }
-  @include m(space-evenly) {
-    justify-content: space-evenly;
-  }
+.#{$comp}--start {
+  justify-content: flex-start;
+}
+.#{$comp}--end {
+  justify-content: flex-end;
+}
+.#{$comp}--center {
+  justify-content: center;
+}
+.#{$comp}--space-around {
+  justify-content: space-around;
+}
+.#{$comp}--space-between {
+  justify-content: space-between;
+}
+.#{$comp}--space-evenly {
+  justify-content: space-evenly;
+}
 
-  @include m(top) {
-    align-items: flex-start;
-  }
-  @include m(middle) {
-    align-items: center;
-  }
-  @include m(bottom) {
-    align-items: flex-end;
-  }
-  @include m(stretch) {
-    align-items: stretch;
-  }
+.#{$comp}--top {
+  align-items: flex-start;
+}
+.#{$comp}--middle {
+  align-items: center;
+}
+.#{$comp}--bottom {
+  align-items: flex-end;
+}
+.#{$comp}--stretch {
+  align-items: stretch;
 }

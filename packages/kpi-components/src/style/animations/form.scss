@@ -1,6 +1,6 @@
-@import '../mixins/bem.scss'; // 引入 BEM
+@import '../variables.scss'; // 引入变量
 
-@include b(form-item-message-error) {
+.#{$prefix}-form-item-message-error {
   &-enter-from,
   &-exit-to {
     opacity: 0;

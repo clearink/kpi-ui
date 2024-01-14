@@ -1,11 +1,13 @@
 // 优化打包性能引入除了 preset 的内容, 顺序不可该变
 @import '../../style/variables.scss'; // 引入 变量
-@import '../../style/mixins/index.scss'; // 引入 BEM reset
+@import '../../style/mixins/index.scss'; // 引入 reset
 
 @import './tokens.scss';
 @import './mixins.scss';
 
-@include b(checkbox) {
+$comp: #{$prefix}-checkbox;
+
+.#{$comp} {
   @include reset-component();
   position: relative;
 
@@ -13,81 +15,79 @@
   align-items: center;
   cursor: pointer;
 
-  @include e(original) {
+  &:hover .#{$comp}__input {
+    border-color: var(--#{$prefix}-color-primary-default);
+  }
+}
+
+.#{$comp}__original {
+  position: absolute;
+  opacity: 0;
+  outline: none;
+  margin: 0;
+  width: 0;
+  height: 0;
+  z-index: -1;
+
+  &:focus-visible + .#{$comp}__input {
+    outline-color: var(--#{$prefix}-color-primary-light-3);
+    outline-offset: $kpi-checkbox-outline-offset;
+  }
+}
+
+.#{$comp}__input {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  border: 1px solid var(--#{$prefix}-color-border-default);
+  border-radius: var(--#{$prefix}-border-radius-small);
+  width: $kpi-checkbox-input-width;
+  height: $kpi-checkbox-input-height;
+  background-color: var(--#{$prefix}-color-fill-blank);
+  transition: $kpi-checkbox-input-transition;
+  z-index: 1;
+  outline: transparent solid $kpi-checkbox-outline-width;
+
+  &::after {
+    content: '';
     position: absolute;
-    opacity: 0;
-    outline: none;
-    margin: 0;
-    width: 0;
-    height: 0;
-    z-index: -1;
-
-    @include pseudo(':focus-visible + .kpi-checkbox__input ') {
-      outline-color: var(--#{$prefix}-color-primary-light-3);
-      outline-offset: $kpi-btn-outline-offset;
-    }
-  }
-
-  @include e(input) {
-    position: relative;
-    display: inline-block;
     box-sizing: border-box;
-    border: 1px solid var(--#{$prefix}-color-border-default);
-    border-radius: var(--#{$prefix}-border-radius-small);
-    width: $kpi-checkbox-input-width;
-    height: $kpi-checkbox-input-height;
-    background-color: var(--#{$prefix}-color-fill-blank);
-    transition: $kpi-checkbox-input-transition;
-    z-index: 1;
-    outline: transparent solid $kpi-checkbox-outline-width;
+    width: $kpi-checkbox-arrow-width;
+    height: $kpi-checkbox-arrow-height;
+    border: 2px solid #{$color-white};
+    border-top: 0;
+    border-left: 0;
+    left: calc($kpi-checkbox-arrow-width / 2);
+    top: 50%;
+    transition: $kpi-checkbox-arrow-transition-enter;
+    transform: scale(0) rotate(45deg) translate(-50%, -50%);
+  }
+}
 
-    @include pseudo('::after') {
-      content: '';
-      position: absolute;
-      box-sizing: border-box;
-      width: $kpi-checkbox-arrow-width;
-      height: $kpi-checkbox-arrow-height;
-      border: 2px solid #{$color-white};
-      border-top: 0;
-      border-left: 0;
-      left: calc($kpi-checkbox-arrow-width / 2);
-      top: 50%;
-      transition: $kpi-checkbox-arrow-transition-enter;
-      transform: scale(0) rotate(45deg) translate(-50%, -50%);
+.#{$comp}__label {
+  padding: 0 8px;
+  color: var(--#{$prefix}-color-text-regular);
+}
+
+.#{$comp}--checked {
+  &.#{$comp}__input {
+    border-color: var(--#{$prefix}-color-primary-default);
+    background-color: var(--#{$prefix}-color-primary-default);
+
+    &::after {
+      transform: scale(1) rotate(45deg) translate(-50%, -50%);
+      transition: $kpi-checkbox-arrow-transition-exit;
     }
   }
 
-  @include e(label) {
-    padding: 0 8px;
-    color: var(--#{$prefix}-color-text-regular);
-  }
-
-  @include pseudo(':hover') {
-    @include b(checkbox__input) {
-      border-color: var(--#{$prefix}-color-primary-default);
-    }
-  }
-
-  @include m(checked) {
-    @include b(checkbox__input) {
-      border-color: var(--#{$prefix}-color-primary-default);
-      background-color: var(--#{$prefix}-color-primary-default);
-
-      @include pseudo('::after') {
-        transform: scale(1) rotate(45deg) translate(-50%, -50%);
-        transition: $kpi-checkbox-arrow-transition-exit;
-      }
-    }
-
-    @include pseudo(':hover') {
-      @include b(checkbox__input) {
-        border-color: var(--#{$prefix}-color-primary-light-3);
-        background-color: var(--#{$prefix}-color-primary-light-3);
-      }
+  &:hover {
+    &.#{$comp}__input {
+      border-color: var(--#{$prefix}-color-primary-light-3);
+      background-color: var(--#{$prefix}-color-primary-light-3);
     }
   }
 }
 
-@include b(checkbox-group) {
+.#{$comp}-group {
   @include reset-component();
 }

@@ -1,6 +1,6 @@
-@import '../mixins/bem.scss'; // 引入 BEM
+@import '../variables.scss'; //引入变量
 
-@include b(badge-scroll-number) {
+.#{$prefix}-badge-scroll-number {
   &-enter-from {
     opacity: 0;
     transform: translate3d(0, 5px, 0);

@@ -1,4 +1,4 @@
-import { List, useWatch } from '../form-internal'
+import { List, useWatch } from '../_internal/form'
 import ErrorList from './components/error-list'
 import Form from './components/form'
 import useForm from './components/form/hooks/use_form'

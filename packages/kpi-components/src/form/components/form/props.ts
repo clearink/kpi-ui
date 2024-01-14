@@ -1,6 +1,6 @@
 import type { ColProps } from '../../../col/props'
-import type { SizeType } from '../../../config-provider/props'
-import type { ExternalFormInstance, InternalFormProps } from '../../../form-internal/_shared/props'
+import type { SizeType } from '../../../_shared/context'
+import type { ExternalFormInstance, InternalFormProps } from '../../../_internal/form/_shared/props'
 import type { FormLabelAlign, FormLayout, NamePath, RequiredMark } from '../../props'
 
 export interface FormInstance<S = any> extends ExternalFormInstance<S> {

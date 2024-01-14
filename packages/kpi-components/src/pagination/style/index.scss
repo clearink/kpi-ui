@@ -1,55 +1,57 @@
 // 优化打包性能引入除了 preset 的内容, 顺序不可该变
 @import '../../style/variables.scss'; // 引入 变量
-@import '../../style/mixins/index.scss'; // 引入 BEM reset
+@import '../../style/mixins/index.scss'; // 引入 reset
 
 @import './tokens.scss';
 @import './mixins.scss';
 
-@include b(pagination) {
+$comp: #{$prefix}-pagination;
+
+.#{$comp} {
   @include reset-component();
   display: flex;
+}
 
-  @include e(item) {
-    position: relative;
-    cursor: pointer;
-    user-select: none;
-    background-color: #f5f5f5;
-    min-width: 32px;
-    padding: 0 12px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.#{$comp}__item {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  background-color: #f5f5f5;
+  min-width: 32px;
+  padding: 0 12px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  @include e(text) {
-    position: relative;
-    z-index: 2;
-    white-space: nowrap;
-  }
+.#{$comp}__text {
+  position: relative;
+  z-index: 2;
+  white-space: nowrap;
+}
 
-  @include e(active) {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 2px;
-    bottom: 2px;
-    border-radius: 4px;
-    background-color: #fff;
-    pointer-events: none;
-    box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02),
-      0 2px 4px 0 rgba(0, 0, 0, 0.02);
-    z-index: 1;
-  }
+.#{$comp}__active {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 4px;
+  background-color: #fff;
+  pointer-events: none;
+  box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02),
+    0 2px 4px 0 rgba(0, 0, 0, 0.02);
+  z-index: 1;
+}
 
-  @include e(text) {
-    color: rgba(0, 0, 0, 0.65);
-  }
+.#{$comp}__text {
+  color: rgba(0, 0, 0, 0.65);
+}
 
-  @include e(pre) {
-    margin-right: 8px;
-  }
+.#{$comp}__pre {
+  margin-right: 8px;
+}
 
-  @include e(next) {
-  }
+.#{$comp}__next {
 }
