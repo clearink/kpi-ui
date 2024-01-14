@@ -1,33 +1,30 @@
-import { useConstant } from '@kpi-ui/hooks'
+import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 
 import type { OverlayProps } from '../props'
 
 export class OverlayStore {
-  // 是否应该渲染
-  shouldRender = false
-
-  setShouldRender = (value: boolean) => {
-    this.shouldRender = value
-  }
-
+  // 过渡中
   inTransition = false
 
   setInTransition = (value: boolean) => {
+    if (this.inTransition !== value) this.forceUpdate()
+
     this.inTransition = value
   }
 
-  // 组件是否渲染过
   isInitial = true
 
   setIsInitial = (value: boolean) => {
     this.isInitial = value
   }
 
-  constructor(props: OverlayProps) {
-    this.shouldRender = !!props.open
+  constructor(props: OverlayProps, public forceUpdate: () => void) {
+    this.isInitial = !props.open
   }
 }
 
 export default function useOverlayStore(props: OverlayProps) {
-  return useConstant(() => new OverlayStore(props))
+  const forceUpdate = useForceUpdate()
+
+  return useConstant(() => new OverlayStore(props, forceUpdate))
 }

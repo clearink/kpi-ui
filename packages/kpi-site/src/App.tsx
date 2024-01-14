@@ -3,6 +3,7 @@ import { useRef, useState } from 'react'
 
 import '@kpi-ui/components/src/style'
 import './style.scss'
+import { CSSTransition } from '@kpi-ui/components/src/_internal/transition'
 
 export default function App() {
   const [open, set] = useState(false)
@@ -18,11 +19,11 @@ export default function App() {
       >
         minus
       </Button>
-      <Modal open={open} onOpenChange={set}>
+      <Modal open={open} unmountOnExit onOpenChange={set}>
         <div>div</div>
       </Modal>
 
-      <div className="container" ref={ref}></div>
+      {/* <div className="container" ref={ref}></div> */}
     </div>
   )
 }

@@ -6,7 +6,7 @@ import getContainer from './utils/get_container'
 import type { ContainerType, PortalProps } from './props'
 
 function Portal(props: PortalProps) {
-  const { children, visible, forceRender, container: _container } = props
+  const { children, container: _container } = props
 
   const [container, setContainer] = useState<ContainerType>(() => getContainer(_container))
 
@@ -14,7 +14,7 @@ function Portal(props: PortalProps) {
     setContainer(getContainer(_container))
   }, [_container])
 
-  if (isNullish(container) || !(forceRender || visible)) return null
+  if (isNullish(container)) return null
 
   return container === false ? children : createPortal(children, container)
 }

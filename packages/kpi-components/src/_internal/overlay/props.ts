@@ -9,17 +9,25 @@ export interface OverlayProps {
 
   children: React.ReactElement
 
+  mask?: boolean
+
   open?: boolean
 
   lockScreen?: boolean
 
   transitions?: { mask?: string; content?: string }
 
-  forceRender?: boolean
+  /**
+   * @zh 进入过渡时才进行初次渲染
+   * @default false
+   */
+  mountOnEnter?: boolean
 
-  destroyOnClose?: boolean
-
-  mask?: boolean
+  /**
+   * @zh 退出过渡结束时卸载元素
+   * @default false
+   */
+  unmountOnExit?: boolean
 
   classNames?: { root?: string; mask?: string; wrap?: string }
 }

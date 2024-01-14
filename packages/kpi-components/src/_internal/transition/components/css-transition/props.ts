@@ -14,7 +14,17 @@ export interface CSSTransitionProps<E extends HTMLElement = HTMLElement> {
   type?: 'transition' | 'animation'
   duration?: number | { appear?: number; enter?: number; exit?: number }
   appear?: boolean
+
+  /**
+   * @zh 进入过渡时才进行初次渲染
+   * @default false
+   */
   mountOnEnter?: boolean
+
+  /**
+   * @zh 退出过渡结束时卸载元素
+   * @default false
+   */
   unmountOnExit?: boolean
   children: ReactElement
   // classNames

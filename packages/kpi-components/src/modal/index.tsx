@@ -4,7 +4,7 @@ import Overlay from '../_internal/overlay'
 import type { ModalProps } from './props'
 import { usePrefixCls } from '../_shared/hooks'
 
-const included = ['open', 'forceRender', 'destroyOnClose', 'container'] as const
+const included = ['open', 'mountOnEnter', 'unmountOnExit', 'container'] as const
 
 function Modal(props: ModalProps) {
   // const {  ...restProps } = props
@@ -17,14 +17,15 @@ function Modal(props: ModalProps) {
       {...overlayProps}
       transitions={{ mask: 'kpi-fade-in', content: 'kpi-slide-bottom' }}
       classNames={{
-        root: `${prefixCls}__root`,
-        mask: `${prefixCls}__mask`,
-        wrap: `${prefixCls}__wrap`,
+        mask: `${prefixCls}-mask`,
+        wrap: `${prefixCls}-wrap`,
       }}
     >
-      <div className={`${prefixCls}`}>
+      <div role="dialog" aria-modal="true" className={`${prefixCls}`}>
         <div className={`${prefixCls}__content`}>
-          <div className={`${prefixCls}__header`}></div>
+          <div className={`${prefixCls}__header`}>
+            <div onClick={() => props.onOpenChange?.(!props.open)}>close</div>
+          </div>
           <div className={`${prefixCls}__body`}>{props.children}</div>
           <div className={`${prefixCls}__footer`}></div>
         </div>

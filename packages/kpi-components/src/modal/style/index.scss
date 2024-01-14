@@ -7,14 +7,6 @@
 
 $comp: #{$prefix}-modal;
 
-.#{$comp} {
-  @include reset-component();
-}
-
-.#{$comp}-root {
-  @include full-screen();
-}
-
 .#{$comp}-mask {
   @include full-screen();
   pointer-events: none;
@@ -25,14 +17,23 @@ $comp: #{$prefix}-modal;
   @include full-screen();
 }
 
-.#{$comp}-content {
-}
+.#{$comp} {
+  @include reset-component();
 
-.#{$comp}-header {
-}
+  width: 520px;
+  margin: 0 auto;
+  position: relative;
+  top: 100px;
+  background-color: white;
+  .#{$comp}__content {
+  }
 
-.#{$comp}-body {
-}
+  .#{$comp}__header {
+  }
 
-.#{$comp}-footer {
+  .#{$comp}__body {
+  }
+
+  .#{$comp}__footer {
+  }
 }
