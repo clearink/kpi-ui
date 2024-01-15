@@ -7,7 +7,7 @@ import useOverlayStore from './hooks/use_overlay_store'
 import type { OverlayProps } from './props'
 
 function Overlay(props: OverlayProps) {
-  const { open, mountOnEnter, unmountOnExit, mask, transitions, classNames } = props
+  const { open, keepMounted, unmountOnClose, mask, transitions, classNames } = props
 
   const store = useOverlayStore(props)
 
@@ -16,15 +16,23 @@ function Overlay(props: OverlayProps) {
     if (!open) return
 
     store.setIsInitial(false)
+    store.setShouldMounted(true)
   })
 
-  if (unmountOnExit && !open && !store.inTransition) return null
+  useDerivedState(unmountOnClose, () => {
+    if (!unmountOnClose) return
+    store.setShouldMounted(!unmountOnClose || !!keepMounted)
+  })
+
+  if (!keepMounted && !store.shouldMounted) {
+    if (!open && !store.inTransition) return null
+  }
 
   return (
     <Portal container={props.container}>
       <div className={classNames?.root}>
         {!!mask && (
-          <CSSTransition appear when={open} name={transitions?.mask} mountOnEnter={mountOnEnter}>
+          <CSSTransition appear when={open} name={transitions?.mask} mountOnEnter={!keepMounted}>
             <div aria-hidden="true" className={classNames?.mask}></div>
           </CSSTransition>
         )}
@@ -37,13 +45,14 @@ function Overlay(props: OverlayProps) {
             appear
             when={open}
             name={transitions?.content}
-            mountOnEnter={mountOnEnter}
-            unmountOnExit={unmountOnExit}
+            mountOnEnter={!keepMounted}
             onEnter={() => {
               store.setInTransition(true)
+              store.setShouldMounted(true)
             }}
             onExited={() => {
               store.setInTransition(false)
+              store.setShouldMounted(!!keepMounted)
             }}
           >
             {props.children}
@@ -56,5 +65,4 @@ function Overlay(props: OverlayProps) {
 
 export default withDefaults(Overlay, {
   mask: true,
-  mountOnEnter: true,
 })

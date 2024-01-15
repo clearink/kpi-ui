@@ -23,13 +23,14 @@ export default function useTransitionEvent<E extends HTMLElement>(
     const { from, active, to } = classNames[step]
 
     delClassNames(el, from, active, to)
-    if (!isExit(step)) return onEntered && onEntered(el, isAppear(step))
+
+    if (!isExit(step)) return onEntered?.(el, isAppear(step))
 
     onExited && onExited(el)
 
-    store.hidden()
+    store.display.hide()
 
-    unmountOnExit && store.destroy()
+    unmountOnExit && store.updateUnmount(true)
   }
 
   const runCancel = (el: E, step: TransitionStep) => {

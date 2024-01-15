@@ -13,21 +13,17 @@ export interface OverlayProps {
 
   open?: boolean
 
-  lockScreen?: boolean
+  lockScroll?: boolean
 
   transitions?: { mask?: string; content?: string }
 
   /**
-   * @zh 进入过渡时才进行初次渲染
+   * @zh 永远会渲染在页面
    * @default false
    */
-  mountOnEnter?: boolean
+  keepMounted?: boolean
 
-  /**
-   * @zh 退出过渡结束时卸载元素
-   * @default false
-   */
-  unmountOnExit?: boolean
+  unmountOnClose?: boolean
 
   classNames?: { root?: string; mask?: string; wrap?: string }
 }

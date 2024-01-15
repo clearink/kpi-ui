@@ -1,4 +1,4 @@
-import { useConstant, useForceUpdate, useDerivedState } from '@kpi-ui/hooks'
+import { useConstant, useDerivedState, useForceUpdate } from '@kpi-ui/hooks'
 import {
   ENTER,
   ENTERED,
@@ -13,7 +13,49 @@ import {
 import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
 
 const explicit = Symbol.for('explicit-display')
+
 export class TransitionStore<E extends HTMLElement> {
+  display = {
+    show: () => {
+      const el = this.instance
+
+      if (!el) return
+
+      const { display, priority } = el[explicit]
+
+      el.style.setProperty('display', display, priority)
+    },
+    stash: () => {
+      const el = this.instance
+
+      if (!el) return
+
+      const display = el.style.getPropertyValue('display')
+      const priority = el.style.getPropertyPriority('display')
+
+      el[explicit] = { display, priority }
+    },
+    hide: () => {
+      const el = this.instance
+
+      if (!el) return
+
+      el.style.display = 'none'
+    },
+  }
+
+  appear = false
+
+  mounted = false
+
+  setMounted = (mounted: boolean) => {
+    this.mounted = mounted
+  }
+
+  get running() {
+    return isEnter(this.status) || isExit(this.status)
+  }
+
   constructor(public forceUpdate: () => void, props: CSS<E>) {
     const { appear, when, unmountOnExit, mountOnEnter } = props
 
@@ -27,16 +69,13 @@ export class TransitionStore<E extends HTMLElement> {
 
   status: TransitionStatus
 
-  appear = false
-
-  // 过渡元素是否挂载过
-  mounted = false
-
-  setMounted = (mounted: boolean) => {
-    this.mounted = mounted
-  }
-
   unmount = false
+
+  updateUnmount = (unmount: boolean) => {
+    if (this.unmount !== unmount) this.forceUpdate()
+
+    this.unmount = unmount
+  }
 
   instance: E | null = null
 
@@ -50,8 +89,6 @@ export class TransitionStore<E extends HTMLElement> {
     this.isInitial = isInitial
   }
 
-  running = false
-
   endHook: void | (() => void) = undefined
 
   setEndHook = (endHook: void | (() => void)) => {
@@ -64,54 +101,15 @@ export class TransitionStore<E extends HTMLElement> {
     this.endHook = undefined
   }
 
-  prepareHidden = () => {
-    const el = this.instance as null | (E & { [explicit]: { display: string; priority: string } })
-
-    if (!el) return
-
-    const display = el.style.getPropertyValue('display')
-    const priority = el.style.getPropertyPriority('display')
-
-    el[explicit] = { display, priority }
-  }
-
-  hidden = () => {
-    const el = this.instance
-
-    if (!el) return
-
-    el.style.display = 'none'
-  }
-
-  show = () => {
-    const el = this.instance as null | (E & { [explicit]: { display: string; priority: string } })
-
-    if (!el) return
-
-    const { display, priority } = el[explicit]
-
-    el.style.setProperty('display', display, priority)
-  }
-
-  destroy = () => {
-    this.unmount = true
-
-    this.forceUpdate()
-  }
-
   start = (step: TransitionStep) => {
-    this.running = true
-
-    this.unmount = false
+    this.updateUnmount(false)
 
     this.status = isExit(step) ? EXIT : ENTER
 
-    isExit(step) ? this.prepareHidden() : this.show()
+    isExit(step) ? this.display.stash() : this.display.show()
   }
 
   finish = (step: TransitionStep) => {
-    this.running = false
-
     this.status = isExit(step) ? EXITED : ENTERED
 
     this.runEndHook()
@@ -135,11 +133,7 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
   useDerivedState(`${unmountOnExit}-${mountOnEnter}`, () => {
     const unmount = (!!unmountOnExit || (!store.mounted && !!mountOnEnter)) && !when
 
-    if (!isExited(store.status) || store.unmount === unmount) return
-
-    store.unmount = unmount
-
-    store.forceUpdate()
+    if (isExited(store.status)) store.updateUnmount(unmount)
   })
 
   return store

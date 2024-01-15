@@ -35,9 +35,9 @@ function CSSTransition<E extends HTMLElement = HTMLElement>(
 
     store.setInstance(el)
 
-    store.prepareHidden()
+    store.display.stash()
 
-    if (store.appear || !when) store.hidden()
+    if (store.appear || !when) store.display.hide()
   })
 
   const runTransition = useEvent((el: E, step: TransitionStep) => {
