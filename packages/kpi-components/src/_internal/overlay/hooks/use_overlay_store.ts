@@ -1,39 +1,57 @@
-import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
+import { useConstant, useDerivedState, useForceUpdate } from '@kpi-ui/hooks'
 
 import type { OverlayProps } from '../props'
 
 export class OverlayStore {
-  isInitial = true
+  // 能否挂载元素
+  isMounted: boolean
 
-  setIsInitial = (value: boolean) => {
-    this.isInitial = value
+  setIsMounted = (value: boolean, forceUpdate = true) => {
+    if (this.isMounted !== value && forceUpdate) this.forceUpdate()
+
+    this.isMounted = value
   }
 
-  // 过渡中
-  inTransition = false
-
-  setInTransition = (value: boolean) => {
-    if (this.inTransition !== value) this.forceUpdate()
-
-    this.inTransition = value
-  }
-
-  shouldMounted = false
-
-  setShouldMounted = (value: boolean) => {
-    if (this.shouldMounted !== value) this.forceUpdate()
-
-    this.shouldMounted = value
+  wrap = {
+    instance: null as HTMLElement | null,
+    stash: (el: HTMLElement | null) => {
+      this.wrap.instance = el
+    },
+    show: () => {
+      const el = this.wrap.instance
+      el && el.style.removeProperty('display')
+    },
+    hide: () => {
+      const el = this.wrap.instance
+      el && el.style.setProperty('display', 'none', 'important')
+    },
   }
 
   constructor(props: OverlayProps, public forceUpdate: () => void) {
-    this.isInitial = !props.open
-    this.shouldMounted = !!props.unmountOnClose
+    this.isMounted = !!props.keepMounted
   }
 }
 
 export default function useOverlayStore(props: OverlayProps) {
+  const { keepMounted, unmountOnExit, open } = props
+
   const forceUpdate = useForceUpdate()
 
-  return useConstant(() => new OverlayStore(props, forceUpdate))
+  const store = useConstant(() => new OverlayStore(props, forceUpdate))
+
+  // 监听 keepMounted, unmountOnExit
+  useDerivedState(`${keepMounted}-${unmountOnExit}`, () => {
+    let mounted = store.isMounted
+
+    // keepMounted 优先级高于 unmountOnExit
+    if (keepMounted) mounted = true
+    else if (unmountOnExit) mounted = false
+
+    store.setIsMounted(mounted)
+  })
+
+  // when 变化时需要保证页面处于渲染中, 不必强制渲染一次更新 isMounted
+  useDerivedState(open, () => store.setIsMounted(true, false))
+
+  return store
 }

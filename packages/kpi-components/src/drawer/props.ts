@@ -6,7 +6,7 @@ export interface StyledProps {
   style?: React.CSSProperties
 }
 
-export interface ModalProps
+export interface DrawerProps
   extends StyledProps,
     Pick<
       OverlayProps,

@@ -1,8 +1,8 @@
 $kpi-checkbox-outline-width: 2px;
 
-$kpi-checkbox-input-width: var(--#{$prefix}-component-size-extra-small);
+$kpi-checkbox-input-width: var(--#{$prefix}-size-unit-4);
 
-$kpi-checkbox-input-height: var(--#{$prefix}-component-size-extra-small);
+$kpi-checkbox-input-height: var(--#{$prefix}-size-unit-4);
 
 $kpi-checkbox-arrow-width: calc($kpi-checkbox-input-width / 14 * 5);
 

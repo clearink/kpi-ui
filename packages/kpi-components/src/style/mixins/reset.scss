@@ -4,8 +4,7 @@
   padding: 0;
   color: var(--#{$prefix}-color-text-regular);
   font-size: var(--#{$prefix}-font-size-default);
-  font-variant: var(--#{$prefix}-font-variant);
   line-height: var(--#{$prefix}-line-height-default);
+  font-family: var(--#{$prefix}-font-family);
   list-style: none;
-  font-feature-settings: var(--#{$prefix}-font-feature-settings);
 }

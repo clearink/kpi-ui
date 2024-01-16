@@ -5,7 +5,7 @@
 @import './tokens.scss';
 @import './mixins.scss';
 
-$comp: #{$prefix}-modal;
+$comp: #{$prefix}-drawer;
 
 .#{$comp}-mask {
   @include full-screen();

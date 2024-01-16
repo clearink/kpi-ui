@@ -3,7 +3,7 @@ import Overlay from '../_internal/overlay'
 import { usePrefixCls } from '../_shared/hooks'
 import cls from 'classnames'
 
-import type { ModalProps } from './props'
+import type { DrawerProps } from './props'
 import { useId } from 'react'
 import Button from '../button'
 
@@ -16,10 +16,10 @@ const included = [
   'unmountOnExit',
 ] as const
 
-function Modal(props: ModalProps) {
+function Drawer(props: DrawerProps) {
   const { children, open, transitions, title, footer } = props
 
-  const prefixCls = usePrefixCls('modal')
+  const prefixCls = usePrefixCls('drawer')
 
   const ariaId = useId()
 
@@ -73,7 +73,7 @@ function Modal(props: ModalProps) {
   )
 }
 
-export default withDefaults(Modal)
+export default withDefaults(Drawer)
 
 /**
  * 需要干什么?

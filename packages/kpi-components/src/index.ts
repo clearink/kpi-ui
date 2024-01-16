@@ -30,6 +30,9 @@ export { default as Grid } from './grid'
 export { default as Modal } from './modal'
 export type { ModalProps } from './modal/_shared/props'
 
+export { default as Drawer } from './drawer'
+export type { DrawerProps } from './drawer/_shared/props'
+
 export { default as Checkbox } from './checkbox'
 export type { CheckboxProps } from './checkbox/_shared/props'
 

@@ -18,6 +18,5 @@
 
 body {
   @include reset-component();
-  font-family: var(--#{$prefix}-font-family);
   background-color: var(--#{$prefix}-color-background-default);
 }

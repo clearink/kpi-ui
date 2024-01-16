@@ -8,7 +8,7 @@
 
   @include kpi-radius();
 
-  @include kpi-component-size();
+  @include kpi-size-unit();
 
   @include kpi-motion();
 }

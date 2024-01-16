@@ -30,7 +30,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     store.display.hide()
 
-    unmountOnExit && store.updateUnmount(true)
+    unmountOnExit && store.setIsMounted(false)
   }
 
   const runCancel = (el: E, step: TransitionStep) => {

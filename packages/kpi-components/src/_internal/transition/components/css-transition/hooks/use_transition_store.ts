@@ -40,16 +40,16 @@ export class TransitionStore<E extends HTMLElement> {
 
       if (!el) return
 
-      el.style.display = 'none'
+      el.style.setProperty('display', 'none', 'important')
     },
   }
 
   appear = false
 
-  mounted = false
+  hasMounted = false
 
-  setMounted = (mounted: boolean) => {
-    this.mounted = mounted
+  setHasMounted = (value: boolean) => {
+    this.hasMounted = value
   }
 
   get running() {
@@ -61,7 +61,7 @@ export class TransitionStore<E extends HTMLElement> {
 
     this.appear = !!appear
 
-    this.unmount = (!!unmountOnExit || !!mountOnEnter) && !when
+    this.isMounted = when || !(unmountOnExit || mountOnEnter)
 
     if (!when) this.status = EXITED
     else this.status = appear ? ENTER : ENTERED
@@ -69,12 +69,12 @@ export class TransitionStore<E extends HTMLElement> {
 
   status: TransitionStatus
 
-  unmount = false
+  isMounted: boolean
 
-  updateUnmount = (unmount: boolean) => {
-    if (this.unmount !== unmount) this.forceUpdate()
+  setIsMounted = (value: boolean, forceUpdate = true) => {
+    if (this.isMounted !== value && forceUpdate) this.forceUpdate()
 
-    this.unmount = unmount
+    this.isMounted = value
   }
 
   instance: E | null = null
@@ -102,8 +102,6 @@ export class TransitionStore<E extends HTMLElement> {
   }
 
   start = (step: TransitionStep) => {
-    this.updateUnmount(false)
-
     this.status = isExit(step) ? EXIT : ENTER
 
     isExit(step) ? this.display.stash() : this.display.show()
@@ -131,10 +129,13 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
 
   // 监听 unmountOnExit 与 mountOnEnter
   useDerivedState(`${unmountOnExit}-${mountOnEnter}`, () => {
-    const unmount = (!!unmountOnExit || (!store.mounted && !!mountOnEnter)) && !when
+    const mounted = when || !(unmountOnExit || (!store.hasMounted && mountOnEnter))
 
-    if (isExited(store.status)) store.updateUnmount(unmount)
+    if (isExited(store.status)) store.setIsMounted(mounted)
   })
+
+  // when 变化时需要保证页面处于渲染中, 不必强制渲染一次更新 isMounted
+  useDerivedState(when, () => store.setIsMounted(true, false))
 
   return store
 }

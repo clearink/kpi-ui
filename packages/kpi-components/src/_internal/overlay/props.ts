@@ -13,17 +13,23 @@ export interface OverlayProps {
 
   open?: boolean
 
-  lockScroll?: boolean
-
   transitions?: { mask?: string; content?: string }
 
-  /**
-   * @zh 永远会渲染在页面
-   * @default false
-   */
   keepMounted?: boolean
 
-  unmountOnClose?: boolean
+  unmountOnExit?: boolean
 
   classNames?: { root?: string; mask?: string; wrap?: string }
+
+  onBeforeOpen?: () => void
+
+  onOpen?: () => void
+
+  onAfterOpen?: () => void
+
+  onBeforeClose?: () => void
+
+  onClose?: () => void
+
+  onAfterClose?: () => void
 }

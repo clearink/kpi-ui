@@ -27,7 +27,7 @@ $comp: #{$prefix}-form;
   vertical-align: middle;
 
   > label {
-    height: var(--#{$prefix}-component-size-default);
+    height: var(--#{$prefix}-size-unit-8);
     position: relative;
     display: inline-flex;
     align-items: center;

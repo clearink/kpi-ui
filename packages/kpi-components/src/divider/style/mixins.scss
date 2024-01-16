@@ -1,8 +1,9 @@
 @mixin divider-percent($left: 50%) {
-  @include pseudo('::before') {
+  &::before {
     width: $left;
   }
-  @include pseudo('::after') {
+
+  &::after {
     width: #{100% - $left};
   }
 }

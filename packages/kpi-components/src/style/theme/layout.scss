@@ -6,12 +6,9 @@
   --#{$prefix}-code-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 
   // Other
-  --#{$prefix}-font-variant: tabular-nums;
-  --#{$prefix}-font-feature-settings: 'tnum';
-
   --#{$prefix}-font-weight-regular: 400;
   --#{$prefix}-font-weight-medium: 500;
-  --#{$prefix}-font-weight-bold: 700;
+  --#{$prefix}-font-weight-bold: 600;
 
   --#{$prefix}-font-size-extra-small: 12px;
   --#{$prefix}-font-size-small: 13px;
@@ -31,6 +28,7 @@
 @mixin kpi-radius() {
   --#{$prefix}-border-radius-small: 2px;
   --#{$prefix}-border-radius-default: 4px;
+  --#{$prefix}-border-radius-large: 8px;
   --#{$prefix}-border-radius-round: 20px;
   --#{$prefix}-border-radius-circle: 50%;
 }
@@ -40,18 +38,45 @@
   @if $theme == 'light' {
     --#{$prefix}-box-shadow-lighter: 0px 0px 6px #{rgba($color-black, 0.12)};
     --#{$prefix}-box-shadow-light: 0px 0px 12px #{rgba($color-black, 0.12)};
-    --#{$prefix}-box-shadow-base: 0px 12px 32px 4px #{rgba($color-black, 0.04)},
+    --#{$prefix}-box-shadow-default: 0px 12px 32px 4px #{rgba($color-black, 0.04)},
       0px 8px 20px 0px #{rgba($color-black, 0.08)};
     --#{$prefix}-box-shadow-dark: 0px 16px 48px 16px #{rgba($color-black, 0.08)},
       0px 12px 32px 0px #{rgba($color-black, 0.12)}, 0px 8px 16px -8px #{rgba($color-black, 0.16)};
   } @else if $theme == 'dark' {
     --#{$prefix}-box-shadow-lighter: 0px 0px 6px #{rgba($color-black, 0.72)};
     --#{$prefix}-box-shadow-light: 0px 0px 12px #{rgba($color-black, 0.72)};
-    --#{$prefix}-box-shadow-base: 0px 12px 32px 4px #{rgba($color-black, 0.36)},
+    --#{$prefix}-box-shadow-default: 0px 12px 32px 4px #{rgba($color-black, 0.36)},
       0px 8px 20px #{rgba($color-black, 0.72)};
     --#{$prefix}-box-shadow-dark: 0px 16px 48px 16px #{rgba($color-black, 0.72)},
       0px 12px 32px #{$color-black}, 0px 8px 16px -8px #{$color-black};
   }
+}
+
+@mixin kpi-size-unit() {
+  --#{$prefix}-size-unit-0: 0px;
+  --#{$prefix}-size-unit-1: 4px;
+  --#{$prefix}-size-unit-2: 8px;
+  --#{$prefix}-size-unit-3: 12px;
+  --#{$prefix}-size-unit-3_5: 14px;
+  --#{$prefix}-size-unit-4: 16px;
+  --#{$prefix}-size-unit-5: 20px;
+  --#{$prefix}-size-unit-6: 24px;
+  --#{$prefix}-size-unit-7: 28px;
+  --#{$prefix}-size-unit-8: 32px;
+  --#{$prefix}-size-unit-9: 36px;
+  --#{$prefix}-size-unit-10: 40px;
+  --#{$prefix}-size-unit-11: 44px;
+  --#{$prefix}-size-unit-12: 48px;
+  --#{$prefix}-size-unit-13: 52px;
+  --#{$prefix}-size-unit-14: 56px;
+  --#{$prefix}-size-unit-15: 60px;
+  --#{$prefix}-size-unit-16: 64px;
+  --#{$prefix}-size-unit-17: 68px;
+  --#{$prefix}-size-unit-18: 72px;
+  --#{$prefix}-size-unit-24: 96px;
+  --#{$prefix}-size-unit-32: 128px;
+  --#{$prefix}-size-unit-64: 256px;
+  --#{$prefix}-size-unit-96: 384px;
 }
 
 @mixin kpi-component-size() {
