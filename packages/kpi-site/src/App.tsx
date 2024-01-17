@@ -13,26 +13,6 @@ export default function App() {
     <div style={{ margin: 100 }}>
       <Button
         variant="filled"
-        // 视为 classNames.root
-        className="custom-class"
-        // 视为 styles.root
-        style={{ backdropFilter: 'initial' }}
-        classNames={{
-          root: 'btn-root',
-          icon: 'btn-icon',
-          text: 'btn-text',
-        }}
-        styles={{
-          root: {
-            backgroundColor: 'red',
-          },
-          icon: {
-            color: 'blue',
-          },
-          text: {
-            color: 'yellow',
-          },
-        }}
         onClick={() => {
           set((p) => !p)
         }}
@@ -46,10 +26,22 @@ export default function App() {
         <div>132123</div>
       </Modal>
       <Collapse
-        expandedKey={d}
+        expandedKeys={d}
         onChange={(v) => {
           setd(v)
         }}
+        items={[
+          {
+            key: '1',
+            title: '',
+            children: <div>123</div>,
+          },
+          {
+            key: '2',
+            title: '',
+            children: <div>456</div>,
+          },
+        ]}
       ></Collapse>
 
       {/* <div className="container" ref={ref}></div> */}

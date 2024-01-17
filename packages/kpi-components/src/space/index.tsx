@@ -38,8 +38,8 @@ function Space(props: SpaceProps) {
     const key = (child as ReactElement)?.key || index
     return (
       <Fragment key={key}>
-        <div className={`${name}-item`}>{child}</div>
-        {split && !isEndItem && <span className={`${name}-item-split`}>{split}</span>}
+        <div className={`${prefixCls}-item`}>{child}</div>
+        {split && !isEndItem && <span className={`${prefixCls}-item-split`}>{split}</span>}
       </Fragment>
     )
   })

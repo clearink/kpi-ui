@@ -1,11 +1,3 @@
-import { withDefaults } from '@kpi-ui/utils'
+import Collapse from './components/collapse'
 
-import type { ExpandedKey, CollapseProps } from './props'
-
-function Collapse<K extends ExpandedKey>(props: CollapseProps<K>) {
-  return <div>123</div>
-}
-
-export default withDefaults(Collapse) as <K extends ExpandedKey>(
-  props: CollapseProps<K>
-) => JSX.Element
+export default Collapse

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { isArray } from '@kpi-ui/utils'
 import { SpaceProps } from '../props'
 
-const SPACE_SIZE = { small: 8, middle: 16, large: 24 }
+const SPACE_SIZE = { small: 8, default: 16, large: 24 }
 
 export default function useSpaceGutter(size: SpaceProps['size'], hasSplit: boolean) {
   return useMemo(() => {

@@ -12,7 +12,11 @@ export interface StyledProps {
   className?: string
   style?: React.CSSProperties
 }
-export interface SemanticStyledProps<K extends string> {
+export interface SemanticStyledProps<K extends string> extends StyledProps {
   classNames?: Partial<Record<K, string>>
   styles?: Partial<Record<K, React.CSSProperties>>
+}
+
+export interface WithChildren {
+  children?: React.ReactNode
 }

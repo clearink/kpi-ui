@@ -17,7 +17,7 @@ export default function useFormatClass(prefixCls: string, props: ButtonProps) {
       [`${prefixCls}--theme-${theme}`]: theme && theme !== 'primary',
       [`${prefixCls}--variant-${variant}`]: variant && variant !== 'default',
       [`${prefixCls}--shape-${shape}`]: shape && shape !== 'default',
-      [`${prefixCls}--size-${size}`]: size && size !== 'middle',
+      [`${prefixCls}--size-${size}`]: size && size !== 'default',
       [`${prefixCls}--loading`]: loading,
       [`${prefixCls}--block`]: block,
       [`${prefixCls}--ghost`]: ghost,
