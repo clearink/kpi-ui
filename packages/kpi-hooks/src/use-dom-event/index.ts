@@ -1,8 +1,9 @@
-import type { RefObject } from 'react'
 import { noop } from '@kpi-ui/utils'
 import useDeepMemo from '../use-deep-memo'
 import useEvent from '../use-event'
 import useIsomorphicEffect from '../use-isomorphic-effect'
+
+import { type RefObject } from 'react'
 
 export default function useDomEvent(
   ref: RefObject<EventTarget>,
@@ -10,7 +11,7 @@ export default function useDomEvent(
   handler: EventListener = noop,
   options?: AddEventListenerOptions
 ) {
-  const eventHandler = useEvent(handler)
+  const fn = useEvent(handler)
 
   const eventOptions = useDeepMemo(() => options, [options])
 
@@ -19,8 +20,8 @@ export default function useDomEvent(
 
     if (!ref.current) return
 
-    element.addEventListener(eventName, eventHandler, eventOptions)
+    element.addEventListener(eventName, fn, eventOptions)
 
-    return () => element.removeEventListener(eventName, eventHandler, eventOptions)
-  }, [eventHandler, eventName, eventOptions, ref])
+    return () => element.removeEventListener(eventName, fn, eventOptions)
+  }, [fn, eventName, eventOptions, ref])
 }

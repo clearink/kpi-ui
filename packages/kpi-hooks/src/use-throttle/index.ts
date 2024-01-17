@@ -1,10 +1,12 @@
+import { isUndefined } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
 import useEvent from '../use-event'
 import useMounted from '../use-mounted'
-import { isUndefined } from '@kpi-ui/utils'
+
+import type { AnyFn } from '@kpi-ui/types'
 
 // 节流 函数
-export function throttle(fn: (...args: any[]) => any, delay: number) {
+export function throttle(fn: AnyFn, delay: number) {
   let timer: undefined | number
 
   function inner(this: unknown, ...args: any[]) {
@@ -20,7 +22,7 @@ export function throttle(fn: (...args: any[]) => any, delay: number) {
 }
 
 // 节流 hook
-export function useThrottleCallback<Fn extends (...args: any[]) => any>(delay: number, fn: Fn) {
+export function useThrottleCallback<Fn extends AnyFn>(delay: number, fn: Fn) {
   const callback = useEvent(fn)
 
   const [throttled, clear] = useMemo(() => throttle(callback, delay), [callback, delay])

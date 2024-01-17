@@ -8,4 +8,8 @@
 
 ## TODO
 
-1. 完成 Modal 组件
+1. 完成 Modal 组件(60%)
+
+
+## 遗留问题
+ 1. className与classNames, style与styles的兼容 包含组件： button,divider,space,row,col,form,checkbox,badge,modal,drawer

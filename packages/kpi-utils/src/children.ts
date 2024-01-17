@@ -1,6 +1,4 @@
-import type { ReactElement, ReactNode } from 'react'
-
-import { Children } from 'react'
+import { Children, type ReactElement, type ReactNode } from 'react'
 import { isFragment } from 'react-is'
 import { pushItem } from './array'
 import { isNullish } from './is'

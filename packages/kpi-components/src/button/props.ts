@@ -1,10 +1,14 @@
+import type { SemanticStyledProps, StyledProps } from '@kpi-ui/types'
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import type { SizeType } from '../config-provider/_shared/props'
 
 /**
  * @desc >支持原生 button 的其他所有属性
  */
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps
+  extends StyledProps,
+    SemanticStyledProps<'root' | 'icon' | 'text'>,
+    ButtonHTMLAttributes<HTMLButtonElement> {
   /**
    * @zh  按钮主题
    * @default 'primary'

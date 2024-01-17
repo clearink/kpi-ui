@@ -5,13 +5,14 @@ import { PagerProps } from './props'
 export default function PageItem(props: PagerProps) {
   const { page, itemRender, disabled, active, className, prefix, showHtmlTitle, ...rest } = props
 
-  const classes = useMemo(() => {
-    return cls(`${prefix}-item`, {
+  const classes = cls(
+    `${prefix}-item`,
+    {
       [`${prefix}-item--active`]: active,
       [`${prefix}-item--disabled`]: disabled,
-      [className!]: className,
-    })
-  }, [active, className, disabled, prefix])
+    },
+    className
+  )
 
   const title = useMemo(() => (showHtmlTitle ? `${page}` : undefined), [page, showHtmlTitle])
 

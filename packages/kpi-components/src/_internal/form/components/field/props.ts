@@ -1,14 +1,14 @@
+import type { AnyObject } from '@kpi-ui/types'
+import type { BaseSchema } from '@kpi-ui/validator'
 import type { ReactNode } from 'react'
-import type { AnyObject } from '../../../../types'
 import type {
+  ExternalFieldMeta,
+  ExternalNamePath,
   FormActionType,
   InternalFieldMeta,
-  ExternalNamePath,
   InternalNamePath,
-  ExternalFieldMeta,
 } from '../../props'
 import type { ExternalFormInstance } from '../form/control/props'
-import type { BaseSchema } from '@kpi-ui/validator'
 
 export interface InternalFormFieldProps<S = any> {
   /**

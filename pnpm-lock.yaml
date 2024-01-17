@@ -107,6 +107,9 @@ importers:
       '@kpi-ui/hooks':
         specifier: workspace:^
         version: link:../kpi-hooks
+      '@kpi-ui/types':
+        specifier: workspace:^
+        version: link:../kpi-types
       '@kpi-ui/utils':
         specifier: workspace:^
         version: link:../kpi-utils
@@ -150,6 +153,9 @@ importers:
 
   packages/kpi-hooks:
     dependencies:
+      '@kpi-ui/types':
+        specifier: workspace:^
+        version: link:../kpi-types
       '@kpi-ui/utils':
         specifier: workspace:^
         version: link:../kpi-utils
@@ -215,6 +221,12 @@ importers:
         specifier: ^4.4.5
         version: 4.5.0(@types/node@18.11.18)(sass@1.58.3)
 
+  packages/kpi-types:
+    devDependencies:
+      '@types/react':
+        specifier: ^18.2.15
+        version: 18.2.35
+
   packages/kpi-utils:
     dependencies:
       react-fast-compare:
@@ -236,6 +248,9 @@ importers:
 
   packages/kpi-validator:
     dependencies:
+      '@kpi-ui/types':
+        specifier: workspace:^
+        version: link:../kpi-types
       '@kpi-ui/utils':
         specifier: workspace:^
         version: link:../kpi-utils

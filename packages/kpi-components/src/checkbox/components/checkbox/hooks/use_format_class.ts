@@ -10,10 +10,13 @@ export default function useFormatClass(
   const { className, indeterminate } = props
   const { checked, disabled } = fallbacks
 
-  return cls(prefixCls, {
-    [`${prefixCls}--checked`]: checked,
-    [`${prefixCls}--disabled`]: disabled,
-    [`${prefixCls}--indeterminate`]: indeterminate,
-    [className!]: className,
-  })
+  return cls(
+    prefixCls,
+    {
+      [`${prefixCls}--checked`]: checked,
+      [`${prefixCls}--disabled`]: disabled,
+      [`${prefixCls}--indeterminate`]: indeterminate,
+    },
+    className
+  )
 }

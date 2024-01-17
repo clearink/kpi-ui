@@ -1,4 +1,4 @@
-import { flattenChildren, pickWithFallback, withDefaults, withoutProperties } from '@kpi-ui/utils'
+import { fallback, flattenChildren, withDefaults, withoutProperties } from '@kpi-ui/utils'
 import { Fragment, ReactElement, type CSSProperties } from 'react'
 import { SizeContext } from '../_shared/context'
 import { usePrefixCls } from '../_shared/hooks'
@@ -21,7 +21,7 @@ const excluded = [
 function Space(props: SpaceProps) {
   const { children: _children, style, split } = props
 
-  const { size } = pickWithFallback(props, { size: SizeContext.useState() }, ['size'])
+  const size = fallback(props.size, SizeContext.useState())
 
   const prefixCls = usePrefixCls('space')
 

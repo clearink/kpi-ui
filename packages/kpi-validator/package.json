@@ -6,6 +6,7 @@
   "module": "src/index.ts",
   "license": "MIT",
   "dependencies": {
-    "@kpi-ui/utils": "workspace:^"
+    "@kpi-ui/utils": "workspace:^",
+    "@kpi-ui/types": "workspace:^"
   }
 }

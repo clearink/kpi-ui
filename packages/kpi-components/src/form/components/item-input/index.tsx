@@ -1,4 +1,4 @@
-import { isNullish, pickWithFallback } from '@kpi-ui/utils'
+import { fallback, isNullish } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import Col from '../../../col'
@@ -13,7 +13,7 @@ import type { FormItemInputProps } from './props'
 function FormItemInput(props: FormItemInputProps) {
   const { children, validateStatus: _status, extra, help, getOuter } = props
 
-  const { wrapperCol } = pickWithFallback(props, FormContext.useState(), ['wrapperCol'])
+  const wrapperCol = fallback(props.wrapperCol, FormContext.useState()?.wrapperCol)
 
   const [meta, onMetaChange] = useMetaState()
 

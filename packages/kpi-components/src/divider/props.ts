@@ -1,12 +1,11 @@
-import { CSSProperties, ReactNode } from 'react'
+import { SemanticStyledProps, StyledProps } from '@kpi-ui/types'
+import { ReactNode } from 'react'
 
-export interface DividerProps {
+export interface DividerProps extends StyledProps, SemanticStyledProps<'root' | 'text'> {
   children?: ReactNode
-  className?: string
   dashed?: boolean
   align?: 'left' | 'right' | 'center'
   margin?: string | number
   plain?: boolean
-  style?: CSSProperties
   direction?: 'horizontal' | 'vertical'
 }

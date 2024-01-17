@@ -18,13 +18,17 @@ export interface ModalProps
 
   footer?: React.ReactNode
 
-  beforeClose?: () => void
-
-  afterClose?: () => void
-
   beforeOpen?: () => void
 
+  onOpen?: () => void
+
   afterOpen?: () => void
+
+  beforeClose?: () => void
+
+  onClose?: () => void
+
+  afterClose?: () => void
 
   onOpenChange?: (open: boolean) => void
 }

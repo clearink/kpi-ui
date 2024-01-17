@@ -1,6 +1,6 @@
 import { ctxHelper, logger, noop } from '@kpi-ui/utils'
 
-import type { AnyObject } from '../../../types'
+import type { AnyObject } from '@kpi-ui/types'
 import type { ExternalFieldData, ExternalFormInstance, InternalFormInstance } from './props'
 
 export interface InternalFormContextState {

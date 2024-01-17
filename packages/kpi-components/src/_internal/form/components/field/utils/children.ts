@@ -1,10 +1,10 @@
 import { flattenChildren, isFunction } from '@kpi-ui/utils'
-import { ReactNode, isValidElement, type ReactElement } from 'react'
+import { isValidElement, type ReactElement, type ReactNode } from 'react'
 import { InternalFormFieldProps } from '../props'
 
-import type { AnyObject } from '../../../../../types'
-import type { FormFieldControl } from '../control'
+import type { AnyObject } from '@kpi-ui/types'
 import type { InternalFormInstance } from '../../form/control/props'
+import type { FormFieldControl } from '../control'
 
 /** 格式化 Form.Field children */
 export default function normalizeChildren(

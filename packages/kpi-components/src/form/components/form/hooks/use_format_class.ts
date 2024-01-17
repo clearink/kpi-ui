@@ -10,10 +10,13 @@ export default function useFormatClass(
   const { layout, className } = props
   const { size, requiredMark } = fallbacks
 
-  return cls(prefixCls, {
-    [`${prefixCls}--${layout}`]: layout,
-    [`${prefixCls}--hide-required-mark`]: !requiredMark,
-    [`${prefixCls}--${size}`]: size,
-    [className!]: className,
-  })
+  return cls(
+    prefixCls,
+    {
+      [`${prefixCls}--${layout}`]: layout,
+      [`${prefixCls}--hide-required-mark`]: !requiredMark,
+      [`${prefixCls}--${size}`]: size,
+    },
+    className
+  )
 }

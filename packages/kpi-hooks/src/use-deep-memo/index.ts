@@ -1,17 +1,14 @@
-import { useRef, type DependencyList } from 'react'
 import { isEqual } from '@kpi-ui/utils'
-export interface MemoizeCache<T> {
-  deps?: DependencyList
-  value?: T
-  init: boolean
-}
+import useConstant from '../use-constant'
 
+import { type DependencyList } from 'react'
 export default function useDeepMemo<T>(factory: () => T, deps?: DependencyList): T {
-  const ref = useRef<MemoizeCache<T>>({ init: true })
+  const store = useConstant(() => ({ value: factory(), deps }))
 
-  if (ref.current.init || !isEqual(ref.current.deps, deps)) {
-    ref.current = { init: false, value: factory(), deps }
+  if (!isEqual(store.deps, deps)) {
+    store.deps = deps
+    store.value = factory()
   }
 
-  return ref.current.value!
+  return store.value
 }

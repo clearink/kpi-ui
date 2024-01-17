@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import useEvent from '../use-event'
 import useMounted from '../use-mounted'
 
-type Fn = (...args: any[]) => any
+import type { AnyFn } from '@kpi-ui/types'
 
 // 防抖 函数
-export function debounce<F extends Fn>(fn: F, delay: number) {
+export function debounce<F extends AnyFn>(fn: F, delay: number) {
   let timer: undefined | number
 
   function inner(this: unknown, ...args: any[]) {
@@ -17,7 +17,7 @@ export function debounce<F extends Fn>(fn: F, delay: number) {
 }
 
 // 防抖 hook
-export function useDebounceCallback<F extends Fn>(delay: number, fn: F) {
+export function useDebounceCallback<F extends AnyFn>(delay: number, fn: F) {
   const callback = useEvent(fn)
 
   const [debounced, clear] = useMemo(() => debounce(callback, delay), [callback, delay])

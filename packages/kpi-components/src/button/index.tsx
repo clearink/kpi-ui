@@ -17,6 +17,10 @@ const excluded = [
   'ghost',
   'icon',
   'children',
+  'classNames',
+  'styles',
+  'className',
+  'onClick',
 ] as const
 
 function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {

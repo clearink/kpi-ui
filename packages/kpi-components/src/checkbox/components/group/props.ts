@@ -1,5 +1,6 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { SemanticStyledProps, StyledProps } from '@kpi-ui/types'
+import type { ReactNode } from 'react'
 
-export interface CheckboxGroupProps {
+export interface CheckboxGroupProps extends StyledProps, SemanticStyledProps<'root' | 'text'> {
   children?: ReactNode
 }

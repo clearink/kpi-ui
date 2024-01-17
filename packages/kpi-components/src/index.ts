@@ -1,3 +1,6 @@
+export { default as ConfigProvider } from './config-provider'
+export type * from './config-provider/_shared/props'
+
 export { default as Button } from './button'
 export type { ButtonProps } from './button/_shared/props'
 
@@ -39,5 +42,5 @@ export type { CheckboxProps } from './checkbox/_shared/props'
 export { default as Badge } from './badge'
 export type { BadgeProps } from './badge/_shared/props'
 
-export { default as ConfigProvider } from './config-provider'
-export type * from './config-provider/_shared/props'
+export { default as Collapse } from './collapse'
+export type { CollapseProps } from './collapse/_shared/props'

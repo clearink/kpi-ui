@@ -1,11 +1,10 @@
 import { isUndefined } from '@kpi-ui/utils'
-import BaseSchema from './base'
 import { enums } from '../locales/default'
 import { Invalid, Valid } from '../make_rule'
+import BaseSchema from './base'
 
+import type { Writable } from '@kpi-ui/types'
 import type { Context } from '../interface'
-import type { Writable } from '../types'
-
 export type EnumItem = string | number | symbol | boolean
 export type EnumInput = Readonly<[EnumItem, ...EnumItem[]]>
 

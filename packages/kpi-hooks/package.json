@@ -9,7 +9,8 @@
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "dependencies": {
-    "@kpi-ui/utils": "workspace:^"
+    "@kpi-ui/utils": "workspace:^",
+    "@kpi-ui/types": "workspace:^"
   },
   "devDependencies": {
     "@types/react": "^18.2.15"

@@ -1,0 +1,11 @@
+{
+  "name": "@kpi-ui/types",
+  "private": true,
+  "description": "@kpi-ui types",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "devDependencies": {
+    "@types/react": "^18.2.15"
+  }
+}

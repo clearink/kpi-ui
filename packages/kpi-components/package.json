@@ -16,6 +16,7 @@
     "@kpi-ui/hooks": "workspace:^",
     "@kpi-ui/utils": "workspace:^",
     "@kpi-ui/validator": "workspace:^",
+    "@kpi-ui/types": "workspace:^",
     "classnames": "^2.3.1"
   },
   "devDependencies": {
