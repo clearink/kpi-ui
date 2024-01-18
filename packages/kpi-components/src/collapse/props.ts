@@ -1,3 +1,3 @@
 import type React from 'react'
 
-export type ExpandedKey = React.Key | React.Key[]
+export type ExpandedKey = React.Key

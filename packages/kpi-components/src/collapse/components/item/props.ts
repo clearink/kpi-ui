@@ -1,10 +1,9 @@
 import type { SemanticStyledProps, WithChildren } from '@kpi-ui/types'
 import type React from 'react'
-import type { ExpandedKey } from '../../props'
 
-export interface CollapseItemProps<K extends ExpandedKey = ExpandedKey>
+export interface CollapseItemProps
   extends WithChildren,
-    SemanticStyledProps<'root' | 'title' | 'content'>,
+    SemanticStyledProps<'root' | 'header' | 'arrow' | 'title' | 'extra' | 'content'>,
     React.DOMAttributes<HTMLDivElement> {
   collapsible?: 'header' | 'arrow' | 'disabled'
   extra?: React.ReactNode

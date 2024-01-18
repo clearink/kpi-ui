@@ -21,4 +21,10 @@ export function pushItem<T>(array: T[], items: T | T[]) {
 export function removeItem<T>(array: T[], value: T) {
   const index = array.indexOf(value)
   index > -1 && array.splice(index, 1)
+
+  return array
+}
+
+export function hasItem<T>(array: T[], value: T) {
+  return array.indexOf(value) > -1
 }

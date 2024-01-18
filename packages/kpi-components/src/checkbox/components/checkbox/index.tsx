@@ -1,9 +1,11 @@
+// utils
 import { useControllableState } from '@kpi-ui/hooks'
 import { isNullish, withDefaults, withoutProperties } from '@kpi-ui/utils'
-import TouchEffect from '../../../_internal/touch-effect'
 import { usePrefixCls } from '../../../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
-
+// comps
+import TouchEffect from '../../../_internal/touch-effect'
+// types
 import type { CheckboxProps } from './props'
 
 const excluded = [

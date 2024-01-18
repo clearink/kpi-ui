@@ -1,40 +1,61 @@
 // utils
+import { hasItem, isNullish, withDefaults } from '@kpi-ui/utils'
+import { ForwardedRef, forwardRef, useState } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
+import { CollapseContext } from '../../_shared/context'
+import useFormatClass from './hooks/use_format_class'
+import useFormatStyles from './hooks/use_format_styles'
 import handlers from './utils/transition_handlers'
 // comps
 import { CSSTransition } from '../../../_internal/transition'
 // types
-import type { ExpandedKey } from '../../props'
 import type { CollapseItemProps } from './props'
-import { CollapseContext } from '../../_shared/context'
 
-export default function CollapseItem<K extends ExpandedKey>(props: CollapseItemProps<K>) {
+function CollapseItem(props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement>) {
   const { name, title, extra } = props
+
+  const { expandedKeys, onItemExpand } = CollapseContext.useState()
 
   const prefixCls = usePrefixCls('collapse')
 
-  const { expandedKeys } = CollapseContext.useState()
+  const classNames = useFormatClass(prefixCls, props)
 
-  const expanded = expandedKeys?.includes(name)
+  const styles = useFormatStyles(props)
+
+  const expanded = hasItem(expandedKeys, name)
 
   return (
-    <div className={`${prefixCls}-item`}>
+    <div ref={ref} className={classNames.root} style={styles.root}>
       <div
-        className={`${prefixCls}-item__header`}
-        aria-expanded={expanded}
-        aria-disabled="false"
-        role="tab"
-        tabIndex={0}
+        className={classNames.header}
+        style={styles.header}
+        // aria-expanded={expanded}
+        // aria-disabled="false"
+        // // role="tab"
+        // tabIndex={0}
+        onClick={() => onItemExpand(name)}
       >
-        {expanded ? '-' : '+'}
-        {title}
-        {extra}
+        {/* {showArrow && <span className={classNames.arrow}>{expanded ? '-' : '+'}</span>} */}
+        <span className={classNames.title} style={styles.title}>
+          {title}
+        </span>
+        {!isNullish(extra) && (
+          <span className={classNames.extra} style={styles.extra}>
+            {extra}
+          </span>
+        )}
       </div>
       <CSSTransition when={expanded} unmountOnExit name={`${prefixCls}-transition`} {...handlers}>
         <div>
-          <div className={`${prefixCls}-item__content`}>{props.children}</div>
+          <div className={classNames.content} style={styles.content}>
+            {props.children}
+          </div>
         </div>
       </CSSTransition>
     </div>
   )
 }
+
+export default withDefaults(forwardRef(CollapseItem), {
+  showArrow: true,
+})

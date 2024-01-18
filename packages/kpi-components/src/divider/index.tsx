@@ -1,8 +1,9 @@
+// utils
 import { isNullish, withDefaults, withoutProperties } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 import { usePrefixCls } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
-
+// types
 import type { DividerProps } from './props'
 
 const excluded = [
@@ -33,11 +34,9 @@ function Divider(props: DividerProps) {
 
   const attrs = withoutProperties(props, excluded)
 
-  const shouldRenderChildren = direction === 'horizontal' && !isNullish(children)
-
   return (
     <div {...attrs} className={classes}>
-      {shouldRenderChildren && (
+      {direction === 'horizontal' && !isNullish(children) && (
         <span className={`${prefixCls}__inner-text`} style={innerStyle}>
           {children}
         </span>

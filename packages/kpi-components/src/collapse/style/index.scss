@@ -7,7 +7,6 @@
 
 $comp: #{$prefix}-collapse;
 
-// collapse
 .#{$comp} {
   @include reset-component();
   border-radius: var(--#{$prefix}-size-unit-1);
@@ -17,17 +16,17 @@ $comp: #{$prefix}-collapse;
     @include reset-component();
     border-bottom: 1px solid var(--#{$prefix}-color-border-default);
 
-    &:first-child {
-      border-radius: var(--#{$prefix}-size-unit-1) var(--#{$prefix}-size-unit-1) 0 0;
-    }
-
-    &:last-child {
-      border-radius: 0 0 var(--#{$prefix}-size-unit-1) var(--#{$prefix}-size-unit-1);
+    &:last-of-type {
       border-bottom: 0;
     }
 
     &__header {
       padding: var(--#{$prefix}-size-unit-3) var(--#{$prefix}-size-unit-4);
+      display: flex;
+    }
+
+    &__title {
+      flex: auto;
     }
 
     &__content {
@@ -37,15 +36,10 @@ $comp: #{$prefix}-collapse;
 
   &.#{$comp}--bordered {
     background-color: transparent;
-    .#{$comp}-item {
-      border: 1px solid var(--#{$prefix}-color-border-default);
-      &:not(:last-child) {
-        border-bottom: 0;
-      }
+    border: 1px solid var(--#{$prefix}-color-border-default);
 
-      &__content {
-        border-top: 1px solid var(--#{$prefix}-color-border-default);
-      }
+    .#{$comp}-item__content {
+      border-top: 1px solid var(--#{$prefix}-color-border-default);
     }
   }
 

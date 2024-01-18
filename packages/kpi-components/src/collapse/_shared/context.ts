@@ -1,9 +1,16 @@
-import { ctxHelper } from '@kpi-ui/utils'
-import type React from 'react'
+// utils
+import { ctxHelper, noop } from '@kpi-ui/utils'
+// types
+import type { CollapseProps, ExpandedKey } from './props'
 
 export interface CollapseContextState {
-  // 当前展开的面板
-  expandedKeys?: React.Key[]
+  accordion?: CollapseProps['accordion']
+  expandedKeys: ExpandedKey[]
+  arrowPlacement?: CollapseProps['arrowPlacement']
+  onItemExpand: (key: ExpandedKey) => void
 }
 
-export const CollapseContext = ctxHelper<CollapseContextState>({})
+export const CollapseContext = ctxHelper<CollapseContextState>({
+  expandedKeys: [],
+  onItemExpand: noop,
+})
