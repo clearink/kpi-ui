@@ -1,6 +1,3 @@
-export type ExpandedKey = React.Key | React.Key[]
+import type React from 'react'
 
-export interface CollapseProps<K extends ExpandedKey = ExpandedKey> {
-  expandedKey?: K
-  onChange?: (expandedKey: K) => void
-}
+export type ExpandedKey = React.Key | React.Key[]

@@ -1,7 +1,8 @@
 import type { SemanticStyledProps, WithChildren } from '@kpi-ui/types'
 import type React from 'react'
+import type { ExpandedKey } from '../../props'
 
-export interface CollapsePanelProps
+export interface CollapseItemProps<K extends ExpandedKey = ExpandedKey>
   extends WithChildren,
     SemanticStyledProps<'root' | 'title' | 'content'>,
     React.DOMAttributes<HTMLDivElement> {
@@ -12,12 +13,8 @@ export interface CollapsePanelProps
   keepMounted?: boolean
   unmountOnExit?: boolean
 
-  // Collapse 组件额外传递
-  expanded?: boolean
-  accordion?: boolean
-  transition?: string
   arrowIcon?:
     | React.ReactNode
-    | ((props: Pick<CollapsePanelProps, 'expanded' | 'name'>) => React.ReactNode)
+    | ((props: { expanded: boolean; name: CollapseItemProps['name'] }) => React.ReactNode)
   showArrow?: boolean
 }

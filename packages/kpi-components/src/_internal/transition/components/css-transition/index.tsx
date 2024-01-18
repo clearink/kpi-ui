@@ -1,6 +1,6 @@
 import { useEvent } from '@kpi-ui/hooks'
-import { addClassNames, delClassNames, fillRef, isFunction, nextFrame } from '@kpi-ui/utils'
-import { Children, cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref } from 'react'
+import { addClassNames, delClassNames, fillRef, nextFrame } from '@kpi-ui/utils'
+import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref } from 'react'
 import { reflow } from '../../_shared/utils'
 import { APPEAR, ENTER, EXIT, isAppear, isExit } from '../../constant'
 import useFormatClassNames from './hooks/use_format_class_names'
@@ -87,11 +87,7 @@ function CSSTransition<E extends HTMLElement>(
     if (store.appear && when) return runTransition(instance, APPEAR)
   }, [runTransition, store, when])
 
-  if (!when && !store.isMounted) return null
-
-  if (isFunction(children)) return children(refCallback)
-
-  return cloneElement(Children.only(children), { ref: refCallback })
+  return !when && !store.isMounted ? null : cloneElement(children, { ref: refCallback })
 }
 
 export default forwardRef(CSSTransition) as <E extends HTMLElement>(

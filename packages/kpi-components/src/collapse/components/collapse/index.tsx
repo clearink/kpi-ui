@@ -1,24 +1,42 @@
 // utils
-import { withDefaults } from '@kpi-ui/utils'
-import useFormatItems from './hooks/use_format_items'
-
-// comps
-import CollapsePanel from '../panel'
-
-// types
-import type { CollapseProps, ExpandedKey } from './props'
+import { useControllableState } from '@kpi-ui/hooks'
+import { toArray, withDefaults } from '@kpi-ui/utils'
+import { forwardRef, useMemo } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
+import useFormatClass from './hooks/use_format_class'
+import useConvertChildren from './hooks/use_convert_children'
+// types
+import type { ExpandedKey } from '../../props'
+import type { CollapseProps } from './props'
+import type { ForwardedRef, Ref } from 'react'
+import { CollapseContext } from '../../_shared/context'
 
-function Collapse<K extends ExpandedKey>(props: CollapseProps<K>) {
+function Collapse(props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
   const prefixCls = usePrefixCls('collapse')
 
-  const items = props.items.map((item) => {
-    return <CollapsePanel {...item} name={item.key} key={item.key} />
+  const classNames = useFormatClass(prefixCls, props)
+
+  const children = useConvertChildren(props)
+
+  const [expandedKeys, setExpandedKeys] = useControllableState({
+    value: toArray(props.expandedKeys),
+    defaultValue: toArray(props.defaultExpandedKeys),
+    onChange: () => {},
   })
 
-  return <div>{items}</div>
+  const collapseContext = useMemo(() => {
+    return {
+      expandedKeys,
+    }
+  }, [expandedKeys])
+
+  return (
+    <div ref={ref} className={classNames}>
+      <CollapseContext.Provider value={collapseContext}>{children}</CollapseContext.Provider>
+    </div>
+  )
 }
 
-export default withDefaults(Collapse) as <K extends ExpandedKey>(
-  props: CollapseProps<K>
-) => JSX.Element
+export default withDefaults(forwardRef(Collapse), {
+  bordered: true,
+}) as <K extends ExpandedKey>(props: CollapseProps & { ref?: Ref<HTMLDivElement> }) => JSX.Element

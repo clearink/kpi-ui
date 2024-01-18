@@ -7,6 +7,68 @@
 
 $comp: #{$prefix}-collapse;
 
+// collapse
 .#{$comp} {
   @include reset-component();
+  border-radius: var(--#{$prefix}-size-unit-1);
+  background-color: var(--#{$prefix}-color-fill-light);
+
+  &-item {
+    @include reset-component();
+    border-bottom: 1px solid var(--#{$prefix}-color-border-default);
+
+    &:first-child {
+      border-radius: var(--#{$prefix}-size-unit-1) var(--#{$prefix}-size-unit-1) 0 0;
+    }
+
+    &:last-child {
+      border-radius: 0 0 var(--#{$prefix}-size-unit-1) var(--#{$prefix}-size-unit-1);
+      border-bottom: 0;
+    }
+
+    &__header {
+      padding: var(--#{$prefix}-size-unit-3) var(--#{$prefix}-size-unit-4);
+    }
+
+    &__content {
+      padding: var(--#{$prefix}-size-unit-4);
+    }
+  }
+
+  &.#{$comp}--bordered {
+    background-color: transparent;
+    .#{$comp}-item {
+      border: 1px solid var(--#{$prefix}-color-border-default);
+      &:not(:last-child) {
+        border-bottom: 0;
+      }
+
+      &__content {
+        border-top: 1px solid var(--#{$prefix}-color-border-default);
+      }
+    }
+  }
+
+  &.#{$comp}--ghost {
+    background-color: transparent;
+    .#{$comp}-item {
+      border: 0;
+    }
+  }
+}
+
+// transitions
+.#{$comp}-transition {
+  &-enter-from,
+  &-exit-to {
+    opacity: 0;
+  }
+
+  &-enter-active,
+  &-exit-active {
+    overflow: hidden;
+    will-change: opacity, height;
+    transition: opacity var(--#{$prefix}-motion-duration-mid) var(--#{$prefix}-motion-in-out),
+      height var(--#{$prefix}-motion-duration-mid) var(--#{$prefix}-motion-in-out);
+  }
 }

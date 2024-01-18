@@ -1,4 +1,4 @@
-import type { ReactElement, RefCallback } from 'react'
+import type { ReactElement } from 'react'
 import type { APPEAR, ENTER, ENTERED, EXIT, EXITED } from '../../constant'
 import type { TransitionStore } from './hooks/use_transition_store'
 
@@ -26,7 +26,7 @@ export interface CSSTransitionProps<E extends HTMLElement = HTMLElement> {
    * @default false
    */
   unmountOnExit?: boolean
-  children: ReactElement | ((ref: RefCallback<E>) => ReactElement)
+  children: ReactElement
   // classNames
   classNames?: {
     appear?: string

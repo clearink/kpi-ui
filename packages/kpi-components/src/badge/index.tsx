@@ -1,12 +1,4 @@
 import Badge from './components/badge'
-import BadgeRibbon from './components/ribbon'
+import Ribbon from './components/ribbon'
 
-type CompoundedBadgeType = typeof Badge & {
-  Ribbon: typeof BadgeRibbon
-}
-
-const CompoundedBadge = Badge as CompoundedBadgeType
-
-CompoundedBadge.Ribbon = BadgeRibbon
-
-export default CompoundedBadge
+export default Object.assign(Badge, { Ribbon })

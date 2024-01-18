@@ -1,23 +1,22 @@
 import type React from 'react'
-import type { CollapsePanelProps } from '../panel/props'
 import type { SizeType } from '../../../_shared/context'
+import type { ExpandedKey } from '../../props'
+import type { CollapseItemProps } from '../item/props'
+import type { SemanticStyledProps, WithChildren } from '@kpi-ui/types'
 
-export type ExpandedKey = React.Key | React.Key[]
+export type CollapseItemType = Omit<CollapseItemProps, 'name' | 'expanded' | 'accordion'> & {
+  key: CollapseItemProps['name']
+  ref?: React.RefObject<HTMLDivElement>
+}
 
-export interface CollapseProps<K extends ExpandedKey = ExpandedKey> {
+export interface CollapseProps extends WithChildren, SemanticStyledProps<'root'> {
+  items?: CollapseItemType[]
   accordion?: boolean
-  items: CollapseItemProps[]
-  expandedKeys?: K
-  defaultExpandedKeys?: K
-  onChange?: (expandedKey: K) => void
+  expandedKeys?: ExpandedKey
+  defaultExpandedKeys?: ExpandedKey
+  onChange?: (expandedName: React.Key, expandedKeys: React.Key[]) => void
   placement?: 'start' | 'end'
   size?: SizeType
   bordered?: boolean
   ghost?: boolean
-}
-
-export interface CollapseItemProps
-  extends Omit<CollapsePanelProps, 'name' | 'expanded' | 'accordion' | 'transition'> {
-  key: CollapsePanelProps['name']
-  ref?: React.RefObject<HTMLDivElement>
 }
