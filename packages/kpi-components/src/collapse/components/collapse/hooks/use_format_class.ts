@@ -4,10 +4,7 @@ import cls from 'classnames'
 import type { CollapseProps } from '../props'
 import type { ExpandedKey } from '../../../props'
 
-export default function useFormatClass<K extends ExpandedKey>(
-  prefixCls: string,
-  props: CollapseProps<K>
-) {
+export default function useFormatClass(prefixCls: string, props: CollapseProps) {
   const { bordered, ghost, className, classNames } = props
 
   return cls(

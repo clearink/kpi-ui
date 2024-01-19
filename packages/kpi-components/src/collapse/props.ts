@@ -1,3 +1,1 @@
-import type React from 'react'
-
-export type ExpandedKey = React.Key
+export type ExpandedKey = string | number

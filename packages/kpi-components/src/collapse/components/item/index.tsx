@@ -10,6 +10,7 @@ import handlers from './utils/transition_handlers'
 import { CSSTransition } from '../../../_internal/transition'
 // types
 import type { CollapseItemProps } from './props'
+import { toSemanticStyles } from '../../utils/format_styles'
 
 function CollapseItem(props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement>) {
   const { name, title, extra } = props

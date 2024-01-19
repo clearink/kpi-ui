@@ -1,7 +1,7 @@
 // types
 import type { CollapseItemProps } from '../props'
 
-export default function useFormatStyle(props: CollapseItemProps) {
+export default function useFormatStyles(props: CollapseItemProps) {
   const { style, styles } = props
 
   return {

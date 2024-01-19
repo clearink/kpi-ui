@@ -1,11 +1,14 @@
 // utils
 import { useControllableState, useEvent } from '@kpi-ui/hooks'
-import { hasItem, removeItem, toArray, withDefaults } from '@kpi-ui/utils'
-import { forwardRef, useMemo } from 'react'
+import { isArray, isNullish, toArray, withDefaults } from '@kpi-ui/utils'
+import { forwardRef, useEffect, useMemo } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { CollapseContext } from '../../_shared/context'
-import useFormatChildren from './hooks/use_format_children'
 import useFormatClass from './hooks/use_format_class'
+import { toSemanticStyles } from '../../utils/format_styles'
+
+// comps
+import CollapseItem from '../item'
 // types
 import type { ForwardedRef, Ref } from 'react'
 import type { CollapseContextState } from '../../_shared/context'
@@ -13,29 +16,49 @@ import type { ExpandedKey } from '../../props'
 import type { CollapseProps } from './props'
 
 function Collapse(props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
-  const { accordion, arrowPlacement, onChange } = props
+  const {
+    items,
+    children,
+    expandedKeys: _expandedKeys,
+    defaultExpandedKeys,
+    accordion,
+    arrowPlacement,
+    onChange,
+  } = props
 
   const prefixCls = usePrefixCls('collapse')
 
   const classNames = useFormatClass(prefixCls, props)
 
-  const children = useFormatChildren(props)
+  const styles = toSemanticStyles(props.style, props.styles)
 
   const [expandedKeys, setExpandedKeys] = useControllableState({
-    value: props.expandedKeys,
-    defaultValue: props.defaultExpandedKeys,
+    value: isNullish(_expandedKeys) ? undefined : toArray(_expandedKeys),
+    defaultValue: isNullish(defaultExpandedKeys) ? undefined : toArray(defaultExpandedKeys),
+    shouldUpdate: (prev, next) => {
+      return prev.length !== next.length || prev.some((key, index) => key !== next[index])
+    },
   })
 
   const onItemExpand = useEvent((key: ExpandedKey) => {
-    let keys = toArray(expandedKeys).concat()
+    let keys = expandedKeys.concat()
 
-    if (hasItem(keys, key)) removeItem(keys, key)
-    else if (accordion) keys = [key]
+    const index = keys.indexOf(key)
+
+    const isExpanded = index > -1
+
+    if (accordion) keys = isExpanded ? [] : [key]
+    else if (isExpanded) keys.splice(index, 1)
     else keys.push(key)
 
     setExpandedKeys(keys)
     onChange && onChange(key, keys)
   })
+
+  useEffect(() => {
+    const keys = toArray(expandedKeys)
+    if (accordion && keys.length > 1) onItemExpand(keys[0])
+  }, [accordion, expandedKeys, onItemExpand])
 
   // TODO 检测 accordion 属性 更改 expandedKeys 为单一值
 
@@ -48,9 +71,19 @@ function Collapse(props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
     }
   }, [accordion, arrowPlacement, expandedKeys, onItemExpand])
 
+  console.log('render')
   return (
-    <div ref={ref} className={classNames}>
-      <CollapseContext.Provider value={collapseContext}>{children}</CollapseContext.Provider>
+    <div
+      ref={ref}
+      className={classNames}
+      style={styles.root}
+      role={accordion ? 'tablist' : undefined}
+    >
+      <CollapseContext.Provider value={collapseContext}>
+        {isArray(items)
+          ? items.map((item) => <CollapseItem {...item} key={item.name} />)
+          : children}
+      </CollapseContext.Provider>
     </div>
   )
 }
