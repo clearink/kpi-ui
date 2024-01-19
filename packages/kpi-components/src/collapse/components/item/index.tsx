@@ -1,27 +1,36 @@
 // utils
-import { hasItem, isNullish, withDefaults } from '@kpi-ui/utils'
-import { ForwardedRef, forwardRef, useState } from 'react'
+import { fallback, hasItem, isNullish, withDefaults } from '@kpi-ui/utils'
+import { ForwardedRef, forwardRef } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { CollapseContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
-import useFormatStyles from './hooks/use_format_styles'
 import handlers from './utils/transition_handlers'
+import getSemanticStyles from '../../utils/semantic_styles'
 // comps
 import { CSSTransition } from '../../../_internal/transition'
 // types
 import type { CollapseItemProps } from './props'
-import { toSemanticStyles } from '../../utils/format_styles'
 
 function CollapseItem(props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement>) {
   const { name, title, extra } = props
 
-  const { expandedKeys, onItemExpand } = CollapseContext.useState()
+  const {
+    accordion,
+    expandedKeys,
+    onItemExpand,
+    keepMounted: _keepMounted,
+    unmountOnExit: _unmountOnExit,
+  } = CollapseContext.useState()
+
+  const keepMounted = fallback(props.keepMounted, _keepMounted)
+
+  const unmountOnExit = fallback(props.unmountOnExit, _unmountOnExit)
 
   const prefixCls = usePrefixCls('collapse')
 
   const classNames = useFormatClass(prefixCls, props)
 
-  const styles = useFormatStyles(props)
+  const styles = getSemanticStyles(props.style, props.styles)
 
   const expanded = hasItem(expandedKeys, name)
 
@@ -30,10 +39,10 @@ function CollapseItem(props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement
       <div
         className={classNames.header}
         style={styles.header}
-        // aria-expanded={expanded}
+        aria-expanded={expanded}
         // aria-disabled="false"
-        // // role="tab"
-        // tabIndex={0}
+        role={accordion ? 'tab' : 'button'}
+        tabIndex={0}
         onClick={() => onItemExpand(name)}
       >
         {/* {showArrow && <span className={classNames.arrow}>{expanded ? '-' : '+'}</span>} */}
@@ -46,8 +55,14 @@ function CollapseItem(props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement
           </span>
         )}
       </div>
-      <CSSTransition when={expanded} unmountOnExit name={`${prefixCls}-transition`} {...handlers}>
-        <div>
+      <CSSTransition
+        when={expanded}
+        mountOnEnter={!keepMounted}
+        unmountOnExit={!keepMounted && unmountOnExit}
+        name={`${prefixCls}-transition`}
+        {...handlers}
+      >
+        <div role={accordion ? 'tabpanel' : undefined}>
           <div className={classNames.content} style={styles.content}>
             {props.children}
           </div>

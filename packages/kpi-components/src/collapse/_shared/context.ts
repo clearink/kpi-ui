@@ -8,6 +8,9 @@ export interface CollapseContextState {
   expandedKeys: ExpandedKey[]
   arrowPlacement?: CollapseProps['arrowPlacement']
   onItemExpand: (key: ExpandedKey) => void
+
+  keepMounted?: boolean
+  unmountOnExit?: boolean
 }
 
 export const CollapseContext = ctxHelper<CollapseContextState>({

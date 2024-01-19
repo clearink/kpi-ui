@@ -6,13 +6,14 @@ import type { ExpandedKey } from '../../props'
 export interface CollapseItemProps
   extends HasChildren,
     SemanticStyledProps<'root' | 'header' | 'arrow' | 'title' | 'extra' | 'content'>,
-    React.DOMAttributes<HTMLDivElement> {
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   collapsible?: 'header' | 'arrow' | 'disabled'
   extra?: React.ReactNode
   name: ExpandedKey
   title?: React.ReactNode
   keepMounted?: boolean
   unmountOnExit?: boolean
+  disabled?: boolean
 
   arrowIcon?:
     | React.ReactNode

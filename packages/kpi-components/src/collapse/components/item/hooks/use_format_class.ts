@@ -4,12 +4,19 @@ import cls from 'classnames'
 import type { CollapseItemProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: CollapseItemProps) {
-  const { className, classNames } = props
+  const { className, classNames, disabled } = props
 
   const name = `${prefixCls}-item`
 
   return {
-    root: cls(name, className, classNames?.root),
+    root: cls(
+      name,
+      className,
+      {
+        [`${name}--disabled`]: disabled,
+      },
+      classNames?.root
+    ),
     header: cls(`${name}__header`, classNames?.header),
     arrow: cls(`${name}__arrow`, classNames?.arrow),
     title: cls(`${name}__title`, classNames?.title),

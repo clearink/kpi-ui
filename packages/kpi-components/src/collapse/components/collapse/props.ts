@@ -11,6 +11,8 @@ export type CollapseItemType = CollapseItemProps & {
 export interface CollapseProps extends HasChildren, SemanticStyledProps<'root'> {
   items?: CollapseItemType[]
   accordion?: boolean
+  keepMounted?: boolean
+  unmountOnExit?: boolean
   expandedKeys?: ExpandedKey | ExpandedKey[]
   defaultExpandedKeys?: ExpandedKey | ExpandedKey[]
   onChange?: (expandedName: ExpandedKey, expandedKeys: ExpandedKey[]) => void

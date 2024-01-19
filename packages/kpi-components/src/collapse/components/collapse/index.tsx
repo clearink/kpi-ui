@@ -5,8 +5,7 @@ import { forwardRef, useEffect, useMemo } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { CollapseContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
-import { toSemanticStyles } from '../../utils/format_styles'
-
+import getSemanticStyles from '../../utils/semantic_styles'
 // comps
 import CollapseItem from '../item'
 // types
@@ -23,6 +22,8 @@ function Collapse(props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
     defaultExpandedKeys,
     accordion,
     arrowPlacement,
+    keepMounted,
+    unmountOnExit,
     onChange,
   } = props
 
@@ -30,7 +31,7 @@ function Collapse(props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
 
   const classNames = useFormatClass(prefixCls, props)
 
-  const styles = toSemanticStyles(props.style, props.styles)
+  const styles = getSemanticStyles(props.style, props.styles)
 
   const [expandedKeys, setExpandedKeys] = useControllableState({
     value: isNullish(_expandedKeys) ? undefined : toArray(_expandedKeys),
@@ -60,18 +61,17 @@ function Collapse(props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
     if (accordion && keys.length > 1) onItemExpand(keys[0])
   }, [accordion, expandedKeys, onItemExpand])
 
-  // TODO 检测 accordion 属性 更改 expandedKeys 为单一值
-
   const collapseContext = useMemo<CollapseContextState>(() => {
     return {
       accordion,
       arrowPlacement,
       onItemExpand,
       expandedKeys: toArray(expandedKeys),
+      keepMounted,
+      unmountOnExit,
     }
-  }, [accordion, arrowPlacement, expandedKeys, onItemExpand])
+  }, [accordion, arrowPlacement, expandedKeys, keepMounted, onItemExpand, unmountOnExit])
 
-  console.log('render')
   return (
     <div
       ref={ref}
