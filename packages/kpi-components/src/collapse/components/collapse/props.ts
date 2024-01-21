@@ -1,6 +1,6 @@
 import type React from 'react'
 import type { SizeType } from '../../../_shared/context'
-import type { ExpandedKey } from '../../props'
+import type { ExpandedName } from '../../props'
 import type { CollapseItemProps } from '../item/props'
 import type { SemanticStyledProps, HasChildren } from '@kpi-ui/types'
 
@@ -8,16 +8,23 @@ export type CollapseItemType = CollapseItemProps & {
   ref?: React.RefObject<HTMLDivElement>
 }
 
-export interface CollapseProps extends HasChildren, SemanticStyledProps<'root'> {
+export type CollapsibleType = 'icon' | 'title' | 'extra'
+export type ExpandIconPosition = 'start' | 'end'
+export interface CollapseProps<K extends ExpandedName = ExpandedName>
+  extends HasChildren,
+    SemanticStyledProps<'root'> {
   items?: CollapseItemType[]
   accordion?: boolean
-  keepMounted?: boolean
-  unmountOnExit?: boolean
-  expandedKeys?: ExpandedKey | ExpandedKey[]
-  defaultExpandedKeys?: ExpandedKey | ExpandedKey[]
-  onChange?: (expandedName: ExpandedKey, expandedKeys: ExpandedKey[]) => void
-  arrowPlacement?: 'start' | 'end'
+  expandedNames?: K | K[]
+  defaultExpandedNames?: K | K[]
   size?: SizeType
   bordered?: boolean
   ghost?: boolean
+  collapsible?: CollapsibleType[]
+  expandIconPosition?: ExpandIconPosition
+  onChange?: (expandedName: K, ExpandedNames: K[]) => void
+
+  keepMounted?: boolean
+  unmountOnExit?: boolean
+  expandIcon?: React.ReactNode | ((props: { name: K; expanded: boolean }) => React.ReactNode)
 }

@@ -1,11 +1,14 @@
+// utils
 import { fallback, isNull, isNullish, pick, withDefaults } from '@kpi-ui/utils'
-import Overlay from '../_internal/overlay'
-import { usePrefixCls } from '../_shared/hooks'
 import cls from 'classnames'
-
-import type { ModalProps } from './props'
 import { useId } from 'react'
+import { usePrefixCls } from '../_shared/hooks'
+// comps
+import FocusTrap from '../_internal/focus-trap'
+import Overlay from '../_internal/overlay'
 import Button from '../button'
+// types
+import type { ModalProps } from './props'
 
 const included = [
   'container',
@@ -42,32 +45,32 @@ function Modal(props: ModalProps) {
         className={cls(prefixCls, props.className)}
         style={props.style}
       >
-        <div tabIndex={0} aria-hidden="true" className={`${prefixCls}__sentinel`}></div>
-        <div className={`${prefixCls}__content`}>
-          <button
-            type="button"
-            aria-label="close"
-            className={`${prefixCls}__closer`}
-            onClick={() => props.onOpenChange?.(!open)}
-          >
-            X
-          </button>
-          <div className={`${prefixCls}__header`}>
-            {!isNullish(title) && (
-              <span id={ariaId} className={`${prefixCls}__title`}>
-                {title}
-              </span>
+        <FocusTrap>
+          <div className={`${prefixCls}__content`}>
+            <button
+              type="button"
+              aria-label="close"
+              className={`${prefixCls}__closer`}
+              onClick={() => props.onOpenChange?.(!open)}
+            >
+              X
+            </button>
+            <div className={`${prefixCls}__header`}>
+              {!isNullish(title) && (
+                <span id={ariaId} className={`${prefixCls}__title`}>
+                  {title}
+                </span>
+              )}
+            </div>
+            <div className={`${prefixCls}__body`}>{children}</div>
+            {!isNull(footer) && (
+              <div className={`${prefixCls}__footer`}>
+                <Button>取消</Button>
+                <Button variant="filled">确定</Button>
+              </div>
             )}
           </div>
-          <div className={`${prefixCls}__body`}>{children}</div>
-          {!isNull(footer) && (
-            <div className={`${prefixCls}__footer`}>
-              <Button>取消</Button>
-              <Button variant="filled">确定</Button>
-            </div>
-          )}
-        </div>
-        <div tabIndex={0} aria-hidden="true" className={`${prefixCls}__sentinel`}></div>
+        </FocusTrap>
       </div>
     </Overlay>
   )

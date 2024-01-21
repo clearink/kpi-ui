@@ -1,12 +1,6 @@
+// utils
 import { useConstant, useDerivedState } from '@kpi-ui/hooks'
-import {
-  isEqual,
-  isFunction,
-  isNullish,
-  toArray,
-  withDefaults,
-  withoutProperties,
-} from '@kpi-ui/utils'
+import { isEqual, isFunction, isNullish, withDefaults, withoutProperties } from '@kpi-ui/utils'
 import {
   ForwardedRef,
   createElement,
@@ -14,13 +8,12 @@ import {
   useEffect,
   useImperativeHandle,
   useMemo,
-  type FormEvent,
-  type Ref,
 } from 'react'
 import { InternalFormContext, InternalFormInstanceContext } from '../../_shared/context'
 import { HOOK_MARK } from './control'
 import useForm from './hooks/use_form'
-
+// types
+import type { FormEvent, Ref } from 'react'
 import type { InternalFormInstance } from './control/props'
 import type { InternalFormProps } from './props'
 
@@ -66,7 +59,7 @@ function InternalForm<State = any>(
   // 同步 fields 字段
   useDerivedState(fields, {
     compare: isEqual,
-    listener: () => internalHook.setFields(toArray(fields)),
+    listener: () => fields && internalHook.setFields(fields),
   })
 
   const handleSubmit = (e?: FormEvent) => {

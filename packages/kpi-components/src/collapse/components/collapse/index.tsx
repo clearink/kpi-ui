@@ -1,29 +1,32 @@
 // utils
 import { useControllableState, useEvent } from '@kpi-ui/hooks'
-import { isArray, isNullish, toArray, withDefaults } from '@kpi-ui/utils'
-import { forwardRef, useEffect, useMemo } from 'react'
+import { isArray, isUndefined, withDefaults } from '@kpi-ui/utils'
+import { forwardRef, useMemo } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { CollapseContext } from '../../_shared/context'
-import useFormatClass from './hooks/use_format_class'
 import getSemanticStyles from '../../utils/semantic_styles'
+import useFormatClass from './hooks/use_format_class'
+import getExpandedNames from './utils/get_expanded_names'
 // comps
 import CollapseItem from '../item'
 // types
 import type { ForwardedRef, Ref } from 'react'
 import type { CollapseContextState } from '../../_shared/context'
-import type { ExpandedKey } from '../../props'
+import type { ExpandedName } from '../../props'
 import type { CollapseProps } from './props'
 
 function Collapse(props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
   const {
     items,
     children,
-    expandedKeys: _expandedKeys,
-    defaultExpandedKeys,
+    expandedNames: _names,
+    defaultExpandedNames: _default,
     accordion,
-    arrowPlacement,
+    expandIconPosition,
     keepMounted,
     unmountOnExit,
+    expandIcon,
+    collapsible,
     onChange,
   } = props
 
@@ -33,44 +36,48 @@ function Collapse(props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
 
   const styles = getSemanticStyles(props.style, props.styles)
 
-  const [expandedKeys, setExpandedKeys] = useControllableState({
-    value: isNullish(_expandedKeys) ? undefined : toArray(_expandedKeys),
-    defaultValue: isNullish(defaultExpandedKeys) ? undefined : toArray(defaultExpandedKeys),
-    shouldUpdate: (prev, next) => {
-      return prev.length !== next.length || prev.some((key, index) => key !== next[index])
-    },
+  const [expandedNames, setExpandedNames] = useControllableState({
+    value: isUndefined(_names) ? undefined : getExpandedNames(_names, accordion),
+    defaultValue: () => getExpandedNames(_default, accordion),
   })
 
-  const onItemExpand = useEvent((key: ExpandedKey) => {
-    let keys = expandedKeys.concat()
+  const onItemClick = useEvent((name: ExpandedName) => {
+    let names = expandedNames.concat()
 
-    const index = keys.indexOf(key)
+    const index = names.indexOf(name)
 
     const isExpanded = index > -1
 
-    if (accordion) keys = isExpanded ? [] : [key]
-    else if (isExpanded) keys.splice(index, 1)
-    else keys.push(key)
+    if (accordion) names = isExpanded ? [] : [name]
+    else if (isExpanded) names.splice(index, 1)
+    else names.push(name)
 
-    setExpandedKeys(keys)
-    onChange && onChange(key, keys)
+    setExpandedNames(names)
+
+    onChange && onChange(name, names)
   })
-
-  useEffect(() => {
-    const keys = toArray(expandedKeys)
-    if (accordion && keys.length > 1) onItemExpand(keys[0])
-  }, [accordion, expandedKeys, onItemExpand])
 
   const collapseContext = useMemo<CollapseContextState>(() => {
     return {
       accordion,
-      arrowPlacement,
-      onItemExpand,
-      expandedKeys: toArray(expandedKeys),
+      expandIconPosition,
+      onItemClick,
+      expandedNames,
       keepMounted,
       unmountOnExit,
+      expandIcon,
+      collapsible: collapsible!,
     }
-  }, [accordion, arrowPlacement, expandedKeys, keepMounted, onItemExpand, unmountOnExit])
+  }, [
+    accordion,
+    expandIcon,
+    expandIconPosition,
+    expandedNames,
+    keepMounted,
+    onItemClick,
+    unmountOnExit,
+    collapsible,
+  ])
 
   return (
     <div
@@ -90,4 +97,8 @@ function Collapse(props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
 
 export default withDefaults(forwardRef(Collapse), {
   bordered: true,
-}) as <K extends ExpandedKey>(props: CollapseProps & { ref?: Ref<HTMLDivElement> }) => JSX.Element
+  collapsible: ['icon', 'title', 'extra'],
+  expandIconPosition: 'start',
+}) as <K extends ExpandedName>(
+  props: CollapseProps<K> & { ref?: Ref<HTMLDivElement> }
+) => JSX.Element

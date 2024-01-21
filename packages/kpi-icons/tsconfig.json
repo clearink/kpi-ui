@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": ["src", "../kpi-svg/src/types.ts"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "declarationDir": "esm",
+    "emitDeclarationOnly": true
+  }
+}

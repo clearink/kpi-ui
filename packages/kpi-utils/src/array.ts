@@ -26,5 +26,5 @@ export function removeItem<T>(array: T[], value: T) {
 }
 
 export function hasItem<T>(array: T[], value: T) {
-  return array.indexOf(value) > -1
+  return array.includes(value)
 }

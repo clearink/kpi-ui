@@ -1,7 +1,7 @@
 {
   "name": "@kpi-ui/components",
   "version": "0.0.1",
-  "description": "react components",
+  "description": "@kpi-ui components",
   "main": "src/index.ts",
   "module": "src/index.ts",
   "license": "MIT",
@@ -17,6 +17,7 @@
     "@kpi-ui/utils": "workspace:^",
     "@kpi-ui/validator": "workspace:^",
     "@kpi-ui/types": "workspace:^",
+    "@kpi-ui/icons": "workspace:^",
     "classnames": "^2.3.1"
   },
   "devDependencies": {

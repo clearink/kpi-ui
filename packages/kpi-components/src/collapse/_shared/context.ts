@@ -1,19 +1,23 @@
 // utils
 import { ctxHelper, noop } from '@kpi-ui/utils'
 // types
-import type { CollapseProps, ExpandedKey } from './props'
+import type { CollapsibleType, ExpandIconPosition } from '../components/collapse/props'
+import type { CollapseProps, ExpandedName } from './props'
 
 export interface CollapseContextState {
   accordion?: CollapseProps['accordion']
-  expandedKeys: ExpandedKey[]
-  arrowPlacement?: CollapseProps['arrowPlacement']
-  onItemExpand: (key: ExpandedKey) => void
+  expandedNames: ExpandedName[]
+  expandIconPosition?: ExpandIconPosition
+  collapsible: CollapsibleType[]
+  onItemClick: (key: ExpandedName) => void
 
   keepMounted?: boolean
   unmountOnExit?: boolean
+  expandIcon?: CollapseProps['expandIcon']
 }
 
 export const CollapseContext = ctxHelper<CollapseContextState>({
-  expandedKeys: [],
-  onItemExpand: noop,
+  expandedNames: [],
+  onItemClick: noop,
+  collapsible: [],
 })

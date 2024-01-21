@@ -1,5 +1,8 @@
+// utils
 import { useConstant, useDerivedState, useForceUpdate } from '@kpi-ui/hooks'
-
+import { isExited } from '../../transition/constant'
+// types
+import type { CSSTransitionRef } from '../../transition/_shared/props'
 import type { OverlayProps } from '../props'
 
 export class OverlayStore {
@@ -27,6 +30,18 @@ export class OverlayStore {
     },
   }
 
+  content = {
+    instance: null as CSSTransitionRef | null,
+    stash: (el: CSSTransitionRef | null) => {
+      this.content.instance = el
+    },
+  }
+
+  get isExited() {
+    const el = this.content.instance
+    return el && isExited(el.status)
+  }
+
   constructor(props: OverlayProps, public forceUpdate: () => void) {
     this.isMounted = !!props.keepMounted
   }
@@ -41,13 +56,9 @@ export default function useOverlayStore(props: OverlayProps) {
 
   // 监听 keepMounted, unmountOnExit
   useDerivedState(`${keepMounted}-${unmountOnExit}`, () => {
-    let mounted = store.isMounted
-
     // keepMounted 优先级高于 unmountOnExit
-    if (keepMounted) mounted = true
-    else if (unmountOnExit) mounted = false
-
-    store.setIsMounted(mounted)
+    if (keepMounted) store.setIsMounted(true)
+    else if (unmountOnExit && store.isExited) store.setIsMounted(false)
   })
 
   // when 变化时需要保证页面处于渲染中, 不必强制渲染一次更新 isMounted

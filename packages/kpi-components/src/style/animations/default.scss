@@ -27,6 +27,7 @@
     opacity: 1;
     transform: scaleY(1);
     transition-property: opacity, transform;
+    will-change: opacity, transform;
     transition-duration: var(--#{$prefix}-motion-duration-slow);
     transition-timing-function: var(--#{$prefix}-motion-in-back);
   }
@@ -57,6 +58,7 @@
   &-enter-active,
   &-exit-active {
     transition-property: opacity, transform;
+    will-change: opacity, transform;
     transition-duration: var(--#{$prefix}-motion-duration-slow);
     transition-timing-function: var(--#{$prefix}-motion-in-out-circ);
   }

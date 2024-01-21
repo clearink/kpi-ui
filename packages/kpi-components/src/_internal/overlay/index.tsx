@@ -23,6 +23,7 @@ function Overlay(props: OverlayProps) {
         <div tabIndex={-1} ref={store.wrap.stash} className={classNames?.wrap}>
           <CSSTransition
             appear
+            ref={store.content.stash}
             when={open}
             name={transitions?.content}
             mountOnEnter={!keepMounted}
