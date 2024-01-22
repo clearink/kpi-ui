@@ -1,8 +1,10 @@
 import { Modal, Drawer, Button, Collapse } from '@kpi-ui/components'
-import { useReducer, useRef, useState } from 'react'
+import { forwardRef, useReducer, useRef, useState } from 'react'
 
 import '@kpi-ui/components/src/style'
 import './style.scss'
+import { CSSTransition } from '@kpi-ui/components/src/_internal/transition'
+import FocusTrap from '@kpi-ui/components/src/_internal/focus-trap'
 
 const items = [
   {
@@ -46,9 +48,12 @@ const items = [
   },
 ]
 
+const A = () => {
+  return <div>123</div>
+}
 export default function App() {
   const [open, set] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
+
   const [d, setd] = useState(['1', '3'])
 
   return (
@@ -61,17 +66,23 @@ export default function App() {
       >
         minus
       </Button>
-      <Modal title="我的Modal" open={open} onOpenChange={set}>
+      {/* <Modal title="我的Modal" open={open} onOpenChange={set}>
         <div>132123</div>
         <div>132123</div>
         <div>132123</div>
         <div>132123</div>
-      </Modal>
+      </Modal> */}
+      <FocusTrap>
+        <div>
+          <input />
+          <button>btn</button>
+        </div>
+      </FocusTrap>
       <button
         type="button"
         aria-label="close"
         onClick={() => {
-          console.log('close')
+          setaa((p) => !p)
         }}
       >
         X
@@ -87,6 +98,14 @@ export default function App() {
           items={items}
         />
       </div>
+      <CSSTransition when={open} name="kpi-slide-bottom">
+        <div>
+          <div>132123</div>
+          <div>132123</div>
+          <div>132123</div>
+          <div>132123</div>
+        </div>
+      </CSSTransition>
       {/* <div className="container" ref={ref}></div> */}
     </div>
   )

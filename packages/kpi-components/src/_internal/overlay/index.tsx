@@ -20,10 +20,10 @@ function Overlay(props: OverlayProps) {
             <div aria-hidden="true" className={classNames?.mask}></div>
           </CSSTransition>
         )}
-        <div tabIndex={-1} ref={store.wrap.stash} className={classNames?.wrap}>
+        <div tabIndex={-1} ref={store.wrap} className={classNames?.wrap}>
           <CSSTransition
             appear
-            ref={store.content.stash}
+            ref={store.content}
             when={open}
             name={transitions?.content}
             mountOnEnter={!keepMounted}

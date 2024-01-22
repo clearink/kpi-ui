@@ -1,3 +1,5 @@
 import { HasChildren } from '@kpi-ui/types'
 
-export interface FocusTrapProps extends HasChildren {}
+export interface FocusTrapProps extends HasChildren {
+  open?: boolean
+}

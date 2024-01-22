@@ -6,6 +6,7 @@ export type LiteralUnion<T, U> = T | (U & Nothing)
 export type NonUndefined<T> = T extends undefined ? never : T
 export type Writable<T> = { -readonly [P in keyof T]: T[P] }
 export type Full<T> = T extends Nothing ? { [K in keyof T]: T[K] } : T
+export type ReactRef<T> = React.RefObject<T> | React.MutableRefObject<T>
 
 // components
 export interface StyledProps {

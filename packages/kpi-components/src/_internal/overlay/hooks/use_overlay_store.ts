@@ -16,29 +16,23 @@ export class OverlayStore {
   }
 
   wrap = {
-    instance: null as HTMLElement | null,
-    stash: (el: HTMLElement | null) => {
-      this.wrap.instance = el
-    },
+    current: null as HTMLDivElement | null,
     show: () => {
-      const el = this.wrap.instance
+      const el = this.wrap.current
       el && el.style.removeProperty('display')
     },
     hide: () => {
-      const el = this.wrap.instance
+      const el = this.wrap.current
       el && el.style.setProperty('display', 'none', 'important')
     },
   }
 
   content = {
-    instance: null as CSSTransitionRef | null,
-    stash: (el: CSSTransitionRef | null) => {
-      this.content.instance = el
-    },
+    current: null as CSSTransitionRef | null,
   }
 
   get isExited() {
-    const el = this.content.instance
+    const el = this.content.current
     return el && isExited(el.status)
   }
 

@@ -15,7 +15,7 @@ export function mergeRefs<T>(...refs: (Ref<T> | undefined)[]) {
   }
 }
 
-export function supportRef(el: ReactNode): el is ReactElement {
+export function supportRef(el: ReactNode): el is ReactElement & { ref: Ref<any> } {
   if (isFragment(el) || !isValidElement(el)) return false
 
   const type = isMemo(el) ? el.type.type : el.type

@@ -5,7 +5,9 @@ import type { FocusTrapProps } from '../props'
 
 export class FocusTrapStore {
   sentinel = {
-    stash: () => {},
+    start: { current: null as HTMLDivElement | null },
+    content: { current: null as HTMLElement | null },
+    end: { current: null as HTMLDivElement | null },
   }
   constructor(props: FocusTrapProps) {}
 }

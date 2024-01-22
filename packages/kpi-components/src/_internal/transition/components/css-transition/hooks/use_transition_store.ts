@@ -129,9 +129,9 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
 
   // 监听 unmountOnExit 与 mountOnEnter
   useDerivedState(`${unmountOnExit}-${mountOnEnter}`, () => {
-    const mounted = when || !(unmountOnExit || (!store.hasMounted && mountOnEnter))
+    if (!isExited(store.status)) return
 
-    if (isExited(store.status)) store.setIsMounted(mounted)
+    store.setIsMounted(!(unmountOnExit || (!store.hasMounted && mountOnEnter)))
   })
 
   // when 变化时需要保证页面处于渲染中, 不必强制渲染一次更新 isMounted
