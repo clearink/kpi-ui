@@ -1,6 +1,8 @@
-import { isValidElement, Component, type ReactElement, type ReactNode, type Ref } from 'react'
+import { isValidElement, Component } from 'react'
 import { isFragment, isMemo } from 'react-is'
 import { isFunction, isNullish } from './is'
+// types
+import type { ReactElement, ReactNode, Ref } from 'react'
 
 export function fillRef<T>(el: T, ref?: Ref<T>) {
   if (isFunction(ref)) ref(el)
