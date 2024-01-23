@@ -261,6 +261,9 @@ importers:
 
   packages/kpi-utils:
     dependencies:
+      '@kpi-ui/types':
+        specifier: workspace:^
+        version: link:../kpi-types
       react-fast-compare:
         specifier: ^3.2.0
         version: 3.2.0

@@ -8,7 +8,7 @@ export type CollapseItemType = CollapseItemProps & {
   ref?: React.RefObject<HTMLDivElement>
 }
 
-export type CollapsibleType = 'icon' | 'title' | 'extra'
+export type CollapsibleType = 'header' | 'icon' | 'title'
 export type ExpandIconPosition = 'start' | 'end'
 export interface CollapseProps<K extends ExpandedName = ExpandedName>
   extends HasChildren,
@@ -20,7 +20,7 @@ export interface CollapseProps<K extends ExpandedName = ExpandedName>
   size?: SizeType
   bordered?: boolean
   ghost?: boolean
-  collapsible?: CollapsibleType[]
+  collapsible?: CollapsibleType
   expandIconPosition?: ExpandIconPosition
   onChange?: (expandedName: K, ExpandedNames: K[]) => void
 

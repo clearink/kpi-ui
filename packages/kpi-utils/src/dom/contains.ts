@@ -1,6 +1,10 @@
-import { isFunction } from './is'
+// utils
+import { isFunction } from '../is'
+// types
+import type { MayBe } from '@kpi-ui/types'
 
-export default function contains(root: Node | null | undefined, node: Node | null | undefined) {
+// 包含
+export default function contains(root: MayBe<Node>, node: MayBe<Node>) {
   if (!root || !node) return false
 
   if (isFunction(root.contains)) return root.contains(node)

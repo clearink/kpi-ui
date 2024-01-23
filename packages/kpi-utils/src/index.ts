@@ -1,22 +1,11 @@
 export * from './is'
 export * from './value'
 export * from './array'
+// dom
+export * from './dom'
+// react
+export * from './react'
 export { default as logger } from './logger'
 export { default as capitalize } from './capitalize'
-export { flattenChildren } from './children'
-export { shallowMerge, shallowEqual, shallowUnequal } from './shallow'
 export { default as noop } from './noop'
 export { default as fallback } from './fallback'
-export { default as ctxHelper } from './context'
-export { default as withDisplayName } from './with_name'
-export { default as withDefaults } from './with_defaults'
-export { default as withFallbacks } from './with_fallbacks'
-export { default as reactIs } from 'react-is'
-export { default as isEqual } from 'react-fast-compare'
-export { fillRef, mergeRefs, supportRef } from './ref'
-export { addClassNames, delClassNames } from './classnames'
-export { nextFrame } from './raf'
-
-// dom
-export { default as isBrowser } from './is_browser'
-export { default as contains } from './contains'

@@ -28,3 +28,8 @@ export function removeItem<T>(array: T[], value: T) {
 export function hasItem<T>(array: T[], value: T) {
   return array.includes(value)
 }
+
+export function atIndex<T>(array: T[], index: number) {
+  const cursor = index
+  return array[cursor]
+}

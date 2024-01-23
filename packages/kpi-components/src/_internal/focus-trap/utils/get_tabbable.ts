@@ -2,5 +2,7 @@
 import { TABBABLE_QUERY } from '../constants'
 
 export default function getTabbable(el: HTMLElement) {
-  return el.querySelectorAll<HTMLElement>(TABBABLE_QUERY)
+  const list = el.querySelectorAll<HTMLElement>(TABBABLE_QUERY)
+
+  return Array.from(list)
 }

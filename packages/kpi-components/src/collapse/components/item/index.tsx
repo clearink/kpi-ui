@@ -6,7 +6,6 @@ import {
   isNullish,
   withDefaults,
   withDisplayName,
-  withFallbacks,
 } from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
@@ -35,11 +34,6 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
     expandIcon: fallback(ctx.expandIcon, <CaretRightOutlined />),
   })
 
-  const fallbacks = withFallbacks(_props, {
-    showExpandIcon: defaultProps.showExpandIcon,
-    keepMounted: ctx.keepMounted,
-  })
-
   const { name, title, extra, disabled, showExpandIcon, expandIcon } = props
 
   const prefixCls = usePrefixCls('collapse')
@@ -54,7 +48,7 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
   const styles = getSemanticStyles(props.style, props.styles)
 
   const getItemClickHandler = (type: CollapsibleType) => {
-    if (disabled || !hasItem(ctx.collapsible, type)) return undefined
+    if (disabled || ctx.collapsible !== type) return undefined
 
     return () => ctx.onItemClick(name)
   }
@@ -68,6 +62,7 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
         aria-disabled={!!disabled}
         role={ctx.accordion ? 'tab' : 'button'}
         tabIndex={0}
+        onClick={getItemClickHandler('header')}
       >
         {!!showExpandIcon && (
           <span
@@ -86,11 +81,7 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
           {title}
         </span>
         {!isNullish(extra) && (
-          <span
-            className={classNames.extra}
-            style={styles.extra}
-            onClick={getItemClickHandler('extra')}
-          >
+          <span className={classNames.extra} style={styles.extra}>
             {extra}
           </span>
         )}

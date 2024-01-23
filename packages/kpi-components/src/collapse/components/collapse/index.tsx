@@ -17,7 +17,7 @@ import type { CollapseProps } from './props'
 
 export const defaultProps: Partial<CollapseProps> = {
   bordered: true,
-  collapsible: ['icon', 'title', 'extra'],
+  collapsible: 'header',
   expandIconPosition: 'start',
 }
 
@@ -65,8 +65,8 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
     onChange && onChange(name, names)
   })
 
-  const collapseContext = useMemo<CollapseContextState>(() => {
-    return {
+  const collapseContext = useMemo<CollapseContextState>(
+    () => ({
       accordion,
       expandIconPosition,
       onItemClick,
@@ -74,18 +74,19 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
       keepMounted,
       unmountOnExit,
       expandIcon,
-      collapsible: collapsible!,
-    }
-  }, [
-    accordion,
-    expandIcon,
-    expandIconPosition,
-    expandedNames,
-    keepMounted,
-    onItemClick,
-    unmountOnExit,
-    collapsible,
-  ])
+      collapsible,
+    }),
+    [
+      accordion,
+      expandIcon,
+      expandIconPosition,
+      expandedNames,
+      keepMounted,
+      onItemClick,
+      unmountOnExit,
+      collapsible,
+    ]
+  )
 
   return (
     <div

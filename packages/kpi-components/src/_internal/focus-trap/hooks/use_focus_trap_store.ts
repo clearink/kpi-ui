@@ -4,11 +4,29 @@ import { useConstant } from '@kpi-ui/hooks'
 import type { FocusTrapProps } from '../props'
 
 export class FocusTrapStore {
-  start = { current: null as HTMLDivElement | null }
+  start = {
+    current: null as HTMLDivElement | null,
+    focus: () => {
+      const el = this.start.current
+      el && el.focus()
+    },
+  }
 
-  content = { current: null as HTMLElement | null }
+  content = {
+    current: null as HTMLElement | null,
+    focus: () => {
+      const el = this.content.current
+      el && el.focus()
+    },
+  }
 
-  end = { current: null as HTMLDivElement | null }
+  end = {
+    current: null as HTMLDivElement | null,
+    focus: () => {
+      const el = this.end.current
+      el && el.focus()
+    },
+  }
 
   constructor(props: FocusTrapProps) {}
 }
