@@ -1,7 +1,9 @@
-import { withDefaults } from '@kpi-ui/utils'
+import { withDisplayName } from '@kpi-ui/utils'
 import useFormatClass from './hooks/use_format_class'
 
 import type { BackTopProps } from './props'
+
+export const defaultProps: Partial<BackTopProps> = {}
 
 function BackTop(props: BackTopProps) {
   const classes = useFormatClass(props)
@@ -9,7 +11,4 @@ function BackTop(props: BackTopProps) {
   return <div className={classes}>back-top</div>
 }
 
-export default withDefaults(BackTop, {
-  duration: 200,
-  threshold: 400,
-})
+export default withDisplayName(BackTop)

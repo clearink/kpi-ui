@@ -1,12 +1,6 @@
-export type ContainerType = HTMLElement | false | null
-// false 时, 视为使用 document.body
+import type { PortalProps } from '../portal/props'
 
-export type GetContainerType = string | ContainerType | (() => ContainerType)
-
-export interface OverlayProps {
-  /** 自定义容器,会执行多次 为 false 时表示不适用 portal */
-  container?: GetContainerType
-
+export interface OverlayProps extends Pick<PortalProps, 'getContainer'> {
   children: React.ReactElement
 
   mask?: boolean

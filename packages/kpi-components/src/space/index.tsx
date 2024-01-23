@@ -1,4 +1,4 @@
-import { fallback, flattenChildren, withDefaults, withoutProperties } from '@kpi-ui/utils'
+import { fallback, flattenChildren, withDisplayName, omit, withDefaults } from '@kpi-ui/utils'
 import { Fragment, ReactElement, type CSSProperties } from 'react'
 import { SizeContext } from '../_shared/context'
 import { usePrefixCls } from '../_shared/hooks'
@@ -18,7 +18,15 @@ const excluded = [
   'wrap',
 ] as const
 
-function Space(props: SpaceProps) {
+export const defaultProps: Partial<SpaceProps> = {
+  direction: 'horizontal',
+  size: 'small',
+  wrap: false,
+}
+
+function Space(_props: SpaceProps) {
+  const props = withDefaults(_props, defaultProps)
+
   const { children: _children, style, split } = props
 
   const size = fallback(props.size, SizeContext.useState())
@@ -44,7 +52,7 @@ function Space(props: SpaceProps) {
     )
   })
 
-  const attrs = withoutProperties(props, excluded)
+  const attrs = omit(props, excluded)
 
   return (
     <div {...attrs} className={classes} style={{ ...gap, ...style }}>
@@ -53,8 +61,4 @@ function Space(props: SpaceProps) {
   )
 }
 
-export default withDefaults(Space, {
-  direction: 'horizontal',
-  size: 'small',
-  wrap: false,
-})
+export default withDisplayName(Space)

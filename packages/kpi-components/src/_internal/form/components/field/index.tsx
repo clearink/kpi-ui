@@ -1,15 +1,23 @@
+// utils
 import { useConstant, useDeepMemo } from '@kpi-ui/hooks'
-import { isUndefined, toArray } from '@kpi-ui/utils'
+import { isUndefined, toArray, withDefaults } from '@kpi-ui/utils'
 import { Fragment, useEffect, useMemo } from 'react'
 import { InternalFormInstanceContext } from '../../_shared/context'
 import { _getName } from '../../utils/path'
 import { HOOK_MARK } from '../form/control'
 import useFieldControl from './hooks/use_field_control'
 import useInjectField from './hooks/use_inject_field'
-
+// types
 import type { ExternalFormFieldProps, InternalFormFieldProps } from './props'
 
-function InternalFormField(props: InternalFormFieldProps) {
+export const defaultProps: Partial<InternalFormFieldProps> = {
+  trigger: 'onChange',
+  valuePropName: 'value',
+}
+
+function InternalFormField(_props: InternalFormFieldProps) {
+  const props = withDefaults(_props, defaultProps)
+
   // 父级表单方法
   const instance = InternalFormInstanceContext.useState()
 

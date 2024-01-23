@@ -10,10 +10,13 @@ import useMetaState from './hooks/use_meta_state'
 
 import type { FormItemInputProps } from './props'
 
+// TODO: refactor offset logic
 function FormItemInput(props: FormItemInputProps) {
   const { children, validateStatus: _status, extra, help, getOuter } = props
 
-  const wrapperCol = fallback(props.wrapperCol, FormContext.useState()?.wrapperCol)
+  const ctx = FormContext.useState()
+
+  const wrapperCol = fallback(props.wrapperCol, ctx.wrapperCol)
 
   const [meta, onMetaChange] = useMetaState()
 

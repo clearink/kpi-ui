@@ -1,19 +1,12 @@
 // utils
 import { useConstant, useDerivedState } from '@kpi-ui/hooks'
-import { isEqual, isFunction, isNullish, withDefaults, withoutProperties } from '@kpi-ui/utils'
-import {
-  ForwardedRef,
-  createElement,
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-} from 'react'
+import { isEqual, isFunction, isNullish, withDisplayName, omit, withDefaults } from '@kpi-ui/utils'
+import { createElement, forwardRef, useEffect, useImperativeHandle, useMemo } from 'react'
 import { InternalFormContext, InternalFormInstanceContext } from '../../_shared/context'
 import { HOOK_MARK } from './control'
 import useForm from './hooks/use_form'
 // types
-import type { FormEvent, Ref } from 'react'
+import type { FormEvent, ForwardedRef, Ref } from 'react'
 import type { InternalFormInstance } from './control/props'
 import type { InternalFormProps } from './props'
 
@@ -34,10 +27,18 @@ const excluded = [
   'onFailed',
 ] as const
 
+export const defaultProps: Partial<InternalFormProps> = {
+  tag: 'form',
+  preserve: true,
+  validateTrigger: 'onChange',
+}
+
 function InternalForm<State = any>(
-  props: InternalFormProps<State>,
+  _props: InternalFormProps<State>,
   ref: ForwardedRef<InternalFormInstance<State>>
 ) {
+  const props = withDefaults(_props, defaultProps)
+
   const { name, tag, form, fields, children, onReset, initialValues, validateTrigger } = props
 
   const instance = useForm(form) as InternalFormInstance<State>
@@ -92,7 +93,7 @@ function InternalForm<State = any>(
 
   // 表单剩余字段
   const attrs = {
-    ...withoutProperties(props, excluded),
+    ...omit(props, excluded),
     onSubmit: handleSubmit,
     onReset: handleReset,
   }
@@ -100,10 +101,6 @@ function InternalForm<State = any>(
   return createElement(tag as any, attrs, elements)
 }
 
-export default withDefaults(forwardRef(InternalForm), {
-  preserve: true,
-  validateTrigger: 'onChange',
-  tag: 'form',
-}) as <State = any>(
+export default withDisplayName(forwardRef(InternalForm)) as <State = any>(
   props: InternalFormProps<State> & { ref?: Ref<InternalFormInstance<State>> }
 ) => JSX.Element

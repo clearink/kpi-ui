@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { isNull, isNullish, isUndefined, withoutProperties } from '@kpi-ui/utils'
+import { isNull, isNullish, isUndefined, omit } from '@kpi-ui/utils'
 import SchemaContext from '../context'
 import { base, union } from '../locales/default'
 import { Invalid, Valid, makeRule } from '../make_rule'
@@ -241,7 +241,7 @@ export class UnionSchema<
 
     const results: UnionInnerReturn<Out> = await Promise.all(
       this.inner.map(async (schema) => {
-        const ctx = SchemaContext.ensure(withoutProperties(context, ['issue']))
+        const ctx = SchemaContext.ensure(omit(context, ['issue']))
         try {
           return [ctx, await schema._validate(value, ctx)]
         } catch (error) {

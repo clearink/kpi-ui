@@ -1,5 +1,5 @@
 // utils
-import { isNullish, withDefaults, withoutProperties } from '@kpi-ui/utils'
+import { isNullish, withDisplayName, omit, withDefaults } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 import { usePrefixCls } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
@@ -20,7 +20,16 @@ const excluded = [
   'styles',
 ] as const
 
-function Divider(props: DividerProps) {
+export const defaultProps: Partial<DividerProps> = {
+  dashed: false,
+  align: 'center',
+  direction: 'horizontal',
+  plain: false,
+}
+
+function Divider(_props: DividerProps) {
+  const props = withDefaults(_props, defaultProps)
+
   const { children, direction, align, margin } = props
 
   const prefixCls = usePrefixCls('divider')
@@ -32,7 +41,7 @@ function Divider(props: DividerProps) {
     if (align === 'right') return { marginRight: margin }
   }, [align, margin])
 
-  const attrs = withoutProperties(props, excluded)
+  const attrs = omit(props, excluded)
 
   return (
     <div {...attrs} className={classes}>
@@ -45,9 +54,4 @@ function Divider(props: DividerProps) {
   )
 }
 
-export default withDefaults(Divider, {
-  dashed: false,
-  align: 'center',
-  direction: 'horizontal',
-  plain: false,
-})
+export default withDisplayName(Divider)

@@ -1,12 +1,15 @@
-import { isNullish, withDefaults } from '@kpi-ui/utils'
+// utils
+import { isNullish, withDisplayName } from '@kpi-ui/utils'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import getContainer from './utils/get_container'
 
 import type { ContainerType, PortalProps } from './props'
 
+export const defaultProps: Partial<PortalProps> = {}
+
 function Portal(props: PortalProps) {
-  const { children, container: _container } = props
+  const { children, getContainer: _container } = props
 
   const [container, setContainer] = useState<ContainerType>(() => getContainer(_container))
 
@@ -16,7 +19,9 @@ function Portal(props: PortalProps) {
 
   if (isNullish(container)) return null
 
-  return container === false ? children : createPortal(children, container)
+  if (container === false) return <>{children}</>
+
+  return createPortal(children, container)
 }
 
-export default withDefaults(Portal)
+export default withDisplayName(Portal)

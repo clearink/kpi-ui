@@ -1,5 +1,6 @@
+// utils
 import { hasOwn, isFunction, isObjectLike, toArray } from '@kpi-ui/utils'
-
+// types
 import type { AnyObject } from '@kpi-ui/types'
 import type { InternalFormInstance, InternalHookReturn } from '../../form/control/props'
 import type { FormFieldControl } from '../control'
@@ -27,13 +28,13 @@ export default function collectInjectProps(
   const {
     name,
     rule,
-    trigger = 'onChange',
+    trigger,
     validateTrigger,
-    valuePropName = 'value',
-    getValueFromEvent = defaultGetValueFromEvent(valuePropName),
+    valuePropName,
+    getValueFromEvent = defaultGetValueFromEvent(valuePropName!),
     formatter,
     // 获取 event value 字段函数 getValueProps 与 valuePropName 互斥
-    getValueProps = defaultGetValueProps(valuePropName),
+    getValueProps = defaultGetValueProps(valuePropName!),
   } = props
 
   return (childProps: AnyObject = {}) => {
@@ -46,7 +47,7 @@ export default function collectInjectProps(
       ...childProps,
       ...getValueProps(value),
       // 触发条件
-      [trigger]: (...args: any[]) => {
+      [trigger!]: (...args: any[]) => {
         let next = getValueFromEvent(...args)
 
         if (isFunction(formatter)) next = formatter(next, value, () => instance.getFieldsValue())
@@ -56,7 +57,7 @@ export default function collectInjectProps(
         internalHooks?.dispatch({ type: 'fieldEvent', control, value: next })
 
         // originTrigger
-        childProps[trigger] && childProps[trigger](...args)
+        childProps[trigger!] && childProps[trigger!](...args)
       },
     }
 

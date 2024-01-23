@@ -1,5 +1,5 @@
 // utils
-import { fallback, isNull, isNullish, pick, withDefaults } from '@kpi-ui/utils'
+import { fallback, isNull, isNullish, pick, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import cls from 'classnames'
 import { useId } from 'react'
 import Overlay from '../_internal/overlay'
@@ -10,7 +10,7 @@ import Button from '../button'
 import type { DrawerProps } from './props'
 
 const included = [
-  'container',
+  'getContainer',
   'mask',
   'open',
   'transitions',
@@ -18,10 +18,16 @@ const included = [
   'unmountOnExit',
 ] as const
 
-function Drawer(props: DrawerProps) {
-  const { children, open, transitions, title, footer } = props
+export const defaultProps: Partial<DrawerProps> = {}
 
-  const prefixCls = usePrefixCls('drawer')
+function Drawer(_props: DrawerProps) {
+  const props = withDefaults(_props, defaultProps)
+
+  const { children, open, transitions = {}, title, footer } = props
+
+  const rootPrefixCls = usePrefixCls()
+
+  const prefixCls = `${rootPrefixCls}-drawer`
 
   const ariaId = useId()
 
@@ -29,8 +35,8 @@ function Drawer(props: DrawerProps) {
     <Overlay
       {...pick(props, included)}
       transitions={{
-        mask: fallback(transitions?.mask, 'kpi-fade-in'),
-        content: fallback(transitions?.content, 'kpi-slide-bottom'),
+        mask: fallback(transitions.mask, `${rootPrefixCls}-fade-in`),
+        content: fallback(transitions.content, `${rootPrefixCls}-slide-bottom`),
       }}
       classNames={{
         mask: `${prefixCls}-mask`,
@@ -75,8 +81,4 @@ function Drawer(props: DrawerProps) {
   )
 }
 
-export default withDefaults(Drawer)
-
-/**
- * 需要干什么?
- */
+export default withDisplayName(Drawer)

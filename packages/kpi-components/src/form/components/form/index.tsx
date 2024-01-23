@@ -1,13 +1,15 @@
+// utils
 import { useEvent } from '@kpi-ui/hooks'
-import { pickWithFallback, withDefaults, withoutProperties } from '@kpi-ui/utils'
-import { forwardRef, useImperativeHandle, useMemo, type ForwardedRef, type Ref } from 'react'
-import { ConfigContext, DisabledContext, SizeContext } from '../../../_shared/context'
-import { usePrefixCls } from '../../../_shared/hooks'
+import { withDisplayName, omit, withDefaults } from '@kpi-ui/utils'
+import { forwardRef, useImperativeHandle, useMemo } from 'react'
 import InternalForm from '../../../_internal/form'
+import { DisabledContext, SizeContext } from '../../../_shared/context'
+import { usePrefixCls } from '../../../_shared/hooks'
 import { FormContext, FormContextState } from '../../_shared/context'
 import useForm from './hooks/use_form'
 import useFormatClass from './hooks/use_format_class'
-
+// types
+import type { ForwardedRef, Ref } from 'react'
 import type { FormInstance, FormProps } from './props'
 
 const excluded = [
@@ -24,9 +26,27 @@ const excluded = [
   'requiredMark',
 ] as const
 
-function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstance<State>>) {
+export const defaultProps: Partial<FormProps> = {
+  layout: 'horizontal',
+  requiredMark: true,
+  colon: true,
+}
+
+function Form<State = any>(_props: FormProps<State>, ref: ForwardedRef<FormInstance<State>>) {
+  const props = withDefaults(_props, {
+    ...defaultProps,
+    size: SizeContext.useState(),
+    disabled: DisabledContext.useState(),
+    // ...ConfigContext.useState().form,
+    // colon
+    // requiredMark
+  })
+
   const {
     name,
+    colon,
+    size,
+    disabled,
     labelAlign,
     labelWrap,
     labelCol,
@@ -34,22 +54,13 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     form,
     layout,
     onFailed,
+    requiredMark,
     scrollToFirstError,
   } = props
 
-  const fallbacks = pickWithFallback(
-    props,
-    {
-      size: SizeContext.useState(),
-      disabled: DisabledContext.useState(),
-      ...ConfigContext.useState().form,
-    },
-    ['size', 'disabled', 'colon', 'requiredMark']
-  )
-
   const prefixCls = usePrefixCls('form')
 
-  const classes = useFormatClass(prefixCls, props, fallbacks)
+  const classes = useFormatClass(prefixCls, props)
 
   const formInstance = useForm(form)
 
@@ -62,22 +73,12 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
       labelWrap,
       labelCol,
       wrapperCol,
-      colon: fallbacks.colon,
-      requiredMark: fallbacks.requiredMark,
+      colon,
+      requiredMark,
       form: formInstance,
       layout,
     }
-  }, [
-    fallbacks.colon,
-    fallbacks.requiredMark,
-    formInstance,
-    labelAlign,
-    labelCol,
-    labelWrap,
-    layout,
-    name,
-    wrapperCol,
-  ])
+  }, [colon, requiredMark, formInstance, labelAlign, labelCol, labelWrap, layout, name, wrapperCol])
 
   const onFailedWithEffect = useEvent((errors: any) => {
     onFailed && onFailed(errors)
@@ -85,11 +86,11 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
     // formInstance.scrollToField()
   })
 
-  const attrs = withoutProperties(props, excluded)
+  const attrs = omit(props, excluded)
 
   return (
-    <DisabledContext.Provider value={fallbacks.disabled}>
-      <SizeContext.Provider value={fallbacks.size}>
+    <DisabledContext.Provider value={disabled}>
+      <SizeContext.Provider value={size}>
         <FormContext.Provider value={formContext}>
           <InternalForm<State>
             {...attrs}
@@ -104,8 +105,6 @@ function Form<State = any>(props: FormProps<State>, ref: ForwardedRef<FormInstan
   )
 }
 
-export default withDefaults(forwardRef(Form), {
-  layout: 'horizontal',
-  requiredMark: true,
-  colon: true,
-}) as <State = any>(props: FormProps<State> & { ref?: Ref<FormInstance<State>> }) => JSX.Element
+export default withDisplayName(forwardRef(Form)) as <State = any>(
+  props: FormProps<State> & { ref?: Ref<FormInstance<State>> }
+) => JSX.Element

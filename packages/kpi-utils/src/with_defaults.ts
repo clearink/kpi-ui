@@ -1,20 +1,17 @@
-import type { ComponentType } from 'react'
+import { isUndefined } from './is'
 
-/**
- *
- * @param WrappedComponent 需要包装的组件
- * @param defaultProps 默认属性
- */
-export default function withDefaults<S>(
-  WrappedComponent: ComponentType<S>,
-  defaultProps?: Partial<S>
+export default function withDefaults<V extends Record<string, any>>(
+  source: V,
+  partial: Partial<V>
 ) {
-  WrappedComponent.defaultProps = defaultProps
+  const result: any = { ...source }
 
-  // 生产环境去除 displayName
-  if (process.env.NODE_ENV !== 'production') {
-    WrappedComponent.displayName = WrappedComponent.name
+  const keys = Object.keys(partial)
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i]
+    if (isUndefined(source[key])) result[key] = partial[key]
   }
 
-  return WrappedComponent
+  return result as V
 }

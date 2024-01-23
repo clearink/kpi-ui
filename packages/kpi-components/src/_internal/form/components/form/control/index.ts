@@ -342,9 +342,7 @@ export class FormControlsControl {
 
       if (!cache && !removeInvalid) result.push(new InvalidFieldControl(path))
 
-      cache && pushItem(result, cache)
-
-      return result
+      return cache ? pushItem(result, cache) : result
     }, [] as any[])
   }
 

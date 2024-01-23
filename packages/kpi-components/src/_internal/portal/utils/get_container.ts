@@ -2,7 +2,7 @@ import { isBrowser, isFunction, isNullish, isString } from '@kpi-ui/utils'
 
 import type { PortalProps } from '../props'
 
-export default function getContainer(container: PortalProps['container']) {
+export default function getContainer(container: PortalProps['getContainer']) {
   if (!isBrowser()) return null
 
   if (isNullish(container)) return document.body

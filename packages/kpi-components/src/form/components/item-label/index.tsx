@@ -1,4 +1,4 @@
-import { isString, pickWithFallback } from '@kpi-ui/utils'
+import { fallback, isString } from '@kpi-ui/utils'
 import { usePrefixCls } from '../../../_shared/hooks'
 import Col from '../../../col'
 import { FormContext } from '../../_shared/context'
@@ -7,28 +7,32 @@ import useFormatClass from './hooks/use_format_class'
 
 import type { FormItemLabelProps } from './props'
 
-function FormItemLabel(props: FormItemLabelProps) {
-  const fallbacks = pickWithFallback(props, FormContext.useState(), [
-    'colon',
-    'labelAlign',
-    'labelCol',
-    'labelWrap',
-    'requiredMark',
-    'layout',
-  ])
+export const defaultProps: Partial<FormItemLabelProps> = {}
+
+function FormItemLabel(_props: FormItemLabelProps) {
+  const ctx = FormContext.useState()
+
+  const props = {
+    ..._props,
+    colon: fallback(_props.colon, ctx.colon),
+    labelAlign: fallback(_props.labelAlign, ctx.labelAlign),
+    labelCol: fallback(_props.labelCol, ctx.labelCol),
+    labelWrap: fallback(_props.labelWrap, ctx.labelWrap),
+    requiredMark: fallback(_props.requiredMark, ctx.requiredMark),
+  }
 
   const prefixCls = usePrefixCls('form-item__label')
 
-  const classes = useFormatClass(prefixCls, props, fallbacks)
+  const classes = useFormatClass(prefixCls, props, ctx)
 
   const { htmlFor, label } = props
 
   const htmlTitle = isString(label) ? label : undefined
 
   return (
-    <Col {...fallbacks.labelCol} className={classes}>
+    <Col {...props.labelCol} className={classes}>
       <label htmlFor={htmlFor} title={htmlTitle}>
-        {normalizeChildren(props, fallbacks)}
+        {normalizeChildren(props, ctx)}
       </label>
     </Col>
   )

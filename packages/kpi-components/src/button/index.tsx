@@ -1,4 +1,4 @@
-import { withDefaults, withoutProperties } from '@kpi-ui/utils'
+import { withDisplayName, omit, withDefaults } from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef, type MouseEvent } from 'react'
 import TouchEffect from '../_internal/touch-effect'
 import { usePrefixCls } from '../_shared/hooks'
@@ -23,8 +23,16 @@ const excluded = [
   'onClick',
 ] as const
 
-function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
-  const { children, onClick, loading, disabled, variant } = props
+export const defaultProps: Partial<ButtonProps> = {
+  theme: 'primary',
+  variant: 'default',
+  type: 'button',
+}
+
+function Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
+  const props = withDefaults(_props, defaultProps)
+
+  const { children: _children, onClick, loading, disabled, variant } = props
 
   const prefixCls = usePrefixCls('button')
 
@@ -35,25 +43,21 @@ function Button(props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
     else onClick && onClick(e)
   }
 
-  const attrs = withoutProperties(props, excluded)
+  const attrs = omit(props, excluded)
 
-  const renderNode = (
+  const children = (
     <button {...attrs} className={classes} ref={ref} onClick={handleClick}>
-      <span>{children}</span>
+      <span>{_children}</span>
     </button>
   )
 
-  if (!isBorderedVariant(variant)) return renderNode
+  if (!isBorderedVariant(variant)) return children
 
   return (
     <TouchEffect component="Button" disabled={!!loading}>
-      {renderNode}
+      {children}
     </TouchEffect>
   )
 }
 
-export default withDefaults(forwardRef(Button), {
-  theme: 'primary',
-  variant: 'default',
-  type: 'button',
-})
+export default withDisplayName(forwardRef(Button))

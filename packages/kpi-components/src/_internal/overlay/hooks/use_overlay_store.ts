@@ -1,6 +1,6 @@
 // utils
 import { useConstant, useDerivedState, useForceUpdate } from '@kpi-ui/hooks'
-import { isExited } from '../../transition/constant'
+import { isExited } from '../../transition/constants'
 // types
 import type { CSSTransitionRef } from '../../transition/_shared/props'
 import type { OverlayProps } from '../props'

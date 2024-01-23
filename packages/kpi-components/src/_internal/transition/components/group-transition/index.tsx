@@ -1,5 +1,5 @@
 import { useDerivedState } from '@kpi-ui/hooks'
-import { isNullish, withoutProperties } from '@kpi-ui/utils'
+import { isNullish, omit } from '@kpi-ui/utils'
 import { createElement, useEffect } from 'react'
 import { isElementsEqual } from '../../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
@@ -59,7 +59,7 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
 
   if (isNullish(tag)) return <>{store.nodes}</>
 
-  const attrs = withoutProperties(props, excluded)
+  const attrs = omit(props, excluded)
 
   return createElement(tag, attrs, store.nodes)
 }

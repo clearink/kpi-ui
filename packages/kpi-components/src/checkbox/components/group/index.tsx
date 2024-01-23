@@ -1,4 +1,4 @@
-import { withoutProperties } from '@kpi-ui/utils'
+import { omit } from '@kpi-ui/utils'
 import { usePrefixCls } from '../../../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 
@@ -13,7 +13,7 @@ function CheckboxGroup(props: CheckboxGroupProps) {
 
   const classes = useFormatClass(prefixCls, props)
 
-  const attrs = withoutProperties(props, excluded)
+  const attrs = omit(props, excluded)
 
   return (
     <div {...attrs} className={classes}>

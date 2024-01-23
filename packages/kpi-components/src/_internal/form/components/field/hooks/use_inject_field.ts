@@ -15,7 +15,6 @@ export default function useInjectField(
   internalHooks?: InternalHookReturn
 ) {
   // 收集注册到子组件的数据
-
   const handleCollect = collectInjectProps(props, instance, control, internalHooks)
 
   // 处理 children

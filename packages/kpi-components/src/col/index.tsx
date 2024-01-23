@@ -1,4 +1,4 @@
-import { withoutProperties } from '@kpi-ui/utils'
+import { omit } from '@kpi-ui/utils'
 import { forwardRef, type ForwardedRef } from 'react'
 import { RowContext } from '../_shared/context'
 import { usePrefixCls } from '../_shared/hooks'
@@ -33,7 +33,7 @@ function Col(props: ColProps, ref: ForwardedRef<HTMLDivElement>) {
 
   const flex = useColFlex(props.flex)
 
-  const attrs = withoutProperties(props, excluded)
+  const attrs = omit(props, excluded)
 
   return (
     <div {...attrs} className={classes} ref={ref} style={{ flex, ...gapStyle, ...style }}>

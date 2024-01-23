@@ -47,7 +47,7 @@ function internalDeleteIn<V = any>(source: V, paths: InternalNamePath): V {
 
   const [attr, ...rest] = paths
 
-  if (!hasOwn(source, attr)) return source
+  if (!hasOwn(source as any, attr)) return source
 
   if (rest.length === 0) delete source[attr]
   else internalDeleteIn(source[attr], rest)
@@ -110,7 +110,7 @@ export function hasOwnWithPath<V>(source: V, paths: InternalNamePath) {
   for (let i = 0; i < paths.length; i += 1) {
     const key = paths[i]
 
-    if (!hasOwn(source, key)) return false
+    if (!hasOwn(source as any, key)) return false
 
     source = source[key]
   }

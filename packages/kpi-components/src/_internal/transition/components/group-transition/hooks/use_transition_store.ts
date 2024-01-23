@@ -1,7 +1,7 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
-import { addClassNames, delClassNames, withoutProperties } from '@kpi-ui/utils'
+import { addClassNames, delClassNames, omit } from '@kpi-ui/utils'
 import { cloneElement, createElement, type ReactElement } from 'react'
-import { ENTER, isExit, isExited } from '../../../constant'
+import { ENTER, isExit, isExited } from '../../../constants'
 import { batch } from '../../../_shared/utils'
 import CSSTransition from '../../css-transition'
 import makeUniqueId from '../../../utils/unique_id'
@@ -65,7 +65,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
   }
 
   make = (element: ReactElement, extra: Partial<CSS>) => {
-    const preset = withoutProperties(this.props, ['children']) as CSS
+    const preset = omit(this.props, ['children']) as CSS
 
     const ref = (instance: CSSTransitionRef | null) => {
       if (!instance) this.components.delete(element.key)

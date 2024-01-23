@@ -1,6 +1,6 @@
 // utils
 import { useControllableState } from '@kpi-ui/hooks'
-import { isNullish, withDefaults, withoutProperties } from '@kpi-ui/utils'
+import { isNullish, withDisplayName, omit } from '@kpi-ui/utils'
 import { usePrefixCls } from '../../../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 // comps
@@ -17,6 +17,8 @@ const excluded = [
   'indeterminate',
   'onChange',
 ] as const
+
+export const defaultProps: Partial<CheckboxProps> = {}
 
 function Checkbox(props: CheckboxProps) {
   const { children } = props
@@ -36,7 +38,7 @@ function Checkbox(props: CheckboxProps) {
 
   const classes = useFormatClass(prefixCls, props, { checked })
 
-  const attrs = withoutProperties(props, excluded)
+  const attrs = omit(props, excluded)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(e.target.checked)
@@ -58,4 +60,4 @@ function Checkbox(props: CheckboxProps) {
   )
 }
 
-export default withDefaults(Checkbox)
+export default withDisplayName(Checkbox)

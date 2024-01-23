@@ -6,5 +6,5 @@ export interface PortalProps {
   children?: React.ReactNode
 
   /** 自定义容器,会执行多次 为 false 时表示不适用 portal */
-  container?: GetContainerType
+  getContainer?: GetContainerType
 }

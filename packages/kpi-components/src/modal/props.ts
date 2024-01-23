@@ -1,16 +1,13 @@
+// types
+import type { SemanticStyledProps } from '@kpi-ui/types'
 import type React from 'react'
 import type { OverlayProps } from '../_internal/overlay/props'
 
-export interface StyledProps {
-  className?: string
-  style?: React.CSSProperties
-}
-
 export interface ModalProps
-  extends StyledProps,
+  extends SemanticStyledProps<'root'>,
     Pick<
       OverlayProps,
-      'container' | 'mask' | 'open' | 'transitions' | 'keepMounted' | 'unmountOnExit'
+      'getContainer' | 'mask' | 'open' | 'transitions' | 'keepMounted' | 'unmountOnExit'
     > {
   children?: React.ReactNode
 

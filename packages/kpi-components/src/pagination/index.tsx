@@ -1,4 +1,4 @@
-import { withDefaults } from '@kpi-ui/utils'
+import { withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { usePrefixCls } from '../_shared/hooks'
 import { CSSTransition } from '../_internal/transition'
 import useFormatClass from './hooks/use_format_class'
@@ -7,7 +7,20 @@ import useSharedLayout from './hooks/use_shared_layout'
 
 import type { PaginationProps } from './props'
 
-function Pagination(props: PaginationProps) {
+export const defaultProps: Partial<PaginationProps> = {
+  simple: false,
+  total: 0,
+  showJumper: false,
+  showHtmlTitle: true,
+  hideOnSinglePage: false,
+  defaultCurrent: 1,
+  defaultPageSize: 10,
+  totalBoundaryShowSizeChanger: 50,
+}
+
+function Pagination(_props: PaginationProps) {
+  const props = withDefaults(_props, defaultProps)
+
   const { onChange } = props
 
   const prefixCls = usePrefixCls('pagination')
@@ -69,13 +82,4 @@ function Pagination(props: PaginationProps) {
   )
 }
 
-export default withDefaults(Pagination, {
-  simple: false,
-  total: 0,
-  showJumper: false,
-  showHtmlTitle: true,
-  hideOnSinglePage: false,
-  defaultCurrent: 1,
-  defaultPageSize: 10,
-  totalBoundaryShowSizeChanger: 50,
-})
+export default withDisplayName(Pagination)

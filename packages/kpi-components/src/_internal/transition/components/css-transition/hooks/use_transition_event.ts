@@ -1,5 +1,5 @@
 import { delClassNames, isUndefined } from '@kpi-ui/utils'
-import { isAppear, isExit } from '../../../constant'
+import { isAppear, isExit } from '../../../constants'
 import { batch } from '../../../_shared/utils'
 import collectTimeoutInfo from '../utils/collect'
 import { addListener, addTimeout } from '../utils/listener'

@@ -2,13 +2,8 @@ import cls from 'classnames'
 
 import type { FormProps } from '../props'
 
-export default function useFormatClass(
-  prefixCls: string,
-  props: FormProps,
-  fallbacks: Pick<FormProps, 'size' | 'disabled' | 'colon' | 'requiredMark'>
-) {
-  const { layout, className } = props
-  const { size, requiredMark } = fallbacks
+export default function useFormatClass(prefixCls: string, props: FormProps) {
+  const { layout, className, size, requiredMark } = props
 
   return cls(
     prefixCls,

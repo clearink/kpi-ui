@@ -1,11 +1,15 @@
-import { withDefaults } from '@kpi-ui/utils'
+import { withDefaults, withDisplayName } from '@kpi-ui/utils'
 import Portal from '../portal'
 import { CSSTransition } from '../transition'
 import useOverlayStore from './hooks/use_overlay_store'
 
 import type { OverlayProps } from './props'
 
-function Overlay(props: OverlayProps) {
+export const defaultProps: Partial<OverlayProps> = { mask: true }
+
+function Overlay(_props: OverlayProps) {
+  const props = withDefaults(_props, defaultProps)
+
   const { open, keepMounted, unmountOnExit, mask, transitions, classNames } = props
 
   const store = useOverlayStore(props)
@@ -13,7 +17,7 @@ function Overlay(props: OverlayProps) {
   if (!open && !store.isMounted) return null
 
   return (
-    <Portal container={props.container}>
+    <Portal getContainer={props.getContainer}>
       <div className={classNames?.root}>
         {!!mask && (
           <CSSTransition appear when={open} name={transitions?.mask} mountOnEnter={!keepMounted}>
@@ -44,6 +48,4 @@ function Overlay(props: OverlayProps) {
   )
 }
 
-export default withDefaults(Overlay, {
-  mask: true,
-})
+export default withDisplayName(Overlay)

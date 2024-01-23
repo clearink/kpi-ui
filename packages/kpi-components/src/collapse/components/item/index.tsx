@@ -1,5 +1,13 @@
 // utils
-import { fallback, hasItem, isFunction, isNullish, withDefaults } from '@kpi-ui/utils'
+import {
+  fallback,
+  hasItem,
+  isFunction,
+  isNullish,
+  withDefaults,
+  withDisplayName,
+  withFallbacks,
+} from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { CollapseContext } from '../../_shared/context'
@@ -13,10 +21,26 @@ import { CSSTransition } from '../../../_internal/transition'
 import type { CollapseItemProps } from './props'
 import type { CollapsibleType } from '../collapse/props'
 
-function CollapseItem(props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement>) {
-  const { name, title, extra, disabled, showExpandIcon } = props
+export const defaultProps: Partial<CollapseItemProps> = {
+  showExpandIcon: true,
+}
 
+function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement>) {
   const ctx = CollapseContext.useState()
+
+  const props = withDefaults(_props, {
+    ...defaultProps,
+    keepMounted: ctx.keepMounted,
+    unmountOnExit: ctx.unmountOnExit,
+    expandIcon: fallback(ctx.expandIcon, <CaretRightOutlined />),
+  })
+
+  const fallbacks = withFallbacks(_props, {
+    showExpandIcon: defaultProps.showExpandIcon,
+    keepMounted: ctx.keepMounted,
+  })
+
+  const { name, title, extra, disabled, showExpandIcon, expandIcon } = props
 
   const prefixCls = usePrefixCls('collapse')
 
@@ -28,12 +52,6 @@ function CollapseItem(props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement
   })
 
   const styles = getSemanticStyles(props.style, props.styles)
-
-  const keepMounted = fallback(props.keepMounted, ctx.keepMounted)
-
-  const unmountOnExit = fallback(props.unmountOnExit, ctx.unmountOnExit)
-
-  const expandIcon = fallback(props.expandIcon, ctx.expandIcon, <CaretRightOutlined />)
 
   const getItemClickHandler = (type: CollapsibleType) => {
     if (disabled || !hasItem(ctx.collapsible, type)) return undefined
@@ -79,8 +97,8 @@ function CollapseItem(props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement
       </div>
       <CSSTransition
         when={expanded}
-        mountOnEnter={!keepMounted}
-        unmountOnExit={!keepMounted && unmountOnExit}
+        mountOnEnter={!props.keepMounted}
+        unmountOnExit={!props.keepMounted && props.unmountOnExit}
         name={`${prefixCls}-transition`}
         {...handlers}
       >
@@ -94,6 +112,4 @@ function CollapseItem(props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement
   )
 }
 
-export default withDefaults(forwardRef(CollapseItem), {
-  showExpandIcon: true,
-})
+export default withDisplayName(forwardRef(CollapseItem))

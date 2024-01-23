@@ -1,6 +1,6 @@
 // utils
 import { useControllableState, useEvent } from '@kpi-ui/hooks'
-import { isArray, isUndefined, withDefaults } from '@kpi-ui/utils'
+import { isArray, isUndefined, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { forwardRef, useMemo } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { CollapseContext } from '../../_shared/context'
@@ -15,7 +15,15 @@ import type { CollapseContextState } from '../../_shared/context'
 import type { ExpandedName } from '../../props'
 import type { CollapseProps } from './props'
 
-function Collapse(props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
+export const defaultProps: Partial<CollapseProps> = {
+  bordered: true,
+  collapsible: ['icon', 'title', 'extra'],
+  expandIconPosition: 'start',
+}
+
+function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
+  const props = withDefaults(_props, defaultProps)
+
   const {
     items,
     children,
@@ -95,10 +103,6 @@ function Collapse(props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
   )
 }
 
-export default withDefaults(forwardRef(Collapse), {
-  bordered: true,
-  collapsible: ['icon', 'title', 'extra'],
-  expandIconPosition: 'start',
-}) as <K extends ExpandedName>(
+export default withDisplayName(forwardRef(Collapse)) as <K extends ExpandedName>(
   props: CollapseProps<K> & { ref?: Ref<HTMLDivElement> }
 ) => JSX.Element

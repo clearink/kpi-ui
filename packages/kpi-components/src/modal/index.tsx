@@ -1,5 +1,5 @@
 // utils
-import { fallback, isNull, isNullish, pick, withDefaults } from '@kpi-ui/utils'
+import { fallback, isNull, isNullish, pick, withDisplayName } from '@kpi-ui/utils'
 import cls from 'classnames'
 import { useId } from 'react'
 import { usePrefixCls } from '../_shared/hooks'
@@ -11,7 +11,7 @@ import Button from '../button'
 import type { ModalProps } from './props'
 
 const included = [
-  'container',
+  'getContainer',
   'mask',
   'open',
   'transitions',
@@ -19,10 +19,14 @@ const included = [
   'unmountOnExit',
 ] as const
 
+export const defaultProps: Partial<ModalProps> = {}
+
 function Modal(props: ModalProps) {
   const { children, open, transitions, title, footer } = props
 
-  const prefixCls = usePrefixCls('modal')
+  const rootPrefixCls = usePrefixCls()
+
+  const prefixCls = `${rootPrefixCls}-modal`
 
   const ariaId = useId()
 
@@ -30,8 +34,8 @@ function Modal(props: ModalProps) {
     <Overlay
       {...pick(props, included)}
       transitions={{
-        mask: fallback(transitions?.mask, 'kpi-fade-in'),
-        content: fallback(transitions?.content, 'kpi-slide-bottom'),
+        mask: fallback(transitions?.mask, `${rootPrefixCls}-fade-in`),
+        content: fallback(transitions?.content, `${rootPrefixCls}-slide-bottom`),
       }}
       classNames={{
         mask: `${prefixCls}-mask`,
@@ -76,7 +80,7 @@ function Modal(props: ModalProps) {
   )
 }
 
-export default withDefaults(Modal)
+export default withDisplayName(Modal)
 
 /**
  * 需要干什么?
