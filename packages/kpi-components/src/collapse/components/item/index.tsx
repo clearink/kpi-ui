@@ -8,7 +8,7 @@ import {
   withDisplayName,
 } from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef } from 'react'
-import { KEYBOARD } from '../../../_shared/constants'
+import { Keyboard } from '../../../_shared/constants'
 import { usePrefixCls, useSemanticStyles } from '../../../_shared/hooks'
 import { CollapseContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
@@ -54,7 +54,7 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
   }
 
   const handleHeaderEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === KEYBOARD.enter) ctx.onItemClick(name)
+    if (e.key === Keyboard.enter) ctx.onItemClick(name)
   }
 
   return (

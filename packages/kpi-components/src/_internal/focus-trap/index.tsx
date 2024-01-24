@@ -1,11 +1,18 @@
 // utils
 import { useComposeRefs, useEvent } from '@kpi-ui/hooks'
-import { atIndex, isBrowser, ownerDocument, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import {
+  atIndex,
+  isBrowser,
+  logger,
+  nextFrame,
+  ownerDocument,
+  withDefaults,
+  withDisplayName,
+} from '@kpi-ui/utils'
 import { cloneElement, useEffect } from 'react'
-import { KEYBOARD } from '../../_shared/constants'
+import { Keyboard } from '../../_shared/constants'
 import useFocusTrapEvent from './hooks/use_trap_event'
 import useFocusTrapStore from './hooks/use_trap_store'
-import defaultGetTabbable from './utils/get_tabbable'
 import { addListener } from '../transition/_shared/utils'
 // types
 import type { FocusEvent } from 'react'
@@ -17,15 +24,13 @@ const hidden: React.CSSProperties = {
   height: 0,
 }
 
-export const defaultProps: Partial<FocusTrapProps> = {
-  getTabbable: defaultGetTabbable,
-}
+export const defaultProps: Partial<FocusTrapProps> = {}
 
 // 焦点聚焦
 function FocusTrap(_props: FocusTrapProps) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children, active, getTabbable } = props
+  const { children, active } = props
 
   const store = useFocusTrapStore(props)
 
@@ -34,7 +39,16 @@ function FocusTrap(_props: FocusTrapProps) {
   const runFocus = useEvent(() => {})
 
   // 尽量模仿 CSSTransition 组件的写法
-  useEffect(() => {}, [runFocus])
+  useEffect(() => {
+    if (active) {
+      return nextFrame(() => {
+        const $start = store.start.current
+        $start && $start.focus({ preventScroll: true })
+      })
+    }
+  }, [runFocus, active, store.start])
+
+  const ref = useComposeRefs(store.content, (children as any).ref)
 
   // useEffect(() => {
   //   const $content = store.content.current
@@ -64,7 +78,7 @@ function FocusTrap(_props: FocusTrapProps) {
 
   //   const loopFocus = (e: KeyboardEvent) => {
   //     console.log('last keydown', e, e.key)
-  //     if (e.key !== KEYBOARD.tab) return
+  //     if (e.key !== Keyboard.tab) return
 
   //     if (root.activeElement === $content && e.shiftKey) {
   //       // shift + tab
@@ -79,11 +93,11 @@ function FocusTrap(_props: FocusTrapProps) {
   //     cleanupKeydown()
   //     cleanupContain()
   //   }
-  // }, [getTabbable, handleDetectContain, handleLoopFocus, store])
+  // }, [handleDetectContain, handleLoopFocus, store])
 
   const handleSentinelFocus = (e: FocusEvent<HTMLDivElement>) => {
     // store
-    console.log('sentinel focus', e)
+    console.log('sentinel focus', e, e.relatedTarget)
   }
 
   const handleContentFocus = useEvent((e: FocusEvent<HTMLDivElement>) => {
@@ -91,8 +105,6 @@ function FocusTrap(_props: FocusTrapProps) {
     const original = children.props.onFocus
     original && original(e)
   })
-
-  const ref = useComposeRefs(store.content, (children as any).ref)
 
   return (
     <>

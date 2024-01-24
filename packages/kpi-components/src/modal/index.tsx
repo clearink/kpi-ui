@@ -49,7 +49,7 @@ function Modal(props: ModalProps) {
         className={cls(prefixCls, props.className)}
         style={props.style}
       >
-        <FocusTrap open={open}>
+        <FocusTrap active={open}>
           <div className={`${prefixCls}__content`}>
             <button
               type="button"
