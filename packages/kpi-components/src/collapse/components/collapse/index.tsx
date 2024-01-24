@@ -2,9 +2,8 @@
 import { useControllableState, useEvent } from '@kpi-ui/hooks'
 import { isArray, isUndefined, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { forwardRef, useMemo } from 'react'
-import { usePrefixCls } from '../../../_shared/hooks'
+import { usePrefixCls, useSemanticStyles } from '../../../_shared/hooks'
 import { CollapseContext } from '../../_shared/context'
-import getSemanticStyles from '../../utils/semantic_styles'
 import useFormatClass from './hooks/use_format_class'
 import getExpandedNames from './utils/get_expanded_names'
 // comps
@@ -42,7 +41,7 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
 
   const classNames = useFormatClass(prefixCls, props)
 
-  const styles = getSemanticStyles(props.style, props.styles)
+  const styles = useSemanticStyles(props.style, props.styles)
 
   const [expandedNames, setExpandedNames] = useControllableState({
     value: isUndefined(_names) ? undefined : getExpandedNames(_names, accordion),

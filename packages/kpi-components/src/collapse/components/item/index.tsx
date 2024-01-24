@@ -8,17 +8,17 @@ import {
   withDisplayName,
 } from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef } from 'react'
-import { usePrefixCls } from '../../../_shared/hooks'
+import { KEYBOARD } from '../../../_shared/constants'
+import { usePrefixCls, useSemanticStyles } from '../../../_shared/hooks'
 import { CollapseContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
 import handlers from './utils/transition_handlers'
-import getSemanticStyles from '../../utils/semantic_styles'
 // comps
 import { CaretRightOutlined } from '@kpi-ui/icons'
 import { CSSTransition } from '../../../_internal/transition'
 // types
-import type { CollapseItemProps } from './props'
 import type { CollapsibleType } from '../collapse/props'
+import type { CollapseItemProps } from './props'
 
 export const defaultProps: Partial<CollapseItemProps> = {
   showExpandIcon: true,
@@ -45,12 +45,16 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
     expanded,
   })
 
-  const styles = getSemanticStyles(props.style, props.styles)
+  const styles = useSemanticStyles(props.style, props.styles)
 
   const getItemClickHandler = (type: CollapsibleType) => {
     if (disabled || ctx.collapsible !== type) return undefined
 
     return () => ctx.onItemClick(name)
+  }
+
+  const handleHeaderEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === KEYBOARD.enter) ctx.onItemClick(name)
   }
 
   return (
@@ -62,6 +66,7 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
         aria-disabled={!!disabled}
         role={ctx.accordion ? 'tab' : 'button'}
         tabIndex={0}
+        onKeyDown={handleHeaderEnter}
         onClick={getItemClickHandler('header')}
       >
         {!!showExpandIcon && (

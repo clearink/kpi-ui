@@ -9,7 +9,3 @@ export const TABBABLE_QUERY = [
   'video[controls]',
   '[contenteditable]:not([contenteditable="false"])',
 ].join(',')
-
-export const KEY_NAME = {
-  tab: 'Tab',
-}
