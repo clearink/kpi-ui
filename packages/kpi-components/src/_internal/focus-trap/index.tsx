@@ -1,7 +1,7 @@
 // utils
 import { useComposeRefs, useEvent } from '@kpi-ui/hooks'
 import {
-  atIndex,
+  atArray,
   isBrowser,
   logger,
   nextFrame,
@@ -30,23 +30,28 @@ export const defaultProps: Partial<FocusTrapProps> = {}
 function FocusTrap(_props: FocusTrapProps) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children, active } = props
+  const { children, active, autoFocus } = props
 
   const store = useFocusTrapStore(props)
 
-  const [handleLoopFocus, handleDetectContain] = useFocusTrapEvent(store, props)
+  // const [handleLoopFocus, handleDetectContain] = useFocusTrapEvent(store, props)
 
   const runFocus = useEvent(() => {})
 
   // 尽量模仿 CSSTransition 组件的写法
   useEffect(() => {
-    if (active) {
-      return nextFrame(() => {
-        const $start = store.start.current
-        $start && $start.focus({ preventScroll: true })
-      })
-    }
-  }, [runFocus, active, store.start])
+    if (!active) return
+
+    const runFrameCleanup = nextFrame(() => {
+      if (autoFocus) {
+        // 获取 tabbable 元素
+      } else {
+        store.start.focus()
+      }
+    })
+
+    return runFrameCleanup()
+  }, [runFocus, active, store, autoFocus])
 
   const ref = useComposeRefs(store.content, (children as any).ref)
 

@@ -1,4 +1,4 @@
-import type { SemanticStyledProps } from '@kpi-ui/types'
+import type { HasChildren, SemanticStyledProps } from '@kpi-ui/types'
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import type { SizeType } from '../config-provider/_shared/props'
 
@@ -6,7 +6,8 @@ import type { SizeType } from '../config-provider/_shared/props'
  * @desc >支持原生 button 的其他所有属性
  */
 export interface ButtonProps
-  extends SemanticStyledProps<'root' | 'icon' | 'text'>,
+  extends HasChildren,
+    SemanticStyledProps<'root' | 'icon' | 'text'>,
     ButtonHTMLAttributes<HTMLButtonElement> {
   /**
    * @zh  按钮主题
@@ -60,9 +61,4 @@ export interface ButtonProps
    * @zh 前缀图标
    */
   icon?: ReactNode
-
-  /**
-   * @zh 子元素
-   */
-  children?: ReactNode
 }

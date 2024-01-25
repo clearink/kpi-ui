@@ -1,5 +1,4 @@
 export { default as isBrowser } from './is_browser'
-export { default as contains } from './contains'
 export * from './classnames'
 export * from './raf'
 export * from './owner'

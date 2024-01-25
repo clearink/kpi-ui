@@ -1,8 +1,17 @@
 // utils
-import { fallback, isNull, isNullish, pick, withDisplayName } from '@kpi-ui/utils'
-import cls from 'classnames'
-import { useId } from 'react'
-import { usePrefixCls } from '../_shared/hooks'
+import {
+  fallback,
+  isFunction,
+  isNull,
+  isNullish,
+  pick,
+  withDefaults,
+  withDisplayName,
+} from '@kpi-ui/utils'
+import React, { useId } from 'react'
+import { Keyboard } from '../_shared/constants'
+import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
+import useFormatClass from './hooks/use_format_class'
 // comps
 import FocusTrap from '../_internal/focus-trap'
 import Overlay from '../_internal/overlay'
@@ -19,63 +28,87 @@ const included = [
   'unmountOnExit',
 ] as const
 
-export const defaultProps: Partial<ModalProps> = {}
+export const defaultProps: Partial<ModalProps> = {
+  closeOnEscape: true,
+}
 
-function Modal(props: ModalProps) {
-  const { children, open, transitions, title, footer } = props
+function Modal(_props: ModalProps) {
+  const props = withDefaults(_props, defaultProps)
+
+  const { children: _children, open, title, footer, modalRender, transitions = {} } = props
+
+  const ariaId = useId()
 
   const rootPrefixCls = usePrefixCls()
 
   const prefixCls = `${rootPrefixCls}-modal`
 
-  const ariaId = useId()
+  const classNames = useFormatClass(prefixCls, props)
+
+  const styles = useSemanticStyles(props.style, props.styles)
+
+  const wrapAttrs = props.closeOnEscape
+    ? {
+        onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+          if (e.key === Keyboard.esc) props.onOpenChange?.(!open)
+        },
+      }
+    : undefined
+
+  const children = (
+    <div
+      role="dialog"
+      aria-labelledby={title ? ariaId : undefined}
+      aria-modal="true"
+      className={classNames.root}
+      style={styles.root}
+    >
+      <FocusTrap active={open}>
+        <div className={classNames.main}>
+          <button
+            type="button"
+            aria-label="close"
+            className={classNames.close}
+            style={styles.close}
+            onClick={() => props.onOpenChange?.(!open)}
+          >
+            X
+          </button>
+          <div className={classNames.header} style={styles.header}>
+            {!isNullish(title) && (
+              <span id={ariaId} className={`${prefixCls}__title`}>
+                {title}
+              </span>
+            )}
+          </div>
+          <div className={classNames.body} style={styles.body}>
+            {_children}
+          </div>
+          {!isNull(footer) && (
+            <div className={classNames.footer} style={styles.footer}>
+              <Button>取消</Button>
+              <Button variant="filled">确定</Button>
+            </div>
+          )}
+        </div>
+      </FocusTrap>
+    </div>
+  )
 
   return (
     <Overlay
       {...pick(props, included)}
+      attrs={{ wrap: wrapAttrs }}
       transitions={{
-        mask: fallback(transitions?.mask, `${rootPrefixCls}-fade-in`),
-        content: fallback(transitions?.content, `${rootPrefixCls}-slide-bottom`),
+        mask: fallback(transitions.mask, `${rootPrefixCls}-fade-in`),
+        content: fallback(transitions.content, `${rootPrefixCls}-slide-bottom`),
       }}
       classNames={{
         mask: `${prefixCls}-mask`,
         wrap: `${prefixCls}-wrap`,
       }}
     >
-      <div
-        role="dialog"
-        aria-labelledby={title ? ariaId : undefined}
-        aria-modal="true"
-        className={cls(prefixCls, props.className)}
-        style={props.style}
-      >
-        <FocusTrap active={open}>
-          <div className={`${prefixCls}__content`}>
-            <button
-              type="button"
-              aria-label="close"
-              className={`${prefixCls}__closer`}
-              onClick={() => props.onOpenChange?.(!open)}
-            >
-              X
-            </button>
-            <div className={`${prefixCls}__header`}>
-              {!isNullish(title) && (
-                <span id={ariaId} className={`${prefixCls}__title`}>
-                  {title}
-                </span>
-              )}
-            </div>
-            <div className={`${prefixCls}__body`}>{children}</div>
-            {!isNull(footer) && (
-              <div className={`${prefixCls}__footer`}>
-                <Button>取消</Button>
-                <Button variant="filled">确定</Button>
-              </div>
-            )}
-          </div>
-        </FocusTrap>
-      </div>
+      {isFunction(modalRender) ? modalRender(children) : children}
     </Overlay>
   )
 }

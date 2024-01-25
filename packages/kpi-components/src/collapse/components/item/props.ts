@@ -6,9 +6,9 @@ export interface CollapseItemProps
   extends HasChildren,
     SemanticStyledProps<'root' | 'header' | 'icon' | 'title' | 'extra' | 'content'>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
-  extra?: React.ReactNode
   name: ExpandedName
   title?: React.ReactNode
+  extra?: React.ReactNode
   disabled?: boolean
   showExpandIcon?: boolean
 

@@ -4,6 +4,7 @@ import {
   hasItem,
   isFunction,
   isNullish,
+  omit,
   withDefaults,
   withDisplayName,
 } from '@kpi-ui/utils'
@@ -23,6 +24,24 @@ import type { CollapseItemProps } from './props'
 export const defaultProps: Partial<CollapseItemProps> = {
   showExpandIcon: true,
 }
+
+const excluded = [
+  'name',
+  'title',
+  'extra',
+  'disabled',
+  'showExpandIcon',
+  'keepMounted',
+  'unmountOnExit',
+  'expandIcon',
+  // 子元素
+  'children',
+  // 样式
+  'className',
+  'classNames',
+  'style',
+  'styles',
+] as const
 
 function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement>) {
   const ctx = CollapseContext.useState()
@@ -57,8 +76,10 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
     if (e.key === Keyboard.enter) ctx.onItemClick(name)
   }
 
+  const attrs = omit(props, excluded)
+
   return (
-    <div ref={ref} className={classNames.root} style={styles.root}>
+    <div {...attrs} ref={ref} className={classNames.root} style={styles.root}>
       <div
         className={classNames.header}
         style={styles.header}

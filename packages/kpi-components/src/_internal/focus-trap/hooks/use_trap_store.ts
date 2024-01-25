@@ -8,7 +8,7 @@ export class FocusTrapStore {
     current: null as HTMLDivElement | null,
     focus: () => {
       const el = this.start.current
-      el && el.focus()
+      el && el.focus({ preventScroll: true })
     },
   }
 
@@ -16,7 +16,7 @@ export class FocusTrapStore {
     current: null as HTMLElement | null,
     focus: () => {
       const el = this.content.current
-      el && el.focus()
+      el && el.focus({ preventScroll: true })
     },
   }
 
@@ -24,7 +24,7 @@ export class FocusTrapStore {
     current: null as HTMLDivElement | null,
     focus: () => {
       const el = this.end.current
-      el && el.focus()
+      el && el.focus({ preventScroll: true })
     },
   }
 

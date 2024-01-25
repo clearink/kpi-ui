@@ -29,7 +29,7 @@ export function hasItem<T>(array: T[], value: T) {
   return array.includes(value)
 }
 
-export function atIndex<T>(array: T[], index: number) {
+export function atArray<T>(array: T[], index: number) {
   const cursor = index
   return array[cursor]
 }

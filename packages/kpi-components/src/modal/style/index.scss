@@ -28,14 +28,28 @@ $comp: #{$prefix}-modal;
   padding-bottom: var(--#{$prefix}-size-unit-6);
   width: 520px;
 
-  .#{$comp}__sentinel {
-    width: 0;
-    height: 0;
-    overflow: 'hidden';
-    outline: 'none';
+  .#{$comp}__close {
+    position: absolute;
+    right: var(--#{$prefix}-size-unit-6);
+    top: var(--#{$prefix}-size-unit-5);
+    padding: 0;
+    // color: ;
+    text-decoration: none;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    width: var(--#{$prefix}-line-height-small);
+    height: var(--#{$prefix}-line-height-small);
+
+    &:focus,
+    &:focus-visible {
+      outline-width: $kpi-modal-close-outline-width;
+      outline-offset: $kpi-modal-close-outline-offset;
+      outline-color: $kpi-modal-close-outline-color;
+    }
   }
 
-  .#{$comp}__content {
+  .#{$comp}__main {
     position: relative;
     background-color: var(--#{$prefix}-color-background-default);
     border-radius: var(--#{$prefix}-border-radius-default);
@@ -56,19 +70,6 @@ $comp: #{$prefix}-modal;
     margin-right: var(--#{$prefix}-size-unit-3);
     word-wrap: break-word;
     display: inline-block;
-  }
-
-  .#{$comp}__closer {
-    position: absolute;
-    right: var(--#{$prefix}-size-unit-6);
-    top: var(--#{$prefix}-size-unit-5);
-    padding: 0;
-    // color: ;
-    text-decoration: none;
-    background-color: transparent;
-    outline: 0;
-    border: 0;
-    cursor: pointer;
   }
 
   .#{$comp}__body {

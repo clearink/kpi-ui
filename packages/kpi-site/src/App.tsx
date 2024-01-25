@@ -64,13 +64,8 @@ export default function App() {
         minus
       </Button>
       <Modal title="我的Modal" open={open} onOpenChange={set}>
+        <button>123</button>
         <div>132123</div>
-        <div>132123</div>
-        <div>132123</div>
-        <div>132123</div>
-      </Modal>
-
-      <div style={{ width: 400, margin: 120 }}>
         <Collapse
           accordion
           expandedNames={d}
@@ -80,7 +75,9 @@ export default function App() {
           }}
           items={items}
         />
-      </div>
+        <div>132123</div>
+        <div>132123</div>
+      </Modal>
     </div>
   )
 }

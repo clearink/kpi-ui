@@ -90,7 +90,7 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
   return (
     <div
       ref={ref}
-      className={classNames}
+      className={classNames.root}
       style={styles.root}
       role={accordion ? 'tablist' : undefined}
     >

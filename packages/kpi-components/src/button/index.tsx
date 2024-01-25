@@ -1,7 +1,7 @@
 import { withDisplayName, omit, withDefaults } from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef, type MouseEvent } from 'react'
 import TouchEffect from '../_internal/touch-effect'
-import { usePrefixCls } from '../_shared/hooks'
+import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 import { isBorderedVariant } from './utils/helpers'
 
@@ -16,11 +16,14 @@ const excluded = [
   'block',
   'ghost',
   'icon',
-  'children',
-  'classNames',
-  'styles',
-  'className',
   'onClick',
+  // 子元素
+  'children',
+  // 样式
+  'className',
+  'classNames',
+  'style',
+  'styles',
 ] as const
 
 export const defaultProps: Partial<ButtonProps> = {
@@ -36,7 +39,9 @@ function Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
 
   const prefixCls = usePrefixCls('button')
 
-  const classes = useFormatClass(prefixCls, props)
+  const classNames = useFormatClass(prefixCls, props)
+
+  const styles = useSemanticStyles(props.style, props.styles)
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     if (disabled || loading) e.preventDefault()
@@ -46,8 +51,16 @@ function Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
   const attrs = omit(props, excluded)
 
   const children = (
-    <button {...attrs} className={classes} ref={ref} onClick={handleClick}>
-      <span>{_children}</span>
+    <button
+      {...attrs}
+      className={classNames.root}
+      style={styles.root}
+      ref={ref}
+      onClick={handleClick}
+    >
+      <span className={classNames.text} style={styles.text}>
+        {_children}
+      </span>
     </button>
   )
 

@@ -6,4 +6,6 @@ export interface FocusTrapProps extends SemanticStyledProps<'root'> {
   children: React.ReactElement
 
   active?: boolean
+
+  autoFocus?: boolean
 }

@@ -1,7 +1,17 @@
+import type { SemanticStyledProps } from '@kpi-ui/types'
 import type { PortalProps } from '../portal/props'
+import type { HTMLAttributes } from 'react'
 
-export interface OverlayProps extends Pick<PortalProps, 'getContainer'> {
+export interface OverlayProps
+  extends SemanticStyledProps<'root' | 'mask' | 'wrap'>,
+    Pick<PortalProps, 'getContainer'> {
   children: React.ReactElement
+
+  attrs?: {
+    root?: HTMLAttributes<HTMLDivElement>
+    mask?: HTMLAttributes<HTMLDivElement>
+    wrap?: HTMLAttributes<HTMLDivElement>
+  }
 
   mask?: boolean
 
@@ -12,8 +22,6 @@ export interface OverlayProps extends Pick<PortalProps, 'getContainer'> {
   keepMounted?: boolean
 
   unmountOnExit?: boolean
-
-  classNames?: { root?: string; mask?: string; wrap?: string }
 
   onBeforeOpen?: () => void
 
