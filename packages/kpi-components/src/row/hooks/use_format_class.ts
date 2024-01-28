@@ -1,5 +1,7 @@
-import cls from 'classnames'
-import { RowProps } from '../props'
+// utils
+import { cls } from '@kpi-ui/utils'
+// types
+import type { RowProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: RowProps) {
   const { className, justify, align, wrap } = props

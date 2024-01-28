@@ -1,16 +1,15 @@
 import type { SemanticStyledProps } from '@kpi-ui/types'
+import type { HTMLAttributes, RefCallback } from 'react'
 import type { PortalProps } from '../portal/props'
-import type { HTMLAttributes } from 'react'
 
 export interface OverlayProps
-  extends SemanticStyledProps<'root' | 'mask' | 'wrap'>,
+  extends SemanticStyledProps<'root' | 'mask'>,
     Pick<PortalProps, 'getContainer'> {
-  children: React.ReactElement
+  children: React.ReactElement | ((ref: RefCallback<HTMLDivElement>) => React.ReactElement)
 
   attrs?: {
     root?: HTMLAttributes<HTMLDivElement>
     mask?: HTMLAttributes<HTMLDivElement>
-    wrap?: HTMLAttributes<HTMLDivElement>
   }
 
   mask?: boolean

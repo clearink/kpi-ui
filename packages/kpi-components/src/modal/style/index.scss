@@ -41,7 +41,6 @@ $comp: #{$prefix}-modal;
     width: var(--#{$prefix}-line-height-small);
     height: var(--#{$prefix}-line-height-small);
 
-    &:focus,
     &:focus-visible {
       outline-width: $kpi-modal-close-outline-width;
       outline-offset: $kpi-modal-close-outline-offset;

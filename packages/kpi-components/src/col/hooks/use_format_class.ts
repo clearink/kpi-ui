@@ -1,5 +1,4 @@
-import { isObject, isUndefined } from '@kpi-ui/utils'
-import cls from 'classnames'
+import { cls, isObject, isUndefined } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 import { BREAKPOINT_NAME } from '../../_shared/hooks/use-breakpoint/breakpoint'
 

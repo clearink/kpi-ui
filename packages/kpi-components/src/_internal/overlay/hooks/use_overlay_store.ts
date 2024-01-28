@@ -15,18 +15,6 @@ export class OverlayStore {
     this.isMounted = value
   }
 
-  wrap = {
-    current: null as HTMLDivElement | null,
-    show: () => {
-      const el = this.wrap.current
-      el && el.style.removeProperty('display')
-    },
-    hide: () => {
-      const el = this.wrap.current
-      el && el.style.setProperty('display', 'none', 'important')
-    },
-  }
-
   content = {
     current: null as CSSTransitionRef | null,
   }
@@ -37,7 +25,7 @@ export class OverlayStore {
   }
 
   constructor(props: OverlayProps, public forceUpdate: () => void) {
-    this.isMounted = !!props.keepMounted
+    this.isMounted = !!props.keepMounted || !!props.open
   }
 }
 

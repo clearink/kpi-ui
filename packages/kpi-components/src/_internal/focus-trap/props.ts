@@ -7,5 +7,9 @@ export interface FocusTrapProps extends SemanticStyledProps<'root'> {
 
   active?: boolean
 
-  autoFocus?: boolean
+  getTabbable?: (container: HTMLElement) => HTMLElement[]
+
+  onEnter?: () => void
+
+  onExit?: (focusNode: Element | null) => void
 }

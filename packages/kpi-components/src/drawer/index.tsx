@@ -1,10 +1,20 @@
 // utils
-import { fallback, isNull, isNullish, pick, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import cls from 'classnames'
+import {
+  cls,
+  fallback,
+  isNull,
+  isNullish,
+  pick,
+  withDefaults,
+  withDisplayName,
+} from '@kpi-ui/utils'
 import { useId } from 'react'
-import Overlay from '../_internal/overlay'
-import { usePrefixCls } from '../_shared/hooks'
+import { Keyboard } from '../_shared/constants'
+import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
+import useFormatClass from './hooks/use_format_class'
 // comps
+import FocusTrap from '../_internal/focus-trap'
+import Overlay from '../_internal/overlay'
 import Button from '../button'
 // types
 import type { DrawerProps } from './props'
@@ -25,11 +35,21 @@ function Drawer(_props: DrawerProps) {
 
   const { children, open, transitions = {}, title, footer } = props
 
+  const ariaId = useId()
+
   const rootPrefixCls = usePrefixCls()
 
   const prefixCls = `${rootPrefixCls}-drawer`
 
-  const ariaId = useId()
+  const classNames = useFormatClass(prefixCls, props)
+
+  const styles = useSemanticStyles(props.style, props.styles)
+
+  const onEscape = props.closeOnEscape
+    ? (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === Keyboard.esc) props.onOpenChange?.(!open)
+      }
+    : undefined
 
   return (
     <Overlay
@@ -47,35 +67,38 @@ function Drawer(_props: DrawerProps) {
         role="dialog"
         aria-labelledby={title ? ariaId : undefined}
         aria-modal="true"
-        className={cls(prefixCls, props.className)}
-        style={props.style}
+        className={classNames.root}
+        style={styles.root}
       >
-        <div tabIndex={0} aria-hidden="true" className={`${prefixCls}__sentinel`}></div>
-        <div className={`${prefixCls}__content`}>
-          <button
-            type="button"
-            aria-label="close"
-            className={`${prefixCls}__closer`}
-            onClick={() => props.onOpenChange?.(!open)}
-          >
-            X
-          </button>
-          <div className={`${prefixCls}__header`}>
-            {!isNullish(title) && (
-              <span id={ariaId} className={`${prefixCls}__title`}>
-                {title}
-              </span>
+        <FocusTrap active={open}>
+          <div className={classNames.main} style={styles.main}>
+            <button
+              type="button"
+              aria-label="close"
+              className={classNames.close}
+              style={styles.close}
+              onClick={() => props.onOpenChange?.(!open)}
+            >
+              X
+            </button>
+            <div className={classNames.header} style={styles.header}>
+              {!isNullish(title) && (
+                <span id={ariaId} className={`${prefixCls}__title`}>
+                  {title}
+                </span>
+              )}
+            </div>
+            <div className={classNames.body} style={styles.body}>
+              {children}
+            </div>
+            {!isNull(footer) && (
+              <div className={classNames.footer} style={styles.footer}>
+                <Button>取消</Button>
+                <Button variant="filled">确定</Button>
+              </div>
             )}
           </div>
-          <div className={`${prefixCls}__body`}>{children}</div>
-          {!isNull(footer) && (
-            <div className={`${prefixCls}__footer`}>
-              <Button>取消</Button>
-              <Button variant="filled">确定</Button>
-            </div>
-          )}
-        </div>
-        <div tabIndex={0} aria-hidden="true" className={`${prefixCls}__sentinel`}></div>
+        </FocusTrap>
       </div>
     </Overlay>
   )

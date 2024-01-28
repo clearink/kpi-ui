@@ -1,6 +1,5 @@
 // utils
-// utils
-import cls from 'classnames'
+import { cls } from '@kpi-ui/utils'
 // types
 import type { CollapseItemProps } from '../props'
 import type { CollapseContextState } from '../../../_shared/context'

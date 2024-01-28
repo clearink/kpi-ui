@@ -1,7 +1,6 @@
-import { isUndefined } from '@kpi-ui/utils'
-import cls from 'classnames'
-import { useMemo } from 'react'
-
+// utils
+import { cls, isUndefined } from '@kpi-ui/utils'
+// types
 import type { SpaceProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: SpaceProps) {

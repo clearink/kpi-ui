@@ -1,5 +1,6 @@
-import cls from 'classnames'
-
+// utils
+import { cls } from '@kpi-ui/utils'
+// types
 import type { FormContextState } from '../../../_shared/context'
 import type { FormItemLabelProps } from '../props'
 

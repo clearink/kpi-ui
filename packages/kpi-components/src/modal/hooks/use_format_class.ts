@@ -1,5 +1,5 @@
 // utils
-import cls from 'classnames'
+import { cls } from '@kpi-ui/utils'
 // types
 import type { ModalProps } from '../props'
 

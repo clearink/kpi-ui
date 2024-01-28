@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@kpi-ui/types": "workspace:^",
+    "classnames": "^2.5.1",
     "react-fast-compare": "^3.2.0",
     "react-is": "^18.2.0"
   },

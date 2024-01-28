@@ -1,12 +1,14 @@
-export function addListener<E extends HTMLElement, K extends keyof HTMLElementEventMap>(
-  el: E,
-  event: K,
-  listener: (event: HTMLElementEventMap[K]) => any,
-  options?: boolean | AddEventListenerOptions
-) {
-  el.addEventListener(event, listener, options)
+type EventMap = DocumentEventMap | HTMLElementEventMap | SVGElementEventMap | WindowEventMap
 
-  return () => el.removeEventListener(event, listener, options)
+export function addListener<E extends Node, K extends keyof EventMap>(
+  el: E,
+  type: K,
+  listener: (event: EventMap[K]) => any,
+  options?: AddEventListenerOptions | boolean
+) {
+  el.addEventListener(type, listener as any, options)
+
+  return () => el.removeEventListener(type, listener as any, options)
 }
 
 export function addTimeout(timeout: number, callback: (...args: any) => any) {

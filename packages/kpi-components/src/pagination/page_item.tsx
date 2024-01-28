@@ -1,6 +1,8 @@
-import cls from 'classnames'
+// utils
+import { cls } from '@kpi-ui/utils'
 import { useMemo } from 'react'
-import { PagerProps } from './props'
+// types
+import type { PagerProps } from './props'
 
 export default function PageItem(props: PagerProps) {
   const { page, itemRender, disabled, active, className, prefix, showHtmlTitle, ...rest } = props

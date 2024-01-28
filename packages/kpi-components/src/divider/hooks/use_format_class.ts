@@ -1,6 +1,8 @@
-import cls from 'classnames'
+// utils
+import { cls } from '@kpi-ui/utils'
 import { isUndefined } from '@kpi-ui/utils'
-import { DividerProps } from '../props'
+// types
+import type { DividerProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: DividerProps) {
   const { direction, dashed, align, children, plain, className, margin } = props

@@ -1,5 +1,6 @@
-import cls from 'classnames'
-
+// utils
+import { cls } from '@kpi-ui/utils'
+// types
 import type { FormProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: FormProps) {

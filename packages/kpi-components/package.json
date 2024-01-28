@@ -6,7 +6,7 @@
   "module": "src/index.ts",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint ./src --ext .js,.ts,.jsx,.tsx"
+    "lint": "eslint -c .eslintrc.js --ext .js,.ts,.jsx,.tsx  ./src"
   },
   "peerDependencies": {
     "react": "^18.2.0",
@@ -14,11 +14,10 @@
   },
   "dependencies": {
     "@kpi-ui/hooks": "workspace:^",
-    "@kpi-ui/utils": "workspace:^",
-    "@kpi-ui/validator": "workspace:^",
-    "@kpi-ui/types": "workspace:^",
     "@kpi-ui/icons": "workspace:^",
-    "classnames": "^2.3.1"
+    "@kpi-ui/types": "workspace:^",
+    "@kpi-ui/utils": "workspace:^",
+    "@kpi-ui/validator": "workspace:^"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

@@ -28,14 +28,7 @@ $comp: #{$prefix}-drawer;
   padding-bottom: var(--#{$prefix}-size-unit-6);
   width: 520px;
 
-  .#{$comp}__sentinel {
-    width: 0;
-    height: 0;
-    overflow: 'hidden';
-    outline: 'none';
-  }
-
-  .#{$comp}__content {
+  .#{$comp}__main {
     position: relative;
     background-color: var(--#{$prefix}-color-background-default);
     border-radius: var(--#{$prefix}-border-radius-default);
@@ -58,7 +51,7 @@ $comp: #{$prefix}-drawer;
     display: inline-block;
   }
 
-  .#{$comp}__closer {
+  .#{$comp}__close {
     position: absolute;
     right: var(--#{$prefix}-size-unit-6);
     top: var(--#{$prefix}-size-unit-5);

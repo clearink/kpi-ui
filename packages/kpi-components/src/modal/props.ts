@@ -18,19 +18,13 @@ export interface ModalProps
 
   footer?: React.ReactNode
 
-  beforeOpen?: () => void
+  maskClosable?: boolean
 
-  onOpen?: () => void
+  restoreFocus?: boolean
 
-  afterOpen?: () => void
+  onOk?: () => void
 
-  beforeClose?: () => void
-
-  onClose?: () => void
-
-  afterClose?: () => void
-
-  onOpenChange?: (open: boolean) => void
+  onCancel?: () => void
 
   modalRender?: (modal: React.ReactElement) => React.ReactElement
 }

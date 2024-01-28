@@ -1,6 +1,8 @@
-import cls from 'classnames'
-import { ValidateStatus } from '../../../props'
-import { FormItemInputProps } from '../props'
+// utils
+import { cls } from '@kpi-ui/utils'
+// types
+import type { ValidateStatus } from '../../../props'
+import type { FormItemInputProps } from '../props'
 
 export default function useFormatClass(
   prefixCls: string,

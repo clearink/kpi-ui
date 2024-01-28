@@ -11,7 +11,7 @@ import type { SwitchTransitionProps as Switch } from '../props'
 
 const uniqueId = makeUniqueId('st-')
 class TransitionStore<E extends HTMLElement = HTMLElement> {
-  constructor(public forceUpdate: () => void, props: CSS<E>) {
+  constructor(public forceUpdate: () => void, props: Switch<E>) {
     this.props = props
 
     this.current = props.children
@@ -21,15 +21,15 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   props: Switch<E>
 
-  current: ReactElement<CSS<E>>
+  current: ReactElement
 
-  elements: ReactElement<CSS<E>>[] = []
+  elements: ReactElement[] = []
 
   setTransitionProps = (props: Switch<E>) => {
     this.props = props
   }
 
-  make = (element: ReactElement<CSS<E>>, extra: Partial<CSS<E>>) => {
+  make = (element: ReactElement, extra: Partial<CSS<E>>) => {
     const preset = omit(this.props, ['mode', 'children']) as CSS
 
     Object.assign(preset, extra, { key: uniqueId() })

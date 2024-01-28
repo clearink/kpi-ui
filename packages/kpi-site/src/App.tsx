@@ -1,9 +1,8 @@
 import { Modal, Drawer, Button, Collapse } from '@kpi-ui/components'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import '@kpi-ui/components/src/style'
 import './style.scss'
-import { CSSTransition } from '@kpi-ui/components/src/_internal/transition'
 import FocusTrap from '@kpi-ui/components/src/_internal/focus-trap'
 
 const items = [
@@ -51,6 +50,7 @@ const items = [
 export default function App() {
   const [open, set] = useState(false)
 
+  const ref = useRef<HTMLButtonElement>(null)
   const [d, setd] = useState(['1', '3'])
 
   return (
@@ -63,7 +63,20 @@ export default function App() {
       >
         minus
       </Button>
-      <Modal title="我的Modal" open={open} onOpenChange={set}>
+      <Button variant="filled">minus</Button>
+      <Button variant="filled">minus</Button>
+      <Button variant="filled">minus</Button>
+      <Button variant="filled">minus</Button>
+      <Button variant="filled">minus</Button>
+      <Button variant="filled">minus</Button>
+      <Button variant="filled">minus</Button>
+      <Modal
+        title="我的Modal"
+        maskClosable={false}
+        open={open}
+        onCancel={() => set(false)}
+        onOk={() => set(false)}
+      >
         <button>123</button>
         <div>132123</div>
         <Collapse

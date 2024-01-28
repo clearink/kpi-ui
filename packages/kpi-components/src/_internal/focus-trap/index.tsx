@@ -1,21 +1,11 @@
 // utils
 import { useComposeRefs, useEvent } from '@kpi-ui/hooks'
-import {
-  atArray,
-  isBrowser,
-  logger,
-  nextFrame,
-  ownerDocument,
-  withDefaults,
-  withDisplayName,
-} from '@kpi-ui/utils'
+import { atArray, nextFrame, ownerDocument, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, useEffect } from 'react'
-import { Keyboard } from '../../_shared/constants'
-import useFocusTrapEvent from './hooks/use_trap_event'
-import useFocusTrapStore from './hooks/use_trap_store'
 import { addListener } from '../transition/_shared/utils'
+import useFocusTrapStore from './hooks/use_trap_store'
+import defaultGetTabbable from './utils/tabbable'
 // types
-import type { FocusEvent } from 'react'
 import type { FocusTrapProps } from './props'
 
 const hidden: React.CSSProperties = {
@@ -24,110 +14,83 @@ const hidden: React.CSSProperties = {
   height: 0,
 }
 
-export const defaultProps: Partial<FocusTrapProps> = {}
+export const defaultProps: Partial<FocusTrapProps> = {
+  getTabbable: defaultGetTabbable,
+}
 
-// 焦点聚焦
 function FocusTrap(_props: FocusTrapProps) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children, active, autoFocus } = props
+  const { children, active, onEnter, onExit, getTabbable } = props
 
-  const store = useFocusTrapStore(props)
+  const store = useFocusTrapStore()
 
-  // const [handleLoopFocus, handleDetectContain] = useFocusTrapEvent(store, props)
+  const runTrap = useEvent(() => {
+    const root = ownerDocument(store.$start)
 
-  const runFocus = useEvent(() => {})
-
-  // 尽量模仿 CSSTransition 组件的写法
-  useEffect(() => {
-    if (!active) return
+    store.setFocusNode(root.activeElement)
 
     const runFrameCleanup = nextFrame(() => {
-      if (autoFocus) {
-        // 获取 tabbable 元素
-      } else {
-        store.start.focus()
-      }
+      // store.start.focus()
+      console.log(store.focusNode)
+
+      onEnter && onEnter()
+
+      if (!store.$content || !getTabbable) return
+
+      const cleanupKeydown = addListener(root, 'keydown', store.setIsShiftTab, true)
+
+      const cleanupLoop = addListener(root, 'focusin', (e) => {
+        const target = e.target as HTMLElement
+
+        const container = store.$content
+
+        if (!container || !target) return
+
+        // TODO: 还要完成 焦点移到外部时的返回操作
+        // if (!container.contains(target) && !store.isSentinel) {
+        //   console.log(e.relatedTarget)
+        //   if (e.relatedTarget) (e.relatedTarget as HTMLElement).focus()
+        //   else store.start.focus()
+        // }
+
+        if (!store.isSentinelFocus(root)) return
+
+        const $tabbable = getTabbable(container)
+
+        if (!$tabbable.length) return
+
+        const needFocus = atArray($tabbable, store.isShiftTab ? -1 : 0)
+
+        needFocus.focus({ preventScroll: true })
+      })
+
+      store.setExitHook(() => {
+        cleanupLoop()
+        cleanupKeydown()
+      })
     })
 
-    return runFrameCleanup()
-  }, [runFocus, active, store, autoFocus])
+    return () => {
+      runFrameCleanup()
+
+      store.runExitHook()
+
+      onExit && onExit(store.focusNode)
+
+      store.setFocusNode(null)
+    }
+  })
+
+  useEffect(() => (active ? runTrap() : undefined), [active, runTrap])
 
   const ref = useComposeRefs(store.content, (children as any).ref)
 
-  // useEffect(() => {
-  //   const $content = store.content.current
-
-  //   if (!$content || !isBrowser()) return
-
-  //   const root = ownerDocument($content)
-
-  //   const contain = () => {
-  //     const el = store.content.current
-
-  //     if (!el) return
-
-  //     let $tabbable: HTMLElement[] = []
-  //     if (root.activeElement === store.start.current || root.activeElement === store.end.current) {
-  //       $tabbable = getTabbable!(el)
-  //     }
-  //     console.log($tabbable)
-
-  //     if ($tabbable.length) {
-  //       const first = atIndex($tabbable, 0)
-  //       const last = atIndex($tabbable, -1)
-  //       const isShiftTab = false
-  //       isShiftTab ? last.focus() : first.focus()
-  //     } else store.content.focus()
-  //   }
-
-  //   const loopFocus = (e: KeyboardEvent) => {
-  //     console.log('last keydown', e, e.key)
-  //     if (e.key !== Keyboard.tab) return
-
-  //     if (root.activeElement === $content && e.shiftKey) {
-  //       // shift + tab
-  //       store.end.focus()
-  //     }
-  //   }
-
-  //   const cleanupKeydown = addListener(root, 'keydown', handleLoopFocus)
-  //   const cleanupContain = addListener(root, 'focusin', handleDetectContain, true)
-
-  //   return () => {
-  //     cleanupKeydown()
-  //     cleanupContain()
-  //   }
-  // }, [handleDetectContain, handleLoopFocus, store])
-
-  const handleSentinelFocus = (e: FocusEvent<HTMLDivElement>) => {
-    // store
-    console.log('sentinel focus', e, e.relatedTarget)
-  }
-
-  const handleContentFocus = useEvent((e: FocusEvent<HTMLDivElement>) => {
-    console.log('content focus', e)
-    const original = children.props.onFocus
-    original && original(e)
-  })
-
   return (
     <>
-      <div
-        ref={store.start}
-        aria-hidden="true"
-        tabIndex={active ? 0 : -1}
-        style={hidden}
-        onFocus={handleSentinelFocus}
-      ></div>
-      {cloneElement(children, { ref, onFocus: handleContentFocus })}
-      <div
-        ref={store.end}
-        aria-hidden="true"
-        tabIndex={active ? 0 : -1}
-        style={hidden}
-        onFocus={handleSentinelFocus}
-      ></div>
+      <div ref={store.start} aria-hidden="true" tabIndex={active ? 0 : -1} style={hidden}></div>
+      {cloneElement(children, { ref })}
+      <div ref={store.end} aria-hidden="true" tabIndex={active ? 0 : -1} style={hidden}></div>
     </>
   )
 }

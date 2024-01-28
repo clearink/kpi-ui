@@ -2,7 +2,7 @@ import { noop } from '@kpi-ui/utils'
 import { useMemo, useRef } from 'react'
 import { batch } from '../../../../_shared/utils'
 import { InternalFormContext, type InternalFormContextState } from '../../_shared/context'
-import FormProviderControl from './control'
+// import FormProviderControl from './control'
 
 import type { Forms, InternalFormProviderProps } from './props'
 

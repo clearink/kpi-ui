@@ -1,3 +1,4 @@
+// types
 import type { ReactElement } from 'react'
 import type { APPEAR, ENTER, ENTERED, EXIT, EXITED } from '../../constants'
 import type { TransitionStore } from './hooks/use_transition_store'

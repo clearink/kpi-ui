@@ -1,15 +1,15 @@
-import { isBrowser, isFunction, isNullish, isString } from '@kpi-ui/utils'
+import { isBrowser, isFunction, isNullish, isString, ownerDocument } from '@kpi-ui/utils'
 
 import type { PortalProps } from '../props'
 
 export default function getContainer(container: PortalProps['getContainer']) {
   if (!isBrowser()) return null
 
-  if (isNullish(container)) return document.body
+  if (isNullish(container)) return ownerDocument(null).body
 
   if (isFunction(container)) return container()
 
   if (!isString(container)) return container
 
-  return document.querySelector<HTMLElement>(container)
+  return ownerDocument(null).querySelector<HTMLElement>(container)
 }

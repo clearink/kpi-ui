@@ -45,7 +45,7 @@ module.exports = {
     'react-hooks/exhaustive-deps': [
       'error',
       {
-        additionalHooks: 'useIsomorphicEffect|useDeepMemo|useLayoutCountEffect',
+        additionalHooks: 'useIsomorphicEffect|useDeepMemo',
       },
     ],
 

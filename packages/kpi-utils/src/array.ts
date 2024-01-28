@@ -30,6 +30,6 @@ export function hasItem<T>(array: T[], value: T) {
 }
 
 export function atArray<T>(array: T[], index: number) {
-  const cursor = index
+  const cursor = index >= 0 ? index : array.length + index
   return array[cursor]
 }

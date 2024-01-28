@@ -1,5 +1,5 @@
 import { useEvent } from '@kpi-ui/hooks'
-import { addClassNames, delClassNames, fillRef, nextFrame } from '@kpi-ui/utils'
+import { addClassNames, delClassNames, fillRef, nextFrame, supportRef } from '@kpi-ui/utils'
 import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref } from 'react'
 import { reflow } from '../../_shared/utils'
 import { APPEAR, ENTER, EXIT, isAppear, isExit } from '../../constants'
@@ -37,7 +37,7 @@ function CSSTransition<E extends HTMLElement>(
 
     store.display.stash()
 
-    if (store.appear || !when) store.display.hide()
+    if ((store.appear && store.isInitial) || !when) store.display.hide()
   })
 
   const runTransition = useEvent((el: E, step: TransitionStep) => {
@@ -87,7 +87,9 @@ function CSSTransition<E extends HTMLElement>(
     if (store.appear && when) return runTransition(instance, APPEAR)
   }, [runTransition, store, when])
 
-  return !when && !store.isMounted ? null : cloneElement(children, { ref: refCallback })
+  if (!when && !store.isMounted) return null
+
+  return cloneElement(children, { ref: refCallback })
 }
 
 export default forwardRef(CSSTransition) as <E extends HTMLElement>(
