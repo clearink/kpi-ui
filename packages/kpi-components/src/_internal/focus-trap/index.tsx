@@ -31,8 +31,7 @@ function FocusTrap(_props: FocusTrapProps) {
     store.setFocusNode(root.activeElement)
 
     const runFrameCleanup = nextFrame(() => {
-      // store.start.focus()
-      console.log(store.focusNode)
+      store.start.focus()
 
       onEnter && onEnter()
 
@@ -40,21 +39,23 @@ function FocusTrap(_props: FocusTrapProps) {
 
       const cleanupKeydown = addListener(root, 'keydown', store.setIsShiftTab, true)
 
-      const cleanupLoop = addListener(root, 'focusin', (e) => {
+      const cleanupFocusIn = addListener(root, 'focusin', (e) => {
+        e.stopImmediatePropagation()
         const target = e.target as HTMLElement
 
         const container = store.$content
 
         if (!container || !target) return
 
-        // TODO: 还要完成 焦点移到外部时的返回操作
-        // if (!container.contains(target) && !store.isSentinel) {
-        //   console.log(e.relatedTarget)
-        //   if (e.relatedTarget) (e.relatedTarget as HTMLElement).focus()
-        //   else store.start.focus()
-        // }
+        if (!store.isSentinelFocus(root)) {
+          if (container.contains(target)) return
 
-        if (!store.isSentinelFocus(root)) return
+          const related = e.relatedTarget as HTMLElement | null
+
+          if (related && container.contains(related)) {
+            return related.focus({ preventScroll: true })
+          }
+        }
 
         const $tabbable = getTabbable(container)
 
@@ -66,7 +67,7 @@ function FocusTrap(_props: FocusTrapProps) {
       })
 
       store.setExitHook(() => {
-        cleanupLoop()
+        cleanupFocusIn()
         cleanupKeydown()
       })
     })

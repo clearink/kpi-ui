@@ -70,7 +70,7 @@ export default function App() {
       <Button variant="filled">minus</Button>
       <Button variant="filled">minus</Button>
       <Button variant="filled">minus</Button>
-      <Modal
+      {/* <Modal
         title="我的Modal"
         maskClosable={false}
         open={open}
@@ -90,7 +90,21 @@ export default function App() {
         />
         <div>132123</div>
         <div>132123</div>
-      </Modal>
+      </Modal> */}
+
+      <FocusTrap active={open}>
+        <div>
+          <Collapse
+            accordion
+            expandedNames={d}
+            onChange={(name, names) => {
+              console.log(name, names)
+              setd(names)
+            }}
+            items={items}
+          />
+        </div>
+      </FocusTrap>
     </div>
   )
 }

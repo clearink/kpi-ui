@@ -8,7 +8,7 @@ import {
   withDefaults,
   withDisplayName,
 } from '@kpi-ui/utils'
-import React, { useId, useRef } from 'react'
+import React, { useId } from 'react'
 import { Keyboard } from '../_shared/constants'
 import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
