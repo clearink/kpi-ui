@@ -27,7 +27,7 @@ export const defaultProps: Partial<SpaceProps> = {
 function Space(_props: SpaceProps) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children: _children, style, split } = props
+  const { children, style, split } = props
 
   const size = fallback(props.size, SizeContext.useState())
 
@@ -41,7 +41,7 @@ function Space(_props: SpaceProps) {
   const gap: CSSProperties = { rowGap: v, columnGap: h }
 
   // 处理 children
-  const children = flattenChildren(_children).map((child, index, childList) => {
+  const renderNode = flattenChildren(children).map((child, index, childList) => {
     const isEndItem = childList.length - index === 1
     const key = (child as ReactElement)?.key || index
     return (
@@ -56,7 +56,7 @@ function Space(_props: SpaceProps) {
 
   return (
     <div {...attrs} className={classes} style={{ ...gap, ...style }}>
-      {children}
+      {renderNode}
     </div>
   )
 }

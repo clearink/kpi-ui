@@ -28,7 +28,9 @@ const included = [
   'unmountOnExit',
 ] as const
 
-export const defaultProps: Partial<DrawerProps> = {}
+export const defaultProps: Partial<DrawerProps> = {
+  closeOnEscape: true,
+}
 
 function Drawer(_props: DrawerProps) {
   const props = withDefaults(_props, defaultProps)
@@ -60,7 +62,6 @@ function Drawer(_props: DrawerProps) {
       }}
       classNames={{
         mask: `${prefixCls}-mask`,
-        wrap: `${prefixCls}-wrap`,
       }}
     >
       <div

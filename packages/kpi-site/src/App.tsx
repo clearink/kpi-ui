@@ -3,7 +3,6 @@ import { useRef, useState } from 'react'
 
 import '@kpi-ui/components/src/style'
 import './style.scss'
-import FocusTrap from '@kpi-ui/components/src/_internal/focus-trap'
 
 const items = [
   {
@@ -70,15 +69,13 @@ export default function App() {
       <Button variant="filled">minus</Button>
       <Button variant="filled">minus</Button>
       <Button variant="filled">minus</Button>
-      {/* <Modal
+      <Modal
         title="我的Modal"
         maskClosable={false}
         open={open}
         onCancel={() => set(false)}
         onOk={() => set(false)}
       >
-        <button>123</button>
-        <div>132123</div>
         <Collapse
           accordion
           expandedNames={d}
@@ -90,21 +87,9 @@ export default function App() {
         />
         <div>132123</div>
         <div>132123</div>
-      </Modal> */}
+      </Modal>
 
-      <FocusTrap active={open}>
-        <div>
-          <Collapse
-            accordion
-            expandedNames={d}
-            onChange={(name, names) => {
-              console.log(name, names)
-              setd(names)
-            }}
-            items={items}
-          />
-        </div>
-      </FocusTrap>
+      <input />
     </div>
   )
 }

@@ -38,16 +38,7 @@ export const defaultProps: Partial<ModalProps> = {
 function Modal(_props: ModalProps) {
   const props = withDefaults(_props, defaultProps)
 
-  const {
-    children: _children,
-    open,
-    title,
-    footer,
-    transitions = {},
-    onOk,
-    onCancel,
-    modalRender,
-  } = props
+  const { children, open, title, footer, transitions = {}, onOk, onCancel, modalRender } = props
 
   const store = useModalStore()
 
@@ -67,13 +58,14 @@ function Modal(_props: ModalProps) {
         if (e.key === Keyboard.esc) onCancel && onCancel()
       }
 
-  const onClick = !props.maskClosable
-    ? undefined
-    : (e: React.SyntheticEvent) => {
-        if (e.target && e.target === store.wrap.current) {
-          onCancel && onCancel()
+  const onClick =
+    !props.maskClosable || !props.mask
+      ? undefined
+      : (e: React.SyntheticEvent) => {
+          if (e.target && e.target === store.wrap.current) {
+            onCancel && onCancel()
+          }
         }
-      }
 
   const onTrapExit = !props.restoreFocus
     ? undefined
@@ -81,7 +73,7 @@ function Modal(_props: ModalProps) {
         node && (node as HTMLElement).focus()
       }
 
-  const children = (
+  const renderNode = (
     <div className={classNames.main} style={styles.main}>
       <button
         type="button"
@@ -100,7 +92,7 @@ function Modal(_props: ModalProps) {
         )}
       </div>
       <div className={classNames.body} style={styles.body}>
-        {_children}
+        {children}
       </div>
       {!isNull(footer) && (
         <div className={classNames.footer} style={styles.footer}>
@@ -141,7 +133,7 @@ function Modal(_props: ModalProps) {
             style={styles.root}
           >
             <FocusTrap active={open} onExit={onTrapExit}>
-              {isFunction(modalRender) ? modalRender(children) : children}
+              {isFunction(modalRender) ? modalRender(renderNode) : renderNode}
             </FocusTrap>
           </div>
         </div>

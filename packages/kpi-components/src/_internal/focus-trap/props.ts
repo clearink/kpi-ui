@@ -11,5 +11,5 @@ export interface FocusTrapProps extends SemanticStyledProps<'root'> {
 
   onEnter?: () => void
 
-  onExit?: (focusNode: Element | null) => void
+  onExit?: (returnTo: Element | null) => void
 }

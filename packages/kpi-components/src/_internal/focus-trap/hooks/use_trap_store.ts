@@ -7,8 +7,7 @@ export class FocusTrapStore {
   start = {
     current: null as HTMLDivElement | null,
     focus: () => {
-      const el = this.$start
-      el && el.focus({ preventScroll: true })
+      this.focus(this.$start)
     },
   }
 
@@ -18,10 +17,6 @@ export class FocusTrapStore {
 
   content = {
     current: null as HTMLElement | null,
-    focus: () => {
-      const el = this.$content
-      el && el.focus({ preventScroll: true })
-    },
   }
 
   get $content() {
@@ -42,28 +37,30 @@ export class FocusTrapStore {
     this.isShiftTab = e.key === Keyboard.tab && e.shiftKey
   }
 
-  isSentinelFocus = (root: Document) => {
-    const active = root.activeElement
+  returnTo: Element | null = null
 
+  setReturnTo = (value: Element | null) => {
+    this.returnTo = value
+  }
+
+  related: HTMLElement | null = null
+
+  setRelated = (value: HTMLElement | null) => {
+    this.related = value
+  }
+
+  isSentinelFocus = (active: Element | null) => {
     return active === this.$start || active === this.$end
   }
 
-  focusNode: Element | null = null
-
-  setFocusNode = (value: Element | null) => {
-    this.focusNode = value
+  focus = (node: HTMLElement | null) => {
+    node && node.focus({ preventScroll: true })
   }
 
-  exitHook: undefined | (() => void) = undefined
+  cleanup = () => {
+    this.related = null
 
-  setExitHook = (value: undefined | (() => void)) => {
-    this.exitHook = value
-  }
-
-  runExitHook = () => {
-    this.exitHook && this.exitHook()
-
-    this.exitHook = undefined
+    this.returnTo = null
   }
 }
 

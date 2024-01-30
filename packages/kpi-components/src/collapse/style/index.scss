@@ -60,6 +60,11 @@ $comp: #{$prefix}-collapse;
   &__header {
     padding: var(--#{$prefix}-size-unit-3) var(--#{$prefix}-size-unit-4);
     display: flex;
+    outline: 0;
+
+    &:focus-visible {
+      box-shadow: inset 0 0 0 2px var(--#{$prefix}-color-primary-light-3);
+    }
   }
 
   &__title {

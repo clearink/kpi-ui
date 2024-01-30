@@ -35,7 +35,7 @@ export const defaultProps: Partial<ButtonProps> = {
 function Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children: _children, onClick, loading, disabled, variant } = props
+  const { children, onClick, loading, disabled, variant } = props
 
   const prefixCls = usePrefixCls('button')
 
@@ -50,7 +50,7 @@ function Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
 
   const attrs = omit(props, excluded)
 
-  const children = (
+  const renderNode = (
     <button
       {...attrs}
       className={classNames.root}
@@ -59,16 +59,16 @@ function Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
       onClick={handleClick}
     >
       <span className={classNames.text} style={styles.text}>
-        {_children}
+        {children}
       </span>
     </button>
   )
 
-  if (!isBorderedVariant(variant)) return children
+  if (!isBorderedVariant(variant)) return renderNode
 
   return (
     <TouchEffect component="Button" disabled={!!loading}>
-      {children}
+      {renderNode}
     </TouchEffect>
   )
 }

@@ -1,10 +1,11 @@
-import { fallback, isString } from '@kpi-ui/utils'
+// utils
+import { isString, withDefaults } from '@kpi-ui/utils'
 import { usePrefixCls } from '../../../_shared/hooks'
 import Col from '../../../col'
 import { FormContext } from '../../_shared/context'
-import normalizeChildren from './utils/normalize_children'
 import useFormatClass from './hooks/use_format_class'
-
+import normalizeChildren from './utils/normalize_children'
+// types
 import type { FormItemLabelProps } from './props'
 
 export const defaultProps: Partial<FormItemLabelProps> = {}
@@ -12,14 +13,13 @@ export const defaultProps: Partial<FormItemLabelProps> = {}
 function FormItemLabel(_props: FormItemLabelProps) {
   const ctx = FormContext.useState()
 
-  const props = {
-    ..._props,
-    colon: fallback(_props.colon, ctx.colon),
-    labelAlign: fallback(_props.labelAlign, ctx.labelAlign),
-    labelCol: fallback(_props.labelCol, ctx.labelCol),
-    labelWrap: fallback(_props.labelWrap, ctx.labelWrap),
-    requiredMark: fallback(_props.requiredMark, ctx.requiredMark),
-  }
+  const props = withDefaults(_props, {
+    colon: ctx.colon,
+    labelAlign: ctx.labelAlign,
+    labelCol: ctx.labelCol,
+    labelWrap: ctx.labelWrap,
+    requiredMark: ctx.requiredMark,
+  })
 
   const prefixCls = usePrefixCls('form-item__label')
 
