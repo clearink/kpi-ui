@@ -48,6 +48,7 @@ const items = [
 
 export default function App() {
   const [open, set] = useState(false)
+  const [open1, set1] = useState(false)
 
   const ref = useRef<HTMLButtonElement>(null)
   const [d, setd] = useState(['1', '3'])
@@ -62,7 +63,9 @@ export default function App() {
       >
         minus
       </Button>
-      <Button variant="filled">minus</Button>
+      <Button style={{ zIndex: 3000 }} variant="filled">
+        minus
+      </Button>
       <Button variant="filled">minus</Button>
       <Button variant="filled">minus</Button>
       <Button variant="filled">minus</Button>
@@ -85,8 +88,33 @@ export default function App() {
           }}
           items={items}
         />
-        <div>132123</div>
-        <div>132123</div>
+        <Button
+          variant="filled"
+          onClick={() => {
+            set1((p) => !p)
+          }}
+        >
+          op1
+        </Button>
+        <Modal
+          title="我的Modal"
+          maskClosable={false}
+          open={open1}
+          onCancel={() => set1(false)}
+          onOk={() => set1(false)}
+        >
+          <Collapse
+            accordion
+            expandedNames={d}
+            onChange={(name, names) => {
+              console.log(name, names)
+              setd(names)
+            }}
+            items={items}
+          />
+          <div>132123</div>
+          <div>132123</div>
+        </Modal>
       </Modal>
 
       <input />

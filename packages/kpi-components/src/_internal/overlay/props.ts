@@ -7,11 +7,6 @@ export interface OverlayProps
     Pick<PortalProps, 'getContainer'> {
   children: React.ReactElement | ((ref: RefCallback<HTMLDivElement>) => React.ReactElement)
 
-  attrs?: {
-    root?: HTMLAttributes<HTMLDivElement>
-    mask?: HTMLAttributes<HTMLDivElement>
-  }
-
   mask?: boolean
 
   open?: boolean
@@ -21,6 +16,8 @@ export interface OverlayProps
   keepMounted?: boolean
 
   unmountOnExit?: boolean
+
+  zIndex?: number
 
   onBeforeOpen?: () => void
 

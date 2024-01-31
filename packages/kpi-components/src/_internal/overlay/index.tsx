@@ -1,6 +1,6 @@
 // utils
-import { cls, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { useSemanticStyles } from '../../_shared/hooks'
+import { cls, fallback, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { useSemanticStyles, useZIndex } from '../../_shared/hooks'
 import useOverlayStore from './hooks/use_overlay_store'
 // comps
 import Portal from '../portal'
@@ -21,7 +21,6 @@ function Overlay(_props: OverlayProps) {
     unmountOnExit,
     mask,
     className,
-    attrs = {},
     transitions = {},
     classNames = {},
     onBeforeOpen,
@@ -32,22 +31,23 @@ function Overlay(_props: OverlayProps) {
 
   const styles = useSemanticStyles(props.style, props.styles)
 
+  const zIndex = useZIndex()
+
+  console.log('zIndex', zIndex)
+
   if (!open && !store.isMounted) return null
 
   return (
     <Portal getContainer={props.getContainer}>
-      <div {...attrs.root} className={cls(className, classNames.root)} style={styles.root}>
+      <div
+        className={cls(className, classNames.root)}
+        style={withDefaults(styles.root || {}, { zIndex })}
+      >
         {!!mask && (
           <CSSTransition appear when={open} name={transitions.mask} mountOnEnter={!keepMounted}>
-            <div
-              {...attrs.mask}
-              aria-hidden="true"
-              className={classNames.mask}
-              style={styles.mask}
-            ></div>
+            <div aria-hidden="true" className={classNames.mask} style={styles.mask}></div>
           </CSSTransition>
         )}
-
         <CSSTransition
           appear
           ref={store.content}
@@ -72,7 +72,4 @@ function Overlay(_props: OverlayProps) {
   )
 }
 
-/**
- * @internal 仅提供给 modal与drawer组件使用
- *  */
 export default withDisplayName(Overlay)
