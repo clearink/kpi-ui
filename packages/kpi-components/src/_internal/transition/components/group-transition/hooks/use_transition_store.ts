@@ -50,9 +50,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     return this.previous.reduce((map, el) => {
       const comp = this.components.get(el.key)
 
-      const instance = comp && comp.instance
-
-      const rect = instance && instance.getBoundingClientRect()
+      const rect = comp?.instance?.getBoundingClientRect()
 
       return rect ? map.set(el.key, rect) : map
     }, new Map<ReactElement['key'], DOMRect>())
@@ -92,9 +90,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
     if (!isCompleted) return
 
-    const { onExitComplete } = this.props
-
-    onExitComplete && onExitComplete()
+    this.props.onExitComplete?.()
 
     this.forceUpdate()
   }

@@ -26,7 +26,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     if (!isExit(step)) return onEntered?.(el, isAppear(step))
 
-    onExited && onExited(el)
+    onExited?.(el)
 
     store.display.hide()
 
@@ -36,8 +36,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
   const runCancel = (el: E, step: TransitionStep) => {
     const { from, active, to } = classNames[step]
 
-    if (isExit(step)) onExitCancel && onExitCancel(el)
-    else onEnterCancel && onEnterCancel(el, isAppear(step))
+    isExit(step) ? onExitCancel?.(el) : onEnterCancel?.(el, isAppear(step))
 
     delClassNames(el, from, active, to)
   }

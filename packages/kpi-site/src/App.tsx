@@ -63,9 +63,7 @@ export default function App() {
       >
         minus
       </Button>
-      <Button style={{ zIndex: 3000 }} variant="filled">
-        minus
-      </Button>
+      <Button variant="filled">minus</Button>
       <Button variant="filled">minus</Button>
       <Button variant="filled">minus</Button>
       <Button variant="filled">minus</Button>

@@ -81,7 +81,7 @@ function Form<State = any>(_props: FormProps<State>, ref: ForwardedRef<FormInsta
   }, [colon, requiredMark, formInstance, labelAlign, labelCol, labelWrap, layout, name, wrapperCol])
 
   const onFailedWithEffect = useEvent((errors: any) => {
-    onFailed && onFailed(errors)
+    onFailed?.(errors)
     if (!scrollToFirstError) return
     // formInstance.scrollToField()
   })

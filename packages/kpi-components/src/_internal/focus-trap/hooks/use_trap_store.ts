@@ -54,7 +54,7 @@ export class FocusTrapStore {
   }
 
   focus = (node: HTMLElement | null) => {
-    node && node.focus({ preventScroll: true })
+    node?.focus({ preventScroll: true })
   }
 
   cleanup = () => {

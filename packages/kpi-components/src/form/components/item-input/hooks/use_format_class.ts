@@ -7,7 +7,7 @@ import type { FormItemInputProps } from '../props'
 export default function useFormatClass(
   prefixCls: string,
   status: ValidateStatus,
-  wrapperCol: FormItemInputProps['wrapperCol']
+  wrapperCol: FormItemInputProps['wrapperCol'] = {}
 ) {
-  return cls(prefixCls, status && `${prefixCls}--has-${status}`, wrapperCol && wrapperCol.className)
+  return cls(prefixCls, status && `${prefixCls}--has-${status}`, wrapperCol.className)
 }

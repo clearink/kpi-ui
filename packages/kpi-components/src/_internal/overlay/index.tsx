@@ -53,7 +53,7 @@ function Overlay(_props: OverlayProps) {
           name={transitions.content}
           mountOnEnter={!keepMounted}
           onEnter={() => {
-            onBeforeOpen && onBeforeOpen()
+            onBeforeOpen?.()
             store.setIsMounted(true)
           }}
           onExited={() => {

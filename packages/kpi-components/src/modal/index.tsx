@@ -59,7 +59,7 @@ function Modal(_props: ModalProps) {
 
         e.stopPropagation()
 
-        onCancel && onCancel()
+        onCancel?.()
         console.log(e)
         // 嵌套时有bug
       }
@@ -69,7 +69,7 @@ function Modal(_props: ModalProps) {
       ? undefined
       : (e: React.SyntheticEvent) => {
           if (e.target && e.target === store.wrap.current) {
-            onCancel && onCancel()
+            onCancel?.()
           }
         }
 

@@ -5,11 +5,11 @@ export class ModalStore {
     current: null as HTMLDivElement | null,
     show: () => {
       const el = this.wrap.current
-      el && el.style.removeProperty('display')
+      el?.style.removeProperty('display')
     },
     hide: () => {
       const el = this.wrap.current
-      el && el.style.setProperty('display', 'none', 'important')
+      el?.style.setProperty('display', 'none', 'important')
     },
   }
 }

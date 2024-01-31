@@ -57,7 +57,7 @@ export default function collectInjectProps(
         internalHooks?.dispatch({ type: 'fieldEvent', control, value: next })
 
         // originTrigger
-        childProps[trigger!] && childProps[trigger!](...args)
+        childProps[trigger!]?.(...args)
       },
     }
 
@@ -70,7 +70,7 @@ export default function collectInjectProps(
       if (triggerName === false) return result
 
       result[triggerName] = (...args: any[]) => {
-        injectProps[triggerName] && injectProps[triggerName](...args)
+        injectProps[triggerName]?.(...args)
         rule && instance.validateField(name)
       }
 

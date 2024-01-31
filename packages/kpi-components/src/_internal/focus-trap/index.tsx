@@ -12,6 +12,7 @@ import { cloneElement, useEffect } from 'react'
 import { addListener } from '../transition/_shared/utils'
 import useFocusTrapStore from './hooks/use_trap_store'
 import defaultGetTabbable from './utils/tabbable'
+import focusTrap from './utils/trap'
 // types
 import type { FocusTrapProps } from './props'
 
@@ -39,9 +40,7 @@ function FocusTrap(_props: FocusTrapProps) {
   const ref = useComposeRefs(store.content, (children as any).ref)
 
   const runTrap = useEvent(() => {
-    let cleanupKeydown = noop
-
-    let cleanupFocusIn = noop
+    let cleanupTrap = noop
 
     const root = ownerDocument(store.$start)
 
@@ -50,48 +49,38 @@ function FocusTrap(_props: FocusTrapProps) {
     const runFrameCleanup = nextFrame(() => {
       store.start.focus()
 
-      onEnter && onEnter()
+      onEnter?.()
 
       if (!store.$content || !getTabbable) return
 
-      cleanupKeydown = addListener(root, 'keydown', store.setIsShiftTab, true)
+      cleanupTrap = focusTrap.trap()
 
-      // 不能使用往 root 上面加事件，嵌套 focus trap 时会有问题
-      cleanupFocusIn = addListener(root, 'focusin', (e) => {
-        e.stopImmediatePropagation()
+      // cleanupKeydown = addListener(root, 'keydown', store.setIsShiftTab, true)
 
-        const target = e.target as HTMLElement
-
-        const container = store.$content
-
-        if (!container || !target) return
-
-        const activeNode = root.activeElement
-
-        if (!store.isSentinelFocus(activeNode)) {
-          if (container.contains(target)) return store.setRelated(target)
-
-          if (store.related) return store.focus(store.related)
-        }
-
-        const $tabbable = getTabbable(container)
-
-        if (!$tabbable.length) return
-
-        const needFocus = atArray($tabbable, store.isShiftTab ? -1 : 0)
-
-        needFocus.focus({ preventScroll: true })
-      })
+      // // 不能使用往 root 上面加事件，嵌套 focus trap 时会有问题
+      // cleanupFocusIn = addListener(root, 'focusin', (e) => {
+      //   // e.stopImmediatePropagation()
+      //   // const target = e.target as HTMLElement
+      //   // const container = store.$content
+      //   // if (!container || !target) return
+      //   // const activeNode = root.activeElement
+      //   // if (!store.isSentinelFocus(activeNode)) {
+      //   //   if (container.contains(target)) return store.setRelated(target)
+      //   //   if (store.related) return store.focus(store.related)
+      //   // }
+      //   // const $tabbable = getTabbable(container)
+      //   // if (!$tabbable.length) return
+      //   // const needFocus = atArray($tabbable, store.isShiftTab ? -1 : 0)
+      //   // needFocus.focus({ preventScroll: true })
+      // })
     })
 
     return () => {
       runFrameCleanup()
 
-      cleanupFocusIn()
+      cleanupTrap()
 
-      cleanupKeydown()
-
-      onExit && onExit(store.returnTo)
+      onExit?.(store.returnTo)
 
       store.cleanup()
     }
@@ -99,10 +88,19 @@ function FocusTrap(_props: FocusTrapProps) {
 
   useEffect(() => (active ? runTrap() : undefined), [active, runTrap])
 
+  const onFocus = (e: FocusEvent) => {
+    children.props.onFocus?.(e)
+    console.log('focus', e)
+  }
+  const onBlur = (e: FocusEvent) => {
+    children.props.onBlur?.(e)
+    console.log('blur', e)
+  }
+
   return (
     <>
       <div ref={store.start} tabIndex={active ? 0 : -1} style={hidden}></div>
-      {cloneElement(children, { ref })}
+      {cloneElement(children, { ref, onFocus, onBlur })}
       <div ref={store.end} aria-hidden="true" tabIndex={active ? 0 : -1} style={hidden}></div>
     </>
   )

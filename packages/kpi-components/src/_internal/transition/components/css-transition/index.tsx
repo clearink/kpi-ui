@@ -47,20 +47,22 @@ function CSSTransition<E extends HTMLElement>(
 
     addClassNames(el, from)
 
-    isExit(step) && reflow(el)
+    const exit = isExit(step)
+
+    const appear = isAppear(step)
+
+    exit && reflow(el)
 
     addClassNames(el, active)
 
-    if (isExit(step)) onExit && onExit(el)
-    else onEnter && onEnter(el, isAppear(step))
+    exit ? onExit?.(el) : onEnter?.(el, appear)
 
     const runFrameCleanup = nextFrame(() => {
       delClassNames(el, from)
 
       addClassNames(el, to)
 
-      if (isExit(step)) onExiting && onExiting(el)
-      else onEntering && onEntering(el, isAppear(step))
+      exit ? onExiting?.(el) : onEntering?.(el, appear)
 
       // 保存结束时的回调
       store.setEndHook(makeEndHook(el, step, timeouts[step]))

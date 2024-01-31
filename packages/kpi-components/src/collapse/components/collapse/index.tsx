@@ -61,7 +61,7 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
 
     setExpandedNames(names)
 
-    onChange && onChange(name, names)
+    onChange?.(name, names)
   })
 
   const collapseContext = useMemo<CollapseContextState>(
