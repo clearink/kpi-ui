@@ -33,8 +33,6 @@ function Overlay(_props: OverlayProps) {
 
   const zIndex = useZIndex()
 
-  console.log('zIndex', zIndex)
-
   if (!open && !store.isMounted) return null
 
   return (

@@ -56,6 +56,7 @@ function FocusTrap(_props: FocusTrapProps) {
 
       cleanupKeydown = addListener(root, 'keydown', store.setIsShiftTab, true)
 
+      // 不能使用往 root 上面加事件，嵌套 focus trap 时会有问题
       cleanupFocusIn = addListener(root, 'focusin', (e) => {
         e.stopImmediatePropagation()
 

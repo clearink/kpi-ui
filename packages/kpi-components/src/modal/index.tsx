@@ -55,7 +55,13 @@ function Modal(_props: ModalProps) {
   const onKeyDown = !props.closeOnEscape
     ? undefined
     : (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === Keyboard.esc) onCancel && onCancel()
+        if (e.key !== Keyboard.esc) return
+
+        e.stopPropagation()
+
+        onCancel && onCancel()
+        console.log(e)
+        // 嵌套时有bug
       }
 
   const onClick =
