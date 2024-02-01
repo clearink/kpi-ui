@@ -40,44 +40,27 @@ function FocusTrap(_props: FocusTrapProps) {
   const ref = useComposeRefs(store.content, (children as any).ref)
 
   const runTrap = useEvent(() => {
-    let cleanupTrap = noop
-
     const root = ownerDocument(store.$start)
 
     store.setReturnTo(root.activeElement)
 
-    const runFrameCleanup = nextFrame(() => {
-      store.start.focus()
+    const cleanupTrap = focusTrap.trap({})
 
-      onEnter?.()
+    // const runFrameCleanup = nextFrame(() => {
+    //   store.start.focus()
 
-      if (!store.$content || !getTabbable) return
+    //   onEnter?.()
 
-      cleanupTrap = focusTrap.trap()
+    //   if (!store.$content || !getTabbable) return
 
-      // cleanupKeydown = addListener(root, 'keydown', store.setIsShiftTab, true)
-
-      // // 不能使用往 root 上面加事件，嵌套 focus trap 时会有问题
-      // cleanupFocusIn = addListener(root, 'focusin', (e) => {
-      //   // e.stopImmediatePropagation()
-      //   // const target = e.target as HTMLElement
-      //   // const container = store.$content
-      //   // if (!container || !target) return
-      //   // const activeNode = root.activeElement
-      //   // if (!store.isSentinelFocus(activeNode)) {
-      //   //   if (container.contains(target)) return store.setRelated(target)
-      //   //   if (store.related) return store.focus(store.related)
-      //   // }
-      //   // const $tabbable = getTabbable(container)
-      //   // if (!$tabbable.length) return
-      //   // const needFocus = atArray($tabbable, store.isShiftTab ? -1 : 0)
-      //   // needFocus.focus({ preventScroll: true })
-      // })
-    })
+    //   cleanupTrap = focusTrap.trap({
+    //     el: store.$content,
+    //     isSentinelFocus: store.isSentinelFocus,
+    //     getTabbable,
+    //   })
+    // })
 
     return () => {
-      runFrameCleanup()
-
       cleanupTrap()
 
       onExit?.(store.returnTo)
@@ -88,19 +71,10 @@ function FocusTrap(_props: FocusTrapProps) {
 
   useEffect(() => (active ? runTrap() : undefined), [active, runTrap])
 
-  const onFocus = (e: FocusEvent) => {
-    children.props.onFocus?.(e)
-    console.log('focus', e)
-  }
-  const onBlur = (e: FocusEvent) => {
-    children.props.onBlur?.(e)
-    console.log('blur', e)
-  }
-
   return (
     <>
       <div ref={store.start} tabIndex={active ? 0 : -1} style={hidden}></div>
-      {cloneElement(children, { ref, onFocus, onBlur })}
+      {cloneElement(children, { ref })}
       <div ref={store.end} aria-hidden="true" tabIndex={active ? 0 : -1} style={hidden}></div>
     </>
   )
