@@ -1,9 +1,12 @@
-import { atArray, noop, ownerDocument } from '@kpi-ui/utils'
+import { atIndex, nextFrame, noop, ownerDocument } from '@kpi-ui/utils'
 import { addListener } from '../../../_shared/utils'
 import { Keyboard } from '../../../_shared/constants'
 
 class FocusTrap {
-  private stack: HTMLElement[] = []
+  private stack: {
+    onKeyDown: (e: KeyboardEvent) => void
+    onFocus: (e: FocusEvent) => void
+  }[] = []
 
   private cleanupKeydown = noop
 
@@ -15,56 +18,47 @@ class FocusTrap {
     this.isShiftTab = e.key === Keyboard.tab && e.shiftKey
   }
 
-  private focus = (el?: HTMLElement) => {
-    el && el.focus({ preventScroll: true })
+  private lastFocus: HTMLElement | null = null
+
+  private setLastFocus = (value: HTMLElement) => {
+    this.lastFocus = value
   }
 
   trap = (options: {
-    el: HTMLElement
-    isSentinelFocus: (target: HTMLElement) => boolean
-    getTabbable: (el: HTMLElement) => HTMLElement[]
+    root: Document
+    onKeyDown: (e: KeyboardEvent) => void
+    onFocus: (e: FocusEvent) => void
   }) => {
-    const { el, isSentinelFocus, getTabbable } = options
+    const { root, onKeyDown, onFocus } = options
 
-    this.stack.push(el)
+    const listeners = { onKeyDown, onFocus }
+
+    this.stack.push(listeners)
 
     if (this.stack.length === 1) {
-      const root = ownerDocument(el)
-
-      this.cleanupKeydown = addListener(root, 'keydown', this.setIsShiftTab, true)
+      this.cleanupKeydown = addListener(
+        root,
+        'keydown',
+        (e) => {
+          const topListeners = atIndex(this.stack, -1)
+          topListeners && topListeners.onKeyDown(e)
+        },
+        true
+      )
 
       this.cleanupFocusin = addListener(root, 'focusin', (e) => {
-        e.stopImmediatePropagation()
-
-        const target = e.target as HTMLElement
-
-        const current = atArray(this.stack, -1)
-
-        if (!current || !target || el !== current) return
-
-        console.log('needFocus', target, el === current)
-
-        if (!isSentinelFocus(target)) {
-          if (current.contains(target)) return // this.setRelated(target)
-
-          // if(this.related) return this.focusRe
-        }
-
-        const doms = getTabbable(el)
-
-        if (!doms.length) return
-
-        const needFocus = atArray(doms, this.isShiftTab ? -1 : 0)
-        this.focus(needFocus)
+        const topListeners = atIndex(this.stack, -1)
+        topListeners && topListeners.onFocus(e)
       })
     }
 
     return () => {
-      this.stack = this.stack.filter((item) => item !== el)
+      this.stack = this.stack.filter((item) => item !== listeners)
 
       if (this.stack.length) return
 
       this.cleanupFocusin()
+
       this.cleanupKeydown()
     }
   }

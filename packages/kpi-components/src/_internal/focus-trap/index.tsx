@@ -1,7 +1,7 @@
 // utils
 import { useComposeRefs, useEvent } from '@kpi-ui/hooks'
 import {
-  atArray,
+  atIndex,
   nextFrame,
   noop,
   ownerDocument,
@@ -44,24 +44,47 @@ function FocusTrap(_props: FocusTrapProps) {
 
     store.setReturnTo(root.activeElement)
 
-    const cleanupTrap = focusTrap.trap({})
+    const runFrameCleanup = nextFrame(() => {
+      store.start.focus()
+      onEnter?.()
+    })
 
-    // const runFrameCleanup = nextFrame(() => {
-    //   store.start.focus()
+    if (!store.$content || !getTabbable) return
 
-    //   onEnter?.()
+    const runTrapCleanup = focusTrap.trap({
+      root,
+      onKeyDown: store.setIsShiftTab,
+      onFocus: (e) => {
+        e.stopImmediatePropagation()
 
-    //   if (!store.$content || !getTabbable) return
+        const target = e.target as HTMLElement
 
-    //   cleanupTrap = focusTrap.trap({
-    //     el: store.$content,
-    //     isSentinelFocus: store.isSentinelFocus,
-    //     getTabbable,
-    //   })
-    // })
+        const container = store.$content
+
+        if (!container || !target) return
+
+        const activeNode = root.activeElement
+
+        if (!store.isSentinelFocus(activeNode)) {
+          if (container.contains(target)) return store.setRelated(target)
+
+          if (store.related) return store.focus(store.related)
+        }
+
+        const $tabbable = getTabbable(container)
+
+        if (!$tabbable.length) return
+
+        const needFocus = atIndex($tabbable, store.isShiftTab ? -1 : 0)
+
+        needFocus.focus({ preventScroll: true })
+      },
+    })
 
     return () => {
-      cleanupTrap()
+      runFrameCleanup()
+
+      runTrapCleanup()
 
       onExit?.(store.returnTo)
 
