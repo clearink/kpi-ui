@@ -1,8 +1,8 @@
 import { useEvent } from '@kpi-ui/hooks'
-import { addClassNames, delClassNames, fillRef, nextFrame, supportRef } from '@kpi-ui/utils'
+import { addClassNames, delClassNames, fillRef, nextFrame } from '@kpi-ui/utils'
 import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref } from 'react'
 import { reflow } from '../../_shared/utils'
-import { APPEAR, ENTER, EXIT, isAppear, isExit } from '../../constants'
+import { APPEAR, ENTER, EXIT, isAppear, isExit, isExited } from '../../constants'
 import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'
 import useTransitionEvent from './hooks/use_transition_event'
@@ -14,11 +14,11 @@ function CSSTransition<E extends HTMLElement>(
   props: CSSTransitionProps<E>,
   ref: Ref<CSSTransitionRef<E>>
 ) {
-  const { children, name, when, ssr, duration, onEnter, onEntering, onExit, onExiting } = props
+  const { children, name, when, duration, onEnter, onEntering, onExit, onExiting } = props
+
+  const display = children.props.style?.display
 
   const store = useTransitionStore<E>(props)
-
-  if (store.isInitial && ssr) reflow()
 
   const classNames = useFormatClassNames(name, props.classNames)
 
@@ -28,43 +28,36 @@ function CSSTransition<E extends HTMLElement>(
 
   const [runCancel, makeEndHook] = useTransitionEvent(store, classNames, props)
 
-  const refCallback = useEvent((el: E | null) => {
+  const refCallback = (el: E | null) => {
     fillRef(el, (children as any).ref)
-
-    if (el) store.setHasMounted(true)
 
     store.setInstance(el)
 
-    store.display.stash()
+    el && store.setHasMounted()
 
-    if ((store.appear && store.isInitial) || !when) store.display.hide()
-  })
+    if (isAppear(store.status) || isExited(store.status)) store.display.hide()
+  }
 
   const runTransition = useEvent((el: E, step: TransitionStep) => {
     const { from, active, to } = classNames[step]
 
-    store.start(step)
+    store.start(step, display)
 
     addClassNames(el, from)
 
-    const exit = isExit(step)
-
-    const appear = isAppear(step)
-
-    exit && reflow(el)
+    isExit(step) && reflow(el)
 
     addClassNames(el, active)
 
-    exit ? onExit?.(el) : onEnter?.(el, appear)
+    isExit(step) ? onExit?.(el) : onEnter?.(el, isAppear(step))
 
     const runFrameCleanup = nextFrame(() => {
       delClassNames(el, from)
 
       addClassNames(el, to)
 
-      exit ? onExiting?.(el) : onEntering?.(el, appear)
+      isExit(step) ? onExiting?.(el) : onEntering?.(el, isAppear(step))
 
-      // 保存结束时的回调
       store.setEndHook(makeEndHook(el, step, timeouts[step]))
     })
 

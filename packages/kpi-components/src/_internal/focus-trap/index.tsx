@@ -1,18 +1,9 @@
 // utils
 import { useComposeRefs, useEvent } from '@kpi-ui/hooks'
-import {
-  atIndex,
-  nextFrame,
-  noop,
-  ownerDocument,
-  withDefaults,
-  withDisplayName,
-} from '@kpi-ui/utils'
+import { nextFrame, ownerDocument, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, useEffect } from 'react'
-import { addListener } from '../transition/_shared/utils'
 import useFocusTrapStore from './hooks/use_trap_store'
 import defaultGetTabbable from './utils/tabbable'
-import focusTrap from './utils/trap'
 // types
 import type { FocusTrapProps } from './props'
 
@@ -40,6 +31,8 @@ function FocusTrap(_props: FocusTrapProps) {
   const ref = useComposeRefs(store.content, (children as any).ref)
 
   const runTrap = useEvent(() => {
+    if (!store.$content || !getTabbable) return
+
     const root = ownerDocument(store.$start)
 
     store.setReturnTo(root.activeElement)
@@ -49,37 +42,7 @@ function FocusTrap(_props: FocusTrapProps) {
       onEnter?.()
     })
 
-    if (!store.$content || !getTabbable) return
-
-    const runTrapCleanup = focusTrap.trap({
-      root,
-      onKeyDown: store.setIsShiftTab,
-      onFocus: (e) => {
-        e.stopImmediatePropagation()
-
-        const target = e.target as HTMLElement
-
-        const container = store.$content
-
-        if (!container || !target) return
-
-        const activeNode = root.activeElement
-
-        if (!store.isSentinelFocus(activeNode)) {
-          if (container.contains(target)) return store.setRelated(target)
-
-          if (store.related) return store.focus(store.related)
-        }
-
-        const $tabbable = getTabbable(container)
-
-        if (!$tabbable.length) return
-
-        const needFocus = atIndex($tabbable, store.isShiftTab ? -1 : 0)
-
-        needFocus.focus({ preventScroll: true })
-      },
-    })
+    const runTrapCleanup = store.trap(root, getTabbable)
 
     return () => {
       runFrameCleanup()

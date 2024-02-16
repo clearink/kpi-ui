@@ -1,10 +1,15 @@
 import type { SemanticStyledProps } from '@kpi-ui/types'
-import type { HTMLAttributes, RefCallback } from 'react'
+import type { RefCallback } from 'react'
 import type { PortalProps } from '../portal/props'
+import { CSSTransitionProps } from '../transition/_shared/props'
 
 export interface OverlayProps
   extends SemanticStyledProps<'root' | 'mask'>,
-    Pick<PortalProps, 'getContainer'> {
+    Pick<PortalProps, 'getContainer'>,
+    Pick<
+      CSSTransitionProps,
+      'onEnter' | 'onEntering' | 'onEntered' | 'onExit' | 'onExiting' | 'onExited'
+    > {
   children: React.ReactElement | ((ref: RefCallback<HTMLDivElement>) => React.ReactElement)
 
   mask?: boolean
@@ -18,16 +23,4 @@ export interface OverlayProps
   unmountOnExit?: boolean
 
   zIndex?: number
-
-  onBeforeOpen?: () => void
-
-  onOpen?: () => void
-
-  onAfterOpen?: () => void
-
-  onBeforeClose?: () => void
-
-  onClose?: () => void
-
-  onAfterClose?: () => void
 }

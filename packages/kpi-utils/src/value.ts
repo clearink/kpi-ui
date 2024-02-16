@@ -42,7 +42,7 @@ export function shallowEqual(prev: any, next: any) {
 }
 
 export function shallowUnequal(prev: any, next: any) {
-  return Object.is(prev, next)
+  return !Object.is(prev, next)
 }
 
 export function shallowMerge<R, T extends Record<string, any>>(source: R, defaults: T) {

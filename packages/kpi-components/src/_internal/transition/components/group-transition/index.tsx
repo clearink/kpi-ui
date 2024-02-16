@@ -7,7 +7,6 @@ import useTransitionStore from './hooks/use_transition_store'
 import type { GroupTransitionProps } from './props'
 
 const excluded = [
-  'ssr',
   'when',
   'name',
   'type',

@@ -27,12 +27,14 @@ const included = [
   'transitions',
   'keepMounted',
   'unmountOnExit',
+  'zIndex',
 ] as const
 
 export const defaultProps: Partial<ModalProps> = {
   closeOnEscape: true,
   maskClosable: true,
-  restoreFocus: true,
+  returnFocus: true,
+  mask: true,
 }
 
 function Modal(_props: ModalProps) {
@@ -52,7 +54,7 @@ function Modal(_props: ModalProps) {
 
   const styles = useSemanticStyles(props.style, props.styles)
 
-  const onKeyDown = !props.closeOnEscape
+  const onEscpaceDown = !props.closeOnEscape
     ? undefined
     : (e: React.KeyboardEvent<HTMLDivElement>) => {
         if (e.key !== Keyboard.esc) return
@@ -60,20 +62,18 @@ function Modal(_props: ModalProps) {
         e.stopPropagation()
 
         onCancel?.()
-        console.log(e)
-        // 嵌套时有bug
       }
 
-  const onClick =
+  const onMaskClick =
     !props.maskClosable || !props.mask
       ? undefined
       : (e: React.SyntheticEvent) => {
-          if (e.target && e.target === store.wrap.current) {
+          if (e.target && e.target === store.$wrap) {
             onCancel?.()
           }
         }
 
-  const onTrapExit = !props.restoreFocus
+  const onTrapExit = !props.returnFocus
     ? undefined
     : (node: Element | null) => {
         node && (node as HTMLElement).focus()
@@ -119,15 +119,15 @@ function Modal(_props: ModalProps) {
         mask: fallback(transitions.mask, `${rootPrefixCls}-fade-in`),
         content: fallback(transitions.content, `${rootPrefixCls}-slide-bottom`),
       }}
-      onBeforeOpen={store.wrap.show}
-      onAfterClose={store.wrap.hide}
+      onEnter={store.wrap.show}
+      onExited={store.wrap.hide}
     >
       {(ref) => (
         <div
           tabIndex={-1}
           ref={store.wrap}
-          onKeyDown={onKeyDown}
-          onClick={onClick}
+          onKeyDown={onEscpaceDown}
+          onClick={onMaskClick}
           className={`${prefixCls}-wrap`}
         >
           <div

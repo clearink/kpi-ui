@@ -1,60 +1,20 @@
-import { Modal, Drawer, Button, Collapse } from '@kpi-ui/components'
+import { Modal, Drawer, Button } from '@kpi-ui/components'
 import { useRef, useState } from 'react'
+import Tooltip from '@kpi-ui/components/src/_internal/tooltip'
 
 import '@kpi-ui/components/src/style'
 import './style.scss'
-
-const items = [
-  {
-    name: '1',
-    title: 'name-1',
-    extra: <div>123</div>,
-    children: (
-      <div>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud incididunt ut labore et
-        dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-        ut aliquip ex ea commodo consequat.
-      </div>
-    ),
-  },
-  {
-    name: '2',
-    title: 'name-2',
-    extra: <div>123</div>,
-    children: (
-      <div>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud incididunt ut labore et
-        dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-        ut aliquip ex ea commodo consequat.
-      </div>
-    ),
-  },
-  {
-    name: '3',
-    title: 'name-3',
-    extra: <div>123</div>,
-    children: (
-      <div>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud incididunt ut labore et
-        dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-        ut aliquip ex ea commodo consequat.
-      </div>
-    ),
-  },
-]
+import { CSSTransition } from '@kpi-ui/components/src/_internal/transition'
 
 export default function App() {
-  const [open, set] = useState(false)
-  const [open1, set1] = useState(false)
+  const [open, set] = useState(!false)
+  const [open1, set1] = useState('flex')
+  const [d, setd] = useState(false)
 
-  const ref = useRef<HTMLButtonElement>(null)
-  const [d, setd] = useState(['1', '3'])
+  const ref = useRef<HTMLTextAreaElement>(null)
 
   return (
-    <div style={{ margin: 100 }}>
+    <div style={{ margin: 100, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Button
         variant="filled"
         onClick={() => {
@@ -63,59 +23,31 @@ export default function App() {
       >
         minus
       </Button>
-      <Button variant="filled">minus</Button>
-      <Button variant="filled">minus</Button>
-      <Button variant="filled">minus</Button>
-      <Button variant="filled">minus</Button>
-      <Button variant="filled">minus</Button>
-      <Button variant="filled">minus</Button>
-      <Button variant="filled">minus</Button>
-      <Modal
-        title="我的Modal"
-        maskClosable={false}
-        open={open}
-        onCancel={() => set(false)}
-        onOk={() => set(false)}
+      <Button
+        variant="filled"
+        onClick={() => {
+          setd((p) => !p)
+        }}
       >
-        <Collapse
-          accordion
-          expandedNames={d}
-          onChange={(name, names) => {
-            console.log(name, names)
-            setd(names)
-          }}
-          items={items}
-        />
-        <Button
-          variant="filled"
-          onClick={() => {
-            set1((p) => !p)
-          }}
-        >
-          op1
-        </Button>
-        <Modal
-          title="我的Modal"
-          maskClosable={false}
-          open={open1}
-          onCancel={() => set1(false)}
-          onOk={() => set1(false)}
-        >
-          <Collapse
-            accordion
-            expandedNames={d}
-            onChange={(name, names) => {
-              console.log(name, names)
-              setd(names)
-            }}
-            items={items}
-          />
-          <div>132123</div>
-          <div>132123</div>
-        </Modal>
-      </Modal>
+        setd
+      </Button>
+      <Button
+        variant="filled"
+        onClick={() => {
+          set1((p) => (p === 'flex' ? 'block' : 'flex'))
+        }}
+      >
+        {open1}
+      </Button>
+      <CSSTransition name="fade" appear when={open}>
+        <div style={{ display: `${open1}` }}>asdsadas</div>
+      </CSSTransition>
 
-      <input />
+      {/* <div style={{ position: 'absolute', left: 400, top: 200 }}>
+        <Tooltip content={<div>12313211212</div>}>
+          <textarea ref={ref} style={{ position: 'relative', top: 20 }} />
+        </Tooltip>
+      </div> */}
     </div>
   )
 }

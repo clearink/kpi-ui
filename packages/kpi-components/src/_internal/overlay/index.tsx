@@ -1,6 +1,7 @@
 // utils
-import { cls, fallback, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { useSemanticStyles, useZIndex } from '../../_shared/hooks'
+import { cls, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { useSemanticStyles } from '../../_shared/hooks'
+import useOverlayLevel from './hooks/use_overlay_level'
 import useOverlayStore from './hooks/use_overlay_store'
 // comps
 import Portal from '../portal'
@@ -15,33 +16,23 @@ export const defaultProps: Partial<OverlayProps> = { mask: true }
 function Overlay(_props: OverlayProps) {
   const props = withDefaults(_props, defaultProps)
 
-  const {
-    open,
-    keepMounted,
-    unmountOnExit,
-    mask,
-    className,
-    transitions = {},
-    classNames = {},
-    onBeforeOpen,
-    onAfterClose,
-  } = props
+  const { open, keepMounted, unmountOnExit, transitions = {}, classNames = {} } = props
 
   const store = useOverlayStore(props)
 
-  const styles = useSemanticStyles(props.style, props.styles)
+  const level = useOverlayLevel(store, props)
 
-  const zIndex = useZIndex()
+  const styles = useSemanticStyles(props.style, props.styles)
 
   if (!open && !store.isMounted) return null
 
   return (
     <Portal getContainer={props.getContainer}>
       <div
-        className={cls(className, classNames.root)}
-        style={withDefaults(styles.root || {}, { zIndex })}
+        className={cls(props.className, classNames.root)}
+        style={withDefaults(styles.root || {}, { zIndex: level })}
       >
-        {!!mask && (
+        {!!props.mask && (
           <CSSTransition appear when={open} name={transitions.mask} mountOnEnter={!keepMounted}>
             <div aria-hidden="true" className={classNames.mask} style={styles.mask}></div>
           </CSSTransition>
@@ -52,12 +43,16 @@ function Overlay(_props: OverlayProps) {
           when={open}
           name={transitions.content}
           mountOnEnter={!keepMounted}
-          onEnter={() => {
-            onBeforeOpen?.()
+          onEnter={(el, appearing) => {
+            props.onEnter?.(el, appearing)
             store.setIsMounted(true)
           }}
-          onExited={() => {
-            onAfterClose && onAfterClose()
+          onEntering={props.onEntering}
+          onEntered={props.onEntered}
+          onExit={props.onExit}
+          onExiting={props.onExiting}
+          onExited={(el) => {
+            props.onExited?.(el)
             store.setIsMounted(!(unmountOnExit && !keepMounted))
           }}
         >

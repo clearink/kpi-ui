@@ -1,9 +1,11 @@
 import { useConstant, useDerivedState, useForceUpdate } from '@kpi-ui/hooks'
 import {
+  APPEAR,
   ENTER,
   ENTERED,
   EXIT,
   EXITED,
+  isAppear,
   isEnter,
   isEntered,
   isExit,
@@ -12,35 +14,17 @@ import {
 
 import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
 
-const explicit = Symbol.for('explicit-display')
-
 export class TransitionStore<E extends HTMLElement> {
   display = {
-    show: () => {
+    show: (display: undefined | string) => {
       const el = this.instance
 
-      if (!el) return
-
-      const { display, priority } = el[explicit]
-
-      el.style.setProperty('display', display, priority)
-    },
-    stash: () => {
-      const el = this.instance
-
-      if (!el) return
-
-      const display = el.style.getPropertyValue('display')
-      const priority = el.style.getPropertyPriority('display')
-
-      el[explicit] = { display, priority }
+      el && el.style.setProperty('display', display || '')
     },
     hide: () => {
       const el = this.instance
 
-      if (!el) return
-
-      el.style.setProperty('display', 'none', 'important')
+      el && el.style.setProperty('display', 'none')
     },
   }
 
@@ -48,8 +32,8 @@ export class TransitionStore<E extends HTMLElement> {
 
   hasMounted = false
 
-  setHasMounted = (value: boolean) => {
-    this.hasMounted = value
+  setHasMounted = () => {
+    this.hasMounted = true
   }
 
   get running() {
@@ -64,7 +48,7 @@ export class TransitionStore<E extends HTMLElement> {
     this.isMounted = when || !(unmountOnExit || mountOnEnter)
 
     if (!when) this.status = EXITED
-    else this.status = appear ? ENTER : ENTERED
+    else this.status = appear ? APPEAR : ENTERED
   }
 
   status: TransitionStatus
@@ -101,10 +85,10 @@ export class TransitionStore<E extends HTMLElement> {
     this.endHook = undefined
   }
 
-  start = (step: TransitionStep) => {
+  start = (step: TransitionStep, display: string | undefined) => {
     this.status = isExit(step) ? EXIT : ENTER
 
-    isExit(step) ? this.display.stash() : this.display.show()
+    !isExit(step) && this.display.show(display)
   }
 
   finish = (step: TransitionStep) => {
@@ -114,7 +98,7 @@ export class TransitionStore<E extends HTMLElement> {
   }
 
   shouldTransition = (isInitial: boolean, when?: boolean) => {
-    if (isInitial) return isEnter(this.status)
+    if (isInitial) return isAppear(this.status)
 
     return when ? !isEntered(this.status) : !isExited(this.status)
   }

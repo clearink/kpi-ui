@@ -1,0 +1,12 @@
+// 优化打包性能引入除了 preset 的内容, 顺序不可该变
+@import '../../style/variables.scss'; // 引入 变量
+@import '../../style/mixins/index.scss'; // 引入 reset
+
+@import './tokens.scss';
+@import './mixins.scss';
+
+$comp: #{$prefix}-popover;
+
+.#{$comp} {
+  @include reset-component();
+}

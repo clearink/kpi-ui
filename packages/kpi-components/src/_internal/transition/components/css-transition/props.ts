@@ -5,11 +5,15 @@ import type { TransitionStore } from './hooks/use_transition_store'
 
 export type TransitionStep = typeof APPEAR | typeof ENTER | typeof EXIT
 
-export type TransitionStatus = typeof ENTER | typeof EXIT | typeof ENTERED | typeof EXITED
+export type TransitionStatus =
+  | typeof APPEAR
+  | typeof ENTER
+  | typeof EXIT
+  | typeof ENTERED
+  | typeof EXITED
 
 export type CSSTransitionRef<E extends HTMLElement = HTMLElement> = TransitionStore<E>
 export interface CSSTransitionProps<E extends HTMLElement = HTMLElement> {
-  ssr?: boolean
   when?: boolean
   name?: string
   type?: 'transition' | 'animation'

@@ -8,7 +8,7 @@ export interface ModalProps
     SemanticStyledProps<'root' | 'main' | 'close' | 'header' | 'body' | 'footer'>,
     Pick<
       OverlayProps,
-      'getContainer' | 'mask' | 'open' | 'transitions' | 'keepMounted' | 'unmountOnExit'
+      'getContainer' | 'mask' | 'open' | 'transitions' | 'keepMounted' | 'unmountOnExit' | 'zIndex'
     > {
   closeOnEscape?: boolean
 
@@ -20,7 +20,7 @@ export interface ModalProps
 
   maskClosable?: boolean
 
-  restoreFocus?: boolean
+  returnFocus?: boolean
 
   onOk?: () => void
 

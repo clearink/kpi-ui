@@ -9,8 +9,12 @@ export class ModalStore {
     },
     hide: () => {
       const el = this.wrap.current
-      el?.style.setProperty('display', 'none', 'important')
+      el?.style.setProperty('display', 'none')
     },
+  }
+
+  get $wrap() {
+    return this.wrap.current
   }
 }
 
