@@ -1,4 +1,6 @@
+// utils
 import { useConstant, useDerivedState, useForceUpdate } from '@kpi-ui/hooks'
+import { addClassNames, delClassNames } from '@kpi-ui/utils'
 import {
   APPEAR,
   ENTER,
@@ -11,10 +13,42 @@ import {
   isExit,
   isExited,
 } from '../../../constants'
-
+// types
 import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
 
+const additional = Symbol.for('additional-class')
+
 export class TransitionStore<E extends HTMLElement> {
+  classNames = {
+    add: (...classes: (string | undefined)[]) => {
+      const el = this.instance as null | (E & { [additional]?: Set<string | undefined> })
+
+      if (!el) return
+
+      addClassNames(el, ...classes)
+
+      if (!el[additional]) el[additional] = new Set()
+
+      classes.forEach((cls) => el[additional]!.add(cls))
+    },
+    del: (...classes: (string | undefined)[]) => {
+      const el = this.instance as null | (E & { [additional]?: Set<string | undefined> })
+
+      if (!el) return
+
+      delClassNames(el, ...classes)
+
+      if (el[additional]) classes.forEach((cls) => el[additional]!.delete(cls))
+    },
+    restore: () => {
+      const el = this.instance as null | (E & { [additional]?: Set<string | undefined> })
+
+      if (!el || !el[additional]) return
+
+      el[additional].forEach((cls) => addClassNames(el, cls))
+    },
+  }
+
   display = {
     show: (display: undefined | string) => {
       const el = this.instance

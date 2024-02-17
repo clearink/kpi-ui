@@ -22,7 +22,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     const { from, active, to } = classNames[step]
 
-    delClassNames(el, from, active, to)
+    store.classNames.del(from, active, to)
 
     if (!isExit(step)) return onEntered?.(el, isAppear(step))
 
@@ -38,7 +38,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     isExit(step) ? onExitCancel?.(el) : onEnterCancel?.(el, isAppear(step))
 
-    delClassNames(el, from, active, to)
+    store.classNames.del(from, active, to)
   }
 
   const makeEndHook = (el: E, step: TransitionStep, timeout?: number) => {

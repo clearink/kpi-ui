@@ -1,5 +1,5 @@
 import { useEvent } from '@kpi-ui/hooks'
-import { addClassNames, delClassNames, fillRef, nextFrame } from '@kpi-ui/utils'
+import { fillRef, nextFrame } from '@kpi-ui/utils'
 import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref } from 'react'
 import { reflow } from '../../_shared/utils'
 import { APPEAR, ENTER, EXIT, isAppear, isExit, isExited } from '../../constants'
@@ -17,6 +17,7 @@ function CSSTransition<E extends HTMLElement>(
   const { children, name, when, duration, onEnter, onEntering, onExit, onExiting } = props
 
   const display = children.props.style?.display
+  const cls = children.props.className
 
   const store = useTransitionStore<E>(props)
 
@@ -35,6 +36,8 @@ function CSSTransition<E extends HTMLElement>(
 
     el && store.setHasMounted()
 
+    store.classNames.restore()
+
     if (isAppear(store.status) || isExited(store.status)) store.display.hide()
   }
 
@@ -43,18 +46,18 @@ function CSSTransition<E extends HTMLElement>(
 
     store.start(step, display)
 
-    addClassNames(el, from)
+    store.classNames.add(from)
 
     isExit(step) && reflow(el)
 
-    addClassNames(el, active)
+    store.classNames.add(active)
 
     isExit(step) ? onExit?.(el) : onEnter?.(el, isAppear(step))
 
     const runFrameCleanup = nextFrame(() => {
-      delClassNames(el, from)
+      store.classNames.del(from)
 
-      addClassNames(el, to)
+      store.classNames.add(to)
 
       isExit(step) ? onExiting?.(el) : onEntering?.(el, isAppear(step))
 

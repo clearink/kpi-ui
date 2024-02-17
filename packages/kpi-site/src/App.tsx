@@ -1,15 +1,16 @@
 import { Modal, Drawer, Button } from '@kpi-ui/components'
 import { useRef, useState } from 'react'
 import Tooltip from '@kpi-ui/components/src/_internal/tooltip'
+import CSSTransition from '@kpi-ui/components/src/_internal/transition/components/css-transition'
 
 import '@kpi-ui/components/src/style'
 import './style.scss'
-import { CSSTransition } from '@kpi-ui/components/src/_internal/transition'
+import ForwardFunctional from '@kpi-ui/components/src/_internal/overlay/components/forward_functional'
 
 export default function App() {
   const [open, set] = useState(!false)
-  const [open1, set1] = useState('flex')
-  const [d, setd] = useState(false)
+  const [cls, setCls] = useState('a')
+  const [display, setDisplay] = useState('flex')
 
   const ref = useRef<HTMLTextAreaElement>(null)
 
@@ -21,27 +22,17 @@ export default function App() {
           set((p) => !p)
         }}
       >
-        minus
+        open
       </Button>
       <Button
         variant="filled"
         onClick={() => {
-          setd((p) => !p)
+          setCls((p) => (p === 'a' ? 'b' : 'a'))
+          setDisplay((p) => (p === 'flex' ? 'block' : 'flex'))
         }}
       >
-        setd
+        change cls
       </Button>
-      <Button
-        variant="filled"
-        onClick={() => {
-          set1((p) => (p === 'flex' ? 'block' : 'flex'))
-        }}
-      >
-        {open1}
-      </Button>
-      <CSSTransition name="fade" appear when={open}>
-        <div style={{ display: `${open1}` }}>asdsadas</div>
-      </CSSTransition>
 
       {/* <div style={{ position: 'absolute', left: 400, top: 200 }}>
         <Tooltip content={<div>12313211212</div>}>

@@ -6,6 +6,8 @@ export default function useDomRect(ref: React.RefObject<Element>) {
     return {
       width: -1,
       height: -1,
+      left: -1,
+      top: -1,
     }
   })
 
@@ -17,5 +19,5 @@ export default function useDomRect(ref: React.RefObject<Element>) {
 
   useResizeObserver(ref, onResize)
 
-  return rect
+  return [rect, setRect] as const
 }

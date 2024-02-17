@@ -11,7 +11,7 @@ import type { PopoverProps } from './props'
 
 const defaultProps: Partial<PopoverProps> = {}
 
-function Tooltip(_props: PopoverProps) {
+function InternalTooltip(_props: PopoverProps) {
   const props = withDefaults(_props, defaultProps)
 
   const { children, content } = props
@@ -28,7 +28,7 @@ function Tooltip(_props: PopoverProps) {
   const ref = useRef<Element>(null)
 
   // 获取 reference 的位置，大小
-  const refRect = useDomRect(ref)
+  const [refRect, setRefRect] = useDomRect(ref)
 
   const composedRef = useComposeRefs(ref, (children as any).ref)
 
@@ -42,6 +42,12 @@ function Tooltip(_props: PopoverProps) {
 
   const onMouseEnter: React.MouseEventHandler<HTMLElement> = (e) => {
     console.log('enter', e)
+    setRefRect({
+      width: (200 * Math.random()) | 0,
+      height: (400 * Math.random()) | 0,
+      left: (400 * Math.random()) | 0,
+      top: (400 * Math.random()) | 0,
+    })
     setOpen(true)
   }
   const onMouseLeave: React.MouseEventHandler<HTMLElement> = (e) => {
@@ -72,7 +78,7 @@ function Tooltip(_props: PopoverProps) {
           console.log('reference', refRect)
         }}
       >
-        <div className={prefixCls} style={{ position: 'absolute' }}>
+        <div className={prefixCls} style={{ position: 'absolute', ...refRect }}>
           <div className={`${prefixCls}__arrow`}></div>
           <div className={`${prefixCls}__main`}>
             <div className={`${prefixCls}__title`}></div>
@@ -87,4 +93,4 @@ function Tooltip(_props: PopoverProps) {
 /**
  * @zh 内部组件
  */
-export default withDisplayName(Tooltip)
+export default withDisplayName(InternalTooltip)
