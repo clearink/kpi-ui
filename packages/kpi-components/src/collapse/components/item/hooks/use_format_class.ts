@@ -16,11 +16,11 @@ export default function useFormatClass(
   return {
     root: cls(
       name,
-      className,
       {
         [`${name}--disabled`]: disabled,
         [`${name}--expanded`]: expanded,
       },
+      className,
       classNames?.root
     ),
     header: cls(

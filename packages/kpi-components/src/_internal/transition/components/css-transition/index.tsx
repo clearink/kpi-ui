@@ -1,5 +1,5 @@
 import { useEvent } from '@kpi-ui/hooks'
-import { fillRef, nextFrame } from '@kpi-ui/utils'
+import { fillRef, nextFrame, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref } from 'react'
 import { reflow } from '../../_shared/utils'
 import { APPEAR, ENTER, EXIT, isAppear, isExit, isExited } from '../../constants'
@@ -17,7 +17,6 @@ function CSSTransition<E extends HTMLElement>(
   const { children, name, when, duration, onEnter, onEntering, onExit, onExiting } = props
 
   const display = children.props.style?.display
-  const cls = children.props.className
 
   const store = useTransitionStore<E>(props)
 
@@ -90,6 +89,8 @@ function CSSTransition<E extends HTMLElement>(
   return cloneElement(children, { ref: refCallback })
 }
 
-export default forwardRef(CSSTransition) as <E extends HTMLElement>(
+export default withDisplayName(forwardRef(CSSTransition), 'CSSTransition') as <
+  E extends HTMLElement
+>(
   props: CSSTransitionProps<E> & { ref?: Ref<CSSTransitionRef<E>> }
 ) => JSX.Element | null

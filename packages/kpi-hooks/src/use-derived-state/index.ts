@@ -1,4 +1,4 @@
-import { isFunction } from '@kpi-ui/utils'
+import { isFunction, shallowEqual } from '@kpi-ui/utils'
 import { useRef } from 'react'
 
 export interface DerivedOptions<S> {
@@ -11,7 +11,7 @@ function useDerivedState<S>(current: S, options: DerivedOptions<S>): void
 function useDerivedState<S>(current: S, arg: DerivedOptions<S> | (() => void)): void {
   const ref = useRef(current)
 
-  const compare = isFunction(arg) ? Object.is : arg.compare
+  const compare = isFunction(arg) ? shallowEqual : arg.compare
 
   if (compare(current, ref.current)) return
 

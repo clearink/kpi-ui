@@ -1,5 +1,5 @@
 // utils
-import { usePrefixCls } from '../_shared/hooks'
+import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
 import { withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, useRef } from 'react'
 // comps
@@ -7,17 +7,28 @@ import InternalTooltip from '../_internal/tooltip'
 
 // types
 import type { TooltipProps } from './props'
+import useFormatClass from './hooks/use_format_class'
 
 const defaultProps: Partial<TooltipProps> = {}
 
 function Tooltip(_props: TooltipProps) {
   const props = withDefaults(_props, defaultProps)
 
-  // const { children } = props
+  const rootPrefixCls = usePrefixCls()
 
-  // return <InternalTooltip>{children}</InternalTooltip>
+  const prefixCls = `${rootPrefixCls}-tooltip`
 
-  return <div>123</div>
+  const classNames = useFormatClass(prefixCls, props)
+
+  return (
+    <InternalTooltip
+      {...props}
+      classNames={classNames}
+      transitions={{
+        content: `${rootPrefixCls}-slide-bottom`,
+      }}
+    />
+  )
 }
 
 export default withDisplayName(Tooltip)

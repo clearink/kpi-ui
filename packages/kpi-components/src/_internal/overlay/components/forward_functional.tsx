@@ -16,7 +16,7 @@ function ForwardFunctional<T extends React.ReactElement, R extends ReactRef<any>
   return cloneElement(children, { ref: mergeRefs(ref, (children as any).ref) })
 }
 
-export default withDisplayName(forwardRef(ForwardFunctional)) as <
+export default withDisplayName(forwardRef(ForwardFunctional), 'ForwardFunctional') as <
   T extends React.ReactElement,
   R extends ReactRef<any> = ReactRef<any>
 >(

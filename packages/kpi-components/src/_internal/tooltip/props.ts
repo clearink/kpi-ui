@@ -1,18 +1,19 @@
 import type { HasChildren, SemanticStyledProps } from '@kpi-ui/types'
 import type { OverlayProps } from '../overlay/props'
 
-export type PopoverTrigger = 'hover' | 'focus' | 'click' | 'contextMenu'
+export type ToolTipTrigger = 'hover' | 'focus' | 'click' | 'contextMenu'
 
-export interface PopoverProps
+export interface InternalTooltipProps
   extends Required<HasChildren<React.ReactElement>>,
-    SemanticStyledProps<'root' | 'title' | 'content'>,
-    Pick<OverlayProps, 'open' | 'zIndex'> {
+    SemanticStyledProps<'root' | 'arrow' | 'main' | 'title' | 'content'>,
+    Pick<OverlayProps, 'open' | 'zIndex' | 'transitions'> {
   title?: React.ReactNode
   content?: React.ReactNode
 
-  trigger?: PopoverTrigger | PopoverTrigger[]
+  trigger?: ToolTipTrigger | ToolTipTrigger[]
+
+  // tooltip 关闭时默认不会更新，防止页面闪烁
+  fresh?: boolean
 
   onOpenChange?: (open: boolean) => void
 }
-
-export interface InternalTooltipProps {}

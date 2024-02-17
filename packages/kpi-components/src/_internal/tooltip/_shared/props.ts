@@ -1,1 +1,1 @@
-export type { PopoverProps } from '../props'
+export type { InternalTooltipProps } from '../props'

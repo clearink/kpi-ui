@@ -103,6 +103,6 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
   )
 }
 
-export default withDisplayName(forwardRef(Collapse)) as <K extends ExpandedName>(
+export default withDisplayName(forwardRef(Collapse), 'Collapse') as <K extends ExpandedName>(
   props: CollapseProps<K> & { ref?: Ref<HTMLDivElement> }
 ) => JSX.Element

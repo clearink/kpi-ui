@@ -76,7 +76,9 @@ function Modal(_props: ModalProps) {
   const onTrapExit = !props.returnFocus
     ? undefined
     : (node: Element | null) => {
-        node && (node as HTMLElement).focus()
+        const el = node as HTMLElement | null
+
+        if (el && isFunction(el.focus)) el.focus()
       }
 
   const renderNode = (

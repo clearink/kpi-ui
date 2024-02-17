@@ -1,4 +1,4 @@
-import { delClassNames, isUndefined } from '@kpi-ui/utils'
+import { isUndefined } from '@kpi-ui/utils'
 import { isAppear, isExit } from '../../../constants'
 import { batch } from '../../../_shared/utils'
 import collectTimeoutInfo from '../utils/collect'

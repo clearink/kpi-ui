@@ -6,11 +6,15 @@ import type { CSSTransitionRef } from '../../transition/_shared/props'
 import type { OverlayProps } from '../props'
 
 export class OverlayStore {
+  constructor(props: OverlayProps, public forceUpdate: () => void) {
+    this.isMounted = !!props.keepMounted || !!props.open
+  }
+
   // 能否挂载元素
   isMounted: boolean
 
-  setIsMounted = (value: boolean, forceUpdate = true) => {
-    if (this.isMounted !== value && forceUpdate) this.forceUpdate()
+  setIsMounted = (value: boolean) => {
+    if (this.isMounted !== value) this.forceUpdate()
 
     this.isMounted = value
   }
@@ -22,10 +26,6 @@ export class OverlayStore {
   get isExited() {
     const el = this.content.current
     return el && isExited(el.status)
-  }
-
-  constructor(props: OverlayProps, public forceUpdate: () => void) {
-    this.isMounted = !!props.keepMounted || !!props.open
   }
 }
 
@@ -43,8 +43,8 @@ export default function useOverlayStore(props: OverlayProps) {
     else if (unmountOnExit && store.isExited) store.setIsMounted(false)
   })
 
-  // when 变化时需要保证页面处于渲染中, 不必强制渲染一次更新 isMounted
-  useDerivedState(open, () => store.setIsMounted(true, false))
+  // when 变化时需要保证页面处于渲染中,
+  useDerivedState(open, () => store.setIsMounted(true))
 
   return store
 }

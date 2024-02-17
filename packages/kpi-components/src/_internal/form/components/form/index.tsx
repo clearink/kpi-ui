@@ -46,7 +46,7 @@ function InternalForm<State = any>(
   // 用于多表单联动
   const parentForm = InternalFormContext.useState()
 
-  useImperativeHandle(ref, () => instance)
+  useImperativeHandle(ref, () => instance, [instance])
 
   const internalHook = useMemo(() => instance.getInternalHooks(HOOK_MARK)!, [instance])
 
@@ -101,6 +101,6 @@ function InternalForm<State = any>(
   return createElement(tag as any, attrs, elements)
 }
 
-export default withDisplayName(forwardRef(InternalForm)) as <State = any>(
+export default withDisplayName(forwardRef(InternalForm), 'InternalForm') as <State = any>(
   props: InternalFormProps<State> & { ref?: Ref<InternalFormInstance<State>> }
 ) => JSX.Element

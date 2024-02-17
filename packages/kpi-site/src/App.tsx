@@ -1,18 +1,13 @@
-import { Modal, Drawer, Button } from '@kpi-ui/components'
-import { useRef, useState } from 'react'
-import Tooltip from '@kpi-ui/components/src/_internal/tooltip'
-import CSSTransition from '@kpi-ui/components/src/_internal/transition/components/css-transition'
+import { Button, Tooltip } from '@kpi-ui/components'
+import { useEffect, useRef, useState } from 'react'
 
 import '@kpi-ui/components/src/style'
 import './style.scss'
-import ForwardFunctional from '@kpi-ui/components/src/_internal/overlay/components/forward_functional'
+import { CSSTransition, SwitchTransition } from '@kpi-ui/components/src/_internal/transition'
 
 export default function App() {
-  const [open, set] = useState(!false)
+  const [open, set] = useState(false)
   const [cls, setCls] = useState('a')
-  const [display, setDisplay] = useState('flex')
-
-  const ref = useRef<HTMLTextAreaElement>(null)
 
   return (
     <div style={{ margin: 100, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -28,16 +23,26 @@ export default function App() {
         variant="filled"
         onClick={() => {
           setCls((p) => (p === 'a' ? 'b' : 'a'))
-          setDisplay((p) => (p === 'flex' ? 'block' : 'flex'))
         }}
       >
         change cls
       </Button>
-
-      {/* <div style={{ position: 'absolute', left: 400, top: 200 }}>
-        <Tooltip content={<div>12313211212</div>}>
-          <textarea ref={ref} style={{ position: 'relative', top: 20 }} />
-        </Tooltip>
+      <SwitchTransition name="fade" mode="out-in">
+        <div key={open ? 1 : 2} className={cls}>
+          121212
+        </div>
+      </SwitchTransition>
+      {/* <div style={{ padding: 400 }}>
+        adasdsa
+        <div style={{ position: 'absolute', left: 400, top: 200 }}>
+          <div style={{ position: 'absolute', left: 400, top: 200 }}>
+            <div style={{ position: 'absolute', left: 400, top: 200 }}>
+              <Tooltip content={<div>12313211212</div>}>
+                <textarea ref={ref} style={{ position: 'relative', top: 20 }} />
+              </Tooltip>
+            </div>
+          </div>
+        </div>
       </div> */}
     </div>
   )

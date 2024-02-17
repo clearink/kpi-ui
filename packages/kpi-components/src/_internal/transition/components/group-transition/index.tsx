@@ -1,9 +1,10 @@
+// utils
 import { useDerivedState } from '@kpi-ui/hooks'
-import { isNullish, omit } from '@kpi-ui/utils'
+import { isNullish, omit, withDisplayName } from '@kpi-ui/utils'
 import { createElement, useEffect } from 'react'
 import { isElementsEqual } from '../../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
-
+// types
 import type { GroupTransitionProps } from './props'
 
 const excluded = [
@@ -30,9 +31,7 @@ const excluded = [
   'flip',
 ] as const
 
-export default function GroupTransition<E extends HTMLElement = HTMLElement>(
-  props: GroupTransitionProps<E>
-) {
+function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransitionProps<E>) {
   const { tag, children } = props
 
   const store = useTransitionStore(props)
@@ -62,3 +61,7 @@ export default function GroupTransition<E extends HTMLElement = HTMLElement>(
 
   return createElement(tag, attrs, store.nodes)
 }
+
+export default withDisplayName(GroupTransition) as <E extends HTMLElement>(
+  props: GroupTransitionProps<E>
+) => JSX.Element

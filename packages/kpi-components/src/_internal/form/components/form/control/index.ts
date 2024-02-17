@@ -449,7 +449,9 @@ export class FormStateControl<State = any> {
   setFieldsData = (fields: ExternalFieldData[]) => {
     const prev = this._state
 
-    fields.forEach((field) => hasOwn(field, 'value') && this.setFieldValue(field.name, field.value))
+    fields.forEach((field) => {
+      if (hasOwn(field, 'value')) this.setFieldValue(field.name, field.value)
+    })
 
     return [prev, this._state] as const
   }

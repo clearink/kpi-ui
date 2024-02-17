@@ -44,4 +44,4 @@ function Row(_props: RowProps, ref: ForwardedRef<HTMLDivElement>) {
   )
 }
 
-export default withDisplayName(forwardRef(Row))
+export default withDisplayName(forwardRef(Row), 'Row')

@@ -44,3 +44,6 @@ export type { BadgeProps } from './badge/_shared/props'
 
 export { default as Collapse } from './collapse'
 export type { CollapseProps } from './collapse/_shared/props'
+
+export { default as Tooltip } from './tooltip'
+export type { TooltipProps } from './tooltip/_shared/props'

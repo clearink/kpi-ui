@@ -38,7 +38,7 @@ export const hasOwn = Object.hasOwn
   : (o: object, v: PropertyKey) => Object.prototype.hasOwnProperty.call(o, v)
 
 export function shallowEqual(prev: any, next: any) {
-  return prev === next
+  return Object.is(prev, next)
 }
 
 export function shallowUnequal(prev: any, next: any) {

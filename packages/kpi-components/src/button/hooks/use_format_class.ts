@@ -5,7 +5,7 @@ import { DisabledContext, SizeContext } from '../../_shared/context'
 import type { ButtonProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: ButtonProps) {
-  const { theme, variant, block, shape, ghost, loading, classNames = {} } = props
+  const { theme, variant, block, shape, ghost, loading, className, classNames = {} } = props
 
   const size = fallback(props.size, SizeContext.useState())
 
@@ -24,7 +24,7 @@ export default function useFormatClass(prefixCls: string, props: ButtonProps) {
         [`${prefixCls}--ghost`]: ghost,
         [`${prefixCls}--disabled`]: disabled,
       },
-      props.className,
+      className,
       classNames.root
     ),
     icon: cls(`${prefixCls}__icon`, classNames.icon),

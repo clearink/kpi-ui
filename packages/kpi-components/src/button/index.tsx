@@ -73,4 +73,4 @@ function Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
   )
 }
 
-export default withDisplayName(forwardRef(Button))
+export default withDisplayName(forwardRef(Button), 'Button')

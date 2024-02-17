@@ -1,36 +1,36 @@
 // utils
-import { useComposeRefs, useControllableState, useDebounceCallback } from '@kpi-ui/hooks'
-import { withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { useControllableState } from '@kpi-ui/hooks'
+import { cls, mergeRefs, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, useRef } from 'react'
-import { usePrefixCls } from '../../_shared/hooks'
 import useDomRect from './hooks/use_dom_rect'
 // comps
 import Overlay from '../overlay'
 // types
-import type { PopoverProps } from './props'
+import type { InternalTooltipProps } from './props'
+import { useSemanticStyles } from '../../_shared/hooks'
+import ShouldUpdate from '../should-update'
+import useTooltipStore from './hooks/use_tooltip_store'
 
-const defaultProps: Partial<PopoverProps> = {}
+const defaultProps: Partial<InternalTooltipProps> = {
+  trigger: 'hover',
+}
 
-function InternalTooltip(_props: PopoverProps) {
+function InternalTooltip(_props: InternalTooltipProps) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children, content } = props
+  const { children, content, zIndex, transitions, fresh, className, classNames = {} } = props
 
-  const rootPrefixCls = usePrefixCls()
-  const prefixCls = `${rootPrefixCls}-tooltip`
+  const store = useTooltipStore()
+
+  const styles = useSemanticStyles(props.style, props.styles)
   /**
    * 1. 定位
    * 2. 位置
    * 3. 移动
    */
 
-  // const ref = useRef<HTMLDivElement>(null)
-  const ref = useRef<Element>(null)
-
   // 获取 reference 的位置，大小
-  const [refRect, setRefRect] = useDomRect(ref)
-
-  const composedRef = useComposeRefs(ref, (children as any).ref)
+  const [refRect, setRefRect] = useDomRect(store.trigger)
 
   const [open, setOpen] = useControllableState({
     value: props.open,
@@ -38,52 +38,55 @@ function InternalTooltip(_props: PopoverProps) {
     onChange: props.onOpenChange,
   })
 
-  // const setDebouncedOpen = useDebounceCallback(50, setOpen)
-
-  const onMouseEnter: React.MouseEventHandler<HTMLElement> = (e) => {
-    console.log('enter', e)
-    setRefRect({
-      width: (200 * Math.random()) | 0,
-      height: (400 * Math.random()) | 0,
-      left: (400 * Math.random()) | 0,
-      top: (400 * Math.random()) | 0,
-    })
+  const onMouseEnter: React.MouseEventHandler<HTMLElement> = () => {
     setOpen(true)
   }
-  const onMouseLeave: React.MouseEventHandler<HTMLElement> = (e) => {
-    console.log('leave', e)
+  const onMouseLeave: React.MouseEventHandler<HTMLElement> = () => {
+    console.log('leave')
     setOpen(false)
   }
 
   return (
     <>
       {cloneElement(children, {
-        ref: composedRef,
+        ref: mergeRefs(store.tooltip, (children as any).ref),
         onMouseEnter,
         onMouseLeave,
       })}
       <Overlay
-        open={open}
-        zIndex={props.zIndex}
         mask={false}
-        transitions={{
-          content: `${rootPrefixCls}-slide-bottom`,
-        }}
-        onEnter={(el) => {
+        open={open}
+        zIndex={zIndex}
+        transitions={transitions}
+        onEnter={(el, appearing) => {
           // 获取 文本的大小，高度
-          const rect = el.getBoundingClientRect()
+          // const rect = el.getBoundingClientRect()
           // console.log(rect, ref.current?.getBoundingClientRect())
           // 将 el的位置附加到 reference 上
-          console.log('content', rect)
-          console.log('reference', refRect)
+          console.log('onenter', el, appearing)
+          // console.log('trigger', store.tooltip)
+          // console.log('tooltip', el)
+          // 获取 trigger 的位置
+          // 计算 el 应该出现的位置
         }}
       >
-        <div className={prefixCls} style={{ position: 'absolute', ...refRect }}>
-          <div className={`${prefixCls}__arrow`}></div>
-          <div className={`${prefixCls}__main`}>
-            <div className={`${prefixCls}__title`}></div>
-            <div className={`${prefixCls}__content`}>{content}</div>
-          </div>
+        <div
+          ref={store.tooltip}
+          className={cls(className, classNames.root)}
+          style={{
+            ...styles.root,
+          }}
+        >
+          <div className={classNames.arrow} style={styles.arrow}></div>
+          {/* 内容缓存 */}
+          <ShouldUpdate when={open || !!fresh}>
+            <div className={classNames.main} style={styles.main}>
+              <div className={classNames.title} style={styles.title}></div>
+              <div className={classNames.content} style={styles.content}>
+                {content}
+              </div>
+            </div>
+          </ShouldUpdate>
         </div>
       </Overlay>
     </>

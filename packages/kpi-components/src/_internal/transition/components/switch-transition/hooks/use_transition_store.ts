@@ -1,12 +1,15 @@
+// utils
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { omit } from '@kpi-ui/utils'
 import { ReactElement, cloneElement, createElement } from 'react'
 import { batch } from '../../../_shared/utils'
-import CSSTransition from '../../css-transition'
+import { isEntered, isExit, isExited } from '../../../constants'
 import runCounter from '../../../utils/run_counter'
 import makeUniqueId from '../../../utils/unique_id'
-
-import type { CSSTransitionProps as CSS } from '../../css-transition/props'
+// comps
+import CSSTransition from '../../css-transition'
+// types
+import type { CSSTransitionProps as CSS, CSSTransitionRef } from '../../css-transition/props'
 import type { SwitchTransitionProps as Switch } from '../props'
 
 const uniqueId = makeUniqueId('st-')
@@ -25,6 +28,37 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   elements: ReactElement[] = []
 
+  components = new Map<ReactElement['key'], CSSTransitionRef>()
+
+  get renderNodes() {
+    const { mode, children } = this.props
+
+    const len = this.elements.length
+
+    if (mode === 'out-in') {
+      return this.elements.map((el) => {
+        const instance = this.components.get(el.key)
+
+        if (!instance) return el
+
+        if (instance.status === 3) return el
+        console.log(instance.status, instance.instance)
+        return el //cloneElement(el, undefined, children)
+      })
+    }
+
+    if (mode === 'in-out') {
+      return this.elements.map((el, index) => {
+        return el
+      })
+    }
+
+    return this.elements.map((el, index) => {
+      if (index === 0 && len === 2) return el
+      return cloneElement(el, undefined, children)
+    })
+  }
+
   setTransitionProps = (props: Switch<E>) => {
     this.props = props
   }
@@ -32,7 +66,14 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
   make = (element: ReactElement, extra: Partial<CSS<E>>) => {
     const preset = omit(this.props, ['mode', 'children']) as CSS
 
-    Object.assign(preset, extra, { key: uniqueId() })
+    const key = uniqueId()
+
+    const ref = (instance: CSSTransitionRef | null) => {
+      if (!instance) this.components.delete(key)
+      else this.components.set(key, instance)
+    }
+
+    Object.assign(preset, extra, { key, ref })
 
     return createElement(CSSTransition, preset, element)
   }

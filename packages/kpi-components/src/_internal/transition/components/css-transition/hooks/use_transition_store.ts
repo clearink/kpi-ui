@@ -19,6 +19,17 @@ import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from
 const additional = Symbol.for('additional-class')
 
 export class TransitionStore<E extends HTMLElement> {
+  constructor(public forceUpdate: () => void, props: CSS<E>) {
+    const { appear, when, unmountOnExit, mountOnEnter } = props
+
+    this.appear = !!appear
+
+    this.isMounted = when || !(unmountOnExit || mountOnEnter)
+
+    if (!when) this.status = EXITED
+    else this.status = appear ? APPEAR : ENTERED
+  }
+
   classNames = {
     add: (...classes: (string | undefined)[]) => {
       const el = this.instance as null | (E & { [additional]?: Set<string | undefined> })
@@ -43,9 +54,9 @@ export class TransitionStore<E extends HTMLElement> {
     restore: () => {
       const el = this.instance as null | (E & { [additional]?: Set<string | undefined> })
 
-      if (!el || !el[additional]) return
+      if (!el) return
 
-      el[additional].forEach((cls) => addClassNames(el, cls))
+      if (el[additional]) el[additional].forEach((cls) => addClassNames(el, cls))
     },
   }
 
@@ -74,23 +85,12 @@ export class TransitionStore<E extends HTMLElement> {
     return isEnter(this.status) || isExit(this.status)
   }
 
-  constructor(public forceUpdate: () => void, props: CSS<E>) {
-    const { appear, when, unmountOnExit, mountOnEnter } = props
-
-    this.appear = !!appear
-
-    this.isMounted = when || !(unmountOnExit || mountOnEnter)
-
-    if (!when) this.status = EXITED
-    else this.status = appear ? APPEAR : ENTERED
-  }
-
   status: TransitionStatus
 
   isMounted: boolean
 
-  setIsMounted = (value: boolean, forceUpdate = true) => {
-    if (this.isMounted !== value && forceUpdate) this.forceUpdate()
+  setIsMounted = (value: boolean) => {
+    if (this.isMounted !== value) this.forceUpdate()
 
     this.isMounted = value
   }
@@ -152,8 +152,8 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
     store.setIsMounted(!(unmountOnExit || (!store.hasMounted && mountOnEnter)))
   })
 
-  // when 变化时需要保证页面处于渲染中, 不必强制渲染一次更新 isMounted
-  useDerivedState(when, () => store.setIsMounted(true, false))
+  // when 变化时需要保证页面处于渲染中,
+  useDerivedState(when, () => store.setIsMounted(true))
 
   return store
 }

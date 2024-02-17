@@ -33,7 +33,7 @@ function Overlay(_props: OverlayProps) {
         style={withDefaults(styles.root || {}, { zIndex: level })}
       >
         {!!props.mask && (
-          <CSSTransition appear when={open} name={transitions.mask} mountOnEnter={!keepMounted}>
+          <CSSTransition appear when={open} name={transitions.mask}>
             <div aria-hidden="true" className={classNames.mask} style={styles.mask}></div>
           </CSSTransition>
         )}
@@ -42,7 +42,6 @@ function Overlay(_props: OverlayProps) {
           ref={store.content}
           when={open}
           name={transitions.content}
-          mountOnEnter={!keepMounted}
           onEnter={(el, appearing) => {
             props.onEnter?.(el, appearing)
             store.setIsMounted(true)

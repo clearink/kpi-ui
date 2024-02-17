@@ -129,4 +129,4 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
   )
 }
 
-export default withDisplayName(forwardRef(CollapseItem))
+export default withDisplayName(forwardRef(CollapseItem), 'CollapseItem')

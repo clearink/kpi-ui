@@ -1,13 +1,13 @@
+// utils
 import { useDerivedState } from '@kpi-ui/hooks'
+import { withDisplayName } from '@kpi-ui/utils'
 import { isElementEqual } from '../../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
-
+// types
 import type { SwitchTransitionProps } from './props'
 
 // 转场动画
-export default function SwitchTransition<E extends HTMLElement = HTMLElement>(
-  props: SwitchTransitionProps<E>
-) {
+function SwitchTransition<E extends HTMLElement = HTMLElement>(props: SwitchTransitionProps<E>) {
   const { children, mode } = props
 
   const store = useTransitionStore(props)
@@ -26,5 +26,14 @@ export default function SwitchTransition<E extends HTMLElement = HTMLElement>(
     store.forceUpdate()
   })
 
-  return <>{store.elements}</>
+  // useDerivedState(children, () => {
+  //   store.current = children
+  //   store.forceUpdate()
+  // })
+
+  return <>{store.renderNodes}</>
 }
+
+export default withDisplayName(SwitchTransition) as <E extends HTMLElement>(
+  props: SwitchTransitionProps<E>
+) => JSX.Element
