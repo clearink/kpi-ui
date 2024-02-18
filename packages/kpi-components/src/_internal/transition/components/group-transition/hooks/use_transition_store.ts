@@ -22,9 +22,12 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
     this.current = props.children
 
-    this.current.forEach((el) => this.elements.set(el.key, this.make(el, { when: true })))
-
-    this.nodes = Array.from(this.elements.values())
+    this.current.forEach((el) => {
+      this.elements.set(el.key, {
+        fresh: true,
+        el: this.make(el, { when: true }),
+      })
+    })
   }
 
   props: Group<E>
@@ -37,10 +40,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   current: ReactElement[] = []
 
-  // 展示用
-  nodes: ReactElement<CSS>[] = []
-
-  elements = new Map<ReactElement['key'], ReactElement<CSS>>()
+  elements = new Map<ReactElement['key'], { el: ReactElement<CSS>; fresh: boolean }>()
 
   components = new Map<ReactElement['key'], CSSTransitionRef>()
 
@@ -86,8 +86,6 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
       if (isCompleted && isExit(comp.status)) isCompleted = false
     })
 
-    this.nodes = Array.from(this.elements.values())
-
     if (!isCompleted) return
 
     this.props.onExitComplete?.()
@@ -103,16 +101,16 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     this.elements = union(this.elements, enters, children).reduce((result, [key, el]) => {
       if (result.has(key)) throw new Error(`Encountered two children with the same key, '${key}'. `)
 
-      if (enters.has(key)) return result.set(key, this.make(el, { when: true, appear: true }))
+      if (enters.has(key)) {
+        return result.set(key, { fresh: true, el: this.make(el, { when: true, appear: true }) })
+      }
 
       const props: Partial<CSS<E>> = { onExited: batch(onExited, this.runExitedEffect) }
 
       if (exits.has(key)) props.when = false
 
-      return result.set(key, cloneElement(el, props))
+      return result.set(key, { fresh: props.when !== false, el: cloneElement(el, props) })
     }, new Map())
-
-    this.nodes = Array.from(this.elements.values())
 
     this.previous = this.current
 
@@ -171,6 +169,21 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     reflow()
 
     this.cancels = moves.map((fn) => fn())
+  }
+
+  render = () => {
+    const { children } = this.props
+
+    const elements: ReactElement[] = []
+
+    this.elements.forEach((item, key) => {
+      const node = children.find((el) => el.key === key)
+
+      if (!item.fresh || !node) elements.push(item.el)
+      else elements.push(cloneElement(item.el, undefined, node))
+    })
+
+    return elements
   }
 }
 

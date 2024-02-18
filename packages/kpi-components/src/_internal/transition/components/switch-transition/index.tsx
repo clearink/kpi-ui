@@ -26,12 +26,7 @@ function SwitchTransition<E extends HTMLElement = HTMLElement>(props: SwitchTran
     store.forceUpdate()
   })
 
-  // useDerivedState(children, () => {
-  //   store.current = children
-  //   store.forceUpdate()
-  // })
-
-  return <>{store.renderNodes}</>
+  return <>{store.render()}</>
 }
 
 export default withDisplayName(SwitchTransition) as <E extends HTMLElement>(

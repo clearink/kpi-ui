@@ -3,13 +3,12 @@ import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { omit } from '@kpi-ui/utils'
 import { ReactElement, cloneElement, createElement } from 'react'
 import { batch } from '../../../_shared/utils'
-import { isEntered, isExit, isExited } from '../../../constants'
 import runCounter from '../../../utils/run_counter'
 import makeUniqueId from '../../../utils/unique_id'
 // comps
 import CSSTransition from '../../css-transition'
 // types
-import type { CSSTransitionProps as CSS, CSSTransitionRef } from '../../css-transition/props'
+import type { CSSTransitionProps as CSS } from '../../css-transition/props'
 import type { SwitchTransitionProps as Switch } from '../props'
 
 const uniqueId = makeUniqueId('st-')
@@ -19,45 +18,14 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
     this.current = props.children
 
-    this.elements = [this.make(this.current, { when: true })]
+    this.elements = [{ fresh: true, el: this.make(this.current, { when: true }) }]
   }
 
   props: Switch<E>
 
   current: ReactElement
 
-  elements: ReactElement[] = []
-
-  components = new Map<ReactElement['key'], CSSTransitionRef>()
-
-  get renderNodes() {
-    const { mode, children } = this.props
-
-    const len = this.elements.length
-
-    if (mode === 'out-in') {
-      return this.elements.map((el) => {
-        const instance = this.components.get(el.key)
-
-        if (!instance) return el
-
-        if (instance.status === 3) return el
-        console.log(instance.status, instance.instance)
-        return el //cloneElement(el, undefined, children)
-      })
-    }
-
-    if (mode === 'in-out') {
-      return this.elements.map((el, index) => {
-        return el
-      })
-    }
-
-    return this.elements.map((el, index) => {
-      if (index === 0 && len === 2) return el
-      return cloneElement(el, undefined, children)
-    })
-  }
+  elements: { el: ReactElement; fresh: boolean }[] = []
 
   setTransitionProps = (props: Switch<E>) => {
     this.props = props
@@ -66,31 +34,32 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
   make = (element: ReactElement, extra: Partial<CSS<E>>) => {
     const preset = omit(this.props, ['mode', 'children']) as CSS
 
-    const key = uniqueId()
-
-    const ref = (instance: CSSTransitionRef | null) => {
-      if (!instance) this.components.delete(key)
-      else this.components.set(key, instance)
-    }
-
-    Object.assign(preset, extra, { key, ref })
+    Object.assign(preset, extra, { key: uniqueId() })
 
     return createElement(CSSTransition, preset, element)
   }
 
   runOutInSwitch = () => {
     this.elements = [
-      cloneElement(this.elements[0], {
-        when: false,
-        appear: true,
-        onExited: batch(this.props.onExited, () => {
-          this.current = this.props.children
+      {
+        fresh: false,
+        el: cloneElement(this.elements[0].el, {
+          when: false,
+          appear: true,
+          onExited: batch(this.props.onExited, () => {
+            this.current = this.props.children
 
-          this.elements = [this.make(this.current, { when: true, appear: true })]
+            this.elements = [
+              {
+                fresh: true,
+                el: this.make(this.current, { when: true, appear: true }),
+              },
+            ]
 
-          this.forceUpdate()
+            this.forceUpdate()
+          }),
         }),
-      }),
+      },
     ]
   }
 
@@ -98,27 +67,36 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     this.current = this.props.children
 
     this.elements = [
-      cloneElement(this.elements[1] || this.elements[0], {
-        onEntered: this.props.onEntered,
-        onExited: this.props.onExited,
-      }),
-      this.make(this.current, {
-        when: true,
-        appear: true,
-        onEntered: batch(this.props.onEntered, () => {
-          this.elements = [
-            cloneElement(this.elements[0], {
-              when: false,
-              onExited: batch(this.props.onExited, () => {
-                this.elements = [this.elements[1]]
-                this.forceUpdate()
-              }),
-            }),
-            this.elements[1],
-          ]
-          this.forceUpdate()
+      {
+        fresh: false,
+        el: cloneElement((this.elements[1] || this.elements[0]).el, {
+          onEntered: this.props.onEntered,
+          onExited: this.props.onExited,
         }),
-      }),
+      },
+      {
+        fresh: true,
+        el: this.make(this.current, {
+          when: true,
+          appear: true,
+          onEntered: batch(this.props.onEntered, () => {
+            this.elements = [
+              {
+                fresh: false,
+                el: cloneElement(this.elements[0].el, {
+                  when: false,
+                  onExited: batch(this.props.onExited, () => {
+                    this.elements = [this.elements[1]]
+                    this.forceUpdate()
+                  }),
+                }),
+              },
+              this.elements[1],
+            ]
+            this.forceUpdate()
+          }),
+        }),
+      },
     ]
   }
 
@@ -131,18 +109,34 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     })
 
     this.elements = [
-      cloneElement(this.elements[1] || this.elements[0], {
-        when: false,
-        appear: true,
-        onEntered: this.props.onEntered,
-        onExited: batch(this.props.onExited, resolve),
-      }),
-      this.make(this.current, {
-        when: true,
-        appear: true,
-        onEntered: batch(this.props.onEntered, resolve),
-      }),
+      {
+        fresh: false,
+        el: cloneElement((this.elements[1] || this.elements[0]).el, {
+          when: false,
+          appear: true,
+          onEntered: this.props.onEntered,
+          onExited: batch(this.props.onExited, resolve),
+        }),
+      },
+      {
+        fresh: true,
+        el: this.make(this.current, {
+          when: true,
+          appear: true,
+          onEntered: batch(this.props.onEntered, resolve),
+        }),
+      },
     ]
+  }
+
+  // 处于 exit 阶段的元素不可以更新数据
+  render = () => {
+    const { children } = this.props
+
+    return this.elements.map((item) => {
+      if (!item.fresh) return item.el
+      return cloneElement(item.el, undefined, children)
+    })
   }
 }
 export default function useTransitionStore<E extends HTMLElement = HTMLElement>(props: Switch<E>) {
