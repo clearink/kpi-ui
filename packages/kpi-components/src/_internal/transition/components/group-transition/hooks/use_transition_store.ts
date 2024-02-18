@@ -176,11 +176,17 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
     const elements: ReactElement[] = []
 
+    // updateElements
     this.elements.forEach((item, key) => {
       const node = children.find((el) => el.key === key)
 
-      if (!item.fresh || !node) elements.push(item.el)
-      else elements.push(cloneElement(item.el, undefined, node))
+      if (!item.fresh || !node) return elements.push(item.el)
+
+      const element = cloneElement(item.el, undefined, node)
+
+      elements.push(element)
+
+      this.elements.set(key, { fresh: item.fresh, el: element })
     })
 
     return elements

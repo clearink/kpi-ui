@@ -13,7 +13,7 @@
     transform: translateX(250px);
   }
   &-enter-active {
-    transition: all 14s ease-in-out;
+    transition: all 3s ease-in-out;
   }
   &-enter-to {
   }
@@ -21,7 +21,7 @@
   &-exit-from {
   }
   &-exit-active {
-    transition: all 14s ease-in-out;
+    transition: all 3s ease-in-out;
   }
   &-exit-to {
     // opacity: 0;

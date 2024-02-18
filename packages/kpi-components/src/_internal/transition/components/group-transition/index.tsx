@@ -57,9 +57,7 @@ function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransi
 
   if (isNullish(tag)) return <>{store.render()}</>
 
-  const attrs = omit(props, excluded)
-
-  return createElement(tag, attrs, store.render())
+  return createElement(tag, omit(props, excluded), store.render())
 }
 
 export default withDisplayName(GroupTransition) as <E extends HTMLElement>(

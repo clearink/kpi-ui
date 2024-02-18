@@ -5,12 +5,12 @@ import collectTimeoutInfo from '../utils/collect'
 import { addListener, addTimeout } from '../utils/listener'
 import runCounter from '../../../utils/run_counter'
 import useFormatClassNames from './use_format_class_names'
-import useTransitionStore from './use_transition_store'
-
+// types
 import type { CSSTransitionProps, TransitionStep } from '../props'
+import type { TransitionStore } from './use_transition_store'
 
 export default function useTransitionEvent<E extends HTMLElement>(
-  store: ReturnType<typeof useTransitionStore<E>>,
+  store: TransitionStore<E>,
   classNames: ReturnType<typeof useFormatClassNames>,
   props: CSSTransitionProps<E>
 ) {

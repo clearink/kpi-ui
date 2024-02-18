@@ -1,4 +1,5 @@
 import { useComposeRefs } from '@kpi-ui/hooks'
+import { withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, useEffect, useRef } from 'react'
 import { addListener } from '../../_shared/utils'
 // comps
@@ -7,7 +8,7 @@ import useTouchEffect from './hooks/use_touch_effect'
 import type { TouchEffectProps } from './props'
 
 // button checkbox radio 等一些组件中点击动效
-export default function TouchEffect(props: TouchEffectProps) {
+function TouchEffect(props: TouchEffectProps) {
   const { children, disabled } = props
 
   const $container = useRef<HTMLElement>(null)
@@ -26,3 +27,5 @@ export default function TouchEffect(props: TouchEffectProps) {
 
   return cloneElement(children as any, { ref })
 }
+
+export default withDisplayName(TouchEffect)

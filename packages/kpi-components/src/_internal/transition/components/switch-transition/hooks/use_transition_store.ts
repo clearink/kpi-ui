@@ -129,14 +129,17 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     ]
   }
 
-  // 处于 exit 阶段的元素不可以更新数据
   render = () => {
     const { children } = this.props
 
-    return this.elements.map((item) => {
-      if (!item.fresh) return item.el
-      return cloneElement(item.el, undefined, children)
+    // updateElements
+    this.elements = this.elements.map((item) => {
+      if (!item.fresh) return item
+
+      return { fresh: item.fresh, el: cloneElement(item.el, undefined, children) }
     })
+
+    return this.elements.map((item) => item.el)
   }
 }
 export default function useTransitionStore<E extends HTMLElement = HTMLElement>(props: Switch<E>) {

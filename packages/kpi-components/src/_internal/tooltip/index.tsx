@@ -1,15 +1,15 @@
 // utils
 import { useControllableState } from '@kpi-ui/hooks'
 import { cls, mergeRefs, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { cloneElement, useRef } from 'react'
-import useDomRect from './hooks/use_dom_rect'
+import { cloneElement } from 'react'
+import { useSemanticStyles } from '../../_shared/hooks'
+import useTooltipAlign from './hooks/use_tooltip_align'
+import useTooltipStore from './hooks/use_tooltip_store'
 // comps
 import Overlay from '../overlay'
+import ShouldUpdate from '../should-update'
 // types
 import type { InternalTooltipProps } from './props'
-import { useSemanticStyles } from '../../_shared/hooks'
-import ShouldUpdate from '../should-update'
-import useTooltipStore from './hooks/use_tooltip_store'
 
 const defaultProps: Partial<InternalTooltipProps> = {
   trigger: 'hover',
@@ -23,6 +23,8 @@ function InternalTooltip(_props: InternalTooltipProps) {
   const store = useTooltipStore()
 
   const styles = useSemanticStyles(props.style, props.styles)
+
+  const [refRect, setRefRect] = useTooltipAlign(store, props)
   /**
    * 1. 定位
    * 2. 位置
@@ -30,13 +32,16 @@ function InternalTooltip(_props: InternalTooltipProps) {
    */
 
   // 获取 reference 的位置，大小
-  const [refRect, setRefRect] = useDomRect(store.trigger)
 
   const [open, setOpen] = useControllableState({
     value: props.open,
     defaultValue: false,
     onChange: props.onOpenChange,
   })
+
+  const onAlign = () => {
+    // align trigger and tooltip
+  }
 
   const onMouseEnter: React.MouseEventHandler<HTMLElement> = () => {
     setOpen(true)
@@ -49,7 +54,7 @@ function InternalTooltip(_props: InternalTooltipProps) {
   return (
     <>
       {cloneElement(children, {
-        ref: mergeRefs(store.tooltip, (children as any).ref),
+        ref: mergeRefs(store.trigger, (children as any).ref),
         onMouseEnter,
         onMouseLeave,
       })}

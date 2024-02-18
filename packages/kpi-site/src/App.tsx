@@ -1,9 +1,8 @@
 import { Button, Tooltip } from '@kpi-ui/components'
-import { useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 
 import '@kpi-ui/components/src/style'
 import './style.scss'
-import { CSSTransition, SwitchTransition } from '@kpi-ui/components/src/_internal/transition'
 
 export default function App() {
   const [open, set] = useState(false)
@@ -27,23 +26,19 @@ export default function App() {
       >
         change cls
       </Button>
-      <SwitchTransition name="fade" mode="out-in">
-        <div key={open ? 1 : 2} className={cls}>
-          121212
-        </div>
-      </SwitchTransition>
-      {/* <div style={{ padding: 400 }}>
+
+      <div style={{ padding: 400 }}>
         adasdsa
         <div style={{ position: 'absolute', left: 400, top: 200 }}>
           <div style={{ position: 'absolute', left: 400, top: 200 }}>
             <div style={{ position: 'absolute', left: 400, top: 200 }}>
               <Tooltip content={<div>12313211212</div>}>
-                <textarea ref={ref} style={{ position: 'relative', top: 20 }} />
+                <textarea style={{ position: 'relative', top: 20 }} />
               </Tooltip>
             </div>
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   )
 }

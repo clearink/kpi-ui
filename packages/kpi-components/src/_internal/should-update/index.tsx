@@ -7,5 +7,6 @@ export default withDisplayName(
   memo(
     (props: ShouldUpdateProps) => props.children as React.ReactElement,
     (_, { when }) => !(isFunction(when) ? when() : when)
-  )
+  ),
+  'ShouldUpdate'
 )
