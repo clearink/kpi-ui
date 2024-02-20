@@ -36,24 +36,33 @@ function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransi
 
   const store = useTransitionStore(props)
 
-  store.setTransitionProps(props)
-
   const shouldTransition = !isElementsEqual(store.current, children)
 
+  let returnEarly = false
+
   useDerivedState(shouldTransition, () => {
-    if (shouldTransition || !store.shouldFlip()) return
-    store.coords = store.getCoords()
+    if (shouldTransition) {
+      returnEarly = true
+
+      store.scheduler.start()
+    } else if (store.isCanFlip) {
+      store.updateCoords()
+    }
   })
 
   useEffect(() => {
-    const { isInitial } = store
+    const { scheduler } = store
 
-    if (isInitial) store.setIsInitial(false)
+    if (scheduler.isUpdate()) return scheduler.update()
 
-    if (shouldTransition) return store.runTransition()
+    // step 2 wait CSSTransition.instance mount
+    if (scheduler.isWait()) return scheduler.wait()
 
-    if (!isInitial && store.shouldFlip()) store.runFlip()
-  }, [shouldTransition, store])
+    // step 3 run flip
+    if (scheduler.isFlip()) return store.flip()
+  }, [store, store.scheduler.effect])
+
+  if (returnEarly) return null
 
   if (isNullish(tag)) return <>{store.render()}</>
 

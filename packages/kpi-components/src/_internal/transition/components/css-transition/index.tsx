@@ -1,3 +1,4 @@
+// utils
 import { useEvent } from '@kpi-ui/hooks'
 import { fillRef, nextFrame, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref } from 'react'
@@ -7,7 +8,8 @@ import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'
 import useTransitionEvent from './hooks/use_transition_event'
 import useTransitionStore from './hooks/use_transition_store'
-
+import { addTransitionClass, delTransitionClass, recoverTransitionClass } from './utils/classnames'
+// types
 import type { CSSTransitionProps, CSSTransitionRef, TransitionStep } from './props'
 
 function CSSTransition<E extends HTMLElement>(
@@ -18,7 +20,7 @@ function CSSTransition<E extends HTMLElement>(
 
   const display = children.props.style?.display
 
-  const store = useTransitionStore<E>(props)
+  const [store, returnEarly] = useTransitionStore<E>(props)
 
   const classNames = useFormatClassNames(name, props.classNames)
 
@@ -35,7 +37,7 @@ function CSSTransition<E extends HTMLElement>(
 
     el && store.setHasMounted()
 
-    store.classNames.restore()
+    el && recoverTransitionClass(el)
 
     if (isAppear(store.status) || isExited(store.status)) store.display.hide()
   }
@@ -45,18 +47,18 @@ function CSSTransition<E extends HTMLElement>(
 
     store.start(step, display)
 
-    store.classNames.add(from)
+    addTransitionClass(el, from)
 
     isExit(step) && reflow(el)
 
-    store.classNames.add(active)
+    addTransitionClass(el, active)
 
     isExit(step) ? onExit?.(el) : onEnter?.(el, isAppear(step))
 
     const runFrameCleanup = nextFrame(() => {
-      store.classNames.del(from)
+      delTransitionClass(el, from)
 
-      store.classNames.add(to)
+      addTransitionClass(el, to)
 
       isExit(step) ? onExiting?.(el) : onEntering?.(el, isAppear(step))
 
@@ -68,25 +70,23 @@ function CSSTransition<E extends HTMLElement>(
 
       store.runEndHook()
 
-      store.running && runCancel(el, step)
+      runCancel(el, step)
     }
   })
 
   useEffect(() => {
-    const { isInitial, instance } = store
+    const { scheduler, instance } = store
 
-    if (isInitial) store.setIsInitial(false)
+    if (scheduler.shouldMount()) return scheduler.beMounted()
 
-    if (!(instance && store.shouldTransition(isInitial, when))) return
+    if (!(instance && store.shouldTransition(when))) return
 
-    if (!isInitial) return runTransition(instance, when ? ENTER : EXIT)
+    if (scheduler.shouldRunFirst()) return runTransition(instance, APPEAR)
 
-    if (store.appear && when) return runTransition(instance, APPEAR)
-  }, [runTransition, store, when])
+    return runTransition(instance, when ? ENTER : EXIT)
+  }, [runTransition, store, store.scheduler.effect, when])
 
-  if (!when && !store.isMounted) return null
-
-  return cloneElement(children, { ref: refCallback })
+  return returnEarly || !store.isMounted ? null : cloneElement(children, { ref: refCallback })
 }
 
 export default withDisplayName(forwardRef(CSSTransition), 'CSSTransition') as <

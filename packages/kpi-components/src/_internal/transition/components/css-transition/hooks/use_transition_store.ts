@@ -1,14 +1,15 @@
 // utils
 import { useConstant, useDerivedState, useForceUpdate } from '@kpi-ui/hooks'
-import { addClassNames, delClassNames } from '@kpi-ui/utils'
 import {
   APPEAR,
   ENTER,
   ENTERED,
   EXIT,
   EXITED,
-  isAppear,
-  isEnter,
+  NEED_APPEAR,
+  NEED_MOUNT,
+  NONE,
+  READY,
   isEntered,
   isExit,
   isExited,
@@ -16,48 +17,17 @@ import {
 // types
 import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
 
-const additional = Symbol.for('additional-class')
-
 export class TransitionStore<E extends HTMLElement> {
   constructor(public forceUpdate: () => void, props: CSS<E>) {
-    const { appear, when, unmountOnExit, mountOnEnter } = props
+    const { appear, when, mountOnEnter, unmountOnExit } = props
 
-    this.appear = !!appear
-
-    this.isMounted = when || !(unmountOnExit || mountOnEnter)
+    this.isMounted = !!when && !appear
 
     if (!when) this.status = EXITED
     else this.status = appear ? APPEAR : ENTERED
-  }
 
-  classNames = {
-    add: (...classes: (string | undefined)[]) => {
-      const el = this.instance as null | (E & { [additional]?: Set<string | undefined> })
-
-      if (!el) return
-
-      addClassNames(el, ...classes)
-
-      if (!el[additional]) el[additional] = new Set()
-
-      classes.forEach((cls) => el[additional]!.add(cls))
-    },
-    del: (...classes: (string | undefined)[]) => {
-      const el = this.instance as null | (E & { [additional]?: Set<string | undefined> })
-
-      if (!el) return
-
-      delClassNames(el, ...classes)
-
-      if (el[additional]) classes.forEach((cls) => el[additional]!.delete(cls))
-    },
-    restore: () => {
-      const el = this.instance as null | (E & { [additional]?: Set<string | undefined> })
-
-      if (!el) return
-
-      if (el[additional]) el[additional].forEach((cls) => addClassNames(el, cls))
-    },
+    if (when) this.scheduler.status = appear ? NEED_APPEAR : NONE
+    else this.scheduler.status = mountOnEnter || unmountOnExit ? NONE : NEED_MOUNT
   }
 
   display = {
@@ -73,7 +43,32 @@ export class TransitionStore<E extends HTMLElement> {
     },
   }
 
-  appear = false
+  scheduler = {
+    // 触发 useEffect
+    effect: 0,
+    status: NONE,
+    isReady: () => this.scheduler.status === READY,
+    shouldMount: () => {
+      const { status } = this.scheduler
+      return status === NEED_MOUNT || status === NEED_APPEAR
+    },
+    beMounted: () => {
+      if (this.scheduler.status === NEED_MOUNT) {
+        this.scheduler.status = NONE
+      } else if (this.scheduler.status === NEED_APPEAR) {
+        this.scheduler.status = READY
+        this.scheduler.effect += 1
+      }
+      this.setIsMounted(true)
+    },
+    shouldRunFirst: () => {
+      if (!this.scheduler.isReady()) return false
+
+      this.scheduler.status = NONE
+
+      return true
+    },
+  }
 
   hasMounted = false
 
@@ -81,13 +76,13 @@ export class TransitionStore<E extends HTMLElement> {
     this.hasMounted = true
   }
 
-  get running() {
-    return isEnter(this.status) || isExit(this.status)
-  }
-
   status: TransitionStatus
 
-  isMounted: boolean
+  setStatus = (value: TransitionStatus) => {
+    this.status = value
+  }
+
+  isMounted = false
 
   setIsMounted = (value: boolean) => {
     if (this.isMounted !== value) this.forceUpdate()
@@ -99,12 +94,6 @@ export class TransitionStore<E extends HTMLElement> {
 
   setInstance = (instance: E | null) => {
     this.instance = instance
-  }
-
-  isInitial = true
-
-  setIsInitial = (isInitial: boolean) => {
-    this.isInitial = isInitial
   }
 
   endHook: void | (() => void) = undefined
@@ -120,20 +109,18 @@ export class TransitionStore<E extends HTMLElement> {
   }
 
   start = (step: TransitionStep, display: string | undefined) => {
-    this.status = isExit(step) ? EXIT : ENTER
+    this.setStatus(isExit(step) ? EXIT : ENTER)
 
     !isExit(step) && this.display.show(display)
   }
 
-  finish = (step: TransitionStep) => {
-    this.status = isExit(step) ? EXITED : ENTERED
+  done = (step: TransitionStep) => {
+    this.setStatus(isExit(step) ? EXITED : ENTERED)
 
     this.runEndHook()
   }
 
-  shouldTransition = (isInitial: boolean, when?: boolean) => {
-    if (isInitial) return isAppear(this.status)
-
+  shouldTransition = (when: boolean | undefined) => {
     return when ? !isEntered(this.status) : !isExited(this.status)
   }
 }
@@ -145,15 +132,25 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
 
   const store = useConstant(() => new TransitionStore<E>(forceUpdate, props))
 
+  let returnEarly = false
+
   // 监听 unmountOnExit 与 mountOnEnter
   useDerivedState(`${unmountOnExit}-${mountOnEnter}`, () => {
     if (!isExited(store.status)) return
 
-    store.setIsMounted(!(unmountOnExit || (!store.hasMounted && mountOnEnter)))
+    const isMounted = !(unmountOnExit || (!store.hasMounted && mountOnEnter))
+
+    returnEarly = isMounted !== store.isMounted
+
+    store.setIsMounted(isMounted)
   })
 
   // when 变化时需要保证页面处于渲染中,
-  useDerivedState(when, () => store.setIsMounted(true))
+  useDerivedState(when, () => {
+    returnEarly = store.isMounted !== true
 
-  return store
+    store.setIsMounted(true)
+  })
+
+  return [store, returnEarly] as const
 }

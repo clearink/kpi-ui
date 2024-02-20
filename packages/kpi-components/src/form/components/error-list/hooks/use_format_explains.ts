@@ -20,9 +20,9 @@ const makeExplains = (
 export default function useFormatExplains(props: FormErrorListProps) {
   const { help, helpStatus } = props
 
-  const errors = useDebounceValue(20, props.errors || [])
+  const errors = useDebounceValue(40, props.errors || [])
 
-  const warnings = useDebounceValue(20, props.warnings || [])
+  const warnings = useDebounceValue(40, props.warnings || [])
 
   return useMemo(() => {
     if (help) return makeExplains('help', [help], helpStatus)

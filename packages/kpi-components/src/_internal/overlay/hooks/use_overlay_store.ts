@@ -36,15 +36,26 @@ export default function useOverlayStore(props: OverlayProps) {
 
   const store = useConstant(() => new OverlayStore(props, forceUpdate))
 
+  let returnEarly = false
+
   // 监听 keepMounted, unmountOnExit
   useDerivedState(`${keepMounted}-${unmountOnExit}`, () => {
     // keepMounted 优先级高于 unmountOnExit
-    if (keepMounted) store.setIsMounted(true)
-    else if (unmountOnExit && store.isExited) store.setIsMounted(false)
+    let isMounted = store.isMounted
+    if (keepMounted) isMounted = true
+    else if (unmountOnExit && store.isExited) isMounted = false
+
+    returnEarly = store.isMounted !== isMounted
+
+    store.setIsMounted(isMounted)
   })
 
   // when 变化时需要保证页面处于渲染中,
-  useDerivedState(open, () => store.setIsMounted(true))
+  useDerivedState(open, () => {
+    returnEarly = store.isMounted !== true
 
-  return store
+    store.setIsMounted(true)
+  })
+
+  return [store, returnEarly] as const
 }

@@ -12,9 +12,9 @@ function SwitchTransition<E extends HTMLElement = HTMLElement>(props: SwitchTran
 
   const store = useTransitionStore(props)
 
-  store.setTransitionProps(props)
-
   const shouldTransition = !isElementEqual(store.current, children)
+
+  let returnEarly = false
 
   useDerivedState(shouldTransition, () => {
     if (!shouldTransition) return
@@ -23,10 +23,12 @@ function SwitchTransition<E extends HTMLElement = HTMLElement>(props: SwitchTran
     else if (mode === 'in-out') store.runInOutSwitch()
     else store.runDefaultSwitch()
 
+    returnEarly = true
+
     store.forceUpdate()
   })
 
-  return <>{store.render()}</>
+  return returnEarly ? null : <>{store.render()}</>
 }
 
 export default withDisplayName(SwitchTransition) as <E extends HTMLElement>(

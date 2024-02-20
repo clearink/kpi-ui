@@ -1,11 +1,10 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { addClassNames, delClassNames, omit } from '@kpi-ui/utils'
 import { cloneElement, createElement, type ReactElement } from 'react'
-import { ENTER, isExit, isExited } from '../../../constants'
-import { batch } from '../../../_shared/utils'
-import CSSTransition from '../../css-transition'
+import { batch, reflow } from '../../../_shared/utils'
+import { ENTER, INIT, WAIT, UPDATE, FLIP, isExit, isExited } from '../../../constants'
 import makeUniqueId from '../../../utils/unique_id'
-import { reflow } from '../../../_shared/utils'
+import CSSTransition from '../../css-transition'
 import diff from '../utils/diff'
 import union from '../utils/union'
 
@@ -23,11 +22,44 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     this.current = props.children
 
     this.current.forEach((el) => {
-      this.elements.set(el.key, {
-        fresh: true,
-        el: this.make(el, { when: true }),
-      })
+      this.elements.set(el.key, { fresh: true, el: this.make(el, { when: true }) })
     })
+  }
+
+  get isCanFlip() {
+    return !!(this.props.name && this.props.flip)
+  }
+
+  scheduler = {
+    status: INIT,
+    effect: 0,
+    nextEffect: () => {
+      this.scheduler.effect += 1
+
+      this.forceUpdate()
+    },
+    isWait: () => this.scheduler.status === WAIT,
+    isUpdate: () => this.scheduler.status === UPDATE,
+    isFlip: () => {
+      return this.scheduler.status === FLIP && this.isCanFlip
+    },
+    start: () => {
+      this.scheduler.status = UPDATE
+
+      this.scheduler.nextEffect()
+    },
+    update: () => {
+      this.unionElements()
+
+      this.scheduler.status = WAIT
+
+      this.scheduler.nextEffect()
+    },
+    wait: () => {
+      this.scheduler.status = FLIP
+
+      this.scheduler.nextEffect()
+    },
   }
 
   props: Group<E>
@@ -56,10 +88,8 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     }, new Map<ReactElement['key'], DOMRect>())
   }
 
-  isInitial = true
-
-  setIsInitial = (isInitial: boolean) => {
-    this.isInitial = isInitial
+  updateCoords = () => {
+    this.coords = this.getCoords()
   }
 
   make = (element: ReactElement, extra: Partial<CSS>) => {
@@ -93,7 +123,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     this.forceUpdate()
   }
 
-  runTransition = () => {
+  unionElements = () => {
     const { children, onExited } = this.props
 
     const [enters, exits] = diff(this.current, children)
@@ -115,15 +145,11 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     this.previous = this.current
 
     this.current = children
-
-    this.forceUpdate()
   }
 
   cancels: (() => void)[] = []
 
-  shouldFlip = () => !!(this.props.flip && this.props.name)
-
-  runFlip = () => {
+  flip = () => {
     const { name } = this.props
 
     this.cancels.forEach((fn) => fn())
@@ -176,7 +202,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
     const elements: ReactElement[] = []
 
-    // updateElements
+    // sync elements
     this.elements.forEach((item, key) => {
       const node = children.find((el) => el.key === key)
 
@@ -196,5 +222,9 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 export default function useTransitionStore<E extends HTMLElement = HTMLElement>(props: Group<E>) {
   const forceUpdate = useForceUpdate()
 
-  return useConstant(() => new TransitionStore(forceUpdate, props))
+  const store = useConstant(() => new TransitionStore(forceUpdate, props))
+
+  store.setTransitionProps(props)
+
+  return store
 }

@@ -18,13 +18,13 @@ function Overlay(_props: OverlayProps) {
 
   const { open, keepMounted, unmountOnExit, transitions = {}, classNames = {} } = props
 
-  const store = useOverlayStore(props)
+  const [store, returnEarly] = useOverlayStore(props)
 
   const level = useOverlayLevel(store, props)
 
   const styles = useSemanticStyles(props.style, props.styles)
 
-  if (!open && !store.isMounted) return null
+  if (returnEarly || (!open && !store.isMounted)) return null
 
   return (
     <Portal getContainer={props.getContainer}>

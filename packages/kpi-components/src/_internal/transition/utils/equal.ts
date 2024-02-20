@@ -5,7 +5,7 @@ export function isElementEqual(current: ReactNode, next: ReactNode) {
 
   if (!isValidElement(current) || !isValidElement(next)) return false
 
-  return current.key === next.key
+  return current.key === next.key && current.type === next.type
 }
 
 export function isElementsEqual(prev: ReactElement[], next: ReactElement[]) {
