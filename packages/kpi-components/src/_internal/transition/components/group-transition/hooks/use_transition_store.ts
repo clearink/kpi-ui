@@ -38,11 +38,9 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
       this.forceUpdate()
     },
-    isWait: () => this.scheduler.status === WAIT,
-    isUpdate: () => this.scheduler.status === UPDATE,
-    isFlip: () => {
-      return this.scheduler.status === FLIP && this.isCanFlip
-    },
+    shouldUpdate: () => this.scheduler.status === UPDATE,
+    shouldWait: () => this.scheduler.status === WAIT,
+    shouldFlip: () => this.scheduler.status === FLIP && this.isCanFlip,
     start: () => {
       this.scheduler.status = UPDATE
 

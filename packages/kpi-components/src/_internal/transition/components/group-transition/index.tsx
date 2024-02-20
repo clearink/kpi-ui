@@ -50,13 +50,14 @@ function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransi
   useEffect(() => {
     const { scheduler } = store
 
-    if (scheduler.isUpdate()) return scheduler.update()
+    // step 1 update elements
+    if (scheduler.shouldUpdate()) return scheduler.update()
 
     // step 2 wait CSSTransition.instance mount
-    if (scheduler.isWait()) return scheduler.wait()
+    if (scheduler.shouldWait()) return scheduler.wait()
 
     // step 3 run flip
-    if (scheduler.isFlip()) return store.flip()
+    if (scheduler.shouldFlip()) return store.flip()
   }, [store, store.scheduler.effect])
 
   if (returnEarly) return null
