@@ -41,13 +41,10 @@ function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransi
   let returnEarly = false
 
   useDerivedState(shouldTransition, () => {
-    if (shouldTransition) {
-      returnEarly = true
+    returnEarly = shouldTransition
 
-      store.scheduler.start()
-    } else if (store.isCanFlip) {
-      store.updateCoords()
-    }
+    if (shouldTransition) store.scheduler.start()
+    else if (store.isCanFlip) store.updateCoords()
   })
 
   useEffect(() => {
