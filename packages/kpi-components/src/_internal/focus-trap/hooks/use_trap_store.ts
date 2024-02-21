@@ -1,49 +1,43 @@
 // utils
 import { useConstant } from '@kpi-ui/hooks'
-import { Keyboard } from '../../../_shared/constants'
 import { atIndex, noop } from '@kpi-ui/utils'
+import { Keyboard } from '../../../_shared/constants'
+import { addListener } from '../../transition/_shared/utils'
 // types
 import type { FocusTrapProps } from '../props'
-import { addListener } from '../../transition/_shared/utils'
+
+let __stack: {
+  onKeyDown: (e: KeyboardEvent) => void
+  onFocusIn: (e: FocusEvent) => void
+}[] = []
+
+let __cleanupKeyDown = noop
+
+let __cleanupFocusIn = noop
 
 export class FocusTrapStore {
-  start = {
+  $start = {
     current: null as HTMLDivElement | null,
-    focus: () => {
-      this.focus(this.$start)
-    },
   }
 
-  get $start() {
-    return this.start.current
-  }
-
-  content = {
+  $content = {
     current: null as HTMLElement | null,
   }
 
-  get $content() {
-    return this.content.current
-  }
-
-  end = {
+  $end = {
     current: null as HTMLDivElement | null,
   }
 
-  get $end() {
-    return this.end.current
-  }
-
   focus = (node: HTMLElement | null) => {
-    node?.focus({ preventScroll: true })
+    node && node.focus({ preventScroll: true })
   }
 
   shiftTab = false
 
-  returnTo: Element | null = null
+  returnFocus: Element | null = null
 
-  setReturnTo = (value: Element | null) => {
-    this.returnTo = value
+  setReturnFocus = (value: Element | null) => {
+    this.returnFocus = value
   }
 
   related: HTMLElement | null = null
@@ -55,27 +49,18 @@ export class FocusTrapStore {
   cleanup = () => {
     this.related = null
 
-    this.returnTo = null
+    this.returnFocus = null
   }
 
-  static __stack: {
-    onKeyDown: (e: KeyboardEvent) => void
-    onFocusIn: (e: FocusEvent) => void
-  }[] = []
-
-  static __cleanupKeyDown = noop
-
-  static __cleanupFocusIn = noop
-
-  private init = (root: Document) => {
+  init = (root: Document) => {
     const getTopEvent = (type: 'onKeyDown' | 'onFocusIn') => (e: any) => {
-      const topListeners = atIndex(FocusTrapStore.__stack, -1)
+      const topListeners = atIndex(__stack, -1)
       topListeners && topListeners[type](e)
     }
 
-    FocusTrapStore.__cleanupKeyDown = addListener(root, 'keydown', getTopEvent('onKeyDown'), true)
+    __cleanupKeyDown = addListener(root, 'keydown', getTopEvent('onKeyDown'), true)
 
-    FocusTrapStore.__cleanupFocusIn = addListener(root, 'focusin', getTopEvent('onFocusIn'))
+    __cleanupFocusIn = addListener(root, 'focusin', getTopEvent('onFocusIn'))
   }
 
   trap = (root: Document, getTabbale: FocusTrapProps['getTabbable']) => {
@@ -87,12 +72,14 @@ export class FocusTrapStore {
       e.stopImmediatePropagation()
 
       const target = e.target as HTMLElement
-      const container = this.$content
+
+      const container = this.$content.current
 
       if (!container || !target) return
 
       const active = root.activeElement
-      if (active !== this.$start && active !== this.$end) {
+
+      if (active !== this.$start.current && active !== this.$end.current) {
         if (container.contains(target)) return this.setRelated(target)
         if (this.related) return this.focus(this.related)
       }
@@ -106,17 +93,17 @@ export class FocusTrapStore {
 
     const listeners = { onKeyDown, onFocusIn }
 
-    FocusTrapStore.__stack.push(listeners)
+    __stack.push(listeners)
 
-    if (FocusTrapStore.__stack.length === 1) this.init(root)
+    if (__stack.length === 1) this.init(root)
 
     return () => {
-      FocusTrapStore.__stack = FocusTrapStore.__stack.filter((item) => item !== listeners)
+      __stack = __stack.filter((item) => item !== listeners)
 
-      if (!FocusTrapStore.__stack.length) {
-        FocusTrapStore.__cleanupFocusIn()
+      if (!__stack.length) {
+        __cleanupFocusIn()
 
-        FocusTrapStore.__cleanupKeyDown()
+        __cleanupKeyDown()
       }
     }
   }

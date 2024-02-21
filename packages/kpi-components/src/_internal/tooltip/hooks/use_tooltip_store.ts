@@ -1,13 +1,25 @@
 import { useConstant } from '@kpi-ui/hooks'
 
 export class TooltipStore {
-  trigger = {
+  $trigger = {
     current: null as Element | null,
   }
 
-  tooltip = {
+  $tooltip = {
     current: null as HTMLDivElement | null,
   }
+
+  isFirst = true
+
+  attemptRunFirst = () => {
+    if (!this.isFirst) return
+
+    this.isFirst = false
+
+    // showTooltip
+  }
+
+  showTooltip = () => {}
 }
 
 export default function useTooltipStore() {

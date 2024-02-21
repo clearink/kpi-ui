@@ -11,7 +11,7 @@ export const defaultProps: Partial<PortalProps> = {}
 function Portal(props: PortalProps) {
   const { children, getContainer: _container } = props
 
-  const [container, setContainer] = useState<ContainerType>(() => getContainer(_container))
+  const [container, setContainer] = useState<ContainerType>(null)
 
   useEffect(() => {
     setContainer(getContainer(_container))

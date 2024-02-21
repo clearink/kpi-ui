@@ -1,7 +1,17 @@
 // uitls
+import { ownerWindow } from '@kpi-ui/utils'
 import { useEffect } from 'react'
 import useEvent from '../use-event'
-import useResizeStore from './hooks/use_resize_store'
+
+type ResizeCallback = (el: Element) => void
+
+const __listeners = new Map<Element, Set<ResizeCallback>>()
+
+const __observer = new ResizeObserver((entries) => {
+  entries.forEach(({ target }) => {
+    __listeners.get(target)?.forEach((fn) => fn(target))
+  })
+})
 
 // 元素改变大小 observer hook
 export default function useResizeObserver(
@@ -10,7 +20,37 @@ export default function useResizeObserver(
 ) {
   const fn = useEvent(onResize)
 
-  const store = useResizeStore()
+  useEffect(() => {
+    const el = dom.current
 
-  useEffect(() => (dom.current ? store.observe(dom.current, fn) : undefined), [dom, fn, store])
+    if (!el) return
+
+    const callback = () => fn(el)
+
+    if (__listeners.size === 0) {
+      ownerWindow(el).addEventListener('resize', callback)
+    }
+
+    if (!__listeners.has(el)) {
+      __listeners.set(el, new Set())
+      __observer.observe(el, { box: 'border-box' })
+    }
+
+    __listeners.get(el)?.add(callback)
+
+    return () => {
+      const listener = __listeners.get(el)
+
+      listener?.delete(callback)
+
+      if (listener && listener.size === 0) {
+        __listeners.delete(el)
+        __observer.unobserve(el)
+      }
+
+      if (__listeners.size === 0) {
+        ownerWindow(el).removeEventListener('resize', callback)
+      }
+    }
+  }, [dom, fn])
 }

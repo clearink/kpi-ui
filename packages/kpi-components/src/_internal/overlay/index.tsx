@@ -24,7 +24,9 @@ function Overlay(_props: OverlayProps) {
 
   const styles = useSemanticStyles(props.style, props.styles)
 
-  if (returnEarly || (!open && !store.isMounted)) return null
+  // TODO: lock scroll
+
+  if (returnEarly || !store.isMounted) return null
 
   return (
     <Portal getContainer={props.getContainer}>
@@ -39,7 +41,7 @@ function Overlay(_props: OverlayProps) {
         )}
         <CSSTransition
           appear
-          ref={store.content}
+          ref={store.$content}
           when={open}
           name={transitions.content}
           onEnter={(el, appearing) => {

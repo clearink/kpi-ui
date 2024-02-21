@@ -57,9 +57,9 @@ function CommonFormItem(props: FormItemProps) {
     return !isNullish(name) && hasRequired(rule)
   }, [_required, name, rule])
 
-  const outer = useRef<HTMLDivElement>(null)
+  const $outer = useRef<HTMLDivElement>(null)
 
-  const getOuter = useCallback(() => outer.current, [])
+  const getOuter = useCallback(() => $outer.current, [])
 
   const labelProps = pick(props, labelIncluded)
 
@@ -70,7 +70,7 @@ function CommonFormItem(props: FormItemProps) {
   // }
 
   return (
-    <Row className={classes} style={style} ref={outer}>
+    <Row className={classes} style={style} ref={$outer}>
       {!isNullish(label) && <FormItemLabel htmlFor={itemId} required={required} {...labelProps} />}
       <FormItemInput {...inputProps} getOuter={getOuter}>
         {(onMetaChange, onSubMetaChange) => (

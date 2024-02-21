@@ -19,12 +19,12 @@ export class OverlayStore {
     this.isMounted = value
   }
 
-  content = {
+  $content = {
     current: null as CSSTransitionRef | null,
   }
 
   get isExited() {
-    const el = this.content.current
+    const el = this.$content.current
     return el && isExited(el.status)
   }
 }
@@ -42,6 +42,7 @@ export default function useOverlayStore(props: OverlayProps) {
   useDerivedState(`${keepMounted}-${unmountOnExit}`, () => {
     // keepMounted 优先级高于 unmountOnExit
     let isMounted = store.isMounted
+
     if (keepMounted) isMounted = true
     else if (unmountOnExit && store.isExited) isMounted = false
 

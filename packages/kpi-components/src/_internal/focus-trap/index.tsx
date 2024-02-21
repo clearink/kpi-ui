@@ -28,17 +28,17 @@ function FocusTrap(_props: FocusTrapProps) {
 
   const store = useFocusTrapStore()
 
-  const ref = useComposeRefs(store.content, (children as any).ref)
+  const ref = useComposeRefs(store.$content, (children as any).ref)
 
   const runTrap = useEvent(() => {
     if (!store.$content || !getTabbable) return
 
-    const root = ownerDocument(store.$start)
+    const root = ownerDocument(store.$start.current)
 
-    store.setReturnTo(root.activeElement)
+    store.setReturnFocus(root.activeElement)
 
     const runFrameCleanup = nextFrame(() => {
-      store.start.focus()
+      store.focus(store.$start.current)
       onEnter?.()
     })
 
@@ -49,7 +49,7 @@ function FocusTrap(_props: FocusTrapProps) {
 
       runTrapCleanup()
 
-      onExit?.(store.returnTo)
+      onExit?.(store.returnFocus)
 
       store.cleanup()
     }
@@ -59,9 +59,9 @@ function FocusTrap(_props: FocusTrapProps) {
 
   return (
     <>
-      <div ref={store.start} tabIndex={active ? 0 : -1} style={hidden}></div>
+      <div ref={store.$start} tabIndex={active ? 0 : -1} style={hidden}></div>
       {cloneElement(children, { ref })}
-      <div ref={store.end} aria-hidden="true" tabIndex={active ? 0 : -1} style={hidden}></div>
+      <div ref={store.$end} aria-hidden="true" tabIndex={active ? 0 : -1} style={hidden}></div>
     </>
   )
 }

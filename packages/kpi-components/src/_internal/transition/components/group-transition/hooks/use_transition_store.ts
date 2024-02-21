@@ -39,7 +39,7 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
       this.forceUpdate()
     },
     shouldUpdate: () => this.scheduler.status === UPDATE,
-    shouldWait: () => this.scheduler.status === WAIT,
+    shouldWait: () => this.scheduler.status === WAIT && this.isCanFlip,
     shouldFlip: () => this.scheduler.status === FLIP && this.isCanFlip,
     start: () => {
       this.scheduler.status = UPDATE
@@ -48,6 +48,8 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     },
     update: () => {
       this.unionElements()
+
+      if (!this.isCanFlip) return this.forceUpdate()
 
       this.scheduler.status = WAIT
 

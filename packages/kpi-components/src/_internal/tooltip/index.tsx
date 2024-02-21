@@ -1,7 +1,7 @@
 // utils
 import { useControllableState } from '@kpi-ui/hooks'
-import { cls, mergeRefs, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { cloneElement } from 'react'
+import { cls, fallback, mergeRefs, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { cloneElement, useEffect, useRef } from 'react'
 import { useSemanticStyles } from '../../_shared/hooks'
 import useTooltipAlign from './hooks/use_tooltip_align'
 import useTooltipStore from './hooks/use_tooltip_store'
@@ -10,38 +10,45 @@ import Overlay from '../overlay'
 import ShouldUpdate from '../should-update'
 // types
 import type { InternalTooltipProps } from './props'
+import useTriggerObserver from './hooks/use_trigger_observer'
 
 const defaultProps: Partial<InternalTooltipProps> = {
   trigger: 'hover',
+  openDelay: 100,
+  closeDelay: 200,
 }
 
 function InternalTooltip(_props: InternalTooltipProps) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children, content, zIndex, transitions, fresh, className, classNames = {} } = props
+  const {
+    open: _open,
+    defaultOpen,
+    children,
+    content,
+    zIndex,
+    transitions,
+    fresh,
+    className,
+    style,
+    classNames = {},
+    styles: _styles,
+    onOpenChange,
+  } = props
 
   const store = useTooltipStore()
 
-  const styles = useSemanticStyles(props.style, props.styles)
-
-  const [refRect, setRefRect] = useTooltipAlign(store, props)
-  /**
-   * 1. 定位
-   * 2. 位置
-   * 3. 移动
-   */
-
-  // 获取 reference 的位置，大小
+  const styles = useSemanticStyles(style, _styles)
 
   const [open, setOpen] = useControllableState({
-    value: props.open,
-    defaultValue: false,
-    onChange: props.onOpenChange,
+    value: _open,
+    defaultValue: fallback(defaultOpen, false),
+    onChange: onOpenChange,
   })
 
-  const onAlign = () => {
-    // align trigger and tooltip
-  }
+  useTriggerObserver(store, open)
+
+  const [tooltipCoords, setTooltipCoords] = useTooltipAlign(store.$trigger, open)
 
   const onMouseEnter: React.MouseEventHandler<HTMLElement> = () => {
     setOpen(true)
@@ -51,10 +58,18 @@ function InternalTooltip(_props: InternalTooltipProps) {
     setOpen(false)
   }
 
+  useEffect(() => {
+    const tooltip = store.$tooltip.current
+
+    if (!tooltip || !open) return
+    // 当 tooltip 改变时 尝试 对齐 tooltip
+    console.log('effect')
+  }, [store, open, tooltipCoords])
+
   return (
     <>
       {cloneElement(children, {
-        ref: mergeRefs(store.trigger, (children as any).ref),
+        ref: mergeRefs(store.$trigger, (children as any).ref),
         onMouseEnter,
         onMouseLeave,
       })}
@@ -63,24 +78,12 @@ function InternalTooltip(_props: InternalTooltipProps) {
         open={open}
         zIndex={zIndex}
         transitions={transitions}
-        onEnter={(el, appearing) => {
-          // 获取 文本的大小，高度
-          // const rect = el.getBoundingClientRect()
-          // console.log(rect, ref.current?.getBoundingClientRect())
-          // 将 el的位置附加到 reference 上
-          console.log('onenter', el, appearing)
-          // console.log('trigger', store.tooltip)
-          // console.log('tooltip', el)
-          // 获取 trigger 的位置
-          // 计算 el 应该出现的位置
-        }}
+        onEnter={store.attemptRunFirst}
       >
         <div
-          ref={store.tooltip}
+          ref={store.$tooltip}
           className={cls(className, classNames.root)}
-          style={{
-            ...styles.root,
-          }}
+          style={{ ...styles.root }}
         >
           <div className={classNames.arrow} style={styles.arrow}></div>
           {/* 内容缓存 */}
