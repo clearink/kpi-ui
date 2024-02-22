@@ -10,6 +10,7 @@ import type { TooltipStore } from './use_tooltip_store'
 export default function useTriggerObserver(store: TooltipStore, open: boolean) {
   const onChange = useThrottleCallback(100, (el: Element) => {})
 
+  // trigger resize + window resize
   useResizeObserver(store.$trigger, onChange)
 
   // scroll 事件如何绑定比较好？

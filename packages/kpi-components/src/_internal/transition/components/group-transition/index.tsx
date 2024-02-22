@@ -1,5 +1,5 @@
 // utils
-import { useDerivedState } from '@kpi-ui/hooks'
+import { useWatchValue } from '@kpi-ui/hooks'
 import { isNullish, omit, withDisplayName } from '@kpi-ui/utils'
 import { createElement, useEffect } from 'react'
 import { isElementsEqual } from '../../utils/equal'
@@ -40,7 +40,7 @@ function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransi
 
   let returnEarly = false
 
-  useDerivedState(shouldTransition, () => {
+  useWatchValue(shouldTransition, () => {
     returnEarly = shouldTransition
 
     if (shouldTransition) store.scheduler.start()

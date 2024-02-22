@@ -1,13 +1,14 @@
-import { useConstant, useEvent, useUnmountEffect } from '@kpi-ui/hooks'
+import { useEvent, useUnmountEffect } from '@kpi-ui/hooks'
+import { useRef } from 'react'
 
 export default function useRafCallback<F extends (...args: any[]) => void>(fn: F) {
-  const config = useConstant(() => ({ id: -1 }))
+  const id = useRef(-1)
 
-  useUnmountEffect(() => cancelAnimationFrame(config.id))
+  useUnmountEffect(() => cancelAnimationFrame(id.current))
 
   return useEvent((...args: any[]) => {
-    cancelAnimationFrame(config.id)
+    cancelAnimationFrame(id.current)
 
-    config.id = requestAnimationFrame(() => fn(...args))
+    id.current = requestAnimationFrame(() => fn(...args))
   })
 }

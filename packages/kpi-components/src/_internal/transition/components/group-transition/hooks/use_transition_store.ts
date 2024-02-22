@@ -2,12 +2,13 @@ import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { addClassNames, delClassNames, omit } from '@kpi-ui/utils'
 import { cloneElement, createElement, type ReactElement } from 'react'
 import { batch, reflow } from '../../../_shared/utils'
-import { ENTER, INIT, WAIT, UPDATE, FLIP, isExit, isExited } from '../../../constants'
+import { ENTER, isExit, isExited } from '../../../constants'
 import makeUniqueId from '../../../utils/unique_id'
 import CSSTransition from '../../css-transition'
 import diff from '../utils/diff'
 import union from '../utils/union'
-
+import { NONE_ACTION, UPDATE_CHILDREN, WAIT_TICK, FLIP_READY } from '../constants'
+// types
 import type { CSSTransitionProps as CSS, CSSTransitionRef } from '../../css-transition/props'
 import type { GroupTransitionProps as Group } from '../props'
 
@@ -31,18 +32,18 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
   }
 
   scheduler = {
-    status: INIT,
+    status: NONE_ACTION,
     effect: 0,
     nextEffect: () => {
       this.scheduler.effect += 1
 
       this.forceUpdate()
     },
-    shouldUpdate: () => this.scheduler.status === UPDATE,
-    shouldWait: () => this.scheduler.status === WAIT && this.isCanFlip,
-    shouldFlip: () => this.scheduler.status === FLIP && this.isCanFlip,
+    shouldUpdate: () => this.scheduler.status === UPDATE_CHILDREN,
+    shouldWait: () => this.scheduler.status === WAIT_TICK && this.isCanFlip,
+    shouldFlip: () => this.scheduler.status === FLIP_READY && this.isCanFlip,
     start: () => {
-      this.scheduler.status = UPDATE
+      this.scheduler.status = UPDATE_CHILDREN
 
       this.scheduler.nextEffect()
     },
@@ -51,12 +52,12 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
       if (!this.isCanFlip) return this.forceUpdate()
 
-      this.scheduler.status = WAIT
+      this.scheduler.status = WAIT_TICK
 
       this.scheduler.nextEffect()
     },
     wait: () => {
-      this.scheduler.status = FLIP
+      this.scheduler.status = FLIP_READY
 
       this.scheduler.nextEffect()
     },

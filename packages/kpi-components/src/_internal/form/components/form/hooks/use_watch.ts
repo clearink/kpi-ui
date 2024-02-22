@@ -7,7 +7,7 @@ import { HOOK_MARK } from '../control'
 import type { ExternalNamePath } from '../../../props'
 import type { InternalFormInstance, ExternalFormInstance } from '../control/props'
 
-export default function useWatchValue<T>(namePath?: ExternalNamePath, form?: ExternalFormInstance) {
+export default function useWatch<T>(namePath?: ExternalNamePath, form?: ExternalFormInstance) {
   const [value, setValue] = useState<T | undefined>()
 
   const formInstance = InternalFormInstanceContext.useState()

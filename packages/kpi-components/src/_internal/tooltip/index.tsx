@@ -1,7 +1,7 @@
 // utils
 import { useControllableState } from '@kpi-ui/hooks'
 import { cls, fallback, mergeRefs, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { cloneElement, useEffect, useRef } from 'react'
+import { cloneElement, useEffect } from 'react'
 import { useSemanticStyles } from '../../_shared/hooks'
 import useTooltipAlign from './hooks/use_tooltip_align'
 import useTooltipStore from './hooks/use_tooltip_store'
@@ -11,6 +11,7 @@ import ShouldUpdate from '../should-update'
 // types
 import type { InternalTooltipProps } from './props'
 import useTriggerObserver from './hooks/use_trigger_observer'
+import useTooltipOpen from './hooks/use_tooltip_open'
 
 const defaultProps: Partial<InternalTooltipProps> = {
   trigger: 'hover',
@@ -22,8 +23,6 @@ function InternalTooltip(_props: InternalTooltipProps) {
   const props = withDefaults(_props, defaultProps)
 
   const {
-    open: _open,
-    defaultOpen,
     children,
     content,
     zIndex,
@@ -33,18 +32,13 @@ function InternalTooltip(_props: InternalTooltipProps) {
     style,
     classNames = {},
     styles: _styles,
-    onOpenChange,
   } = props
 
   const store = useTooltipStore()
 
-  const styles = useSemanticStyles(style, _styles)
+  const [open, setOpen] = useTooltipOpen(props)
 
-  const [open, setOpen] = useControllableState({
-    value: _open,
-    defaultValue: fallback(defaultOpen, false),
-    onChange: onOpenChange,
-  })
+  const styles = useSemanticStyles(style, _styles)
 
   useTriggerObserver(store, open)
 
@@ -78,7 +72,7 @@ function InternalTooltip(_props: InternalTooltipProps) {
         open={open}
         zIndex={zIndex}
         transitions={transitions}
-        onEnter={store.attemptRunFirst}
+        onEnter={store.runFirst}
       >
         <div
           ref={store.$tooltip}
@@ -101,7 +95,4 @@ function InternalTooltip(_props: InternalTooltipProps) {
   )
 }
 
-/**
- * @zh 内部组件
- */
 export default withDisplayName(InternalTooltip)

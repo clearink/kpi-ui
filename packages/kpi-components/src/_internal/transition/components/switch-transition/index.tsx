@@ -1,5 +1,5 @@
 // utils
-import { useDerivedState } from '@kpi-ui/hooks'
+import { useWatchValue } from '@kpi-ui/hooks'
 import { withDisplayName } from '@kpi-ui/utils'
 import { isElementEqual } from '../../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
@@ -16,7 +16,7 @@ function SwitchTransition<E extends HTMLElement = HTMLElement>(props: SwitchTran
 
   let returnEarly = false
 
-  useDerivedState(shouldTransition, () => {
+  useWatchValue(shouldTransition, () => {
     if (!shouldTransition) return
 
     if (mode === 'out-in') store.runOutInSwitch()

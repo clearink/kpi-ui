@@ -11,7 +11,7 @@ export class TooltipStore {
 
   isFirst = true
 
-  attemptRunFirst = () => {
+  runFirst = () => {
     if (!this.isFirst) return
 
     this.isFirst = false

@@ -1,19 +1,17 @@
 // utils
-import { useConstant, useDerivedState, useForceUpdate } from '@kpi-ui/hooks'
+import { useConstant, useWatchValue, useForceUpdate } from '@kpi-ui/hooks'
 import {
   APPEAR,
   ENTER,
   ENTERED,
   EXIT,
   EXITED,
-  NEED_APPEAR,
-  NEED_MOUNT,
-  NONE,
-  READY,
   isEntered,
   isExit,
   isExited,
 } from '../../../constants'
+import { APPEAR_ACTION, APPEAR_READY, MOUNT_ACTION, NONE_ACTION } from '../constants'
+
 // types
 import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
 
@@ -26,8 +24,8 @@ export class TransitionStore<E extends HTMLElement> {
     if (!when) this.status = EXITED
     else this.status = appear ? APPEAR : ENTERED
 
-    if (when) this.scheduler.status = appear ? NEED_APPEAR : NONE
-    else this.scheduler.status = mountOnEnter || unmountOnExit ? NONE : NEED_MOUNT
+    if (when) this.scheduler.status = appear ? APPEAR_ACTION : NONE_ACTION
+    else this.scheduler.status = mountOnEnter || unmountOnExit ? NONE_ACTION : MOUNT_ACTION
   }
 
   display = {
@@ -46,25 +44,27 @@ export class TransitionStore<E extends HTMLElement> {
   scheduler = {
     // 触发 useEffect
     effect: 0,
-    status: NONE,
-    isReady: () => this.scheduler.status === READY,
+    status: NONE_ACTION,
+    isReady: () => this.scheduler.status === APPEAR_READY,
     shouldMount: () => {
       const { status } = this.scheduler
-      return status === NEED_MOUNT || status === NEED_APPEAR
+      return status === MOUNT_ACTION || status === APPEAR_ACTION
     },
     beMounted: () => {
-      if (this.scheduler.status === NEED_MOUNT) {
-        this.scheduler.status = NONE
-      } else if (this.scheduler.status === NEED_APPEAR) {
-        this.scheduler.status = READY
+      if (this.scheduler.status === MOUNT_ACTION) {
+        this.scheduler.status = NONE_ACTION
+      } else if (this.scheduler.status === APPEAR_ACTION) {
+        this.scheduler.status = APPEAR_READY
+
         this.scheduler.effect += 1
       }
+
       this.setIsMounted(true)
     },
     shouldRunFirst: () => {
       if (!this.scheduler.isReady()) return false
 
-      this.scheduler.status = NONE
+      this.scheduler.status = NONE_ACTION
 
       return true
     },
@@ -135,7 +135,7 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
   let returnEarly = false
 
   // 监听 unmountOnExit 与 mountOnEnter
-  useDerivedState(`${unmountOnExit}-${mountOnEnter}`, () => {
+  useWatchValue(`${unmountOnExit}-${mountOnEnter}`, () => {
     if (!isExited(store.status)) return
 
     const isMounted = !(unmountOnExit || (!store.hasMounted && mountOnEnter))
@@ -146,7 +146,7 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
   })
 
   // when 变化时需要保证页面处于渲染中,
-  useDerivedState(when, () => {
+  useWatchValue(when, () => {
     returnEarly = store.isMounted !== true
 
     store.setIsMounted(true)

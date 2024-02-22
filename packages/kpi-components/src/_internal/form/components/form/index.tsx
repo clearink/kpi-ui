@@ -1,5 +1,5 @@
 // utils
-import { useConstant, useDerivedState } from '@kpi-ui/hooks'
+import { useConstant, useWatchValue } from '@kpi-ui/hooks'
 import { isEqual, isFunction, isNullish, withDisplayName, omit, withDefaults } from '@kpi-ui/utils'
 import { createElement, forwardRef, useEffect, useImperativeHandle, useMemo } from 'react'
 import { InternalFormContext, InternalFormInstanceContext } from '../../_shared/context'
@@ -58,7 +58,7 @@ function InternalForm<State = any>(
   useEffect(() => parentForm.register(instance, name), [instance, name, parentForm])
 
   // 同步 fields 字段
-  useDerivedState(fields, {
+  useWatchValue(fields, {
     compare: isEqual,
     listener: () => fields && internalHook.setFields(fields),
   })

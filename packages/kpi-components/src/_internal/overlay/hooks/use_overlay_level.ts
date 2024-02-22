@@ -1,5 +1,5 @@
 // utils
-import { useConstant, useDerivedState } from '@kpi-ui/hooks'
+import { useConstant, useWatchValue } from '@kpi-ui/hooks'
 import { isUndefined } from '@kpi-ui/utils'
 import { ZIndexContext } from '../../../_shared/context'
 // types
@@ -17,7 +17,7 @@ export default function useOverlayLevel(store: OverlayStore, props: OverlayProps
     value: isControlled || (!open && !store.isMounted) ? 0 : getZIndex(),
   }))
 
-  useDerivedState(open, () => {
+  useWatchValue(open, () => {
     if (open && !isControlled) level.value = getZIndex()
   })
 
