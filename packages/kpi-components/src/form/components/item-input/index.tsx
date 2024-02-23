@@ -7,7 +7,7 @@ import FormErrorList from '../error-list'
 import useFormatClass from './hooks/use_format_class'
 import useFormatStatus from './hooks/use_format_status'
 import useMetaState from './hooks/use_meta_state'
-
+// types
 import type { FormItemInputProps } from './props'
 
 // TODO: refactor offset logic

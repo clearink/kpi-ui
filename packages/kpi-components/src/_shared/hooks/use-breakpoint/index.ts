@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
 import { useEvent } from '@kpi-ui/hooks'
 import { isUndefined } from '@kpi-ui/utils'
+import { useEffect, useState } from 'react'
 import observer from './breakpoint_observer'
-
+// types
 import type { ScreenMatch } from './breakpoint'
 
 // 基础响应式断点 hooks

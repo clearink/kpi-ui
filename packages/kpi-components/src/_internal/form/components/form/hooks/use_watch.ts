@@ -3,9 +3,9 @@ import { logger, shallowEqual, toArray } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { InternalFormInstanceContext } from '../../../_shared/context'
 import { HOOK_MARK } from '../control'
-
+// types
 import type { ExternalNamePath } from '../../../props'
-import type { InternalFormInstance, ExternalFormInstance } from '../control/props'
+import type { ExternalFormInstance, InternalFormInstance } from '../control/props'
 
 export default function useWatch<T>(namePath?: ExternalNamePath, form?: ExternalFormInstance) {
   const [value, setValue] = useState<T | undefined>()

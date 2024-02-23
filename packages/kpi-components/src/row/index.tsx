@@ -1,5 +1,5 @@
 import { withDisplayName, omit, withDefaults } from '@kpi-ui/utils'
-import { CSSProperties, forwardRef, type ForwardedRef } from 'react'
+import { forwardRef, type CSSProperties, type ForwardedRef } from 'react'
 import { RowContext } from '../_shared/context'
 import { usePrefixCls } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'

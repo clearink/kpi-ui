@@ -1,9 +1,8 @@
-import { isValidElement, Component } from 'react'
+import { isValidElement, Component, type ReactElement, type ReactNode } from 'react'
 import { isFragment, isMemo } from 'react-is'
 import { isFunction, isNullish } from '../is'
 // types
 import type { ReactRef } from '@kpi-ui/types'
-import type { ReactElement, ReactNode } from 'react'
 
 export function fillRef<T>(el: T, ref?: ReactRef<T>) {
   if (isFunction(ref)) ref(el)

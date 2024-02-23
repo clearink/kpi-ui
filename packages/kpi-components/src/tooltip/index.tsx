@@ -1,7 +1,7 @@
 // utils
 import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
 import { withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { cloneElement, useRef } from 'react'
+
 // comps
 import InternalTooltip from '../_internal/tooltip'
 

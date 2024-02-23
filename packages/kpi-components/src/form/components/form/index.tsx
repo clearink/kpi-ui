@@ -1,7 +1,7 @@
 // utils
 import { useEvent } from '@kpi-ui/hooks'
 import { withDisplayName, omit, withDefaults } from '@kpi-ui/utils'
-import { forwardRef, useImperativeHandle, useMemo } from 'react'
+import { forwardRef, useImperativeHandle, useMemo, type ForwardedRef, type Ref } from 'react'
 import InternalForm from '../../../_internal/form'
 import { DisabledContext, SizeContext } from '../../../_shared/context'
 import { usePrefixCls } from '../../../_shared/hooks'
@@ -9,7 +9,6 @@ import { FormContext, FormContextState } from '../../_shared/context'
 import useForm from './hooks/use_form'
 import useFormatClass from './hooks/use_format_class'
 // types
-import type { ForwardedRef, Ref } from 'react'
 import type { FormInstance, FormProps } from './props'
 
 const excluded = [

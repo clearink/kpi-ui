@@ -1,4 +1,6 @@
 import { useConstant } from '@kpi-ui/hooks'
+// types
+import type { InternalTooltipProps, TooltipCoords } from '../props'
 
 export class TooltipStore {
   $trigger = {
@@ -9,17 +11,39 @@ export class TooltipStore {
     current: null as HTMLDivElement | null,
   }
 
-  isFirst = true
+  updateCoords = (open: boolean, props: InternalTooltipProps, oldCoords: TooltipCoords) => {
+    const tooltip = this.$tooltip.current
 
-  runFirst = () => {
-    if (!this.isFirst) return
+    const trigger = this.$trigger.current
 
-    this.isFirst = false
+    if (!open || !tooltip || !trigger) return null
 
-    // showTooltip
+    const { autoLayout, placement } = props
+
+    const tooltipRect = tooltip.getBoundingClientRect()
+
+    const triggerRect = trigger.getBoundingClientRect()
+
+    const offsetY = 10
+
+    const newCoords: TooltipCoords = {
+      top: triggerRect.top - offsetY - tooltipRect.height,
+      right: 'auto',
+      bottom: 'auto',
+      left: triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2,
+    }
+
+    if (newCoords === oldCoords) return null
+
+    tooltip.style.setProperty(
+      'insert',
+      `${newCoords.top} ${newCoords.right} ${newCoords.bottom} ${newCoords.left}`
+    )
+
+    console.log(tooltipRect, triggerRect)
+
+    return newCoords
   }
-
-  showTooltip = () => {}
 }
 
 export default function useTooltipStore() {

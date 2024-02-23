@@ -8,11 +8,10 @@ import {
   withDefaults,
   withDisplayName,
 } from '@kpi-ui/utils'
-import React, { useId } from 'react'
+import { useId, useRef, type KeyboardEvent, type SyntheticEvent } from 'react'
 import { Keyboard } from '../_shared/constants'
 import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
-import useModalStore from './hooks/use_modal_store'
 // comps
 import FocusTrap from '../_internal/focus-trap'
 import Overlay from '../_internal/overlay'
@@ -40,9 +39,20 @@ export const defaultProps: Partial<ModalProps> = {
 function Modal(_props: ModalProps) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children, open, title, footer, transitions = {}, onOk, onCancel, modalRender } = props
+  const {
+    children,
+    open,
+    title,
+    footer,
+    onOk,
+    onCancel,
+    modalRender,
+    style,
+    styles: _styles,
+    transitions = {},
+  } = props
 
-  const store = useModalStore()
+  const $wrap = useRef<HTMLDivElement | null>(null)
 
   const ariaId = useId()
 
@@ -52,11 +62,11 @@ function Modal(_props: ModalProps) {
 
   const classNames = useFormatClass(prefixCls, props)
 
-  const styles = useSemanticStyles(props.style, props.styles)
+  const styles = useSemanticStyles(style, _styles)
 
   const onEscpaceDown = !props.closeOnEscape
     ? undefined
-    : (e: React.KeyboardEvent<HTMLDivElement>) => {
+    : (e: KeyboardEvent<HTMLDivElement>) => {
         if (e.key !== Keyboard.esc) return
 
         e.stopPropagation()
@@ -67,8 +77,8 @@ function Modal(_props: ModalProps) {
   const onMaskClick =
     !props.maskClosable || !props.mask
       ? undefined
-      : (e: React.SyntheticEvent) => {
-          if (e.target && e.target === store.$wrap) {
+      : (e: SyntheticEvent) => {
+          if (e.target && e.target === $wrap.current) {
             onCancel?.()
           }
         }
@@ -121,13 +131,17 @@ function Modal(_props: ModalProps) {
         mask: fallback(transitions.mask, `${rootPrefixCls}-fade-in`),
         content: fallback(transitions.content, `${rootPrefixCls}-slide-bottom`),
       }}
-      onEnter={store.wrap.show}
-      onExited={store.wrap.hide}
+      onEnter={(el) => {
+        el.style.removeProperty('display')
+      }}
+      onExited={(el) => {
+        el.style.setProperty('display', 'none')
+      }}
     >
       {(ref) => (
         <div
           tabIndex={-1}
-          ref={store.wrap}
+          ref={$wrap}
           onKeyDown={onEscpaceDown}
           onClick={onMaskClick}
           className={`${prefixCls}-wrap`}

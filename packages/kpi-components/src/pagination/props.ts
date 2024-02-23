@@ -1,4 +1,4 @@
-import { CSSProperties, KeyboardEventHandler, MouseEventHandler, ReactNode } from 'react'
+import type { CSSProperties, KeyboardEventHandler, MouseEventHandler, ReactNode } from 'react'
 
 export interface PaginationProps {
   /**

@@ -1,10 +1,10 @@
-import { fallback, flattenChildren, withDisplayName, omit, withDefaults } from '@kpi-ui/utils'
-import { Fragment, ReactElement, type CSSProperties } from 'react'
+import { fallback, flattenChildren, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { Fragment, type CSSProperties, type ReactElement } from 'react'
 import { SizeContext } from '../_shared/context'
 import { usePrefixCls } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 import useSpaceGutter from './hooks/use_space_gutter'
-
+// types
 import type { SpaceProps } from './props'
 
 const excluded = [

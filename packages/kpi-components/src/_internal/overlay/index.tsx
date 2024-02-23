@@ -6,7 +6,7 @@ import useOverlayStore from './hooks/use_overlay_store'
 // comps
 import Portal from '../portal'
 import { CSSTransition } from '../transition'
-import ForwardFunctional from './components/forward_functional'
+import ForwardFunctional from './components/forward-functional'
 // types
 import type { ReactElement, RefCallback } from 'react'
 import type { OverlayProps } from './props'
@@ -18,11 +18,11 @@ function Overlay(_props: OverlayProps) {
 
   const { open, keepMounted, unmountOnExit, transitions = {}, classNames = {} } = props
 
+  const styles = useSemanticStyles(props.style, props.styles)
+
   const [store, returnEarly] = useOverlayStore(props)
 
   const level = useOverlayLevel(store, props)
-
-  const styles = useSemanticStyles(props.style, props.styles)
 
   // TODO: lock scroll
 

@@ -1,6 +1,6 @@
 import { isNullish } from '@kpi-ui/utils'
 import { useMemo } from 'react'
-
+// types
 import type { FieldMeta, ValidateStatus } from '../../../props'
 
 export default function useFormatStatus(meta: FieldMeta, validateStatus?: ValidateStatus) {

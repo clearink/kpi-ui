@@ -1,10 +1,10 @@
 import { isBoolean, isFunction } from '@kpi-ui/utils'
-import { type RefObject } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { TouchEffectContext } from '../_shared/context'
 import wave from '../utils/wave'
 import useRafCallback from './use_raf_callback'
-
+// types
+import type { RefObject } from 'react'
 import type { TouchEffectProps } from '../props'
 
 export default function useTouchEffect(

@@ -1,9 +1,9 @@
 // types
 import type { SemanticStyledProps } from '@kpi-ui/types'
-import type React from 'react'
+import type { ReactElement } from 'react'
 
 export interface FocusTrapProps extends SemanticStyledProps<'root'> {
-  children: React.ReactElement
+  children: ReactElement
 
   active?: boolean
 

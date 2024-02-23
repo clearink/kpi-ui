@@ -35,7 +35,7 @@ export const defaultProps: Partial<DrawerProps> = {
 function Drawer(_props: DrawerProps) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children, open, transitions = {}, title, footer } = props
+  const { children, open, title, footer, style, styles: _styles, transitions = {} } = props
 
   const ariaId = useId()
 
@@ -45,7 +45,7 @@ function Drawer(_props: DrawerProps) {
 
   const classNames = useFormatClass(prefixCls, props)
 
-  const styles = useSemanticStyles(props.style, props.styles)
+  const styles = useSemanticStyles(style, _styles)
 
   const onEscape = props.closeOnEscape
     ? (e: React.KeyboardEvent<HTMLDivElement>) => {

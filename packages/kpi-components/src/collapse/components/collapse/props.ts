@@ -1,11 +1,11 @@
-import type React from 'react'
+import type { HasChildren, SemanticStyledProps } from '@kpi-ui/types'
+import type { ReactNode, RefObject } from 'react'
 import type { SizeType } from '../../../_shared/context'
 import type { ExpandedName } from '../../props'
 import type { CollapseItemProps } from '../item/props'
-import type { SemanticStyledProps, HasChildren } from '@kpi-ui/types'
 
 export type CollapseItemType = CollapseItemProps & {
-  ref?: React.RefObject<HTMLDivElement>
+  ref?: RefObject<HTMLDivElement>
 }
 
 export type CollapsibleType = 'header' | 'icon' | 'title'
@@ -26,5 +26,5 @@ export interface CollapseProps<K extends ExpandedName = ExpandedName>
 
   keepMounted?: boolean
   unmountOnExit?: boolean
-  expandIcon?: React.ReactNode | ((props: { name: K; expanded: boolean }) => React.ReactNode)
+  expandIcon?: ReactNode | ((props: { name: K; expanded: boolean }) => React.ReactNode)
 }

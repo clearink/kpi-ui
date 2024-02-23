@@ -1,5 +1,5 @@
-import { SemanticStyledProps } from '@kpi-ui/types'
-import { ReactNode } from 'react'
+import type { SemanticStyledProps } from '@kpi-ui/types'
+import type { ReactNode } from 'react'
 
 export interface DividerProps extends SemanticStyledProps<'root' | 'text'> {
   children?: ReactNode

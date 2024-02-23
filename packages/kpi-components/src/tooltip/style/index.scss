@@ -9,4 +9,10 @@ $comp: #{$prefix}-tooltip;
 
 .#{$comp} {
   @include reset-component();
+
+  width: 100px;
+  padding: 4px;
+  background-color: red;
+  border-radius: 4px;
+  position: absolute;
 }

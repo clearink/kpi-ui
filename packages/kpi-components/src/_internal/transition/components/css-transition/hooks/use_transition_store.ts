@@ -11,7 +11,6 @@ import {
   isExited,
 } from '../../../constants'
 import { APPEAR_ACTION, APPEAR_READY, MOUNT_ACTION, NONE_ACTION } from '../constants'
-
 // types
 import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
 
@@ -55,7 +54,6 @@ export class TransitionStore<E extends HTMLElement> {
         this.scheduler.status = NONE_ACTION
       } else if (this.scheduler.status === APPEAR_ACTION) {
         this.scheduler.status = APPEAR_READY
-
         this.scheduler.effect += 1
       }
 

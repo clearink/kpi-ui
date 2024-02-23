@@ -1,20 +1,18 @@
 import type { SemanticStyledProps, HasChildren } from '@kpi-ui/types'
-import type React from 'react'
+import type { HTMLAttributes, ReactNode } from 'react'
 import type { ExpandedName } from '../../props'
 
 export interface CollapseItemProps
   extends HasChildren,
     SemanticStyledProps<'root' | 'header' | 'icon' | 'title' | 'extra' | 'content'>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+    Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   name: ExpandedName
-  title?: React.ReactNode
-  extra?: React.ReactNode
+  title?: ReactNode
+  extra?: ReactNode
   disabled?: boolean
   showExpandIcon?: boolean
 
   keepMounted?: boolean
   unmountOnExit?: boolean
-  expandIcon?:
-    | React.ReactNode
-    | ((props: { name: ExpandedName; expanded: boolean }) => React.ReactNode)
+  expandIcon?: ReactNode | ((props: { name: ExpandedName; expanded: boolean }) => ReactNode)
 }

@@ -1,6 +1,6 @@
 import { useDebounceState } from '@kpi-ui/hooks'
 import { useCallback } from 'react'
-
+// types
 import type { FieldMeta } from '../../../props'
 
 export function initFieldMeta(): FieldMeta {

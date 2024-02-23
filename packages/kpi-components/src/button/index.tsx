@@ -1,10 +1,11 @@
-import { withDisplayName, omit, withDefaults } from '@kpi-ui/utils'
-import { ForwardedRef, forwardRef, type MouseEvent } from 'react'
-import TouchEffect from '../_internal/touch-effect'
+import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { forwardRef, type ForwardedRef, type MouseEvent } from 'react'
 import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 import { isBorderedVariant } from './utils/helpers'
-
+// comps
+import TouchEffect from '../_internal/touch-effect'
+// types
 import type { ButtonProps } from './props'
 
 const excluded = [
@@ -35,13 +36,13 @@ export const defaultProps: Partial<ButtonProps> = {
 function Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children, onClick, loading, disabled, variant } = props
+  const { children, onClick, loading, disabled, variant, style, styles: _styles } = props
+
+  const styles = useSemanticStyles(style, _styles)
 
   const prefixCls = usePrefixCls('button')
 
   const classNames = useFormatClass(prefixCls, props)
-
-  const styles = useSemanticStyles(props.style, props.styles)
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     if (disabled || loading) e.preventDefault()

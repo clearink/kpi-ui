@@ -1,6 +1,6 @@
 // types
 import type { SemanticStyledProps } from '@kpi-ui/types'
-import type React from 'react'
+import type { ReactNode } from 'react'
 import type { OverlayProps } from '../_internal/overlay/props'
 
 export interface DrawerProps
@@ -11,11 +11,11 @@ export interface DrawerProps
     > {
   closeOnEscape?: boolean
 
-  children?: React.ReactNode
+  children?: ReactNode
 
-  title?: React.ReactNode
+  title?: ReactNode
 
-  footer?: React.ReactNode
+  footer?: ReactNode
 
   beforeClose?: () => void
 

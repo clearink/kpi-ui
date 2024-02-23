@@ -1,7 +1,7 @@
 // utils
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { omit } from '@kpi-ui/utils'
-import { ReactElement, cloneElement, createElement } from 'react'
+import { cloneElement, createElement, type ReactElement } from 'react'
 import { batch } from '../../../_shared/utils'
 import runCounter from '../../../utils/run_counter'
 import makeUniqueId from '../../../utils/unique_id'

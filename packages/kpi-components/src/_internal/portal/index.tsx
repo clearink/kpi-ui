@@ -3,7 +3,7 @@ import { isNullish, withDisplayName } from '@kpi-ui/utils'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import getContainer from './utils/get_container'
-
+// types
 import type { ContainerType, PortalProps } from './props'
 
 export const defaultProps: Partial<PortalProps> = {}

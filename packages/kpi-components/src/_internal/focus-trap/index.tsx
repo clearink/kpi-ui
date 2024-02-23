@@ -13,8 +13,8 @@ const hidden: React.CSSProperties = {
   height: 0,
   padding: 0,
   overflow: 'hidden',
-  top: 1,
-  left: 1,
+  top: -1,
+  left: -1,
 }
 
 export const defaultProps: Partial<FocusTrapProps> = {

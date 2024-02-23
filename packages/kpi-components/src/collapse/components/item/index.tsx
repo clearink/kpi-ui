@@ -8,7 +8,7 @@ import {
   withDefaults,
   withDisplayName,
 } from '@kpi-ui/utils'
-import { ForwardedRef, forwardRef } from 'react'
+import { forwardRef, type ForwardedRef } from 'react'
 import { Keyboard } from '../../../_shared/constants'
 import { usePrefixCls, useSemanticStyles } from '../../../_shared/hooks'
 import { CollapseContext } from '../../_shared/context'
@@ -53,7 +53,7 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
     expandIcon: fallback(ctx.expandIcon, <CaretRightOutlined />),
   })
 
-  const { name, title, extra, disabled, showExpandIcon, expandIcon } = props
+  const { name, title, extra, disabled, showExpandIcon, expandIcon, style, styles: _styles } = props
 
   const prefixCls = usePrefixCls('collapse')
 
@@ -64,7 +64,7 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
     expanded,
   })
 
-  const styles = useSemanticStyles(props.style, props.styles)
+  const styles = useSemanticStyles(style, _styles)
 
   const getItemClickHandler = (type: CollapsibleType) => {
     if (disabled || ctx.collapsible !== type) return undefined

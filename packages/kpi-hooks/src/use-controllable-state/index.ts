@@ -1,5 +1,5 @@
 import { isFunction, isUndefined, shallowUnequal } from '@kpi-ui/utils'
-import { useState, type SetStateAction, type Dispatch } from 'react'
+import { useState, type Dispatch, type SetStateAction } from 'react'
 import useEvent from '../use-event'
 
 export function useControllableProp<T>(prop: T | undefined, state: T) {

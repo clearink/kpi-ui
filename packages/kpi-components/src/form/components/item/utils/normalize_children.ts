@@ -1,6 +1,6 @@
 import { isFunction, isNullish, logger, toArray } from '@kpi-ui/utils'
 import { cloneElement, isValidElement } from 'react'
-
+// types
 import type { FormInstance } from '../../form/props'
 import type { FormItemProps } from '../props'
 
