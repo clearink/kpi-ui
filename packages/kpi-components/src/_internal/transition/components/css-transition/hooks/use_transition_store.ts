@@ -1,5 +1,6 @@
 // utils
-import { useConstant, useWatchValue, useForceUpdate } from '@kpi-ui/hooks'
+import { useConstant, useForceUpdate, useWatchValue } from '@kpi-ui/hooks'
+import { useMemo } from 'react'
 import {
   APPEAR,
   ENTER,
@@ -11,11 +12,12 @@ import {
   isExited,
 } from '../../../constants'
 import { APPEAR_ACTION, APPEAR_READY, MOUNT_ACTION, NONE_ACTION } from '../constants'
+import { showElement } from '../utils/display'
 // types
 import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
 
-export class TransitionStore<E extends HTMLElement> {
-  constructor(public forceUpdate: () => void, props: CSS<E>) {
+export class TransitionState<E extends HTMLElement> {
+  constructor(props: CSS<E>) {
     const { appear, when, mountOnEnter, unmountOnExit } = props
 
     this.isMounted = !!when && !appear
@@ -23,103 +25,81 @@ export class TransitionStore<E extends HTMLElement> {
     if (!when) this.status = EXITED
     else this.status = appear ? APPEAR : ENTERED
 
-    if (when) this.scheduler.status = appear ? APPEAR_ACTION : NONE_ACTION
-    else this.scheduler.status = mountOnEnter || unmountOnExit ? NONE_ACTION : MOUNT_ACTION
+    if (when) this.scheduler = appear ? APPEAR_ACTION : NONE_ACTION
+    else this.scheduler = mountOnEnter || unmountOnExit ? NONE_ACTION : MOUNT_ACTION
   }
 
-  display = {
-    show: (display: undefined | string) => {
-      const el = this.instance
+  effect = 0
 
-      el && el.style.setProperty('display', display || '')
-    },
-    hide: () => {
-      const el = this.instance
-
-      el && el.style.setProperty('display', 'none')
-    },
-  }
-
-  scheduler = {
-    // 触发 useEffect
-    effect: 0,
-    status: NONE_ACTION,
-    isReady: () => this.scheduler.status === APPEAR_READY,
-    shouldMount: () => {
-      const { status } = this.scheduler
-      return status === MOUNT_ACTION || status === APPEAR_ACTION
-    },
-    beMounted: () => {
-      if (this.scheduler.status === MOUNT_ACTION) {
-        this.scheduler.status = NONE_ACTION
-      } else if (this.scheduler.status === APPEAR_ACTION) {
-        this.scheduler.status = APPEAR_READY
-        this.scheduler.effect += 1
-      }
-
-      this.setIsMounted(true)
-    },
-    shouldRunFirst: () => {
-      if (!this.scheduler.isReady()) return false
-
-      this.scheduler.status = NONE_ACTION
-
-      return true
-    },
-  }
+  scheduler = NONE_ACTION
 
   hasMounted = false
 
-  setHasMounted = () => {
-    this.hasMounted = true
-  }
-
   status: TransitionStatus
-
-  setStatus = (value: TransitionStatus) => {
-    this.status = value
-  }
 
   isMounted = false
 
-  setIsMounted = (value: boolean) => {
-    if (this.isMounted !== value) this.forceUpdate()
-
-    this.isMounted = value
-  }
-
   instance: E | null = null
 
-  setInstance = (instance: E | null) => {
-    this.instance = instance
+  cleanupHook: void | (() => void) = undefined
+}
+
+export class TransitionAction<E extends HTMLElement> {
+  constructor(private forceUpdate: () => void, private states: TransitionState<E>) {}
+
+  runCleanupHook = () => {
+    this.states.cleanupHook?.()
+
+    this.states.cleanupHook = undefined
   }
 
-  endHook: void | (() => void) = undefined
+  setIsMounted = (value: boolean) => {
+    if (this.states.isMounted !== value) this.forceUpdate()
 
-  setEndHook = (endHook: void | (() => void)) => {
-    this.endHook = endHook
+    this.states.isMounted = value
   }
 
-  runEndHook = () => {
-    this.endHook && this.endHook()
+  startTransition = (step: TransitionStep, display: string | undefined) => {
+    this.states.status = isExit(step) ? EXIT : ENTER
 
-    this.endHook = undefined
+    !isExit(step) && showElement(this.states.instance, display)
   }
 
-  start = (step: TransitionStep, display: string | undefined) => {
-    this.setStatus(isExit(step) ? EXIT : ENTER)
+  finishTransition = (step: TransitionStep) => {
+    this.states.status = isExit(step) ? EXITED : ENTERED
 
-    !isExit(step) && this.display.show(display)
-  }
-
-  done = (step: TransitionStep) => {
-    this.setStatus(isExit(step) ? EXITED : ENTERED)
-
-    this.runEndHook()
+    this.runCleanupHook()
   }
 
   shouldTransition = (when: boolean | undefined) => {
-    return when ? !isEntered(this.status) : !isExited(this.status)
+    const value = this.states.status
+    return when ? !isEntered(value) : !isExited(value)
+  }
+
+  shouldMount = () => {
+    const { scheduler } = this.states
+    return scheduler === MOUNT_ACTION || scheduler === APPEAR_ACTION
+  }
+
+  beMounted = () => {
+    const { scheduler } = this.states
+
+    if (scheduler === MOUNT_ACTION) {
+      this.states.scheduler = NONE_ACTION
+    } else if (scheduler === APPEAR_ACTION) {
+      this.states.scheduler = APPEAR_READY
+      this.states.effect += 1
+    }
+
+    this.setIsMounted(true)
+  }
+
+  shouldRunFirst = () => {
+    const isCanAppear = this.states.scheduler === APPEAR_READY
+
+    if (isCanAppear) this.states.scheduler = NONE_ACTION
+
+    return isCanAppear
   }
 }
 
@@ -128,27 +108,29 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
 
   const forceUpdate = useForceUpdate()
 
-  const store = useConstant(() => new TransitionStore<E>(forceUpdate, props))
+  const states = useConstant(() => new TransitionState<E>(props))
+
+  const actions = useMemo(() => new TransitionAction<E>(forceUpdate, states), [states, forceUpdate])
 
   let returnEarly = false
 
   // 监听 unmountOnExit 与 mountOnEnter
   useWatchValue(`${unmountOnExit}-${mountOnEnter}`, () => {
-    if (!isExited(store.status)) return
+    if (!isExited(states.status)) return
 
-    const isMounted = !(unmountOnExit || (!store.hasMounted && mountOnEnter))
+    const isMounted = !(unmountOnExit || (!states.hasMounted && mountOnEnter))
 
-    returnEarly = isMounted !== store.isMounted
+    returnEarly = isMounted !== states.isMounted
 
-    store.setIsMounted(isMounted)
+    actions.setIsMounted(isMounted)
   })
 
   // when 变化时需要保证页面处于渲染中,
   useWatchValue(when, () => {
-    returnEarly = store.isMounted !== true
+    returnEarly = states.isMounted !== true
 
-    store.setIsMounted(true)
+    actions.setIsMounted(true)
   })
 
-  return [store, returnEarly] as const
+  return { states, actions, returnEarly }
 }

@@ -34,37 +34,35 @@ const excluded = [
 function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransitionProps<E>) {
   const { tag, children } = props
 
-  const store = useTransitionStore(props)
+  const { states, actions } = useTransitionStore(props)
 
-  const shouldTransition = !isElementsEqual(store.current, children)
+  const shouldTransition = !isElementsEqual(states.current, children)
 
   let returnEarly = false
 
   useWatchValue(shouldTransition, () => {
     returnEarly = shouldTransition
 
-    if (shouldTransition) store.scheduler.start()
-    else if (store.isCanFlip) store.updateCoords()
+    if (shouldTransition) actions.startTransition()
+    else if (actions.isCanFlip()) states.coords = actions.getCoords()
   })
 
   useEffect(() => {
-    const { scheduler } = store
-
     // step 1 update elements
-    if (scheduler.shouldUpdate()) return scheduler.update()
+    if (actions.shouldUpdate()) return actions.updateElements()
 
     // step 2 wait CSSTransition.instance mount
-    if (scheduler.shouldWait()) return scheduler.wait()
+    if (actions.shouldWait()) return actions.waitNextTick()
 
     // step 3 run flip
-    if (scheduler.shouldFlip()) return store.flip()
-  }, [store, store.scheduler.effect])
+    if (actions.shouldFlip()) return actions.runFlip()
+  }, [actions, states.effect])
 
   if (returnEarly) return null
 
-  if (isNullish(tag)) return <>{store.render()}</>
+  if (isNullish(tag)) return <>{actions.renderNodes()}</>
 
-  return createElement(tag, omit(props, excluded), store.render())
+  return createElement(tag, omit(props, excluded), actions.renderNodes())
 }
 
 export default withDisplayName(GroupTransition) as <E extends HTMLElement>(

@@ -26,32 +26,32 @@ function FocusTrap(_props: FocusTrapProps) {
 
   const { children, active, onEnter, onExit, getTabbable } = props
 
-  const store = useFocusTrapStore()
+  const { states, actions } = useFocusTrapStore()
 
-  const ref = useComposeRefs(store.$content, (children as any).ref)
+  const ref = useComposeRefs(states.$content, (children as any).ref)
 
   const runTrap = useEvent(() => {
-    if (!store.$content || !getTabbable) return
+    if (!states.$content || !getTabbable) return
 
-    const root = ownerDocument(store.$start.current)
+    const root = ownerDocument(states.$start.current)
 
-    store.setReturnFocus(root.activeElement)
+    actions.set('returnFocus', root.activeElement)
 
     const runFrameCleanup = nextFrame(() => {
-      store.focus(store.$start.current)
+      actions.focusElement(states.$start.current)
       onEnter?.()
     })
 
-    const runTrapCleanup = store.trap(root, getTabbable)
+    const runTrapCleanup = actions.onFocusTrap(root, getTabbable)
 
     return () => {
       runFrameCleanup()
 
       runTrapCleanup()
 
-      onExit?.(store.returnFocus)
+      onExit?.(states.returnFocus)
 
-      store.cleanup()
+      actions.onCleanup()
     }
   })
 
@@ -59,9 +59,9 @@ function FocusTrap(_props: FocusTrapProps) {
 
   return (
     <>
-      <div ref={store.$start} tabIndex={active ? 0 : -1} style={hidden}></div>
+      <div ref={states.$start} tabIndex={active ? 0 : -1} style={hidden}></div>
       {cloneElement(children, { ref })}
-      <div ref={store.$end} aria-hidden="true" tabIndex={active ? 0 : -1} style={hidden}></div>
+      <div ref={states.$end} aria-hidden="true" tabIndex={active ? 0 : -1} style={hidden}></div>
     </>
   )
 }

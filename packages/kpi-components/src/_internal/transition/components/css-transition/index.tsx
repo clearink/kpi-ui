@@ -9,6 +9,7 @@ import useFormatTimeouts from './hooks/use_format_timeouts'
 import useTransitionEvent from './hooks/use_transition_event'
 import useTransitionStore from './hooks/use_transition_store'
 import { addTransitionClass, delTransitionClass, recoverTransitionClass } from './utils/classnames'
+import { hideElement } from './utils/display'
 // types
 import type { CSSTransitionProps, CSSTransitionRef, TransitionStep } from './props'
 
@@ -20,32 +21,36 @@ function CSSTransition<E extends HTMLElement>(
 
   const display = children.props.style?.display
 
-  const [store, returnEarly] = useTransitionStore<E>(props)
+  const { states, actions, returnEarly } = useTransitionStore<E>(props)
+
+  // prettier-ignore
+  useImperativeHandle(ref, () => ({ 
+    get instance(){ return states.instance }, 
+    get status(){ return states.status } 
+  }), [states])
 
   const classNames = useFormatClassNames(name, props.classNames)
 
   const timeouts = useFormatTimeouts(duration)
 
-  useImperativeHandle(ref, () => store, [store])
-
-  const [runCancel, makeEndHook] = useTransitionEvent(store, classNames, props)
+  const [runCancel, makeEndHook] = useTransitionEvent(states, actions, classNames, props)
 
   const refCallback = (el: E | null) => {
     fillRef(el, (children as any).ref)
 
-    store.setInstance(el)
+    states.instance = el
 
-    el && store.setHasMounted()
+    if (el) states.hasMounted = true
 
     el && recoverTransitionClass(el)
 
-    if (isAppear(store.status) || isExited(store.status)) store.display.hide()
+    if (isAppear(states.status) || isExited(states.status)) hideElement(el)
   }
 
   const runTransition = useEvent((el: E, step: TransitionStep) => {
     const { from, active, to } = classNames[step]
 
-    store.start(step, display)
+    actions.startTransition(step, display)
 
     addTransitionClass(el, from)
 
@@ -62,31 +67,33 @@ function CSSTransition<E extends HTMLElement>(
 
       isExit(step) ? onExiting?.(el) : onEntering?.(el, isAppear(step))
 
-      store.setEndHook(makeEndHook(el, step, timeouts[step]))
+      states.cleanupHook = makeEndHook(el, step, timeouts[step])
     })
 
     return () => {
       runFrameCleanup()
 
-      store.runEndHook()
+      actions.runCleanupHook()
 
       runCancel(el, step)
     }
   })
 
   useEffect(() => {
-    const { scheduler, instance } = store
+    const { instance } = states
 
-    if (scheduler.shouldMount()) return scheduler.beMounted()
+    console.log('effect', performance.now())
 
-    if (!(instance && store.shouldTransition(when))) return
+    if (actions.shouldMount()) return actions.beMounted()
 
-    if (scheduler.shouldRunFirst()) return runTransition(instance, APPEAR)
+    if (!(instance && actions.shouldTransition(when))) return
+
+    if (actions.shouldRunFirst()) return runTransition(instance, APPEAR)
 
     return runTransition(instance, when ? ENTER : EXIT)
-  }, [runTransition, store, store.scheduler.effect, when])
+  }, [runTransition, when, states, actions, states.scheduler])
 
-  return returnEarly || !store.isMounted ? null : cloneElement(children, { ref: refCallback })
+  return returnEarly || !states.isMounted ? null : cloneElement(children, { ref: refCallback })
 }
 
 export default withDisplayName(forwardRef(CSSTransition), 'CSSTransition') as <
