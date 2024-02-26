@@ -4,11 +4,13 @@ import { useRef } from 'react'
 export default function useRafCallback<F extends (...args: any[]) => void>(fn: F) {
   const id = useRef(-1)
 
-  useUnmountEffect(() => cancelAnimationFrame(id.current))
+  // prettier-ignore
+  useUnmountEffect(() => { cancelAnimationFrame(id.current) })
 
   return useEvent((...args: any[]) => {
     cancelAnimationFrame(id.current)
 
-    id.current = requestAnimationFrame(() => fn(...args))
+    // prettier-ignore
+    id.current = requestAnimationFrame(() => { fn(...args) })
   })
 }

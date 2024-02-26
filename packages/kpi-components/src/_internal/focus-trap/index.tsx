@@ -6,6 +6,7 @@ import useFocusTrapStore from './hooks/use_trap_store'
 import defaultGetTabbable from './utils/tabbable'
 // types
 import type { FocusTrapProps } from './props'
+import batch from '../transition/utils/batch'
 
 const hidden: React.CSSProperties = {
   position: 'fixed',
@@ -26,42 +27,43 @@ function FocusTrap(_props: FocusTrapProps) {
 
   const { children, active, onEnter, onExit, getTabbable } = props
 
-  const store = useFocusTrapStore()
+  const { states, actions } = useFocusTrapStore()
 
-  const ref = useComposeRefs(store.$content, (children as any).ref)
+  const ref = useComposeRefs(states.$content, (children as any).ref)
 
-  const runTrap = useEvent(() => {
-    if (!store.$content || !getTabbable) return
+  const runFocusTrap = useEvent(() => {
+    if (!states.$content || !getTabbable) return
 
-    const root = ownerDocument(store.$start.current)
+    const root = ownerDocument(states.$start.current)
 
-    store.setReturnFocus(root.activeElement)
+    actions.setReturnFocus(root.activeElement)
 
     const runFrameCleanup = nextFrame(() => {
-      store.focus(store.$start.current)
+      actions.focusElement(states.$start.current)
       onEnter?.()
     })
 
-    const runTrapCleanup = store.trap(root, getTabbable)
+    const runTrapCleanup = actions.onFocusTrap(root, getTabbable)
 
     return () => {
       runFrameCleanup()
 
       runTrapCleanup()
 
-      onExit?.(store.returnFocus)
+      onExit?.(states.returnFocus)
 
-      store.cleanup()
+      actions.onCleanup()
     }
   })
 
-  useEffect(() => (active ? runTrap() : undefined), [active, runTrap])
+  // prettier-ignore
+  useEffect(() => { if(active) return runFocusTrap() }, [active, runFocusTrap])
 
   return (
     <>
-      <div ref={store.$start} tabIndex={active ? 0 : -1} style={hidden}></div>
+      <div ref={states.$start} tabIndex={active ? 0 : -1} style={hidden}></div>
       {cloneElement(children, { ref })}
-      <div ref={store.$end} aria-hidden="true" tabIndex={active ? 0 : -1} style={hidden}></div>
+      <div ref={states.$end} aria-hidden="true" tabIndex={active ? 0 : -1} style={hidden}></div>
     </>
   )
 }

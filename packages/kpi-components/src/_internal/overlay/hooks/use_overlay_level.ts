@@ -4,9 +4,8 @@ import { isUndefined } from '@kpi-ui/utils'
 import { ZIndexContext } from '../../../_shared/context'
 // types
 import type { OverlayProps } from '../props'
-import type { OverlayStore } from './use_overlay_store'
 
-export default function useOverlayLevel(store: OverlayStore, props: OverlayProps) {
+export default function useOverlayLevel(isMounted: boolean, props: OverlayProps) {
   const { open, zIndex } = props
 
   const { getZIndex } = ZIndexContext.useState()
@@ -14,7 +13,7 @@ export default function useOverlayLevel(store: OverlayStore, props: OverlayProps
   const isControlled = !isUndefined(zIndex)
 
   const level = useConstant(() => ({
-    value: isControlled || (!open && !store.isMounted) ? 0 : getZIndex(),
+    value: isControlled || (!open && !isMounted) ? 0 : getZIndex(),
   }))
 
   useWatchValue(open, () => {

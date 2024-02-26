@@ -13,9 +13,8 @@ function Portal(props: PortalProps) {
 
   const [container, setContainer] = useState<ContainerType>(null)
 
-  useEffect(() => {
-    setContainer(getContainer(_container))
-  }, [_container])
+  // prettier-ignore
+  useEffect(() => { setContainer(getContainer(_container)) }, [_container])
 
   if (isNullish(container)) return null
 

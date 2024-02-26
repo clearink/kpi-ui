@@ -6,9 +6,8 @@ export default function useMounted() {
   useEffect(() => {
     ref.current = true
 
-    return () => {
-      ref.current = false
-    }
+    // prettier-ignore
+    return () => { ref.current = false }
   }, [])
 
   return useCallback(() => ref.current, [])

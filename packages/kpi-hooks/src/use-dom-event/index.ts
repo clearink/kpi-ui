@@ -20,6 +20,7 @@ export default function useDomEvent(
 
     element.addEventListener(eventName, fn, eventOptions)
 
-    return () => element.removeEventListener(eventName, fn, eventOptions)
+    // prettier-ignore
+    return () => { element.removeEventListener(eventName, fn, eventOptions) }
   }, [fn, eventName, eventOptions, ref])
 }

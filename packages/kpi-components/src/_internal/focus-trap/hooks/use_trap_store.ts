@@ -1,6 +1,7 @@
 // utils
 import { useConstant } from '@kpi-ui/hooks'
 import { atIndex, noop } from '@kpi-ui/utils'
+import { useMemo } from 'react'
 import { Keyboard } from '../../../_shared/constants'
 import { addListener } from '../../transition/_shared/utils'
 // types
@@ -15,7 +16,18 @@ let __cleanupKeyDown = noop
 
 let __cleanupFocusIn = noop
 
-export class FocusTrapStore {
+const initTrapEvent = (root: Document) => {
+  const getTopEvent = (type: 'onKeyDown' | 'onFocusIn') => (e: any) => {
+    const topListeners = atIndex(__stack, -1)
+    topListeners && topListeners[type](e)
+  }
+
+  __cleanupKeyDown = addListener(root, 'keydown', getTopEvent('onKeyDown'), true)
+
+  __cleanupFocusIn = addListener(root, 'focusin', getTopEvent('onFocusIn'))
+}
+
+export class FocusTrapState {
   $start = {
     current: null as HTMLDivElement | null,
   }
@@ -28,44 +40,37 @@ export class FocusTrapStore {
     current: null as HTMLDivElement | null,
   }
 
-  focus = (node: HTMLElement | null) => {
-    node && node.focus({ preventScroll: true })
-  }
+  isShiftTab = false
 
-  shiftTab = false
+  latestFocus: HTMLElement | null = null
 
   returnFocus: Element | null = null
+}
+
+export class FocusTrapAction {
+  constructor(private states: FocusTrapState) {}
 
   setReturnFocus = (value: Element | null) => {
-    this.returnFocus = value
+    this.states.returnFocus = value
   }
 
-  related: HTMLElement | null = null
-
-  setRelated = (value: HTMLElement | null) => {
-    this.related = value
+  setLatestFocus = (value: HTMLElement | null) => {
+    this.states.latestFocus = value
   }
 
-  cleanup = () => {
-    this.related = null
-
-    this.returnFocus = null
+  focusElement = (el: HTMLElement | null) => {
+    el && el.focus({ preventScroll: true })
   }
 
-  init = (root: Document) => {
-    const getTopEvent = (type: 'onKeyDown' | 'onFocusIn') => (e: any) => {
-      const topListeners = atIndex(__stack, -1)
-      topListeners && topListeners[type](e)
-    }
+  onCleanup = () => {
+    this.states.latestFocus = null
 
-    __cleanupKeyDown = addListener(root, 'keydown', getTopEvent('onKeyDown'), true)
-
-    __cleanupFocusIn = addListener(root, 'focusin', getTopEvent('onFocusIn'))
+    this.states.returnFocus = null
   }
 
-  trap = (root: Document, getTabbale: FocusTrapProps['getTabbable']) => {
+  onFocusTrap = (root: Document, getTabbable: FocusTrapProps['getTabbable']) => {
     const onKeyDown = (e) => {
-      this.shiftTab = e.key === Keyboard.tab && e.shiftKey
+      this.states.isShiftTab = e.key === Keyboard.tab && e.shiftKey
     }
 
     const onFocusIn = (e: FocusEvent) => {
@@ -73,29 +78,32 @@ export class FocusTrapStore {
 
       const target = e.target as HTMLElement
 
-      const container = this.$content.current
+      const { $start, $content, $end, isShiftTab, latestFocus } = this.states
+
+      const container = $content.current
 
       if (!container || !target) return
 
       const active = root.activeElement
 
-      if (active !== this.$start.current && active !== this.$end.current) {
-        if (container.contains(target)) return this.setRelated(target)
-        if (this.related) return this.focus(this.related)
+      if (active !== $start.current && active !== $end.current) {
+        if (container.contains(target)) return this.setLatestFocus(target)
+
+        if (latestFocus) return this.focusElement(latestFocus)
       }
 
-      const tabbable = getTabbale!(container)
+      const tabbable = getTabbable!(container)
 
       if (!tabbable.length) return
 
-      this.focus(atIndex(tabbable, this.shiftTab ? -1 : 0))
+      this.focusElement(atIndex(tabbable, isShiftTab ? -1 : 0))
     }
 
     const listeners = { onKeyDown, onFocusIn }
 
     __stack.push(listeners)
 
-    if (__stack.length === 1) this.init(root)
+    if (__stack.length === 1) initTrapEvent(root)
 
     return () => {
       __stack = __stack.filter((item) => item !== listeners)
@@ -108,9 +116,10 @@ export class FocusTrapStore {
     }
   }
 }
-
 export default function useFocusTrapStore() {
-  const store = useConstant(() => new FocusTrapStore())
+  const states = useConstant(() => new FocusTrapState())
 
-  return store
+  const actions = useMemo(() => new FocusTrapAction(states), [states])
+
+  return { states, actions }
 }

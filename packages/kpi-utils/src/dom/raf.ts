@@ -12,9 +12,8 @@ export const caf = isBrowser()
 export function nextFrame(callback: () => void) {
   const ids: number[] = Array(2)
 
-  ids[0] = raf(() => {
-    ids[1] = raf(callback)
-  })
+  // prettier-ignore
+  ids[0] = raf(() => { ids[1] = raf(callback) })
 
   return () => ids.forEach(caf)
 }
@@ -22,17 +21,18 @@ export function nextFrame(callback: () => void) {
 export function loopFrame(callback: () => any) {
   let id: number
 
-  const tick = () => {
-    if (callback()) id = raf(tick)
-  }
+  // prettier-ignore
+  const tick = () => { if (callback()) id = raf(tick) }
 
   id = raf(tick)
 
-  return () => caf(id)
+  // prettier-ignore
+  return () => { caf(id) }
 }
 
 export function nextTick(callback: () => void) {
   const id = raf(callback)
 
-  return () => caf(id)
+  // prettier-ignore
+  return () => { caf(id) }
 }

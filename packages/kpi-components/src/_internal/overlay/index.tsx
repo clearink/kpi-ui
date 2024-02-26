@@ -20,13 +20,13 @@ function Overlay(_props: OverlayProps) {
 
   const styles = useSemanticStyles(props.style, props.styles)
 
-  const [store, returnEarly] = useOverlayStore(props)
+  const { states, actions, returnEarly } = useOverlayStore(props)
 
-  const level = useOverlayLevel(store, props)
+  const level = useOverlayLevel(states.isMounted, props)
 
   // TODO: lock scroll
 
-  if (returnEarly || !store.isMounted) return null
+  if (returnEarly || !states.isMounted) return null
 
   return (
     <Portal getContainer={props.getContainer}>
@@ -41,12 +41,12 @@ function Overlay(_props: OverlayProps) {
         )}
         <CSSTransition
           appear
-          ref={store.$content}
+          ref={states.$content}
           when={open}
           name={transitions.content}
           onEnter={(el, appearing) => {
             props.onEnter?.(el, appearing)
-            store.setIsMounted(true)
+            actions.setIsMounted(true)
           }}
           onEntering={props.onEntering}
           onEntered={props.onEntered}
@@ -54,7 +54,7 @@ function Overlay(_props: OverlayProps) {
           onExiting={props.onExiting}
           onExited={(el) => {
             props.onExited?.(el)
-            store.setIsMounted(!(unmountOnExit && !keepMounted))
+            actions.setIsMounted(!(unmountOnExit && !keepMounted))
           }}
         >
           <ForwardFunctional<ReactElement, RefCallback<HTMLDivElement>>>

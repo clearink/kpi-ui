@@ -19,10 +19,11 @@ export default function FormProvider(props: InternalFormProviderProps) {
       // 为每一个 FormProvider 注册表单实例 同时返回取消事件
       register: batch(provider.register, (form, name) => {
         if (!name) return noop
+
         forms.current[name] = form
-        return () => {
-          delete forms.current[name]
-        }
+
+        // prettier-ignore
+        return () => { delete forms.current[name] }
       }),
       triggerFormChange: provider.triggerFormChange,
       triggerFormFinish: provider.triggerFormFinish,

@@ -39,9 +39,8 @@ export function useThrottleValue<Value = any>(delay: number, value: Value) {
 
   const mounted = useMounted()
 
-  const callback = useThrottleCallback(delay, () => {
-    mounted() && setState(value)
-  })
+  // prettier-ignore
+  const callback = useThrottleCallback(delay, () => { mounted() && setState(value) })
 
   useEffect(callback, [callback, value])
 

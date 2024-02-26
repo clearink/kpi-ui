@@ -4,9 +4,8 @@ import { useCallback, useEffect, useRef } from 'react'
 export default function useEvent<T extends (...args: any[]) => any>(callback: T): T {
   const ref = useRef(callback)
 
-  useEffect(() => {
-    ref.current = callback
-  }, [callback])
+  // prettier-ignore
+  useEffect(() => { ref.current = callback }, [callback])
 
   return useCallback((...args: any[]) => ref.current(...args), []) as unknown as T
 }

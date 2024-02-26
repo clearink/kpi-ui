@@ -1,21 +1,21 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { addClassNames, delClassNames, omit } from '@kpi-ui/utils'
-import { cloneElement, createElement, type ReactElement } from 'react'
+import { cloneElement, createElement, useMemo, type ReactElement } from 'react'
 import { batch, reflow } from '../../../_shared/utils'
 import { ENTER, isExit, isExited } from '../../../constants'
 import makeUniqueId from '../../../utils/unique_id'
 import CSSTransition from '../../css-transition'
 import diff from '../utils/diff'
 import union from '../utils/union'
-import { NONE_ACTION, UPDATE_CHILDREN, WAIT_TICK, FLIP_READY } from '../constants'
+import { NONE_ACTION, UPDATE_ACTION, NEXT_TICK, FLIP_READY } from '../constants'
 // types
 import type { CSSTransitionProps as CSS, CSSTransitionRef } from '../../css-transition/props'
 import type { GroupTransitionProps as Group } from '../props'
 
 const uniqueId = makeUniqueId('gt-')
 
-class TransitionStore<E extends HTMLElement = HTMLElement> {
-  constructor(public forceUpdate: () => void, props: Group<E>) {
+class TransitionState<E extends HTMLElement> {
+  constructor(props: Group<E>) {
     this.props = props
 
     this.previous = props.children
@@ -23,51 +23,15 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
     this.current = props.children
 
     this.current.forEach((el) => {
-      this.elements.set(el.key, { fresh: true, el: this.make(el, { when: true }) })
+      this.elements.set(el.key, { fresh: true, el: this.makeElement(el, { when: true }) })
     })
   }
 
-  get isCanFlip() {
-    return !!(this.props.name && this.props.flip)
-  }
+  effect = 0
 
-  scheduler = {
-    status: NONE_ACTION,
-    effect: 0,
-    nextEffect: () => {
-      this.scheduler.effect += 1
-
-      this.forceUpdate()
-    },
-    shouldUpdate: () => this.scheduler.status === UPDATE_CHILDREN,
-    shouldWait: () => this.scheduler.status === WAIT_TICK && this.isCanFlip,
-    shouldFlip: () => this.scheduler.status === FLIP_READY && this.isCanFlip,
-    start: () => {
-      this.scheduler.status = UPDATE_CHILDREN
-
-      this.scheduler.nextEffect()
-    },
-    update: () => {
-      this.unionElements()
-
-      if (!this.isCanFlip) return this.forceUpdate()
-
-      this.scheduler.status = WAIT_TICK
-
-      this.scheduler.nextEffect()
-    },
-    wait: () => {
-      this.scheduler.status = FLIP_READY
-
-      this.scheduler.nextEffect()
-    },
-  }
+  scheduler = NONE_ACTION
 
   props: Group<E>
-
-  setTransitionProps = (props: Group<E>) => {
-    this.props = props
-  }
 
   previous: ReactElement[] = []
 
@@ -79,21 +43,10 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
   coords = new Map<ReactElement['key'], DOMRect>()
 
-  getCoords = () => {
-    return this.previous.reduce((map, el) => {
-      const comp = this.components.get(el.key)
+  cancels: (() => void)[] = []
 
-      const rect = comp?.instance?.getBoundingClientRect()
-
-      return rect ? map.set(el.key, rect) : map
-    }, new Map<ReactElement['key'], DOMRect>())
-  }
-
-  updateCoords = () => {
-    this.coords = this.getCoords()
-  }
-
-  make = (element: ReactElement, extra: Partial<CSS>) => {
+  /** @internal */
+  makeElement = (element: ReactElement, extra: Partial<CSS>) => {
     const preset = omit(this.props, ['children']) as CSS
 
     const ref = (instance: CSSTransitionRef | null) => {
@@ -105,62 +58,87 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
     return createElement(CSSTransition, preset, element)
   }
+}
+
+class TransitionAction<E extends HTMLElement> {
+  constructor(private forceUpdate: () => void, private states: TransitionState<E>) {}
+
+  injectLatestProps = (props: Group<E>) => {
+    this.states.props = props
+  }
+
+  isCanFlip = () => !!(this.states.props.name && this.states.props.flip)
+
+  getCoords = () => {
+    return this.states.previous.reduce((map, el) => {
+      const comp = this.states.components.get(el.key)
+
+      const rect = comp?.instance?.getBoundingClientRect()
+
+      return rect ? map.set(el.key, rect) : map
+    }, new Map<ReactElement['key'], DOMRect>())
+  }
 
   runExitedEffect = () => {
     let isCompleted = true
 
-    this.elements.forEach((_, key) => {
-      const comp = this.components.get(key) || { status: ENTER }
+    this.states.elements.forEach((_, key) => {
+      const comp = this.states.components.get(key) || { status: ENTER }
 
-      if (isExited(comp.status)) this.elements.delete(key)
+      if (isExited(comp.status)) this.states.elements.delete(key)
 
       if (isCompleted && isExit(comp.status)) isCompleted = false
     })
 
     if (!isCompleted) return
 
-    this.props.onExitComplete?.()
+    this.states.props.onExitComplete?.()
 
     this.forceUpdate()
   }
 
   unionElements = () => {
-    const { children, onExited } = this.props
+    const { children, onExited } = this.states.props
 
-    const [enters, exits] = diff(this.current, children)
+    const [enters, exits] = diff(this.states.current, children)
 
-    this.elements = union(this.elements, enters, children).reduce((result, [key, el]) => {
-      if (result.has(key)) throw new Error(`Encountered two children with the same key, '${key}'. `)
+    this.states.elements = union(this.states.elements, enters, children).reduce(
+      (result, [key, el]) => {
+        if (result.has(key))
+          throw new Error(`Encountered two children with the same key, '${key}'. `)
 
-      if (enters.has(key)) {
-        return result.set(key, { fresh: true, el: this.make(el, { when: true, appear: true }) })
-      }
+        if (enters.has(key)) {
+          return result.set(key, {
+            fresh: true,
+            el: this.states.makeElement(el, { when: true, appear: true }),
+          })
+        }
 
-      const props: Partial<CSS<E>> = { onExited: batch(onExited, this.runExitedEffect) }
+        const props: Partial<CSS<E>> = { onExited: batch(onExited, this.runExitedEffect) }
 
-      if (exits.has(key)) props.when = false
+        if (exits.has(key)) props.when = false
 
-      return result.set(key, { fresh: props.when !== false, el: cloneElement(el, props) })
-    }, new Map())
+        return result.set(key, { fresh: props.when !== false, el: cloneElement(el, props) })
+      },
+      new Map()
+    )
 
-    this.previous = this.current
+    this.states.previous = this.states.current
 
-    this.current = children
+    this.states.current = children
   }
 
-  cancels: (() => void)[] = []
+  runFlip = () => {
+    const { name } = this.states.props
 
-  flip = () => {
-    const { name } = this.props
-
-    this.cancels.forEach((fn) => fn())
+    this.states.cancels.forEach((fn) => fn())
 
     const moves: (() => () => void)[] = []
 
     this.getCoords().forEach((newCoord, key) => {
-      const oldCoord = this.coords.get(key)
+      const oldCoord = this.states.coords.get(key)
 
-      const dom = (this.components.get(key) || {}).instance
+      const dom = (this.states.components.get(key) || {}).instance
 
       if (!oldCoord || !dom) return
 
@@ -195,16 +173,16 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
     reflow()
 
-    this.cancels = moves.map((fn) => fn())
+    this.states.cancels = moves.map((fn) => fn())
   }
 
-  render = () => {
-    const { children } = this.props
+  renderNodes = () => {
+    const { children } = this.states.props
 
     const elements: ReactElement[] = []
 
     // sync elements
-    this.elements.forEach((item, key) => {
+    this.states.elements.forEach((item, key) => {
       const node = children.find((el) => el.key === key)
 
       if (!item.fresh || !node) return elements.push(item.el)
@@ -213,19 +191,55 @@ class TransitionStore<E extends HTMLElement = HTMLElement> {
 
       elements.push(element)
 
-      this.elements.set(key, { fresh: item.fresh, el: element })
+      this.states.elements.set(key, { fresh: item.fresh, el: element })
     })
 
     return elements
+  }
+
+  nextEffect = () => {
+    this.states.effect += 1
+
+    this.forceUpdate()
+  }
+
+  shouldUpdate = () => this.states.scheduler === UPDATE_ACTION
+
+  shouldWait = () => this.states.scheduler === NEXT_TICK && this.isCanFlip()
+
+  shouldFlip = () => this.states.scheduler === FLIP_READY && this.isCanFlip()
+
+  startTransition = () => {
+    this.states.scheduler = UPDATE_ACTION
+
+    this.nextEffect()
+  }
+
+  updateElements = () => {
+    this.unionElements()
+
+    if (!this.isCanFlip()) return this.forceUpdate()
+
+    this.states.scheduler = NEXT_TICK
+
+    this.nextEffect()
+  }
+
+  waitNextTick = () => {
+    this.states.scheduler = FLIP_READY
+
+    this.nextEffect()
   }
 }
 
 export default function useTransitionStore<E extends HTMLElement = HTMLElement>(props: Group<E>) {
   const forceUpdate = useForceUpdate()
 
-  const store = useConstant(() => new TransitionStore(forceUpdate, props))
+  const states = useConstant(() => new TransitionState(props))
 
-  store.setTransitionProps(props)
+  const actions = useMemo(() => new TransitionAction(forceUpdate, states), [forceUpdate, states])
 
-  return store
+  actions.injectLatestProps(props)
+
+  return { states, actions }
 }

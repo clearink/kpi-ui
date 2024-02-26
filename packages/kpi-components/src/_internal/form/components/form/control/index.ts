@@ -206,13 +206,13 @@ export class FormWatchValueControl {
   registerWatch = (callback: WatchCallBack) => {
     this._watchList.add(callback)
 
-    return () => this._watchList.delete(callback)
+    // prettier-ignore
+    return () => { this._watchList.delete(callback) }
   }
 
   // 通知监听字段
-  publishWatch = () => {
-    this._watchList.forEach((callback) => callback())
-  }
+  // prettier-ignore
+  publishWatch = () => { this._watchList.forEach((callback) => { callback() }) }
 }
 
 /** ==================================================== */

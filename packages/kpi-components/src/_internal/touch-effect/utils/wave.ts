@@ -3,12 +3,11 @@ import type { TouchEffectInfo } from '../_shared/context'
 // 白色，透明 不合格
 function isValidColor(color: string) {
   const matches = color.split(/[(rgba?()),\s]/g).filter(Boolean)
-  if (matches.length === 3) {
-    return !['255,255,255'].includes(matches.join(','))
-  }
-  if (matches.length === 4) {
-    return matches[3] !== '0'
-  }
+
+  if (matches.length === 3) return !['255,255,255'].includes(matches.join(','))
+
+  if (matches.length === 4) return matches[3] !== '0'
+
   return false
 }
 

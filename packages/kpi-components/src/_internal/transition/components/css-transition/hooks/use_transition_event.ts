@@ -4,14 +4,16 @@ import { isAppear, isEnter, isExit } from '../../../constants'
 import runCounter from '../../../utils/run_counter'
 import { delTransitionClass } from '../utils/classnames'
 import collectTimeoutInfo from '../utils/collect'
+import { hideElement } from '../utils/display'
 import { addListener, addTimeout } from '../utils/listener'
 import useFormatClassNames from './use_format_class_names'
+import useTransitionStore from './use_transition_store'
 // types
 import type { CSSTransitionProps, TransitionStep } from '../props'
-import type { TransitionStore } from './use_transition_store'
 
 export default function useTransitionEvent<E extends HTMLElement>(
-  store: TransitionStore<E>,
+  states: ReturnType<typeof useTransitionStore<E>>['states'],
+  actions: ReturnType<typeof useTransitionStore<E>>['actions'],
   classNames: ReturnType<typeof useFormatClassNames>,
   props: CSSTransitionProps<E>
 ) {
@@ -19,7 +21,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
     props
 
   const done = (el: E, step: TransitionStep) => {
-    store.done(step)
+    actions.finishTransition(step)
 
     const { from, active, to } = classNames[step]
 
@@ -29,13 +31,13 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     onExited?.(el)
 
-    store.display.hide()
+    hideElement(el)
 
-    unmountOnExit && store.setIsMounted(false)
+    unmountOnExit && actions.setIsMounted(false)
   }
 
   const runCancel = (el: E, step: TransitionStep) => {
-    if (!isEnter(store.status) && !isExit(store.status)) return
+    if (!isEnter(states.status) && !isExit(states.status)) return
 
     const { from, active, to } = classNames[step]
 

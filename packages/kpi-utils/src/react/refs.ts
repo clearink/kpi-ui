@@ -10,9 +10,8 @@ export function fillRef<T>(el: T, ref?: ReactRef<T>) {
 }
 
 export function mergeRefs<T>(...refs: (ReactRef<T> | undefined)[]) {
-  return (el: T | null) => {
-    refs.forEach((ref) => fillRef(el, ref))
-  }
+  // prettier-ignore
+  return (el: T | null) => { refs.forEach((ref) => { fillRef(el, ref) }) }
 }
 
 export function supportRef(el: ReactNode): el is ReactElement & { ref: ReactRef<any> } {

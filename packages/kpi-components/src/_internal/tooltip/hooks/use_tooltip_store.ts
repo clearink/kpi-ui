@@ -1,8 +1,9 @@
-import { useConstant } from '@kpi-ui/hooks'
+import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
+import { useMemo } from 'react'
 // types
 import type { InternalTooltipProps, TooltipCoords } from '../props'
 
-export class TooltipStore {
+export class TooltipState {
   $trigger = {
     current: null as Element | null,
   }
@@ -11,12 +12,32 @@ export class TooltipStore {
     current: null as HTMLDivElement | null,
   }
 
-  updateCoords = (open: boolean, props: InternalTooltipProps, oldCoords: TooltipCoords) => {
-    const tooltip = this.$tooltip.current
+  coords: TooltipCoords = { top: 'auto', right: 'auto', bottom: 'auto', left: 'auto' }
+}
 
-    const trigger = this.$trigger.current
+export class TooltipAction {
+  constructor(private forceUpdate: () => void, private states: TooltipState) {}
 
-    if (!open || !tooltip || !trigger) return null
+  private isEqualCoords = (a: TooltipCoords, b: TooltipCoords) => {
+    const positions: (keyof TooltipCoords)[] = ['top', 'right', 'bottom', 'left']
+
+    return positions.every((direction) => a[direction] === b[direction])
+  }
+
+  private setCoords = (value: TooltipCoords) => {
+    if (this.isEqualCoords(this.states.coords, value)) return
+
+    this.forceUpdate()
+
+    this.states.coords = value
+  }
+
+  updateCoords = (props: InternalTooltipProps) => {
+    const tooltip = this.states.$tooltip.current
+
+    const trigger = this.states.$trigger.current
+
+    if (!tooltip || !trigger) return null
 
     const { autoLayout, placement } = props
 
@@ -33,19 +54,18 @@ export class TooltipStore {
       left: triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2,
     }
 
-    if (newCoords === oldCoords) return null
-
-    tooltip.style.setProperty(
-      'insert',
-      `${newCoords.top} ${newCoords.right} ${newCoords.bottom} ${newCoords.left}`
-    )
-
     console.log(tooltipRect, triggerRect)
 
-    return newCoords
+    this.setCoords(newCoords)
   }
 }
 
 export default function useTooltipStore() {
-  return useConstant(() => new TooltipStore())
+  const forceUpdate = useForceUpdate()
+
+  const states = useConstant(() => new TooltipState())
+
+  const actions = useMemo(() => new TooltipAction(forceUpdate, states), [forceUpdate, states])
+
+  return { states, actions }
 }

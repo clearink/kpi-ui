@@ -8,6 +8,6 @@ export default function useSpaceGutter(size: SpaceProps['size'], hasSplit: boole
   return useMemo(() => {
     const sizes = isArray(size) ? size : [size, size]
     const denominator = hasSplit ? 2 : 1
-    return sizes.map((s) => (SPACE_SIZE[s || 0] || s || 0) / denominator)
+    return sizes.map((s = 0) => (SPACE_SIZE[s] ?? s) / denominator) || 0
   }, [size, hasSplit])
 }

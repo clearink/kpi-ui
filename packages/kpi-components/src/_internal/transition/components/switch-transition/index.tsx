@@ -10,25 +10,25 @@ import type { SwitchTransitionProps } from './props'
 function SwitchTransition<E extends HTMLElement = HTMLElement>(props: SwitchTransitionProps<E>) {
   const { children, mode } = props
 
-  const store = useTransitionStore(props)
+  const { states, actions } = useTransitionStore(props)
 
-  const shouldTransition = !isElementEqual(store.current, children)
+  const shouldTransition = !isElementEqual(states.current, children)
 
   let returnEarly = false
 
   useWatchValue(shouldTransition, () => {
     if (!shouldTransition) return
 
-    if (mode === 'out-in') store.runOutInSwitch()
-    else if (mode === 'in-out') store.runInOutSwitch()
-    else store.runDefaultSwitch()
+    if (mode === 'out-in') actions.runOutInSwitch()
+    else if (mode === 'in-out') actions.runInOutSwitch()
+    else actions.runDefaultSwitch()
 
     returnEarly = true
 
-    store.forceUpdate()
+    actions.forceUpdate()
   })
 
-  return returnEarly ? null : <>{store.render()}</>
+  return returnEarly ? null : <>{actions.renderNodes()}</>
 }
 
 export default withDisplayName(SwitchTransition) as <E extends HTMLElement>(

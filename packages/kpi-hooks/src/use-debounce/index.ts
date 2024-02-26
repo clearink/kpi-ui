@@ -34,9 +34,8 @@ export function useDebounceValue<Value>(delay: number, value: Value) {
 
   const mounted = useMounted()
 
-  const callback = useDebounceCallback(delay, () => {
-    mounted() && setState(value)
-  })
+  // prettier-ignore
+  const callback = useDebounceCallback(delay, () => { mounted() && setState(value) })
 
   useEffect(callback, [callback, value])
 

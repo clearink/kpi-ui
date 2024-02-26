@@ -1,8 +1,8 @@
 // utils
 import { cls, mergeRefs, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { cloneElement, useEffect, useMemo } from 'react'
+import { cloneElement } from 'react'
 import { useSemanticStyles } from '../../_shared/hooks'
-import useTooltipCoords from './hooks/use_tooltip_coords'
+import useTooltipResize from './hooks/use_tooltip_resize'
 import useTooltipOpen from './hooks/use_tooltip_open'
 import useTooltipStore from './hooks/use_tooltip_store'
 // comps
@@ -39,16 +39,16 @@ function InternalTooltip(_props: InternalTooltipProps) {
 
   const styles = useSemanticStyles(style, _styles)
 
-  const store = useTooltipStore()
-
   const [open, setOpen] = useTooltipOpen(props)
 
-  const [tooltipCoords, setTooltipCoords] = useTooltipCoords(store, props, open)
+  const { states, actions } = useTooltipStore()
+
+  useTooltipResize(states, actions, open, props)
 
   const triggerHandlers = useTriggerEvent(props, setOpen)
 
   const contentCoords = {
-    ...tooltipCoords,
+    ...states.coords,
   }
 
   const arrowCoords = {}
@@ -56,7 +56,7 @@ function InternalTooltip(_props: InternalTooltipProps) {
   return (
     <>
       {cloneElement(children, {
-        ref: mergeRefs(store.$trigger, (children as any).ref),
+        ref: mergeRefs(states.$trigger, (children as any).ref),
         ...triggerHandlers,
       })}
       <Overlay
@@ -65,13 +65,12 @@ function InternalTooltip(_props: InternalTooltipProps) {
         zIndex={zIndex}
         transitions={transitions}
         onEnter={() => {
-          const newCoords = store.updateCoords(open, props, tooltipCoords)
-
-          newCoords && setTooltipCoords(newCoords)
+          console.log('onEnter')
+          actions.updateCoords(props)
         }}
       >
         <div
-          ref={store.$tooltip}
+          ref={states.$tooltip}
           className={cls(className, classNames.root)}
           style={{ ...styles.root, ...contentCoords }}
         >

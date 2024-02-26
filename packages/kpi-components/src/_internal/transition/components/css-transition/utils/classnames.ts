@@ -9,7 +9,8 @@ export const addTransitionClass = (el: Element, ...classes: (string | undefined)
 
   if (!dom[additional]) dom[additional] = new Set()
 
-  classes.forEach((cls) => dom[additional]!.add(cls))
+  // prettier-ignore
+  classes.forEach((cls) => { dom[additional]!.add(cls) })
 }
 
 export const delTransitionClass = (el: Element, ...classes: (string | undefined)[]) => {
@@ -17,11 +18,13 @@ export const delTransitionClass = (el: Element, ...classes: (string | undefined)
 
   delClassNames(dom, ...classes)
 
-  if (dom[additional]) classes.forEach((cls) => dom[additional]!.delete(cls))
+  // prettier-ignore
+  if (dom[additional]) classes.forEach((cls) => { dom[additional]!.delete(cls) })
 }
 
 export const recoverTransitionClass = (el: Element) => {
   const dom = el as Element & { [additional]?: Set<string | undefined> }
 
-  if (dom[additional]) dom[additional].forEach((cls) => addClassNames(dom, cls))
+  // prettier-ignore
+  if (dom[additional]) dom[additional].forEach((cls) => { addClassNames(dom, cls) })
 }
