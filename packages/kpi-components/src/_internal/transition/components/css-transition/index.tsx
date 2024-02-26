@@ -1,14 +1,7 @@
 // utils
 import { useEvent } from '@kpi-ui/hooks'
 import { fillRef, nextFrame, withDisplayName } from '@kpi-ui/utils'
-import {
-  cloneElement,
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  type Ref,
-  useLayoutEffect,
-} from 'react'
+import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref } from 'react'
 import { reflow } from '../../_shared/utils'
 import { APPEAR, ENTER, EXIT, isAppear, isExit, isExited } from '../../constants'
 import useFormatClassNames from './hooks/use_format_class_names'

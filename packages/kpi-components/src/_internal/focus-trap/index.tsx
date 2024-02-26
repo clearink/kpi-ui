@@ -6,7 +6,6 @@ import useFocusTrapStore from './hooks/use_trap_store'
 import defaultGetTabbable from './utils/tabbable'
 // types
 import type { FocusTrapProps } from './props'
-import batch from '../transition/utils/batch'
 
 const hidden: React.CSSProperties = {
   position: 'fixed',
