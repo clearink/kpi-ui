@@ -1,7 +1,7 @@
 // utils
 import { useEvent } from '@kpi-ui/hooks'
 import { fillRef, nextFrame, withDisplayName } from '@kpi-ui/utils'
-import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref } from 'react'
+import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref, useRef } from 'react'
 import { reflow } from '../../_shared/utils'
 import { APPEAR, ENTER, EXIT, isAppear, isExit, isExited } from '../../constants'
 import useFormatClassNames from './hooks/use_format_class_names'
@@ -80,9 +80,11 @@ function CSSTransition<E extends HTMLElement>(
     }
   })
 
+  const isInitial = useRef(true)
+
   useEffect(() => {
     const el = states.instance
-    console.log('useEffect')
+    console.log('useEffect', isInitial.current)
 
     if (actions.shouldMount()) return actions.beMounted()
 
@@ -92,6 +94,14 @@ function CSSTransition<E extends HTMLElement>(
 
     return runTransition(el, when ? ENTER : EXIT)
   }, [runTransition, when, actions, states.instance, states.effect])
+
+  // 通过再增加一个 useEffect 可以实现 strictMode 下的 appear 正确的逻辑
+  useEffect(() => {
+    isInitial.current = false
+    return () => {
+      isInitial.current = true
+    }
+  }, [])
 
   return returnEarly || !states.isMounted ? null : cloneElement(children, { ref: refCallback })
 }
