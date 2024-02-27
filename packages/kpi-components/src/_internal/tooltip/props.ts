@@ -39,4 +39,6 @@ export interface InternalTooltipProps
   placement?: TooltipPlacement
 
   autoLayout?: boolean | { pointAtCenter: boolean }
+
+  offset?: number | [number, number]
 }

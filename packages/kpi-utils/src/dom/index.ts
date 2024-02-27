@@ -1,4 +1,5 @@
 export { default as isBrowser } from './is_browser'
+export { default as isElement } from './is_element'
 export * from './classnames'
 export * from './raf'
 export * from './owner'

@@ -19,6 +19,7 @@ export const defaultProps: Partial<InternalTooltipProps> = {
   defaultOpen: false,
   placement: 'bottom',
   autoLayout: true,
+  offset: 0,
 }
 
 function InternalTooltip(_props: InternalTooltipProps) {

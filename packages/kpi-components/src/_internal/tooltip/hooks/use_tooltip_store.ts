@@ -1,4 +1,5 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
+import { fallback, isArray, isElement, toArray } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 // types
 import type { InternalTooltipProps, TooltipCoords } from '../props'
@@ -18,6 +19,14 @@ export class TooltipState {
 export class TooltipAction {
   constructor(private forceUpdate: () => void, private states: TooltipState) {}
 
+  get trigger() {
+    return this.states.$trigger.current
+  }
+
+  get tooltip() {
+    return this.states.$tooltip.current
+  }
+
   private isEqualCoords = (a: TooltipCoords, b: TooltipCoords) => {
     const positions: (keyof TooltipCoords)[] = ['top', 'right', 'bottom', 'left']
 
@@ -32,10 +41,19 @@ export class TooltipAction {
     this.states.coords = value
   }
 
-  updateCoords = (props: InternalTooltipProps) => {
-    const tooltip = this.states.$tooltip.current
+  setTriggerNode = (el: Element | null) => {
+    if (!isElement(el) || this.trigger !== el) return
 
-    const trigger = this.states.$trigger.current
+    this.states.$trigger.current = el
+
+    this.forceUpdate()
+  }
+
+  updateCoords = (props: InternalTooltipProps) => {
+    const tooltip = this.tooltip
+
+    const trigger = this.trigger
+    console.log('updateCoords', tooltip, trigger)
 
     if (!tooltip || !trigger) return null
 
@@ -45,16 +63,14 @@ export class TooltipAction {
 
     const triggerRect = trigger.getBoundingClientRect()
 
-    const offsetY = 10
-
     const newCoords: TooltipCoords = {
-      top: triggerRect.top - offsetY - tooltipRect.height,
+      top: triggerRect.top - 10 - tooltipRect.height + window.scrollY,
       right: 'auto',
       bottom: 'auto',
-      left: triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2,
+      left: triggerRect.left + (triggerRect.width - tooltipRect.width) / 2 + window.scrollX,
     }
 
-    console.log(tooltipRect, triggerRect)
+    // console.log(tooltipRect, triggerRect)
 
     this.setCoords(newCoords)
   }
