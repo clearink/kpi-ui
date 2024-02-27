@@ -46,7 +46,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
     delTransitionClass(el, from, active, to)
   }
 
-  const makeEndHook = (el: E, step: TransitionStep, timeout?: number) => {
+  const makeCleanupHook = (el: E, step: TransitionStep, timeout?: number) => {
     const resolve = done.bind(null, el, step)
 
     if (addEndListener) return addEndListener(el, step, resolve)
@@ -88,5 +88,5 @@ export default function useTransitionEvent<E extends HTMLElement>(
     )
   }
 
-  return [runCancel, makeEndHook] as const
+  return [runCancel, makeCleanupHook] as const
 }

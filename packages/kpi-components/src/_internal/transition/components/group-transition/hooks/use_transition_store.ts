@@ -7,7 +7,6 @@ import makeUniqueId from '../../../utils/unique_id'
 import CSSTransition from '../../css-transition'
 import diff from '../utils/diff'
 import union from '../utils/union'
-import { NONE_ACTION, UPDATE_ACTION, NEXT_TICK, FLIP_READY } from '../constants'
 // types
 import type { CSSTransitionProps as CSS, CSSTransitionRef } from '../../css-transition/props'
 import type { GroupTransitionProps as Group } from '../props'
@@ -27,9 +26,7 @@ class TransitionState<E extends HTMLElement> {
     })
   }
 
-  effect = 0
-
-  scheduler = NONE_ACTION
+  isInitial = true
 
   props: Group<E>
 
@@ -65,6 +62,10 @@ class TransitionAction<E extends HTMLElement> {
 
   injectLatestProps = (props: Group<E>) => {
     this.states.props = props
+  }
+
+  setIsInitial = (value: boolean) => {
+    this.states.isInitial = value
   }
 
   isCanFlip = () => !!(this.states.props.name && this.states.props.flip)
@@ -126,6 +127,10 @@ class TransitionAction<E extends HTMLElement> {
     this.states.previous = this.states.current
 
     this.states.current = children
+  }
+
+  shouldRunFlip = (isInitial: boolean) => {
+    return !isInitial && this.isCanFlip()
   }
 
   runFlip = () => {
@@ -197,38 +202,10 @@ class TransitionAction<E extends HTMLElement> {
     return elements
   }
 
-  nextEffect = () => {
-    this.states.effect += 1
-
-    this.forceUpdate()
-  }
-
-  shouldUpdate = () => this.states.scheduler === UPDATE_ACTION
-
-  shouldWait = () => this.states.scheduler === NEXT_TICK && this.isCanFlip()
-
-  shouldFlip = () => this.states.scheduler === FLIP_READY && this.isCanFlip()
-
-  startTransition = () => {
-    this.states.scheduler = UPDATE_ACTION
-
-    this.nextEffect()
-  }
-
   updateElements = () => {
     this.unionElements()
 
-    if (!this.isCanFlip()) return this.forceUpdate()
-
-    this.states.scheduler = NEXT_TICK
-
-    this.nextEffect()
-  }
-
-  waitNextTick = () => {
-    this.states.scheduler = FLIP_READY
-
-    this.nextEffect()
+    this.forceUpdate()
   }
 }
 

@@ -4,6 +4,7 @@ import '@kpi-ui/components/src/style'
 import './style.scss'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { CSSTransition } from '@kpi-ui/components/src/_internal/transition'
+import Overlay from '@kpi-ui/components/src/_internal/overlay'
 
 export default function App() {
   const [open, set] = useState(!false)
@@ -21,11 +22,11 @@ export default function App() {
       >{`${open}`}</button>
       <button onClick={() => setD((p) => (p === 'block' ? 'flex' : 'block'))}>{`${d}`}</button>
 
-      <CSSTransition name="fade" appear when={open}>
+      {/* <CSSTransition name="fade" appear when={open}>
         <div style={{ display: d }}>12312132</div>
-      </CSSTransition>
+      </CSSTransition> */}
 
-      {/* <Overlay
+      <Overlay
         open={open}
         mask={false}
         transitions={{
@@ -33,7 +34,7 @@ export default function App() {
         }}
       >
         <div>1231212</div>
-      </Overlay> */}
+      </Overlay>
     </div>
     // <div style={{ margin: 100, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
     //   <div style={{ padding: 400 }}>

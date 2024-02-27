@@ -15,7 +15,8 @@ export function nextFrame(callback: () => void) {
   // prettier-ignore
   ids[0] = raf(() => { ids[1] = raf(callback) })
 
-  return () => ids.forEach(caf)
+  // prettier-ignore
+  return () => { ids.forEach(caf) }
 }
 
 export function loopFrame(callback: () => any) {

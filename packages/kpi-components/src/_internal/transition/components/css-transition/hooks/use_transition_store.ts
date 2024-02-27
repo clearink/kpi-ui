@@ -11,7 +11,6 @@ import {
   isExit,
   isExited,
 } from '../../../constants'
-import { APPEAR_ACTION, APPEAR_READY, MOUNT_ACTION, NONE_ACTION } from '../constants'
 import { showElement } from '../utils/display'
 // types
 import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
@@ -20,18 +19,17 @@ export class TransitionState<E extends HTMLElement> {
   constructor(props: CSS<E>) {
     const { appear, when, mountOnEnter, unmountOnExit } = props
 
-    this.isMounted = !!when && !appear
+    this.appear = !!appear
+
+    this.isMounted = when || !(unmountOnExit || mountOnEnter)
 
     if (!when) this.status = EXITED
     else this.status = appear ? APPEAR : ENTERED
-
-    if (when) this.scheduler = appear ? APPEAR_ACTION : NONE_ACTION
-    else this.scheduler = mountOnEnter || unmountOnExit ? NONE_ACTION : MOUNT_ACTION
   }
 
-  effect = 0
+  isInitial = true
 
-  scheduler = NONE_ACTION
+  appear = false
 
   hasMounted = false
 
@@ -59,6 +57,10 @@ export class TransitionAction<E extends HTMLElement> {
     this.states.isMounted = value
   }
 
+  setIsInitial = (value: boolean) => {
+    this.states.isInitial = value
+  }
+
   startTransition = (step: TransitionStep, display: string | undefined) => {
     this.states.status = isExit(step) ? EXIT : ENTER
 
@@ -75,33 +77,6 @@ export class TransitionAction<E extends HTMLElement> {
     const { status } = this.states
 
     return when ? !isEntered(status) : !isExited(status)
-  }
-
-  shouldMount = () => {
-    const { instance, scheduler } = this.states
-
-    return !instance && (scheduler === MOUNT_ACTION || scheduler === APPEAR_ACTION)
-  }
-
-  beMounted = () => {
-    const { scheduler } = this.states
-
-    if (scheduler === MOUNT_ACTION) {
-      this.states.scheduler = NONE_ACTION
-    } else if (scheduler === APPEAR_ACTION) {
-      this.states.scheduler = APPEAR_READY
-      this.states.effect += 1
-    }
-
-    this.setIsMounted(true)
-  }
-
-  shouldRunFirst = () => {
-    const isCanAppear = this.states.scheduler === APPEAR_READY
-
-    if (isCanAppear) this.states.scheduler = NONE_ACTION
-
-    return isCanAppear
   }
 }
 
@@ -130,12 +105,6 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
   // when 变化时需要保证页面处于渲染中,
   useWatchValue(when, () => {
     returnEarly = states.isMounted !== true
-
-    // when 改变时需要修改 states.scheduler 防止数据不对
-    if (states.scheduler === APPEAR_READY && !when) {
-      states.scheduler = NONE_ACTION
-    }
-    console.log(states.scheduler, when)
 
     actions.setIsMounted(true)
   })

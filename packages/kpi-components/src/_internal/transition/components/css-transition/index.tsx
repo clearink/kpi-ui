@@ -1,7 +1,7 @@
 // utils
 import { useEvent } from '@kpi-ui/hooks'
-import { fillRef, nextFrame, withDisplayName } from '@kpi-ui/utils'
-import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref, useRef } from 'react'
+import { fillRef, nextFrame, nextTick, withDisplayName } from '@kpi-ui/utils'
+import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref } from 'react'
 import { reflow } from '../../_shared/utils'
 import { APPEAR, ENTER, EXIT, isAppear, isExit, isExited } from '../../constants'
 import useFormatClassNames from './hooks/use_format_class_names'
@@ -33,7 +33,7 @@ function CSSTransition<E extends HTMLElement>(
 
   const timeouts = useFormatTimeouts(duration)
 
-  const [runCancel, makeEndHook] = useTransitionEvent(states, actions, classNames, props)
+  const [runCancel, makeCleanupHook] = useTransitionEvent(states, actions, classNames, props)
 
   const refCallback = (el: E | null) => {
     fillRef(el, (children as any).ref)
@@ -50,7 +50,8 @@ function CSSTransition<E extends HTMLElement>(
   const runTransition = useEvent((el: E, step: TransitionStep) => {
     const { from, active, to } = classNames[step]
 
-    console.log('runTransition', el, step)
+    console.log('runTransition', step, performance.now())
+
     actions.startTransition(step, display)
 
     addTransitionClass(el, from)
@@ -68,7 +69,7 @@ function CSSTransition<E extends HTMLElement>(
 
       isExit(step) ? onExiting?.(el) : onEntering?.(el, isAppear(step))
 
-      states.cleanupHook = makeEndHook(el, step, timeouts[step])
+      states.cleanupHook = makeCleanupHook(el, step, timeouts[step])
     })
 
     return () => {
@@ -80,28 +81,20 @@ function CSSTransition<E extends HTMLElement>(
     }
   })
 
-  const isInitial = useRef(true)
-
   useEffect(() => {
-    const el = states.instance
-    console.log('useEffect', isInitial.current)
+    const { instance: el, isInitial } = states
 
-    if (actions.shouldMount()) return actions.beMounted()
+    if (isInitial) actions.setIsInitial(false)
 
     if (!(el && actions.shouldTransition(when))) return
 
-    if (actions.shouldRunFirst()) return runTransition(el, APPEAR)
+    if (!isInitial) return runTransition(el, when ? ENTER : EXIT)
 
-    return runTransition(el, when ? ENTER : EXIT)
-  }, [runTransition, when, actions, states.instance, states.effect])
+    if (states.appear && when) return runTransition(el, APPEAR)
+  }, [runTransition, when, states, actions])
 
-  // 通过再增加一个 useEffect 可以实现 strictMode 下的 appear 正确的逻辑
-  useEffect(() => {
-    isInitial.current = false
-    return () => {
-      isInitial.current = true
-    }
-  }, [])
+  // prettier-ignore
+  useEffect(() => () => { actions.setIsInitial(true) }, [actions])
 
   return returnEarly || !states.isMounted ? null : cloneElement(children, { ref: refCallback })
 }

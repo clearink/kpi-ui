@@ -11,6 +11,7 @@ import {
 import { useId, useRef, type KeyboardEvent, type SyntheticEvent } from 'react'
 import { Keyboard } from '../_shared/constants'
 import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
+import { hideElement, showElement } from '../_shared/utils'
 import useFormatClass from './hooks/use_format_class'
 // comps
 import FocusTrap from '../_internal/focus-trap'
@@ -64,7 +65,7 @@ function Modal(_props: ModalProps) {
 
   const styles = useSemanticStyles(style, _styles)
 
-  const onEscpaceDown = !props.closeOnEscape
+  const onEscapeDown = !props.closeOnEscape
     ? undefined
     : (e: KeyboardEvent<HTMLDivElement>) => {
         if (e.key !== Keyboard.esc) return
@@ -131,18 +132,18 @@ function Modal(_props: ModalProps) {
         mask: fallback(transitions.mask, `${rootPrefixCls}-fade-in`),
         content: fallback(transitions.content, `${rootPrefixCls}-slide-bottom`),
       }}
-      onEnter={(el) => {
-        el.style.removeProperty('display')
+      onEnter={() => {
+        showElement($wrap.current)
       }}
-      onExited={(el) => {
-        el.style.setProperty('display', 'none')
+      onExited={() => {
+        hideElement($wrap.current)
       }}
     >
       {(ref) => (
         <div
           tabIndex={-1}
           ref={$wrap}
-          onKeyDown={onEscpaceDown}
+          onKeyDown={onEscapeDown}
           onClick={onMaskClick}
           className={`${prefixCls}-wrap`}
         >
