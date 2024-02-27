@@ -1,6 +1,6 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { addClassNames, delClassNames, omit } from '@kpi-ui/utils'
-import { cloneElement, createElement, useMemo, type ReactElement } from 'react'
+import { cloneElement, createElement, useEffect, useMemo, type ReactElement } from 'react'
 import { batch, reflow } from '../../../_shared/utils'
 import { ENTER, isExit, isExited } from '../../../constants'
 import makeUniqueId from '../../../utils/unique_id'
@@ -129,14 +129,21 @@ class TransitionAction<E extends HTMLElement> {
     this.states.current = children
   }
 
-  shouldRunFlip = (isInitial: boolean) => {
-    return !isInitial && this.isCanFlip()
+  setFlipCleanup = (value: (() => void)[]) => {
+    this.states.cancels = value
   }
+
+  runFlipCleanup = () => {
+    // prettier-ignore
+    this.states.cancels.forEach((fn) => { fn() })
+  }
+
+  shouldFlip = (isInitial: boolean) => !isInitial && this.isCanFlip()
 
   runFlip = () => {
     const { name } = this.states.props
 
-    this.states.cancels.forEach((fn) => fn())
+    this.runFlipCleanup()
 
     const moves: (() => () => void)[] = []
 
@@ -178,7 +185,7 @@ class TransitionAction<E extends HTMLElement> {
 
     reflow()
 
-    this.states.cancels = moves.map((fn) => fn())
+    this.setFlipCleanup(moves.map((fn) => fn()))
   }
 
   renderNodes = () => {
@@ -217,6 +224,8 @@ export default function useTransitionStore<E extends HTMLElement = HTMLElement>(
   const actions = useMemo(() => new TransitionAction(forceUpdate, states), [forceUpdate, states])
 
   actions.injectLatestProps(props)
+
+  useEffect(() => actions.runFlipCleanup, [actions])
 
   return { states, actions }
 }

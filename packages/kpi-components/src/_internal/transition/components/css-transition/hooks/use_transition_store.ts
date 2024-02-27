@@ -7,6 +7,7 @@ import {
   ENTERED,
   EXIT,
   EXITED,
+  isAppear,
   isEntered,
   isExit,
   isExited,
@@ -19,8 +20,6 @@ export class TransitionState<E extends HTMLElement> {
   constructor(props: CSS<E>) {
     const { appear, when, mountOnEnter, unmountOnExit } = props
 
-    this.appear = !!appear
-
     this.isMounted = when || !(unmountOnExit || mountOnEnter)
 
     if (!when) this.status = EXITED
@@ -28,8 +27,6 @@ export class TransitionState<E extends HTMLElement> {
   }
 
   isInitial = true
-
-  appear = false
 
   hasMounted = false
 
@@ -77,6 +74,20 @@ export class TransitionAction<E extends HTMLElement> {
     const { status } = this.states
 
     return when ? !isEntered(status) : !isExited(status)
+  }
+
+  shouldAppear = (isInitial: boolean, when: boolean | undefined) => {
+    return isInitial && when && isAppear(this.states.status)
+  }
+
+  shouldEnter = (isInitial: boolean, when: boolean | undefined) => {
+    return !isInitial && when && !isEntered(this.states.status)
+  }
+
+  shouldExit = (isInitial: boolean, when: boolean | undefined) => {
+    const { status } = this.states
+
+    return !isInitial && !when && !isExited(status) && !isAppear(status)
   }
 }
 

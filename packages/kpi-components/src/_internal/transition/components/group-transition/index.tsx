@@ -40,6 +40,7 @@ function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransi
 
   useWatchValue(shouldUpdateElements, () => {
     if (shouldUpdateElements || !actions.isCanFlip()) return
+
     states.coords = actions.getCoords()
   })
 
@@ -49,7 +50,7 @@ function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransi
     if (isInitial) actions.setIsInitial(false)
 
     if (shouldUpdateElements) actions.updateElements()
-    else if (actions.shouldRunFlip(isInitial)) actions.runFlip()
+    else if (actions.shouldFlip(isInitial)) actions.runFlip()
   }, [shouldUpdateElements, states, actions])
 
   // prettier-ignore

@@ -50,17 +50,17 @@ function CSSTransition<E extends HTMLElement>(
   const runTransition = useEvent((el: E, step: TransitionStep) => {
     const { from, active, to } = classNames[step]
 
-    console.log('runTransition', step, performance.now())
+    const runTickCleanup = nextTick(() => {
+      actions.startTransition(step, display)
 
-    actions.startTransition(step, display)
+      addTransitionClass(el, from)
 
-    addTransitionClass(el, from)
+      isExit(step) && reflow(el)
 
-    isExit(step) && reflow(el)
+      addTransitionClass(el, active)
 
-    addTransitionClass(el, active)
-
-    isExit(step) ? onExit?.(el) : onEnter?.(el, isAppear(step))
+      isExit(step) ? onExit?.(el) : onEnter?.(el, isAppear(step))
+    })
 
     const runFrameCleanup = nextFrame(() => {
       delTransitionClass(el, from)
@@ -73,6 +73,8 @@ function CSSTransition<E extends HTMLElement>(
     })
 
     return () => {
+      runTickCleanup()
+
       runFrameCleanup()
 
       actions.runCleanupHook()
@@ -86,11 +88,13 @@ function CSSTransition<E extends HTMLElement>(
 
     if (isInitial) actions.setIsInitial(false)
 
-    if (!(el && actions.shouldTransition(when))) return
+    if (!el) return
 
-    if (!isInitial) return runTransition(el, when ? ENTER : EXIT)
+    if (actions.shouldAppear(isInitial, when)) return runTransition(el, APPEAR)
 
-    if (states.appear && when) return runTransition(el, APPEAR)
+    if (actions.shouldEnter(isInitial, when)) return runTransition(el, ENTER)
+
+    if (actions.shouldExit(isInitial, when)) return runTransition(el, EXIT)
   }, [runTransition, when, states, actions])
 
   // prettier-ignore
