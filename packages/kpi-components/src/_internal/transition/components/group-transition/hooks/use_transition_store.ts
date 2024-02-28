@@ -1,5 +1,5 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
-import { addClassNames, delClassNames, omit } from '@kpi-ui/utils'
+import { addClassNames, delClassNames, omit, pick } from '@kpi-ui/utils'
 import { cloneElement, createElement, useEffect, useMemo, type ReactElement } from 'react'
 import { batch, reflow } from '../../../_shared/utils'
 import { ENTER, isExit, isExited } from '../../../constants'
@@ -8,10 +8,30 @@ import CSSTransition from '../../css-transition'
 import diff from '../utils/diff'
 import union from '../utils/union'
 // types
-import type { CSSTransitionProps as CSS, CSSTransitionRef } from '../../css-transition/props'
+import type {
+  CSSTransitionProps as CssProps,
+  CSSTransitionRef as CssRef,
+} from '../../css-transition/props'
 import type { GroupTransitionProps as Group } from '../props'
 
 const uniqueId = makeUniqueId('gt-')
+
+const included = [
+  'name',
+  'type',
+  'duration',
+  'appear',
+  'classNames',
+  'addEndListener',
+  'onEnter',
+  'onEntering',
+  'onEntered',
+  'onEnterCancel',
+  'onExit',
+  'onExiting',
+  'onExited',
+  'onExitCancel',
+] as const
 
 class TransitionState<E extends HTMLElement> {
   constructor(props: Group<E>) {
@@ -34,19 +54,19 @@ class TransitionState<E extends HTMLElement> {
 
   current: ReactElement[] = []
 
-  elements = new Map<ReactElement['key'], { el: ReactElement<CSS>; fresh: boolean }>()
+  elements = new Map<ReactElement['key'], { el: ReactElement<CssProps>; fresh: boolean }>()
 
-  components = new Map<ReactElement['key'], CSSTransitionRef>()
+  components = new Map<ReactElement['key'], CssRef>()
 
   coords = new Map<ReactElement['key'], DOMRect>()
 
   cancels: (() => void)[] = []
 
   /** @internal */
-  makeElement = (element: ReactElement, extra: Partial<CSS>) => {
-    const preset = omit(this.props, ['children']) as CSS
+  makeElement = (element: ReactElement, extra: Partial<CssProps>) => {
+    const preset = pick(this.props, included) as CssProps
 
-    const ref = (instance: CSSTransitionRef | null) => {
+    const ref = (instance: CssRef | null) => {
       if (!instance) this.components.delete(element.key)
       else this.components.set(element.key, instance)
     }
@@ -98,7 +118,7 @@ class TransitionAction<E extends HTMLElement> {
     this.forceUpdate()
   }
 
-  unionElements = () => {
+  updateElements = () => {
     const { children, onExited } = this.states.props
 
     const [enters, exits] = diff(this.states.current, children)
@@ -115,7 +135,7 @@ class TransitionAction<E extends HTMLElement> {
           })
         }
 
-        const props: Partial<CSS<E>> = { onExited: batch(onExited, this.runExitedEffect) }
+        const props: Partial<CssProps<E>> = { onExited: batch(onExited, this.runExitedEffect) }
 
         if (exits.has(key)) props.when = false
 
@@ -127,6 +147,8 @@ class TransitionAction<E extends HTMLElement> {
     this.states.previous = this.states.current
 
     this.states.current = children
+
+    this.forceUpdate()
   }
 
   setFlipCleanup = (value: (() => void)[]) => {
@@ -207,12 +229,6 @@ class TransitionAction<E extends HTMLElement> {
     })
 
     return elements
-  }
-
-  updateElements = () => {
-    this.unionElements()
-
-    this.forceUpdate()
   }
 }
 

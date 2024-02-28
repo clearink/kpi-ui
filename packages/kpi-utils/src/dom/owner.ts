@@ -2,10 +2,10 @@
 import type { MayBe } from '@kpi-ui/types'
 
 export function ownerDocument(node?: MayBe<Node>) {
-  return (node && node.ownerDocument) || document
+  return (node && node.ownerDocument) || globalThis.document
 }
 
 export function ownerWindow(node?: MayBe<Node>) {
   const root = ownerDocument(node)
-  return root.defaultView || window
+  return root.defaultView || globalThis.window
 }

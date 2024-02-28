@@ -9,6 +9,11 @@
 
   &-enter-active,
   &-exit-active {
-    transition: all var(--#{$prefix}-motion-duration-slow) var(--#{$prefix}-motion-in-out);
+    transition-property: opacity, transform, height;
+    transition-duration: var(--#{$prefix}-motion-duration-slow);
+    transition-timing-function: var(--#{$prefix}-motion-in-out);
+  }
+  &-exit-active {
+    transition-timing-function: var(--#{$prefix}-motion-out);
   }
 }

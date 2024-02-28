@@ -32,12 +32,11 @@ export function loopFrame(callback: () => any) {
 }
 
 export function nextTick(callback: () => void) {
-  let isCancel = false
-
-  Promise.resolve().then(() => {
-    !isCancel && callback()
-  })
+  let isCancelled = false
 
   // prettier-ignore
-  return () => { isCancel = true }
+  Promise.resolve().then(() => { !isCancelled && callback() })
+
+  // prettier-ignore
+  return () => { isCancelled = true }
 }

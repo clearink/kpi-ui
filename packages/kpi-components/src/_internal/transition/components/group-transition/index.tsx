@@ -36,12 +36,15 @@ function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransi
 
   const { states, actions } = useTransitionStore(props)
 
-  const shouldUpdateElements = !isElementsEqual(states.current, children)
+  const shouldTransition = !isElementsEqual(states.current, children)
 
-  useWatchValue(shouldUpdateElements, () => {
-    if (shouldUpdateElements || !actions.isCanFlip()) return
+  let returnEarly = false
 
-    states.coords = actions.getCoords()
+  useWatchValue(shouldTransition, () => {
+    returnEarly = shouldTransition
+
+    if (!actions.isCanFlip() || shouldTransition) actions.updateElements()
+    else states.coords = actions.getCoords()
   })
 
   useEffect(() => {
@@ -49,12 +52,14 @@ function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransi
 
     if (isInitial) actions.setIsInitial(false)
 
-    if (shouldUpdateElements) actions.updateElements()
+    if (shouldTransition) actions.updateElements()
     else if (actions.shouldFlip(isInitial)) actions.runFlip()
-  }, [shouldUpdateElements, states, actions])
+  }, [shouldTransition, states, actions])
 
   // prettier-ignore
   useEffect(() => () => { actions.setIsInitial(true) }, [actions])
+
+  if (returnEarly) return null
 
   if (isNullish(tag)) return <>{actions.renderNodes()}</>
 
