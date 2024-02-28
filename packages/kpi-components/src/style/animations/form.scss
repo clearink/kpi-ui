@@ -4,16 +4,19 @@
   &-enter-from,
   &-exit-to {
     opacity: 0;
-    transform: translate3d(0, -5px, 0);
+    transform: translate3d(0, -4px, 0);
   }
 
-  &-enter-active,
-  &-exit-active {
-    transition-property: opacity, transform, height;
-    transition-duration: var(--#{$prefix}-motion-duration-slow);
-    transition-timing-function: var(--#{$prefix}-motion-in-out);
+  &-enter-active {
+    overflow: hidden;
+    transition: opacity var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out),
+      transform var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out),
+      height var(--#{$prefix}-motion-duration-2) var(--#{$prefix}-motion-in-out);
   }
+
   &-exit-active {
-    transition-timing-function: var(--#{$prefix}-motion-out);
+    transition: opacity var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out),
+      transform var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out),
+      height var(--#{$prefix}-motion-duration-2) var(--#{$prefix}-motion-in-out);
   }
 }

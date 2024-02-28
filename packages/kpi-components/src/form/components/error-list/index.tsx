@@ -1,12 +1,12 @@
 // utils
-import { cls, loopFrame } from '@kpi-ui/utils'
-import { GroupTransition } from '../../../_internal/transition'
+import { cls } from '@kpi-ui/utils'
 import { usePrefixCls } from '../../../_shared/hooks'
 import useFormatExplains from './hooks/use_format_explains'
 import handlers from './utils/transition_handlers'
+// comps
+import { GroupTransition } from '../../../_internal/transition'
 // types
 import type { FormErrorListProps } from './props'
-import { useEffect, useRef } from 'react'
 
 export default function FormErrorList(props: FormErrorListProps) {
   const { className, onExitComplete } = props
@@ -15,20 +15,6 @@ export default function FormErrorList(props: FormErrorListProps) {
 
   const explains = useFormatExplains(props)
 
-  // useEffect(() => {
-  //   return loopFrame(() => {
-  //     const els = document.querySelectorAll(
-  //       '#root > div > div > div:nth-child(1) > div.kpi-col.kpi-form-item__control.kpi-form-item__control--has-error > div.kpi-form-item__control-status > div.kpi-form-item-message > div'
-  //     )
-  //     let total = 0
-
-  //     els.forEach((el) => {
-  //       total += el.getBoundingClientRect().height
-  //     })
-  //     console.log('total', total, els.length)
-  //     return true
-  //   })
-  // }, [])
   return (
     <GroupTransition
       tag="div"

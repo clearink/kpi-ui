@@ -16,6 +16,8 @@ const handlers = {
     el.style.height = `${el._height}px`
   },
   onEntered: (el: E) => {
+    el.style.height = ''
+
     delete el._height
   },
   onExit: (el: E) => {

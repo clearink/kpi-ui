@@ -82,7 +82,7 @@ $comp: #{$prefix}-collapse;
     font-size: var(--#{$prefix}-font-size-extra-small);
     transition-property: transform;
     will-change: transform;
-    transition-duration: var(--#{$prefix}-motion-duration-slow);
+    transition-duration: var(--#{$prefix}-motion-duration-3);
     margin-right: var(--#{$prefix}-size-unit-3);
   }
 
@@ -111,7 +111,7 @@ $comp: #{$prefix}-collapse;
   &-exit-active {
     overflow: hidden;
     will-change: opacity, height;
-    transition: opacity var(--#{$prefix}-motion-duration-mid) var(--#{$prefix}-motion-in-out),
-      height var(--#{$prefix}-motion-duration-mid) var(--#{$prefix}-motion-in-out);
+    transition: opacity var(--#{$prefix}-motion-duration-2) var(--#{$prefix}-motion-in-out),
+      height var(--#{$prefix}-motion-duration-2) var(--#{$prefix}-motion-in-out);
   }
 }

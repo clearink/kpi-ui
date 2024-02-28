@@ -18,7 +18,7 @@ $kpi-btn-font-size-default: var(--#{$prefix}-font-size-default);
 
 $kpi-btn-font-size-large: var(--#{$prefix}-font-size-default);
 
-$kpi-btn-transition: all var(--#{$prefix}-motion-duration-slow) var(--#{$prefix}-motion-in-out),
+$kpi-btn-transition: all var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out),
   outline 0s, outline-offset 0s;
 
 $kpi-btn-outline-width: 3px;

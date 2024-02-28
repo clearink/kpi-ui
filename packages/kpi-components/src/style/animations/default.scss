@@ -8,7 +8,7 @@
 
   &-enter-active,
   &-exit-active {
-    transition: opacity var(--#{$prefix}-motion-duration-slow) var(--#{$prefix}-motion-in-out-circ);
+    transition: opacity var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out-circ);
   }
 }
 
@@ -28,7 +28,7 @@
     transform: scaleY(1);
     transition-property: opacity, transform;
     will-change: opacity, transform;
-    transition-duration: var(--#{$prefix}-motion-duration-slow);
+    transition-duration: var(--#{$prefix}-motion-duration-3);
     transition-timing-function: var(--#{$prefix}-motion-in-back);
   }
 }
@@ -59,7 +59,7 @@
   &-exit-active {
     transition-property: opacity, transform;
     will-change: opacity, transform;
-    transition-duration: var(--#{$prefix}-motion-duration-slow);
+    transition-duration: var(--#{$prefix}-motion-duration-3);
     transition-timing-function: var(--#{$prefix}-motion-in-out-circ);
   }
 }
