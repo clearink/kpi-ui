@@ -1,22 +1,19 @@
-import noop from '../noop'
-import isBrowser from './is_browser'
+export const raf =
+  typeof requestAnimationFrame === 'function'
+    ? requestAnimationFrame
+    : (setTimeout as typeof requestAnimationFrame)
 
-export const raf = isBrowser()
-  ? requestAnimationFrame
-  : (noop as unknown as typeof requestAnimationFrame)
-
-export const caf = isBrowser()
-  ? cancelAnimationFrame
-  : (noop as unknown as typeof cancelAnimationFrame)
+export const caf =
+  typeof cancelAnimationFrame === 'function'
+    ? cancelAnimationFrame
+    : (clearTimeout as typeof cancelAnimationFrame)
 
 export function nextFrame(callback: () => void) {
-  const cleanup = [-1, () => {}] as [number, () => void]
+  // prettier-ignore
+  const id = raf(() => { callback() })
 
   // prettier-ignore
-  cleanup[0] = raf(() => { cleanup[1] = nextTick(callback) })
-
-  // prettier-ignore
-  return () => { caf(cleanup[0]); cleanup[1]() }
+  return () => { caf(id) }
 }
 
 export function loopFrame(callback: () => any) {
