@@ -24,7 +24,7 @@ export default function FormErrorList(props: FormErrorListProps) {
       onExitComplete={onExitComplete}
       {...handlers}
     >
-      {explains.map((item, i) => (
+      {explains.map((item) => (
         <div key={item.key} className={cls({ [`${prefixCls}--${item.status}`]: item.status })}>
           {item.value}
         </div>

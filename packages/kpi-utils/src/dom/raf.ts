@@ -10,13 +10,13 @@ export const caf = isBrowser()
   : (noop as unknown as typeof cancelAnimationFrame)
 
 export function nextFrame(callback: () => void) {
-  const ids: number[] = Array(2)
+  const cleanup = [-1, () => {}] as [number, () => void]
 
   // prettier-ignore
-  ids[0] = raf(() => { ids[1] = raf(callback) })
+  cleanup[0] = raf(() => { cleanup[1] = nextTick(callback) })
 
   // prettier-ignore
-  return () => { ids.forEach(caf) }
+  return () => { caf(cleanup[0]); cleanup[1]() }
 }
 
 export function loopFrame(callback: () => any) {

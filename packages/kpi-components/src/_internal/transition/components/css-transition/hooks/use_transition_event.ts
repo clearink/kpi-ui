@@ -47,7 +47,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
   }
 
   const makeCleanupHook = (el: E, step: TransitionStep, timeout?: number) => {
-    const resolve = done.bind(null, el, step)
+    const resolve = () => done(el, step)
 
     if (addEndListener) return addEndListener(el, step, resolve)
 
