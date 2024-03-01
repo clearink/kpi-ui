@@ -47,6 +47,7 @@ function CSSTransition<E extends HTMLElement>(
     if (isAppear(states.status) || isExited(states.status)) hideElement(el)
   }
 
+  // 需要保证在相邻的帧去执行
   const runTransition = useEvent((el: E, step: TransitionStep) => {
     const { from, active, to } = classNames[step]
 

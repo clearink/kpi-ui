@@ -1,24 +1,14 @@
-import { isUndefined } from '@kpi-ui/utils'
-
-type E = HTMLDivElement & { _height?: number }
-
-const inject = (el: E) => {
-  el._height = el.clientHeight
-}
+type E = HTMLDivElement
 
 const handlers = {
   onEnter: (el: E) => {
-    isUndefined(el._height) && inject(el)
-
     el.style.height = '0px'
   },
   onEntering: (el: E) => {
-    el.style.height = `${el._height}px`
+    el.style.height = `${el.scrollHeight}px`
   },
   onEntered: (el: E) => {
     el.style.height = ''
-
-    delete el._height
   },
   onExit: (el: E) => {
     el.style.height = `${el.clientHeight}px`

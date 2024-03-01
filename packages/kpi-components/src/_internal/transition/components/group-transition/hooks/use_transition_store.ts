@@ -123,26 +123,23 @@ class TransitionAction<E extends HTMLElement> {
 
     const [enters, exits] = diff(this.states.current, children)
 
-    this.states.elements = union(this.states.elements, enters, children).reduce(
-      (result, [key, el]) => {
-        if (result.has(key))
-          throw new Error(`Encountered two children with the same key, '${key}'. `)
+    const allElements = union(this.states.elements, enters, children)
 
-        if (enters.has(key)) {
-          return result.set(key, {
-            fresh: true,
-            el: this.states.makeElement(el, { when: true, appear: true }),
-          })
-        }
+    this.states.elements = allElements.reduce((result, [key, el]) => {
+      if (result.has(key)) throw new Error(`two children with the same key, '${key}'. `)
 
-        const props: Partial<CssProps<E>> = { onExited: batch(onExited, this.runExitedEffect) }
+      // prettier-ignore
+      if (enters.has(key)) return result.set(key, {
+        fresh: true,
+        el: this.states.makeElement(el, { when: true, appear: true }),
+      })
 
-        if (exits.has(key)) props.when = false
+      const props: Partial<CssProps<E>> = { onExited: batch(onExited, this.runExitedEffect) }
 
-        return result.set(key, { fresh: props.when !== false, el: cloneElement(el, props) })
-      },
-      new Map()
-    )
+      if (exits.has(key)) props.when = false
+
+      return result.set(key, { fresh: props.when !== false, el: cloneElement(el, props) })
+    }, new Map())
 
     this.states.previous = this.states.current
 
@@ -215,17 +212,16 @@ class TransitionAction<E extends HTMLElement> {
 
     const elements: ReactElement[] = []
 
-    // sync elements
     this.states.elements.forEach((item, key) => {
       const node = children.find((el) => el.key === key)
 
       if (!item.fresh || !node) return elements.push(item.el)
 
-      const element = cloneElement(item.el, undefined, node)
+      const isChildrenEqual = item.el.props.children === node
 
-      elements.push(element)
+      item.el = isChildrenEqual ? item.el : cloneElement(item.el, undefined, node)
 
-      this.states.elements.set(key, { fresh: item.fresh, el: element })
+      elements.push(item.el)
     })
 
     return elements

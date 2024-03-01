@@ -138,14 +138,19 @@ class TransitionAction<E extends HTMLElement> {
   renderNodes = () => {
     const { children } = this.states.props
 
-    // updateElements
-    this.states.elements = this.states.elements.map((item) => {
-      if (!item.fresh) return item
+    const elements: ReactElement[] = []
 
-      return { fresh: item.fresh, el: cloneElement(item.el, undefined, children) }
+    this.states.elements.forEach((item) => {
+      if (!item.fresh) return elements.push(item.el)
+
+      const isChildrenEqual = item.el.props.children === children
+
+      item.el = isChildrenEqual ? item.el : cloneElement(item.el, undefined, children)
+
+      elements.push(item.el)
     })
 
-    return this.states.elements.map((item) => item.el)
+    return elements
   }
 }
 
