@@ -1,8 +1,9 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
-import { fallback, isArray, isElement, toArray } from '@kpi-ui/utils'
+import { fallback, isArray, isElement, isNullish, ownerDocument, toArray } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 // types
 import type { InternalTooltipProps, TooltipCoords } from '../props'
+import type { OverlayRef } from '../../overlay/props'
 
 export class TooltipState {
   $trigger = {
@@ -11,6 +12,10 @@ export class TooltipState {
 
   $tooltip = {
     current: null as HTMLDivElement | null,
+  }
+
+  $overlay = {
+    current: null as OverlayRef | null,
   }
 
   coords: TooltipCoords = { top: 'auto', right: 'auto', bottom: 'auto', left: 'auto' }
@@ -27,14 +32,22 @@ export class TooltipAction {
     return this.states.$tooltip.current
   }
 
-  private isEqualCoords = (a: TooltipCoords, b: TooltipCoords) => {
-    const positions: (keyof TooltipCoords)[] = ['top', 'right', 'bottom', 'left']
+  get container() {
+    const container = this.states.$overlay.current?.container
 
-    return positions.every((direction) => a[direction] === b[direction])
+    return isNullish(container) ? ownerDocument().body : container
+  }
+
+  private shouldUpdateCoords = (b: TooltipCoords) => {
+    const a = this.states.coords
+
+    const positions = ['top', 'right', 'bottom', 'left'] as const
+
+    return positions.some((direction) => a[direction] !== b[direction])
   }
 
   private setCoords = (value: TooltipCoords) => {
-    if (this.isEqualCoords(this.states.coords, value)) return
+    if (!this.shouldUpdateCoords(value)) return
 
     this.forceUpdate()
 
@@ -49,15 +62,18 @@ export class TooltipAction {
     this.forceUpdate()
   }
 
+  // 当初始时open=true,updateCoords会调用2次
   updateCoords = (props: InternalTooltipProps) => {
     const tooltip = this.tooltip
 
     const trigger = this.trigger
-    console.log('updateCoords', tooltip, trigger)
 
     if (!tooltip || !trigger) return null
 
     const { autoLayout, placement } = props
+
+    // 应当根据当前的 container 去定位
+    // console.log('this.container', this.container)
 
     const tooltipRect = tooltip.getBoundingClientRect()
 

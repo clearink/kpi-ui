@@ -1,12 +1,13 @@
-import { fallback, isNullish } from '@kpi-ui/utils'
+import { fallback, getElementStyle, isNullish } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
-import Col from '../../../col'
 import { FormContext, FormItemContext } from '../../_shared/context'
-import FormErrorList from '../error-list'
 import useFormatClass from './hooks/use_format_class'
 import useFormatStatus from './hooks/use_format_status'
 import useMetaState from './hooks/use_meta_state'
+// comps
+import Col from '../../../col'
+import FormErrorList from '../error-list'
 // types
 import type { FormItemInputProps } from './props'
 
@@ -38,14 +39,14 @@ function FormItemInput(props: FormItemInputProps) {
 
   const hasError = !!(help || errors.length || warnings.length)
 
-  const showErrorList = !!(errors.length || warnings.length || offset)
+  const showErrorList = !!(hasError || offset)
 
   useEffect(() => {
     const $outer = getOuter()
 
     if (!hasError || !$outer) return
 
-    const styles = getComputedStyle($outer)
+    const styles = getElementStyle($outer)
 
     setOffset(parseFloat(styles.marginBottom))
   }, [getOuter, hasError])

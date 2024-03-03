@@ -1,7 +1,11 @@
 import type { SemanticStyledProps } from '@kpi-ui/types'
 import type { RefCallback } from 'react'
-import type { PortalProps } from '../portal/props'
+import type { PortalProps, PortalRef } from '../portal/props'
 import type { CSSTransitionProps } from '../transition/_shared/props'
+
+export interface OverlayRef {
+  container: PortalRef['container']
+}
 
 export interface OverlayProps
   extends SemanticStyledProps<'root' | 'mask'>,

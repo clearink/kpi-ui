@@ -21,11 +21,11 @@ function FormItemLabel(_props: FormItemLabelProps) {
     requiredMark: ctx.requiredMark,
   })
 
+  const { htmlFor, label } = props
+
   const prefixCls = usePrefixCls('form-item__label')
 
   const classes = useFormatClass(prefixCls, props, ctx)
-
-  const { htmlFor, label } = props
 
   const htmlTitle = isString(label) ? label : undefined
 

@@ -44,7 +44,7 @@ function InternalTooltip(_props: InternalTooltipProps) {
 
   const { states, actions } = useTooltipStore()
 
-  useTooltipResize(states, actions, open, props)
+  useTooltipResize(states, actions, props, open)
 
   const triggerHandlers = useTriggerEvent(props, setOpen)
 
@@ -61,6 +61,7 @@ function InternalTooltip(_props: InternalTooltipProps) {
         ...triggerHandlers,
       })}
       <Overlay
+        ref={states.$overlay}
         mask={false}
         open={open}
         zIndex={zIndex}

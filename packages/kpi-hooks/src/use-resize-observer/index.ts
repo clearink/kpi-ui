@@ -7,13 +7,15 @@ const __listeners = new Map<Element, Set<ResizeCallback>>()
 
 const __observer = new ResizeObserver((entries) => {
   entries.forEach(({ target }) => {
-    __listeners.get(target)?.forEach((fn) => fn(target))
+    // prettier-ignore
+    __listeners.get(target)?.forEach((fn) => { fn(target) })
   })
 })
 
 const __handleResize = () => {
   __listeners.forEach((listeners, el) => {
-    listeners.forEach((fn) => fn(el))
+    // prettier-ignore
+    listeners.forEach((fn) => { fn(el) })
   })
 }
 // 元素改变大小 observer hook

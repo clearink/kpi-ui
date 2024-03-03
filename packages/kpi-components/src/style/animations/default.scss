@@ -24,12 +24,8 @@
 
   &-enter-active,
   &-exit-active {
-    opacity: 1;
-    transform: scaleY(1);
-    transition-property: opacity, transform;
-    will-change: opacity, transform;
-    transition-duration: var(--#{$prefix}-motion-duration-3);
-    transition-timing-function: var(--#{$prefix}-motion-in-back);
+    transition: opacity var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-back),
+      transform var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-back);
   }
 }
 
@@ -46,10 +42,7 @@
 }
 
 .#{$prefix}-slide-bottom {
-  &-enter-from {
-    opacity: 0;
-    transform: translate3d(0, -25px, 0);
-  }
+  &-enter-from,
   &-exit-to {
     opacity: 0;
     transform: translate3d(0, -25px, 0);
@@ -57,9 +50,7 @@
 
   &-enter-active,
   &-exit-active {
-    transition-property: opacity, transform;
-    will-change: opacity, transform;
-    transition-duration: var(--#{$prefix}-motion-duration-3);
-    transition-timing-function: var(--#{$prefix}-motion-in-out-circ);
+    transition: opacity var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out-circ),
+      transform var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out-circ);
   }
 }

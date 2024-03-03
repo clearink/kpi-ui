@@ -10,11 +10,13 @@ import type { InternalTooltipProps } from '../props'
 export default function useTooltipResize(
   states: ReturnType<typeof useTooltipStore>['states'],
   actions: ReturnType<typeof useTooltipStore>['actions'],
-  open: boolean,
-  props: InternalTooltipProps
+  props: InternalTooltipProps,
+  open: boolean
 ) {
-  // prettier-ignore
-  const onChange = useEvent(() => { open && actions.updateCoords(props) })
+  const onChange = useEvent(() => {
+    console.log('onChange', open)
+    open && actions.updateCoords(props)
+  })
 
   // trigger resize + window resize
   useResizeObserver(states.$trigger, onChange)
@@ -35,6 +37,6 @@ export default function useTooltipResize(
     })
 
     // prettier-ignore
-    return () => removes.forEach((fn) => { fn() })
+    return () => { removes.forEach((fn) => { fn() }) }
   }, [open, actions.tooltip, actions.trigger, onChange])
 }

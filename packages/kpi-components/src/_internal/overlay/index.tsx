@@ -1,5 +1,12 @@
 // utils
 import { cls, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import {
+  forwardRef,
+  useImperativeHandle,
+  type ForwardedRef,
+  type ReactElement,
+  type RefCallback,
+} from 'react'
 import { useSemanticStyles } from '../../_shared/hooks'
 import useOverlayLevel from './hooks/use_overlay_level'
 import useOverlayStore from './hooks/use_overlay_store'
@@ -8,19 +15,30 @@ import Portal from '../portal'
 import { CSSTransition } from '../transition'
 import ForwardFunctional from './components/forward-functional'
 // types
-import type { ReactElement, RefCallback } from 'react'
-import type { OverlayProps } from './props'
+import type { OverlayProps, OverlayRef } from './props'
 
 export const defaultProps: Partial<OverlayProps> = { mask: true }
 
-function Overlay(_props: OverlayProps) {
+function Overlay(_props: OverlayProps, ref: ForwardedRef<OverlayRef>) {
   const props = withDefaults(_props, defaultProps)
 
-  const { open, keepMounted, unmountOnExit, transitions = {}, classNames = {} } = props
+  const {
+    open,
+    keepMounted,
+    unmountOnExit,
+    getContainer,
+    transitions = {},
+    classNames = {},
+  } = props
 
   const styles = useSemanticStyles(props.style, props.styles)
 
   const { states, actions, returnEarly } = useOverlayStore(props)
+
+  // prettier-ignore
+  useImperativeHandle(ref, () => ({
+    get container() { return actions.container }
+  }), [actions])
 
   const level = useOverlayLevel(states.isMounted, props)
 
@@ -29,7 +47,7 @@ function Overlay(_props: OverlayProps) {
   if (returnEarly || !states.isMounted) return null
 
   return (
-    <Portal getContainer={props.getContainer}>
+    <Portal ref={states.$portal} getContainer={getContainer}>
       <div
         className={cls(props.className, classNames.root)}
         style={withDefaults(styles.root || {}, { zIndex: level })}
@@ -66,4 +84,4 @@ function Overlay(_props: OverlayProps) {
   )
 }
 
-export default withDisplayName(Overlay)
+export default withDisplayName(forwardRef(Overlay))
