@@ -3,7 +3,6 @@ import { fallback, isArray, isElement, isNullish, ownerDocument, toArray } from 
 import { useMemo } from 'react'
 // types
 import type { InternalTooltipProps, TooltipCoords } from '../props'
-import type { OverlayRef } from '../../overlay/props'
 
 export class TooltipState {
   $trigger = {
@@ -12,10 +11,6 @@ export class TooltipState {
 
   $tooltip = {
     current: null as HTMLDivElement | null,
-  }
-
-  $overlay = {
-    current: null as OverlayRef | null,
   }
 
   coords: TooltipCoords = { top: 'auto', right: 'auto', bottom: 'auto', left: 'auto' }
@@ -32,12 +27,6 @@ export class TooltipAction {
     return this.states.$tooltip.current
   }
 
-  get container() {
-    const container = this.states.$overlay.current?.container
-
-    return isNullish(container) ? ownerDocument().body : container
-  }
-
   private shouldUpdateCoords = (b: TooltipCoords) => {
     const a = this.states.coords
 
@@ -49,9 +38,9 @@ export class TooltipAction {
   private setCoords = (value: TooltipCoords) => {
     if (!this.shouldUpdateCoords(value)) return
 
-    this.forceUpdate()
-
     this.states.coords = value
+
+    this.forceUpdate()
   }
 
   setTriggerNode = (el: Element | null) => {
@@ -72,12 +61,12 @@ export class TooltipAction {
 
     const { autoLayout, placement } = props
 
-    // 应当根据当前的 container 去定位
-    // console.log('this.container', this.container)
+    // 获取 trigger 在文档流中具体的位置
+    const triggerRect = trigger.getBoundingClientRect()
 
     const tooltipRect = tooltip.getBoundingClientRect()
 
-    const triggerRect = trigger.getBoundingClientRect()
+    // 根据 placement 与 autoLayout 属性去生成 newCoords
 
     const newCoords: TooltipCoords = {
       top: triggerRect.top - 10 - tooltipRect.height + window.scrollY,

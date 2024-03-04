@@ -1,36 +1,29 @@
-import { Button, Form, Tooltip } from '@kpi-ui/components'
-import { useMemo, useState } from 'react'
-import kv from '@kpi-ui/validator'
-import GroupTransition from '@kpi-ui/components/src/_internal/transition/components/group-transition'
+import { Tooltip } from '@kpi-ui/components'
 
 import '@kpi-ui/components/src/style'
 import './style.scss'
-import Modal from '@kpi-ui/components/src/modal'
 
 export default function App() {
-  const [open, setOpen] = useState(false)
   return (
-    <div style={{ margin: 100, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <div style={{ padding: 400 }}>
-        {/* <div style={{ position: 'absolute', left: 400, top: 200 }}>
-          <div style={{ position: 'absolute', left: 400, top: 200 }}>
-            <div style={{ position: 'absolute', left: 400, top: 200 }}> */}
-        <Tooltip content={<div>12313211212</div>}>
-          <textarea style={{ position: 'relative', top: 20 }} />
-        </Tooltip>
-        {/* </div>
+    <div
+      style={{
+        height: '100vh',
+        overflow: 'auto',
+      }}
+    >
+      <div style={{ width: 300, margin: '100px auto', height: 1000 }}>
+        {/* <div style={{ position: 'absolute', right: 400, top: 200 }}>
+          <div style={{ position: 'absolute', left: 400, top: 200 }}> */}
+        <div style={{ overflow: 'auto', height: 400 }}>
+          <div>
+            <div style={{ height: 1000 }}></div>
+            <Tooltip open content={<div>12313211212</div>}>
+              <textarea style={{ position: 'relative', top: 20 }} />
+            </Tooltip>
           </div>
+        </div>
+        {/* </div>
         </div> */}
-        <Button
-          onClick={() => {
-            setOpen((p) => !p)
-          }}
-        >
-          123
-        </Button>
-        <Modal open={open} onCancel={() => setOpen(false)} onOk={() => setOpen(false)}>
-          <div>12231</div>
-        </Modal>
       </div>
     </div>
   )

@@ -2,15 +2,15 @@
 import { cls, mergeRefs, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement } from 'react'
 import { useSemanticStyles } from '../../_shared/hooks'
-import useTooltipResize from './hooks/use_tooltip_resize'
 import useTooltipOpen from './hooks/use_tooltip_open'
+import useTooltipResize from './hooks/use_tooltip_resize'
 import useTooltipStore from './hooks/use_tooltip_store'
+import useTriggerEvent from './hooks/use_trigger_event'
 // comps
 import Overlay from '../overlay'
 import ShouldUpdate from '../should-update'
 // types
 import type { InternalTooltipProps } from './props'
-import useTriggerEvent from './hooks/use_trigger_event'
 
 export const defaultProps: Partial<InternalTooltipProps> = {
   trigger: 'hover',
@@ -61,7 +61,6 @@ function InternalTooltip(_props: InternalTooltipProps) {
         ...triggerHandlers,
       })}
       <Overlay
-        ref={states.$overlay}
         mask={false}
         open={open}
         zIndex={zIndex}
