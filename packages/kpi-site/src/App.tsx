@@ -17,9 +17,31 @@ export default function App() {
         <div style={{ overflow: 'auto', height: 400 }}>
           <div>
             <div style={{ height: 1000 }}></div>
-            <Tooltip open content={<div>12313211212</div>}>
-              <textarea style={{ position: 'relative', top: 20 }} />
-            </Tooltip>
+            {[
+              'topLeft',
+              'top',
+              // 'topRight',
+              // 'rightTop',
+              // 'right',
+              // 'rightBottom',
+              // 'bottomLeft',
+              // 'bottom',
+              // 'bottomRight',
+              // 'leftTop',
+              // 'left',
+              // 'leftBottom',
+            ].map((pos) => (
+              <Tooltip
+                key={pos}
+                placement={pos}
+                content={<div style={{ width: 300, height: 20 }}>12313211212</div>}
+              >
+                <textarea
+                  style={{ position: 'relative', margin: '100px 0', top: 20 }}
+                  placeholder={`${pos}Left`}
+                />
+              </Tooltip>
+            ))}
           </div>
         </div>
         {/* </div>

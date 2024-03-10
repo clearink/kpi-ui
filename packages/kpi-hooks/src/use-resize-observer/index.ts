@@ -1,5 +1,6 @@
 import { ownerWindow } from '@kpi-ui/utils'
 import { useEffect } from 'react'
+import useEvent from '../use-event'
 
 type ResizeCallback = (el: Element) => void
 
@@ -18,17 +19,20 @@ const __handleResize = () => {
     listeners.forEach((fn) => { fn(el) })
   })
 }
+
 // 元素改变大小 observer hook
 export default function useResizeObserver(
   dom: React.RefObject<Element>,
-  onChange: (el: Element) => void
+  onResize?: (el: Element) => void
 ) {
+  const resizeEvent = useEvent((el: Element) => {
+    onResize && onResize(el)
+  })
+
   useEffect(() => {
     const el = dom.current
 
     if (!el) return
-
-    const callback = () => onChange(el)
 
     if (__listeners.size === 0) {
       ownerWindow(el).addEventListener('resize', __handleResize, { passive: true })
@@ -39,12 +43,12 @@ export default function useResizeObserver(
       __observer.observe(el, { box: 'border-box' })
     }
 
-    __listeners.get(el)?.add(callback)
+    __listeners.get(el)?.add(resizeEvent)
 
     return () => {
       const listener = __listeners.get(el)
 
-      listener?.delete(callback)
+      listener?.delete(resizeEvent)
 
       if (listener && listener.size === 0) {
         __listeners.delete(el)
@@ -55,5 +59,5 @@ export default function useResizeObserver(
         ownerWindow(el).removeEventListener('resize', __handleResize)
       }
     }
-  }, [dom, onChange])
+  }, [dom, resizeEvent])
 }

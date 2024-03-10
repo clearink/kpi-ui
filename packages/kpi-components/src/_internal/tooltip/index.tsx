@@ -1,6 +1,5 @@
 // utils
-import { cls, mergeRefs, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { cloneElement } from 'react'
+import { cls, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { useSemanticStyles } from '../../_shared/hooks'
 import useTooltipOpen from './hooks/use_tooltip_open'
 import useTooltipResize from './hooks/use_tooltip_resize'
@@ -9,6 +8,8 @@ import useTriggerEvent from './hooks/use_trigger_event'
 // comps
 import Overlay from '../overlay'
 import ShouldUpdate from '../should-update'
+import TooltipContent from './components/content'
+import TooltipTrigger from './components/trigger'
 // types
 import type { InternalTooltipProps } from './props'
 
@@ -26,11 +27,11 @@ function InternalTooltip(_props: InternalTooltipProps) {
   const props = withDefaults(_props, defaultProps)
 
   const {
-    content,
     zIndex,
     transitions,
     fresh,
     //
+    content,
     children,
     className,
     style,
@@ -42,9 +43,9 @@ function InternalTooltip(_props: InternalTooltipProps) {
 
   const [open, setOpen] = useTooltipOpen(props)
 
-  const { states, actions } = useTooltipStore()
+  const { states, actions } = useTooltipStore(props)
 
-  useTooltipResize(states, actions, props, open)
+  const handleUpdateCoords = useTooltipResize(states, actions, props, open)
 
   const triggerHandlers = useTriggerEvent(props, setOpen)
 
@@ -56,36 +57,45 @@ function InternalTooltip(_props: InternalTooltipProps) {
 
   return (
     <>
-      {cloneElement(children, {
-        ref: mergeRefs(states.$trigger, (children as any).ref),
-        ...triggerHandlers,
-      })}
+      <TooltipTrigger
+        ref={states.$trigger}
+        open={open}
+        onResize={handleUpdateCoords}
+        onScroll={handleUpdateCoords}
+        events={triggerHandlers}
+      >
+        {children}
+      </TooltipTrigger>
+
       <Overlay
+        style={{ position: 'absolute', left: 0, top: 0 }}
         mask={false}
         open={open}
         zIndex={zIndex}
         transitions={transitions}
-        onEnter={() => {
-          console.log('onEnter')
-          actions.updateCoords(props)
-        }}
       >
-        <div
+        <TooltipContent
           ref={states.$tooltip}
-          className={cls(className, classNames.root)}
-          style={{ ...styles.root, ...contentCoords }}
+          open={open}
+          onResize={handleUpdateCoords}
+          onScroll={handleUpdateCoords}
         >
-          <div className={classNames.arrow} style={{ ...styles.arrow, ...arrowCoords }}></div>
-          {/* 内容缓存 */}
-          <ShouldUpdate when={open || !!fresh}>
-            <div className={classNames.main} style={styles.main}>
-              <div className={classNames.title} style={styles.title}></div>
-              <div className={classNames.content} style={styles.content}>
-                {content}
+          <div
+            className={cls(className, classNames.root)}
+            style={{ ...styles.root, ...contentCoords }}
+          >
+            <div className={classNames.arrow} style={{ ...styles.arrow, ...arrowCoords }}></div>
+            {/* 内容缓存 */}
+            <ShouldUpdate when={open || !!fresh}>
+              <div className={classNames.main} style={styles.main}>
+                <div className={classNames.title} style={styles.title}></div>
+                <div className={classNames.content} style={styles.content}>
+                  {content}
+                </div>
               </div>
-            </div>
-          </ShouldUpdate>
-        </div>
+            </ShouldUpdate>
+          </div>
+        </TooltipContent>
       </Overlay>
     </>
   )

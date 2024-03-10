@@ -18,8 +18,6 @@ export interface InternalTooltipProps
   extends Required<HasChildren<React.ReactElement>>,
     SemanticStyledProps<'root' | 'arrow' | 'main' | 'title' | 'content'>,
     Pick<OverlayProps, 'zIndex' | 'transitions' | 'getContainer'> {
-  title?: React.ReactNode
-
   content?: React.ReactNode
 
   trigger?: ToolTipTrigger | ToolTipTrigger[]

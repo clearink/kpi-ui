@@ -1,5 +1,5 @@
-import { useEvent, useResizeObserver } from '@kpi-ui/hooks'
-import { ownerWindow, pushItem } from '@kpi-ui/utils'
+import { useEvent, useUnmountEffect } from '@kpi-ui/hooks'
+import { caf, ownerWindow, raf } from '@kpi-ui/utils'
 import { useEffect } from 'react'
 import { addListener } from '../../transition/_shared/utils'
 import getScrollable from '../utils/scrollable'
@@ -14,29 +14,25 @@ export default function useTooltipResize(
   open: boolean
 ) {
   const onChange = useEvent(() => {
-    console.log('onChange', open)
-    open && actions.updateCoords(props)
+    if (states.frameId >= 0) return
+
+    states.frameId = raf(() => {
+      states.frameId = -1
+
+      open && actions.updateCoords(props)
+    })
   })
 
-  // trigger resize + window resize
-  useResizeObserver(states.$trigger, onChange)
+  // prettier-ignore
+  useUnmountEffect(() => { caf(states.frameId) })
 
   useEffect(() => {
-    const tooltip = actions.tooltip
+    if (!open) return
 
-    const trigger = actions.trigger
+    const root = ownerWindow(actions.trigger) as any
 
-    if (!open || !tooltip || !trigger) return
+    return addListener(root, 'scroll', onChange, { passive: true })
+  }, [open, actions, onChange])
 
-    const elements = new Set<Element>(pushItem(getScrollable(trigger), ownerWindow(trigger) as any))
-
-    const removes: (() => void)[] = []
-
-    elements.forEach((el) => {
-      removes.push(addListener(el, 'scroll', onChange, { passive: true }))
-    })
-
-    // prettier-ignore
-    return () => { removes.forEach((fn) => { fn() }) }
-  }, [open, actions.tooltip, actions.trigger, onChange])
+  return onChange
 }
