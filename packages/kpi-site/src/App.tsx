@@ -33,6 +33,7 @@ export default function App() {
             ].map((pos) => (
               <Tooltip
                 key={pos}
+                open
                 placement={pos}
                 content={<div style={{ width: 300, height: 20 }}>12313211212</div>}
               >

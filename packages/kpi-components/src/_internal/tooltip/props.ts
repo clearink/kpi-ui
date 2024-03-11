@@ -5,12 +5,10 @@ import type { OverlayProps } from '../overlay/props'
 
 export type ToolTipTrigger = 'hover' | 'focus' | 'click' | 'contextMenu'
 
-export type TooltipPlacement = (typeof TOOLTIP_PLACEMENT)[number]
+export type TooltipPlacement = keyof typeof TOOLTIP_PLACEMENT
 
 export type TooltipCoords = {
   top: number | 'auto'
-  right: number | 'auto'
-  bottom: number | 'auto'
   left: number | 'auto'
 }
 
@@ -36,7 +34,9 @@ export interface InternalTooltipProps
 
   placement?: TooltipPlacement
 
-  autoLayout?: boolean | { pointAtCenter: boolean }
+  arrow?: boolean | { pointAtCenter: boolean }
+
+  autoLayout: boolean
 
   offset?: number | [number, number]
 }

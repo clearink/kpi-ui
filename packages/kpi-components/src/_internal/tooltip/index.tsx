@@ -60,8 +60,7 @@ function InternalTooltip(_props: InternalTooltipProps) {
       <TooltipTrigger
         ref={states.$trigger}
         open={open}
-        onResize={handleUpdateCoords}
-        onScroll={handleUpdateCoords}
+        onUpdate={handleUpdateCoords}
         events={triggerHandlers}
       >
         {children}
@@ -74,12 +73,7 @@ function InternalTooltip(_props: InternalTooltipProps) {
         zIndex={zIndex}
         transitions={transitions}
       >
-        <TooltipContent
-          ref={states.$tooltip}
-          open={open}
-          onResize={handleUpdateCoords}
-          onScroll={handleUpdateCoords}
-        >
+        <TooltipContent ref={states.$tooltip} open={open} onUpdate={handleUpdateCoords}>
           <div
             className={cls(className, classNames.root)}
             style={{ ...styles.root, ...contentCoords }}
