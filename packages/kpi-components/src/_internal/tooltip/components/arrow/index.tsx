@@ -1,20 +1,14 @@
 import { mergeRefs, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, forwardRef, useRef, type ForwardedRef } from 'react'
 // comps
-import ResizeObserver from '../../../resize-observer'
 // types
-import type { TooltipContentProps } from './props'
+import type { TooltipArrowProps } from './props'
 
-function TooltipContent(props: TooltipContentProps, ref: ForwardedRef<any>) {
-  const { children, onResize } = props
-
-  const dom = useRef<Element>(null)
+function TooltipArrow(props: TooltipArrowProps, ref: ForwardedRef<any>) {
 
   return (
-    <ResizeObserver onResize={onResize}>
-      {cloneElement(children, { ref: mergeRefs((children as any).ref, ref, dom) })}
-    </ResizeObserver>
+    <div ref={ref} className={classNames.arrow} style={{ ...styles.arrow, ...states.arrowCoords }}></div>
   )
 }
 
-export default withDisplayName(forwardRef(TooltipContent), 'TooltipContent')
+export default withDisplayName(forwardRef(TooltipArrow), 'TooltipArrow')

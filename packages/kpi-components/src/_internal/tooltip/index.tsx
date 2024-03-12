@@ -2,8 +2,8 @@
 import { cls, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { useSemanticStyles } from '../../_shared/hooks'
 import useTooltipOpen from './hooks/use_tooltip_open'
-import useTooltipResize from './hooks/use_tooltip_resize'
 import useTooltipStore from './hooks/use_tooltip_store'
+import useTooltipUpdate from './hooks/use_tooltip_update'
 import useTriggerEvent from './hooks/use_trigger_event'
 // comps
 import Overlay from '../overlay'
@@ -45,15 +45,9 @@ function InternalTooltip(_props: InternalTooltipProps) {
 
   const { states, actions } = useTooltipStore(props)
 
-  const handleUpdateCoords = useTooltipResize(states, actions, props, open)
+  const handleUpdateCoords = useTooltipUpdate(actions, props, open)
 
   const triggerHandlers = useTriggerEvent(props, setOpen)
-
-  const contentCoords = {
-    ...states.coords,
-  }
-
-  const arrowCoords = {}
 
   return (
     <>
@@ -66,26 +60,22 @@ function InternalTooltip(_props: InternalTooltipProps) {
         {children}
       </TooltipTrigger>
 
-      <Overlay
-        style={{ position: 'absolute', left: 0, top: 0 }}
-        mask={false}
-        open={open}
-        zIndex={zIndex}
-        transitions={transitions}
-      >
-        <TooltipContent ref={states.$tooltip} open={open} onUpdate={handleUpdateCoords}>
+      <Overlay mask={false} open={open} zIndex={zIndex} transitions={transitions}>
+        <TooltipContent open={open} onUpdate={handleUpdateCoords}>
           <div
+            ref={states.$tooltip}
             className={cls(className, classNames.root)}
-            style={{ ...styles.root, ...contentCoords }}
+            style={{ ...styles.root, ...states.tooltipCoords }}
           >
-            <div className={classNames.arrow} style={{ ...styles.arrow, ...arrowCoords }}></div>
+            <div
+              ref={states.$arrow}
+              className={classNames.arrow}
+              style={{ ...styles.arrow, ...states.arrowCoords }}
+            ></div>
             {/* 内容缓存 */}
             <ShouldUpdate when={open || !!fresh}>
-              <div className={classNames.main} style={styles.main}>
-                <div className={classNames.title} style={styles.title}></div>
-                <div className={classNames.content} style={styles.content}>
-                  {content}
-                </div>
+              <div className={classNames.content} style={styles.content} role="tooltip">
+                {content}
               </div>
             </ShouldUpdate>
           </div>

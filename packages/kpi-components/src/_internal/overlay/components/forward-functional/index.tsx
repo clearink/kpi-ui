@@ -1,5 +1,5 @@
 // utils
-import { isFunction, mergeRefs, withDisplayName } from '@kpi-ui/utils'
+import { isFunction, mergeRefs, supportRef, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, forwardRef } from 'react'
 // types
 import type { ReactRef } from '@kpi-ui/types'
@@ -13,7 +13,9 @@ function ForwardFunctional<T extends React.ReactElement, R extends ReactRef<any>
 
   if (isFunction(children)) return children(ref)
 
-  return cloneElement(children, { ref: mergeRefs(ref, (children as any).ref) })
+  return supportRef(children)
+    ? cloneElement(children, { ref: mergeRefs(ref, children.ref) })
+    : children
 }
 
 export default withDisplayName(forwardRef(ForwardFunctional), 'ForwardFunctional') as <

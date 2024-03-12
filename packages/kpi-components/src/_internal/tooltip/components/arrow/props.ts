@@ -1,6 +1,5 @@
-import type { HasChildren } from '@kpi-ui/types'
-import type { ReactElement } from 'react'
+import type { TooltipCoords } from '../../props'
 
-export interface TooltipContentProps extends Required<HasChildren<ReactElement>> {
-  onResize?: () => void
+export interface TooltipArrowProps {
+  coords: TooltipCoords
 }

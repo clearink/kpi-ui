@@ -1,9 +1,8 @@
 import { useConstant, useForceUpdate, useWatchValue } from '@kpi-ui/hooks'
-import { isNumber } from '@kpi-ui/utils'
 import { useMemo } from 'react'
+import { TOOLTIP_PLACEMENT } from '../constants'
 // types
 import type { InternalTooltipProps, TooltipCoords } from '../props'
-import { TOOLTIP_PLACEMENT } from '../constants'
 
 export class TooltipState {
   $trigger = {
@@ -14,9 +13,13 @@ export class TooltipState {
     current: null as HTMLDivElement | null,
   }
 
-  frameId = -1
+  $arrow = {
+    current: null as HTMLDivElement | null,
+  }
 
-  coords: TooltipCoords = { top: 'auto', left: 'auto' }
+  tooltipCoords: TooltipCoords = {}
+
+  arrowCoords: TooltipCoords = {}
 }
 
 export class TooltipAction {
@@ -30,38 +33,63 @@ export class TooltipAction {
     return this.states.$tooltip.current
   }
 
-  private shouldUpdateCoords = (b: TooltipCoords) => {
-    const a = this.states.coords
-
-    return ['top', 'left'].some((direction) => a[direction] !== b[direction])
+  get arrow() {
+    return this.states.$arrow.current
   }
 
-  private setCoords = (value: TooltipCoords) => {
-    if (!this.shouldUpdateCoords(value)) return
+  private shouldUpdateCoords = (a: TooltipCoords, b: TooltipCoords) => {
+    return a.top !== b.top || a.right !== b.right || a.bottom !== b.bottom || a.left !== b.left
+  }
 
-    this.states.coords = value
+  private setTooltipCoords = (value: TooltipCoords) => {
+    if (!this.shouldUpdateCoords(this.states.tooltipCoords, value)) return
+
+    this.states.tooltipCoords = value
+
+    this.forceUpdate()
+  }
+
+  private setArrowCoords = (value: TooltipCoords) => {
+    if (!this.shouldUpdateCoords(this.states.arrowCoords, value)) return
+
+    this.states.arrowCoords = value
 
     this.forceUpdate()
   }
 
   // 当初始时open=true,updateCoords会调用2次
   updateCoords = (props: InternalTooltipProps) => {
-    if (!this.tooltip || !this.trigger) return null
+    console.log('updateCoords')
+    if (!this.tooltip || !this.trigger || !this.arrow) return
 
-    const { autoLayout, placement } = props
+    // 不能直接计算，得先判断 scroll 逻辑
 
-    // 1. 根据 placement 生成数据
-    const triggerRect = this.trigger.getBoundingClientRect()
-
-    const tooltipRect = this.tooltip.getBoundingClientRect()
+    const { autoLayout, placement, arrow } = props
 
     const algorithm = TOOLTIP_PLACEMENT[placement!] || TOOLTIP_PLACEMENT.top
 
-    const newCoords = algorithm.getCoords(tooltipRect, triggerRect)
+    const tooltipRect = this.tooltip.getBoundingClientRect()
+    const triggerRect = this.trigger.getBoundingClientRect()
+    const arrowRect = this.arrow.getBoundingClientRect()
 
-    // 2. 判断是否需要调整方向
+    // 1. tooltip position
+    const newTooltipCoords = algorithm.getTooltipCoords({
+      tooltip: tooltipRect,
+      trigger: triggerRect,
+      arrow: arrowRect,
+    })
 
-    this.setCoords(newCoords)
+    // 2. arrow position
+    // const newArrowCoords = algorithm.getArrowCoords({
+    //   tooltip: tooltipRect,
+    //   trigger: triggerRect,
+    //   arrow: arrowRect,
+    // })
+
+    // 3. 判断是否需要调整方向
+    this.setTooltipCoords(newTooltipCoords)
+
+    // this.setArrowCoords(newArrowCoords)
   }
 }
 
@@ -74,9 +102,8 @@ export default function useTooltipStore(props: InternalTooltipProps) {
 
   const actions = useMemo(() => new TooltipAction(forceUpdate, states), [forceUpdate, states])
 
-  useWatchValue(placement, () => {
-    actions.updateCoords(props)
-  })
+  // prettier-ignore
+  useWatchValue(placement, () => { actions.updateCoords(props) })
 
   return { states, actions }
 }

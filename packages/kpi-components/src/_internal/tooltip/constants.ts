@@ -1,86 +1,193 @@
+interface GetCoordsOptions {
+  tooltip: DOMRect
+  trigger: DOMRect
+  arrow: DOMRect
+}
 export const TOOLTIP_PLACEMENT = {
   topLeft: {
-    getCoords: (tooltip: DOMRect, trigger: DOMRect) => ({
-      top: trigger.top - tooltip.height,
-      left: trigger.left,
-    }),
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return {
+        top: Math.floor(trigger.top - tooltip.height - arrow.height),
+        left: Math.floor(trigger.left),
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return { left: arrow.width / 2 }
+    },
     flipCoords: () => {},
   },
   top: {
-    getCoords: (tooltip: DOMRect, trigger: DOMRect) => ({
-      top: trigger.top - tooltip.height,
-      left: trigger.left + (trigger.width - tooltip.width) / 2,
-    }),
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return {
+        top: Math.floor(trigger.top - tooltip.height - arrow.height),
+        left: Math.floor(trigger.left + (trigger.width - tooltip.width) / 2),
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      return {}
+    },
     flipCoords: () => {},
   },
   topRight: {
-    getCoords: (tooltip: DOMRect, trigger: DOMRect) => ({
-      top: trigger.top - tooltip.height,
-      left: trigger.left + trigger.width - tooltip.width,
-    }),
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return {
+        top: Math.floor(trigger.top - tooltip.height - arrow.height),
+        left: Math.floor(trigger.left + trigger.width - tooltip.width),
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return { right: arrow.width / 2 }
+    },
     flipCoords: () => {},
   },
   rightTop: {
-    getCoords: (tooltip: DOMRect, trigger: DOMRect) => ({
-      top: trigger.top,
-      left: trigger.left + trigger.width,
-    }),
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { trigger, arrow } = options
+
+      return {
+        top: Math.floor(trigger.top),
+        left: Math.floor(trigger.left + trigger.width + arrow.width),
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return { top: arrow.width / 2 }
+    },
     flipCoords: () => {},
   },
   right: {
-    getCoords: (tooltip: DOMRect, trigger: DOMRect) => ({
-      top: trigger.top + (trigger.height - tooltip.height) / 2,
-      left: trigger.left + trigger.width,
-    }),
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return {
+        top: Math.floor(trigger.top + (trigger.height - tooltip.height) / 2),
+        left: Math.floor(trigger.left + trigger.width + arrow.width),
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      return {}
+    },
     flipCoords: () => {},
   },
   rightBottom: {
-    getCoords: (tooltip: DOMRect, trigger: DOMRect) => ({
-      top: trigger.top + trigger.height - tooltip.height,
-      left: trigger.left + trigger.width,
-    }),
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return {
+        top: Math.floor(trigger.top + trigger.height - tooltip.height),
+        left: Math.floor(trigger.left + trigger.width + arrow.width),
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return { bottom: arrow.width / 2 }
+    },
     flipCoords: () => {},
   },
   bottomLeft: {
-    getCoords: (tooltip: DOMRect, trigger: DOMRect) => ({
-      top: trigger.top + trigger.height,
-      left: trigger.left,
-    }),
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { trigger, arrow } = options
+
+      return {
+        top: Math.floor(trigger.top + trigger.height + arrow.height),
+        left: Math.floor(trigger.left),
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return { left: arrow.width / 2 }
+    },
     flipCoords: () => {},
   },
   bottom: {
-    getCoords: (tooltip: DOMRect, trigger: DOMRect) => ({
-      top: trigger.top + trigger.height,
-      left: trigger.left + (trigger.width - tooltip.width) / 2,
-    }),
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return {
+        top: Math.floor(trigger.top + trigger.height + arrow.height),
+        left: Math.floor(trigger.left + (trigger.width - tooltip.width) / 2),
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      return {}
+    },
     flipCoords: () => {},
   },
   bottomRight: {
-    getCoords: (tooltip: DOMRect, trigger: DOMRect) => ({
-      top: trigger.top + trigger.height,
-      left: trigger.left + trigger.width - tooltip.width,
-    }),
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return {
+        top: Math.floor(trigger.top + trigger.height + arrow.height),
+        left: Math.floor(trigger.left + trigger.width - tooltip.width),
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return { right: arrow.width / 2 }
+    },
     flipCoords: () => {},
   },
   leftTop: {
-    getCoords: (tooltip: DOMRect, trigger: DOMRect) => ({
-      top: trigger.top,
-      left: trigger.left - tooltip.width,
-    }),
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return {
+        top: Math.floor(trigger.top),
+        left: Math.floor(trigger.left - tooltip.width - arrow.width),
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return { top: arrow.width / 2 }
+    },
     flipCoords: () => {},
   },
   left: {
-    getCoords: (tooltip: DOMRect, trigger: DOMRect) => ({
-      top: trigger.top + (trigger.height - tooltip.height) / 2,
-      left: trigger.left - tooltip.width,
-    }),
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return {
+        top: Math.floor(trigger.top + (trigger.height - tooltip.height) / 2),
+        left: Math.floor(trigger.left - tooltip.width - arrow.width),
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return {}
+    },
     flipCoords: () => {},
   },
   leftBottom: {
-    getCoords: (tooltip: DOMRect, trigger: DOMRect) => ({
-      top: trigger.top + trigger.height - tooltip.height,
-      left: trigger.left - tooltip.width,
-    }),
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return {
+        top: Math.floor(trigger.top + trigger.height - tooltip.height),
+        left: Math.floor(trigger.left - tooltip.width - arrow.width),
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      const { tooltip, trigger, arrow } = options
+
+      return { bottom: arrow.width / 2 }
+    },
     flipCoords: () => {},
   },
 }

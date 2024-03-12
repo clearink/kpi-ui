@@ -50,7 +50,7 @@ function Overlay(_props: OverlayProps, ref: ForwardedRef<OverlayRef>) {
     <Portal ref={states.$portal} getContainer={getContainer}>
       <div
         className={cls(props.className, classNames.root)}
-        style={withDefaults(styles.root || {}, { zIndex: level })}
+        style={withDefaults(styles.root || {}, { position: 'absolute', zIndex: level })}
       >
         {!!props.mask && (
           <CSSTransition appear when={open} name={transitions.mask}>

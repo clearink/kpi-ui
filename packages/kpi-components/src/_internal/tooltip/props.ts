@@ -8,13 +8,15 @@ export type ToolTipTrigger = 'hover' | 'focus' | 'click' | 'contextMenu'
 export type TooltipPlacement = keyof typeof TOOLTIP_PLACEMENT
 
 export type TooltipCoords = {
-  top: number | 'auto'
-  left: number | 'auto'
+  top?: number | 'auto'
+  right?: number | 'auto'
+  bottom?: number | 'auto'
+  left?: number | 'auto'
 }
 
 export interface InternalTooltipProps
   extends Required<HasChildren<React.ReactElement>>,
-    SemanticStyledProps<'root' | 'arrow' | 'main' | 'title' | 'content'>,
+    SemanticStyledProps<'root' | 'arrow' | 'content'>,
     Pick<OverlayProps, 'zIndex' | 'transitions' | 'getContainer'> {
   content?: React.ReactNode
 

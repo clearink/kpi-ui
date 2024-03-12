@@ -1,4 +1,4 @@
-import { Tooltip } from '@kpi-ui/components'
+import { Modal, Tooltip } from '@kpi-ui/components'
 
 import '@kpi-ui/components/src/style'
 import './style.scss'
@@ -11,7 +11,7 @@ export default function App() {
         overflow: 'auto',
       }}
     >
-      <div style={{ width: 300, margin: '100px auto', height: 1000 }}>
+      <div style={{ width: 600, margin: '100px auto', height: 1000 }}>
         {/* <div style={{ position: 'absolute', right: 400, top: 200 }}>
           <div style={{ position: 'absolute', left: 400, top: 200 }}> */}
         <div style={{ overflow: 'auto', height: 400 }}>
@@ -19,7 +19,7 @@ export default function App() {
             <div style={{ height: 1000 }}></div>
             {[
               'topLeft',
-              'top',
+              // 'top',
               // 'topRight',
               // 'rightTop',
               // 'right',
@@ -35,11 +35,11 @@ export default function App() {
                 key={pos}
                 open
                 placement={pos}
-                content={<div style={{ width: 300, height: 20 }}>12313211212</div>}
+                content={<div style={{ width: 300, height: 60 }}>12313211212</div>}
               >
                 <textarea
-                  style={{ position: 'relative', margin: '100px 0', top: 20 }}
-                  placeholder={`${pos}Left`}
+                  style={{ display: 'block', position: 'relative', margin: '100px 0', top: 20 }}
+                  placeholder={pos}
                 />
               </Tooltip>
             ))}

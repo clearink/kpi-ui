@@ -1,13 +1,11 @@
 // utils
-import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
+import { usePrefixCls } from '../_shared/hooks'
 import { withDefaults, withDisplayName } from '@kpi-ui/utils'
-
+import useFormatClass from './hooks/use_format_class'
 // comps
 import InternalTooltip from '../_internal/tooltip'
-
 // types
 import type { TooltipProps } from './props'
-import useFormatClass from './hooks/use_format_class'
 
 const defaultProps: Partial<TooltipProps> = {}
 
