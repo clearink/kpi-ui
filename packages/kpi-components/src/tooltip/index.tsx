@@ -23,7 +23,7 @@ function Tooltip(_props: TooltipProps) {
       {...props}
       classNames={classNames}
       transitions={{
-        content: `${rootPrefixCls}-slide-bottom`,
+        content: `${rootPrefixCls}-zoom-fast`,
       }}
     />
   )

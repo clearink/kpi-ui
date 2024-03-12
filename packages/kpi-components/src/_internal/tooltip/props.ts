@@ -8,10 +8,10 @@ export type ToolTipTrigger = 'hover' | 'focus' | 'click' | 'contextMenu'
 export type TooltipPlacement = keyof typeof TOOLTIP_PLACEMENT
 
 export type TooltipCoords = {
-  top?: number | 'auto'
-  right?: number | 'auto'
-  bottom?: number | 'auto'
-  left?: number | 'auto'
+  top?: number
+  right?: number
+  bottom?: number
+  left?: number
 }
 
 export interface InternalTooltipProps
@@ -38,7 +38,7 @@ export interface InternalTooltipProps
 
   arrow?: boolean | { pointAtCenter: boolean }
 
-  autoLayout: boolean
+  autoLayout?: boolean
 
   offset?: number | [number, number]
 }

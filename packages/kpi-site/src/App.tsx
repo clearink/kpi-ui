@@ -17,23 +17,24 @@ export default function App() {
         <div style={{ overflow: 'auto', height: 400 }}>
           <div>
             <div style={{ height: 1000 }}></div>
-            {[
-              'topLeft',
-              // 'top',
-              // 'topRight',
-              // 'rightTop',
-              // 'right',
-              // 'rightBottom',
-              // 'bottomLeft',
-              // 'bottom',
-              // 'bottomRight',
-              // 'leftTop',
-              // 'left',
-              // 'leftBottom',
-            ].map((pos) => (
+            {(
+              [
+                'topLeft',
+                // 'top',
+                // 'topRight',
+                // 'rightTop',
+                // 'right',
+                // 'rightBottom',
+                // 'bottomLeft',
+                // 'bottom',
+                // 'bottomRight',
+                // 'leftTop',
+                // 'left',
+                // 'leftBottom',
+              ] as const
+            ).map((pos) => (
               <Tooltip
                 key={pos}
-                open
                 placement={pos}
                 content={<div style={{ width: 300, height: 60 }}>12313211212</div>}
               >

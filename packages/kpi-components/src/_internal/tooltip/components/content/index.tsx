@@ -22,10 +22,7 @@ function TooltipContent(props: TooltipContentProps, ref: ForwardedRef<any>) {
 
     const removes: (() => void)[] = []
 
-    new Set([
-      ...getScrollable(el),
-      // ownerWindow(dom.current)
-    ]).forEach((el) => {
+    new Set([...getScrollable(el), ownerWindow(dom.current)]).forEach((el) => {
       removes.push(addListener(el, 'scroll', onUpdate, { passive: true }))
     })
 

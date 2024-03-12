@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 import { TOOLTIP_PLACEMENT } from '../constants'
 // types
 import type { InternalTooltipProps, TooltipCoords } from '../props'
+import getPositionedElement from '../utils/positioned'
+import { nextFrame } from '@kpi-ui/utils'
 
 export class TooltipState {
   $trigger = {
@@ -38,7 +40,11 @@ export class TooltipAction {
   }
 
   private shouldUpdateCoords = (a: TooltipCoords, b: TooltipCoords) => {
-    return a.top !== b.top || a.right !== b.right || a.bottom !== b.bottom || a.left !== b.left
+    const positions = ['top', 'right', 'bottom', 'left'] as const
+
+    return positions.some((pos) => {
+      return Math.floor(Number(a[pos] || 0)) !== Math.floor(Number(b[pos] || 0))
+    })
   }
 
   private setTooltipCoords = (value: TooltipCoords) => {
@@ -59,7 +65,6 @@ export class TooltipAction {
 
   // 当初始时open=true,updateCoords会调用2次
   updateCoords = (props: InternalTooltipProps) => {
-    console.log('updateCoords')
     if (!this.tooltip || !this.trigger || !this.arrow) return
 
     // 不能直接计算，得先判断 scroll 逻辑
@@ -71,9 +76,12 @@ export class TooltipAction {
     const tooltipRect = this.tooltip.getBoundingClientRect()
     const triggerRect = this.trigger.getBoundingClientRect()
     const arrowRect = this.arrow.getBoundingClientRect()
+    const positionedRect = getPositionedElement(this.tooltip).getBoundingClientRect()
 
+    console.log(tooltipRect, triggerRect, arrowRect)
     // 1. tooltip position
     const newTooltipCoords = algorithm.getTooltipCoords({
+      positioned: positionedRect,
       tooltip: tooltipRect,
       trigger: triggerRect,
       arrow: arrowRect,
