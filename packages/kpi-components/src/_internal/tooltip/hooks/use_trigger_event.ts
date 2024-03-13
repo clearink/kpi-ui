@@ -18,7 +18,7 @@ export default function useTriggerEvent(
   const onOpen = () => { setOpen(true, openDelay) }
 
   // prettier-ignore
-  const onClose = () => { setOpen(false, openDelay) }
+  const onClose = () => { setOpen(false, closeDelay) }
 
   if (hasItem(actions, 'hover')) {
     // if (isMobile) {

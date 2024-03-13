@@ -1,0 +1,23 @@
+@import '../variables.scss'; //引入变量
+
+.#{$prefix}-zoom-fast {
+  &-enter-from,
+  &-exit-to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  &-enter-active {
+    pointer-events: none;
+    --#{$prefix}-motion-duration-1: 0.3s;
+    transition: opacity var(--#{$prefix}-motion-duration-1) var(--#{$prefix}-motion-out-circ),
+      transform var(--#{$prefix}-motion-duration-1) var(--#{$prefix}-motion-out-circ);
+  }
+
+  &-exit-active {
+    pointer-events: none;
+    --#{$prefix}-motion-duration-1: 0.3s;
+    transition: opacity var(--#{$prefix}-motion-duration-1) var(--#{$prefix}-motion-in-out-circ),
+      transform var(--#{$prefix}-motion-duration-1) var(--#{$prefix}-motion-in-out-circ);
+  }
+}

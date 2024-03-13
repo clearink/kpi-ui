@@ -4,7 +4,6 @@ import { TOOLTIP_PLACEMENT } from '../constants'
 // types
 import type { InternalTooltipProps, TooltipCoords } from '../props'
 import getPositionedElement from '../utils/positioned'
-import { nextFrame } from '@kpi-ui/utils'
 
 export class TooltipState {
   $trigger = {
@@ -19,7 +18,7 @@ export class TooltipState {
     current: null as HTMLDivElement | null,
   }
 
-  tooltipCoords: TooltipCoords = {}
+  tooltipCoords: TooltipCoords = { left: '-1000vw', top: '-1000vh' }
 
   arrowCoords: TooltipCoords = {}
 }
@@ -40,11 +39,11 @@ export class TooltipAction {
   }
 
   private shouldUpdateCoords = (a: TooltipCoords, b: TooltipCoords) => {
-    const positions = ['top', 'right', 'bottom', 'left'] as const
+    const positions = ['top', 'right', 'bottom', 'left', '--origin-x', '--origin-y'] as const
 
-    return positions.some((pos) => {
-      return Math.floor(Number(a[pos] || 0)) !== Math.floor(Number(b[pos] || 0))
-    })
+    const toInteger = (value: any) => Math.floor(Number(value) || 0)
+
+    return positions.some((pos) => toInteger(a[pos]) !== toInteger(b[pos]))
   }
 
   private setTooltipCoords = (value: TooltipCoords) => {
@@ -65,26 +64,20 @@ export class TooltipAction {
 
   // 当初始时open=true,updateCoords会调用2次
   updateCoords = (props: InternalTooltipProps) => {
-    if (!this.tooltip || !this.trigger || !this.arrow) return
+    if (!this.tooltip || !this.trigger) return
 
     // 不能直接计算，得先判断 scroll 逻辑
 
-    const { autoLayout, placement, arrow } = props
+    const { autoLayout, placement } = props
 
     const algorithm = TOOLTIP_PLACEMENT[placement!] || TOOLTIP_PLACEMENT.top
 
-    const tooltipRect = this.tooltip.getBoundingClientRect()
-    const triggerRect = this.trigger.getBoundingClientRect()
-    const arrowRect = this.arrow.getBoundingClientRect()
-    const positionedRect = getPositionedElement(this.tooltip).getBoundingClientRect()
-
-    console.log(tooltipRect, triggerRect, arrowRect)
     // 1. tooltip position
     const newTooltipCoords = algorithm.getTooltipCoords({
-      positioned: positionedRect,
-      tooltip: tooltipRect,
-      trigger: triggerRect,
-      arrow: arrowRect,
+      positioned: getPositionedElement(this.tooltip),
+      tooltip: this.tooltip,
+      trigger: this.trigger,
+      arrow: this.arrow,
     })
 
     // 2. arrow position

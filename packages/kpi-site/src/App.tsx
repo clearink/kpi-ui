@@ -20,8 +20,8 @@ export default function App() {
             {(
               [
                 'topLeft',
-                // 'top',
-                // 'topRight',
+                'top',
+                'topRight',
                 // 'rightTop',
                 // 'right',
                 // 'rightBottom',

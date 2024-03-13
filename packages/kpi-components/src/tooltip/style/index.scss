@@ -13,6 +13,8 @@ $comp: #{$prefix}-tooltip;
   position: absolute;
   width: max-content;
 
+  transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
+
   &.#{$comp}-topLeft {
     .#{$comp}__arrow {
       bottom: 0;

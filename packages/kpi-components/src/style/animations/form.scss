@@ -10,7 +10,7 @@
   &-enter-active,
   &-exit-active {
     overflow: hidden;
-    transition: height var(--#{$prefix}-motion-duration-2_5) var(--#{$prefix}-motion-in-out),
+    transition: height var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out),
       opacity var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out),
       transform var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out);
   }

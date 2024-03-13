@@ -53,21 +53,21 @@ function CSSTransition<E extends HTMLElement>(
     const runTickCleanup = nextTick(() => {
       actions.startTransition(step, display)
 
+      isExit(step) ? onExit?.(el) : onEnter?.(el, isAppear(step))
+
       addTransitionClass(el, from)
 
       isExit(step) && reflow(el)
 
       addTransitionClass(el, active)
-
-      isExit(step) ? onExit?.(el) : onEnter?.(el, isAppear(step))
     })
 
     const runFrameCleanup = nextFrame(() => {
+      isExit(step) ? onExiting?.(el) : onEntering?.(el, isAppear(step))
+
       delTransitionClass(el, from)
 
       addTransitionClass(el, to)
-
-      isExit(step) ? onExiting?.(el) : onEntering?.(el, isAppear(step))
 
       states.cleanupHook = makeCleanupHook(el, step, timeouts[step])
     })

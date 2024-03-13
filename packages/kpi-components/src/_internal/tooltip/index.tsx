@@ -18,18 +18,24 @@ export const defaultProps: Partial<InternalTooltipProps> = {
   openDelay: 100,
   closeDelay: 100,
   defaultOpen: false,
-  placement: 'bottom',
+  placement: 'top',
   autoLayout: true,
   offset: 0,
+  arrow: true,
 }
 
 function InternalTooltip(_props: InternalTooltipProps) {
   const props = withDefaults(_props, defaultProps)
 
   const {
+    // overlay
     zIndex,
     transitions,
+    keepMounted,
+    unmountOnExit,
     fresh,
+    //
+    arrow,
     //
     content,
     children,
@@ -60,7 +66,14 @@ function InternalTooltip(_props: InternalTooltipProps) {
         {children}
       </TooltipTrigger>
 
-      <Overlay mask={false} open={open} zIndex={zIndex} transitions={transitions}>
+      <Overlay
+        mask={false}
+        open={open}
+        zIndex={zIndex}
+        transitions={transitions}
+        keepMounted={keepMounted}
+        unmountOnExit={unmountOnExit}
+      >
         <TooltipContent open={open} onUpdate={handleUpdateCoords}>
           <div
             ref={states.$tooltip}
@@ -68,10 +81,24 @@ function InternalTooltip(_props: InternalTooltipProps) {
             style={{ ...styles.root, ...states.tooltipCoords }}
           >
             <div
-              ref={states.$arrow}
-              className={classNames.arrow}
-              style={{ ...styles.arrow, ...states.arrowCoords }}
+              style={{
+                width: 4,
+                height: 4,
+                borderRadius: '50%',
+                background: 'blue',
+                position: 'absolute',
+                left: 'calc(var(--origin-x, 50%) - 2px)',
+                top: 'calc(var(--origin-y, 50%) - 2px)',
+                zIndex: 20,
+              }}
             ></div>
+            {!!arrow && (
+              <div
+                ref={states.$arrow}
+                className={classNames.arrow}
+                style={{ ...styles.arrow, ...states.arrowCoords }}
+              ></div>
+            )}
             {/* 内容缓存 */}
             <ShouldUpdate when={open || !!fresh}>
               <div className={classNames.content} style={styles.content} role="tooltip">
