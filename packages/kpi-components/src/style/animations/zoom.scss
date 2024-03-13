@@ -9,15 +9,13 @@
 
   &-enter-active {
     pointer-events: none;
-    --#{$prefix}-motion-duration-1: 0.3s;
-    transition: opacity var(--#{$prefix}-motion-duration-1) var(--#{$prefix}-motion-out-circ),
-      transform var(--#{$prefix}-motion-duration-1) var(--#{$prefix}-motion-out-circ);
+    transition: opacity var(--#{$prefix}-motion-duration-1_5) var(--#{$prefix}-motion-out-circ),
+      transform var(--#{$prefix}-motion-duration-1_5) var(--#{$prefix}-motion-out-circ);
   }
 
   &-exit-active {
     pointer-events: none;
-    --#{$prefix}-motion-duration-1: 0.3s;
-    transition: opacity var(--#{$prefix}-motion-duration-1) var(--#{$prefix}-motion-in-out-circ),
-      transform var(--#{$prefix}-motion-duration-1) var(--#{$prefix}-motion-in-out-circ);
+    transition: opacity var(--#{$prefix}-motion-duration-1_5) var(--#{$prefix}-motion-in-out-circ),
+      transform var(--#{$prefix}-motion-duration-1_5) var(--#{$prefix}-motion-in-out-circ);
   }
 }

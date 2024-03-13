@@ -2,7 +2,7 @@ import { useConstant, useForceUpdate, useWatchValue } from '@kpi-ui/hooks'
 import { useMemo } from 'react'
 import { TOOLTIP_PLACEMENT } from '../constants'
 // types
-import type { InternalTooltipProps, TooltipCoords } from '../props'
+import type { InternalTooltipProps, Coords } from '../props'
 import getPositionedElement from '../utils/positioned'
 
 export class TooltipState {
@@ -18,9 +18,9 @@ export class TooltipState {
     current: null as HTMLDivElement | null,
   }
 
-  tooltipCoords: TooltipCoords = { left: '-1000vw', top: '-1000vh' }
+  tooltipCoords: Coords = { left: '-1000vw', top: '-1000vh' }
 
-  arrowCoords: TooltipCoords = {}
+  arrowCoords: Coords = {}
 }
 
 export class TooltipAction {
@@ -38,15 +38,15 @@ export class TooltipAction {
     return this.states.$arrow.current
   }
 
-  private shouldUpdateCoords = (a: TooltipCoords, b: TooltipCoords) => {
+  private shouldUpdateCoords = (a: Coords, b: Coords) => {
     const positions = ['top', 'right', 'bottom', 'left', '--origin-x', '--origin-y'] as const
 
-    const toInteger = (value: any) => Math.floor(Number(value) || 0)
+    const toString = (value: any) => Math.floor(Number(value) || 0).toFixed(2)
 
-    return positions.some((pos) => toInteger(a[pos]) !== toInteger(b[pos]))
+    return positions.some((pos) => toString(a[pos]) !== toString(b[pos]))
   }
 
-  private setTooltipCoords = (value: TooltipCoords) => {
+  private setTooltipCoords = (value: Coords) => {
     if (!this.shouldUpdateCoords(this.states.tooltipCoords, value)) return
 
     this.states.tooltipCoords = value
@@ -54,7 +54,7 @@ export class TooltipAction {
     this.forceUpdate()
   }
 
-  private setArrowCoords = (value: TooltipCoords) => {
+  private setArrowCoords = (value: Coords) => {
     if (!this.shouldUpdateCoords(this.states.arrowCoords, value)) return
 
     this.states.arrowCoords = value

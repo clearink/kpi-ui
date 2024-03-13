@@ -97,7 +97,7 @@ function InternalTooltip(_props: InternalTooltipProps) {
                 ref={states.$arrow}
                 className={classNames.arrow}
                 style={{ ...styles.arrow, ...states.arrowCoords }}
-              ></div>
+              />
             )}
             {/* 内容缓存 */}
             <ShouldUpdate when={open || !!fresh}>

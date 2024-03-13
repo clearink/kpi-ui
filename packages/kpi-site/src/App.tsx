@@ -36,12 +36,10 @@ export default function App() {
               <Tooltip
                 key={pos}
                 placement={pos}
-                content={<div style={{ width: 300, height: 60 }}>12313211212</div>}
+                arrow={pos === 'topLeft'}
+                content={<div style={{ width: 100 }}>12313211212</div>}
               >
-                <textarea
-                  style={{ display: 'block', position: 'relative', margin: '100px 0', top: 20 }}
-                  placeholder={pos}
-                />
+                <textarea style={{ margin: '10px' }} placeholder={pos} />
               </Tooltip>
             ))}
           </div>

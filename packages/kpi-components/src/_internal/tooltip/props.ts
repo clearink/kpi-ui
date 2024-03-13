@@ -7,7 +7,7 @@ export type ToolTipTrigger = 'hover' | 'focus' | 'click' | 'contextMenu'
 
 export type TooltipPlacement = keyof typeof TOOLTIP_PLACEMENT
 
-export type TooltipCoords = {
+export interface Coords {
   top?: number | string
   right?: number | string
   bottom?: number | string
