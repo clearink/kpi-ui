@@ -10,12 +10,3 @@ export function getElementCoords(el: Element) {
     clientWidth: el.clientWidth,
   }
 }
-
-export function getArrowCoords(
-  el: Element | null,
-  defaultCoords: ReturnType<typeof getElementCoords>
-) {
-  if (el) return getElementCoords(el)
-
-  return { ...defaultCoords, height: 16, width: 16, clientHeight: 16, clientWidth: 16 }
-}

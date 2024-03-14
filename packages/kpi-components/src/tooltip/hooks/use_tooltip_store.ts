@@ -96,16 +96,11 @@ export class TooltipAction {
 }
 
 export default function useTooltipStore(props: TooltipProps) {
-  const { placement } = props
-
   const forceUpdate = useForceUpdate()
 
   const states = useConstant(() => new TooltipState())
 
   const actions = useMemo(() => new TooltipAction(forceUpdate, states), [forceUpdate, states])
-
-  // prettier-ignore
-  useWatchValue(placement, () => { actions.updateCoords(props) })
 
   return { states, actions }
 }

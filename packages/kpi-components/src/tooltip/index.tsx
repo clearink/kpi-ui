@@ -13,6 +13,7 @@ import TooltipContent from './components/content'
 import TooltipTrigger from './components/trigger'
 // types
 import type { TooltipProps } from './props'
+import { useWatchValue } from '@kpi-ui/hooks'
 
 export const defaultProps: Partial<TooltipProps> = {
   trigger: 'hover',
@@ -35,6 +36,7 @@ function Tooltip(_props: TooltipProps) {
     unmountOnExit,
     //
     arrow,
+    placement,
     //
     fresh,
     content,
@@ -59,6 +61,9 @@ function Tooltip(_props: TooltipProps) {
   const handleUpdateCoords = useTooltipUpdate(actions, props, open)
 
   const triggerHandlers = useTriggerEvent(props, setOpen)
+
+  // prettier-ignore
+  useWatchValue(placement, () => { actions.updateCoords(props) })
 
   return (
     <>

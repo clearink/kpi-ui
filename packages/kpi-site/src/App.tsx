@@ -36,7 +36,8 @@ export default function App() {
               <Tooltip
                 key={pos}
                 placement={pos}
-                open
+                // open
+                // arrow={false}
                 // arrow={pos === 'topLeft'}
                 content={<div style={{ width: 100 }}>12313211212</div>}
               >

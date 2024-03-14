@@ -17,9 +17,8 @@ $comp: #{$prefix}-tooltip;
 
   &.#{$comp}-topLeft {
     .#{$comp}__arrow {
-      bottom: $kpi-tooltip-size;
-      left: $kpi-tooltip-offset-x;
-      transform: translate3d(0, 100%, 0) rotate(180deg);
+      left: $kpi-tooltip-arrow-size;
+      bottom: 0;
     }
   }
 
@@ -27,15 +26,14 @@ $comp: #{$prefix}-tooltip;
     .#{$comp}__arrow {
       bottom: 0;
       left: 50%;
-      transform: translate3d(-50%, 100%, 0) rotate(180deg);
+      transform: translate3d(-50%, 0%, 0);
     }
   }
 
   &.#{$comp}-topRight {
     .#{$comp}__arrow {
       bottom: 0;
-      right: $kpi-tooltip-offset-x;
-      transform: translate3d(0, 100%, 0) rotate(180deg);
+      right: $kpi-tooltip-arrow-size;
     }
   }
 
@@ -117,22 +115,29 @@ $comp: #{$prefix}-tooltip;
   min-width: 100px;
   background-color: red;
   border-radius: 4px;
-  margin-bottom: $kpi-tooltip-offset;
+  margin-bottom: $kpi-tooltip-arrow-size;
 }
 
 .#{$comp}__arrow {
   position: absolute;
   z-index: 1;
   pointer-events: none;
-  width: $kpi-tooltip-size;
-  height: $kpi-tooltip-size;
-  overflow: hidden;
-  background-color: red;
-  transform: rotate(45deg);
+  width: $kpi-tooltip-arrow-size * 2;
+  height: $kpi-tooltip-arrow-size * 2;
+
+  &::before {
+    content: '';
+    display: block;
+    width: $kpi-tooltip-arrow-size;
+    height: $kpi-tooltip-arrow-size;
+    transform: translate(50%, -50%) rotate(45deg);
+    border-bottom-right-radius: 2px;
+    background-color: red;
+  }
 }
 
 .#{$comp}-has-arrow {
   .#{$comp}__content {
-    margin-bottom: 16px;
+    margin-bottom: $kpi-tooltip-arrow-size * 2;
   }
 }

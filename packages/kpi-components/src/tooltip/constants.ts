@@ -1,6 +1,4 @@
-import { defaultProps } from '.'
-import { InternalTooltipProps, TooltipPlacement } from './props'
-import { getArrowCoords, getElementCoords } from './utils/coords'
+import { getElementCoords } from './utils/coords'
 
 interface GetCoordsOptions {
   positioned: Element
@@ -22,17 +20,13 @@ export const TOOLTIP_PLACEMENT = {
 
       const _popup = getElementCoords(popup)
 
-      const _arrow = getArrowCoords(arrow, {
-        ..._popup,
-        left: _popup.left + 12,
-        top: _popup.top + _popup.clientHeight,
-      })
+      const arrow_size = 8
 
       return {
         top: _trigger.top - _popup.clientHeight - _positioned.top,
         left: _trigger.left - _positioned.left,
-        '--origin-x': `${_arrow.left - _popup.left}px`,
-        '--origin-y': `${_arrow.top - _popup.top}px`,
+        '--origin-x': `${arrow_size * 2}px`,
+        '--origin-y': `${_popup.clientHeight + arrow_size / 2}px`,
       }
     },
     getArrowCoords: (options: GetCoordsOptions) => {
@@ -40,67 +34,70 @@ export const TOOLTIP_PLACEMENT = {
     },
     flipCoords: () => {},
   },
-  // top: {
-  //   getTooltipCoords: (options: GetCoordsOptions) => {
-  //     const { tooltip, trigger, positioned, arrow } = options
+  top: {
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { popup, trigger, positioned, arrow } = options
 
-  //     const _positioned = getElementCoords(positioned)
+      const _positioned = getElementCoords(positioned)
 
-  //     const _trigger = getElementCoords(trigger)
+      const _trigger = getElementCoords(trigger)
 
-  //     const _tooltip = getElementCoords(tooltip)
+      const _popup = getElementCoords(popup)
 
-  //     const _arrow = getArrowCoords(arrow, {
-  //       ..._tooltip,
-  //       left: _tooltip.left + (_tooltip.clientWidth - 16) / 2,
-  //       top: _tooltip.top + _tooltip.clientHeight,
-  //     })
+      const arrow_size = 8
 
-  //     return {
-  //       top: _trigger.top - tooltip.clientHeight - _arrow.height - _positioned.top,
-  //       left: _trigger.left + (_trigger.width - tooltip.scrollWidth) / 2 - _positioned.left,
-  //       '--origin-x': `${tooltip.clientWidth / 2}px`,
-  //       '--origin-y': `${tooltip.clientHeight + _arrow.height / 2}px`,
-  //     }
-  //   },
-  //   getArrowCoords: (options: GetCoordsOptions) => {
-  //     return {}
-  //   },
-  //   flipCoords: () => {},
-  // },
-  // topRight: {
-  //   getTooltipCoords: (options: GetCoordsOptions) => {
-  //     const { tooltip, trigger, positioned, arrow } = options
+      const _arrow = arrow
+        ? getElementCoords(arrow)
+        : {
+            ..._popup,
+            left: _popup.left + (_popup.clientWidth - arrow_size * 2) / 2,
+            top: _popup.top + popup.clientHeight - arrow_size,
+          }
 
-  //     const _positioned = getElementCoords(positioned)
+      return {
+        top: _trigger.top - _popup.clientHeight - _positioned.top,
+        left: _trigger.left + (_trigger.width - _popup.clientWidth) / 2 - _positioned.left,
+        '--origin-x': `${_arrow.left - _popup.left + arrow_size}px`,
+        '--origin-y': `${_arrow.top - _popup.top + arrow_size / 2}px`,
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      return {}
+    },
+    flipCoords: () => {},
+  },
+  topRight: {
+    getTooltipCoords: (options: GetCoordsOptions) => {
+      const { popup, trigger, positioned, arrow } = options
 
-  //     const _trigger = getElementCoords(trigger)
+      const _positioned = getElementCoords(positioned)
 
-  //     const _tooltip = getElementCoords(tooltip)
+      const _trigger = getElementCoords(trigger)
 
-  //     const _arrow = getArrowCoords(arrow, {
-  //       ..._tooltip,
-  //       left: _tooltip.left + (_tooltip.clientWidth - 12 - 16),
-  //       top: _tooltip.top + _tooltip.clientHeight,
-  //     })
+      const _popup = getElementCoords(popup)
 
-  //     return {
-  //       top: _trigger.top - tooltip.clientHeight - _arrow.height - _positioned.top,
-  //       left:
-  //         _trigger.left +
-  //         _trigger.width -
-  //         _tooltip.clientWidth -
-  //         _arrow.clientWidth -
-  //         _positioned.left,
-  //       '--origin-x': `${tooltip.clientWidth / 2}px`,
-  //       '--origin-y': `${tooltip.clientHeight + _arrow.height / 2}px`,
-  //     }
-  //   },
-  //   getArrowCoords: (options: GetCoordsOptions) => {
-  //     return {}
-  //   },
-  //   flipCoords: () => {},
-  // },
+      const arrow_size = 8
+
+      const _arrow = arrow
+        ? getElementCoords(arrow)
+        : {
+            ..._popup,
+            left: _popup.left + (_popup.clientWidth - arrow_size * 3),
+            top: _popup.top + popup.clientHeight - arrow_size,
+          }
+
+      return {
+        top: _trigger.top - _popup.clientHeight - _positioned.top,
+        left: _trigger.left + (_trigger.width - _popup.clientWidth) - _positioned.left,
+        '--origin-x': `${_arrow.left - _popup.left + arrow_size}px`,
+        '--origin-y': `${_arrow.top - _popup.top + arrow_size / 2}px`,
+      }
+    },
+    getArrowCoords: (options: GetCoordsOptions) => {
+      return {}
+    },
+    flipCoords: () => {},
+  },
   // rightTop: {
   //   getTooltipCoords: (options: GetCoordsOptions) => {
   //     const { trigger, positioned, arrow } = options
