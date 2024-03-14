@@ -1,1 +1,1 @@
-export type { TooltipProps } from '../props'
+export type { InternalTooltipProps } from '../props'

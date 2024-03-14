@@ -3,9 +3,9 @@ import { fallback } from '@kpi-ui/utils'
 import { useRef, type SetStateAction } from 'react'
 import { defaultProps } from '..'
 // types
-import type { InternalTooltipProps } from '../props'
+import type { TooltipProps } from '../props'
 
-export default function useTooltipOpen(props: InternalTooltipProps) {
+export default function useTooltipOpen(props: TooltipProps) {
   const { open: _open, defaultOpen, onOpenChange } = props
 
   const timer = useRef<any>(undefined)

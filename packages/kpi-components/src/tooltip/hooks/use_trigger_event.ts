@@ -1,11 +1,11 @@
 import { hasItem, toArray } from '@kpi-ui/utils'
 // types
 import type { DOMAttributes, SetStateAction } from 'react'
-import type { InternalTooltipProps } from '../props'
+import type { TooltipProps } from '../props'
 
 // 触发条件
 export default function useTriggerEvent(
-  props: InternalTooltipProps,
+  props: TooltipProps,
   setOpen: (state: SetStateAction<boolean>, delay?: number) => void
 ) {
   const { trigger, openDelay, closeDelay } = props

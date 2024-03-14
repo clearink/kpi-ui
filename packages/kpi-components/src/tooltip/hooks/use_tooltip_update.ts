@@ -1,16 +1,16 @@
 import { useEvent } from '@kpi-ui/hooks'
-import { nextTick } from '@kpi-ui/utils'
+import { nextTick, noop } from '@kpi-ui/utils'
 import { useEffect, useRef } from 'react'
 import useTooltipStore from './use_tooltip_store'
 // types
-import type { InternalTooltipProps } from '../props'
+import type { TooltipProps } from '../props'
 
 export default function useTooltipUpdate(
   actions: ReturnType<typeof useTooltipStore>['actions'],
-  props: InternalTooltipProps,
+  props: TooltipProps,
   open: boolean
 ) {
-  const cleanupTick = useRef(() => {})
+  const cleanupTick = useRef(noop)
 
   // prettier-ignore
   useEffect(() => () => { cleanupTick.current() }, [])

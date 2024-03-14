@@ -17,7 +17,7 @@ $comp: #{$prefix}-tooltip;
 
   &.#{$comp}-topLeft {
     .#{$comp}__arrow {
-      bottom: 0;
+      bottom: $kpi-tooltip-size;
       left: $kpi-tooltip-offset-x;
       transform: translate3d(0, 100%, 0) rotate(180deg);
     }
@@ -117,7 +117,9 @@ $comp: #{$prefix}-tooltip;
   min-width: 100px;
   background-color: red;
   border-radius: 4px;
+  margin-bottom: $kpi-tooltip-offset;
 }
+
 .#{$comp}__arrow {
   position: absolute;
   z-index: 1;
@@ -125,15 +127,12 @@ $comp: #{$prefix}-tooltip;
   width: $kpi-tooltip-size;
   height: $kpi-tooltip-size;
   overflow: hidden;
+  background-color: red;
+  transform: rotate(45deg);
+}
 
-  &::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    width: $kpi-tooltip-size;
-    height: $kpi-tooltip-size / 2;
-    background-color: red;
-    clip-path: $kpi-tooltip-arrow-polygon;
-    clip-path: $kpi-tooltip-arrow-path;
+.#{$comp}-has-arrow {
+  .#{$comp}__content {
+    margin-bottom: 16px;
   }
 }
