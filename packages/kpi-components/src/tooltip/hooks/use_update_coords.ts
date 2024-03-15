@@ -5,7 +5,7 @@ import useTooltipStore from './use_tooltip_store'
 // types
 import type { TooltipProps } from '../props'
 
-export default function useTooltipUpdate(
+export default function useUpdateCoords(
   actions: ReturnType<typeof useTooltipStore>['actions'],
   props: TooltipProps,
   open: boolean

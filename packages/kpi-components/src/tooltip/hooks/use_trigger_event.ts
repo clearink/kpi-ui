@@ -26,6 +26,7 @@ export default function useTriggerEvent(
     //   handlers.onPointerLeave = onClose
     // } else {
     handlers.onMouseEnter = onOpen
+    // 如果在 popup内则不执行onClose
     handlers.onMouseLeave = onClose
     // }
   }

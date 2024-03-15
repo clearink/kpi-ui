@@ -174,7 +174,7 @@ $color-overlay: (
   'light-light': #{rgba($color-black, 0.7)},
   'light-lighter': #{rgba($color-black, 0.5)},
   // dark
-  'dark-default': #{rgba($color-black, 0.8)},
-  'dark-light': #{rgba($color-black, 0.7)},
-  'dark-lighter': #{rgba($color-black, 0.5)}
+  'dark-default': #{rgba($color-white, 0.8)},
+  'dark-light': #{rgba($color-white, 0.7)},
+  'dark-lighter': #{rgba($color-white, 0.5)}
 );

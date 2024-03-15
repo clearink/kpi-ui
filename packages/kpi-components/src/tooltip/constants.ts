@@ -1,103 +1,99 @@
 import { getElementCoords } from './utils/coords'
 
 interface GetCoordsOptions {
-  positioned: Element
+  relative: Element
   popup: Element
   trigger: Element
-  arrow: Element | null
 }
 
 // TODO: 去除魔术字符串
 
 export const TOOLTIP_PLACEMENT = {
   topLeft: {
-    getTooltipCoords: (options: GetCoordsOptions) => {
-      const { popup, trigger, positioned, arrow } = options
+    getPopupCoords: (options: GetCoordsOptions) => {
+      const { popup, trigger, relative } = options
 
-      const _positioned = getElementCoords(positioned)
-
-      const _trigger = getElementCoords(trigger)
-
-      const _popup = getElementCoords(popup)
-
-      const arrow_size = 8
-
-      return {
-        top: _trigger.top - _popup.clientHeight - _positioned.top,
-        left: _trigger.left - _positioned.left,
-        '--origin-x': `${arrow_size * 2}px`,
-        '--origin-y': `${_popup.clientHeight + arrow_size / 2}px`,
-      }
-    },
-    getArrowCoords: (options: GetCoordsOptions) => {
-      return {}
-    },
-    flipCoords: () => {},
-  },
-  top: {
-    getTooltipCoords: (options: GetCoordsOptions) => {
-      const { popup, trigger, positioned, arrow } = options
-
-      const _positioned = getElementCoords(positioned)
+      const _relative = getElementCoords(relative)
 
       const _trigger = getElementCoords(trigger)
 
       const _popup = getElementCoords(popup)
 
-      const arrow_size = 8
-
-      const _arrow = arrow
-        ? getElementCoords(arrow)
-        : {
-            ..._popup,
-            left: _popup.left + (_popup.clientWidth - arrow_size * 2) / 2,
-            top: _popup.top + popup.clientHeight - arrow_size,
-          }
+      // const arrow_size = 8
+      // const arrow_offset_x = arrow_size * 2
+      // const arrow_offset_y = _popup.clientHeight - arrow_size
 
       return {
-        top: _trigger.top - _popup.clientHeight - _positioned.top,
-        left: _trigger.left + (_trigger.width - _popup.clientWidth) / 2 - _positioned.left,
-        '--origin-x': `${_arrow.left - _popup.left + arrow_size}px`,
-        '--origin-y': `${_arrow.top - _popup.top + arrow_size / 2}px`,
+        top: _trigger.top - _popup.clientHeight - _relative.top,
+        left: _trigger.left - _relative.left,
+        // '--origin-x': `${arrow_offset_x}px`,
+        // '--origin-y': `${arrow_offset_y}px`,
       }
+    },
+    shouldFlipCoords: () => {
+      // 当 trigger 对应的 placement 不能容纳 popup 时需要 flip
+      // 是直接 trigger.getBoundingClientRect 还是
+      return false
+    },
+    flipPopupCoords: (options: { left: number; top: number }) => {
+      const { left } = options
     },
     getArrowCoords: (options: GetCoordsOptions) => {
       return {}
     },
-    flipCoords: () => {},
   },
-  topRight: {
-    getTooltipCoords: (options: GetCoordsOptions) => {
-      const { popup, trigger, positioned, arrow } = options
+  // top: {
+  //   getTooltipCoords: (options: GetCoordsOptions) => {
+  //     const { popup, trigger, positioned } = options
 
-      const _positioned = getElementCoords(positioned)
+  //     const _positioned = getElementCoords(positioned)
 
-      const _trigger = getElementCoords(trigger)
+  //     const _trigger = getElementCoords(trigger)
 
-      const _popup = getElementCoords(popup)
+  //     const _popup = getElementCoords(popup)
 
-      const arrow_size = 8
+  //     const arrow_size = 8
+  //     const arrow_offset_x = _popup.clientWidth / 2
+  //     const arrow_offset_y = _popup.clientHeight - arrow_size
 
-      const _arrow = arrow
-        ? getElementCoords(arrow)
-        : {
-            ..._popup,
-            left: _popup.left + (_popup.clientWidth - arrow_size * 3),
-            top: _popup.top + popup.clientHeight - arrow_size,
-          }
+  //     return {
+  //       top: _trigger.top - _popup.clientHeight - _positioned.top,
+  //       left: _trigger.left + (_trigger.width - _popup.clientWidth) / 2 - _positioned.left,
+  //       '--origin-x': `${arrow_offset_x}px`,
+  //       '--origin-y': `${arrow_offset_y}px`,
+  //     }
+  //   },
+  //   getArrowCoords: (options: GetCoordsOptions) => {
+  //     return {}
+  //   },
+  //   flipCoords: () => {},
+  // },
+  // topRight: {
+  //   getTooltipCoords: (options: GetCoordsOptions) => {
+  //     const { popup, trigger, positioned } = options
 
-      return {
-        top: _trigger.top - _popup.clientHeight - _positioned.top,
-        left: _trigger.left + (_trigger.width - _popup.clientWidth) - _positioned.left,
-        '--origin-x': `${_arrow.left - _popup.left + arrow_size}px`,
-        '--origin-y': `${_arrow.top - _popup.top + arrow_size / 2}px`,
-      }
-    },
-    getArrowCoords: (options: GetCoordsOptions) => {
-      return {}
-    },
-    flipCoords: () => {},
-  },
+  //     const _positioned = getElementCoords(positioned)
+
+  //     const _trigger = getElementCoords(trigger)
+
+  //     const _popup = getElementCoords(popup)
+
+  //     const arrow_size = 8
+  //     const arrow_offset_x = _popup.clientWidth - arrow_size * 2
+  //     const arrow_offset_y = _popup.clientHeight - arrow_size
+
+  //     return {
+  //       top: _trigger.top - _popup.clientHeight - _positioned.top,
+  //       left: _trigger.left + (_trigger.width - _popup.clientWidth) - _positioned.left,
+  //       '--origin-x': `${arrow_offset_x}px`,
+  //       '--origin-y': `${arrow_offset_y}px`,
+  //     }
+  //   },
+  //   getArrowCoords: (options: GetCoordsOptions) => {
+  //     return {}
+  //   },
+  //   flipCoords: () => {},
+  // },
   // rightTop: {
   //   getTooltipCoords: (options: GetCoordsOptions) => {
   //     const { trigger, positioned, arrow } = options

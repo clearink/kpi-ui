@@ -10,3 +10,5 @@ export function getElementCoords(el: Element) {
     clientWidth: el.clientWidth,
   }
 }
+
+export const defaultArrowCoords = {}

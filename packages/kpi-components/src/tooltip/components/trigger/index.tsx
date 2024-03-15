@@ -2,7 +2,7 @@ import { useComposeRefs, useResizeObserver } from '@kpi-ui/hooks'
 import { withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, forwardRef, useEffect, useRef, type ForwardedRef } from 'react'
 import { addListener } from '../../../_internal/transition/_shared/utils'
-import getScrollable from '../../utils/scrollable'
+import { getScrollElements } from '../../utils/elements'
 // types
 import type { TooltipTriggerProps } from './props'
 
@@ -11,7 +11,7 @@ function TooltipTrigger(props: TooltipTriggerProps, ref: ForwardedRef<any>) {
 
   const dom = useRef<Element>(null)
 
-  useResizeObserver(dom, onUpdate)
+  useResizeObserver(() => dom.current, onUpdate)
 
   const $trigger = useComposeRefs((children as any).ref, ref, dom)
 
@@ -20,7 +20,7 @@ function TooltipTrigger(props: TooltipTriggerProps, ref: ForwardedRef<any>) {
 
     const removes: (() => void)[] = []
 
-    getScrollable(dom.current).forEach((el) => {
+    getScrollElements(dom.current).forEach((el) => {
       removes.push(addListener(el, 'scroll', onUpdate, { passive: true }))
     })
 

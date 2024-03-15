@@ -1,11 +1,12 @@
 // utils
-import { cls, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { useWatchValue } from '@kpi-ui/hooks'
+import { cls, fallback, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
+import useFormatClass from './hooks/use_format_class'
 import useTooltipOpen from './hooks/use_tooltip_open'
 import useTooltipStore from './hooks/use_tooltip_store'
-import useTooltipUpdate from './hooks/use_tooltip_update'
 import useTriggerEvent from './hooks/use_trigger_event'
-import useFormatClass from './hooks/use_format_class'
+import useUpdateCoords from './hooks/use_update_coords'
 // comps
 import Overlay from '../_internal/overlay'
 import ShouldUpdate from '../_internal/should-update'
@@ -13,7 +14,6 @@ import TooltipContent from './components/content'
 import TooltipTrigger from './components/trigger'
 // types
 import type { TooltipProps } from './props'
-import { useWatchValue } from '@kpi-ui/hooks'
 
 export const defaultProps: Partial<TooltipProps> = {
   trigger: 'hover',
@@ -38,6 +38,7 @@ function Tooltip(_props: TooltipProps) {
     arrow,
     placement,
     //
+    transition,
     fresh,
     content,
     children,
@@ -58,9 +59,9 @@ function Tooltip(_props: TooltipProps) {
 
   const { states, actions } = useTooltipStore(props)
 
-  const handleUpdateCoords = useTooltipUpdate(actions, props, open)
-
   const triggerHandlers = useTriggerEvent(props, setOpen)
+
+  const handleUpdateCoords = useUpdateCoords(actions, props, open)
 
   // prettier-ignore
   useWatchValue(placement, () => { actions.updateCoords(props) })
@@ -80,11 +81,9 @@ function Tooltip(_props: TooltipProps) {
         mask={false}
         open={open}
         zIndex={zIndex}
-        transitions={{
-          content: `${rootPrefixCls}-zoom-fast`,
-        }}
         keepMounted={keepMounted}
         unmountOnExit={unmountOnExit}
+        transitions={{ content: fallback(transition, `${rootPrefixCls}-zoom-fast`) }}
       >
         <TooltipContent open={open} onUpdate={handleUpdateCoords}>
           <div
@@ -94,24 +93,21 @@ function Tooltip(_props: TooltipProps) {
           >
             <div
               style={{
-                width: 4,
-                height: 4,
+                border: '1px solid blue',
                 borderRadius: '50%',
-                background: 'blue',
                 position: 'absolute',
-                left: 'calc(var(--origin-x, 50%) - 2px)',
-                top: 'calc(var(--origin-y, 50%) - 2px)',
+                left: 'var(--origin-x, 50%)',
+                top: 'var(--origin-y, 50%)',
                 zIndex: 20,
               }}
             ></div>
             {!!arrow && (
               <div
-                ref={states.$arrow}
                 className={classNames.arrow}
                 style={{ ...styles.arrow, ...states.arrowCoords }}
               />
             )}
-            {/* 内容缓存 */}
+            {/* 内容缓存 TODO: content 能否使用 render props */}
             <ShouldUpdate when={open || !!fresh}>
               <div className={classNames.content} style={styles.content} role="tooltip">
                 {content}

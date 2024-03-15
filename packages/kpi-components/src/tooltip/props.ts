@@ -20,6 +20,8 @@ export interface TooltipProps
   extends Required<HasChildren<React.ReactElement>>,
     SemanticStyledProps<'root' | 'main' | 'arrow' | 'content'>,
     Pick<OverlayProps, 'zIndex' | 'getContainer' | 'keepMounted' | 'unmountOnExit'> {
+  transition?: string
+
   content?: React.ReactNode
 
   trigger?: ToolTipTrigger | ToolTipTrigger[]

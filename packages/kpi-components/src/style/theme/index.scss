@@ -15,6 +15,7 @@
 
 // 亮色模式
 :root,
+:root[data-theme='light'],
 :root[data-prefers-color='light'] {
   @include kpi-shadow('light');
 
@@ -42,6 +43,7 @@
 }
 
 // 深色模式
+:root[data-theme='dark'],
 :root[data-prefers-color='dark'] {
   @include kpi-shadow('dark');
 

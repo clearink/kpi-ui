@@ -1,3 +1,4 @@
+@use 'sass:math';
 // 优化打包性能引入除了 preset 的内容, 顺序不可该变
 @import '../../style/variables.scss'; // 引入 变量
 @import '../../style/mixins/index.scss'; // 引入 reset
@@ -18,13 +19,13 @@ $comp: #{$prefix}-tooltip;
   &.#{$comp}-topLeft {
     .#{$comp}__arrow {
       left: $kpi-tooltip-arrow-size;
-      bottom: 0;
+      bottom: math.div($kpi-tooltip-arrow-size, -2);
     }
   }
 
   &.#{$comp}-top {
     .#{$comp}__arrow {
-      bottom: 0;
+      bottom: math.div($kpi-tooltip-arrow-size, -2);
       left: 50%;
       transform: translate3d(-50%, 0%, 0);
     }
@@ -32,89 +33,90 @@ $comp: #{$prefix}-tooltip;
 
   &.#{$comp}-topRight {
     .#{$comp}__arrow {
-      bottom: 0;
+      bottom: math.div($kpi-tooltip-arrow-size, -2);
       right: $kpi-tooltip-arrow-size;
     }
   }
 
-  &.#{$comp}-rightTop {
-    .#{$comp}__arrow {
-      left: 0;
-      top: $kpi-tooltip-offset-y;
-      transform: translate3d(-100%, 0%, 0) rotate(-90deg);
-    }
-  }
+  // &.#{$comp}-rightTop {
+  //   .#{$comp}__arrow {
+  //     left: 0;
+  //     top: 0;
+  //     transform: translate3d(-100%, 0%, 0) rotate(-90deg);
+  //   }
+  // }
 
-  &.#{$comp}-right {
-    .#{$comp}__arrow {
-      left: 0;
-      top: 50%;
-      transform: translate3d(-100%, -50%, 0) rotate(-90deg);
-    }
-  }
+  // &.#{$comp}-right {
+  //   .#{$comp}__arrow {
+  //     left: 0;
+  //     top: 50%;
+  //     transform: translate3d(-100%, -50%, 0) rotate(-90deg);
+  //   }
+  // }
 
-  &.#{$comp}-rightBottom {
-    .#{$comp}__arrow {
-      left: 0;
-      bottom: $kpi-tooltip-offset-y;
-      transform: translate3d(-100%, 0%, 0) rotate(-90deg);
-    }
-  }
+  // &.#{$comp}-rightBottom {
+  //   .#{$comp}__arrow {
+  //     left: 0;
+  //     bottom: 0;
+  //     transform: translate3d(-100%, 0%, 0) rotate(-90deg);
+  //   }
+  // }
 
-  &.#{$comp}-bottomLeft {
-    .#{$comp}__arrow {
-      top: 0;
-      left: $kpi-tooltip-offset-x;
-      transform: translate3d(0, -100%, 0) rotate(0deg);
-    }
-  }
+  // &.#{$comp}-bottomLeft {
+  //   .#{$comp}__arrow {
+  //     top: 0;
+  //     left: 0;
+  //     transform: translate3d(0, -100%, 0) rotate(0deg);
+  //   }
+  // }
 
-  &.#{$comp}-bottom {
-    .#{$comp}__arrow {
-      top: 0;
-      left: 50%;
-      transform: translate3d(-50%, -100%, 0) rotate(0deg);
-    }
-  }
+  // &.#{$comp}-bottom {
+  //   .#{$comp}__arrow {
+  //     top: 0;
+  //     left: 50%;
+  //     transform: translate3d(-50%, -100%, 0) rotate(0deg);
+  //   }
+  // }
 
-  &.#{$comp}-bottomRight {
-    .#{$comp}__arrow {
-      top: 0;
-      right: $kpi-tooltip-offset-x;
-      transform: translate3d(0, -100%, 0) rotate(0deg);
-    }
-  }
+  // &.#{$comp}-bottomRight {
+  //   .#{$comp}__arrow {
+  //     top: 0;
+  //     right: 0;
+  //     transform: translate3d(0, -100%, 0) rotate(0deg);
+  //   }
+  // }
 
-  &.#{$comp}-leftTop {
-    .#{$comp}__arrow {
-      right: 0;
-      top: $kpi-tooltip-offset-y;
-      transform: translate3d(100%, 0, 0) rotate(90deg);
-    }
-  }
+  // &.#{$comp}-leftTop {
+  //   .#{$comp}__arrow {
+  //     right: 0;
+  //     top: 0;
+  //     transform: translate3d(100%, 0, 0) rotate(90deg);
+  //   }
+  // }
 
-  &.#{$comp}-left {
-    .#{$comp}__arrow {
-      right: 0;
-      top: 50%;
-      transform: translate3d(100%, -50%, 0) rotate(90deg);
-    }
-  }
+  // &.#{$comp}-left {
+  //   .#{$comp}__arrow {
+  //     right: 0;
+  //     top: 50%;
+  //     transform: translate3d(100%, -50%, 0) rotate(90deg);
+  //   }
+  // }
 
-  &.#{$comp}-leftBottom {
-    .#{$comp}__arrow {
-      right: 0;
-      bottom: $kpi-tooltip-offset-y;
-      transform: translate3d(100%, 0, 0) rotate(90deg);
-    }
-  }
+  // &.#{$comp}-leftBottom {
+  //   .#{$comp}__arrow {
+  //     right: 0;
+  //     bottom: 0;
+  //     transform: translate3d(100%, 0, 0) rotate(90deg);
+  //   }
+  // }
 }
 
 .#{$comp}__content {
-  padding: 4px;
-  min-width: 100px;
+  padding: var(--#{$prefix}-size-unit-1) var(--#{$prefix}-size-unit-2);
+  max-width: var(--#{$prefix}-size-unit-64);
+  // background-color: var(--#{$prefix}-color-overlay-default);
   background-color: red;
-  border-radius: 4px;
+  border-radius: var(--#{$prefix}-border-radius-default);
   margin-bottom: $kpi-tooltip-arrow-size;
 }
 
@@ -138,6 +140,6 @@ $comp: #{$prefix}-tooltip;
 
 .#{$comp}-has-arrow {
   .#{$comp}__content {
-    margin-bottom: $kpi-tooltip-arrow-size * 2;
+    margin-bottom: math.div($kpi-tooltip-arrow-size * 3, 2);
   }
 }

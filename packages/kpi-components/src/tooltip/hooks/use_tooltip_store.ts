@@ -1,10 +1,10 @@
-import { useConstant, useForceUpdate, useWatchValue } from '@kpi-ui/hooks'
+import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { useMemo } from 'react'
 import { TOOLTIP_PLACEMENT } from '../constants'
+import { getRelativeElement } from '../utils/elements'
+import { defaultProps } from '..'
 // types
 import type { TooltipProps, Coords } from '../props'
-import getPositionedElement from '../utils/positioned'
-import { defaultProps } from '..'
 
 export class TooltipState {
   $trigger = {
@@ -12,10 +12,6 @@ export class TooltipState {
   }
 
   $popup = {
-    current: null as HTMLDivElement | null,
-  }
-
-  $arrow = {
     current: null as HTMLDivElement | null,
   }
 
@@ -33,10 +29,6 @@ export class TooltipAction {
 
   get popup() {
     return this.states.$popup.current
-  }
-
-  get arrow() {
-    return this.states.$arrow.current
   }
 
   private shouldUpdateCoords = (a: Coords, b: Coords) => {
@@ -74,12 +66,17 @@ export class TooltipAction {
     const algorithm = TOOLTIP_PLACEMENT[placement!] || TOOLTIP_PLACEMENT[defaultProps.placement!]
 
     // 1. tooltip position
-    const newTooltipCoords = algorithm.getTooltipCoords({
-      positioned: getPositionedElement(this.popup),
+    const newTooltipCoords = algorithm.getPopupCoords({
+      relative: getRelativeElement(this.popup),
       popup: this.popup,
       trigger: this.trigger,
-      arrow: this.arrow,
     })
+
+    if (algorithm.shouldFlipCoords()) {
+      //
+    }
+
+    // newTooltipCoords = algorithm.flipPopupCoords(newTooltipCoords)
 
     // 2. arrow position
     // const newArrowCoords = algorithm.getArrowCoords({
