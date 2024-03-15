@@ -2,7 +2,6 @@ import { useComposeRefs } from '@kpi-ui/hooks'
 import { withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, useEffect, useRef } from 'react'
 import { addListener } from '../../_shared/utils'
-// comps
 import useTouchEffect from './hooks/use_touch_effect'
 // types
 import type { TouchEffectProps } from './props'

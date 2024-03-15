@@ -1,5 +1,6 @@
+export * from './classnames'
+export * from './global'
 export { default as isBrowser } from './is_browser'
 export { default as isElement } from './is_element'
-export * from './classnames'
 export * from './raf'
-export * from './function'
+export { default as getTargetElement, type GetTargetElement, type TargetElement } from './target'

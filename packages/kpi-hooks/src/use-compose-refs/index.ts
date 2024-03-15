@@ -5,8 +5,6 @@ import { useMemo } from 'react'
 import type { MayBe, ReactRef } from '@kpi-ui/types'
 
 export default function useComposeRefs<T>(...refs: MayBe<ReactRef<T>>[]) {
-  return useMemo(() => {
-    return refs.every(isNullish) ? null : mergeRefs(...refs)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, refs)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useMemo(() => (refs.every(isNullish) ? null : mergeRefs(...refs)), refs)
 }

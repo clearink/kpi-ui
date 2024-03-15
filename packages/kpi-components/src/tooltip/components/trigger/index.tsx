@@ -1,32 +1,37 @@
 import { useComposeRefs, useResizeObserver } from '@kpi-ui/hooks'
-import { withDisplayName } from '@kpi-ui/utils'
+import { loopFrame, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, forwardRef, useEffect, useRef, type ForwardedRef } from 'react'
-import { addListener } from '../../../_internal/transition/_shared/utils'
 import { getScrollElements } from '../../utils/elements'
 // types
 import type { TooltipTriggerProps } from './props'
 
 function TooltipTrigger(props: TooltipTriggerProps, ref: ForwardedRef<any>) {
-  const { open, children, events, onUpdate } = props
+  const { open, children, events, onResize, onScroll } = props
 
   const dom = useRef<Element>(null)
 
-  useResizeObserver(() => dom.current, onUpdate)
+  useResizeObserver(() => dom.current, onResize)
 
   const $trigger = useComposeRefs((children as any).ref, ref, dom)
 
   useEffect(() => {
     if (!dom.current || !open) return
 
-    const removes: (() => void)[] = []
+    const elements = getScrollElements(dom.current)
 
-    getScrollElements(dom.current).forEach((el) => {
-      removes.push(addListener(el, 'scroll', onUpdate, { passive: true }))
+    const cleanupFrame = loopFrame(() => {
+      elements.forEach((el) => {
+        el.addEventListener('scroll', onScroll, { passive: true })
+      })
     })
 
-    // prettier-ignore
-    return () => { removes.forEach((fn) => { fn() }) }
-  }, [open, onUpdate])
+    return () => {
+      cleanupFrame()
+
+      // prettier-ignore
+      elements.forEach((el) => { el.removeEventListener('scroll', onScroll) })
+    }
+  }, [open, onScroll])
 
   return cloneElement(children, { ref: $trigger, ...events })
 }

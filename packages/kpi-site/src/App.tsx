@@ -1,4 +1,4 @@
-import { Modal, Tooltip } from '@kpi-ui/components'
+import { Button, Tooltip } from '@kpi-ui/components'
 
 import '@kpi-ui/components/src/style'
 import './style.scss'
@@ -38,16 +38,17 @@ export default function App() {
                   <Tooltip
                     key={pos}
                     placement={pos}
-                    open
                     // arrow={false}
                     // arrow={pos === 'topLeft'}
                     content={<div style={{ width: 100 }}>12313211212</div>}
                   >
-                    <textarea style={{ margin: '10px' }} placeholder={pos} />
+                    <Button variant="filled" style={{ margin: 10 }}>
+                      {pos}
+                    </Button>
                   </Tooltip>
                 ))}
                 <div style={{ height: 1000 }}></div>
-                {/* </div> 
+                {/* </div>
             </div>*/}
               </div>
             </div>

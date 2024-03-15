@@ -1,12 +1,12 @@
 // utils
 import { useConstant, useForceUpdate, useWatchValue } from '@kpi-ui/hooks'
+import { isNullish, ownerBody } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 import { isExited } from '../../../_shared/constants'
 // types
 import type { PortalRef } from '../../portal/props'
 import type { CSSTransitionRef as CSSRef } from '../../transition/_shared/props'
 import type { OverlayProps } from '../props'
-import { isNullish, ownerDocument } from '@kpi-ui/utils'
 
 export class OverlayState {
   constructor(props: OverlayProps, public forceUpdate: () => void) {
@@ -36,7 +36,7 @@ export class OverlayAction {
   get container() {
     const container = this.states.$portal.current?.container
 
-    return isNullish(container) ? ownerDocument().body : container
+    return isNullish(container) ? ownerBody() : container
   }
 
   setIsMounted = (value: boolean) => {

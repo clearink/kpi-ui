@@ -1,8 +1,8 @@
+import { useThrottleFrame } from '@kpi-ui/hooks'
 import { isBoolean, isFunction } from '@kpi-ui/utils'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { TouchEffectContext } from '../_shared/context'
 import wave from '../utils/wave'
-import useRafCallback from './use_raf_callback'
 // types
 import type { RefObject } from 'react'
 import type { TouchEffectProps } from '../props'
@@ -17,7 +17,7 @@ export default function useTouchEffect(
 
   const { disabled, effect } = TouchEffectContext.useState()
 
-  return useRafCallback((event: MouseEvent) => {
+  return useThrottleFrame((event: MouseEvent) => {
     if (isBoolean(disabled) && disabled) return
 
     const root = $container.current!

@@ -4,7 +4,7 @@ export function isScrollable(el: Element) {
   return ['scrollTop', 'scrollLeft'].some((property) => {
     if (el[property]) return true
 
-    el[property] = 1
+    el[property] = 1e10
 
     const result = el[property]
 

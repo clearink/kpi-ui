@@ -1,9 +1,9 @@
 import { getElementCoords } from './utils/coords'
 
 interface GetCoordsOptions {
-  relative: Element
-  popup: Element
-  trigger: Element
+  relative: ReturnType<typeof getElementCoords>
+  popup: ReturnType<typeof getElementCoords>
+  trigger: ReturnType<typeof getElementCoords>
 }
 
 // TODO: 去除魔术字符串
@@ -13,21 +13,16 @@ export const TOOLTIP_PLACEMENT = {
     getPopupCoords: (options: GetCoordsOptions) => {
       const { popup, trigger, relative } = options
 
-      const _relative = getElementCoords(relative)
+      // 相对于屏幕的坐标
+      const screenCoords = {
+        top: trigger.coords.top - popup.height,
+        left: trigger.coords.left,
+      }
 
-      const _trigger = getElementCoords(trigger)
-
-      const _popup = getElementCoords(popup)
-
-      // const arrow_size = 8
-      // const arrow_offset_x = arrow_size * 2
-      // const arrow_offset_y = _popup.clientHeight - arrow_size
-
+      // 相对于定位元素
       return {
-        top: _trigger.top - _popup.clientHeight - _relative.top,
-        left: _trigger.left - _relative.left,
-        // '--origin-x': `${arrow_offset_x}px`,
-        // '--origin-y': `${arrow_offset_y}px`,
+        top: screenCoords.top - relative.coords.top,
+        left: screenCoords.left - relative.coords.left,
       }
     },
     shouldFlipCoords: () => {
@@ -276,4 +271,22 @@ export const TOOLTIP_PLACEMENT = {
   //   },
   //   flipCoords: () => {},
   // },
+}
+
+class TopLeftPlacement {
+  getPopupCoords = (options: GetCoordsOptions) => {
+    const { popup, trigger, relative } = options
+
+    // 相对于屏幕的坐标
+    const screenCoords = {
+      top: trigger.coords.top - popup.height,
+      left: trigger.coords.left,
+    }
+
+    // 相对于定位元素
+    return {
+      top: screenCoords.top - relative.coords.top,
+      left: screenCoords.left - relative.coords.left,
+    }
+  }
 }

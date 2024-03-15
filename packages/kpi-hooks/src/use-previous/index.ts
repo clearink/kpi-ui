@@ -1,4 +1,5 @@
 import { shallowUnequal } from '@kpi-ui/utils'
+import { useMemo } from 'react'
 import useConstant from '../use-constant'
 
 export default function usePrevious<T>(value: T) {
@@ -7,10 +8,12 @@ export default function usePrevious<T>(value: T) {
     previous: undefined as T | undefined,
   }))
 
-  if (shallowUnequal(state.current, value)) {
-    state.previous = state.current
-    state.current = value
-  }
+  useMemo(() => {
+    if (shallowUnequal(state.current, value)) {
+      state.previous = state.current
+      state.current = value
+    }
+  }, [state, value])
 
   return state.previous
 }

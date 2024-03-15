@@ -1,12 +1,11 @@
 // utils
-import { useWatchValue } from '@kpi-ui/hooks'
+import { useThrottleFrame, useThrottleTick, useWatchValue } from '@kpi-ui/hooks'
 import { cls, fallback, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 import useTooltipOpen from './hooks/use_tooltip_open'
 import useTooltipStore from './hooks/use_tooltip_store'
 import useTriggerEvent from './hooks/use_trigger_event'
-import useUpdateCoords from './hooks/use_update_coords'
 // comps
 import Overlay from '../_internal/overlay'
 import ShouldUpdate from '../_internal/should-update'
@@ -34,6 +33,7 @@ function Tooltip(_props: TooltipProps) {
     zIndex,
     keepMounted,
     unmountOnExit,
+    getContainer,
     //
     arrow,
     placement,
@@ -61,35 +61,41 @@ function Tooltip(_props: TooltipProps) {
 
   const triggerHandlers = useTriggerEvent(props, setOpen)
 
-  const handleUpdateCoords = useUpdateCoords(actions, props, open)
+  const handleResize = useThrottleTick(() => {
+    open && actions.updateCoords(props)
+  })
 
-  // prettier-ignore
-  useWatchValue(placement, () => { actions.updateCoords(props) })
+  const handleScroll = useThrottleFrame(() => {
+    open && actions.updateCoords(props)
+  })
 
   return (
     <>
       <TooltipTrigger
         ref={states.$trigger}
         open={open}
-        onUpdate={handleUpdateCoords}
+        onResize={handleResize}
+        onScroll={handleScroll}
         events={triggerHandlers}
       >
         {children}
       </TooltipTrigger>
 
       <Overlay
+        style={{ left: 0, top: 0 }}
         mask={false}
         open={open}
         zIndex={zIndex}
         keepMounted={keepMounted}
         unmountOnExit={unmountOnExit}
+        getContainer={getContainer}
         transitions={{ content: fallback(transition, `${rootPrefixCls}-zoom-fast`) }}
       >
-        <TooltipContent open={open} onUpdate={handleUpdateCoords}>
+        <TooltipContent open={open} onResize={handleResize} onScroll={handleScroll}>
           <div
             ref={states.$popup}
             className={cls(className, classNames.root)}
-            style={{ ...styles.root, ...states.tooltipCoords }}
+            style={{ ...styles.root, ...states.popupCoords }}
           >
             <div
               style={{

@@ -161,7 +161,9 @@ export default function useTransitionStore<E extends HTMLElement = HTMLElement>(
 
   const actions = useMemo(() => new TransitionAction(forceUpdate, states), [forceUpdate, states])
 
-  actions.injectLatestProps(props)
+  // 不能直接在渲染期间 write ref
+  // prettier-ignore
+  useMemo(() => { actions.injectLatestProps(props) }, [actions, props])
 
   return { states, actions }
 }

@@ -5,7 +5,8 @@ export default function useEvent<T extends (...args: any[]) => any>(callback: T)
   const ref = useRef(callback)
 
   // 兼容 react devtool
-  ref.current = useMemo(() => callback, [callback])
+  // prettier-ignore
+  useMemo(() => { ref.current = callback }, [callback])
 
-  return useCallback((...args: any[]) => ref.current(...args), []) as unknown as T
+  return useCallback((...args: any[]) => (0, ref.current)(...args), []) as unknown as T
 }

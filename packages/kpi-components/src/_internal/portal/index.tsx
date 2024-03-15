@@ -1,22 +1,21 @@
 // utils
-import { isNullish, withDisplayName } from '@kpi-ui/utils'
+import { getTargetElement, isNullish, ownerBody, withDisplayName } from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { createPortal } from 'react-dom'
-import getContainer from './utils/get_container'
 // types
-import type { ContainerType, PortalProps, PortalRef } from './props'
+import type { PortalProps, PortalRef } from './props'
 
 export const defaultProps: Partial<PortalProps> = {}
 
 function Portal(props: PortalProps, ref: ForwardedRef<PortalRef>) {
   const { children, getContainer: _container } = props
 
-  const [container, setContainer] = useState<ContainerType>(null)
+  const [container, set] = useState(() => getTargetElement(_container, ownerBody()))
 
   useImperativeHandle(ref, () => ({ container }), [container])
 
   // prettier-ignore
-  useEffect(() => { setContainer(getContainer(_container)) }, [_container])
+  useEffect(() => { set(getTargetElement(_container, ownerBody())) }, [_container])
 
   if (isNullish(container)) return null
 

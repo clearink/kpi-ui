@@ -12,14 +12,16 @@ function useWatchValue<S>(current: S, arg: WatchOptions<S> | WatchOptions<S>['li
   const ref = useRef(current)
 
   // 兼容 react devtool
-  ref.current = useMemo(() => {
+  useMemo(() => {
     const compare = isFunction(arg) ? shallowEqual : arg.compare
 
-    if (compare(current, ref.current)) return ref.current
+    if (compare(current, ref.current)) return
 
-    isFunction(arg) ? arg(current, ref.current) : arg.listener(current, ref.current)
+    const listener = isFunction(arg) ? arg : arg.listener
 
-    return current
+    listener(current, ref.current)
+
+    ref.current = current
   }, [arg, current])
 }
 
