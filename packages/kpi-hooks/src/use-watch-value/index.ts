@@ -1,5 +1,5 @@
 import { isFunction, shallowEqual } from '@kpi-ui/utils'
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 
 export interface WatchOptions<S> {
   compare: (current: S, previous: S) => boolean
@@ -11,13 +11,16 @@ function useWatchValue<S>(current: S, options: WatchOptions<S>): void
 function useWatchValue<S>(current: S, arg: WatchOptions<S> | WatchOptions<S>['listener']): void {
   const ref = useRef(current)
 
-  const compare = isFunction(arg) ? shallowEqual : arg.compare
+  // 兼容 react devtool
+  ref.current = useMemo(() => {
+    const compare = isFunction(arg) ? shallowEqual : arg.compare
 
-  if (compare(current, ref.current)) return
+    if (compare(current, ref.current)) return ref.current
 
-  isFunction(arg) ? arg(current, ref.current) : arg.listener(current, ref.current)
+    isFunction(arg) ? arg(current, ref.current) : arg.listener(current, ref.current)
 
-  ref.current = current
+    return current
+  }, [arg, current])
 }
 
 export default useWatchValue

@@ -1,29 +1,27 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
+import useConstant from '../use-constant'
 import useEvent from '../use-event'
-import getObserveTarget from './utils/target'
-import observe from './utils/observe'
 import useForceUpdate from '../use-force-update'
+import observe from './utils/observe'
+import getObserveTarget from './utils/target'
 // types
 import type { GetTargetType, TargetType } from './props'
 
 // 元素改变大小 observer hook
 export default function useResizeObserver(target: GetTargetType, onResize: (el: Element) => void) {
-  // prettier-ignore
   const onChange = useEvent(onResize)
 
-  const el = useRef<TargetType>(null)
+  const store = useConstant(() => ({ el: null as TargetType }))
 
   const forceUpdate = useForceUpdate()
 
   useEffect(() => {
     const newTarget = getObserveTarget(target)
 
-    if (el.current !== newTarget) forceUpdate()
+    if (store.el !== newTarget) forceUpdate()
 
-    el.current = newTarget
-  }, [forceUpdate, target])
+    store.el = newTarget
+  }, [forceUpdate, store, target])
 
-  const dom = el.current
-
-  useEffect(() => (dom ? observe(dom, onChange) : undefined), [onChange, dom])
+  useEffect(() => (store.el ? observe(store.el, onChange) : void 0), [onChange, store.el])
 }

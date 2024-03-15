@@ -1,6 +1,6 @@
-import { useControllableState, useEvent, useUnmountEffect } from '@kpi-ui/hooks'
+import { useControllableState, useEvent } from '@kpi-ui/hooks'
 import { fallback } from '@kpi-ui/utils'
-import { useRef, type SetStateAction } from 'react'
+import { useEffect, useRef, type SetStateAction } from 'react'
 import { defaultProps } from '..'
 // types
 import type { TooltipProps } from '../props'
@@ -10,7 +10,8 @@ export default function useTooltipOpen(props: TooltipProps) {
 
   const timer = useRef<any>(undefined)
 
-  useUnmountEffect(() => clearTimeout(timer.current))
+  // prettier-ignore
+  useEffect(() => () => { clearTimeout(timer.current) }, [])
 
   const [open, setOpen] = useControllableState({
     value: _open,
