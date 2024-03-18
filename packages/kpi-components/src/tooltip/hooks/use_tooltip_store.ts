@@ -58,7 +58,6 @@ export class TooltipAction {
 
   // 当初始时open=true,updateCoords会调用2次
   updateCoords = (props: TooltipProps) => {
-    console.log('update coord')
     if (!this.popup || !this.trigger) return
 
     // 不能直接计算，得先判断 scroll 逻辑

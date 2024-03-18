@@ -1,17 +1,11 @@
 import { getElementStyle, ownerDocument } from '@kpi-ui/utils'
 
 export function isScrollable(el: Element) {
-  return ['scrollTop', 'scrollLeft'].some((property) => {
-    if (el[property]) return true
+  const { overflow: o, overflowX: ox, overflowY: oy } = getElementStyle(el)
 
-    el[property] = 1e10
+  const builtin = ['auto', 'scroll', 'hidden', 'clip']
 
-    const result = el[property]
-
-    if (result) el[property] = 0
-
-    return !!result
-  })
+  return builtin.includes(o) || builtin.includes(ox) || builtin.includes(oy)
 }
 
 export function getScrollElements(element: Element) {

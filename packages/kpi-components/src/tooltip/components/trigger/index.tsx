@@ -1,5 +1,5 @@
 import { useComposeRefs, useResizeObserver } from '@kpi-ui/hooks'
-import { loopFrame, withDisplayName } from '@kpi-ui/utils'
+import { withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, forwardRef, useEffect, useRef, type ForwardedRef } from 'react'
 import { getScrollElements } from '../../utils/elements'
 // types
@@ -12,26 +12,22 @@ function TooltipTrigger(props: TooltipTriggerProps, ref: ForwardedRef<any>) {
 
   useResizeObserver(() => dom.current, onResize)
 
-  const $trigger = useComposeRefs((children as any).ref, ref, dom)
-
   useEffect(() => {
     if (!dom.current || !open) return
 
     const elements = getScrollElements(dom.current)
 
-    const cleanupFrame = loopFrame(() => {
-      elements.forEach((el) => {
-        el.addEventListener('scroll', onScroll, { passive: true })
-      })
+    elements.forEach((el) => {
+      el.addEventListener('scroll', onScroll, { passive: true })
     })
 
     return () => {
-      cleanupFrame()
-
       // prettier-ignore
       elements.forEach((el) => { el.removeEventListener('scroll', onScroll) })
     }
   }, [open, onScroll])
+
+  const $trigger = useComposeRefs((children as any).ref, ref, dom)
 
   return cloneElement(children, { ref: $trigger, ...events })
 }

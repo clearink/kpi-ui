@@ -19,6 +19,19 @@ export const TOOLTIP_PLACEMENT = {
         left: trigger.coords.left,
       }
 
+      console.log('screenCoords', screenCoords, {
+        top: screenCoords.top - relative.coords.top,
+        left: screenCoords.left - relative.coords.left,
+      })
+      const arrow = {
+        size: 8,
+        ox: 12,
+        oy: 8,
+      }
+
+      const arrowCoords = {}
+      screenCoords.left = Math.max(screenCoords.left, 0)
+
       // 相对于定位元素
       return {
         top: screenCoords.top - relative.coords.top,

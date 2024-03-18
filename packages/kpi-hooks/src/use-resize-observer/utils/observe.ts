@@ -30,8 +30,9 @@ export class ObserverUtil {
     // prettier-ignore
     this._instance = this._instance || new ResizeObserver((entries) => {
       entries.forEach(({ target }) => {
-        // prettier-ignore
-        this._listeners.get(target)?.forEach((fn) => { fn(target) })
+        const listeners = this._listeners.get(target)
+
+        listeners && listeners.forEach((fn) => { fn(target) })
       })
     })
 
@@ -48,17 +49,19 @@ export class ObserverUtil {
     }
 
     {
-      const listener = this._listeners.get(el)
-      listener && listener.add(callback)
+      const listeners = this._listeners.get(el)
+
+      listeners && listeners.add(callback)
     }
 
     return () => {
-      const listener = this._listeners.get(el)
+      const listeners = this._listeners.get(el)
 
-      listener && listener.delete(callback)
+      listeners && listeners.delete(callback)
 
-      if (listener && !listener.size) {
+      if (listeners && !listeners.size) {
         this._listeners.delete(el)
+
         this._getInstance().unobserve(el)
       }
 
