@@ -1,5 +1,5 @@
 // utils
-import { useThrottleFrame, useThrottleTick, useWatchValue } from '@kpi-ui/hooks'
+import { useThrottleFrame, useThrottleTick } from '@kpi-ui/hooks'
 import { cls, fallback, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
@@ -107,6 +107,7 @@ function Tooltip(_props: TooltipProps) {
                 zIndex: 20,
               }}
             ></div>
+            {/* 箭头使用 svg 图算了 */}
             {!!arrow && (
               <div
                 className={classNames.arrow}

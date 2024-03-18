@@ -1,26 +1,25 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import useEvent from '../use-event'
 import useMounted from '../use-mounted'
-
+// types
 import type { AnyFn } from '@kpi-ui/types'
-import { caf, nextTick, noop, ownerWindow, raf } from '@kpi-ui/utils'
 
 // 防抖 函数
 export function debounce<F extends AnyFn>(fn: F, delay: number) {
-  let timer: undefined | number
+  let timer: undefined | number | NodeJS.Timeout
 
   function inner(this: unknown, ...args: any[]) {
     clearTimeout(timer)
 
     // prettier-ignore
-    timer = ownerWindow().setTimeout(() => { fn.apply(this, args) }, delay)
+    timer = setTimeout(() => { fn.apply(this, args) }, delay)
   }
 
   return [inner as F, () => clearTimeout(timer)] as const
 }
 
 // 防抖 hook
-export function useDebounceCallback<F extends AnyFn>(delay: number, fn: F) {
+export function useDebounceTimeout<F extends AnyFn>(delay: number, fn: F) {
   const callback = useEvent(fn)
 
   const [debounced, clear] = useMemo(() => debounce(callback, delay), [callback, delay])
@@ -38,7 +37,7 @@ export function useDebounceValue<Value>(delay: number, value: Value) {
   const mounted = useMounted()
 
   // prettier-ignore
-  const callback = useDebounceCallback(delay, () => { mounted() && setState(value) })
+  const callback = useDebounceTimeout(delay, () => { mounted() && setState(value) })
 
   useEffect(callback, [callback, value])
 
@@ -48,35 +47,7 @@ export function useDebounceValue<Value>(delay: number, value: Value) {
 export function useDebounceState<S>(delay: number, initialState: S | (() => S)) {
   const [state, set] = useState(initialState)
 
-  const setState = useDebounceCallback(delay, set)
+  const setState = useDebounceTimeout(delay, set)
 
   return [state, setState] as const
-}
-
-export function useDebounceFrame<Fn extends AnyFn>(fn: Fn) {
-  const id = useRef(-1)
-
-  // prettier-ignore
-  useEffect(() => () => { caf(id.current) }, [])
-
-  return useEvent((...args: any[]) => {
-    caf(id.current)
-
-    // prettier-ignore
-    id.current = raf(() => { fn(...args) })
-  })
-}
-
-export function useDebounceTick<Fn extends AnyFn>(fn: Fn) {
-  const cleanup = useRef(noop)
-
-  // prettier-ignore
-  useEffect(() => () => { cleanup.current() }, [])
-
-  return useEvent((...args: any[]) => {
-    cleanup.current()
-
-    // prettier-ignore
-    cleanup.current = nextTick(() => { fn(...args) })
-  })
 }

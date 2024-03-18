@@ -1,5 +1,5 @@
-import { caf, isUndefined, nextTick, noop, ownerWindow, raf } from '@kpi-ui/utils'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { isUndefined } from '@kpi-ui/utils'
+import { useEffect, useMemo, useState } from 'react'
 import useEvent from '../use-event'
 import useMounted from '../use-mounted'
 // types
@@ -7,22 +7,22 @@ import type { AnyFn } from '@kpi-ui/types'
 
 // 节流 函数
 export function throttle(fn: AnyFn, delay: number) {
-  let timer: undefined | number
+  let timer: undefined | number | NodeJS.Timeout
 
   function inner(this: unknown, ...args: any[]) {
     if (!isUndefined(timer)) return
 
-    timer = ownerWindow().setTimeout(() => {
-      timer = undefined
-      fn.apply(this, args)
-    }, delay)
+    // prettier-ignore
+    const callback = () => { timer = undefined; fn.apply(this, args) }
+
+    timer = setTimeout(callback, delay)
   }
 
   return [inner, () => clearTimeout(timer)] as const
 }
 
 // 节流 hook
-export function useThrottleCallback<Fn extends AnyFn>(delay: number, fn: Fn) {
+export function useThrottleTimeout<Fn extends AnyFn>(delay: number, fn: Fn) {
   const callback = useEvent(fn)
 
   const [throttled, clear] = useMemo(() => throttle(callback, delay), [callback, delay])
@@ -40,7 +40,7 @@ export function useThrottleValue<Value = any>(delay: number, value: Value) {
   const mounted = useMounted()
 
   // prettier-ignore
-  const callback = useThrottleCallback(delay, () => { mounted() && setState(value) })
+  const callback = useThrottleTimeout(delay, () => { mounted() && setState(value) })
 
   useEffect(callback, [callback, value])
 
@@ -50,35 +50,7 @@ export function useThrottleValue<Value = any>(delay: number, value: Value) {
 export function useThrottleState<S = undefined>(delay: number, initialState: S | (() => S)) {
   const [state, set] = useState(initialState)
 
-  const setState = useThrottleCallback(delay, set)
+  const setState = useThrottleTimeout(delay, set)
 
   return [state, setState] as const
-}
-
-export function useThrottleFrame<Fn extends AnyFn>(fn: Fn) {
-  const id = useRef(-1)
-
-  // prettier-ignore
-  useEffect(() => () => { caf(id.current) }, [])
-
-  return useEvent((...args: any[]) => {
-    if (id.current >= 0) return
-
-    // prettier-ignore
-    id.current = raf(() => { id.current = -1; fn(...args) })
-  })
-}
-
-export function useThrottleTick<Fn extends AnyFn>(fn: Fn) {
-  const cleanup = useRef(noop)
-
-  // prettier-ignore
-  useEffect(() => () => { cleanup.current() }, [])
-
-  return useEvent((...args: any[]) => {
-    if (cleanup.current !== noop) return
-
-    // prettier-ignore
-    cleanup.current = nextTick(() => { cleanup.current = noop; fn(...args) })
-  })
 }
