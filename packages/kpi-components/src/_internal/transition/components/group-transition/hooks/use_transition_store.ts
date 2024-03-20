@@ -1,5 +1,5 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
-import { addClassNames, delClassNames, omit, pick } from '@kpi-ui/utils'
+import { addClassNames, delClassNames, pick } from '@kpi-ui/utils'
 import { cloneElement, createElement, useEffect, useMemo, type ReactElement } from 'react'
 import { batch, reflow } from '../../../_shared/utils'
 import { ENTER, isExit, isExited } from '../../../constants'

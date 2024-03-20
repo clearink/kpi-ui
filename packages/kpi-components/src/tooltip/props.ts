@@ -1,11 +1,22 @@
-import { TOOLTIP_PLACEMENT } from './constants'
 // types
 import type { HasChildren, SemanticStyledProps } from '@kpi-ui/types'
 import type { OverlayProps } from '../_internal/overlay/props'
 
 export type ToolTipTrigger = 'hover' | 'focus' | 'click' | 'contextMenu'
 
-export type TooltipPlacement = keyof typeof TOOLTIP_PLACEMENT
+export type TooltipPlacement =
+  | 'topLeft'
+  | 'top'
+  | 'topRight'
+  | 'rightTop'
+  | 'right'
+  | 'rightBottom'
+  | 'bottomRight'
+  | 'bottom'
+  | 'bottomLeft'
+  | 'leftBottom'
+  | 'left'
+  | 'leftTop'
 
 export interface Coords {
   top?: number | string

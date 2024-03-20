@@ -1,7 +1,6 @@
 import { useComposeRefs } from '@kpi-ui/hooks'
-import { withDisplayName } from '@kpi-ui/utils'
+import { makeEventListener, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, useEffect, useRef } from 'react'
-import { addListener } from '../../_shared/utils'
 import useTouchEffect from './hooks/use_touch_effect'
 // types
 import type { TouchEffectProps } from './props'
@@ -19,7 +18,7 @@ function TouchEffect(props: TouchEffectProps) {
 
     if (!container || container.nodeType !== 1 || disabled) return
 
-    return addListener(container, 'click', showTouchEffect, true)
+    return makeEventListener(container, 'click', showTouchEffect, true)
   }, [showTouchEffect, disabled])
 
   const ref = useComposeRefs($container, (children as any).ref)

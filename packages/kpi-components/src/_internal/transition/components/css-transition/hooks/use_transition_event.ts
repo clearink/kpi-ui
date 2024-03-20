@@ -1,11 +1,10 @@
-import { isUndefined } from '@kpi-ui/utils'
+import { isUndefined, makeEventListener, makeFrameTimeout } from '@kpi-ui/utils'
 import { batch } from '../../../_shared/utils'
 import { isAppear, isEnter, isExit } from '../../../constants'
 import runCounter from '../../../utils/run_counter'
 import { delTransitionClass } from '../utils/classnames'
 import collectTimeoutInfo from '../utils/collect'
 import { hideElement } from '../utils/display'
-import { addListener, addTimeout } from '../utils/listener'
 import useFormatClassNames from './use_format_class_names'
 import useTransitionStore from './use_transition_store'
 // types
@@ -51,7 +50,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     if (addEndListener) return addEndListener(el, step, resolve)
 
-    if (!isUndefined(timeout)) return addTimeout(timeout, resolve)
+    if (!isUndefined(timeout)) return makeFrameTimeout(timeout, resolve)
 
     const collection = getComputedStyle(el, null)
 
@@ -59,32 +58,32 @@ export default function useTransitionEvent<E extends HTMLElement>(
 
     const animation = collectTimeoutInfo(collection, 'animation')
 
-    if (transition.timeout <= 0 && animation.timeout <= 0) return addTimeout(0, resolve)
+    if (transition.timeout <= 0 && animation.timeout <= 0) return makeFrameTimeout(0, resolve)
 
     if (type === 'transition' && transition.timeout > 0) {
       return batch(
-        addListener(el, 'transitionend', runCounter(transition.count, resolve)),
-        addTimeout(transition.timeout, resolve)
+        makeEventListener(el, 'transitionend', runCounter(transition.count, resolve)),
+        makeFrameTimeout(transition.timeout, resolve)
       )
     }
 
     if (type === 'animation' && animation.timeout > 0) {
       return batch(
-        addListener(el, 'animationend', runCounter(animation.count, resolve)),
-        addTimeout(animation.timeout, resolve)
+        makeEventListener(el, 'animationend', runCounter(animation.count, resolve)),
+        makeFrameTimeout(animation.timeout, resolve)
       )
     }
 
     if (transition.timeout > animation.timeout) {
       return batch(
-        addListener(el, 'transitionend', runCounter(transition.count, resolve)),
-        addTimeout(transition.timeout, resolve)
+        makeEventListener(el, 'transitionend', runCounter(transition.count, resolve)),
+        makeFrameTimeout(transition.timeout, resolve)
       )
     }
 
     return batch(
-      addListener(el, 'animationend', runCounter(animation.count, resolve)),
-      addTimeout(animation.timeout, resolve)
+      makeEventListener(el, 'animationend', runCounter(animation.count, resolve)),
+      makeFrameTimeout(animation.timeout, resolve)
     )
   }
 

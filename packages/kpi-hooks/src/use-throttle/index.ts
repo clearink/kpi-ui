@@ -1,4 +1,4 @@
-import { isUndefined } from '@kpi-ui/utils'
+import { noop, makeFrameTimeout } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
 import useEvent from '../use-event'
 import useMounted from '../use-mounted'
@@ -6,19 +6,20 @@ import useMounted from '../use-mounted'
 import type { AnyFn } from '@kpi-ui/types'
 
 // 节流 函数
-export function throttle(fn: AnyFn, delay: number) {
-  let timer: undefined | number | NodeJS.Timeout
+export function throttle<F extends AnyFn>(fn: F, delay: number) {
+  let cleanup = noop
 
   function inner(this: unknown, ...args: any[]) {
-    if (!isUndefined(timer)) return
+    if (cleanup !== noop) return
 
     // prettier-ignore
-    const callback = () => { timer = undefined; fn.apply(this, args) }
+    const callback = () => { cleanup = noop; fn.apply(this, args) }
 
-    timer = setTimeout(callback, delay)
+    cleanup = makeFrameTimeout(callback, delay)
   }
 
-  return [inner, () => clearTimeout(timer)] as const
+  // prettier-ignore
+  return [inner, () => { cleanup() }] as const
 }
 
 // 节流 hook

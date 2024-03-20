@@ -1,5 +1,5 @@
-import { addTimeout } from '../../transition/_shared/utils'
 // types
+import { makeFrameTimeout } from '@kpi-ui/utils'
 import type { TouchEffectInfo } from '../_shared/context'
 
 // 白色，透明 不合格
@@ -40,7 +40,7 @@ export default function wave(info: TouchEffectInfo) {
 
   div.addEventListener('animationend', () => div.remove())
 
-  addTimeout(2000, () => div.remove())
+  makeFrameTimeout(2000, () => div.remove())
 
   target.insertBefore(div, target.firstChild)
 }

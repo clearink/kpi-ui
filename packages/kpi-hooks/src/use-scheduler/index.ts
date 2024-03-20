@@ -1,5 +1,5 @@
 import { caf, nextTick, noop, raf } from '@kpi-ui/utils'
-import makeSchedulerHook from './utils/make'
+import makeSchedulerHook from './utils/make_hook'
 import { AnyFn } from '@kpi-ui/types'
 
 type HookFn = <F extends AnyFn>(callback: F) => F

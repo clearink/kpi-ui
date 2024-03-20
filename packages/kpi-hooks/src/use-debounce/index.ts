@@ -1,3 +1,4 @@
+import { makeFrameTimeout } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
 import useEvent from '../use-event'
 import useMounted from '../use-mounted'
@@ -6,16 +7,17 @@ import type { AnyFn } from '@kpi-ui/types'
 
 // 防抖 函数
 export function debounce<F extends AnyFn>(fn: F, delay: number) {
-  let timer: undefined | number | NodeJS.Timeout
+  let cleanup = () => {}
 
   function inner(this: unknown, ...args: any[]) {
-    clearTimeout(timer)
+    cleanup()
 
     // prettier-ignore
-    timer = setTimeout(() => { fn.apply(this, args) }, delay)
+    cleanup = makeFrameTimeout(() => { fn.apply(this, args) }, delay)
   }
 
-  return [inner as F, () => clearTimeout(timer)] as const
+  // prettier-ignore
+  return [inner as F, () => { cleanup() }] as const
 }
 
 // 防抖 hook

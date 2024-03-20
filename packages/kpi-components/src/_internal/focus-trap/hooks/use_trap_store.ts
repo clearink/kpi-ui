@@ -1,9 +1,8 @@
 // utils
 import { useConstant } from '@kpi-ui/hooks'
-import { atIndex, noop } from '@kpi-ui/utils'
+import { atIndex, makeEventListener, noop } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 import { Keyboard } from '../../../_shared/constants'
-import { addListener } from '../../transition/_shared/utils'
 // types
 import type { FocusTrapProps } from '../props'
 
@@ -22,9 +21,9 @@ const initTrapEvent = (root: Document) => {
     topListeners && topListeners[type](e)
   }
 
-  __cleanupKeyDown = addListener(root, 'keydown', getTopEvent('onKeyDown'), true)
+  __cleanupKeyDown = makeEventListener(root, 'keydown', getTopEvent('onKeyDown'), true)
 
-  __cleanupFocusIn = addListener(root, 'focusin', getTopEvent('onFocusIn'))
+  __cleanupFocusIn = makeEventListener(root, 'focusin', getTopEvent('onFocusIn'))
 }
 
 export class FocusTrapState {

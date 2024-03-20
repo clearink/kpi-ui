@@ -1,5 +1,5 @@
 import { useControllableState, useEvent } from '@kpi-ui/hooks'
-import { fallback } from '@kpi-ui/utils'
+import { fallback, makeFrameTimeout } from '@kpi-ui/utils'
 import { useEffect, useRef, type SetStateAction } from 'react'
 import { defaultProps } from '..'
 // types
@@ -8,10 +8,10 @@ import type { TooltipProps } from '../props'
 export default function useTooltipOpen(props: TooltipProps) {
   const { open: _open, defaultOpen, onOpenChange } = props
 
-  const timer = useRef<any>(undefined)
+  const cleanupTimer = useRef(() => {})
 
   // prettier-ignore
-  useEffect(() => () => { clearTimeout(timer.current) }, [])
+  useEffect(() => () => { cleanupTimer.current() }, [])
 
   const [open, setOpen] = useControllableState({
     value: _open,
@@ -22,10 +22,10 @@ export default function useTooltipOpen(props: TooltipProps) {
   return [
     open,
     useEvent((state: SetStateAction<boolean>, delay = 0) => {
-      clearTimeout(timer.current)
+      cleanupTimer.current()
 
       if (delay === 0) setOpen(state)
-      else timer.current = setTimeout(() => setOpen(state), delay)
+      else cleanupTimer.current = makeFrameTimeout(delay, () => setOpen(state))
     }),
   ] as const
 }
