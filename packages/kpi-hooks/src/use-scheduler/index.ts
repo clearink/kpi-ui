@@ -7,27 +7,27 @@ type HookFn = <F extends AnyFn>(callback: F) => F
 export const useThrottleTick: HookFn = makeSchedulerHook({
   initialValue: noop,
   onCleanup: (fn) => fn(),
-  shouldReturn: (fn) => fn !== noop,
   onScheduler: nextTick,
+  shouldPrevent: (fn) => fn !== noop,
 })
 
 export const useDebounceTick: HookFn = makeSchedulerHook({
   initialValue: noop,
   onCleanup: (fn) => fn(),
   onScheduler: nextTick,
-  shouldReturn: (fn) => (fn(), false),
+  shouldPrevent: (fn) => (fn(), false),
 })
 
 export const useThrottleFrame: HookFn = makeSchedulerHook({
   initialValue: -1,
   onCleanup: caf,
   onScheduler: raf,
-  shouldReturn: (id) => id > -1,
+  shouldPrevent: (id) => id > -1,
 })
 
 export const useDebounceFrame: HookFn = makeSchedulerHook({
   initialValue: -1,
   onCleanup: caf,
   onScheduler: raf,
-  shouldReturn: (id) => (caf(id), false),
+  shouldPrevent: (id) => (caf(id), false),
 })

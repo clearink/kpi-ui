@@ -29,6 +29,8 @@ type GenerateEnums<T extends readonly ConstantItem[]> = T extends readonly [infe
 export default class Constant<T extends readonly ConstantItem[]> {
   readonly options: ConstantOption<T>[] = []
 
+  readonly enums: GenerateEnums<T>
+
   get: (key: T[number][0]) => ConstantOption<T>
 
   match(callback: (item: ConstantOption<T>) => boolean): ConstantOption<T> | undefined
@@ -39,8 +41,6 @@ export default class Constant<T extends readonly ConstantItem[]> {
   when: (value: any, condition: T[number][0] | T[number][0][]) => boolean
 
   extend: <R extends object>(fn: (instance: this) => R) => this & R
-
-  readonly enums: GenerateEnums<T>
 
   constructor(public readonly sequences: T) {
     const k_map = new Map<T[number][0], ConstantOption<T>>()
@@ -74,13 +74,13 @@ export default class Constant<T extends readonly ConstantItem[]> {
 
       const matched = v_map.get(value)
 
-      return key === undefined ? matched : matched || this.get(key)
+      return key === undefined ? matched : matched || k_map.get(key)
     }) as any
 
     this.when = (value, condition) => {
       const keys = Array.isArray(condition) ? condition : [condition]
 
-      return keys.some((key) => this.get(key).value === value)
+      return keys.some((key) => k_map.has(key) && k_map.get(key)!.value === value)
     }
   }
 }

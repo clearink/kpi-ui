@@ -8,14 +8,14 @@ import type { MayBe } from '@kpi-ui/types'
 // 元素改变大小 observer hook
 export default function useResizeObserver<T extends Element>(
   target: GetTargetElement<T>,
-  onResize: (el: Element) => void
+  handler: (el: Element) => void
 ) {
-  const onChange = useEvent(onResize)
+  const callback = useEvent(handler)
 
   const [el, set] = useState<MayBe<T>>(null)
 
   // prettier-ignore
   useEffect(() => { set(getTargetElement(target)) }, [target])
 
-  useEffect(() => (el ? observe(el, onChange) : void 0), [el, onChange])
+  useEffect(() => (el ? observe(el, callback) : void 0), [el, callback])
 }

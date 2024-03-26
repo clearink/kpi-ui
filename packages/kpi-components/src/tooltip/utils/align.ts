@@ -22,8 +22,8 @@ export function makeAlignment(
   }
 }
 
-export const topLeftAlignment = makeAlignment('topLeft', { size: 16, offsetX: 12, offsetY: 8 })
-
-export const topAlignment = makeAlignment('top', { size: 16, offsetX: 12, offsetY: 8 })
-
-export const topRightAlignment = makeAlignment('topRight', { size: 16, offsetX: 12, offsetY: 8 })
+export default {
+  topLeft: makeAlignment('topLeft', { size: 16, offsetX: 12, offsetY: 8 }),
+  top: makeAlignment('top', { size: 16, offsetX: 12, offsetY: 8 }),
+  topRight: makeAlignment('topRight', { size: 16, offsetX: 12, offsetY: 8 }),
+}
