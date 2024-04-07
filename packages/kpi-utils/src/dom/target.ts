@@ -20,7 +20,7 @@ function getTargetElement<T extends TargetElement>(
 function getTargetElement<T extends TargetElement>(...args: [GetTargetElement<T>, T?]) {
   const [target, defaultElement] = args
 
-  if (!isBrowser()) return null
+  if (!isBrowser) return null
 
   if (isNullish(target)) return defaultElement
 

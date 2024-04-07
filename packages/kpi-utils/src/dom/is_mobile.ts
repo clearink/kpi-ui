@@ -1,7 +1,7 @@
 import isBrowser from './is_browser'
 
 export default function isMobile() {
-  if (!isBrowser() || typeof navigator === 'undefined') return false
+  if (!isBrowser || typeof navigator === 'undefined') return false
 
   const ua = navigator.userAgent || (navigator as any).vendor || (window as any).opera
 

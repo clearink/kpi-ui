@@ -10,7 +10,7 @@ function TooltipContent(props: TooltipContentProps, ref: ForwardedRef<any>) {
 
   const dom = useRef<Element>(null)
 
-  useResizeObserver(() => dom.current, onResize)
+  useResizeObserver(dom, onResize)
 
   useEffect(() => {
     if (!dom.current || !open) return

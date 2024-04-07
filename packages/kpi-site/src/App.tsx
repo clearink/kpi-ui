@@ -81,7 +81,7 @@ const App: React.FC = () => {
           content="Thanks for using antd. Have a nice day!"
           placement="topLeft"
           trigger="click"
-          defaultOpen
+          open
         >
           <div
             style={{
