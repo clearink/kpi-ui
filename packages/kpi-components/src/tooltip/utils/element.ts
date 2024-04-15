@@ -33,7 +33,7 @@ export function getRelativeElement(el: Element) {
     parent = parent.parentElement
   }
 
-  const doc = ownerDocument(el)
+  const root = ownerDocument(el)
 
-  return doc.documentElement || doc.body
+  return root.documentElement || root.body
 }

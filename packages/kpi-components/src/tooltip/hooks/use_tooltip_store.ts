@@ -1,4 +1,4 @@
-import { useConstant, useForceUpdate, useWatchValue } from '@kpi-ui/hooks'
+import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { useMemo } from 'react'
 import { TOOLTIP_PLACEMENT } from '../constants'
 import { getRelativeElement } from '../utils/element'
@@ -103,18 +103,12 @@ export class TooltipAction {
   }
 }
 
-export default function useTooltipStore(props: TooltipProps) {
-  const { placement } = props
-
+export default function useTooltipStore() {
   const forceUpdate = useForceUpdate()
 
   const states = useConstant(() => new TooltipState())
 
   const actions = useMemo(() => new TooltipAction(forceUpdate, states), [forceUpdate, states])
-
-  // 监听 placement, 尝试重新定位
-  // prettier-ignore
-  useWatchValue(placement, () => { actions.updateCoords(props) })
 
   return { states, actions }
 }

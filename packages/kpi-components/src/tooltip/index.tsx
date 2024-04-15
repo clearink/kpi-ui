@@ -6,6 +6,7 @@ import useFormatClass from './hooks/use_format_class'
 import useTooltipOpen from './hooks/use_tooltip_open'
 import useTooltipStore from './hooks/use_tooltip_store'
 import useTriggerEvent from './hooks/use_trigger_event'
+import useWatchCoords from './hooks/use_watch_coords'
 // comps
 import Overlay from '../_internal/overlay'
 import ShouldUpdate from '../_internal/should-update'
@@ -56,17 +57,18 @@ function Tooltip(_props: TooltipProps) {
 
   const [open, setOpen] = useTooltipOpen(props)
 
-  const { states, actions } = useTooltipStore(props)
+  const { states, actions } = useTooltipStore()
 
   const triggerHandlers = useTriggerEvent(props, setOpen)
 
-  const handleResize = useThrottleTick(() => {
-    open && actions.updateCoords(props)
-  })
+  // prettier-ignore
+  const onUpdate = () => { open && actions.updateCoords(props) }
 
-  const handleScroll = useThrottleFrame(() => {
-    open && actions.updateCoords(props)
-  })
+  useWatchCoords(props, onUpdate)
+
+  const handleResize = useThrottleTick(onUpdate)
+
+  const handleScroll = useThrottleFrame(onUpdate)
 
   return (
     <>
