@@ -2,7 +2,7 @@ import { MayBe } from '@kpi-ui/types'
 import { MutableRefObject } from 'react'
 import { isFunction, isNullish, isObjectLike, isString } from '../is'
 import { ownerDocument } from './global'
-import isBrowser from './is_browser'
+import { isBrowser } from './is_browser'
 
 type TargetElement = HTMLElement | Element | Window | Document | false
 
@@ -12,12 +12,12 @@ export type GetTargetElement<T extends TargetElement> =
   | (() => MayBe<T>)
   | MutableRefObject<MayBe<T>>
 
-function getTargetElement<T extends TargetElement>(target: GetTargetElement<T>): MayBe<T>
-function getTargetElement<T extends TargetElement>(
+export function getTargetElement<T extends TargetElement>(target: GetTargetElement<T>): MayBe<T>
+export function getTargetElement<T extends TargetElement>(
   target: GetTargetElement<T>,
   defaultElement: T
 ): MayBe<T>
-function getTargetElement<T extends TargetElement>(...args: [GetTargetElement<T>, T?]) {
+export function getTargetElement<T extends TargetElement>(...args: [GetTargetElement<T>, T?]) {
   const [target, defaultElement] = args
 
   if (!isBrowser()) return null
@@ -32,5 +32,3 @@ function getTargetElement<T extends TargetElement>(...args: [GetTargetElement<T>
 
   return target
 }
-
-export default getTargetElement

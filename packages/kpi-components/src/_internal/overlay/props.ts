@@ -3,9 +3,7 @@ import type { RefCallback } from 'react'
 import type { PortalProps, PortalRef } from '../portal/props'
 import type { CSSTransitionProps } from '../transition/_shared/props'
 
-export interface OverlayRef {
-  container: PortalRef['container']
-}
+export type OverlayRef = PortalRef
 
 export interface OverlayProps
   extends SemanticStyledProps<'root' | 'mask'>,

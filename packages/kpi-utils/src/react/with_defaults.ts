@@ -1,9 +1,6 @@
 // utils
-import { shallowMerge } from '../value'
+import { shallowMerge } from '../object'
 
-export default function withDefaults<V extends Record<string, any>>(
-  source: V,
-  partial: Partial<V>
-) {
+export function withDefaults<V extends Record<string, any>>(source: V, partial: Partial<V>) {
   return shallowMerge(source, partial) as V
 }

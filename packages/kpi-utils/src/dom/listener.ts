@@ -1,6 +1,6 @@
 type EventMap = DocumentEventMap | HTMLElementEventMap | SVGElementEventMap | WindowEventMap
 
-export default function makeEventListener<E extends Node | Window, K extends keyof EventMap>(
+export function makeEventListener<E extends Node | Window, K extends keyof EventMap>(
   el: E,
   type: K,
   listener: (event: EventMap[K]) => any,

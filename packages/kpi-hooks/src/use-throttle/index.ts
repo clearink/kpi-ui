@@ -15,7 +15,7 @@ export function throttle<F extends AnyFn>(fn: F, delay: number) {
     // prettier-ignore
     const callback = () => { cleanup = noop; fn.apply(this, args) }
 
-    cleanup = makeFrameTimeout(callback, delay)
+    cleanup = makeFrameTimeout(delay, callback)
   }
 
   // prettier-ignore

@@ -8,10 +8,10 @@ import type { TooltipProps } from '../props'
 export default function useTooltipOpen(props: TooltipProps) {
   const { open: _open, defaultOpen, onOpenChange } = props
 
-  const cleanupTimer = useRef(() => {})
+  const timer = useRef(() => {})
 
   // prettier-ignore
-  useEffect(() => () => { cleanupTimer.current() }, [])
+  useEffect(() => () => { timer.current() }, [])
 
   const [open, setOpen] = useControllableState({
     value: _open,
@@ -22,10 +22,10 @@ export default function useTooltipOpen(props: TooltipProps) {
   return [
     open,
     useEvent((state: SetStateAction<boolean>, delay = 0) => {
-      cleanupTimer.current()
+      timer.current()
 
       if (delay === 0) setOpen(state)
-      else cleanupTimer.current = makeFrameTimeout(delay, () => setOpen(state))
+      else timer.current = makeFrameTimeout(delay, () => setOpen(state))
     }),
   ] as const
 }

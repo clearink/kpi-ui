@@ -3,9 +3,7 @@ import { type GetTargetElement } from '@kpi-ui/utils'
 
 export type ContainerType = Element | false
 
-export interface PortalRef {
-  container: MayBe<ContainerType>
-}
+export type PortalRef = MayBe<ContainerType>
 
 export interface PortalProps {
   children?: React.ReactNode

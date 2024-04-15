@@ -12,7 +12,7 @@ function Portal(props: PortalProps, ref: ForwardedRef<PortalRef>) {
 
   const [container, set] = useState(() => getTargetElement(_container, ownerBody()))
 
-  useImperativeHandle(ref, () => ({ container }), [container])
+  useImperativeHandle<PortalRef, PortalRef>(ref, () => container, [container])
 
   // prettier-ignore
   useEffect(() => { set(getTargetElement(_container, ownerBody())) }, [_container])

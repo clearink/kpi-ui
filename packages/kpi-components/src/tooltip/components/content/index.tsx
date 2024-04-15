@@ -1,7 +1,7 @@
 import { useComposeRefs, useResizeObserver } from '@kpi-ui/hooks'
 import { ownerWindow, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, forwardRef, useEffect, useRef, type ForwardedRef } from 'react'
-import { getScrollElements } from '../../utils/elements'
+import { getScrollElements } from '../../utils/element'
 // types
 import type { TooltipContentProps } from './props'
 

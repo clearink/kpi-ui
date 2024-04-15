@@ -1,7 +1,7 @@
 import { useConstant, useForceUpdate, useWatchValue } from '@kpi-ui/hooks'
 import { useMemo } from 'react'
 import { TOOLTIP_PLACEMENT } from '../constants'
-import { getRelativeElement } from '../utils/elements'
+import { getRelativeElement } from '../utils/element'
 import { defaultProps } from '..'
 // types
 import type { TooltipProps, Coords } from '../props'
@@ -35,7 +35,7 @@ export class TooltipAction {
   private shouldUpdateCoords = (a: Coords, b: Coords) => {
     const positions = ['top', 'right', 'bottom', 'left', '--origin-x', '--origin-y'] as const
 
-    const toString = (value: any) => Math.floor(Number(value) || 0).toFixed(2)
+    const toString = (value: any) => (Number(value) || 0).toFixed(2)
 
     return positions.some((pos) => toString(a[pos]) !== toString(b[pos]))
   }

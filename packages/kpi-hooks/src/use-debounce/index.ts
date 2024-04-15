@@ -13,7 +13,7 @@ export function debounce<F extends AnyFn>(fn: F, delay: number) {
     cleanup()
 
     // prettier-ignore
-    cleanup = makeFrameTimeout(() => { fn.apply(this, args) }, delay)
+    cleanup = makeFrameTimeout(delay, () => { fn.apply(this, args) })
   }
 
   // prettier-ignore

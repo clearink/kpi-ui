@@ -1,16 +1,25 @@
-import { TooltipPlacement } from '../props'
+import type { TooltipPlacement, TooltipProps } from '../props'
+import { getRelativeElement } from './element'
 
-export function makeAlignment(
+export interface AlignOptions {
+  props: TooltipProps
+  popup: HTMLElement
+  trigger: HTMLElement
+}
+
+export function makeAlignHelper(
   placement: TooltipPlacement,
-  defaultArrow: { size: number; offsetX: number; offsetY: number }
+  getScreenCoords: (options: AlignOptions) => any
 ) {
-  type TOptions = any
-  return (options: TOptions) => {
-    const { popup, trigger, relative, arrow } = options
+  return (options: AlignOptions) => {
+    const { popup, trigger, props } = options
 
     // 依次获得各个元素的位置信息
+    const relative = getRelativeElement(popup)
 
     // 计算出 popup 相对于 screen 的偏移位置
+
+    const screenCoords = getScreenCoords(options)
 
     // 计算出 popup 相对于 relative 的偏移位置
 
@@ -22,8 +31,14 @@ export function makeAlignment(
   }
 }
 
+const defaultArrowSize = {
+  size: 16,
+  offsetX: 12,
+  offsetY: 12,
+}
+
 export default {
-  topLeft: makeAlignment('topLeft', { size: 16, offsetX: 12, offsetY: 8 }),
-  top: makeAlignment('top', { size: 16, offsetX: 12, offsetY: 8 }),
-  topRight: makeAlignment('topRight', { size: 16, offsetX: 12, offsetY: 8 }),
+  topLeft: makeAlignHelper('topLeft', () => {}),
+  top: makeAlignHelper('top', () => {}),
+  topRight: makeAlignHelper('topRight', () => {}),
 }

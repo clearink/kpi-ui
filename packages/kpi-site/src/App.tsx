@@ -62,8 +62,15 @@ import { useEffect } from 'react'
 // }
 const App: React.FC = () => {
   useEffect(() => {
-    document.documentElement.scrollTop = document.documentElement.clientHeight
-    document.documentElement.scrollLeft = document.documentElement.clientWidth
+    const height = document.documentElement.clientHeight
+    const width = document.documentElement.clientWidth
+    const id = setTimeout(() => {
+      document.documentElement.scrollTop = height
+      document.documentElement.scrollLeft = width
+    }, 300)
+    return () => {
+      clearTimeout(id)
+    }
   }, [])
 
   return (
@@ -83,7 +90,7 @@ const App: React.FC = () => {
           trigger="click"
           defaultOpen
         >
-          <div
+          <Button
             style={{
               height: 32,
               width: 200,
@@ -93,7 +100,7 @@ const App: React.FC = () => {
             }}
           >
             Scroll The Window
-          </div>
+          </Button>
         </Tooltip>
       </div>
     </div>

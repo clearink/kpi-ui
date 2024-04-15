@@ -36,7 +36,6 @@ function Tooltip(_props: TooltipProps) {
     getContainer,
     //
     arrow,
-    placement,
     //
     transition,
     fresh,

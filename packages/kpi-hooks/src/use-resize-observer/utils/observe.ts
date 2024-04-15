@@ -2,7 +2,7 @@ import { ownerWindow } from '@kpi-ui/utils'
 // types
 import type { ResizeCallback } from '../props'
 
-export class ObserverUtil {
+export class ElementResizeObserver {
   private _instance: ResizeObserver | null = null
 
   private _listeners = new Map<Element, Set<ResizeCallback>>()
@@ -70,4 +70,4 @@ export class ObserverUtil {
   }
 }
 
-export default new ObserverUtil().observe
+export default new ElementResizeObserver().observe
