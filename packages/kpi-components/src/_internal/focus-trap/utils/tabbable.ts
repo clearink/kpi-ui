@@ -1,4 +1,3 @@
-// utils
 import { TabbableQuery } from '../constants'
 
 const isContentEditable = (node: HTMLElement) => {

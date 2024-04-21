@@ -1,11 +1,9 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { useMemo } from 'react'
-import { TOOLTIP_PLACEMENT } from '../constants'
-import { getRelativeElement } from '../utils/element'
-import { defaultProps } from '..'
+import aligners from '../utils/aligner'
 // types
-import type { TooltipProps, Coords } from '../props'
-import { getElementCoords } from '../utils/coords'
+import type { Coords, TooltipProps } from '../props'
+import { defaultProps } from '..'
 
 export class TooltipState {
   $trigger = {
@@ -64,42 +62,51 @@ export class TooltipAction {
 
     const { autoLayout, placement } = props
 
-    const algorithm = TOOLTIP_PLACEMENT[placement!] || TOOLTIP_PLACEMENT[defaultProps.placement!]
+    const getPopupCoords = aligners[placement!] || aligners[defaultProps.placement!]
 
-    const relative = getElementCoords(getRelativeElement(this.popup))
-    const popup = getElementCoords(this.popup)
-    const trigger = getElementCoords(this.trigger)
-    // 1. popup position
-    const newPopupCoords = algorithm.getPopupCoords({
-      relative,
-      popup,
-      trigger,
+    const newPopupCoords = getPopupCoords({
+      props,
+      popup: this.popup,
+      trigger: this.trigger,
+      onFlip: () => {},
     })
 
-    // 2. arrow position
-    const newArrowCoords = algorithm.getArrowCoords({
-      relative,
-      popup,
-      trigger,
-    })
+    // const algorithm = TOOLTIP_PLACEMENT[placement!] || TOOLTIP_PLACEMENT[defaultProps.placement!]
 
-    if (algorithm.shouldFlipCoords()) {
-      //
-    }
-
-    // newTooltipCoords = algorithm.flipPopupCoords(newTooltipCoords)
-
-    // 2. arrow position
-    // const newArrowCoords = algorithm.getArrowCoords({
-    //   tooltip: tooltipRect,
-    //   trigger: triggerRect,
-    //   arrow: arrowRect,
+    // const relative = getElementCoords(getRelativeElement(this.popup))
+    // const popup = getElementCoords(this.popup)
+    // const trigger = getElementCoords(this.trigger)
+    // // 1. popup position
+    // const newPopupCoords = algorithm.getPopupCoords({
+    //   relative,
+    //   popup,
+    //   trigger,
     // })
+
+    // // 2. arrow position
+    // const newArrowCoords = algorithm.getArrowCoords({
+    //   relative,
+    //   popup,
+    //   trigger,
+    // })
+
+    // if (algorithm.shouldFlipCoords()) {
+    //   //
+    // }
+
+    // // newTooltipCoords = algorithm.flipPopupCoords(newTooltipCoords)
+
+    // // 2. arrow position
+    // // const newArrowCoords = algorithm.getArrowCoords({
+    // //   tooltip: tooltipRect,
+    // //   trigger: triggerRect,
+    // //   arrow: arrowRect,
+    // // })
 
     // 3. 判断是否需要调整方向
     this.setPopupCoords(newPopupCoords)
 
-    // this.setArrowCoords(newArrowCoords)
+    // // this.setArrowCoords(newArrowCoords)
   }
 }
 

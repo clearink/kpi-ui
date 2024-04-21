@@ -85,15 +85,14 @@ const App: React.FC = () => {
         }}
       >
         <Tooltip
-          content="Thanks for using antd. Have a nice day!"
-          placement="topLeft"
-          trigger="click"
+          content="Thanks for uasasdasdassing antd. Have a nice day!"
+          placement="topRight"
           open
         >
           <Button
             style={{
               height: 32,
-              width: 200,
+              width: 500,
               border: '1px solid',
               borderRadius: 4,
               padding: '6px 8px',

@@ -1,4 +1,3 @@
-// utils
 import { useWatchValue } from '@kpi-ui/hooks'
 import { withDisplayName } from '@kpi-ui/utils'
 import { isElementEqual } from '../../utils/equal'

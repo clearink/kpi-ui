@@ -1,4 +1,3 @@
-// utils
 import {
   cls,
   fallback,

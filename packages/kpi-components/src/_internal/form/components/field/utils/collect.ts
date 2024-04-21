@@ -1,4 +1,3 @@
-// utils
 import { hasOwn, isFunction, isObjectLike, toArray } from '@kpi-ui/utils'
 // types
 import type { AnyObject } from '@kpi-ui/types'

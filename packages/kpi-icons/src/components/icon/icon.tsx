@@ -1,4 +1,3 @@
-// utils
 import { definitionToNode } from './utils'
 // types
 import type { IconProps } from './props'

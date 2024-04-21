@@ -1,4 +1,3 @@
-// utils
 import classNames from 'classnames'
 // types
 import type { ArgumentArray } from 'classnames'

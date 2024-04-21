@@ -1,4 +1,3 @@
-// utils
 import { useConstant, useWatchValue } from '@kpi-ui/hooks'
 import { isEqual, isFunction, isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { createElement, forwardRef, useEffect, useImperativeHandle, useMemo } from 'react'

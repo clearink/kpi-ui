@@ -1,4 +1,3 @@
-// utils
 import { useEvent } from '@kpi-ui/hooks'
 import { withDisplayName, omit, withDefaults } from '@kpi-ui/utils'
 import { forwardRef, useImperativeHandle, useMemo, type ForwardedRef, type Ref } from 'react'

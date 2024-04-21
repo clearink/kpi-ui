@@ -1,4 +1,3 @@
-// utils
 import { cls } from '@kpi-ui/utils'
 import { usePrefixCls } from '../../_shared/hooks'
 // types

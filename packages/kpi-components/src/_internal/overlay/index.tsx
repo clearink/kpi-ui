@@ -1,5 +1,4 @@
-// utils
-import { cls, fallback, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { cls, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { forwardRef, type ForwardedRef, type ReactElement, type RefCallback } from 'react'
 import { useSemanticStyles } from '../../_shared/hooks'
 import useOverlayLevel from './hooks/use_overlay_level'

@@ -1,4 +1,3 @@
-// utils
 import { cls } from '@kpi-ui/utils'
 import { usePrefixCls } from '../../../_shared/hooks'
 import useFormatExplains from './hooks/use_format_explains'

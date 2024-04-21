@@ -1,4 +1,4 @@
-import { getElementStyle, ownerDocument } from '@kpi-ui/utils'
+import { getElementStyle, ownerDocument, ownerWindow } from '@kpi-ui/utils'
 
 function isScrollable(el: Element) {
   const { overflow: o, overflowX: ox, overflowY: oy } = getElementStyle(el)
@@ -22,18 +22,54 @@ export function getScrollElements(element: Element) {
   return elements
 }
 
-export function getRelativeElement(el: Element) {
+export function getElementCoords(el: HTMLElement) {
+  const coords = el.getBoundingClientRect()
+
+  return {
+    el,
+    top: coords.top,
+    right: coords.right,
+    bottom: coords.bottom,
+    left: coords.left,
+    height: coords.height,
+    width: coords.width,
+    /** clientHeight */
+    _height: el.clientHeight,
+    /** clientWidth */
+    _width: el.clientWidth,
+  }
+}
+
+export function getPositionedCoords(el: Element) {
   let parent = el.parentElement
 
   while (parent) {
     const { position } = getElementStyle(parent)
 
-    if (position !== 'static') return parent
+    if (position !== 'static') return getElementCoords(parent)
 
     parent = parent.parentElement
   }
 
   const root = ownerDocument(el)
 
-  return root.documentElement || root.body
+  return getElementCoords(root.documentElement || root.body)
+}
+
+export function isOffscreen(el: HTMLElement) {
+  const win = ownerWindow(el)
+
+  const screenWidth = win.innerWidth
+  const screenHeight = win.innerHeight
+
+  const coords = el.getBoundingClientRect()
+  const width = el.clientWidth
+  const height = el.clientHeight
+
+  return (
+    coords.left < -width ||
+    coords.left > screenWidth ||
+    coords.top < -height ||
+    coords.top > screenHeight
+  )
 }

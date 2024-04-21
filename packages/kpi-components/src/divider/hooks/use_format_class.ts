@@ -1,4 +1,3 @@
-// utils
 import { cls } from '@kpi-ui/utils'
 import { isUndefined } from '@kpi-ui/utils'
 // types

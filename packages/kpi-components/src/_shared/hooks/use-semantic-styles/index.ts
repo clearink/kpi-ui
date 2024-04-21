@@ -1,4 +1,3 @@
-// utils
 import { isUndefined } from '@kpi-ui/utils'
 
 export default function useSemanticStyles<K extends string, V extends object>(

@@ -1,4 +1,3 @@
-// utils
 import { useThrottleFrame, useThrottleTick } from '@kpi-ui/hooks'
 import { cls, fallback, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
@@ -106,6 +105,7 @@ function Tooltip(_props: TooltipProps) {
                 left: 'var(--origin-x, 50%)',
                 top: 'var(--origin-y, 50%)',
                 zIndex: 20,
+                transform: 'translate(-50%, -50%)',
               }}
             ></div>
             {/* 箭头使用 svg 图算了 */}

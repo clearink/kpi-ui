@@ -1,4 +1,3 @@
-// utils
 import { isEqual } from '@kpi-ui/utils'
 import { useMemo, type DependencyList } from 'react'
 import useConstant from '../use-constant'

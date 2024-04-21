@@ -1,4 +1,3 @@
-// utils
 import { isString, withDefaults } from '@kpi-ui/utils'
 import { usePrefixCls } from '../../../_shared/hooks'
 import Col from '../../../col'

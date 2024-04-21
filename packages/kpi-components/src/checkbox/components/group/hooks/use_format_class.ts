@@ -1,4 +1,3 @@
-// utils
 import { cls } from '@kpi-ui/utils'
 // types
 import type { CheckboxGroupProps } from '../props'

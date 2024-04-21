@@ -1,4 +1,3 @@
-// utils
 import { isNullish, mergeRefs } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 // types

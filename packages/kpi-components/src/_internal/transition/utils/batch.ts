@@ -1,4 +1,3 @@
-// utils
 import { isFunction } from '@kpi-ui/utils'
 // types
 import type { AnyFn, MayBe } from '@kpi-ui/types'

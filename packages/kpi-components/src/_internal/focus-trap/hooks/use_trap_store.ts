@@ -1,4 +1,3 @@
-// utils
 import { useConstant } from '@kpi-ui/hooks'
 import { atIndex, makeEventListener, noop } from '@kpi-ui/utils'
 import { useMemo } from 'react'

@@ -1,4 +1,3 @@
-// utils
 import { cls, isUndefined } from '@kpi-ui/utils'
 // types
 import type { SpaceProps } from '../props'

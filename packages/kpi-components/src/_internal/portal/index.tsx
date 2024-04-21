@@ -1,4 +1,3 @@
-// utils
 import { getTargetElement, isNullish, ownerBody, withDisplayName } from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { createPortal } from 'react-dom'

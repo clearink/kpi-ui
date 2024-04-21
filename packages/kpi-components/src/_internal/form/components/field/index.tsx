@@ -1,4 +1,3 @@
-// utils
 import { useConstant, useDeepMemo } from '@kpi-ui/hooks'
 import { isUndefined, toArray, withDefaults } from '@kpi-ui/utils'
 import { Fragment, useEffect, useMemo } from 'react'

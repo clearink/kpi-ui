@@ -1,4 +1,3 @@
-// utils
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { omit } from '@kpi-ui/utils'
 import { cloneElement, createElement, useMemo, type ReactElement } from 'react'

@@ -1,4 +1,3 @@
-// utils
 import {
   fallback,
   isFunction,

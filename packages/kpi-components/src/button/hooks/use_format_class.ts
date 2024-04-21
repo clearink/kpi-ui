@@ -1,4 +1,3 @@
-// utils
 import { cls, fallback } from '@kpi-ui/utils'
 import { DisabledContext, SizeContext } from '../../_shared/context'
 // types

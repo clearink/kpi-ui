@@ -1,4 +1,3 @@
-// utils
 import { useConstant, useForceUpdate, useMounted } from '@kpi-ui/hooks'
 import FormGroupControl from '../control'
 // types

@@ -1,4 +1,3 @@
-// utils
 import { shallowMerge } from '../object'
 
 export function withDefaults<V extends Record<string, any>>(source: V, partial: Partial<V>) {

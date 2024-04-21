@@ -1,4 +1,3 @@
-// utils
 import { isFunction, mergeRefs, supportRef, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, forwardRef } from 'react'
 // types

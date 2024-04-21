@@ -1,4 +1,3 @@
-// utils
 import { useComposeRefs, useEvent } from '@kpi-ui/hooks'
 import { nextFrame, ownerDocument, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, useEffect } from 'react'
