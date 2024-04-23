@@ -1,3 +1,4 @@
+import { fallback } from '@kpi-ui/utils'
 import { TabbableQuery } from '../constants'
 
 const isContentEditable = (node: HTMLElement) => {
@@ -28,10 +29,9 @@ function getTabIndex(node: HTMLElement) {
 }
 
 function isHidden(node: HTMLElement, cache = new WeakMap<HTMLElement, boolean>()) {
-  let hidden = false
+  let hidden = fallback(cache.get(node), false)!
 
-  if (cache.has(node)) hidden = cache.get(node)!
-  else {
+  if (!cache.has(node)) {
     const { display, visibility } = getComputedStyle(node)
 
     hidden = display === 'none' || visibility === 'hidden'

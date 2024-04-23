@@ -126,12 +126,17 @@ const aligners = {
       const size = 8
       const ratio = 2
 
-      adjustedCoords.left = Math.min(screenCoords.left + popup._width, rootWidth) - popup._width
+      // 应当以 triggerCoords 为基准来计算
 
-      // if (trigger.left - popup.left >= popup._width - size * 4) {
-      //   // 保持当前
-      //   adjustedCoords.left = Math.min(screenCoords.left, trigger.left - popup._width + size * 4)
-      // }
+      if (screenCoords.left + popup._width >= rootWidth) {
+        adjustedCoords.left = rootWidth - popup._width
+
+        // adjustedCoords.left 相距太大 则 不应该执行上一句的逻辑
+        if (trigger.left - adjustedCoords.left >= popup._width - size * 4) {
+          // 保持当前
+          adjustedCoords.left = Math.min(screenCoords.left, trigger.left - popup._width + size * 4)
+        }
+      }
 
       const offsetCoords = {
         top: popup._height - size,
