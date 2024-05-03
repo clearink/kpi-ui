@@ -7,7 +7,7 @@ import useSharedLayout from './hooks/use_shared_layout'
 
 import type { PaginationProps } from './props'
 
-export const defaultProps: Partial<PaginationProps> = {
+const defaultProps: Partial<PaginationProps> = {
   simple: false,
   total: 0,
   showJumper: false,

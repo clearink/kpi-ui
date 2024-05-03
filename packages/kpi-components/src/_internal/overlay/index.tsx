@@ -10,7 +10,7 @@ import ForwardFunctional from './components/forward-functional'
 // types
 import type { OverlayProps, OverlayRef } from './props'
 
-export const defaultProps: Partial<OverlayProps> = { mask: true }
+const defaultProps: Partial<OverlayProps> = { mask: true }
 
 function Overlay(_props: OverlayProps, ref: ForwardedRef<OverlayRef>) {
   const props = withDefaults(_props, defaultProps)

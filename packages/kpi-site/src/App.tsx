@@ -1,65 +1,9 @@
 import { Button, Tooltip } from '@kpi-ui/components'
+import { useEffect } from 'react'
 
 import '@kpi-ui/components/src/style'
 import './style.scss'
-import { useEffect } from 'react'
 
-// export default function App() {
-//   return (
-//     <div
-//       style={{
-//         height: '100vh',
-//         overflow: 'auto',
-//       }}
-//     >
-//       <div style={{ overflow: 'auto', width: 640, margin: '100px auto', height: 400 }}>
-//         <div style={{ overflow: 'auto', width: 620, margin: '100px auto', height: 600 }}>
-//           <div style={{ overflow: 'auto', width: 600, margin: '100px auto', height: 800 }}>
-//             {/* <div style={{ position: 'absolute', right: 400, top: 200 }}>
-//         <div style={{ position: 'absolute', left: 400, top: 200 }}>*/}
-//             <div style={{ overflow: 'auto', height: 300, border: '1px solid red' }}>
-//               <div>
-//                 <div style={{ height: 1000 }}></div>
-//                 {(
-//                   [
-//                     'topLeft',
-//                     // 'top',
-//                     // 'topRight',
-//                     // 'rightTop',
-//                     // 'right',
-//                     // 'rightBottom',
-//                     // 'bottomLeft',
-//                     // 'bottom',
-//                     // 'bottomRight',
-//                     // 'leftTop',
-//                     // 'left',
-//                     // 'leftBottom',
-//                   ] as const
-//                 ).map((pos) => (
-//                   <Tooltip
-//                     key={pos}
-//                     placement={pos}
-//                     open
-//                     // arrow={false}
-//                     // arrow={pos === 'topLeft'}
-//                     content={<div style={{ width: 100 }}>12313211212</div>}
-//                   >
-//                     <Button variant="filled" style={{ margin: 10 }}>
-//                       {pos}
-//                     </Button>
-//                   </Tooltip>
-//                 ))}
-//                 <div style={{ height: 1000 }}></div>
-//                 {/* </div>
-//             </div>*/}
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
 const App: React.FC = () => {
   useEffect(() => {
     const height = document.documentElement.clientHeight
@@ -85,22 +29,32 @@ const App: React.FC = () => {
         }}
       >
         <Tooltip
-          content="Thanks for uasasdasdassing antd. Have a nice day!"
-          placement="topRight"
+          content={
+            <div
+              style={{
+                height: 100,
+              }}
+            >
+              AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!
+            </div>
+          }
+          placement="topLeft"
+          // placement="top"
+          // placement="topRight"
+          // placement="rightTop"
+          // placement="right"
+          // placement="rightBottom"
           open
         >
           <Button
             style={{
-              height: 32,
               width: 500,
-              border: '1px solid',
-              borderRadius: 4,
-              padding: '6px 8px',
             }}
           >
             Scroll The Window
           </Button>
         </Tooltip>
+        {/* <iframe src="http://localhost:5173" width="1000px" height="500px"></iframe> */}
       </div>
     </div>
   )

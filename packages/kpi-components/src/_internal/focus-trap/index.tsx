@@ -16,7 +16,7 @@ const hidden: React.CSSProperties = {
   left: -1,
 }
 
-export const defaultProps: Partial<FocusTrapProps> = {
+const defaultProps: Partial<FocusTrapProps> = {
   getTabbable: defaultGetTabbable,
 }
 

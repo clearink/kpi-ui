@@ -14,7 +14,7 @@ import TooltipTrigger from './components/trigger'
 // types
 import type { TooltipProps } from './props'
 
-export const defaultProps: Partial<TooltipProps> = {
+const defaultProps: Partial<TooltipProps> = {
   trigger: 'hover',
   openDelay: 100,
   closeDelay: 100,
@@ -105,7 +105,7 @@ function Tooltip(_props: TooltipProps) {
                 left: 'var(--origin-x, 50%)',
                 top: 'var(--origin-y, 50%)',
                 zIndex: 20,
-                transform: 'translate(-50%, -50%)',
+                transform: 'translate(-50%, -50%) scale(0.5)',
               }}
             ></div>
             {/* 箭头使用 svg 图算了 */}
@@ -116,11 +116,14 @@ function Tooltip(_props: TooltipProps) {
               />
             )}
             {/* 内容缓存 TODO: content 能否使用 render props */}
-            <ShouldUpdate when={open || !!fresh}>
-              <div className={classNames.content} style={styles.content} role="tooltip">
-                {content}
-              </div>
-            </ShouldUpdate>
+            <div
+              ref={states.$content}
+              className={classNames.content}
+              style={styles.content}
+              role="tooltip"
+            >
+              <ShouldUpdate when={open || !!fresh}>{content}</ShouldUpdate>
+            </div>
           </div>
         </TooltipContent>
       </Overlay>

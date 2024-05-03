@@ -18,7 +18,7 @@ const excluded = [
   'wrap',
 ] as const
 
-export const defaultProps: Partial<SpaceProps> = {
+const defaultProps: Partial<SpaceProps> = {
   direction: 'horizontal',
   size: 'small',
   wrap: false,

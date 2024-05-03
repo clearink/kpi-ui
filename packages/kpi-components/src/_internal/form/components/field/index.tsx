@@ -9,7 +9,7 @@ import useInjectField from './hooks/use_inject_field'
 // types
 import type { ExternalFormFieldProps, InternalFormFieldProps } from './props'
 
-export const defaultProps: Partial<InternalFormFieldProps> = {
+const defaultProps: Partial<InternalFormFieldProps> = {
   trigger: 'onChange',
   valuePropName: 'value',
 }

@@ -1,7 +1,6 @@
 import { useControllableState, useEvent } from '@kpi-ui/hooks'
-import { fallback, makeFrameTimeout } from '@kpi-ui/utils'
+import { makeFrameTimeout } from '@kpi-ui/utils'
 import { useEffect, useRef, type SetStateAction } from 'react'
-import { defaultProps } from '..'
 // types
 import type { TooltipProps } from '../props'
 
@@ -15,7 +14,7 @@ export default function useTooltipOpen(props: TooltipProps) {
 
   const [open, setOpen] = useControllableState({
     value: _open,
-    defaultValue: fallback(defaultOpen, defaultProps.defaultOpen),
+    defaultValue: defaultOpen,
     onChange: onOpenChange,
   })
 

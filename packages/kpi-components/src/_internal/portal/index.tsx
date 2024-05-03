@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom'
 // types
 import type { PortalProps, PortalRef } from './props'
 
-export const defaultProps: Partial<PortalProps> = {}
+const defaultProps: Partial<PortalProps> = {}
 
 function Portal(props: PortalProps, ref: ForwardedRef<PortalRef>) {
   const { children, getContainer: _container } = props

@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import aligners from '../utils/aligner'
 // types
 import type { Coords, TooltipProps } from '../props'
-import { defaultProps } from '..'
 
 export class TooltipState {
   $trigger = {
@@ -14,9 +13,13 @@ export class TooltipState {
     current: null as HTMLDivElement | null,
   }
 
+  $content = {
+    current: null as HTMLDivElement | null,
+  }
+
   popupCoords: Coords = { left: '-1000vw', top: '-1000vh' }
 
-  arrowCoords: Coords = {}
+  arrowCoords: Pick<Coords, 'top' | 'left'> = {}
 }
 
 export class TooltipAction {
@@ -30,10 +33,14 @@ export class TooltipAction {
     return this.states.$popup.current
   }
 
-  private shouldUpdateCoords = (a: Coords, b: Coords) => {
-    const positions = ['top', 'right', 'bottom', 'left', '--origin-x', '--origin-y'] as const
+  get content() {
+    return this.states.$content.current
+  }
 
-    const toString = (value: any) => (Number(value) || 0).toFixed(2)
+  private shouldUpdateCoords = (a: Coords, b: Coords) => {
+    const positions = ['top', 'left', '--origin-x', '--origin-y'] as const
+
+    const toString = (value: any) => (parseFloat(value) || 0).toFixed(2)
 
     return positions.some((pos) => toString(a[pos]) !== toString(b[pos]))
   }
@@ -56,57 +63,20 @@ export class TooltipAction {
 
   // 当初始时open=true,updateCoords会调用2次
   updateCoords = (props: TooltipProps) => {
-    if (!this.popup || !this.trigger) return
+    if (!this.popup || !this.trigger || !this.content) return
 
-    // 不能直接计算，得先判断 scroll 逻辑
+    const getCoords = aligners[props.placement!] || aligners.top
 
-    const { autoLayout, placement } = props
-
-    const getPopupCoords = aligners[placement!] || aligners[defaultProps.placement!]
-
-    const newPopupCoords = getPopupCoords({
+    const { popupCoords, arrowCoords } = getCoords({
       props,
       popup: this.popup,
       trigger: this.trigger,
-      onFlip: () => {},
+      content: this.content,
     })
 
-    // const algorithm = TOOLTIP_PLACEMENT[placement!] || TOOLTIP_PLACEMENT[defaultProps.placement!]
+    this.setPopupCoords(popupCoords)
 
-    // const relative = getElementCoords(getRelativeElement(this.popup))
-    // const popup = getElementCoords(this.popup)
-    // const trigger = getElementCoords(this.trigger)
-    // // 1. popup position
-    // const newPopupCoords = algorithm.getPopupCoords({
-    //   relative,
-    //   popup,
-    //   trigger,
-    // })
-
-    // // 2. arrow position
-    // const newArrowCoords = algorithm.getArrowCoords({
-    //   relative,
-    //   popup,
-    //   trigger,
-    // })
-
-    // if (algorithm.shouldFlipCoords()) {
-    //   //
-    // }
-
-    // // newTooltipCoords = algorithm.flipPopupCoords(newTooltipCoords)
-
-    // // 2. arrow position
-    // // const newArrowCoords = algorithm.getArrowCoords({
-    // //   tooltip: tooltipRect,
-    // //   trigger: triggerRect,
-    // //   arrow: arrowRect,
-    // // })
-
-    // 3. 判断是否需要调整方向
-    this.setPopupCoords(newPopupCoords)
-
-    // // this.setArrowCoords(newArrowCoords)
+    this.setArrowCoords(arrowCoords)
   }
 }
 

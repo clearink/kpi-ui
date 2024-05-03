@@ -12,7 +12,7 @@ import type { CollapseContextState } from '../../_shared/context'
 import type { ExpandedName } from '../../props'
 import type { CollapseProps } from './props'
 
-export const defaultProps: Partial<CollapseProps> = {
+const defaultProps: Partial<CollapseProps> = {
   bordered: true,
   collapsible: 'header',
   expandIconPosition: 'start',

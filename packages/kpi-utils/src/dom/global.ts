@@ -10,6 +10,11 @@ export function ownerWindow(node?: MayBe<Node>) {
   return root.defaultView || globalThis.window
 }
 
+export function ownerRoot(node?: MayBe<Node>) {
+  const root = ownerDocument(node)
+  return root.documentElement || root.body
+}
+
 export function getElementStyle(node: Element) {
   return ownerWindow(node).getComputedStyle(node)
 }

@@ -19,7 +19,7 @@ const excluded = [
   'styles',
 ] as const
 
-export const defaultProps: Partial<DividerProps> = {
+const defaultProps: Partial<DividerProps> = {
   dashed: false,
   align: 'center',
   direction: 'horizontal',

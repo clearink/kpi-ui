@@ -24,7 +24,7 @@ const excluded = [
   'requiredMark',
 ] as const
 
-export const defaultProps: Partial<FormProps> = {
+const defaultProps: Partial<FormProps> = {
   layout: 'horizontal',
   requiredMark: true,
   colon: true,

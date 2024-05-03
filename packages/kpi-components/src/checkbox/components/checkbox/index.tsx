@@ -17,7 +17,7 @@ const excluded = [
   'onChange',
 ] as const
 
-export const defaultProps: Partial<CheckboxProps> = {}
+const defaultProps: Partial<CheckboxProps> = {}
 
 function Checkbox(props: CheckboxProps) {
   const { children } = props

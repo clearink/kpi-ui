@@ -7,7 +7,7 @@ import normalizeChildren from './utils/normalize_children'
 // types
 import type { FormItemLabelProps } from './props'
 
-export const defaultProps: Partial<FormItemLabelProps> = {}
+const defaultProps: Partial<FormItemLabelProps> = {}
 
 function FormItemLabel(_props: FormItemLabelProps) {
   const ctx = FormContext.useState()

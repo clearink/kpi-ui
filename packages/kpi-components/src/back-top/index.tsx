@@ -3,7 +3,7 @@ import useFormatClass from './hooks/use_format_class'
 
 import type { BackTopProps } from './props'
 
-export const defaultProps: Partial<BackTopProps> = {}
+const defaultProps: Partial<BackTopProps> = {}
 
 function BackTop(props: BackTopProps) {
   const classes = useFormatClass(props)

@@ -9,7 +9,7 @@ import type { RowProps } from './props'
 
 const excluded = ['children', 'gutter', 'align', 'justify', 'wrap'] as const
 
-export const defaultProps: Partial<RowProps> = {
+const defaultProps: Partial<RowProps> = {
   gutter: 0,
   wrap: true,
 }

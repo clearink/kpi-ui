@@ -1,5 +1,5 @@
 import { useDebounceState } from '@kpi-ui/hooks'
-import { useCallback } from 'react'
+import { useCallback, startTransition } from 'react'
 // types
 import type { FieldMeta } from '../../../props'
 
@@ -18,12 +18,12 @@ export function initFieldMeta(): FieldMeta {
 export default function useMetaState() {
   const [state, setState] = useDebounceState(100, initFieldMeta)
 
-  const update = useCallback(
-    (meta: FieldMeta) => {
-      meta.mounted && setState(meta)
-    },
-    [setState]
-  )
+  // prettier-ignore
+  const update = useCallback((meta: FieldMeta) => {
+    meta.mounted && startTransition(() => {
+      setState(meta)
+    })
+  }, [setState])
 
   return [state, update] as const
 }

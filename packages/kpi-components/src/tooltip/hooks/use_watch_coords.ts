@@ -4,7 +4,9 @@ import type { TooltipProps } from '../props'
 
 // 监听状态, 重新定位元素
 export default function useWatchCoords(props: TooltipProps, onCallback: () => void) {
-  const { placement } = props
+  const { placement, offset } = props
 
   useWatchValue(placement, onCallback)
+
+  useWatchValue(`${offset}`, onCallback)
 }

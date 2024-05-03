@@ -29,7 +29,7 @@ const included = [
   'zIndex',
 ] as const
 
-export const defaultProps: Partial<ModalProps> = {
+const defaultProps: Partial<ModalProps> = {
   closeOnEscape: true,
   maskClosable: true,
   returnFocus: true,

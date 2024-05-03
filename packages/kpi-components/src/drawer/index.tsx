@@ -27,7 +27,7 @@ const included = [
   'unmountOnExit',
 ] as const
 
-export const defaultProps: Partial<DrawerProps> = {
+const defaultProps: Partial<DrawerProps> = {
   closeOnEscape: true,
 }
 

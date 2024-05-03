@@ -20,7 +20,7 @@ import { CSSTransition } from '../../../_internal/transition'
 import type { CollapsibleType } from '../collapse/props'
 import type { CollapseItemProps } from './props'
 
-export const defaultProps: Partial<CollapseItemProps> = {
+const defaultProps: Partial<CollapseItemProps> = {
   showExpandIcon: true,
 }
 

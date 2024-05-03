@@ -5,7 +5,7 @@ import useFormatClass from './hooks/use_format_class'
 
 import type { BadgeProps } from './props'
 
-export const defaultProps: Partial<BadgeProps> = {
+const defaultProps: Partial<BadgeProps> = {
   maxCount: 99,
 }
 function Badge(_props: BadgeProps) {

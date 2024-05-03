@@ -17,100 +17,6 @@ $comp: #{$prefix}-tooltip;
   transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
 }
 
-.#{$comp}-topLeft {
-  .#{$comp}__arrow {
-    bottom: math.div($kpi-tooltip-arrow-size, -2);
-    left: $kpi-tooltip-arrow-size;
-  }
-}
-
-.#{$comp}-top {
-  .#{$comp}__arrow {
-    bottom: math.div($kpi-tooltip-arrow-size, -2);
-    left: 50%;
-    transform: translate3d(-50%, 0%, 0);
-  }
-}
-
-.#{$comp}-topRight {
-  .#{$comp}__arrow {
-    right: $kpi-tooltip-arrow-size;
-    bottom: math.div($kpi-tooltip-arrow-size, -2);
-  }
-}
-
-.#{$comp}-rightTop {
-  .#{$comp}__arrow {
-    top: math.div($kpi-tooltip-arrow-size, 2);
-    left: math.div($kpi-tooltip-arrow-size, -2);
-    transform: rotate(90deg);
-  }
-}
-
-.#{$comp}-right {
-  .#{$comp}__arrow {
-    top: 50%;
-    left: math.div($kpi-tooltip-arrow-size, -2);
-    transform: translate3d(0, -50%, 0) rotate(90deg);
-  }
-}
-
-.#{$comp}-rightBottom {
-  .#{$comp}__arrow {
-    bottom: math.div($kpi-tooltip-arrow-size, 2);
-    left: math.div($kpi-tooltip-arrow-size, -2);
-    transform: rotate(90deg);
-  }
-}
-
-.#{$comp}-bottomLeft {
-  .#{$comp}__arrow {
-    top: math.div($kpi-tooltip-arrow-size, -2);
-    left: $kpi-tooltip-arrow-size;
-    transform: rotate(180deg);
-  }
-}
-
-.#{$comp}-bottom {
-  .#{$comp}__arrow {
-    top: math.div($kpi-tooltip-arrow-size, -2);
-    left: 50%;
-    transform: translate3d(-50%, 0, 0) rotate(180deg);
-  }
-}
-
-.#{$comp}-bottomRight {
-  .#{$comp}__arrow {
-    top: math.div($kpi-tooltip-arrow-size, -2);
-    right: $kpi-tooltip-arrow-size;
-    transform: rotate(180deg);
-  }
-}
-
-.#{$comp}-leftTop {
-  .#{$comp}__arrow {
-    top: math.div($kpi-tooltip-arrow-size, 2);
-    right: math.div($kpi-tooltip-arrow-size, -2);
-    transform: rotate(270deg);
-  }
-}
-
-.#{$comp}-left {
-  .#{$comp}__arrow {
-    top: 50%;
-    right: math.div($kpi-tooltip-arrow-size, -2);
-    transform: translate3d(0, -50%, 0) rotate(270deg);
-  }
-}
-
-.#{$comp}-leftBottom {
-  .#{$comp}__arrow {
-    right: math.div($kpi-tooltip-arrow-size, -2);
-    bottom: math.div($kpi-tooltip-arrow-size, 2);
-    transform: rotate(270deg);
-  }
-}
-
 .#{$comp}__content {
   padding: var(--#{$prefix}-size-unit-1) var(--#{$prefix}-size-unit-2);
   max-width: var(--#{$prefix}-size-unit-64);
@@ -131,16 +37,14 @@ $comp: #{$prefix}-tooltip;
     display: block;
     width: $kpi-tooltip-arrow-size;
     height: $kpi-tooltip-arrow-size;
-    transform: translate(50%, -50%) rotate(45deg);
+    transform: translate3d(50%, 50%, 0) rotate(45deg);
     border-bottom-right-radius: 2px;
     background-color: red;
   }
 }
 
-/* ********** margin ********** */
-.#{$comp}-topLeft,
-.#{$comp}-top,
-.#{$comp}-topRight {
+/* ******************** margin rotate ******************** */
+.#{$comp}[data-popup-placement^='top'] {
   .#{$comp}__content {
     margin-bottom: $kpi-tooltip-arrow-size;
   }
@@ -151,9 +55,11 @@ $comp: #{$prefix}-tooltip;
   }
 }
 
-.#{$comp}-rightTop,
-.#{$comp}-right,
-.#{$comp}-rightBottom {
+.#{$comp}[data-popup-placement^='right'] {
+  .#{$comp}__arrow {
+    transform: rotate(90deg);
+  }
+
   .#{$comp}__content {
     margin-left: $kpi-tooltip-arrow-size;
   }
@@ -164,9 +70,11 @@ $comp: #{$prefix}-tooltip;
   }
 }
 
-.#{$comp}-bottomRight,
-.#{$comp}-bottom,
-.#{$comp}-bottomLeft {
+.#{$comp}[data-popup-placement^='bottom'] {
+  .#{$comp}__arrow {
+    transform: rotate(180deg);
+  }
+
   .#{$comp}__content {
     margin-top: $kpi-tooltip-arrow-size;
   }
@@ -177,9 +85,11 @@ $comp: #{$prefix}-tooltip;
   }
 }
 
-.#{$comp}-leftBottom,
-.#{$comp}-left,
-.#{$comp}-leftTop {
+.#{$comp}[data-popup-placement^='left'] {
+  .#{$comp}__arrow {
+    transform: rotate(270deg);
+  }
+
   .#{$comp}__content {
     margin-right: $kpi-tooltip-arrow-size;
   }

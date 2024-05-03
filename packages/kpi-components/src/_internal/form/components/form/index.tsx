@@ -26,7 +26,7 @@ const excluded = [
   'onFailed',
 ] as const
 
-export const defaultProps: Partial<InternalFormProps> = {
+const defaultProps: Partial<InternalFormProps> = {
   tag: 'form',
   preserve: true,
   validateTrigger: 'onChange',

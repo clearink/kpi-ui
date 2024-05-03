@@ -27,7 +27,7 @@ const excluded = [
   'styles',
 ] as const
 
-export const defaultProps: Partial<ButtonProps> = {
+const defaultProps: Partial<ButtonProps> = {
   theme: 'primary',
   variant: 'default',
   type: 'button',
