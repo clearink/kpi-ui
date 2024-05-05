@@ -97,17 +97,6 @@ function Tooltip(_props: TooltipProps) {
             className={cls(className, classNames.root)}
             style={{ ...styles.root, ...states.popupCoords }}
           >
-            <div
-              style={{
-                border: '1px solid blue',
-                borderRadius: '50%',
-                position: 'absolute',
-                left: 'var(--origin-x, 50%)',
-                top: 'var(--origin-y, 50%)',
-                zIndex: 20,
-                transform: 'translate(-50%, -50%) scale(0.5)',
-              }}
-            ></div>
             {/* 箭头使用 svg 图算了 */}
             {!!arrow && (
               <div

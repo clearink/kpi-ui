@@ -67,32 +67,50 @@ export interface AlignerOptions {
 export type ElementCoords = ReturnType<typeof getElementCoords>
 
 export interface ScreenCoords {
+  /** 垂直方向偏移量 */
   top: number
+  /** 水平方向偏移量 */
   left: number
+  // /** 真实宽度 */
   _width: number
+  /** 真实高度 */
   _height: number
+  /** popup 坐标翻转过 */
+  flipped: boolean
+  /** popup 坐标偏移过 */
+  shifted: boolean
+  /** 主轴 */
+  main: 'top' | 'bottom' | 'left' | 'right'
+  /** 交叉轴 */
+  cross: 'left' | 'center' | 'right' | 'top' | 'bottom'
 }
 
 export type ArrowCoords = Pick<ScreenCoords, 'top' | 'left'>
 
 export type OriginCoords = Pick<ScreenCoords, 'top' | 'left'>
 
+export interface GetScreenCoordsOptions {
+  triggerCoords: ElementCoords
+  popupCoords: ElementCoords
+  props: TooltipProps
+}
+
 export interface ShiftPopupCoordsOptions {
   adjustedCoords: ScreenCoords
   triggerCoords: ElementCoords
-  popupCoords: ElementCoords
 }
+
+export type FlipPopupCoordsOptions = ShiftPopupCoordsOptions
 
 export interface GetArrowCoordsOptions {
   adjustedCoords: ScreenCoords
   triggerCoords: ElementCoords
   contentCoords: ElementCoords
 }
-export type FlipPopupCoordsOptions = ShiftPopupCoordsOptions
 
 export interface AlignerConfig {
   // 相对于 viewport 的坐标
-  getScreenCoords: (trigger: ElementCoords, popup: ElementCoords) => ScreenCoords
+  getScreenCoords: (options: GetScreenCoordsOptions) => ScreenCoords
 
   // 调整
   shiftPopupCoords: (options: ShiftPopupCoordsOptions) => ScreenCoords
@@ -104,5 +122,5 @@ export interface AlignerConfig {
   getArrowCoords: (options: GetArrowCoordsOptions) => ArrowCoords
 
   // 转换原点
-  getOriginCoords: (arrow: ArrowCoords) => OriginCoords
+  getOriginCoords: (arrow: ArrowCoords, flipped: boolean) => OriginCoords
 }

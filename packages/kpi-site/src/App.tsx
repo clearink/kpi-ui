@@ -38,17 +38,18 @@ const App: React.FC = () => {
               AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!
             </div>
           }
-          placement="topLeft"
+          // placement="topLeft"
           // placement="top"
-          // placement="topRight"
+          placement="topRight"
           // placement="rightTop"
           // placement="right"
           // placement="rightBottom"
+          arrow={{ pointAtCenter: true }}
           open
         >
           <Button
             style={{
-              width: 500,
+              width: 150,
             }}
           >
             Scroll The Window
