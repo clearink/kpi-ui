@@ -92,7 +92,7 @@ export interface GetScreenCoordsOptions {
   popupCoords: ElementCoords
 }
 
-export interface MakeArrowCenterOptions {
+export interface KeepArrowCenterOptions {
   adjustedCoords: ScreenCoords
   triggerCoords: ElementCoords
 }
@@ -114,7 +114,7 @@ export interface AlignerConfig {
   // 相对于 viewport 的坐标
   getScreenCoords: (options: GetScreenCoordsOptions) => ScreenCoords
 
-  makeArrowCenter: (options: MakeArrowCenterOptions) => ScreenCoords
+  keepArrowCenter: (options: KeepArrowCenterOptions) => ScreenCoords
 
   // 调整
   shiftPopupCoords: (options: ShiftPopupCoordsOptions) => ScreenCoords

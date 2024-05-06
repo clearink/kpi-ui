@@ -5,7 +5,7 @@ import type {
   FlipPopupCoordsOptions,
   GetArrowCoordsOptions,
   GetScreenCoordsOptions,
-  MakeArrowCenterOptions,
+  KeepArrowCenterOptions,
   ScreenCoords,
   ShiftPopupCoordsOptions,
   TooltipProps,
@@ -73,8 +73,8 @@ export function getLeftOrRightScreenCoords(
 }
 
 /* ****************************** arrow center ****************************** */
-export function makeTopOrBottomArrowCenter(cross: 'left' | 'center' | 'right') {
-  return (options: MakeArrowCenterOptions) => {
+export function keepTopOrBottomArrowCenter(cross: 'left' | 'center' | 'right') {
+  return (options: KeepArrowCenterOptions) => {
     const { adjustedCoords: popup, triggerCoords: trigger } = options
 
     const deltaValue = trigger.width / 2 - offset_x - arrow_size
@@ -90,8 +90,8 @@ export function makeTopOrBottomArrowCenter(cross: 'left' | 'center' | 'right') {
   }
 }
 
-export function makeLeftOrRightArrowCenter(cross: 'top' | 'center' | 'bottom') {
-  return (options: MakeArrowCenterOptions) => {
+export function keepLeftOrRightArrowCenter(cross: 'top' | 'center' | 'bottom') {
+  return (options: KeepArrowCenterOptions) => {
     const { adjustedCoords: popup, triggerCoords: trigger } = options
 
     const deltaValue = trigger.height / 2 - offset_y - arrow_size
@@ -133,8 +133,6 @@ export function shiftTopOrBottomPopupCoords() {
     const max = ownerRoot(trigger.el).clientWidth - popup._width
 
     if (popup.left <= 0) return Math.min(trigger.right - min, 0)
-
-    // 是否需要进行翻转?
 
     if (popup.left >= max) return Math.max(trigger.left - popup._width + min, max)
   }
