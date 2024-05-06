@@ -1,3 +1,4 @@
+import { isObjectLike } from '@kpi-ui/utils'
 import { getElementCoords, getPositionedCoords } from './elements'
 import {
   flipLeftOrRightPopupCoords,
@@ -8,6 +9,9 @@ import {
   getTopOrBottomArrowCoords,
   getTopOrBottomOriginCoords,
   getTopOrBottomScreenCoords,
+  makeLeftOrRightArrowCenter,
+  makeTopOrBottomArrowCenter,
+  offsetPopupCoords,
   shiftLeftOrRightPopupCoords,
   shiftTopOrBottomPopupCoords,
   updatePopupPlacement,
@@ -17,16 +21,18 @@ import type { AlignerConfig, AlignerOptions } from '../props'
 
 function aligner(config: AlignerConfig) {
   const {
-    // 相对于 viewport 的坐标
     getScreenCoords,
-    getArrowCoords,
-    getOriginCoords,
+    makeArrowCenter,
     shiftPopupCoords,
     flipPopupCoords,
+    getArrowCoords,
+    getOriginCoords,
   } = config
 
   return (options: AlignerOptions) => {
     const { popup, trigger, content, props } = options
+
+    const { shift, flip, arrow } = props
 
     // 依次获得各个元素的位置信息
     const triggerCoords = getElementCoords(trigger)
@@ -34,22 +40,26 @@ function aligner(config: AlignerConfig) {
     const contentCoords = getElementCoords(content)
     const positionedCoords = getPositionedCoords(popup)
 
-    const { ax, ay } = { ax: true, ay: true }
-    // const {ax,ay} = formatAutoLayout(props)
+    let adjustedCoords = getScreenCoords({ triggerCoords, popupCoords })
 
-    let adjustedCoords = getScreenCoords({ triggerCoords, popupCoords, props })
+    adjustedCoords = offsetPopupCoords(adjustedCoords, props.offset)
+
+    // 箭头居中
+    const center = isObjectLike(arrow) && arrow.pointAtCenter
+
+    if (center) adjustedCoords = makeArrowCenter({ adjustedCoords, triggerCoords })
 
     // 偏移
-    if (ax) adjustedCoords = shiftPopupCoords({ adjustedCoords, triggerCoords })
+    if (shift) adjustedCoords = shiftPopupCoords({ adjustedCoords, triggerCoords })
 
     // 翻转
-    if (ay) adjustedCoords = flipPopupCoords({ adjustedCoords, triggerCoords })
+    if (flip) adjustedCoords = flipPopupCoords({ adjustedCoords, triggerCoords })
 
     // 箭头
     const arrowCoords = getArrowCoords({ contentCoords, triggerCoords, adjustedCoords })
 
     // 变换原点
-    const originCoords = getOriginCoords(arrowCoords, adjustedCoords.flipped)
+    const originCoords = getOriginCoords(arrowCoords, adjustedCoords)
 
     // 更新 dataset
     updatePopupPlacement(popup, adjustedCoords)
@@ -69,87 +79,99 @@ function aligner(config: AlignerConfig) {
 const aligners = {
   topLeft: aligner({
     getScreenCoords: getTopOrBottomScreenCoords('top', 'left'),
-    getArrowCoords: getTopOrBottomArrowCoords('top', 'left'),
-    getOriginCoords: getTopOrBottomOriginCoords('top'),
+    makeArrowCenter: makeTopOrBottomArrowCenter('left'),
     shiftPopupCoords: shiftTopOrBottomPopupCoords(),
     flipPopupCoords: flipTopOrBottomPopupCoords('top'),
+    getArrowCoords: getTopOrBottomArrowCoords('left'),
+    getOriginCoords: getTopOrBottomOriginCoords('top'),
   }),
   top: aligner({
     getScreenCoords: getTopOrBottomScreenCoords('top', 'center'),
-    getArrowCoords: getTopOrBottomArrowCoords('top', 'center'),
-    getOriginCoords: getTopOrBottomOriginCoords('top'),
+    makeArrowCenter: makeTopOrBottomArrowCenter('center'),
     shiftPopupCoords: shiftTopOrBottomPopupCoords(),
     flipPopupCoords: flipTopOrBottomPopupCoords('top'),
+    getArrowCoords: getTopOrBottomArrowCoords('center'),
+    getOriginCoords: getTopOrBottomOriginCoords('top'),
   }),
   topRight: aligner({
     getScreenCoords: getTopOrBottomScreenCoords('top', 'right'),
-    getArrowCoords: getTopOrBottomArrowCoords('top', 'right'),
-    getOriginCoords: getTopOrBottomOriginCoords('top'),
+    makeArrowCenter: makeTopOrBottomArrowCenter('right'),
     shiftPopupCoords: shiftTopOrBottomPopupCoords(),
     flipPopupCoords: flipTopOrBottomPopupCoords('top'),
+    getArrowCoords: getTopOrBottomArrowCoords('right'),
+    getOriginCoords: getTopOrBottomOriginCoords('top'),
   }),
   rightTop: aligner({
     getScreenCoords: getLeftOrRightScreenCoords('right', 'top'),
-    getArrowCoords: getLeftOrRightArrowCoords('right', 'top'),
-    getOriginCoords: getLeftOrRightOriginCoords('right'),
+    makeArrowCenter: makeLeftOrRightArrowCenter('top'),
     shiftPopupCoords: shiftLeftOrRightPopupCoords(),
     flipPopupCoords: flipLeftOrRightPopupCoords('right'),
+    getArrowCoords: getLeftOrRightArrowCoords('top'),
+    getOriginCoords: getLeftOrRightOriginCoords('right'),
   }),
   right: aligner({
     getScreenCoords: getLeftOrRightScreenCoords('right', 'center'),
-    getArrowCoords: getLeftOrRightArrowCoords('right', 'center'),
-    getOriginCoords: getLeftOrRightOriginCoords('right'),
+    makeArrowCenter: makeLeftOrRightArrowCenter('center'),
     shiftPopupCoords: shiftLeftOrRightPopupCoords(),
     flipPopupCoords: flipLeftOrRightPopupCoords('right'),
+    getArrowCoords: getLeftOrRightArrowCoords('center'),
+    getOriginCoords: getLeftOrRightOriginCoords('right'),
   }),
   rightBottom: aligner({
     getScreenCoords: getLeftOrRightScreenCoords('right', 'bottom'),
-    getArrowCoords: getLeftOrRightArrowCoords('right', 'bottom'),
-    getOriginCoords: getLeftOrRightOriginCoords('right'),
+    makeArrowCenter: makeLeftOrRightArrowCenter('bottom'),
     shiftPopupCoords: shiftLeftOrRightPopupCoords(),
     flipPopupCoords: flipLeftOrRightPopupCoords('right'),
+    getArrowCoords: getLeftOrRightArrowCoords('bottom'),
+    getOriginCoords: getLeftOrRightOriginCoords('right'),
   }),
   bottomRight: aligner({
     getScreenCoords: getTopOrBottomScreenCoords('bottom', 'right'),
-    getArrowCoords: getTopOrBottomArrowCoords('bottom', 'right'),
-    getOriginCoords: getTopOrBottomOriginCoords('bottom'),
+    makeArrowCenter: makeTopOrBottomArrowCenter('right'),
     shiftPopupCoords: shiftTopOrBottomPopupCoords(),
     flipPopupCoords: flipTopOrBottomPopupCoords('bottom'),
+    getArrowCoords: getTopOrBottomArrowCoords('right'),
+    getOriginCoords: getTopOrBottomOriginCoords('bottom'),
   }),
   bottom: aligner({
     getScreenCoords: getTopOrBottomScreenCoords('bottom', 'center'),
-    getArrowCoords: getTopOrBottomArrowCoords('bottom', 'center'),
-    getOriginCoords: getTopOrBottomOriginCoords('bottom'),
+    makeArrowCenter: makeTopOrBottomArrowCenter('center'),
     shiftPopupCoords: shiftTopOrBottomPopupCoords(),
     flipPopupCoords: flipTopOrBottomPopupCoords('bottom'),
+    getArrowCoords: getTopOrBottomArrowCoords('center'),
+    getOriginCoords: getTopOrBottomOriginCoords('bottom'),
   }),
   bottomLeft: aligner({
     getScreenCoords: getTopOrBottomScreenCoords('bottom', 'left'),
-    getArrowCoords: getTopOrBottomArrowCoords('bottom', 'left'),
-    getOriginCoords: getTopOrBottomOriginCoords('bottom'),
+    makeArrowCenter: makeTopOrBottomArrowCenter('left'),
     shiftPopupCoords: shiftTopOrBottomPopupCoords(),
     flipPopupCoords: flipTopOrBottomPopupCoords('bottom'),
+    getArrowCoords: getTopOrBottomArrowCoords('left'),
+    getOriginCoords: getTopOrBottomOriginCoords('bottom'),
   }),
   leftBottom: aligner({
     getScreenCoords: getLeftOrRightScreenCoords('left', 'bottom'),
-    getArrowCoords: getLeftOrRightArrowCoords('left', 'bottom'),
-    getOriginCoords: getLeftOrRightOriginCoords('left'),
+    makeArrowCenter: makeLeftOrRightArrowCenter('bottom'),
     shiftPopupCoords: shiftLeftOrRightPopupCoords(),
     flipPopupCoords: flipLeftOrRightPopupCoords('left'),
+    getArrowCoords: getLeftOrRightArrowCoords('bottom'),
+    getOriginCoords: getLeftOrRightOriginCoords('left'),
   }),
   left: aligner({
     getScreenCoords: getLeftOrRightScreenCoords('left', 'center'),
-    getArrowCoords: getLeftOrRightArrowCoords('left', 'center'),
-    getOriginCoords: getLeftOrRightOriginCoords('left'),
+    makeArrowCenter: makeLeftOrRightArrowCenter('center'),
     shiftPopupCoords: shiftLeftOrRightPopupCoords(),
     flipPopupCoords: flipLeftOrRightPopupCoords('left'),
+    getArrowCoords: getLeftOrRightArrowCoords('center'),
+    getOriginCoords: getLeftOrRightOriginCoords('left'),
   }),
   leftTop: aligner({
     getScreenCoords: getLeftOrRightScreenCoords('left', 'top'),
-    getArrowCoords: getLeftOrRightArrowCoords('left', 'top'),
-    getOriginCoords: getLeftOrRightOriginCoords('left'),
+    makeArrowCenter: makeLeftOrRightArrowCenter('top'),
     shiftPopupCoords: shiftLeftOrRightPopupCoords(),
     flipPopupCoords: flipLeftOrRightPopupCoords('left'),
+    getArrowCoords: getLeftOrRightArrowCoords('top'),
+    getOriginCoords: getLeftOrRightOriginCoords('left'),
   }),
 }
 
@@ -157,7 +179,5 @@ export default aligners
 
 /**
  * TODO
- * 1. arrow.pointerAtCenter 功能
- * 2. autoLayout 功能
- * 3. offset 功能
+ * 1. 优化 shift 功能
  */

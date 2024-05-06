@@ -9,6 +9,7 @@ import useWatchCoords from './hooks/use_watch_coords'
 // comps
 import Overlay from '../_internal/overlay'
 import ShouldUpdate from '../_internal/should-update'
+import TooltipArrow from './components/arrow'
 import TooltipContent from './components/content'
 import TooltipTrigger from './components/trigger'
 // types
@@ -20,7 +21,8 @@ const defaultProps: Partial<TooltipProps> = {
   closeDelay: 100,
   defaultOpen: false,
   placement: 'top',
-  autoLayout: true,
+  shift: true,
+  flip: true,
   offset: 0,
   arrow: true,
 }
@@ -99,7 +101,7 @@ function Tooltip(_props: TooltipProps) {
           >
             {/* 箭头使用 svg 图算了 */}
             {!!arrow && (
-              <div
+              <TooltipArrow
                 className={classNames.arrow}
                 style={{ ...styles.arrow, ...states.arrowCoords }}
               />

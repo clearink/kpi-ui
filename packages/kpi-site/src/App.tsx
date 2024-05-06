@@ -38,9 +38,9 @@ const App: React.FC = () => {
               AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!
             </div>
           }
-          // placement="topLeft"
+          placement="topLeft"
           // placement="top"
-          placement="topRight"
+          // placement="topRight"
           // placement="rightTop"
           // placement="right"
           // placement="rightBottom"

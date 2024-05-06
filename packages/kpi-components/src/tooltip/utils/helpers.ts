@@ -1,13 +1,14 @@
-import { isObjectLike, isUndefined, ownerRoot, shallowEqual } from '@kpi-ui/utils'
+import { isArray, isUndefined, ownerRoot } from '@kpi-ui/utils'
 // types
 import type {
   ArrowCoords,
-  ElementCoords,
   FlipPopupCoordsOptions,
   GetArrowCoordsOptions,
   GetScreenCoordsOptions,
+  MakeArrowCenterOptions,
   ScreenCoords,
   ShiftPopupCoordsOptions,
+  TooltipProps,
 } from '../props'
 
 const arrow_size = 8
@@ -15,42 +16,29 @@ const arrow_sqrt = 5.66
 const offset_x = 8
 const offset_y = 4
 
-/* ****************************** get coords ****************************** */
+/* ****************************** screen coords ****************************** */
 
 export function getTopOrBottomScreenCoords(
   main: 'top' | 'bottom',
   cross: 'left' | 'center' | 'right'
 ) {
   return (options: GetScreenCoordsOptions): ScreenCoords => {
-    const { triggerCoords: trigger, popupCoords: popup, props } = options
-
-    const { arrow } = props
-    const isForceCenter = isObjectLike(arrow) && arrow.pointAtCenter
+    const { triggerCoords: trigger, popupCoords: popup } = options
 
     const top = main === 'top' ? trigger.top - popup._height : trigger.bottom
 
-    // trigger 的中心
-    const center = (trigger.right + trigger.left) / 2
-
-    let left: number
-
-    if (cross === 'left') {
-      left = isForceCenter ? center - arrow_size - offset_x : trigger.left
-    } else if (cross === 'center') {
-      left = trigger.left + (trigger.width - popup._width) / 2
-    } else {
-      left = isForceCenter
-        ? center - popup._width + arrow_size + offset_x
-        : trigger.right - popup._width
-    }
+    const left =
+      cross === 'left'
+        ? trigger.left
+        : cross === 'right'
+        ? trigger.right - popup._width
+        : trigger.left + (trigger.width - popup._width) / 2
 
     return {
       top,
       left,
       _width: popup._width,
       _height: popup._height,
-      flipped: false,
-      shifted: false,
       main,
       cross,
     }
@@ -62,110 +50,74 @@ export function getLeftOrRightScreenCoords(
   cross: 'top' | 'center' | 'bottom'
 ) {
   return (options: GetScreenCoordsOptions): ScreenCoords => {
-    const { triggerCoords: trigger, popupCoords: popup, props } = options
-
-    const { arrow } = props
-    const isForceCenter = isObjectLike(arrow) && arrow.pointAtCenter
+    const { triggerCoords: trigger, popupCoords: popup } = options
 
     const left = main === 'left' ? trigger.left - popup._width : trigger.right
 
-    // trigger 的中心
-    const center = (trigger.bottom + trigger.top) / 2
-
-    let top: number
-
-    if (cross === 'top') {
-      top = isForceCenter ? center - arrow_size - offset_y : trigger.top
-    } else if (cross === 'center') {
-      top = trigger.top + (trigger.height - popup._height) / 2
-    } else {
-      top = isForceCenter
-        ? center - popup._height + arrow_size + offset_y
-        : trigger.bottom - popup._height
-    }
+    const top =
+      cross === 'top'
+        ? trigger.top
+        : cross === 'bottom'
+        ? trigger.bottom - popup._height
+        : trigger.top + (trigger.height - popup._height) / 2
 
     return {
       top,
       left,
       _width: popup._width,
       _height: popup._height,
-      flipped: false,
-      shifted: false,
       main,
       cross,
     }
   }
 }
 
-export function getTopOrBottomArrowCoords(
-  main: 'top' | 'bottom',
-  cross: 'left' | 'center' | 'right'
-) {
-  return (options: GetArrowCoordsOptions) => {
-    const { adjustedCoords: screen, contentCoords: content, triggerCoords: trigger } = options
+/* ****************************** arrow center ****************************** */
+export function makeTopOrBottomArrowCenter(cross: 'left' | 'center' | 'right') {
+  return (options: MakeArrowCenterOptions) => {
+    const { adjustedCoords: popup, triggerCoords: trigger } = options
 
-    const top = shallowEqual(main === 'top', screen.flipped)
-      ? arrow_size / 2
-      : content._height - arrow_size
+    const deltaValue = trigger.width / 2 - offset_x - arrow_size
 
-    const min = Math.max(trigger.left, screen.left)
+    const left =
+      cross === 'left'
+        ? popup.left + deltaValue
+        : cross === 'right'
+        ? popup.left - deltaValue
+        : popup.left
 
-    const max = Math.min(trigger.right, screen.left + screen._width)
-
-    let left = -screen.left
-
-    if (cross === 'left') left += min + offset_x
-    else if (cross === 'center') left += (max + min) / 2 - arrow_size
-    else left += max - arrow_size * 2 - offset_x
-
-    return { top, left }
+    return { ...popup, left }
   }
 }
 
-export function getLeftOrRightArrowCoords(
-  main: 'left' | 'right',
-  cross: 'top' | 'center' | 'bottom'
-) {
-  return (options: GetArrowCoordsOptions) => {
-    const { adjustedCoords: screen, contentCoords: content, triggerCoords: trigger } = options
+export function makeLeftOrRightArrowCenter(cross: 'top' | 'center' | 'bottom') {
+  return (options: MakeArrowCenterOptions) => {
+    const { adjustedCoords: popup, triggerCoords: trigger } = options
 
-    const left = shallowEqual(main === 'left', screen.flipped)
-      ? arrow_size / 2
-      : content._width - arrow_size
+    const deltaValue = trigger.height / 2 - offset_y - arrow_size
 
-    const min = Math.max(trigger.top, screen.top)
+    const top =
+      cross === 'top'
+        ? popup.top + deltaValue
+        : cross === 'bottom'
+        ? popup.top - deltaValue
+        : popup.top
 
-    const max = Math.min(trigger.bottom, screen.top + screen._height)
-
-    let top = -screen.top
-
-    if (cross === 'top') top += min + offset_y
-    else if (cross === 'center') top += (max + min) / 2 - arrow_size
-    else top += max - arrow_size * 2 - offset_y
-
-    return { top, left }
+    return { ...popup, top }
   }
 }
 
-export function getTopOrBottomOriginCoords(main: 'top' | 'bottom') {
-  return (arrow: ArrowCoords, flipped: boolean) => {
-    const factor = shallowEqual(main === 'top', flipped) ? -1 : 1
+/* ****************************** popup offset ****************************** */
 
-    return {
-      top: arrow.top + arrow_size + factor * arrow_sqrt,
-      left: arrow.left + arrow_size,
-    }
-  }
-}
+export function offsetPopupCoords(adjustedCoords: ScreenCoords, offset: TooltipProps['offset']) {
+  const [horizontal, vertical] = isArray(offset) ? [offset[0], offset[1]] : [offset, 0]
 
-export function getLeftOrRightOriginCoords(main: 'left' | 'right') {
-  return (arrow: ArrowCoords, flipped: boolean) => {
-    const factor = shallowEqual(main === 'left', flipped) ? -1 : 1
+  const factor = adjustedCoords.main === 'top' || adjustedCoords.main === 'left' ? -1 : 1
 
-    return {
-      top: arrow.top + arrow_size,
-      left: arrow.left + arrow_size + factor * arrow_sqrt,
-    }
+  return {
+    ...adjustedCoords,
+    top: adjustedCoords.top + (vertical || 0) * factor,
+    left: adjustedCoords.left + (horizontal || 0) * factor,
   }
 }
 
@@ -176,13 +128,15 @@ export function shiftTopOrBottomPopupCoords() {
   const getLeftCoords = (options: ShiftPopupCoordsOptions) => {
     const { adjustedCoords: popup, triggerCoords: trigger } = options
 
-    const start = offset_x * 2 + arrow_size * 2
+    const min = offset_x * 2 + arrow_size * 2
 
-    const end = ownerRoot(trigger.el).clientWidth - popup._width
+    const max = ownerRoot(trigger.el).clientWidth - popup._width
 
-    if (popup.left <= 0) return Math.min(trigger.right - start, 0)
+    if (popup.left <= 0) return Math.min(trigger.right - min, 0)
 
-    if (popup.left >= end) return Math.max(trigger.left - popup._width + start, end)
+    // 是否需要进行翻转?
+
+    if (popup.left >= max) return Math.max(trigger.left - popup._width + min, max)
   }
 
   return (options: ShiftPopupCoordsOptions): ScreenCoords => {
@@ -195,7 +149,6 @@ export function shiftTopOrBottomPopupCoords() {
     return {
       ...popup,
       left: shifted ? left : popup.left,
-      shifted,
     }
   }
 }
@@ -205,13 +158,13 @@ export function shiftLeftOrRightPopupCoords() {
   const getTopCoords = (options: ShiftPopupCoordsOptions) => {
     const { adjustedCoords: popup, triggerCoords: trigger } = options
 
-    const start = offset_y * 2 + arrow_size * 2
+    const min = offset_y * 2 + arrow_size * 2
 
-    const end = ownerRoot(trigger.el).clientHeight - popup._height
+    const max = ownerRoot(trigger.el).clientHeight - popup._height
 
-    if (popup.top <= 0) return Math.min(trigger.bottom - start, 0)
+    if (popup.top <= 0) return Math.min(trigger.bottom - min, 0)
 
-    if (popup.top >= end) return Math.max(trigger.top - popup._height + start, end)
+    if (popup.top >= max) return Math.max(trigger.top - popup._height + min, max)
   }
 
   return (options: ShiftPopupCoordsOptions): ScreenCoords => {
@@ -224,7 +177,6 @@ export function shiftLeftOrRightPopupCoords() {
     return {
       ...popup,
       top: shifted ? top : popup.top,
-      shifted,
     }
   }
 }
@@ -233,18 +185,20 @@ export function shiftLeftOrRightPopupCoords() {
 
 // 翻转上，下的竖直方向
 export function flipTopOrBottomPopupCoords(main: 'top' | 'bottom') {
+  const flippedAxis = main === 'top' ? 'bottom' : 'top'
+
   const getTopCoords = (options: FlipPopupCoordsOptions) => {
     const { adjustedCoords: popup, triggerCoords: trigger } = options
 
-    // 下方必须要有多余的空间
-    if (main === 'top') return popup.top > 0 ? undefined : trigger.bottom
+    if (main === 'top' && popup.top > 0) return
 
     const rootHeight = ownerRoot(trigger.el).clientHeight
 
-    // 下方必须要有多余的空间
-    if (popup.top + popup._height < rootHeight) return
+    const popupBottom = popup.top + popup._height
 
-    return trigger.top - popup._height
+    if (main === 'bottom' && popupBottom < rootHeight) return
+
+    return trigger.bottom + trigger.top - popupBottom
   }
 
   return (options: FlipPopupCoordsOptions) => {
@@ -257,23 +211,27 @@ export function flipTopOrBottomPopupCoords(main: 'top' | 'bottom') {
     return {
       ...popup,
       top: flipped ? top : popup.top,
-      flipped,
+      main: flipped ? flippedAxis : main,
     }
   }
 }
 
 // 翻转左，右的水平方向
 export function flipLeftOrRightPopupCoords(main: 'left' | 'right') {
+  const flippedAxis = main === 'left' ? 'right' : 'left'
+
   const getLeftCoords = (options: FlipPopupCoordsOptions) => {
     const { adjustedCoords: popup, triggerCoords: trigger } = options
 
-    if (main === 'left') return popup.left > 0 ? undefined : trigger.right
+    if (main === 'left' && popup.left > 0) return
 
     const rootWidth = ownerRoot(trigger.el).clientWidth
 
-    if (popup.left + popup._width < rootWidth) return
+    const popupRight = popup.left + popup._width
 
-    return trigger.left - popup._width
+    if (main === 'right' && popupRight < rootWidth) return
+
+    return trigger.right + trigger.left - popupRight
   }
 
   return (options: FlipPopupCoordsOptions) => {
@@ -286,25 +244,85 @@ export function flipLeftOrRightPopupCoords(main: 'left' | 'right') {
     return {
       ...popup,
       left: flipped ? left : popup.left,
-      flipped,
+      main: flipped ? flippedAxis : main,
     }
   }
 }
 
+/* ****************************** arrow coords ****************************** */
+
+export function getTopOrBottomArrowCoords(cross: 'left' | 'center' | 'right') {
+  return (options: GetArrowCoordsOptions) => {
+    const { adjustedCoords: popup, contentCoords: content, triggerCoords: trigger } = options
+
+    const top = popup.main === 'top' ? content._height - arrow_size : arrow_size / 2
+
+    const min = Math.max(trigger.left, popup.left)
+
+    const max = Math.min(trigger.right, popup.left + popup._width)
+
+    let left = -popup.left
+
+    if (cross === 'left') left += min + offset_x
+    else if (cross === 'center') left += (max + min) / 2 - arrow_size
+    else left += max - arrow_size * 2 - offset_x
+
+    return { top, left }
+  }
+}
+
+export function getLeftOrRightArrowCoords(cross: 'top' | 'center' | 'bottom') {
+  return (options: GetArrowCoordsOptions) => {
+    const { adjustedCoords: popup, contentCoords: content, triggerCoords: trigger } = options
+
+    const left = popup.main === 'left' ? content._width - arrow_size : arrow_size / 2
+
+    const min = Math.max(trigger.top, popup.top)
+
+    const max = Math.min(trigger.bottom, popup.top + popup._height)
+
+    let top = -popup.top
+
+    if (cross === 'top') top += min + offset_y
+    else if (cross === 'center') top += (max + min) / 2 - arrow_size
+    else top += max - arrow_size * 2 - offset_y
+
+    return { top, left }
+  }
+}
+
+/* ****************************** origin coords ****************************** */
+
+export function getTopOrBottomOriginCoords(main: 'top' | 'bottom') {
+  return (arrow: ArrowCoords, adjusted: ScreenCoords) => {
+    const factor = adjusted.main === main ? 1 : -1
+
+    return {
+      top: arrow.top + arrow_size + factor * arrow_sqrt,
+      left: arrow.left + arrow_size,
+    }
+  }
+}
+
+export function getLeftOrRightOriginCoords(main: 'left' | 'right') {
+  return (arrow: ArrowCoords, adjusted: ScreenCoords) => {
+    const factor = adjusted.main === main ? 1 : -1
+
+    return {
+      top: arrow.top + arrow_size,
+      left: arrow.left + arrow_size + factor * arrow_sqrt,
+    }
+  }
+}
+
+/* ****************************** popup placement ****************************** */
+
 export function updatePopupPlacement(el: HTMLElement, adjustedCoords: ScreenCoords) {
-  const { flipped, main, cross } = adjustedCoords
-
-  // 是否可以优化逻辑?
-  let first = main
-
-  if (flipped && main === 'top') first = 'bottom'
-  else if (flipped && main === 'bottom') first = 'top'
-  else if (flipped && main === 'left') first = 'right'
-  else if (flipped && main === 'right') first = 'left'
+  const { main, cross } = adjustedCoords
 
   const second = cross !== 'center' ? `-${cross}` : ''
 
-  const placement = `${first}${second}`
+  const placement = `${main}${second}`
 
   if (el.dataset) el.dataset.popupPlacement = placement
   else el.setAttribute('data-popup-placement', placement)
