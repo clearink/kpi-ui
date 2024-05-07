@@ -93,21 +93,21 @@ export interface GetScreenCoordsOptions {
 }
 
 export interface KeepArrowCenterOptions {
+  props: TooltipProps
   adjustedCoords: ScreenCoords
   triggerCoords: ElementCoords
-  arrow: TooltipProps['arrow']
 }
 
 export interface ShiftPopupCoordsOptions {
+  props: TooltipProps
   adjustedCoords: ScreenCoords
   triggerCoords: ElementCoords
-  shift: TooltipProps['shift']
 }
 
 export interface FlipPopupCoordsOptions {
+  props: TooltipProps
   adjustedCoords: ScreenCoords
   triggerCoords: ElementCoords
-  flip: TooltipProps['flip']
 }
 
 export interface GetArrowCoordsOptions {

@@ -31,8 +31,6 @@ function aligner(config: AlignerConfig) {
   return (options: AlignerOptions) => {
     const { popup, trigger, content, props } = options
 
-    const { shift, flip, arrow } = props
-
     // 依次获得各个元素的位置信息
     const triggerCoords = getElementCoords(trigger)
     const popupCoords = getElementCoords(popup)
@@ -43,11 +41,11 @@ function aligner(config: AlignerConfig) {
 
     adjustedCoords = offsetPopupCoords(adjustedCoords, props.offset)
 
-    adjustedCoords = keepArrowCenter({ arrow, adjustedCoords, triggerCoords })
+    adjustedCoords = keepArrowCenter({ props, adjustedCoords, triggerCoords })
 
-    adjustedCoords = shiftPopupCoords({ shift, adjustedCoords, triggerCoords })
+    adjustedCoords = shiftPopupCoords({ props, adjustedCoords, triggerCoords })
 
-    adjustedCoords = flipPopupCoords({ flip, adjustedCoords, triggerCoords })
+    adjustedCoords = flipPopupCoords({ props, adjustedCoords, triggerCoords })
 
     const arrowCoords = getArrowCoords({ contentCoords, triggerCoords, adjustedCoords })
 

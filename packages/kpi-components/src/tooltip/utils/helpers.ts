@@ -61,7 +61,9 @@ export function getLeftOrRightScreenCoords(
 /* ****************************** arrow center ****************************** */
 export function keepTopOrBottomArrowCenter(cross: 'left' | 'center' | 'right') {
   return (options: KeepArrowCenterOptions) => {
-    const { arrow, adjustedCoords: popup, triggerCoords: trigger } = options
+    const { props, adjustedCoords: popup, triggerCoords: trigger } = options
+
+    const { arrow } = props
 
     const shouldKeepCenter = isObjectLike(arrow) && arrow.pointAtCenter
 
@@ -82,7 +84,9 @@ export function keepTopOrBottomArrowCenter(cross: 'left' | 'center' | 'right') {
 
 export function keepLeftOrRightArrowCenter(cross: 'top' | 'center' | 'bottom') {
   return (options: KeepArrowCenterOptions) => {
-    const { arrow, adjustedCoords: popup, triggerCoords: trigger } = options
+    const { props, adjustedCoords: popup, triggerCoords: trigger } = options
+
+    const { arrow } = props
 
     const shouldKeepCenter = isObjectLike(arrow) && arrow.pointAtCenter
 
@@ -104,14 +108,16 @@ export function keepLeftOrRightArrowCenter(cross: 'top' | 'center' | 'bottom') {
 /* ****************************** popup offset ****************************** */
 
 export function offsetPopupCoords(adjustedCoords: ScreenCoords, offset: TooltipProps['offset']) {
+  const { top, left, main } = adjustedCoords
+
   const [horizontal, vertical] = isArray(offset) ? [offset[0], offset[1]] : [offset, 0]
 
-  const factor = adjustedCoords.main === 'top' || adjustedCoords.main === 'left' ? -1 : 1
+  const factor = main === 'top' || main === 'left' ? -1 : 1
 
   return {
     ...adjustedCoords,
-    top: adjustedCoords.top + (vertical || 0) * factor,
-    left: adjustedCoords.left + (horizontal || 0) * factor,
+    top: top + (vertical || 0) * factor,
+    left: left + (horizontal || 0) * factor,
   }
 }
 
@@ -138,7 +144,9 @@ export function shiftTopOrBottomPopupCoords(cross: 'left' | 'center' | 'right') 
   }
 
   return (options: ShiftPopupCoordsOptions): ScreenCoords => {
-    const { shift, adjustedCoords: popup } = options
+    const { props, adjustedCoords: popup } = options
+
+    const { shift } = props
 
     // const shouldShiftPopup =
 
@@ -171,7 +179,9 @@ export function shiftLeftOrRightPopupCoords(cross: 'top' | 'center' | 'bottom') 
   }
 
   return (options: ShiftPopupCoordsOptions): ScreenCoords => {
-    const { shift, adjustedCoords: popup } = options
+    const { props, adjustedCoords: popup } = options
+
+    const { shift } = props
 
     // const shouldShiftPopup =
 
@@ -210,7 +220,9 @@ export function flipTopOrBottomPopupCoords(main: 'top' | 'bottom') {
   }
 
   return (options: FlipPopupCoordsOptions) => {
-    const { flip, adjustedCoords: popup } = options
+    const { props, adjustedCoords: popup } = options
+
+    const { flip } = props
 
     // const shouldFlipPopup =
 
@@ -245,7 +257,9 @@ export function flipLeftOrRightPopupCoords(main: 'left' | 'right') {
   }
 
   return (options: FlipPopupCoordsOptions) => {
-    const { flip, adjustedCoords: popup } = options
+    const { props, adjustedCoords: popup } = options
+
+    const { flip } = props
 
     // const shouldFlipPopup =
 
