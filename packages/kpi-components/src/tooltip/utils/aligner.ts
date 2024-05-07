@@ -1,4 +1,3 @@
-import { isObjectLike } from '@kpi-ui/utils'
 import { getElementCoords, getPositionedCoords } from './elements'
 import {
   flipLeftOrRightPopupCoords,
@@ -44,24 +43,16 @@ function aligner(config: AlignerConfig) {
 
     adjustedCoords = offsetPopupCoords(adjustedCoords, props.offset)
 
-    // 箭头居中
-    const center = isObjectLike(arrow) && arrow.pointAtCenter
+    adjustedCoords = keepArrowCenter({ arrow, adjustedCoords, triggerCoords })
 
-    if (center) adjustedCoords = keepArrowCenter({ adjustedCoords, triggerCoords })
+    adjustedCoords = shiftPopupCoords({ shift, adjustedCoords, triggerCoords })
 
-    // 偏移
-    if (shift) adjustedCoords = shiftPopupCoords({ adjustedCoords, triggerCoords })
+    adjustedCoords = flipPopupCoords({ flip, adjustedCoords, triggerCoords })
 
-    // 翻转
-    if (flip) adjustedCoords = flipPopupCoords({ adjustedCoords, triggerCoords })
-
-    // 箭头
     const arrowCoords = getArrowCoords({ contentCoords, triggerCoords, adjustedCoords })
 
-    // 变换原点
     const originCoords = getOriginCoords(arrowCoords, adjustedCoords)
 
-    // 更新 dataset
     updatePopupPlacement(popup, adjustedCoords)
 
     return {
@@ -69,6 +60,7 @@ function aligner(config: AlignerConfig) {
       popupCoords: {
         top: adjustedCoords.top - positionedCoords.top,
         left: adjustedCoords.left - positionedCoords.left,
+        original: popupCoords,
         '--origin-y': `${originCoords.top}px`,
         '--origin-x': `${originCoords.left}px`,
       },
@@ -80,7 +72,7 @@ const aligners = {
   topLeft: aligner({
     getScreenCoords: getTopOrBottomScreenCoords('top', 'left'),
     keepArrowCenter: keepTopOrBottomArrowCenter('left'),
-    shiftPopupCoords: shiftTopOrBottomPopupCoords(),
+    shiftPopupCoords: shiftTopOrBottomPopupCoords('left'),
     flipPopupCoords: flipTopOrBottomPopupCoords('top'),
     getArrowCoords: getTopOrBottomArrowCoords('left'),
     getOriginCoords: getTopOrBottomOriginCoords('top'),
@@ -88,7 +80,7 @@ const aligners = {
   top: aligner({
     getScreenCoords: getTopOrBottomScreenCoords('top', 'center'),
     keepArrowCenter: keepTopOrBottomArrowCenter('center'),
-    shiftPopupCoords: shiftTopOrBottomPopupCoords(),
+    shiftPopupCoords: shiftTopOrBottomPopupCoords('center'),
     flipPopupCoords: flipTopOrBottomPopupCoords('top'),
     getArrowCoords: getTopOrBottomArrowCoords('center'),
     getOriginCoords: getTopOrBottomOriginCoords('top'),
@@ -96,7 +88,7 @@ const aligners = {
   topRight: aligner({
     getScreenCoords: getTopOrBottomScreenCoords('top', 'right'),
     keepArrowCenter: keepTopOrBottomArrowCenter('right'),
-    shiftPopupCoords: shiftTopOrBottomPopupCoords(),
+    shiftPopupCoords: shiftTopOrBottomPopupCoords('right'),
     flipPopupCoords: flipTopOrBottomPopupCoords('top'),
     getArrowCoords: getTopOrBottomArrowCoords('right'),
     getOriginCoords: getTopOrBottomOriginCoords('top'),
@@ -104,7 +96,7 @@ const aligners = {
   rightTop: aligner({
     getScreenCoords: getLeftOrRightScreenCoords('right', 'top'),
     keepArrowCenter: keepLeftOrRightArrowCenter('top'),
-    shiftPopupCoords: shiftLeftOrRightPopupCoords(),
+    shiftPopupCoords: shiftLeftOrRightPopupCoords('top'),
     flipPopupCoords: flipLeftOrRightPopupCoords('right'),
     getArrowCoords: getLeftOrRightArrowCoords('top'),
     getOriginCoords: getLeftOrRightOriginCoords('right'),
@@ -112,7 +104,7 @@ const aligners = {
   right: aligner({
     getScreenCoords: getLeftOrRightScreenCoords('right', 'center'),
     keepArrowCenter: keepLeftOrRightArrowCenter('center'),
-    shiftPopupCoords: shiftLeftOrRightPopupCoords(),
+    shiftPopupCoords: shiftLeftOrRightPopupCoords('center'),
     flipPopupCoords: flipLeftOrRightPopupCoords('right'),
     getArrowCoords: getLeftOrRightArrowCoords('center'),
     getOriginCoords: getLeftOrRightOriginCoords('right'),
@@ -120,7 +112,7 @@ const aligners = {
   rightBottom: aligner({
     getScreenCoords: getLeftOrRightScreenCoords('right', 'bottom'),
     keepArrowCenter: keepLeftOrRightArrowCenter('bottom'),
-    shiftPopupCoords: shiftLeftOrRightPopupCoords(),
+    shiftPopupCoords: shiftLeftOrRightPopupCoords('bottom'),
     flipPopupCoords: flipLeftOrRightPopupCoords('right'),
     getArrowCoords: getLeftOrRightArrowCoords('bottom'),
     getOriginCoords: getLeftOrRightOriginCoords('right'),
@@ -128,7 +120,7 @@ const aligners = {
   bottomRight: aligner({
     getScreenCoords: getTopOrBottomScreenCoords('bottom', 'right'),
     keepArrowCenter: keepTopOrBottomArrowCenter('right'),
-    shiftPopupCoords: shiftTopOrBottomPopupCoords(),
+    shiftPopupCoords: shiftTopOrBottomPopupCoords('right'),
     flipPopupCoords: flipTopOrBottomPopupCoords('bottom'),
     getArrowCoords: getTopOrBottomArrowCoords('right'),
     getOriginCoords: getTopOrBottomOriginCoords('bottom'),
@@ -136,7 +128,7 @@ const aligners = {
   bottom: aligner({
     getScreenCoords: getTopOrBottomScreenCoords('bottom', 'center'),
     keepArrowCenter: keepTopOrBottomArrowCenter('center'),
-    shiftPopupCoords: shiftTopOrBottomPopupCoords(),
+    shiftPopupCoords: shiftTopOrBottomPopupCoords('center'),
     flipPopupCoords: flipTopOrBottomPopupCoords('bottom'),
     getArrowCoords: getTopOrBottomArrowCoords('center'),
     getOriginCoords: getTopOrBottomOriginCoords('bottom'),
@@ -144,7 +136,7 @@ const aligners = {
   bottomLeft: aligner({
     getScreenCoords: getTopOrBottomScreenCoords('bottom', 'left'),
     keepArrowCenter: keepTopOrBottomArrowCenter('left'),
-    shiftPopupCoords: shiftTopOrBottomPopupCoords(),
+    shiftPopupCoords: shiftTopOrBottomPopupCoords('left'),
     flipPopupCoords: flipTopOrBottomPopupCoords('bottom'),
     getArrowCoords: getTopOrBottomArrowCoords('left'),
     getOriginCoords: getTopOrBottomOriginCoords('bottom'),
@@ -152,7 +144,7 @@ const aligners = {
   leftBottom: aligner({
     getScreenCoords: getLeftOrRightScreenCoords('left', 'bottom'),
     keepArrowCenter: keepLeftOrRightArrowCenter('bottom'),
-    shiftPopupCoords: shiftLeftOrRightPopupCoords(),
+    shiftPopupCoords: shiftLeftOrRightPopupCoords('bottom'),
     flipPopupCoords: flipLeftOrRightPopupCoords('left'),
     getArrowCoords: getLeftOrRightArrowCoords('bottom'),
     getOriginCoords: getLeftOrRightOriginCoords('left'),
@@ -160,7 +152,7 @@ const aligners = {
   left: aligner({
     getScreenCoords: getLeftOrRightScreenCoords('left', 'center'),
     keepArrowCenter: keepLeftOrRightArrowCenter('center'),
-    shiftPopupCoords: shiftLeftOrRightPopupCoords(),
+    shiftPopupCoords: shiftLeftOrRightPopupCoords('center'),
     flipPopupCoords: flipLeftOrRightPopupCoords('left'),
     getArrowCoords: getLeftOrRightArrowCoords('center'),
     getOriginCoords: getLeftOrRightOriginCoords('left'),
@@ -168,7 +160,7 @@ const aligners = {
   leftTop: aligner({
     getScreenCoords: getLeftOrRightScreenCoords('left', 'top'),
     keepArrowCenter: keepLeftOrRightArrowCenter('top'),
-    shiftPopupCoords: shiftLeftOrRightPopupCoords(),
+    shiftPopupCoords: shiftLeftOrRightPopupCoords('top'),
     flipPopupCoords: flipLeftOrRightPopupCoords('left'),
     getArrowCoords: getLeftOrRightArrowCoords('top'),
     getOriginCoords: getLeftOrRightOriginCoords('left'),

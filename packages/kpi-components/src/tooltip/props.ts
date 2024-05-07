@@ -45,9 +45,9 @@ export interface TooltipProps
 
   arrow?: boolean | { pointAtCenter: boolean }
 
-  shift?: boolean
+  shift?: boolean | { horizontal?: boolean; vertical?: boolean }
 
-  flip?: boolean
+  flip?: boolean | { horizontal?: boolean; vertical?: boolean }
 
   offset?: number | [number, number]
 }
@@ -95,14 +95,20 @@ export interface GetScreenCoordsOptions {
 export interface KeepArrowCenterOptions {
   adjustedCoords: ScreenCoords
   triggerCoords: ElementCoords
+  arrow: TooltipProps['arrow']
 }
 
 export interface ShiftPopupCoordsOptions {
   adjustedCoords: ScreenCoords
   triggerCoords: ElementCoords
+  shift: TooltipProps['shift']
 }
 
-export type FlipPopupCoordsOptions = ShiftPopupCoordsOptions
+export interface FlipPopupCoordsOptions {
+  adjustedCoords: ScreenCoords
+  triggerCoords: ElementCoords
+  flip: TooltipProps['flip']
+}
 
 export interface GetArrowCoordsOptions {
   adjustedCoords: ScreenCoords

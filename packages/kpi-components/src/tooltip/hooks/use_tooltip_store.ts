@@ -2,7 +2,7 @@ import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { useMemo } from 'react'
 import aligners from '../utils/aligner'
 // types
-import type { Coords, TooltipProps } from '../props'
+import type { Coords, ElementCoords, TooltipProps } from '../props'
 
 export class TooltipState {
   $trigger = {
@@ -40,15 +40,21 @@ export class TooltipAction {
   private shouldUpdateCoords = (a: Coords, b: Coords) => {
     const positions = ['top', 'left', '--origin-x', '--origin-y'] as const
 
-    const toString = (value: any) => (parseFloat(value) || 0).toFixed(2)
+    const toString = (value: any) => parseFloat(value).toFixed(2)
 
     return positions.some((pos) => toString(a[pos]) !== toString(b[pos]))
   }
 
-  private setPopupCoords = (value: Coords) => {
-    if (!this.shouldUpdateCoords(this.states.popupCoords, value)) return
+  private setPopupCoords = (value: Coords & { original: ElementCoords }) => {
+    const { original, ...newCoords } = value
 
-    this.states.popupCoords = value
+    const shouldUpdate = this.shouldUpdateCoords(this.states.popupCoords, newCoords)
+
+    const forceUpdate = this.shouldUpdateCoords(newCoords, original)
+
+    if (!shouldUpdate && !forceUpdate) return
+
+    this.states.popupCoords = newCoords
 
     this.forceUpdate()
   }

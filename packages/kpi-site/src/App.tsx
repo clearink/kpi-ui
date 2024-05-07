@@ -47,14 +47,14 @@ const App: React.FC = () => {
           // arrow={{ pointAtCenter: true }}
           open
         >
-          <div
+          <Button
             style={{
-              width: 10,
-              height: 10,
-              backgroundColor: 'blue',
-              borderRadius: '50%',
+              width: 130,
+              height: 30,
+              // backgroundColor: 'blue',
+              // borderRadius: '50%',
             }}
-          ></div>
+          ></Button>
         </Tooltip>
         {/* <iframe src="http://localhost:5173" width="1000px" height="500px"></iframe> */}
       </div>
