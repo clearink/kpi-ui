@@ -100,12 +100,12 @@ function Tooltip(_props: TooltipProps) {
             style={{ ...styles.root, ...states.popupCoords }}
           >
             {/* 箭头使用 svg 图算了 */}
-            {!!arrow && (
-              <TooltipArrow
-                className={classNames.arrow}
-                style={{ ...styles.arrow, ...states.arrowCoords }}
-              />
-            )}
+            <TooltipArrow
+              show={!!arrow}
+              className={classNames.arrow}
+              style={{ ...styles.arrow, ...states.arrowCoords }}
+            />
+
             {/* 内容缓存 TODO: content 能否使用 render props */}
             <div
               ref={states.$content}

@@ -1,7 +1,7 @@
 import { useWatchValue } from '@kpi-ui/hooks'
-import { isObjectLike } from '@kpi-ui/utils'
 // types
 import type { TooltipProps } from '../props'
+import { isEqual } from '@kpi-ui/utils'
 
 // 监听状态, 重新定位元素
 export default function useWatchCoords(props: TooltipProps, onCallback: () => void) {
@@ -9,7 +9,9 @@ export default function useWatchCoords(props: TooltipProps, onCallback: () => vo
 
   useWatchValue(placement, onCallback)
 
-  useWatchValue(`${offset}`, onCallback)
+  const options = { compare: isEqual, listener: onCallback }
 
-  useWatchValue(isObjectLike(arrow) && arrow.pointAtCenter, onCallback)
+  useWatchValue(offset, options)
+
+  useWatchValue(arrow, options)
 }

@@ -6,23 +6,23 @@ export interface WatchOptions<S> {
   listener: (current: S, previous: S) => void
 }
 
-function useWatchValue<S>(current: S, callback: WatchOptions<S>['listener']): void
-function useWatchValue<S>(current: S, options: WatchOptions<S>): void
-function useWatchValue<S>(current: S, arg: WatchOptions<S> | WatchOptions<S>['listener']): void {
+function useWatchValue<S>(current: S, args: WatchOptions<S>): void
+function useWatchValue<S>(current: S, args: WatchOptions<S>['listener']): void
+function useWatchValue<S>(current: S, args: any): void {
   const ref = useRef(current)
 
   // 兼容 react devtool
   useMemo(() => {
-    const compare = isFunction(arg) ? shallowEqual : arg.compare
+    const compare = isFunction(args) ? shallowEqual : args.compare
 
     if (compare(current, ref.current)) return
 
-    const listener = isFunction(arg) ? arg : arg.listener
+    const listener = isFunction(args) ? args : args.listener
 
     listener(current, ref.current)
 
     ref.current = current
-  }, [arg, current])
+  }, [args, current])
 }
 
 export default useWatchValue

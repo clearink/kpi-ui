@@ -44,17 +44,17 @@ const App: React.FC = () => {
           // placement="rightTop"
           // placement="right"
           // placement="rightBottom"
-          // arrow={{ pointAtCenter: true }}
+          arrow={{ pointAtCenter: !true }}
           open
         >
-          <Button
+          <div
             style={{
-              width: 130,
-              height: 30,
-              // backgroundColor: 'blue',
+              width: 400,
+              height: 10,
+              backgroundColor: 'blue',
               // borderRadius: '50%',
             }}
-          ></Button>
+          ></div>
         </Tooltip>
         {/* <iframe src="http://localhost:5173" width="1000px" height="500px"></iframe> */}
       </div>
