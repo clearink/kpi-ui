@@ -60,10 +60,9 @@ export class TooltipAction {
   }
 
   private setArrowCoords = (value: Coords) => {
-    // if (!this.shouldUpdateCoords(this.states.arrowCoords, value)) return
+    if (!this.shouldUpdateCoords(this.states.arrowCoords, value)) return
 
     this.states.arrowCoords = value
-    console.log(this.states.arrowCoords)
 
     this.forceUpdate()
   }

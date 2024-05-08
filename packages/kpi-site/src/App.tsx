@@ -31,9 +31,11 @@ const App: React.FC = () => {
         <Tooltip
           content={
             <div
-              style={{
-                height: 100,
-              }}
+              style={
+                {
+                  // height: 100,
+                }
+              }
             >
               AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!
             </div>
@@ -44,12 +46,12 @@ const App: React.FC = () => {
           // placement="rightTop"
           // placement="right"
           // placement="rightBottom"
-          arrow={{ pointAtCenter: !true }}
+          arrow={{ pointAtCenter: true }}
           open
         >
           <div
             style={{
-              width: 400,
+              width: 140,
               height: 10,
               backgroundColor: 'blue',
               // borderRadius: '50%',

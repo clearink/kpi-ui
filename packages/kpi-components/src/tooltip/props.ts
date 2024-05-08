@@ -78,9 +78,9 @@ export interface ScreenCoords {
   /** 真实高度 */
   _height: number
   /** 屏幕宽度 */
-  _rootWidth: number
+  _mx: number
   /** 屏幕高度 */
-  _rootHeight: number
+  _my: number
   /** 主轴 */
   main: 'top' | 'bottom' | 'left' | 'right'
   /** 交叉轴 */
