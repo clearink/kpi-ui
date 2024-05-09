@@ -29,19 +29,9 @@ const App: React.FC = () => {
         }}
       >
         <Tooltip
-          content={
-            <div
-              style={
-                {
-                  // height: 100,
-                }
-              }
-            >
-              AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!
-            </div>
-          }
-          placement="topLeft"
-          // placement="top"
+          content={<div>AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!</div>}
+          // placement="topLeft"
+          placement="bottom"
           // placement="topRight"
           // placement="rightTop"
           // placement="right"
@@ -51,13 +41,34 @@ const App: React.FC = () => {
         >
           <div
             style={{
-              width: 140,
+              width: 110,
               height: 10,
               backgroundColor: 'blue',
               // borderRadius: '50%',
             }}
           ></div>
         </Tooltip>
+        {/* <Tooltip
+          content={<div>AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!</div>}
+          placement="topLeft"
+          // placement="top"
+          // placement="topRight"
+          // placement="rightTop"
+          // placement="right"
+          // placement="rightBottom"
+          arrow={{ pointAtCenter: !true }}
+          // open
+        >
+          <div
+            style={{
+              width: 110,
+              height: 10,
+              backgroundColor: 'blue',
+              // borderRadius: '50%',
+              marginTop: 200,
+            }}
+          ></div>
+        </Tooltip> */}
         {/* <iframe src="http://localhost:5173" width="1000px" height="500px"></iframe> */}
       </div>
     </div>

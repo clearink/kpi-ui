@@ -1,3 +1,4 @@
+import { capitalize } from '@kpi-ui/utils'
 import { getElementCoords, getPositionedCoords } from './elements'
 import {
   flipLeftOrRightPopupCoords,
@@ -166,8 +167,3 @@ const aligners = {
 }
 
 export default aligners
-
-/**
- * TODO
- * 2. 优化 arrowCoords 逻辑
- */

@@ -68,6 +68,14 @@ export interface AlignerOptions {
 
 export type ElementCoords = ReturnType<typeof getElementCoords>
 
+export type HorizontalMainAxis = 'top' | 'bottom'
+export type VerticalMainAxis = 'left' | 'right'
+export type MainAxis = HorizontalMainAxis | VerticalMainAxis
+
+export type HorizontalCrossAxis = 'left' | 'center' | 'right'
+export type VerticalCrossAxis = 'top' | 'center' | 'bottom'
+export type CrossAxis = HorizontalCrossAxis | VerticalCrossAxis
+
 export interface ScreenCoords {
   /** 垂直方向偏移量 */
   top: number
@@ -81,11 +89,20 @@ export interface ScreenCoords {
   _mx: number
   /** 屏幕高度 */
   _my: number
+  /** keep arrow center 时调整的距离 */
+  _delta: number
   /** 主轴 */
-  main: 'top' | 'bottom' | 'left' | 'right'
+  main: MainAxis
   /** 交叉轴 */
-  cross: 'left' | 'center' | 'right' | 'top' | 'bottom'
+  cross: CrossAxis
 }
+
+// export interface ArrowCoords {
+//   top?: number | string
+//   left?: number | string
+//   bottom?: number | string
+//   right?: number | string
+// }
 
 export type ArrowCoords = Pick<ScreenCoords, 'top' | 'left'>
 
