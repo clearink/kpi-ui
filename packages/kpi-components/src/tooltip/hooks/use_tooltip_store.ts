@@ -19,7 +19,7 @@ export class TooltipState {
 
   popupCoords: Coords = { left: '-1000vw', top: '-1000vh' }
 
-  arrowCoords: Pick<Coords, 'top' | 'left'> = {}
+  arrowCoords: Coords = {}
 }
 
 export class TooltipAction {
@@ -33,12 +33,8 @@ export class TooltipAction {
     return this.states.$popup.current
   }
 
-  get content() {
-    return this.states.$content.current
-  }
-
   private shouldUpdateCoords = (a: Coords, b: Coords) => {
-    const positions = ['top', 'left', '--origin-x', '--origin-y'] as const
+    const positions = ['top', 'left', 'transform', '--origin-x', '--origin-y'] as const
 
     const toString = (value: any) => parseFloat(value).toFixed(2)
 
@@ -69,7 +65,7 @@ export class TooltipAction {
 
   // 当初始时open=true,updateCoords会调用2次
   updateCoords = (props: TooltipProps) => {
-    if (!this.popup || !this.trigger || !this.content) return
+    if (!this.popup || !this.trigger) return
 
     const getCoords = aligners[props.placement!] || aligners.top
 
@@ -77,7 +73,6 @@ export class TooltipAction {
       props,
       popup: this.popup,
       trigger: this.trigger,
-      content: this.content,
     })
 
     this.setPopupCoords(popupCoords)

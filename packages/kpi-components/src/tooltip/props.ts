@@ -21,7 +21,7 @@ export type TooltipPlacement =
 
 export interface TooltipProps
   extends Required<HasChildren<React.ReactElement>>,
-    SemanticStyledProps<'root' | 'main' | 'arrow' | 'content'>,
+    SemanticStyledProps<'root' | 'arrow'>,
     Pick<OverlayProps, 'zIndex' | 'getContainer' | 'keepMounted' | 'unmountOnExit'> {
   transition?: string
 
@@ -52,18 +52,12 @@ export interface TooltipProps
   offset?: number | [number, number]
 }
 
-export interface Coords {
-  top?: number | string
-  left?: number | string
-  '--origin-x'?: string
-  '--origin-y'?: string
-}
+export type Coords = Record<string, any>
 
 export interface AlignerOptions {
   props: TooltipProps
   popup: HTMLElement
   trigger: HTMLElement
-  content: HTMLElement
 }
 
 export type ElementCoords = ReturnType<typeof getElementCoords>
@@ -97,18 +91,16 @@ export interface ScreenCoords {
   cross: CrossAxis
 }
 
-// export interface ArrowCoords {
-//   top?: number | string
-//   left?: number | string
-//   bottom?: number | string
-//   right?: number | string
-// }
-
-export type ArrowCoords = Pick<ScreenCoords, 'top' | 'left'>
+export interface ArrowCoords {
+  top: number
+  left: number
+  rotate: number
+}
 
 export type OriginCoords = Pick<ScreenCoords, 'top' | 'left'>
 
 export interface GetScreenCoordsOptions {
+  props: TooltipProps
   triggerCoords: ElementCoords
   popupCoords: ElementCoords
 }
@@ -132,9 +124,9 @@ export interface FlipPopupCoordsOptions {
 }
 
 export interface GetArrowCoordsOptions {
+  props: TooltipProps
   adjustedCoords: ScreenCoords
   triggerCoords: ElementCoords
-  contentCoords: ElementCoords
 }
 
 export interface AlignerConfig {

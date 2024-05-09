@@ -3,18 +3,10 @@ import { cls } from '@kpi-ui/utils'
 import type { TooltipProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: TooltipProps) {
-  const { arrow, className, classNames = {} } = props
+  const { className, classNames = {} } = props
 
   return {
-    root: cls(
-      prefixCls,
-      {
-        [`${prefixCls}-has-arrow`]: !!arrow,
-      },
-      className,
-      classNames.root
-    ),
+    root: cls(prefixCls, className, classNames.root),
     arrow: cls(`${prefixCls}__arrow`, classNames.arrow),
-    content: cls(`${prefixCls}__content`, classNames.content),
   }
 }

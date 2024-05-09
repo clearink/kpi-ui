@@ -1,4 +1,3 @@
-import { capitalize } from '@kpi-ui/utils'
 import { getElementCoords, getPositionedCoords } from './elements'
 import {
   flipLeftOrRightPopupCoords,
@@ -14,7 +13,6 @@ import {
   offsetPopupCoords,
   shiftLeftOrRightPopupCoords,
   shiftTopOrBottomPopupCoords,
-  updatePopupPlacement,
 } from './helpers'
 // types
 import type { AlignerConfig, AlignerOptions } from '../props'
@@ -30,15 +28,14 @@ function aligner(config: AlignerConfig) {
   } = config
 
   return (options: AlignerOptions) => {
-    const { popup, trigger, content, props } = options
+    const { popup, trigger, props } = options
 
     // 依次获得各个元素的位置信息
     const triggerCoords = getElementCoords(trigger)
     const popupCoords = getElementCoords(popup)
-    const contentCoords = getElementCoords(content)
     const positionedCoords = getPositionedCoords(popup)
 
-    let adjustedCoords = getScreenCoords({ triggerCoords, popupCoords })
+    let adjustedCoords = getScreenCoords({ props, triggerCoords, popupCoords })
 
     adjustedCoords = offsetPopupCoords(adjustedCoords, props.offset)
 
@@ -48,14 +45,16 @@ function aligner(config: AlignerConfig) {
 
     adjustedCoords = flipPopupCoords({ props, adjustedCoords, triggerCoords })
 
-    const arrowCoords = getArrowCoords({ contentCoords, triggerCoords, adjustedCoords })
+    const arrowCoords = getArrowCoords({ props, adjustedCoords, triggerCoords })
 
     const originCoords = getOriginCoords(arrowCoords, adjustedCoords)
 
-    updatePopupPlacement(popup, adjustedCoords)
-
     return {
-      arrowCoords,
+      arrowCoords: {
+        top: arrowCoords.top,
+        left: arrowCoords.left,
+        transform: `rotate(${arrowCoords.rotate}deg)`,
+      },
       popupCoords: {
         top: adjustedCoords.top - positionedCoords.top,
         left: adjustedCoords.left - positionedCoords.left,

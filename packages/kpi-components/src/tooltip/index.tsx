@@ -106,15 +106,7 @@ function Tooltip(_props: TooltipProps) {
               style={{ ...styles.arrow, ...states.arrowCoords }}
             />
 
-            {/* 内容缓存 TODO: content 能否使用 render props */}
-            <div
-              ref={states.$content}
-              className={classNames.content}
-              style={styles.content}
-              role="tooltip"
-            >
-              <ShouldUpdate when={open || !!fresh}>{content}</ShouldUpdate>
-            </div>
+            <ShouldUpdate when={open || !!fresh}>{content}</ShouldUpdate>
           </div>
         </TooltipContent>
       </Overlay>
