@@ -19,7 +19,7 @@ const _size = 8
 const _sqrt = 5.66
 const _px = 8
 const _py = 4
-const _offset = 8
+const _offset = 4
 const _effect = 4
 
 /* ****************************** screen coords ****************************** */
@@ -56,7 +56,7 @@ export function getLeftOrRightScreenCoords(main: VerticalMainAxis, cross: Vertic
   return (options: GetScreenCoordsOptions): ScreenCoords => {
     const { props, triggerCoords: trigger, popupCoords: popup } = options
 
-    const dx = (props.arrow ? _effect / 2 : 0) + _offset
+    const dx = (props.arrow ? _effect : 0) + _offset
 
     const left = main === 'left' ? trigger.left - popup._width - dx : trigger.right + dx
 
