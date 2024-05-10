@@ -3,6 +3,8 @@ import { hasItem, toArray } from '@kpi-ui/utils'
 import type { DOMAttributes, SetStateAction } from 'react'
 import type { TooltipProps } from '../props'
 
+// TODO: 完善这里
+
 // 触发条件
 export default function useTriggerEvent(
   props: TooltipProps,

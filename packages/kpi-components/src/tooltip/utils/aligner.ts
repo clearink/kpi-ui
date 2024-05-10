@@ -15,7 +15,16 @@ import {
   shiftTopOrBottomPopupCoords,
 } from './helpers'
 // types
-import type { AlignerConfig, AlignerOptions } from '../props'
+import type {
+  AlignerConfig,
+  AlignerOptions,
+  CrossAxis,
+  HorizontalCrossAxis,
+  MainAxis,
+  TooltipPlacement,
+  VerticalCrossAxis,
+} from '../props'
+import { capitalize } from '@kpi-ui/utils'
 
 function aligner(config: AlignerConfig) {
   const {
@@ -66,103 +75,44 @@ function aligner(config: AlignerConfig) {
   }
 }
 
-const aligners = {
-  topLeft: aligner({
-    getScreenCoords: getTopOrBottomScreenCoords('top', 'left'),
-    keepArrowCenter: keepTopOrBottomArrowCenter(),
-    shiftPopupCoords: shiftTopOrBottomPopupCoords(),
-    flipPopupCoords: flipTopOrBottomPopupCoords(),
-    getArrowCoords: getTopOrBottomArrowCoords(),
-    getOriginCoords: getTopOrBottomOriginCoords(),
-  }),
-  top: aligner({
-    getScreenCoords: getTopOrBottomScreenCoords('top', 'center'),
-    keepArrowCenter: keepTopOrBottomArrowCenter(),
-    shiftPopupCoords: shiftTopOrBottomPopupCoords(),
-    flipPopupCoords: flipTopOrBottomPopupCoords(),
-    getArrowCoords: getTopOrBottomArrowCoords(),
-    getOriginCoords: getTopOrBottomOriginCoords(),
-  }),
-  topRight: aligner({
-    getScreenCoords: getTopOrBottomScreenCoords('top', 'right'),
-    keepArrowCenter: keepTopOrBottomArrowCenter(),
-    shiftPopupCoords: shiftTopOrBottomPopupCoords(),
-    flipPopupCoords: flipTopOrBottomPopupCoords(),
-    getArrowCoords: getTopOrBottomArrowCoords(),
-    getOriginCoords: getTopOrBottomOriginCoords(),
-  }),
-  rightTop: aligner({
-    getScreenCoords: getLeftOrRightScreenCoords('right', 'top'),
+function makeAligner(main: MainAxis, cross: CrossAxis) {
+  if (main === 'top' || main === 'bottom') {
+    return aligner({
+      getScreenCoords: getTopOrBottomScreenCoords(main, cross as HorizontalCrossAxis),
+      keepArrowCenter: keepTopOrBottomArrowCenter(),
+      shiftPopupCoords: shiftTopOrBottomPopupCoords(),
+      flipPopupCoords: flipTopOrBottomPopupCoords(),
+      getArrowCoords: getTopOrBottomArrowCoords(),
+      getOriginCoords: getTopOrBottomOriginCoords(),
+    })
+  }
+  return aligner({
+    getScreenCoords: getLeftOrRightScreenCoords(main, cross as VerticalCrossAxis),
     keepArrowCenter: keepLeftOrRightArrowCenter(),
     shiftPopupCoords: shiftLeftOrRightPopupCoords(),
     flipPopupCoords: flipLeftOrRightPopupCoords(),
     getArrowCoords: getLeftOrRightArrowCoords(),
     getOriginCoords: getLeftOrRightOriginCoords(),
-  }),
-  right: aligner({
-    getScreenCoords: getLeftOrRightScreenCoords('right', 'center'),
-    keepArrowCenter: keepLeftOrRightArrowCenter(),
-    shiftPopupCoords: shiftLeftOrRightPopupCoords(),
-    flipPopupCoords: flipLeftOrRightPopupCoords(),
-    getArrowCoords: getLeftOrRightArrowCoords(),
-    getOriginCoords: getLeftOrRightOriginCoords(),
-  }),
-  rightBottom: aligner({
-    getScreenCoords: getLeftOrRightScreenCoords('right', 'bottom'),
-    keepArrowCenter: keepLeftOrRightArrowCenter(),
-    shiftPopupCoords: shiftLeftOrRightPopupCoords(),
-    flipPopupCoords: flipLeftOrRightPopupCoords(),
-    getArrowCoords: getLeftOrRightArrowCoords(),
-    getOriginCoords: getLeftOrRightOriginCoords(),
-  }),
-  bottomRight: aligner({
-    getScreenCoords: getTopOrBottomScreenCoords('bottom', 'right'),
-    keepArrowCenter: keepTopOrBottomArrowCenter(),
-    shiftPopupCoords: shiftTopOrBottomPopupCoords(),
-    flipPopupCoords: flipTopOrBottomPopupCoords(),
-    getArrowCoords: getTopOrBottomArrowCoords(),
-    getOriginCoords: getTopOrBottomOriginCoords(),
-  }),
-  bottom: aligner({
-    getScreenCoords: getTopOrBottomScreenCoords('bottom', 'center'),
-    keepArrowCenter: keepTopOrBottomArrowCenter(),
-    shiftPopupCoords: shiftTopOrBottomPopupCoords(),
-    flipPopupCoords: flipTopOrBottomPopupCoords(),
-    getArrowCoords: getTopOrBottomArrowCoords(),
-    getOriginCoords: getTopOrBottomOriginCoords(),
-  }),
-  bottomLeft: aligner({
-    getScreenCoords: getTopOrBottomScreenCoords('bottom', 'left'),
-    keepArrowCenter: keepTopOrBottomArrowCenter(),
-    shiftPopupCoords: shiftTopOrBottomPopupCoords(),
-    flipPopupCoords: flipTopOrBottomPopupCoords(),
-    getArrowCoords: getTopOrBottomArrowCoords(),
-    getOriginCoords: getTopOrBottomOriginCoords(),
-  }),
-  leftBottom: aligner({
-    getScreenCoords: getLeftOrRightScreenCoords('left', 'bottom'),
-    keepArrowCenter: keepLeftOrRightArrowCenter(),
-    shiftPopupCoords: shiftLeftOrRightPopupCoords(),
-    flipPopupCoords: flipLeftOrRightPopupCoords(),
-    getArrowCoords: getLeftOrRightArrowCoords(),
-    getOriginCoords: getLeftOrRightOriginCoords(),
-  }),
-  left: aligner({
-    getScreenCoords: getLeftOrRightScreenCoords('left', 'center'),
-    keepArrowCenter: keepLeftOrRightArrowCenter(),
-    shiftPopupCoords: shiftLeftOrRightPopupCoords(),
-    flipPopupCoords: flipLeftOrRightPopupCoords(),
-    getArrowCoords: getLeftOrRightArrowCoords(),
-    getOriginCoords: getLeftOrRightOriginCoords(),
-  }),
-  leftTop: aligner({
-    getScreenCoords: getLeftOrRightScreenCoords('left', 'top'),
-    keepArrowCenter: keepLeftOrRightArrowCenter(),
-    shiftPopupCoords: shiftLeftOrRightPopupCoords(),
-    flipPopupCoords: flipLeftOrRightPopupCoords(),
-    getArrowCoords: getLeftOrRightArrowCoords(),
-    getOriginCoords: getLeftOrRightOriginCoords(),
-  }),
+  })
 }
+
+const aligners: Record<TooltipPlacement, ReturnType<typeof aligner>> = (
+  [
+    ['top', 'left', 'center', 'right'],
+    ['right', 'top', 'center', 'bottom'],
+    ['bottom', 'left', 'center', 'right'],
+    ['left', 'top', 'center', 'bottom'],
+  ] as [MainAxis, CrossAxis, CrossAxis, CrossAxis][]
+).reduce((result, item) => {
+  const [main, cross1, cross2, cross3] = item
+
+  result[`${main}${capitalize(cross1)}`] = makeAligner(main, cross1)
+
+  result[main] = makeAligner(main, cross2)
+
+  result[`${main}${capitalize(cross1)}`] = makeAligner(main, cross3)
+
+  return result
+}, {} as Record<TooltipPlacement, ReturnType<typeof aligner>>)
 
 export default aligners
