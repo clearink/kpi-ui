@@ -99,13 +99,11 @@ function Tooltip(_props: TooltipProps) {
             className={cls(className, classNames.root)}
             style={{ ...styles.root, ...states.popupCoords }}
           >
-            {/* 箭头使用 svg 图算了 */}
             <TooltipArrow
               show={!!arrow}
               className={classNames.arrow}
               style={{ ...styles.arrow, ...states.arrowCoords }}
             />
-
             <ShouldUpdate when={open || !!fresh}>{content}</ShouldUpdate>
           </div>
         </TooltipContent>

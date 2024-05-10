@@ -29,10 +29,10 @@ const App: React.FC = () => {
         }}
       >
         <Tooltip
-          // content={<div>AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!</div>}
-          content="AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!"
-          // placement="topLeft"
-          placement="top"
+          content={<div>AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!</div>}
+          // content="AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!"
+          placement="topLeft"
+          // placement="top"
           // placement="topRight"
           // placement="rightTop"
           // placement="right"
@@ -45,7 +45,6 @@ const App: React.FC = () => {
               width: 110,
               height: 10,
               backgroundColor: 'blue',
-              // borderRadius: '50%',
             }}
           ></div>
         </Tooltip>
