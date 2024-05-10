@@ -110,7 +110,7 @@ const aligners: Record<TooltipPlacement, ReturnType<typeof aligner>> = (
 
   result[main] = makeAligner(main, cross2)
 
-  result[`${main}${capitalize(cross1)}`] = makeAligner(main, cross3)
+  result[`${main}${capitalize(cross3)}`] = makeAligner(main, cross3)
 
   return result
 }, {} as Record<TooltipPlacement, ReturnType<typeof aligner>>)
