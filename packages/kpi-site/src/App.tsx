@@ -1,21 +1,21 @@
 import { Button, Tooltip } from '@kpi-ui/components'
-import { useEffect } from 'react'
+import { useEffect, useReducer, useRef, useState } from 'react'
 
 import '@kpi-ui/components/src/style'
 import './style.scss'
 
 const App: React.FC = () => {
-  // useEffect(() => {
-  //   const height = document.documentElement.clientHeight
-  //   const width = document.documentElement.clientWidth
-  //   const id = setTimeout(() => {
-  //     document.documentElement.scrollTop = height
-  //     document.documentElement.scrollLeft = width
-  //   }, 300)
-  //   return () => {
-  //     clearTimeout(id)
-  //   }
-  // }, [])
+  useEffect(() => {
+    const height = document.documentElement.clientHeight
+    const width = document.documentElement.clientWidth
+    const id = setTimeout(() => {
+      document.documentElement.scrollTop = height
+      document.documentElement.scrollLeft = width
+    }, 300)
+    return () => {
+      clearTimeout(id)
+    }
+  }, [])
 
   return (
     <div>
@@ -23,9 +23,9 @@ const App: React.FC = () => {
         style={{
           width: '300vw',
           height: '300vh',
-          // display: 'flex',
-          // alignItems: 'center',
-          // justifyContent: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
         <Tooltip
@@ -33,14 +33,15 @@ const App: React.FC = () => {
           placement="topLeft"
           open
         >
-          <div
-            style={{
-              width: 110,
-              height: 10,
-              margin: 300,
-              backgroundColor: 'blue',
-            }}
-          ></div>
+          <Button
+            style={
+              {
+                // width: 110,
+              }
+            }
+          >
+            Tooltip Trigger
+          </Button>
         </Tooltip>
       </div>
     </div>

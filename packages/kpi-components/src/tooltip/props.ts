@@ -52,12 +52,17 @@ export interface TooltipProps
   offset?: number | [number, number]
 }
 
-export type Coords = Record<string, any>
+export interface PopupCoords {
+  top: string | number
+  left: string | number
+  '--origin-y': string
+  '--origin-x': string
+}
 
-export interface AlignerOptions {
-  props: TooltipProps
-  popup: HTMLElement
-  trigger: HTMLElement
+export interface ArrowCoords {
+  top: number
+  left: number
+  transform: string
 }
 
 export type ElementCoords = ReturnType<typeof getElementCoords>
@@ -91,59 +96,39 @@ export interface ScreenCoords {
   cross: CrossAxis
 }
 
-export interface ArrowCoords {
-  top: number
-  left: number
-  rotate: number
-}
-
 export type OriginCoords = Pick<ScreenCoords, 'top' | 'left'>
-
-export interface GetScreenCoordsOptions {
-  props: TooltipProps
-  triggerCoords: ElementCoords
-  popupCoords: ElementCoords
-}
-
-export interface KeepArrowCenterOptions {
-  props: TooltipProps
-  adjustedCoords: ScreenCoords
-  triggerCoords: ElementCoords
-}
-
-export interface ShiftPopupCoordsOptions {
-  props: TooltipProps
-  adjustedCoords: ScreenCoords
-  triggerCoords: ElementCoords
-}
-
-export interface FlipPopupCoordsOptions {
-  props: TooltipProps
-  adjustedCoords: ScreenCoords
-  triggerCoords: ElementCoords
-}
-
-export interface GetArrowCoordsOptions {
-  props: TooltipProps
-  adjustedCoords: ScreenCoords
-  triggerCoords: ElementCoords
-}
 
 export interface AlignerConfig {
   // 相对于 viewport 的坐标
-  getScreenCoords: (options: GetScreenCoordsOptions) => ScreenCoords
+  getScreenCoords: (
+    props: TooltipProps,
+    popup: ElementCoords,
+    trigger: ElementCoords
+  ) => ScreenCoords
 
-  keepArrowCenter: (options: KeepArrowCenterOptions) => ScreenCoords
+  keepArrowCenter: (
+    props: TooltipProps,
+    screen: ScreenCoords,
+    trigger: ElementCoords
+  ) => ScreenCoords
 
   // 调整
-  shiftPopupCoords: (options: ShiftPopupCoordsOptions) => ScreenCoords
+  shiftPopupCoords: (
+    props: TooltipProps,
+    screen: ScreenCoords,
+    trigger: ElementCoords
+  ) => ScreenCoords
 
   // 翻转
-  flipPopupCoords: (options: FlipPopupCoordsOptions) => ScreenCoords
+  flipPopupCoords: (
+    props: TooltipProps,
+    screen: ScreenCoords,
+    trigger: ElementCoords
+  ) => ScreenCoords
 
   // 箭头位置
-  getArrowCoords: (options: GetArrowCoordsOptions) => ArrowCoords
+  getArrowCoords: (screen: ScreenCoords, trigger: ElementCoords) => ArrowCoords
 
   // 转换原点
-  getOriginCoords: (arrowCoords: ArrowCoords, adjustedCoords: ScreenCoords) => OriginCoords
+  getOriginCoords: (arrow: ArrowCoords, screen: ScreenCoords) => OriginCoords
 }

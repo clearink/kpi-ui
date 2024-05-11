@@ -1,3 +1,4 @@
+import { capitalize } from '@kpi-ui/utils'
 import { getElementCoords, getPositionedCoords } from './elements'
 import {
   flipLeftOrRightPopupCoords,
@@ -8,8 +9,11 @@ import {
   getTopOrBottomArrowCoords,
   getTopOrBottomOriginCoords,
   getTopOrBottomScreenCoords,
+  isEqualCoords,
   keepLeftOrRightArrowCenter,
   keepTopOrBottomArrowCenter,
+  makeArrowCoordsGetter,
+  makePopupCoordsGetter,
   offsetPopupCoords,
   shiftLeftOrRightPopupCoords,
   shiftTopOrBottomPopupCoords,
@@ -17,14 +21,13 @@ import {
 // types
 import type {
   AlignerConfig,
-  AlignerOptions,
   CrossAxis,
   HorizontalCrossAxis,
   MainAxis,
   TooltipPlacement,
+  TooltipProps,
   VerticalCrossAxis,
 } from '../props'
-import { capitalize } from '@kpi-ui/utils'
 
 function aligner(config: AlignerConfig) {
   const {
@@ -36,42 +39,35 @@ function aligner(config: AlignerConfig) {
     getOriginCoords,
   } = config
 
-  return (options: AlignerOptions) => {
-    const { popup, trigger, props } = options
-
+  return (props: TooltipProps, popup: HTMLElement, trigger: HTMLElement) => {
     // 依次获得各个元素的位置信息
     const triggerCoords = getElementCoords(trigger)
     const popupCoords = getElementCoords(popup)
     const positionedCoords = getPositionedCoords(popup)
 
-    let adjustedCoords = getScreenCoords({ props, triggerCoords, popupCoords })
+    let screenCoords = getScreenCoords(props, popupCoords, triggerCoords)
 
-    adjustedCoords = offsetPopupCoords(adjustedCoords, props.offset)
+    screenCoords = offsetPopupCoords(props, screenCoords)
 
-    adjustedCoords = keepArrowCenter({ props, adjustedCoords, triggerCoords })
+    screenCoords = keepArrowCenter(props, screenCoords, triggerCoords)
 
-    adjustedCoords = shiftPopupCoords({ props, adjustedCoords, triggerCoords })
+    screenCoords = shiftPopupCoords(props, screenCoords, triggerCoords)
 
-    adjustedCoords = flipPopupCoords({ props, adjustedCoords, triggerCoords })
+    screenCoords = flipPopupCoords(props, screenCoords, triggerCoords)
 
-    const arrowCoords = getArrowCoords({ props, adjustedCoords, triggerCoords })
+    const arrowCoords = getArrowCoords(screenCoords, triggerCoords)
 
-    const originCoords = getOriginCoords(arrowCoords, adjustedCoords)
+    const originCoords = getOriginCoords(arrowCoords, screenCoords)
 
-    return {
-      arrowCoords: {
-        top: arrowCoords.top,
-        left: arrowCoords.left,
-        transform: `rotate(${arrowCoords.rotate}deg)`,
-      },
-      popupCoords: {
-        top: adjustedCoords.top - positionedCoords.top,
-        left: adjustedCoords.left - positionedCoords.left,
-        original: popupCoords,
+    return [
+      makeArrowCoordsGetter(arrowCoords),
+      makePopupCoordsGetter({
+        top: screenCoords.top - positionedCoords.top,
+        left: screenCoords.left - positionedCoords.left,
         '--origin-y': `${originCoords.top.toFixed(2)}px`,
         '--origin-x': `${originCoords.left.toFixed(2)}px`,
-      },
-    }
+      }),
+    ] as const
   }
 }
 
@@ -86,6 +82,7 @@ function makeAligner(main: MainAxis, cross: CrossAxis) {
       getOriginCoords: getTopOrBottomOriginCoords(),
     })
   }
+
   return aligner({
     getScreenCoords: getLeftOrRightScreenCoords(main, cross as VerticalCrossAxis),
     keepArrowCenter: keepLeftOrRightArrowCenter(),

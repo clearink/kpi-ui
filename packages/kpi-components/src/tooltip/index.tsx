@@ -82,6 +82,7 @@ function Tooltip(_props: TooltipProps) {
       >
         {children}
       </TooltipTrigger>
+      <div style={{ position: 'absolute', top: states.popupCoords.top }}>123</div>
 
       <Overlay
         style={{ left: 0, top: 0 }}

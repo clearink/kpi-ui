@@ -15,26 +15,27 @@ $comp: #{$prefix}-tooltip;
   width: max-content;
   max-width: var(--#{$prefix}-size-unit-64);
   padding: var(--#{$prefix}-size-unit-1) var(--#{$prefix}-size-unit-2);
-  background-color: red;
   border-radius: var(--#{$prefix}-border-radius-default);
-  // background-color: var(--#{$prefix}-color-overlay-default);
   transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
+
+  background-color: var(--#{$prefix}-color-overlay-default);
 }
 
 .#{$comp}__arrow {
   position: absolute;
   z-index: 1;
   pointer-events: none;
-  width: $kpi-tooltip-arrow-size * 2;
-  height: $kpi-tooltip-arrow-size * 2;
+  width: $kpi-tooltip-arrow-size;
+  height: $kpi-tooltip-arrow-size;
 
   &::before {
     content: '';
     display: block;
-    width: $kpi-tooltip-arrow-size;
-    height: $kpi-tooltip-arrow-size;
+    width: 50%;
+    height: 50%;
     transform: translate3d(50%, 50%, 0) rotate(45deg);
     border-bottom-right-radius: 2px;
-    background-color: red;
+
+    background-color: var(--#{$prefix}-color-overlay-default);
   }
 }

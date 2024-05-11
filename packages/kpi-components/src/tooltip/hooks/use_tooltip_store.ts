@@ -2,7 +2,7 @@ import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { useMemo } from 'react'
 import aligners from '../utils/aligner'
 // types
-import type { Coords, ElementCoords, TooltipProps } from '../props'
+import type { ArrowCoords, PopupCoords, TooltipProps } from '../props'
 
 export class TooltipState {
   $trigger = {
@@ -17,9 +17,9 @@ export class TooltipState {
     current: null as HTMLDivElement | null,
   }
 
-  popupCoords: Coords = { left: '-1000vw', top: '-1000vh' }
+  popupCoords: Partial<PopupCoords> = { left: '-1000vw', top: '-1000vh' }
 
-  arrowCoords: Coords = {}
+  arrowCoords: Partial<ArrowCoords> = {}
 }
 
 export class TooltipAction {
@@ -33,30 +33,16 @@ export class TooltipAction {
     return this.states.$popup.current
   }
 
-  private shouldUpdateCoords = (a: Coords, b: Coords) => {
-    const positions = ['top', 'left', 'transform', '--origin-x', '--origin-y'] as const
+  private setPopupCoords = (value: PopupCoords | null) => {
+    if (!value) return
 
-    const toString = (value: any) => parseFloat(value).toFixed(2)
-
-    return positions.some((pos) => toString(a[pos]) !== toString(b[pos]))
-  }
-
-  private setPopupCoords = (value: Coords & { original: ElementCoords }) => {
-    const { original, ...newCoords } = value
-
-    const shouldUpdate = this.shouldUpdateCoords(this.states.popupCoords, newCoords)
-
-    const forceUpdate = this.shouldUpdateCoords(newCoords, original)
-
-    if (!shouldUpdate && !forceUpdate) return
-
-    this.states.popupCoords = newCoords
+    this.states.popupCoords = value
 
     this.forceUpdate()
   }
 
-  private setArrowCoords = (value: Coords) => {
-    if (!this.shouldUpdateCoords(this.states.arrowCoords, value)) return
+  private setArrowCoords = (value: ArrowCoords | null) => {
+    if (!value) return
 
     this.states.arrowCoords = value
 
@@ -67,17 +53,15 @@ export class TooltipAction {
   updateCoords = (props: TooltipProps) => {
     if (!this.popup || !this.trigger) return
 
+    const { arrowCoords, popupCoords } = this.states
+
     const getCoords = aligners[props.placement!] || aligners.top
 
-    const { popupCoords, arrowCoords } = getCoords({
-      props,
-      popup: this.popup,
-      trigger: this.trigger,
-    })
+    const [getArrowCoords, getPopupCoords] = getCoords(props, this.popup, this.trigger)
 
-    this.setPopupCoords(popupCoords)
+    this.setArrowCoords(getArrowCoords(arrowCoords))
 
-    this.setArrowCoords(arrowCoords)
+    this.setPopupCoords(getPopupCoords(popupCoords))
   }
 }
 

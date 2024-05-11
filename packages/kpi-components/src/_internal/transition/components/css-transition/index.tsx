@@ -99,7 +99,9 @@ function CSSTransition<E extends HTMLElement>(
   // prettier-ignore
   useEffect(() => () => { actions.setIsInitial(true) }, [actions])
 
-  return returnEarly || !states.isMounted ? null : cloneElement(children, { ref: refCallback })
+  if (returnEarly || !states.isMounted) return null
+
+  return cloneElement(children, { ref: refCallback })
 }
 
 export default withDisplayName(forwardRef(CSSTransition), 'CSSTransition') as <
