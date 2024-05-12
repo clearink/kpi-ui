@@ -1,5 +1,6 @@
 import { ctxHelper } from '@kpi-ui/utils'
 
-export interface InternalToolTipContextState {}
+export interface ToolTipContextState {}
 
-export const InternalToolTipContext = ctxHelper<InternalToolTipContextState>({})
+// 嵌套时的逻辑
+export const ToolTipContext = ctxHelper<ToolTipContextState>({})

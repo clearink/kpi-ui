@@ -29,9 +29,17 @@ const App: React.FC = () => {
         }}
       >
         <Tooltip
-          content={<div>AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!</div>}
-          placement="topLeft"
           open
+          content={
+            <div
+              onClick={() => {
+                console.log('23123')
+              }}
+            >
+              AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!
+            </div>
+          }
+          placement="topLeft"
         >
           <Button
             style={

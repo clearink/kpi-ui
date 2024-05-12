@@ -9,7 +9,6 @@ import {
   getTopOrBottomArrowCoords,
   getTopOrBottomOriginCoords,
   getTopOrBottomScreenCoords,
-  isEqualCoords,
   keepLeftOrRightArrowCenter,
   keepTopOrBottomArrowCenter,
   makeArrowCoordsGetter,

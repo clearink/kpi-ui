@@ -97,7 +97,12 @@
 }
 
 @mixin kpi-color-overlay($theme) {
+  --#{$prefix}-color-overlay-dark: #{map-get($color-overlay, #{$theme}-dark)};
   --#{$prefix}-color-overlay-default: #{map-get($color-overlay, #{$theme}-default)};
   --#{$prefix}-color-overlay-light: #{map-get($color-overlay, #{$theme}-light)};
   --#{$prefix}-color-overlay-lighter: #{map-get($color-overlay, #{$theme}-lighter)};
+}
+
+@mixin kpi-color-tooltip($theme) {
+  --#{$prefix}-color-tooltip-default: #{map-get($color-tooltip, #{$theme}-default)};
 }

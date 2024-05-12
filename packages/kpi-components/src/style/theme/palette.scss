@@ -171,10 +171,18 @@ $color-mask: (
 $color-overlay: (
   // light
   'light-default': #{rgba($color-black, 0.8)},
-  'light-light': #{rgba($color-black, 0.7)},
+  'light-light': #{rgba($color-black, 0.6)},
   'light-lighter': #{rgba($color-black, 0.5)},
   // dark
   'dark-default': #{rgba($color-white, 0.8)},
-  'dark-light': #{rgba($color-white, 0.7)},
+  'dark-light': #{rgba($color-white, 0.6)},
   'dark-lighter': #{rgba($color-white, 0.5)}
+);
+
+// TODO: 待确认
+$color-tooltip: (
+  //light
+  'light-default': #{rgba($color-black, 0.85)},
+  //dark
+  'dark-default': #424242
 );

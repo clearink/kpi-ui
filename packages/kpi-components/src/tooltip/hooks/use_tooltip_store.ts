@@ -53,11 +53,12 @@ export class TooltipAction {
   updateCoords = (props: TooltipProps) => {
     if (!this.popup || !this.trigger) return
 
-    const { arrowCoords, popupCoords } = this.states
+    // prettier-ignore
+    const { states:{ arrowCoords, popupCoords }, popup, trigger } = this
 
     const getCoords = aligners[props.placement!] || aligners.top
 
-    const [getArrowCoords, getPopupCoords] = getCoords(props, this.popup, this.trigger)
+    const [getArrowCoords, getPopupCoords] = getCoords(props, popup, trigger)
 
     this.setArrowCoords(getArrowCoords(arrowCoords))
 

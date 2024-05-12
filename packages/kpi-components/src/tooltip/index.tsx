@@ -1,6 +1,7 @@
 import { useThrottleFrame, useThrottleTick } from '@kpi-ui/hooks'
 import { cls, fallback, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
+import { ToolTipContext } from './_shared/context'
 import useFormatClass from './hooks/use_format_class'
 import useTooltipOpen from './hooks/use_tooltip_open'
 import useTooltipStore from './hooks/use_tooltip_store'
@@ -82,7 +83,6 @@ function Tooltip(_props: TooltipProps) {
       >
         {children}
       </TooltipTrigger>
-      <div style={{ position: 'absolute', top: states.popupCoords.top }}>123</div>
 
       <Overlay
         style={{ left: 0, top: 0 }}
@@ -105,7 +105,9 @@ function Tooltip(_props: TooltipProps) {
               className={classNames.arrow}
               style={{ ...styles.arrow, ...states.arrowCoords }}
             />
+            {/* <ToolTipContext.Provider value={{}}> */}
             <ShouldUpdate when={open || !!fresh}>{content}</ShouldUpdate>
+            {/* </ToolTipContext.Provider> */}
           </div>
         </TooltipContent>
       </Overlay>
@@ -114,3 +116,9 @@ function Tooltip(_props: TooltipProps) {
 }
 
 export default withDisplayName(Tooltip)
+
+/**
+ * TODO
+ * 1. 事件
+ * 2. tooltip 嵌套
+ */

@@ -17,16 +17,18 @@ $comp: #{$prefix}-tooltip;
   padding: var(--#{$prefix}-size-unit-1) var(--#{$prefix}-size-unit-2);
   border-radius: var(--#{$prefix}-border-radius-default);
   transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
-
-  background-color: var(--#{$prefix}-color-overlay-default);
+  color: $kpi-tooltip-color-text;
+  background-color: $kpi-tooltip-color-bg;
+  will-change: transform;
 }
 
 .#{$comp}__arrow {
   position: absolute;
-  z-index: 1;
+  z-index: -1;
   pointer-events: none;
   width: $kpi-tooltip-arrow-size;
   height: $kpi-tooltip-arrow-size;
+  clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
 
   &::before {
     content: '';
@@ -35,7 +37,6 @@ $comp: #{$prefix}-tooltip;
     height: 50%;
     transform: translate3d(50%, 50%, 0) rotate(45deg);
     border-bottom-right-radius: 2px;
-
-    background-color: var(--#{$prefix}-color-overlay-default);
+    background-color: $kpi-tooltip-color-bg;
   }
 }
