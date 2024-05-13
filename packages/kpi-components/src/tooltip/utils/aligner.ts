@@ -35,8 +35,8 @@ const _effect = _size / 2
 /* ****************************** screen coords ****************************** */
 
 function getTopOrBottomScreenCoords(
-  main: HorizontalMainAxis,
-  cross: HorizontalCrossAxis
+  main: VerticalMainAxis,
+  cross: VerticalCrossAxis
 ): AlignerConfig['getScreenCoords'] {
   return (props, popup, trigger) => {
     const dy = (props.arrow ? _effect : 0) + _offset
@@ -64,8 +64,8 @@ function getTopOrBottomScreenCoords(
 }
 
 function getLeftOrRightScreenCoords(
-  main: VerticalMainAxis,
-  cross: VerticalCrossAxis
+  main: HorizontalMainAxis,
+  cross: HorizontalCrossAxis
 ): AlignerConfig['getScreenCoords'] {
   return (props, popup, trigger) => {
     const dx = (props.arrow ? _effect : 0) + _offset
@@ -366,15 +366,32 @@ function makePopupCoordsGetter(curr: PopupCoords) {
 
 /* ****************************** aligner ****************************** */
 
-function aligner(config: AlignerConfig) {
-  const {
-    getScreenCoords,
-    keepArrowCenter,
-    shiftPopupCoords,
-    flipPopupCoords,
-    getArrowCoords,
-    getOriginCoords,
-  } = config
+function aligner(main: MainAxis, cross: CrossAxis) {
+  const isTopOrBottomAlign = main === 'top' || main === 'bottom'
+
+  const getScreenCoords = isTopOrBottomAlign
+    ? getTopOrBottomScreenCoords(main, cross as VerticalCrossAxis)
+    : getLeftOrRightScreenCoords(main, cross as HorizontalCrossAxis)
+
+  const keepArrowCenter = isTopOrBottomAlign
+    ? keepTopOrBottomArrowCenter()
+    : keepLeftOrRightArrowCenter()
+
+  const shiftPopupCoords = isTopOrBottomAlign
+    ? shiftTopOrBottomPopupCoords()
+    : shiftLeftOrRightPopupCoords()
+
+  const flipPopupCoords = isTopOrBottomAlign
+    ? flipTopOrBottomPopupCoords()
+    : flipLeftOrRightPopupCoords()
+
+  const getArrowCoords = isTopOrBottomAlign
+    ? getTopOrBottomArrowCoords()
+    : getLeftOrRightArrowCoords()
+
+  const getOriginCoords = isTopOrBottomAlign
+    ? getTopOrBottomOriginCoords()
+    : getLeftOrRightOriginCoords()
 
   return (props: TooltipProps, popup: HTMLElement, trigger: HTMLElement) => {
     // 依次获得各个元素的位置信息
@@ -408,28 +425,6 @@ function aligner(config: AlignerConfig) {
   }
 }
 
-function makeAligner(main: MainAxis, cross: CrossAxis) {
-  if (main === 'top' || main === 'bottom') {
-    return aligner({
-      getScreenCoords: getTopOrBottomScreenCoords(main, cross as HorizontalCrossAxis),
-      keepArrowCenter: keepTopOrBottomArrowCenter(),
-      shiftPopupCoords: shiftTopOrBottomPopupCoords(),
-      flipPopupCoords: flipTopOrBottomPopupCoords(),
-      getArrowCoords: getTopOrBottomArrowCoords(),
-      getOriginCoords: getTopOrBottomOriginCoords(),
-    })
-  }
-
-  return aligner({
-    getScreenCoords: getLeftOrRightScreenCoords(main, cross as VerticalCrossAxis),
-    keepArrowCenter: keepLeftOrRightArrowCenter(),
-    shiftPopupCoords: shiftLeftOrRightPopupCoords(),
-    flipPopupCoords: flipLeftOrRightPopupCoords(),
-    getArrowCoords: getLeftOrRightArrowCoords(),
-    getOriginCoords: getLeftOrRightOriginCoords(),
-  })
-}
-
 const aligners: Record<TooltipPlacement, ReturnType<typeof aligner>> = (
   [
     ['top', 'left', 'center', 'right'],
@@ -438,13 +433,13 @@ const aligners: Record<TooltipPlacement, ReturnType<typeof aligner>> = (
     ['left', 'top', 'center', 'bottom'],
   ] as [MainAxis, CrossAxis, CrossAxis, CrossAxis][]
 ).reduce((result, item) => {
-  const [main, cross1, cross2, cross3] = item
+  const [main, start, middle, end] = item
 
-  result[`${main}${capitalize(cross1)}`] = makeAligner(main, cross1)
+  result[`${main}${capitalize(start)}`] = aligner(main, start)
 
-  result[main] = makeAligner(main, cross2)
+  result[main] = aligner(main, middle)
 
-  result[`${main}${capitalize(cross3)}`] = makeAligner(main, cross3)
+  result[`${main}${capitalize(end)}`] = aligner(main, end)
 
   return result
 }, {} as Record<TooltipPlacement, ReturnType<typeof aligner>>)

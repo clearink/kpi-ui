@@ -67,12 +67,12 @@ export interface ArrowCoords {
 
 export type ElementCoords = ReturnType<typeof getElementCoords>
 
-export type HorizontalMainAxis = 'top' | 'bottom'
-export type VerticalMainAxis = 'left' | 'right'
+export type HorizontalMainAxis = 'left' | 'right'
+export type VerticalMainAxis = 'top' | 'bottom'
 export type MainAxis = HorizontalMainAxis | VerticalMainAxis
 
-export type HorizontalCrossAxis = 'left' | 'center' | 'right'
-export type VerticalCrossAxis = 'top' | 'center' | 'bottom'
+export type HorizontalCrossAxis = 'top' | 'center' | 'bottom'
+export type VerticalCrossAxis = 'left' | 'center' | 'right'
 export type CrossAxis = HorizontalCrossAxis | VerticalCrossAxis
 
 export interface ScreenCoords {

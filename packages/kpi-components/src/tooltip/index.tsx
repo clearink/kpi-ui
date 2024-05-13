@@ -121,5 +121,4 @@ export default withDisplayName(Tooltip)
 /**
  * TODO
  * 1. 事件
- * 2. tooltip 嵌套
  */
