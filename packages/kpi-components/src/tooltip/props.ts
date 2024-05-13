@@ -3,7 +3,7 @@ import { getElementCoords } from './utils/elements'
 import type { HasChildren, SemanticStyledProps } from '@kpi-ui/types'
 import type { OverlayProps } from '../_internal/overlay/props'
 
-export type ToolTipTrigger = 'hover' | 'focus' | 'click' | 'contextMenu'
+export type TriggerEvent = 'hover' | 'focus' | 'click' | 'contextMenu'
 
 export type TooltipPlacement =
   | 'topLeft'
@@ -27,7 +27,7 @@ export interface TooltipProps
 
   content?: React.ReactNode
 
-  trigger?: ToolTipTrigger | ToolTipTrigger[]
+  trigger?: TriggerEvent | TriggerEvent[]
 
   fresh?: boolean
 

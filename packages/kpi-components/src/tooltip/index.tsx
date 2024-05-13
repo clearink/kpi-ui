@@ -61,7 +61,7 @@ function Tooltip(_props: TooltipProps) {
 
   const { states, actions } = useTooltipStore()
 
-  const triggerHandlers = useTriggerEvent(props, setOpen)
+  const [triggerHandlers, contentHandlers] = useTriggerEvent(props, setOpen)
 
   // prettier-ignore
   const onUpdate = () => { open && actions.updateCoords(props) }
@@ -99,6 +99,7 @@ function Tooltip(_props: TooltipProps) {
             ref={states.$popup}
             className={cls(className, classNames.root)}
             style={{ ...styles.root, ...states.popupCoords }}
+            {...contentHandlers}
           >
             <TooltipArrow
               show={!!arrow}

@@ -1,6 +1,6 @@
 import { hasItem, toArray } from '@kpi-ui/utils'
 // types
-import type { DOMAttributes, SetStateAction } from 'react'
+import { DOMAttributes, useCallback } from 'react'
 import type { TooltipProps } from '../props'
 
 // TODO: 完善这里
@@ -8,32 +8,43 @@ import type { TooltipProps } from '../props'
 // 触发条件
 export default function useTriggerEvent(
   props: TooltipProps,
-  setOpen: (state: SetStateAction<boolean>, delay?: number) => void
+  setOpen: (state: boolean, delay?: number) => void
 ) {
   const { trigger, openDelay, closeDelay } = props
 
   const actions = toArray(trigger)
 
-  const handlers: DOMAttributes<HTMLDivElement> = {}
+  const triggerHandlers: DOMAttributes<HTMLDivElement> = {}
 
-  // prettier-ignore
-  const onOpen = () => { setOpen(true, openDelay) }
+  const popupHandlers: DOMAttributes<HTMLElement> = {}
 
-  // prettier-ignore
-  const onClose = () => { setOpen(false, closeDelay) }
+  const onOpen = useCallback(() => {
+    setOpen(true, openDelay)
+  }, [openDelay, setOpen])
+
+  const onClose = useCallback(() => {
+    setOpen(false, closeDelay)
+  }, [closeDelay, setOpen])
 
   if (hasItem(actions, 'hover')) {
     // if (isMobile) {
     //   handlers.onPointerEnter = onOpen
     //   handlers.onPointerLeave = onClose
     // } else {
-    handlers.onMouseEnter = (e) => {
-      console.log(e)
+    triggerHandlers.onMouseEnter = onOpen
+    // 如果在 popup内则不执行onClose
+    triggerHandlers.onMouseLeave = (e) => {
+      console.log(e.nativeEvent, 'leave')
+      onClose()
+    }
+
+    popupHandlers.onMouseEnter = (e) => {
+      console.log('popup enter')
       onOpen()
     }
-    // 如果在 popup内则不执行onClose
-    handlers.onMouseLeave = (e) => {
-      console.log(e)
+
+    popupHandlers.onMouseLeave = (e) => {
+      console.log('popup leave')
       onClose()
     }
     // }
@@ -43,14 +54,14 @@ export default function useTriggerEvent(
     // if (isMobile) {
     //   handlers.onTouchStart = onOpen
     // } else {
-    handlers.onClick = onClose
+    triggerHandlers.onClick = onClose
     // }
   }
 
   if (hasItem(actions, 'focus')) {
-    handlers.onFocus = onOpen
-    handlers.onBlur = onClose
+    triggerHandlers.onFocus = onOpen
+    triggerHandlers.onBlur = onClose
   }
 
-  return handlers
+  return [triggerHandlers, popupHandlers] as const
 }

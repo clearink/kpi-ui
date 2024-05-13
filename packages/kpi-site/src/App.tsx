@@ -29,14 +29,18 @@ const App: React.FC = () => {
         }}
       >
         <Tooltip
-          open
           content={
-            <div
-              onClick={() => {
-                console.log('23123')
-              }}
-            >
-              AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!
+            <div>
+              <Tooltip
+                content={
+                  <Tooltip content="asdasd">
+                    <span>inner tooltip</span>
+                  </Tooltip>
+                }
+              >
+                <span>inner tooltip</span>
+              </Tooltip>
+              <div>AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!</div>
             </div>
           }
           placement="topLeft"
