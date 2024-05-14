@@ -11,7 +11,7 @@ import type { InternalTooltipProps } from '../props'
 import type { TooltipState } from './use_tooltip_store'
 
 // 触发事件
-export default function useTriggerEvent(
+export default function useTooltipEvents(
   states: TooltipState,
   props: InternalTooltipProps,
   setOpen: (state: boolean, delay?: number) => void
@@ -21,17 +21,23 @@ export default function useTriggerEvent(
   const actions = new Set(toArray(trigger))
 
   // 有且仅有 hover 时才不会向 document 挂载 click 事件
-  const onlyHover = actions.size === 1 && actions.has('hover')
+  const onlyHoverTrigger = actions.size === 1 && actions.has('hover')
 
   useEffect(() => {
-    if (onlyHover) return
+    const triggerElement = states.$trigger.current
 
-    const trigger = states.$trigger.current
+    if (onlyHoverTrigger || !triggerElement) return
 
-    return makeEventListener(ownerDocument(trigger), 'mousedown', () => {
-      console.log('mouse down')
+    return makeEventListener(ownerDocument(triggerElement), 'mousedown', (e) => {
+      const popupElement = states.$popup.current
+
+      if (!popupElement) return
+
+      const inPopup = popupElement.contains(e.target as Element)
+      const inTrigger = triggerElement.contains(e.target as Element)
+      console.log('mouse down', e, inPopup, inTrigger)
     })
-  }, [onlyHover, states])
+  }, [onlyHoverTrigger, states, trigger])
 
   let triggerEvents: DOMAttributes<HTMLDivElement> = {}
 

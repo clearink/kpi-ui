@@ -4,7 +4,7 @@ import { useSemanticStyles } from '../../_shared/hooks'
 import { ToolTipContext } from './_shared/context'
 import useTooltipOpen from './hooks/use_tooltip_open'
 import useTooltipStore from './hooks/use_tooltip_store'
-import useTriggerEvent from './hooks/use_trigger_event'
+import useTooltipEvents from './hooks/use_tooltip_events'
 import useWatchCoords from './hooks/use_watch_coords'
 // comps
 import Overlay from '../overlay'
@@ -55,7 +55,7 @@ function InternalTooltip(_props: InternalTooltipProps) {
 
   const { states, actions } = useTooltipStore()
 
-  const [triggerEvents, popupEvents] = useTriggerEvent(states, props, setOpen)
+  const [triggerEvents, popupEvents] = useTooltipEvents(states, props, setOpen)
 
   // prettier-ignore
   const onUpdate = () => { open && actions.updateCoords(props) }
