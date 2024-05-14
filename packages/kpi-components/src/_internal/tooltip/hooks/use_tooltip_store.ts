@@ -2,7 +2,7 @@ import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 import { useMemo } from 'react'
 import aligners from '../utils/aligner'
 // types
-import type { ArrowCoords, PopupCoords, TooltipProps } from '../props'
+import type { ArrowCoords, PopupCoords, InternalTooltipProps } from '../props'
 
 export class TooltipState {
   $trigger = {
@@ -49,12 +49,11 @@ export class TooltipAction {
     this.forceUpdate()
   }
 
-  // 当初始时open=true,updateCoords会调用2次
-  updateCoords = (props: TooltipProps) => {
-    if (!this.popup || !this.trigger) return
-
+  updateCoords = (props: InternalTooltipProps) => {
     // prettier-ignore
-    const { states:{ arrowCoords, popupCoords }, popup, trigger } = this
+    const { popup, trigger, states: { arrowCoords, popupCoords } } = this
+
+    if (!popup || !trigger) return
 
     const getCoords = aligners[props.placement!] || aligners.top
 

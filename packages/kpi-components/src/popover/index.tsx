@@ -1,18 +1,37 @@
-import { usePrefixCls } from '../_shared/hooks'
-import { withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { cloneElement, useRef } from 'react'
+import { fallback, withDisplayName } from '@kpi-ui/utils'
+import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
+import useFormatClass from './hooks/use_format_class'
 // comps
-import Overlay from '../_internal/overlay'
+import Tooltip from '../tooltip'
 // types
 import type { PopoverProps } from './props'
-import { useComposeRefs, useControllableState } from '@kpi-ui/hooks'
 
 const defaultProps: Partial<PopoverProps> = {}
 
-function Popover(_props: PopoverProps) {
-  const props = withDefaults(_props, defaultProps)
+function Popover(props: PopoverProps) {
+  const { style, styles: _styles } = props
 
-  return <div>popover</div>
+  const rootPrefixCls = usePrefixCls()
+
+  const prefixCls = `${rootPrefixCls}-tooltip`
+
+  const classNames = useFormatClass(prefixCls, props)
+
+  const styles = useSemanticStyles(style, _styles)
+
+  return (
+    <Tooltip
+      {...props}
+      classNames={classNames}
+      styles={styles}
+      content={
+        <>
+          <div className={classNames.title}>title</div>
+          <div className={classNames.content}>content</div>
+        </>
+      }
+    />
+  )
 }
 
 export default withDisplayName(Popover)

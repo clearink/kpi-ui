@@ -1,10 +1,10 @@
 import { useControllableState, useEvent, useWatchValue } from '@kpi-ui/hooks'
 import { makeFrameTimeout } from '@kpi-ui/utils'
-import { useEffect, useRef, type SetStateAction } from 'react'
+import { useEffect, useRef } from 'react'
 // types
-import type { TooltipProps } from '../props'
+import type { InternalTooltipProps } from '../props'
 
-export default function useTooltipOpen(props: TooltipProps) {
+export default function useTooltipOpen(props: InternalTooltipProps) {
   const { open: _open, content, defaultOpen, onOpenChange } = props
 
   const timer = useRef(() => {})

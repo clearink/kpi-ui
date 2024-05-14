@@ -29,6 +29,7 @@ const App: React.FC = () => {
         }}
       >
         <Tooltip
+          trigger="click"
           content={
             <div>
               <Tooltip

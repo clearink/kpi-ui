@@ -21,10 +21,13 @@ function Overlay(_props: OverlayProps, ref: ForwardedRef<OverlayRef>) {
     unmountOnExit,
     getContainer,
     transitions = {},
+    className,
     classNames = {},
+    style,
+    styles: _styles,
   } = props
 
-  const styles = useSemanticStyles(props.style, props.styles)
+  const styles = useSemanticStyles(style, _styles)
 
   const { states, actions, returnEarly } = useOverlayStore(props)
 
@@ -37,7 +40,7 @@ function Overlay(_props: OverlayProps, ref: ForwardedRef<OverlayRef>) {
   return (
     <Portal ref={ref} getContainer={getContainer}>
       <div
-        className={cls(props.className, classNames.root)}
+        className={cls(className, classNames.root)}
         style={withDefaults(styles.root || {}, { position: 'absolute', zIndex: level })}
       >
         {!!props.mask && (
