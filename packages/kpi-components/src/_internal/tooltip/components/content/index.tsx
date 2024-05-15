@@ -5,7 +5,7 @@ import { getScrollElements } from '../../utils/elements'
 // types
 import type { TooltipContentProps } from './props'
 
-function TooltipContent(props: TooltipContentProps, ref: ForwardedRef<any>) {
+function TooltipContent(props: TooltipContentProps, _ref: ForwardedRef<any>) {
   const { open, children, onResize, onScroll, onMounted } = props
 
   const dom = useRef<Element>(null)
@@ -26,9 +26,9 @@ function TooltipContent(props: TooltipContentProps, ref: ForwardedRef<any>) {
     return () => { elements.forEach((el) => { el.removeEventListener('scroll', onScroll) })}
   }, [open, onScroll])
 
-  const $content = useComposeRefs((children as any).ref, ref, dom)
+  const ref = useComposeRefs((children as any).ref, _ref, dom)
 
-  return cloneElement(children, { ref: $content })
+  return cloneElement(children, { ref })
 }
 
 export default withDisplayName(forwardRef(TooltipContent), 'TooltipContent')

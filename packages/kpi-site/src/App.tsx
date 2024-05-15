@@ -29,23 +29,26 @@ const App: React.FC = () => {
         }}
       >
         <Tooltip
-          trigger="click"
           content={
-            <div>
-              <Tooltip
-                trigger="click"
-                content={
-                  <Tooltip content="asdasd">
-                    <span>inner tooltip</span>
-                  </Tooltip>
-                }
-              >
-                <span>inner tooltip</span>
-              </Tooltip>
-              <div>AAAAAAAAAAAA for uasasdasdassing antd. Have a nice day!</div>
-            </div>
+            <Tooltip
+              trigger="click"
+              content={
+                <div
+                  style={{ height: 100, width: 200, overflow: 'auto' }}
+                  onMouseDown={(e) => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                  }}
+                >
+                  <div style={{ height: 200 }}> 12312312 不冒泡</div>
+                </div>
+              }
+            >
+              <span>inner tooltip</span>
+            </Tooltip>
           }
           placement="topLeft"
+          trigger="click"
         >
           <Button
             style={
@@ -57,6 +60,14 @@ const App: React.FC = () => {
             Tooltip Trigger
           </Button>
         </Tooltip>
+        <Button
+          onMouseDown={(e) => {
+            e.stopPropagation()
+            e.preventDefault()
+          }}
+        >
+          outer
+        </Button>
       </div>
     </div>
   )

@@ -26,8 +26,10 @@ export default function useTooltipOpen(props: InternalTooltipProps) {
     useEvent((state: boolean, delay = 0) => {
       timer.current()
 
-      if (delay === 0) setOpen(state && !!content)
-      else timer.current = makeFrameTimeout(delay, () => setOpen(state && !!content))
+      const fn = () => setOpen(state && !!content)
+
+      if (delay === 0) fn()
+      else timer.current = makeFrameTimeout(delay, fn)
     }),
   ] as const
 }

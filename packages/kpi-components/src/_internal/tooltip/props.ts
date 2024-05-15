@@ -4,6 +4,11 @@ import type { HasChildren, SemanticStyledProps } from '@kpi-ui/types'
 import type { OverlayProps } from '../overlay/props'
 
 export type TriggerEvent = 'hover' | 'focus' | 'click' | 'contextMenu'
+export interface TriggerEventOption {
+  type: TriggerEvent
+  openDelay?: number
+  closeDelay?: number
+}
 
 export type TooltipPlacement =
   | 'topLeft'
@@ -27,9 +32,7 @@ export interface InternalTooltipProps
 
   content?: React.ReactNode
 
-  trigger?:
-    | TriggerEvent
-    | (TriggerEvent | { type: TriggerEvent; openDelay?: number; closeDelay?: number })[]
+  trigger?: TriggerEvent | (TriggerEvent | TriggerEventOption)[]
 
   fresh?: boolean
 

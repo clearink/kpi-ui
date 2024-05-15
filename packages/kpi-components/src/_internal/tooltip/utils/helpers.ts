@@ -18,12 +18,10 @@ export function isInPopupChain(states: TooltipState, el: Element) {
   return isInChain(trigger) || isInChain(popup) || popups.some((item) => isInChain(item))
 }
 
-export function formatTooltipTrigger(props: InternalTooltipProps) {
+export function formatTriggerOptions(props: InternalTooltipProps) {
   const { trigger, openDelay, closeDelay } = props
 
-  if (isString(trigger)) return [{ type: trigger, openDelay, closeDelay }]
-
-  return toArray(trigger).map((item) => {
+  const triggerList = toArray(trigger).map((item) => {
     if (isString(item)) return { type: item, openDelay, closeDelay }
 
     return {
@@ -32,4 +30,6 @@ export function formatTooltipTrigger(props: InternalTooltipProps) {
       closeDelay: item.closeDelay ?? closeDelay,
     }
   })
+
+  return new Map(triggerList.map((item) => [item.type, item]))
 }

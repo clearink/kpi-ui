@@ -1,48 +1,74 @@
-// trigger events
-
-import { DOMAttributes } from 'react'
+import { type DOMAttributes, type MouseEventHandler } from 'react'
+import type useTooltipOpen from '../hooks/use_tooltip_open'
+// types
+import type { TriggerEventOption } from '../props'
 
 // 除了 hover 时， popup 都是使用 click 结束 close 的
 // hover
 export function getHoverEvents(
-  onOpen: () => void,
-  onClose: () => void
+  option: TriggerEventOption,
+  [state, setOpen]: ReturnType<typeof useTooltipOpen>
 ): [DOMAttributes<HTMLElement>, DOMAttributes<HTMLElement>] {
-  const onMouseEnter = onOpen
+  const { openDelay, closeDelay } = option
 
-  const onMouseLeave = onClose
+  const onMouseEnter = () => {
+    setOpen(true, openDelay)
+  }
+
+  const onMouseLeave = () => {
+    setOpen(false, closeDelay)
+  }
 
   return [
     { onMouseEnter, onMouseLeave },
     { onMouseEnter, onMouseLeave },
   ]
-}
-
-// focus
-export function getFocusEvents(
-  onOpen: () => void,
-  onClose: () => void
-): [DOMAttributes<HTMLElement>, DOMAttributes<HTMLElement>] {
-  return [{ onFocus: onOpen, onBlur: onClose }, {}]
 }
 
 // click
 export function getClickEvents(
-  onOpen: () => void,
-  onClose: () => void
+  option: TriggerEventOption,
+  [state, setOpen]: ReturnType<typeof useTooltipOpen>
 ): [DOMAttributes<HTMLElement>, DOMAttributes<HTMLElement>] {
-  return [
-    {
-      onClick: onOpen,
-    },
-    {},
-  ]
+  const { openDelay } = option
+
+  const onClick = () => {
+    setOpen(!state, openDelay)
+  }
+
+  return [{ onClick }, {}]
+}
+
+// focus
+export function getFocusEvents(
+  option: TriggerEventOption,
+  [state, setOpen]: ReturnType<typeof useTooltipOpen>
+): [DOMAttributes<HTMLElement>, DOMAttributes<HTMLElement>] {
+  const { openDelay, closeDelay } = option
+
+  const onFocus = () => {
+    setOpen(true, openDelay)
+  }
+
+  const onBlur = () => {
+    setOpen(false, closeDelay)
+  }
+
+  return [{ onFocus, onBlur }, {}]
 }
 
 // contextmenu
 export function getContextMenuEvents(
-  onOpen: () => void,
-  onClose: () => void
+  option: TriggerEventOption,
+  [state, setOpen]: ReturnType<typeof useTooltipOpen>
 ): [DOMAttributes<HTMLElement>, DOMAttributes<HTMLElement>] {
-  return [{}, {}]
+  const { openDelay } = option
+
+  const onContextMenu: MouseEventHandler = (e) => {
+    e.preventDefault()
+
+    setOpen(!state, openDelay)
+  }
+
+  return [{ onContextMenu }, {}]
 }

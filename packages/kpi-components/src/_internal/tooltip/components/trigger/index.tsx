@@ -5,7 +5,7 @@ import { getScrollElements } from '../../utils/elements'
 // types
 import type { TooltipTriggerProps } from './props'
 
-function TooltipTrigger(props: TooltipTriggerProps, ref: ForwardedRef<any>) {
+function TooltipTrigger(props: TooltipTriggerProps, _ref: ForwardedRef<any>) {
   const { open, children, events, onResize, onScroll } = props
 
   const dom = useRef<Element>(null)
@@ -24,9 +24,10 @@ function TooltipTrigger(props: TooltipTriggerProps, ref: ForwardedRef<any>) {
     return () => { elements.forEach((el) => { el.removeEventListener('scroll', onScroll) }) }
   }, [open, onScroll])
 
-  const $trigger = useComposeRefs((children as any).ref, ref, dom)
+  const ref = useComposeRefs((children as any).ref, _ref, dom)
 
-  return cloneElement(children, { ref: $trigger, ...events })
+  // TODO: 不能覆盖原有的 event
+  return cloneElement(children, { ref, ...events })
 }
 
 export default withDisplayName(forwardRef(TooltipTrigger), 'TooltipTrigger')

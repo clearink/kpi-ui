@@ -1,15 +1,6 @@
-import { useEvent, useThrottleFrame, useThrottleTick } from '@kpi-ui/hooks'
-import {
-  batch,
-  cls,
-  getShadowRoot,
-  noop,
-  pushItem,
-  removeItem,
-  withDefaults,
-  withDisplayName,
-} from '@kpi-ui/utils'
-import { useEffect, useMemo } from 'react'
+import { useThrottleFrame, useThrottleTick } from '@kpi-ui/hooks'
+import { batch, cls, noop, removeItem, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { useMemo } from 'react'
 import { useSemanticStyles } from '../../_shared/hooks'
 import { InternalToolTipContext, type InternalToolTipContextState } from './_shared/context'
 import useTooltipEvents from './hooks/use_tooltip_events'
@@ -65,17 +56,6 @@ function InternalTooltip(_props: InternalTooltipProps) {
 
   const { states, actions } = useTooltipStore()
 
-  const [triggerEvents, popupEvents] = useTooltipEvents(states, props, setOpen)
-
-  // prettier-ignore
-  const onUpdate = () => { open && actions.updateCoords(props) }
-
-  useWatchCoords(props, onUpdate)
-
-  const handleResize = useThrottleTick(onUpdate)
-
-  const handleScroll = useThrottleFrame(onUpdate)
-
   const parentContext = InternalToolTipContext.useState()
 
   const tooltipContext = useMemo<InternalToolTipContextState>(() => {
@@ -89,7 +69,16 @@ function InternalTooltip(_props: InternalTooltipProps) {
     })
   }, [parentContext, states.popups])
 
-  // 让 tooltip 去执行？
+  const [triggerEvents, popupEvents] = useTooltipEvents(states, props, [open, setOpen])
+
+  // prettier-ignore
+  const onUpdate = () => { open && actions.updateCoords(props) }
+
+  useWatchCoords(props, onUpdate)
+
+  const handleResize = useThrottleTick(onUpdate)
+
+  const handleScroll = useThrottleFrame(onUpdate)
 
   return (
     <>
