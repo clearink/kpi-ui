@@ -11,7 +11,7 @@ import {
 import type { InternalNamePath } from '../props'
 
 function internalSetIn<V = any>(source: V, paths: InternalNamePath, value: any): V {
-  if (paths.length === 0) return value
+  if (!paths.length) return value
 
   const [path, ...rest] = paths
 
@@ -43,13 +43,13 @@ export function getIn<V = any>(values: V, paths: InternalNamePath): any {
 }
 
 function internalDeleteIn<V = any>(source: V, paths: InternalNamePath): V {
-  if (paths.length === 0) return source
+  if (!paths.length) return source
 
   const [attr, ...rest] = paths
 
   if (!hasOwn(source as any, attr)) return source
 
-  if (rest.length === 0) delete source[attr]
+  if (!rest.length) delete source[attr]
   else internalDeleteIn(source[attr], rest)
 
   return source

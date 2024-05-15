@@ -29,8 +29,8 @@ function FocusTrap(_props: FocusTrapProps) {
 
   const ref = useComposeRefs(states.$content, (children as any).ref)
 
-  const runFocusTrap = useEvent(() => {
-    if (!states.$content || !getTabbable) return
+  const runFocusTrap = useEvent((active: FocusTrapProps['active']) => {
+    if (!active || !states.$content || !getTabbable) return
 
     const root = ownerDocument(states.$start.current)
 
@@ -54,8 +54,7 @@ function FocusTrap(_props: FocusTrapProps) {
     }
   })
 
-  // prettier-ignore
-  useEffect(() => { if(active) return runFocusTrap() }, [active, runFocusTrap])
+  useEffect(() => runFocusTrap(active), [active, runFocusTrap])
 
   return (
     <>

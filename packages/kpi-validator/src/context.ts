@@ -38,7 +38,7 @@ export default class SchemaContext extends TypeError {
   issues: SchemaIssue[] = []
 
   get isEmpty() {
-    return this.issues.length === 0
+    return !this.issues.length
   }
 
   addIssue(message: Message, path: Name[], params?: any) {

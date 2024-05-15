@@ -1,5 +1,4 @@
-import { isUndefined, makeEventListener, makeFrameTimeout } from '@kpi-ui/utils'
-import { batch } from '../../../_shared/utils'
+import { batch, isUndefined, makeEventListener, makeFrameTimeout } from '@kpi-ui/utils'
 import { isAppear, isEnter, isExit } from '../../../constants'
 import runCounter from '../../../utils/run_counter'
 import { delTransitionClass } from '../utils/classnames'

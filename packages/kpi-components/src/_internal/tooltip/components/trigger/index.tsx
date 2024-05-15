@@ -17,14 +17,11 @@ function TooltipTrigger(props: TooltipTriggerProps, ref: ForwardedRef<any>) {
 
     const elements = getScrollElements(dom.current)
 
-    elements.forEach((el) => {
-      el.addEventListener('scroll', onScroll, { passive: true })
-    })
+    // prettier-ignore
+    elements.forEach((el) => { el.addEventListener('scroll', onScroll, { passive: true }) })
 
-    return () => {
-      // prettier-ignore
-      elements.forEach((el) => { el.removeEventListener('scroll', onScroll) })
-    }
+    // prettier-ignore
+    return () => { elements.forEach((el) => { el.removeEventListener('scroll', onScroll) }) }
   }, [open, onScroll])
 
   const $trigger = useComposeRefs((children as any).ref, ref, dom)

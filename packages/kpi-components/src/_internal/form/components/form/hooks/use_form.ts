@@ -6,9 +6,11 @@ import type { ExternalFormInstance } from '../control/props'
 export default function useForm<S = any>(form?: ExternalFormInstance<S>) {
   const mounted = useMounted()
 
-  const forceUpdate = useForceUpdate()
+  const update = useForceUpdate()
 
   return useConstant<ExternalFormInstance<S>>(() => {
-    return form || new FormGroupControl(() => mounted() && forceUpdate()).injectForm()
+    const callback = () => mounted() && update()
+
+    return form || new FormGroupControl(callback).injectForm()
   })
 }

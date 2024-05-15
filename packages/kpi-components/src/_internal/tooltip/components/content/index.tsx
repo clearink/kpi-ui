@@ -6,25 +6,24 @@ import { getScrollElements } from '../../utils/elements'
 import type { TooltipContentProps } from './props'
 
 function TooltipContent(props: TooltipContentProps, ref: ForwardedRef<any>) {
-  const { open, children, onResize, onScroll } = props
+  const { open, children, onResize, onScroll, onMounted } = props
 
   const dom = useRef<Element>(null)
 
   useResizeObserver(dom, onResize)
+
+  useEffect(() => onMounted(dom.current), [onMounted])
 
   useEffect(() => {
     if (!dom.current || !open) return
 
     const elements = new Set([...getScrollElements(dom.current), ownerWindow(dom.current)])
 
-    elements.forEach((el) => {
-      el.addEventListener('scroll', onScroll, { passive: true })
-    })
+    // prettier-ignore
+    elements.forEach((el) => { el.addEventListener('scroll', onScroll, { passive: true }) })
 
-    return () => {
-      // prettier-ignore
-      elements.forEach((el) => { el.removeEventListener('scroll', onScroll) })
-    }
+    // prettier-ignore
+    return () => { elements.forEach((el) => { el.removeEventListener('scroll', onScroll) })}
   }, [open, onScroll])
 
   const $content = useComposeRefs((children as any).ref, ref, dom)

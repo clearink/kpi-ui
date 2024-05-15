@@ -7,9 +7,9 @@ export default function useFieldControl() {
   // 重置次数
   const [resetCount, resetField] = useReducer((count) => count + 1, 0)
   // 强制更新视图
-  const forceUpdate = useForceUpdate()
+  const update = useForceUpdate()
 
-  const control = useConstant(() => new FormFieldControl(forceUpdate, resetField, mounted))
+  const control = useConstant(() => new FormFieldControl(update, resetField, mounted))
 
   return [control, resetCount] as const
 }

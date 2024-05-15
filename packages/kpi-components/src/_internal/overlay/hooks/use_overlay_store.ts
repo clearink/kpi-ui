@@ -36,11 +36,11 @@ export class OverlayAction {
 export default function useOverlayStore(props: OverlayProps) {
   const { keepMounted, unmountOnExit, open } = props
 
-  const forceUpdate = useForceUpdate()
+  const update = useForceUpdate()
 
-  const states = useConstant(() => new OverlayState(props, forceUpdate))
+  const states = useConstant(() => new OverlayState(props, update))
 
-  const actions = useMemo(() => new OverlayAction(forceUpdate, states), [forceUpdate, states])
+  const actions = useMemo(() => new OverlayAction(update, states), [update, states])
 
   let returnEarly = false
 

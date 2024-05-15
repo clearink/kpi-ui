@@ -93,11 +93,11 @@ export class TransitionAction<E extends HTMLElement> {
 export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>) {
   const { when, unmountOnExit, mountOnEnter } = props
 
-  const forceUpdate = useForceUpdate()
+  const update = useForceUpdate()
 
   const states = useConstant(() => new TransitionState<E>(props))
 
-  const actions = useMemo(() => new TransitionAction<E>(forceUpdate, states), [states, forceUpdate])
+  const actions = useMemo(() => new TransitionAction<E>(update, states), [states, update])
 
   let returnEarly = false
 

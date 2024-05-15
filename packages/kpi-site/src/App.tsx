@@ -33,6 +33,7 @@ const App: React.FC = () => {
           content={
             <div>
               <Tooltip
+                trigger="click"
                 content={
                   <Tooltip content="asdasd">
                     <span>inner tooltip</span>

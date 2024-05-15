@@ -1,4 +1,4 @@
-import { fallback, isArray, isNumber, isObject, isUndefined, ownerRoot } from '@kpi-ui/utils'
+import { fallback, isArray, isEqual, isObject, isUndefined, ownerDocument } from '@kpi-ui/utils'
 import { getElementCoords, getPositionedCoords } from './elements'
 // types
 import type {
@@ -8,11 +8,11 @@ import type {
   ElementCoords,
   HorizontalCrossAxis,
   HorizontalMainAxis,
+  InternalTooltipProps,
   MainAxis,
   PopupCoords,
   ScreenCoords,
   TooltipPlacement,
-  TooltipProps,
   VerticalCrossAxis,
   VerticalMainAxis,
 } from '../props'
@@ -39,7 +39,7 @@ function getTopOrBottomScreenCoords(
 
     const left = trigger.left + (cross === 'left' ? 0 : cross === 'right' ? dx : dx / 2)
 
-    const root = ownerRoot(trigger.el)
+    const root = ownerDocument(trigger.el).documentElement
 
     return {
       top,
@@ -68,7 +68,7 @@ function getLeftOrRightScreenCoords(
 
     const top = trigger.top + (cross === 'top' ? 0 : cross === 'bottom' ? dy : dy / 2)
 
-    const root = ownerRoot(trigger.el)
+    const root = ownerDocument(trigger.el).documentElement
 
     return {
       top,
@@ -132,7 +132,7 @@ function keepLeftOrRightArrowCenter(): AlignerConfig['keepArrowCenter'] {
 
 /* ****************************** popup offset ****************************** */
 
-function offsetPopupCoords({ offset }: TooltipProps, popup: ScreenCoords): ScreenCoords {
+function offsetPopupCoords({ offset }: InternalTooltipProps, popup: ScreenCoords): ScreenCoords {
   const { top, left, main } = popup
 
   const [horizontal, vertical] = isArray(offset) ? [offset[0], offset[1]] : [offset, 0]
@@ -330,30 +330,14 @@ function getLeftOrRightOriginCoords() {
   }
 }
 
-/* ****************************** coords equal ****************************** */
-
-function isEqualCoords(prev: Record<string, any>, curr: Record<string, any>, keys: string[]) {
-  const toString = (value: any) => (isNumber(value) ? value.toFixed(1) : value)
-
-  return keys.every((key) => toString(prev[key]) === toString(curr[key]))
-}
-
 /* ****************************** coords getter ****************************** */
 
 function makeArrowCoordsGetter(curr: ArrowCoords) {
-  return (prev: Partial<ArrowCoords>) => {
-    const shouldUpdate = !isEqualCoords(prev, curr, ['top', 'left', 'transform'])
-
-    return shouldUpdate ? curr : null
-  }
+  return (prev: Partial<ArrowCoords>) => (isEqual(prev, curr) ? null : curr)
 }
 
 function makePopupCoordsGetter(curr: PopupCoords) {
-  return (prev: Partial<PopupCoords>) => {
-    const shouldUpdate = !isEqualCoords(prev, curr, ['top', 'left', '--origin-y', '--origin-x'])
-
-    return shouldUpdate ? curr : null
-  }
+  return (prev: Partial<PopupCoords>) => (isEqual(prev, curr) ? null : curr)
 }
 
 /* ****************************** aligner ****************************** */
@@ -385,7 +369,7 @@ function aligner(main: MainAxis, cross: CrossAxis) {
     ? getTopOrBottomOriginCoords()
     : getLeftOrRightOriginCoords()
 
-  return (props: TooltipProps, popup: HTMLElement, trigger: HTMLElement) => {
+  return (props: InternalTooltipProps, popup: HTMLElement, trigger: HTMLElement) => {
     // 依次获得各个元素的位置信息
     const triggerCoords = getElementCoords(trigger)
     const popupCoords = getElementCoords(popup)

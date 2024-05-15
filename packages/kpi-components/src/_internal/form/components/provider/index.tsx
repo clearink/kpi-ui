@@ -1,6 +1,5 @@
-import { noop } from '@kpi-ui/utils'
+import { batch, noop } from '@kpi-ui/utils'
 import { useMemo, useRef } from 'react'
-import { batch } from '../../../../_shared/utils'
 import { InternalFormContext, type InternalFormContextState } from '../../_shared/context'
 // import FormProviderControl from './control'
 // types
@@ -12,12 +11,11 @@ export default function FormProvider(props: InternalFormProviderProps) {
 
   const forms = useRef<Forms>({})
 
-  const provider = InternalFormContext.useState()
+  const parentContext = InternalFormContext.useState()
 
   const formContext = useMemo<InternalFormContextState>(() => {
     return {
-      // 为每一个 FormProvider 注册表单实例 同时返回取消事件
-      register: batch(provider.register, (form, name) => {
+      register: batch(parentContext.register, (form, name) => {
         if (!name) return noop
 
         forms.current[name] = form
@@ -25,10 +23,10 @@ export default function FormProvider(props: InternalFormProviderProps) {
         // prettier-ignore
         return () => { delete forms.current[name] }
       }),
-      triggerFormChange: provider.triggerFormChange,
-      triggerFormFinish: provider.triggerFormFinish,
+      triggerFormChange: parentContext.triggerFormChange,
+      triggerFormFinish: parentContext.triggerFormFinish,
     }
-  }, [provider])
+  }, [parentContext])
 
   return (
     <InternalFormContext.Provider value={formContext}>

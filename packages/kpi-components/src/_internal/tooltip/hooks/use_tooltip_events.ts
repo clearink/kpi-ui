@@ -1,14 +1,16 @@
 import { makeEventListener, ownerDocument, shallowMerge, toArray } from '@kpi-ui/utils'
-import { useCallback, useEffect, type DOMAttributes } from 'react'
+import { useEffect, type DOMAttributes } from 'react'
 import {
   getClickEvents,
   getContextMenuEvents,
   getFocusEvents,
   getHoverEvents,
 } from '../utils/events'
+import { isInPopupChain } from '../utils/helpers'
 // types
 import type { InternalTooltipProps } from '../props'
 import type { TooltipState } from './use_tooltip_store'
+import { useEvent } from '@kpi-ui/hooks'
 
 // 触发事件
 export default function useTooltipEvents(
@@ -21,33 +23,27 @@ export default function useTooltipEvents(
   const actions = new Set(toArray(trigger))
 
   // 有且仅有 hover 时才不会向 document 挂载 click 事件
-  const onlyHoverTrigger = actions.size === 1 && actions.has('hover')
-
-  useEffect(() => {
-    const triggerElement = states.$trigger.current
-
-    if (onlyHoverTrigger || !triggerElement) return
-
-    return makeEventListener(ownerDocument(triggerElement), 'mousedown', (e) => {
-      const popupElement = states.$popup.current
-
-      if (!popupElement) return
-
-      const inPopup = popupElement.contains(e.target as Element)
-      const inTrigger = triggerElement.contains(e.target as Element)
-      console.log('mouse down', e, inPopup, inTrigger)
-    })
-  }, [onlyHoverTrigger, states, trigger])
+  const hasClickTrigger = actions.has('click')
 
   let triggerEvents: DOMAttributes<HTMLDivElement> = {}
 
   let popupEvents: DOMAttributes<HTMLElement> = {}
 
   // prettier-ignore
-  const onOpen = useCallback(() => { setOpen(true, openDelay) }, [openDelay, setOpen])
+  const onOpen = useEvent(() => { setOpen(true, openDelay) })
 
   // prettier-ignore
-  const onClose = useCallback(() => { setOpen(false, closeDelay) }, [closeDelay, setOpen])
+  const onClose = useEvent(() => { setOpen(false, closeDelay) })
+
+  useEffect(() => {
+    const triggerElement = states.$trigger.current
+
+    if (!hasClickTrigger || !triggerElement) return
+
+    return makeEventListener(ownerDocument(triggerElement), 'mousedown', (e) => {
+      isInPopupChain(states, e.target as Element) ? onOpen() : onClose()
+    })
+  }, [hasClickTrigger, onClose, onOpen, states, trigger])
 
   if (actions.has('hover')) {
     const [_triggerEvents, _popupEvents] = getHoverEvents(onOpen, onClose)

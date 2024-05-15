@@ -13,9 +13,7 @@ export class TooltipState {
     current: null as HTMLDivElement | null,
   }
 
-  $content = {
-    current: null as HTMLDivElement | null,
-  }
+  popups: Element[] = []
 
   popupCoords: Partial<PopupCoords> = { left: '-1000vw', top: '-1000vh' }
 
@@ -66,11 +64,11 @@ export class TooltipAction {
 }
 
 export default function useTooltipStore() {
-  const forceUpdate = useForceUpdate()
+  const update = useForceUpdate()
 
   const states = useConstant(() => new TooltipState())
 
-  const actions = useMemo(() => new TooltipAction(forceUpdate, states), [forceUpdate, states])
+  const actions = useMemo(() => new TooltipAction(update, states), [update, states])
 
   return { states, actions }
 }

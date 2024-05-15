@@ -27,7 +27,9 @@ export interface InternalTooltipProps
 
   content?: React.ReactNode
 
-  trigger?: TriggerEvent | TriggerEvent[]
+  trigger?:
+    | TriggerEvent
+    | (TriggerEvent | { type: TriggerEvent; openDelay?: number; closeDelay?: number })[]
 
   fresh?: boolean
 

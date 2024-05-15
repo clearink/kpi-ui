@@ -7,4 +7,6 @@ export interface TooltipContentProps extends Required<HasChildren<ReactElement>>
   onResize: () => void
 
   onScroll: () => void
+
+  onMounted: (el: Element | null) => () => void
 }

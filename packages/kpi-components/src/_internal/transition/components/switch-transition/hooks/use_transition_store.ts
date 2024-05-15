@@ -1,7 +1,6 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
-import { omit } from '@kpi-ui/utils'
+import { batch, omit } from '@kpi-ui/utils'
 import { cloneElement, createElement, useMemo, type ReactElement } from 'react'
-import { batch } from '../../../_shared/utils'
 import runCounter from '../../../utils/run_counter'
 import makeUniqueId from '../../../utils/unique_id'
 // comps
@@ -154,11 +153,11 @@ class TransitionAction<E extends HTMLElement> {
 }
 
 export default function useTransitionStore<E extends HTMLElement = HTMLElement>(props: Switch<E>) {
-  const forceUpdate = useForceUpdate()
+  const update = useForceUpdate()
 
-  const states = useConstant(() => new TransitionState(forceUpdate, props))
+  const states = useConstant(() => new TransitionState(update, props))
 
-  const actions = useMemo(() => new TransitionAction(forceUpdate, states), [forceUpdate, states])
+  const actions = useMemo(() => new TransitionAction(update, states), [update, states])
 
   // 不能直接在渲染期间 write ref
   // prettier-ignore

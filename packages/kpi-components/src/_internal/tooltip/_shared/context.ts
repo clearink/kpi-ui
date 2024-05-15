@@ -1,6 +1,8 @@
-import { ctxHelper } from '@kpi-ui/utils'
+import { ctxHelper, noop } from '@kpi-ui/utils'
 
-export interface ToolTipContextState {}
+export interface InternalToolTipContextState {
+  (el: Element | null): () => void
+}
 
 // 嵌套时的逻辑
-export const ToolTipContext = ctxHelper<ToolTipContextState>({})
+export const InternalToolTipContext = ctxHelper<InternalToolTipContextState>(() => noop)

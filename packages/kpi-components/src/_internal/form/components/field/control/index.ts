@@ -67,7 +67,7 @@ export class FormFieldControl {
   public get dirty() {
     if (this._dirty || !isUndefined(this._props.initialValue)) return true
 
-    return !!(this._getInitial && !isUndefined(this._getInitial()))
+    return !isUndefined(this._getInitial?.())
   }
 
   public _validating = false

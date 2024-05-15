@@ -1,10 +1,20 @@
-import { useThrottleFrame, useThrottleTick } from '@kpi-ui/hooks'
-import { cls, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { useEvent, useThrottleFrame, useThrottleTick } from '@kpi-ui/hooks'
+import {
+  batch,
+  cls,
+  getShadowRoot,
+  noop,
+  pushItem,
+  removeItem,
+  withDefaults,
+  withDisplayName,
+} from '@kpi-ui/utils'
+import { useEffect, useMemo } from 'react'
 import { useSemanticStyles } from '../../_shared/hooks'
-import { ToolTipContext } from './_shared/context'
+import { InternalToolTipContext, type InternalToolTipContextState } from './_shared/context'
+import useTooltipEvents from './hooks/use_tooltip_events'
 import useTooltipOpen from './hooks/use_tooltip_open'
 import useTooltipStore from './hooks/use_tooltip_store'
-import useTooltipEvents from './hooks/use_tooltip_events'
 import useWatchCoords from './hooks/use_watch_coords'
 // comps
 import Overlay from '../overlay'
@@ -66,6 +76,21 @@ function InternalTooltip(_props: InternalTooltipProps) {
 
   const handleScroll = useThrottleFrame(onUpdate)
 
+  const parentContext = InternalToolTipContext.useState()
+
+  const tooltipContext = useMemo<InternalToolTipContextState>(() => {
+    return batch(parentContext, (el) => {
+      if (!el) return noop
+
+      states.popups.push(el)
+
+      // prettier-ignore
+      return () => { removeItem(states.popups, el) }
+    })
+  }, [parentContext, states.popups])
+
+  // 让 tooltip 去执行？
+
   return (
     <>
       <TooltipTrigger
@@ -88,7 +113,12 @@ function InternalTooltip(_props: InternalTooltipProps) {
         getContainer={getContainer}
         transitions={{ content: transition }}
       >
-        <TooltipContent open={open} onResize={handleResize} onScroll={handleScroll}>
+        <TooltipContent
+          open={open}
+          onResize={handleResize}
+          onScroll={handleScroll}
+          onMounted={tooltipContext}
+        >
           <div
             ref={states.$popup}
             className={cls(className, classNames.root)}
@@ -100,9 +130,9 @@ function InternalTooltip(_props: InternalTooltipProps) {
               className={classNames.arrow}
               style={{ ...styles.arrow, ...states.arrowCoords }}
             />
-            {/* <ToolTipContext.Provider value={{}}> */}
-            <ShouldUpdate when={open || !!fresh}>{content}</ShouldUpdate>
-            {/* </ToolTipContext.Provider> */}
+            <InternalToolTipContext.Provider value={tooltipContext}>
+              <ShouldUpdate when={open || !!fresh}>{content}</ShouldUpdate>
+            </InternalToolTipContext.Provider>
           </div>
         </TooltipContent>
       </Overlay>

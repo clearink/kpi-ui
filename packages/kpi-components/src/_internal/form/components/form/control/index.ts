@@ -353,11 +353,11 @@ export class FormControlsControl {
 
   // 注册字段
   registerField = (control: FormFieldControl, dispatch: FormDispatchControl) => {
-    const { $state, $initial } = dispatch
+    const { $state, $initial, dispatch: _dispatch } = dispatch
 
     const popControl = this.pushControl(control, $initial)
 
-    dispatch.dispatch({ type: 'registerField', control })
+    _dispatch({ type: 'registerField', control })
 
     // 取消注册， 清除副作用
     return () => {
@@ -373,8 +373,7 @@ export class FormControlsControl {
       if ($state.getFieldValue(name) === $initial.getInitialValue(name)) return
 
       // 不保留数据 && name 合法 && 没有同名字段
-      const cleanup = !this._controls.map.has(key)
-      cleanup && dispatch.dispatch({ type: 'removeField', control })
+      if (!this._controls.map.has(key)) _dispatch({ type: 'removeField', control })
     }
   }
 
@@ -748,7 +747,7 @@ export class FormDispatchControl<State = any> {
 
     const nameList = updateControls.map(({ _name }) => _name)
 
-    nameList.length && this.validateFields(nameList)
+    nameList.length > 0 && this.validateFields(nameList)
 
     // 尽量更新所有依赖字段
     return updateControls
@@ -803,8 +802,6 @@ export class FormDispatchControl<State = any> {
 
   // 触发 onFailed 回调
   triggerOnFailed = (errors: any) => {
-    const { onFailed } = this.$props._props
-
-    onFailed && onFailed(errors)
+    this.$props._props.onFailed?.(errors)
   }
 }
