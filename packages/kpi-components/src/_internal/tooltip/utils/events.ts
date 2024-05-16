@@ -1,22 +1,18 @@
 import { type DOMAttributes, type MouseEventHandler } from 'react'
-import type useTooltipOpen from '../hooks/use_tooltip_open'
 // types
-import type { TriggerEventOption } from '../props'
+import type useTooltipOpen from '../hooks/use_tooltip_open'
 
 // 除了 hover 时， popup 都是使用 click 结束 close 的
 // hover
 export function getHoverEvents(
-  option: TriggerEventOption,
-  [state, setOpen]: ReturnType<typeof useTooltipOpen>
+  setOpen: ReturnType<typeof useTooltipOpen>[1]
 ): [DOMAttributes<HTMLElement>, DOMAttributes<HTMLElement>] {
-  const { openDelay, closeDelay } = option
-
   const onMouseEnter = () => {
-    setOpen(true, openDelay)
+    setOpen(() => true)
   }
 
   const onMouseLeave = () => {
-    setOpen(false, closeDelay)
+    setOpen(() => false)
   }
 
   return [
@@ -27,13 +23,10 @@ export function getHoverEvents(
 
 // click
 export function getClickEvents(
-  option: TriggerEventOption,
-  [state, setOpen]: ReturnType<typeof useTooltipOpen>
+  setOpen: ReturnType<typeof useTooltipOpen>[1]
 ): [DOMAttributes<HTMLElement>, DOMAttributes<HTMLElement>] {
-  const { openDelay } = option
-
   const onClick = () => {
-    setOpen(!state, openDelay)
+    setOpen((state) => !state)
   }
 
   return [{ onClick }, {}]
@@ -41,17 +34,14 @@ export function getClickEvents(
 
 // focus
 export function getFocusEvents(
-  option: TriggerEventOption,
-  [state, setOpen]: ReturnType<typeof useTooltipOpen>
+  setOpen: ReturnType<typeof useTooltipOpen>[1]
 ): [DOMAttributes<HTMLElement>, DOMAttributes<HTMLElement>] {
-  const { openDelay, closeDelay } = option
-
   const onFocus = () => {
-    setOpen(true, openDelay)
+    setOpen(() => true)
   }
 
   const onBlur = () => {
-    setOpen(false, closeDelay)
+    setOpen(() => false)
   }
 
   return [{ onFocus, onBlur }, {}]
@@ -59,15 +49,12 @@ export function getFocusEvents(
 
 // contextmenu
 export function getContextMenuEvents(
-  option: TriggerEventOption,
-  [state, setOpen]: ReturnType<typeof useTooltipOpen>
+  setOpen: ReturnType<typeof useTooltipOpen>[1]
 ): [DOMAttributes<HTMLElement>, DOMAttributes<HTMLElement>] {
-  const { openDelay } = option
-
   const onContextMenu: MouseEventHandler = (e) => {
     e.preventDefault()
 
-    setOpen(!state, openDelay)
+    setOpen((state) => !state)
   }
 
   return [{ onContextMenu }, {}]

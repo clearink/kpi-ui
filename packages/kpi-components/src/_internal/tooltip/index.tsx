@@ -19,7 +19,7 @@ import type { InternalTooltipProps } from './props'
 const defaultProps: Partial<InternalTooltipProps> = {
   trigger: 'hover',
   openDelay: 100,
-  closeDelay: 100,
+  closeDelay: 200,
   defaultOpen: false,
   placement: 'top',
   shift: true,
@@ -69,7 +69,7 @@ function InternalTooltip(_props: InternalTooltipProps) {
     })
   }, [parentContext, states.popups])
 
-  const [triggerEvents, popupEvents] = useTooltipEvents(states, props, [open, setOpen])
+  const [triggerEvents, popupEvents] = useTooltipEvents(props, states, setOpen)
 
   // prettier-ignore
   const onUpdate = () => { open && actions.updateCoords(props) }

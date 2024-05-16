@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react'
 import type { InternalTooltipProps } from '../props'
 
 export default function useTooltipOpen(props: InternalTooltipProps) {
-  const { open: _open, content, defaultOpen, onOpenChange } = props
+  const { open: _open, content, openDelay, closeDelay, defaultOpen, onOpenChange } = props
 
   const timer = useRef(() => {})
 
@@ -23,13 +23,15 @@ export default function useTooltipOpen(props: InternalTooltipProps) {
 
   return [
     open,
-    useEvent((state: boolean, delay = 0) => {
+    useEvent((action: (state: boolean) => boolean) => {
       timer.current()
 
-      const fn = () => setOpen(state && !!content)
+      const newOpen = action(open) && !!content
 
-      if (delay === 0) fn()
-      else timer.current = makeFrameTimeout(delay, fn)
+      const delay = (newOpen ? openDelay : closeDelay) ?? 0
+
+      if (delay === 0) setOpen(newOpen)
+      else timer.current = makeFrameTimeout(delay, () => setOpen(newOpen))
     }),
   ] as const
 }

@@ -18,18 +18,18 @@ export class TooltipState {
   popupCoords: Partial<PopupCoords> = { left: '-1000vw', top: '-1000vh' }
 
   arrowCoords: Partial<ArrowCoords> = {}
+
+  get trigger() {
+    return this.$trigger.current
+  }
+
+  get popup() {
+    return this.$popup.current
+  }
 }
 
 export class TooltipAction {
   constructor(private forceUpdate: () => void, private states: TooltipState) {}
-
-  get trigger() {
-    return this.states.$trigger.current
-  }
-
-  get popup() {
-    return this.states.$popup.current
-  }
 
   private setPopupCoords = (value: PopupCoords | null) => {
     if (!value) return
@@ -48,8 +48,7 @@ export class TooltipAction {
   }
 
   updateCoords = (props: InternalTooltipProps) => {
-    // prettier-ignore
-    const { popup, trigger, states: { arrowCoords, popupCoords } } = this
+    const { popup, trigger, arrowCoords, popupCoords } = this.states
 
     if (!popup || !trigger) return
 

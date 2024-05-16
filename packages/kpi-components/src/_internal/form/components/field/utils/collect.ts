@@ -55,16 +55,14 @@ export default function collectInjectProps(
 
         internalHooks?.dispatch({ type: 'fieldEvent', control, value: next })
 
-        // originTrigger
-        childProps[trigger!]?.(...args)
+        trigger && childProps[trigger]?.(...args)
       },
     }
 
     // 校验触发时机
     const triggerList = toArray(validateTrigger ?? instance.validateTrigger)
 
-    const init = { ...injectProps }
-
+    // prettier-ignore
     return triggerList.reduce((result, triggerName) => {
       if (triggerName === false) return result
 
@@ -74,6 +72,6 @@ export default function collectInjectProps(
       }
 
       return result
-    }, init)
+    }, { ...injectProps })
   }
 }

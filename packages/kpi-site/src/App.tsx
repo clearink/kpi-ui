@@ -31,7 +31,7 @@ const App: React.FC = () => {
         <Tooltip
           content={
             <Tooltip
-              trigger="click"
+              // trigger="click"
               content={
                 <div
                   style={{ height: 100, width: 200, overflow: 'auto' }}
@@ -48,7 +48,7 @@ const App: React.FC = () => {
             </Tooltip>
           }
           placement="topLeft"
-          trigger="click"
+          // trigger="click"
         >
           <Button
             style={

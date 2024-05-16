@@ -1,5 +1,5 @@
 import { useComposeRefs, useResizeObserver } from '@kpi-ui/hooks'
-import { withDisplayName } from '@kpi-ui/utils'
+import { batch, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, forwardRef, useEffect, useRef, type ForwardedRef } from 'react'
 import { getScrollElements } from '../../utils/elements'
 // types
@@ -26,8 +26,13 @@ function TooltipTrigger(props: TooltipTriggerProps, _ref: ForwardedRef<any>) {
 
   const ref = useComposeRefs((children as any).ref, _ref, dom)
 
-  // TODO: 不能覆盖原有的 event
-  return cloneElement(children, { ref, ...events })
+  const cloneProps = Object.entries(events).reduce((result, [key, fn]) => {
+    result[key] = batch(fn, children.props[key])
+
+    return result
+  }, {} as typeof events)
+
+  return cloneElement(children, { ref, ...cloneProps })
 }
 
 export default withDisplayName(forwardRef(TooltipTrigger), 'TooltipTrigger')
