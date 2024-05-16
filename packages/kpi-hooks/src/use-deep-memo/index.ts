@@ -6,10 +6,11 @@ export default function useDeepMemo<T>(factory: () => T, deps?: DependencyList):
   const state = useConstant(() => ({ value: factory(), deps }))
 
   useMemo(() => {
-    if (!isEqual(state.deps, deps)) {
-      state.deps = deps
-      state.value = factory()
-    }
+    if (isEqual(state.deps, deps)) return
+
+    state.deps = deps
+
+    state.value = factory()
   }, [deps, factory, state])
 
   return state.value

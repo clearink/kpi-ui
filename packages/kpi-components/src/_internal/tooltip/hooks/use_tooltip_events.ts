@@ -1,6 +1,6 @@
+import { useDeepMemo } from '@kpi-ui/hooks'
 import { batch, getShadowRoot, makeEventListener, ownerWindow, toArray } from '@kpi-ui/utils'
-import { useEffect } from 'react'
-
+import { useEffect, useMemo } from 'react'
 import { formatTriggerEvents, isInPopupChain } from '../utils/helpers'
 // types
 import type { InternalTooltipProps } from '../props'
@@ -13,28 +13,32 @@ export default function useTooltipEvents(
   states: TooltipState,
   setOpen: ReturnType<typeof useTooltipOpen>[1]
 ) {
-  const actions = new Set(toArray(props.trigger))
+  const { trigger } = props
+
+  const actions = useDeepMemo(() => new Set(toArray(trigger)), [trigger])
 
   const clickToHide = actions.has('click') || actions.has('contextMenu')
 
   useEffect(() => {
-    const el = states.trigger
+    const element = states.trigger
 
-    if (!el || !clickToHide) return
+    if (!element || !clickToHide) return
 
     const handler = ({ target }: MouseEvent) => {
       setOpen((state) => (!state || isInPopupChain(states, target as Element) ? state : false))
     }
 
-    const shadowRoot = getShadowRoot(el)
+    const shadowRoot = getShadowRoot(element)
+
+    const thisWindow = ownerWindow(element)
 
     return batch(
-      makeEventListener(ownerWindow(el), 'mousedown', handler, true),
-      makeEventListener(ownerWindow(el), 'contextmenu', handler, true),
+      makeEventListener(thisWindow, 'mousedown', handler, true),
+      makeEventListener(thisWindow, 'contextmenu', handler, true),
       shadowRoot && makeEventListener(shadowRoot, 'mousedown', handler, true),
       shadowRoot && makeEventListener(shadowRoot, 'contextmenu', handler, true)
     )
   }, [states, clickToHide, setOpen])
 
-  return formatTriggerEvents(actions, setOpen)
+  return useMemo(() => formatTriggerEvents(actions, setOpen), [actions, setOpen])
 }
