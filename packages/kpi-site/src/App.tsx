@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@kpi-ui/components'
+import { Button, Tooltip, Segmented } from '@kpi-ui/components'
 import { useEffect, useReducer, useRef, useState } from 'react'
 
 import '@kpi-ui/components/src/style'
@@ -28,46 +28,7 @@ const App: React.FC = () => {
           justifyContent: 'center',
         }}
       >
-        <Tooltip
-          content={
-            <Tooltip
-              // trigger="click"
-              content={
-                <div
-                  style={{ height: 100, width: 200, overflow: 'auto' }}
-                  onMouseDown={(e) => {
-                    e.stopPropagation()
-                    e.preventDefault()
-                  }}
-                >
-                  <div style={{ height: 200 }}> 12312312 不冒泡</div>
-                </div>
-              }
-            >
-              <span>inner tooltip</span>
-            </Tooltip>
-          }
-          placement="topLeft"
-          // trigger="click"
-        >
-          <Button
-            style={
-              {
-                // width: 110,
-              }
-            }
-          >
-            Tooltip Trigger
-          </Button>
-        </Tooltip>
-        <Button
-          onMouseDown={(e) => {
-            e.stopPropagation()
-            e.preventDefault()
-          }}
-        >
-          outer
-        </Button>
+        <Segmented options={['a', 'b', 'c']} />
       </div>
     </div>
   )

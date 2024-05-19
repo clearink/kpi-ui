@@ -1,5 +1,5 @@
 import { ctxHelper } from '@kpi-ui/utils'
 
-export type SizeType = 'small' | 'default' | 'large' | undefined
+export type SizeType = 'small' | 'middle' | 'large' | undefined
 
-export const SizeContext = ctxHelper<SizeType>('default')
+export const SizeContext = ctxHelper<SizeType>('middle')
