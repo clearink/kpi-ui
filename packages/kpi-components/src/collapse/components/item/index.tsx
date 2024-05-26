@@ -45,12 +45,18 @@ const excluded = [
 function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement>) {
   const ctx = CollapseContext.useState()
 
-  const props = withDefaults(_props, {
-    ...defaultProps,
-    keepMounted: ctx.keepMounted,
-    unmountOnExit: ctx.unmountOnExit,
-    expandIcon: fallback(ctx.expandIcon, <CaretRightOutlined />),
-  })
+  const props = withDefaults(
+    {
+      ..._props,
+      disabled: _props.disabled || ctx.disabled,
+    },
+    {
+      ...defaultProps,
+      keepMounted: ctx.keepMounted,
+      unmountOnExit: ctx.unmountOnExit,
+      expandIcon: fallback(ctx.expandIcon, <CaretRightOutlined />),
+    }
+  )
 
   const { name, title, extra, disabled, showExpandIcon, expandIcon, style, styles: _styles } = props
 

@@ -1,4 +1,4 @@
-import { fallback, getElementStyle, isNullish } from '@kpi-ui/utils'
+import { fallback, getElementStyle, isNullish, withDefaults } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { FormContext, FormItemContext } from '../../_shared/context'
@@ -12,12 +12,14 @@ import FormErrorList from '../error-list'
 import type { FormItemInputProps } from './props'
 
 // TODO: refactor offset logic
-function FormItemInput(props: FormItemInputProps) {
-  const { children, validateStatus: _status, extra, help, getOuter } = props
-
+function FormItemInput(_props: FormItemInputProps) {
   const ctx = FormContext.useState()
 
-  const wrapperCol = fallback(props.wrapperCol, ctx.wrapperCol)
+  const props = withDefaults(_props, {
+    wrapperCol: ctx.wrapperCol,
+  })
+
+  const { children, validateStatus: _status, extra, wrapperCol, help, getOuter } = props
 
   const [meta, onMetaChange] = useMetaState()
 

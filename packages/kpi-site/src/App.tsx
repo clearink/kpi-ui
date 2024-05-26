@@ -5,24 +5,12 @@ import '@kpi-ui/components/src/style'
 import './style.scss'
 
 const App: React.FC = () => {
-  useEffect(() => {
-    const height = document.documentElement.clientHeight
-    const width = document.documentElement.clientWidth
-    const id = setTimeout(() => {
-      document.documentElement.scrollTop = height
-      document.documentElement.scrollLeft = width
-    }, 300)
-    return () => {
-      clearTimeout(id)
-    }
-  }, [])
-
   return (
     <div>
       <div
         style={{
-          width: '300vw',
-          height: '300vh',
+          width: '100vw',
+          height: '100vh',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

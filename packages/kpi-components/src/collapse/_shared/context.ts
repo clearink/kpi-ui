@@ -13,6 +13,7 @@ export interface CollapseContextState {
   keepMounted?: boolean
   unmountOnExit?: boolean
   expandIcon?: CollapseProps['expandIcon']
+  disabled?: boolean
 }
 
 export const CollapseContext = ctxHelper<CollapseContextState>({

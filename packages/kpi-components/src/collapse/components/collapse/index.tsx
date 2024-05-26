@@ -31,6 +31,7 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
     keepMounted,
     unmountOnExit,
     expandIcon,
+    disabled,
     collapsible,
     onChange,
     style,
@@ -74,6 +75,7 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
       unmountOnExit,
       expandIcon,
       collapsible,
+      disabled,
     }),
     [
       accordion,
@@ -84,6 +86,7 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
       onItemClick,
       unmountOnExit,
       collapsible,
+      disabled,
     ]
   )
 

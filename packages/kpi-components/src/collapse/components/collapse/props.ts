@@ -24,7 +24,8 @@ export interface CollapseProps<K extends ExpandedName = ExpandedName>
   expandIconPosition?: ExpandIconPosition
   onChange?: (expandedName: K, ExpandedNames: K[]) => void
 
+  disabled?: boolean
   keepMounted?: boolean
   unmountOnExit?: boolean
-  expandIcon?: ReactNode | ((props: { name: K; expanded: boolean }) => React.ReactNode)
+  expandIcon?: ReactNode | ((props: { name: K; expanded: boolean }) => ReactNode)
 }

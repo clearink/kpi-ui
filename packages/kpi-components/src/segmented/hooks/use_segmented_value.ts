@@ -1,22 +1,17 @@
-import { useControllableState, useEvent } from '@kpi-ui/hooks'
+import { useControllableState } from '@kpi-ui/hooks'
+import { fallback } from '@kpi-ui/utils'
 // types
-import type { SegmentedProps, SegmentedType } from '../props'
+import type { SegmentedOption, SegmentedProps, SegmentedType } from '../props'
 
-export default function useSegmentedValue<T = SegmentedType>(props: SegmentedProps<T>) {
-  const { disabled, value, defaultValue, onChange } = props
+export default function useSegmentedValue<T extends SegmentedType = SegmentedType>(
+  props: SegmentedProps<T>,
+  options: SegmentedOption<T>[]
+) {
+  const { value, defaultValue, onChange } = props
 
-  const [state, set] = useControllableState({
+  return useControllableState({
     value,
-    defaultValue,
+    defaultValue: fallback(defaultValue, options[0]?.value),
     onChange,
   })
-
-  return [
-    state,
-    useEvent((value: T) => {
-      if (disabled) return
-
-      set(value)
-    }),
-  ] as [typeof state, typeof set]
 }

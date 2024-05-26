@@ -1,3 +1,4 @@
+import { hasItem } from '@kpi-ui/utils'
 import type { ReactElement } from 'react'
 
 /**
@@ -9,10 +10,10 @@ export default function diff(prev: ReactElement[], next: ReactElement[]) {
   const newKeys = next.map((el) => el.key)
 
   // old 没有 new 有
-  const enters = newKeys.filter((key) => !oldKeys.includes(key))
+  const enters = newKeys.filter((key) => !hasItem(oldKeys, key))
 
   // old 有 new 没有
-  const exits = oldKeys.filter((id) => !newKeys.includes(id))
+  const exits = oldKeys.filter((key) => !hasItem(newKeys, key))
 
   return [new Set(enters), new Set(exits)] as const
 }

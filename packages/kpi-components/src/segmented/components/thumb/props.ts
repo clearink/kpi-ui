@@ -1,3 +1,6 @@
-import type { SegmentedProps } from '../../props'
+import type { StyledProps } from '@kpi-ui/types'
+import type { SegmentedType } from '../../props'
 
-export interface SegmentedThumbProps extends Pick<SegmentedProps, 'classNames' | 'styles'> {}
+export interface SegmentedThumbProps extends StyledProps {
+  active: SegmentedType
+}

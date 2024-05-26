@@ -1,4 +1,4 @@
-import { fallback } from '@kpi-ui/utils'
+import { getElementStyle } from '@kpi-ui/utils'
 import { TabbableQuery } from '../constants'
 
 const isContentEditable = (node: HTMLElement) => {
@@ -28,19 +28,17 @@ function getTabIndex(node: HTMLElement) {
   return attr
 }
 
-function isHidden(node: HTMLElement, cache = new WeakMap<HTMLElement, boolean>()) {
-  let hidden = fallback(cache.get(node), false)!
+function isHidden(node: HTMLElement, cache: WeakMap<HTMLElement, boolean>) {
+  if (cache.has(node)) return cache.get(node)!
 
-  if (!cache.has(node)) {
-    const { display, visibility } = getComputedStyle(node)
+  const { display, visibility } = getElementStyle(node)
 
-    hidden = display === 'none' || visibility === 'hidden'
-  }
+  let hidden = display === 'none' || visibility === 'hidden'
 
-  if (!hidden && node.parentElement) {
-    // 不是隐藏 查看父元素
-    hidden = isHidden(node.parentElement, cache)
-  }
+  const parent = node.parentElement
+
+  // 递归查看父元素
+  hidden = !hidden && parent ? isHidden(parent, cache) : hidden
 
   cache.set(node, hidden)
 
@@ -56,5 +54,7 @@ function isFocusable(node: HTMLElement) {
 export default function tabbable(container: HTMLElement) {
   const nodes = container.querySelectorAll<HTMLElement>(TabbableQuery)
 
-  return Array.from(nodes).filter((el) => !isHidden(el) && isFocusable(el))
+  const nodeCache = new WeakMap<HTMLElement, boolean>()
+
+  return Array.from(nodes).filter((el) => !isHidden(el, nodeCache) && isFocusable(el))
 }

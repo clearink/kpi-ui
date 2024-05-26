@@ -1,15 +1,21 @@
 import { withDisplayName } from '@kpi-ui/utils'
+import { useEffect } from 'react'
 // comps
 import { CSSTransition } from '../../../_internal/transition'
 // types
 import type { SegmentedThumbProps } from './props'
 
 function SegmentedThumb(props: SegmentedThumbProps) {
-  const { classNames, styles } = props
+  const { className, style, active } = props
+
+  useEffect(() => {
+    console.log('active change', active)
+    // 比对前后的
+  }, [active])
 
   return (
     <CSSTransition>
-      <div className={classNames?.thumb} style={styles?.thumb}>
+      <div key={active} className={className} style={style}>
         123
       </div>
     </CSSTransition>

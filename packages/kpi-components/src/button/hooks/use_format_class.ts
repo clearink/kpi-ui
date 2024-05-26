@@ -1,14 +1,20 @@
-import { cls, fallback } from '@kpi-ui/utils'
-import { DisabledContext, SizeContext } from '../../_shared/context'
+import { cls } from '@kpi-ui/utils'
 // types
 import type { ButtonProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: ButtonProps) {
-  const { theme, variant, block, shape, ghost, loading, className, classNames = {} } = props
-
-  const size = fallback(props.size, SizeContext.useState())
-
-  const disabled = fallback(props.disabled, DisabledContext.useState())
+  const {
+    size,
+    disabled,
+    theme,
+    variant,
+    block,
+    shape,
+    ghost,
+    loading,
+    className,
+    classNames = {},
+  } = props
 
   return {
     root: cls(
@@ -17,7 +23,7 @@ export default function useFormatClass(prefixCls: string, props: ButtonProps) {
         [`${prefixCls}--theme-${theme}`]: theme && theme !== 'primary',
         [`${prefixCls}--variant-${variant}`]: variant && variant !== 'default',
         [`${prefixCls}--shape-${shape}`]: shape && shape !== 'default',
-        [`${prefixCls}--size-${size}`]: size && size !== 'default',
+        [`${prefixCls}--size-${size}`]: size && size !== 'middle',
         [`${prefixCls}--loading`]: loading,
         [`${prefixCls}--block`]: block,
         [`${prefixCls}--ghost`]: ghost,

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
 // types
-import type { SegmentedProps } from '../props'
+import type { SegmentedOption, SegmentedProps } from '../props'
 
 export class SegmentedState {
   $root = {
@@ -11,6 +11,10 @@ export class SegmentedState {
 
 export class SegmentedAction {
   constructor(private forceUpdate: () => void, private states: SegmentedState) {}
+
+  setItem = (el: HTMLElement | null, option: SegmentedOption) => {
+    console.log(el)
+  }
 }
 
 export default function useSegmentedStore(props: SegmentedProps) {

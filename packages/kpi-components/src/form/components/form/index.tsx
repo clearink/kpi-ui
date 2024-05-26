@@ -33,8 +33,8 @@ const defaultProps: Partial<FormProps> = {
 function Form<State = any>(_props: FormProps<State>, ref: ForwardedRef<FormInstance<State>>) {
   const props = withDefaults(_props, {
     ...defaultProps,
-    size: SizeContext.useState(),
     disabled: DisabledContext.useState(),
+    size: SizeContext.useState(),
     // ...ConfigContext.useState().form,
     // colon
     // requiredMark

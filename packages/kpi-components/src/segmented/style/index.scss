@@ -12,5 +12,27 @@ $comp: #{$prefix}-segmented;
   @include reset-component();
 }
 
+.#{$comp}__group {
+  display: flex;
+}
+
+.#{$comp}__thumb {
+}
+
 .#{$comp}-item {
+  position: relative;
+  text-align: center;
+  cursor: pointer;
+
+  .#{$comp}-item__radio {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .#{$comp}-item__label {
+    padding: 12px;
+  }
 }

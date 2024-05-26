@@ -37,10 +37,8 @@ function InternalTooltip(_props: InternalTooltipProps) {
     keepMounted,
     unmountOnExit,
     getContainer,
-    //
-    arrow,
-    //
     transition,
+    arrow,
     fresh,
     content,
     children,

@@ -1,5 +1,6 @@
 import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { forwardRef, type ForwardedRef, type MouseEvent } from 'react'
+import { DisabledContext, SizeContext } from '../_shared/context'
 import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 import { isBorderedVariant } from './utils/helpers'
@@ -34,7 +35,15 @@ const defaultProps: Partial<ButtonProps> = {
 }
 
 function Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
-  const props = withDefaults(_props, defaultProps)
+  const props = withDefaults(
+    { ..._props, disabled: _props.disabled },
+    // disabled: _props.disabled || ButtonGroupCtx.disabled
+    {
+      ...defaultProps,
+      size: SizeContext.useState(),
+      disabled: DisabledContext.useState(),
+    }
+  )
 
   const { children, onClick, loading, disabled, variant, style, styles: _styles } = props
 
