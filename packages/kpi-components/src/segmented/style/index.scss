@@ -14,9 +14,13 @@ $comp: #{$prefix}-segmented;
 
 .#{$comp}__group {
   display: flex;
+  background-color: #ccc;
+  border-radius: 4px;
+  padding: 4px;
 }
 
 .#{$comp}__thumb {
+  transition: transform 0.3s ease-in-out;
 }
 
 .#{$comp}-item {
@@ -33,6 +37,11 @@ $comp: #{$prefix}-segmented;
   }
 
   .#{$comp}-item__label {
-    padding: 12px;
+    padding: 4px 12px;
+  }
+
+  &.#{$comp}-item--selected {
+    background-color: #fff;
+    border-radius: 4px;
   }
 }

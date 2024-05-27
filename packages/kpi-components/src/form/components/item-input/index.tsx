@@ -1,4 +1,4 @@
-import { fallback, getElementStyle, isNullish, withDefaults } from '@kpi-ui/utils'
+import { getElementStyle, isNullish, withDefaults } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { FormContext, FormItemContext } from '../../_shared/context'

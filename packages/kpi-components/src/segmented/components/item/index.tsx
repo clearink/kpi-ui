@@ -1,4 +1,4 @@
-import { fallback, withDisplayName } from '@kpi-ui/utils'
+import { withDisplayName } from '@kpi-ui/utils'
 import { forwardRef, type ForwardedRef } from 'react'
 import { useSemanticStyles } from '../../../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'

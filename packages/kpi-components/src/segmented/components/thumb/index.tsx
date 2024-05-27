@@ -6,18 +6,29 @@ import { CSSTransition } from '../../../_internal/transition'
 import type { SegmentedThumbProps } from './props'
 
 function SegmentedThumb(props: SegmentedThumbProps) {
-  const { className, style, active } = props
+  const { className, style, active, states, actions } = props
 
   useEffect(() => {
-    console.log('active change', active)
+    console.log('active change', active, states)
     // 比对前后的
-  }, [active])
+  }, [active, states])
 
   return (
-    <CSSTransition>
-      <div key={active} className={className} style={style}>
-        123
-      </div>
+    <CSSTransition
+      when
+      key={active}
+      unmountOnExit
+      onEnter={() => {
+        actions.setInTransition(true)
+      }}
+      onEnterCancel={() => {
+        actions.setInTransition(false)
+      }}
+      onEntered={() => {
+        actions.setInTransition(false)
+      }}
+    >
+      <div className={className} style={style}></div>
     </CSSTransition>
   )
 }

@@ -7,6 +7,8 @@ export class SegmentedState {
   $root = {
     current: null as HTMLDivElement | null,
   }
+
+  inTransition = false
 }
 
 export class SegmentedAction {
@@ -14,6 +16,14 @@ export class SegmentedAction {
 
   setItem = (el: HTMLElement | null, option: SegmentedOption) => {
     console.log(el)
+  }
+
+  setInTransition = (value: boolean) => {
+    const { inTransition } = this.states
+
+    if (inTransition !== value) this.forceUpdate()
+
+    this.states.inTransition = value
   }
 }
 

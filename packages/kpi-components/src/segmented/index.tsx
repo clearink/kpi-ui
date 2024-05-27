@@ -29,7 +29,7 @@ function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
 
   const options = useMemo(() => normalizeOptions(_options), [_options])
 
-  const [value, setValue] = useSegmentedValue(props, options)
+  const [active, onChange] = useSegmentedValue(props, options)
 
   // 1. 记录segmented-item的dom信息
   // 2. 当value改变时在thumb组件中切换动画
@@ -37,16 +37,22 @@ function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
   return (
     <div className={classNames.root} style={styles.root} ref={_ref}>
       <div className={classNames.group} style={styles.group}>
-        <SegmentedThumb className={classNames.thumb} style={styles.thumb} active={value} />
+        <SegmentedThumb
+          className={classNames.thumb}
+          style={styles.thumb}
+          active={active}
+          states={states}
+          actions={actions}
+        />
         {options.map((item) => (
           <SegmentedItem
             {...item}
             ref={(el) => actions.setItem(el, item)}
             key={item.value}
             prefixCls={`${prefixCls}-item`}
-            checked={value === item.value}
+            checked={active === item.value}
             disabled={disabled || item.disabled}
-            onChange={setValue}
+            onChange={onChange}
           />
         ))}
       </div>

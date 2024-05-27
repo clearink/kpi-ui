@@ -1,5 +1,4 @@
-import { useControllableState } from '@kpi-ui/hooks'
-import { fallback, isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { DisabledContext } from '../../../_shared/context'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { CheckboxGroupContext } from '../../_shared/context'

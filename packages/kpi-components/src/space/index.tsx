@@ -1,6 +1,6 @@
 import { fallback, flattenChildren, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { Fragment, type CSSProperties, type ReactElement } from 'react'
-import { SizeContext } from '../_shared/context'
+import { ConfigContext } from '../_shared/context'
 import { usePrefixCls } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 import useSpaceGutter from './hooks/use_space_gutter'
@@ -25,11 +25,14 @@ const defaultProps: Partial<SpaceProps> = {
 }
 
 function Space(_props: SpaceProps) {
-  const props = withDefaults(_props, defaultProps)
+  const { space } = ConfigContext.useState()
 
-  const { children, style, split } = props
+  const props = withDefaults(_props, {
+    ...defaultProps,
+    size: fallback(space?.size, defaultProps.size),
+  })
 
-  const size = fallback(props.size, SizeContext.useState())
+  const { children, style, split, size } = props
 
   const prefixCls = usePrefixCls('space')
 
