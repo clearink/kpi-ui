@@ -16,7 +16,7 @@ const App: React.FC = () => {
           justifyContent: 'center',
         }}
       >
-        <Segmented options={['a', 'b', 'c']} />
+        <Segmented options={['a', 'b', 'x']} />
       </div>
     </div>
   )

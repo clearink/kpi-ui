@@ -3,30 +3,13 @@ import { cls } from '@kpi-ui/utils'
 import type { SegmentedItemProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: SegmentedItemProps) {
-  const { checked, className, classNames = {} } = props
+  const { checked, inTransition, className, classNames = {} } = props
 
   return {
     root: cls(
       prefixCls,
       {
-        [`${prefixCls}--selected`]: checked,
-      },
-      className,
-      classNames.root
-    ),
-    radio: cls(`${prefixCls}__radio`),
-    label: cls(`${prefixCls}__label`, classNames.label),
-  }
-}
-
-export function useFormatStyled(prefixCls: string, props: SegmentedItemProps) {
-  const { checked, className, classNames = {} } = props
-
-  return {
-    root: cls(
-      prefixCls,
-      {
-        [`${prefixCls}--selected`]: checked,
+        [`${prefixCls}--selected`]: checked && !inTransition,
       },
       className,
       classNames.root

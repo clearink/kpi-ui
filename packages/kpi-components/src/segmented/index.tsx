@@ -1,4 +1,4 @@
-import { cls, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { getElementStyle, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { forwardRef, useMemo, type ForwardedRef } from 'react'
 import { SizeContext } from '../_shared/context'
 import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
@@ -11,6 +11,8 @@ import SegmentedItem from './components/item'
 import SegmentedThumb from './components/thumb'
 // types
 import type { SegmentedProps } from './props'
+import useWatchSegmented from './hooks/use_watch_segmented'
+import { reflow } from '../_shared/utils'
 
 function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
   const props = withDefaults(_props, {
@@ -25,31 +27,29 @@ function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
 
   const styles = useSemanticStyles(style, _styles)
 
-  const { states, actions } = useSegmentedStore(props)
-
   const options = useMemo(() => normalizeOptions(_options), [_options])
 
   const [active, onChange] = useSegmentedValue(props, options)
 
-  // 1. 记录segmented-item的dom信息
-  // 2. 当value改变时在thumb组件中切换动画
+  const { states, actions } = useSegmentedStore()
+
+  const returnEarly = useWatchSegmented(active, actions)
+
+  if (returnEarly) return null
 
   return (
     <div className={classNames.root} style={styles.root} ref={_ref}>
-      <div className={classNames.group} style={styles.group}>
-        <SegmentedThumb
-          className={classNames.thumb}
-          style={styles.thumb}
-          active={active}
-          states={states}
-          actions={actions}
-        />
-        {options.map((item) => (
+      <div ref={states.$group} className={classNames.group} style={styles.group}>
+        <SegmentedThumb />
+        {options.map((item, index) => (
           <SegmentedItem
             {...item}
-            ref={(el) => actions.setItem(el, item)}
+            ref={(el) => {
+              states.items.set(item.value, el)
+            }}
             key={item.value}
             prefixCls={`${prefixCls}-item`}
+            inTransition={states.inTransition}
             checked={active === item.value}
             disabled={disabled || item.disabled}
             onChange={onChange}
@@ -60,15 +60,4 @@ function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
   )
 }
 
-// <SegmentedItem
-//   {...option}
-//   ref={(el) => actions.setItem(el, option)}
-//   key={option.value}
-//   prefixCls={prefixCls}
-//   classNames={classNames}
-//   styles={styles}
-//   checked={value === option.value}
-//   disabled={disabled || option.disabled}
-//   onChange={setValue}
-// />
 export default withDisplayName(forwardRef(Segmented), 'Segmented')
