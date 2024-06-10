@@ -101,5 +101,5 @@ function InternalForm<State = any>(
 }
 
 export default withDisplayName(forwardRef(InternalForm), 'InternalForm') as <State = any>(
-  props: InternalFormProps<State> & { ref?: Ref<InternalFormInstance<State>> }
+  props: InternalFormProps<State> & React.RefAttributes<InternalFormInstance<State>>
 ) => JSX.Element

@@ -21,5 +21,5 @@ export default withDisplayName(forwardRef(ForwardFunctional), 'ForwardFunctional
   T extends React.ReactElement,
   R extends ReactRef<any> = ReactRef<any>
 >(
-  props: ForwardFunctionalProps<T, R> & { ref?: R }
+  props: ForwardFunctionalProps<T, R> & React.RefAttributes<R>
 ) => JSX.Element

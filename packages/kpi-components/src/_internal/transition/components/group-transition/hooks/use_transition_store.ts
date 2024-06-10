@@ -1,7 +1,6 @@
 import { useConstant, useForceUpdate } from '@kpi-ui/hooks'
-import { addClassNames, batch, delClassNames, pick } from '@kpi-ui/utils'
+import { addClassNames, batch, delClassNames, pick, reflow } from '@kpi-ui/utils'
 import { cloneElement, createElement, useEffect, useMemo, type ReactElement } from 'react'
-import { reflow } from '../../../_shared/utils'
 import { ENTER, isExit, isExited } from '../../../constants'
 import makeUniqueId from '../../../utils/unique_id'
 import CSSTransition from '../../css-transition'

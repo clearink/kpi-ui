@@ -1,4 +1,4 @@
-import { getElementStyle, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { forwardRef, useMemo, type ForwardedRef } from 'react'
 import { SizeContext } from '../_shared/context'
 import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
@@ -7,21 +7,26 @@ import useSegmentedStore from './hooks/use_segmented_store'
 import useSegmentedValue from './hooks/use_segmented_value'
 import { normalizeOptions } from './utils/helpers'
 // comps
+import { CSSTransition } from '../_internal/transition'
 import SegmentedItem from './components/item'
-import SegmentedThumb from './components/thumb'
 // types
-import type { SegmentedProps } from './props'
-import useWatchSegmented from './hooks/use_watch_segmented'
-import { reflow } from '../_shared/utils'
+import type { SegmentedProps, SegmentedType } from './props'
+
+const defaultProps: Partial<SegmentedProps> = {
+  block: false,
+}
 
 function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
   const props = withDefaults(_props, {
+    ...defaultProps,
     size: SizeContext.useState(),
   })
 
   const { style, options: _options, styles: _styles, disabled } = props
 
-  const prefixCls = usePrefixCls('segmented')
+  const rootPrefixCls = usePrefixCls()
+
+  const prefixCls = `${rootPrefixCls}-segmented`
 
   const classNames = useFormatClass(prefixCls, props)
 
@@ -31,25 +36,35 @@ function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
 
   const [active, onChange] = useSegmentedValue(props, options)
 
-  const { states, actions } = useSegmentedStore()
-
-  const returnEarly = useWatchSegmented(active, actions)
+  const { returnEarly, states, actions } = useSegmentedStore(active)
 
   if (returnEarly) return null
 
   return (
     <div className={classNames.root} style={styles.root} ref={_ref}>
       <div ref={states.$group} className={classNames.group} style={styles.group}>
-        <SegmentedThumb />
-        {options.map((item, index) => (
+        {states.showThumb && (
+          <CSSTransition
+            key={active}
+            when
+            appear
+            name={`${rootPrefixCls}-segmented-thumb`}
+            onEnter={actions.onThumbEnter}
+            onEntering={actions.onThumbEntering}
+            onEntered={actions.onThumbEntered}
+          >
+            <div ref={actions.setThumb} className={classNames.thumb} style={styles.thumb}></div>
+          </CSSTransition>
+        )}
+        {options.map((item) => (
           <SegmentedItem
             {...item}
             ref={(el) => {
-              states.items.set(item.value, el)
+              actions.setItem(item.value, el)
             }}
             key={item.value}
             prefixCls={`${prefixCls}-item`}
-            inTransition={states.inTransition}
+            showThumb={states.showThumb}
             checked={active === item.value}
             disabled={disabled || item.disabled}
             onChange={onChange}
@@ -60,4 +75,6 @@ function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
   )
 }
 
-export default withDisplayName(forwardRef(Segmented), 'Segmented')
+export default withDisplayName(forwardRef(Segmented), 'Segmented') as <T extends SegmentedType>(
+  props: SegmentedProps<T> & React.RefAttributes<HTMLDivElement>
+) => JSX.Element

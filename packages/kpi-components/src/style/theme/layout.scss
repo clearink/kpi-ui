@@ -54,6 +54,7 @@
 
 @mixin kpi-size-unit() {
   --#{$prefix}-size-unit-0: 0px;
+  --#{$prefix}-size-unit-0_5: 2px;
   --#{$prefix}-size-unit-1: 4px;
   --#{$prefix}-size-unit-1_5: 6px;
   --#{$prefix}-size-unit-2: 8px;

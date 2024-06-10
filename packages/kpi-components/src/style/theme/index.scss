@@ -1,7 +1,9 @@
 @import './colors.scss';
 @import './layout.scss';
 
-:root {
+@include global() {
+  @include kpi-component-size();
+
   @include kpi-color-semantic();
 
   @include kpi-typography();
@@ -14,9 +16,7 @@
 }
 
 // 亮色模式
-:root,
-:root[data-theme='light'],
-:root[data-prefers-color='light'] {
+@include light() {
   @include kpi-shadow('light');
 
   @include kpi-color-primary('light');
@@ -45,8 +45,7 @@
 }
 
 // 深色模式
-:root[data-theme='dark'],
-:root[data-prefers-color='dark'] {
+@include dark() {
   @include kpi-shadow('dark');
 
   @include kpi-color-primary('dark');

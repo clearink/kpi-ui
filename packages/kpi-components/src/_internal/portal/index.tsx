@@ -23,4 +23,4 @@ function Portal(props: PortalProps, ref: ForwardedRef<PortalRef>) {
   return createPortal(children, container)
 }
 
-export default withDisplayName(forwardRef(Portal))
+export default withDisplayName(forwardRef(Portal), 'Portal')

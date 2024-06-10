@@ -1,0 +1,20 @@
+@mixin global() {
+  :root {
+    @content;
+  }
+}
+
+@mixin light() {
+  :root,
+  :root[data-theme='light'],
+  :root[data-prefers-color='light'] {
+    @content;
+  }
+}
+
+@mixin dark() {
+  :root[data-theme='dark'],
+  :root[data-prefers-color='dark'] {
+    @content;
+  }
+}

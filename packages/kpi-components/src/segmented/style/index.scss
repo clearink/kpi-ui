@@ -10,44 +10,116 @@ $comp: #{$prefix}-segmented;
 
 .#{$comp} {
   @include reset-component();
-  position: relative;
-  background-color: #ccc;
-  padding: 2px;
-  border-radius: 4px;
+  display: inline-block;
+  padding: $kpi-segmented-padding-default;
+  color: $kpi-segmented-color-text-default;
+  background: $kpi-segmented-color-bg;
+  border-radius: $kpi-segmented-radius-default;
+  transition: all var(--#{$prefix}-motion-duration-2) var(--#{$prefix}-motion-in-out);
+
+  &--block {
+    display: flex;
+
+    .#{$comp}-item {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+}
+
+.#{$comp}--lg {
+  border-radius: $kpi-segmented-radius-sm;
+  .#{$comp}-item__label {
+    // min-height: ;
+    // line-height: ;
+    // padding: ;
+    // font-size: ;
+  }
+
+  .#{$comp}__thumb,
+  .#{$comp}-item {
+    // border-radius: ;
+  }
+}
+
+.#{$comp}--sm {
+  // border-radius: ;
+  .#{$comp}-item__label {
+    // min-height: ;
+    // line-height: ;
+    // padding: ;
+    // font-size: ;
+  }
+
+  .#{$comp}__thumb,
+  .#{$comp}-item {
+    // border-radius: ;
+  }
 }
 
 .#{$comp}__group {
+  position: relative;
   display: flex;
-  border-radius: 4px;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .#{$comp}__thumb {
+  background-color: $kpi-segmented-thumb-color-bg;
+  box-shadow: $kpi-segmented-thumb-shadow;
   position: absolute;
-  border-radius: 4px;
-  background-color: #fff;
+  width: 0;
+  height: 100%;
+  padding: $kpi-segmented-thumb-padding-default;
+  border-radius: $kpi-segmented-thumb-radius-default;
+
+  // not item disabled{
+  // background-color: transparent;
+  // }
 }
 
 .#{$comp}-item {
   position: relative;
   text-align: center;
   cursor: pointer;
+  transition: color var(--#{$prefix}-motion-duration-2) var(--#{$prefix}-motion-in-out);
+  border-radius: $kpi-segmented-item-radius-default;
+  transform: translateZ(0);
+
+  &--selected {
+    background-color: $kpi-segmented-item-color-bg;
+    box-shadow: $kpi-segmented-item-shadow;
+    color: $kpi-segmented-color-text-selected;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: inherit;
+    transition: background-color var(--#{$prefix}-motion-duration-2);
+    pointer-events: none;
+  }
 
   .#{$comp}-item__radio {
     position: absolute;
     width: 0;
     height: 0;
-    pointer-events: none;
     opacity: 0;
+    pointer-events: none;
   }
 
   .#{$comp}-item__label {
-    padding: 0px 12px;
-    min-height: 32px;
-    line-height: 32px;
-  }
-
-  &.#{$comp}-item--selected {
-    background-color: #fff;
-    border-radius: 4px;
+    min-height: $kpi-segmented-item-min-height-default;
+    line-height: $kpi-segmented-item-line-height-default;
+    padding: $kpi-segmented-item-padding-default;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }

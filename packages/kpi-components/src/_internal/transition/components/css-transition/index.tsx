@@ -1,7 +1,6 @@
 import { useEvent } from '@kpi-ui/hooks'
-import { fillRef, nextFrame, nextTick, withDisplayName } from '@kpi-ui/utils'
+import { fillRef, nextFrame, nextTick, reflow, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref } from 'react'
-import { reflow } from '../../_shared/utils'
 import { APPEAR, ENTER, EXIT, isAppear, isExit, isExited } from '../../constants'
 import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'
@@ -107,5 +106,5 @@ function CSSTransition<E extends HTMLElement>(
 export default withDisplayName(forwardRef(CSSTransition), 'CSSTransition') as <
   E extends HTMLElement
 >(
-  props: CSSTransitionProps<E> & { ref?: Ref<CSSTransitionRef<E>> }
+  props: CSSTransitionProps<E> & React.RefAttributes<CSSTransitionRef<E>>
 ) => JSX.Element | null

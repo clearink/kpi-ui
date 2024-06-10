@@ -104,5 +104,5 @@ function Form<State = any>(_props: FormProps<State>, ref: ForwardedRef<FormInsta
 }
 
 export default withDisplayName(forwardRef(Form), 'Form') as <State = any>(
-  props: FormProps<State> & { ref?: Ref<FormInstance<State>> }
+  props: FormProps<State> & React.RefAttributes<FormInstance<State>>
 ) => JSX.Element

@@ -5,18 +5,22 @@ import '@kpi-ui/components/src/style'
 import './style.scss'
 
 const App: React.FC = () => {
+  const [a, set] = useState('c')
   return (
     <div>
       <div
         style={{
           width: '100vw',
           height: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
         }}
       >
-        <Segmented options={['a', 'b', 'x']} />
+        <Segmented
+          block={!false}
+          value={a}
+          onChange={set}
+          options={['a', 'b', 'c', 'd', 'eeeeeee', 'f', 'jjjjjj']}
+        />
+        {/* <Pagination total={100} current={a} onChange={set} /> */}
       </div>
     </div>
   )

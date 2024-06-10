@@ -75,4 +75,4 @@ function Overlay(_props: OverlayProps, ref: ForwardedRef<OverlayRef>) {
   )
 }
 
-export default withDisplayName(forwardRef(Overlay))
+export default withDisplayName(forwardRef(Overlay), 'Overlay')

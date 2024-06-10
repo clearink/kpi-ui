@@ -4,6 +4,6 @@ export interface SegmentedItemProps extends SegmentedOption {
   prefixCls: string
   checked: boolean
   title?: string
-  inTransition: boolean
+  showThumb: boolean
   onChange: (value: SegmentedOption['value']) => void
 }

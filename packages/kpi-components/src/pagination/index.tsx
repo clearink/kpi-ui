@@ -65,7 +65,7 @@ function Pagination(_props: PaginationProps) {
                 }}
                 onEntering={(el) => {
                   el.style.transform = `translate3d(0, 0, 0) scale(1, 1)`
-                  el.style.transition = `transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1)`
+                  el.style.transition = `transform 3s cubic-bezier(0.645, 0.045, 0.355, 1)`
                 }}
                 onEntered={(el) => {
                   el.style.transform = ''

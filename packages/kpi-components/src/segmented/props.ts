@@ -24,4 +24,6 @@ export interface SegmentedProps<T extends SegmentedType = SegmentedType>
   onChange?: (value: T) => void
 
   disabled?: boolean
+
+  block?: boolean
 }
