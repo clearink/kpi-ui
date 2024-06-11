@@ -102,7 +102,3 @@
   --#{$prefix}-color-overlay-light: #{map-get($color-overlay, #{$theme}-light)};
   --#{$prefix}-color-overlay-lighter: #{map-get($color-overlay, #{$theme}-lighter)};
 }
-
-@mixin kpi-color-tooltip($theme) {
-  --#{$prefix}-color-tooltip-default: #{map-get($color-tooltip, #{$theme}-default)};
-}

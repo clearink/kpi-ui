@@ -3,9 +3,8 @@
 .#{$prefix}-segmented-thumb {
   &-enter-active {
     user-select: none;
-    will-change: transform, width, height;
+    will-change: transform, width;
     transition: transform var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out),
-      width var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out),
-      height var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out);
+      width var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out);
   }
 }

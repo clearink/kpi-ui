@@ -1,3 +1,17 @@
+$comp: #{$prefix}-tooltip;
+
+@include light() {
+  .#{$comp} {
+    --#{$comp}-color: #{rgba($color-black, 0.85)};
+  }
+}
+
+@include dark() {
+  .#{$comp} {
+    --#{$comp}-color: #424242;
+  }
+}
+
 $kpi-tooltip-arrow-size: 16px;
-$kpi-tooltip-color-bg: var(--#{$prefix}-color-tooltip-default);
+$kpi-tooltip-color-bg: var(--#{$comp}-color);
 $kpi-tooltip-color-text: $color-white;

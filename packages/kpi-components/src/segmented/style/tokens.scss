@@ -1,11 +1,15 @@
+$comp: #{$prefix}-segmented;
+
 /* ************************ segmented ************************ */
 
 @include light() {
-  --#{$prefix}-segmented-color-bg: #f5f5f5;
+  .#{$comp} {
+    --#{$comp}-color-bg: #f5f5f5;
+  }
 }
 
 @include dark() {
-  --#{$prefix}-segmented-color-bg: #{$color-black};
+  --#{$comp}-color-bg: #{$color-black};
 }
 
 $kpi-segmented-color-bg: var(--#{$prefix}-segmented-color-bg);

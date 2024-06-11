@@ -40,8 +40,6 @@
   @include kpi-color-mask('light');
 
   @include kpi-color-overlay('light');
-
-  @include kpi-color-tooltip('light');
 }
 
 // 深色模式
@@ -69,6 +67,4 @@
   @include kpi-color-mask('dark');
 
   @include kpi-color-overlay('dark');
-
-  @include kpi-color-tooltip('dark');
 }

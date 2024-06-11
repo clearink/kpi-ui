@@ -178,10 +178,3 @@ $color-overlay: (
   'dark-light': #{rgba($color-white, 0.6)},
   'dark-lighter': #{rgba($color-white, 0.5)}
 );
-
-$color-tooltip: (
-  //light
-  'light-default': #{rgba($color-black, 0.85)},
-  //dark
-  'dark-default': #424242
-);

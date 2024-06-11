@@ -14,12 +14,7 @@ const App: React.FC = () => {
           height: '100vh',
         }}
       >
-        <Segmented
-          block={!false}
-          value={a}
-          onChange={set}
-          options={['a', 'b', 'c', 'd', 'eeeeeee', 'f', 'jjjjjj']}
-        />
+        <Segmented block={!false} options={['Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly']} />
         {/* <Pagination total={100} current={a} onChange={set} /> */}
       </div>
     </div>

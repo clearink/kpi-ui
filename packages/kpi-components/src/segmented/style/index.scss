@@ -6,8 +6,6 @@
 @import './tokens.scss';
 @import './mixins.scss';
 
-$comp: #{$prefix}-segmented;
-
 .#{$comp} {
   @include reset-component();
   display: inline-block;
@@ -91,19 +89,6 @@ $comp: #{$prefix}-segmented;
     background-color: $kpi-segmented-item-color-bg;
     box-shadow: $kpi-segmented-item-shadow;
     color: $kpi-segmented-color-text-selected;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    border-radius: inherit;
-    transition: background-color var(--#{$prefix}-motion-duration-2);
-    pointer-events: none;
   }
 
   .#{$comp}-item__radio {

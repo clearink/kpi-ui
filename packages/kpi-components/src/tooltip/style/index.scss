@@ -6,8 +6,6 @@
 @import './tokens.scss';
 @import './mixins.scss';
 
-$comp: #{$prefix}-tooltip;
-
 .#{$comp} {
   @include reset-component();
 
