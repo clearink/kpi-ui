@@ -8,44 +8,47 @@
   // Other
   --#{$prefix}-font-weight-regular: 400;
   --#{$prefix}-font-weight-medium: 500;
-  --#{$prefix}-font-weight-bold: 600;
+  --#{$prefix}-font-weight-bold: 700;
 
   --#{$prefix}-font-size-extra-small: 12px;
   --#{$prefix}-font-size-small: 13px;
-  --#{$prefix}-font-size-default: 14px;
+  --#{$prefix}-font-size: 14px;
   --#{$prefix}-font-size-medium: 16px;
   --#{$prefix}-font-size-large: 18px;
   --#{$prefix}-font-size-extra-large: 20px;
 
   --#{$prefix}-line-height-extra-small: 20px;
   --#{$prefix}-line-height-small: 22px;
-  --#{$prefix}-line-height-default: 22px;
+  --#{$prefix}-line-height: 22px;
   --#{$prefix}-line-height-medium: 24px;
   --#{$prefix}-line-height-large: 26px;
   --#{$prefix}-line-height-extra-large: 28px;
 }
 
 @mixin kpi-radius() {
+  --#{$prefix}-border-radius-none: 0;
   --#{$prefix}-border-radius-small: 2px;
-  --#{$prefix}-border-radius-default: 4px;
+  --#{$prefix}-border-radius: 4px;
   --#{$prefix}-border-radius-large: 8px;
   --#{$prefix}-border-radius-round: 20px;
-  --#{$prefix}-border-radius-circle: 50%;
+  --#{$prefix}-border-radius-circle: 100%;
 }
 
 @mixin kpi-shadow($theme) {
   // light
   @if $theme == 'light' {
-    --#{$prefix}-box-shadow-lighter: 0px 0px 6px #{rgba($color-black, 0.12)};
+    --#{$prefix}-box-shadow-lighter: 0 6px 16px 0 rgba(0, 0, 0, 0.08),
+      0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+
     --#{$prefix}-box-shadow-light: 0px 0px 12px #{rgba($color-black, 0.12)};
-    --#{$prefix}-box-shadow-default: 0px 12px 32px 4px #{rgba($color-black, 0.04)},
+    --#{$prefix}-box-shadow: 0px 12px 32px 4px #{rgba($color-black, 0.04)},
       0px 8px 20px 0px #{rgba($color-black, 0.08)};
     --#{$prefix}-box-shadow-dark: 0px 16px 48px 16px #{rgba($color-black, 0.08)},
       0px 12px 32px 0px #{rgba($color-black, 0.12)}, 0px 8px 16px -8px #{rgba($color-black, 0.16)};
   } @else if $theme == 'dark' {
     --#{$prefix}-box-shadow-lighter: 0px 0px 6px #{rgba($color-black, 0.72)};
     --#{$prefix}-box-shadow-light: 0px 0px 12px #{rgba($color-black, 0.72)};
-    --#{$prefix}-box-shadow-default: 0px 12px 32px 4px #{rgba($color-black, 0.36)},
+    --#{$prefix}-box-shadow: 0px 12px 32px 4px #{rgba($color-black, 0.36)},
       0px 8px 20px #{rgba($color-black, 0.72)};
     --#{$prefix}-box-shadow-dark: 0px 16px 48px 16px #{rgba($color-black, 0.72)},
       0px 12px 32px #{$color-black}, 0px 8px 16px -8px #{$color-black};

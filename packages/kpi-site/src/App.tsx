@@ -1,7 +1,7 @@
-import { Button, Tooltip, Segmented } from '@kpi-ui/components'
+// import { Button, Tooltip, Segmented } from '@kpi-ui/components'
 import { useEffect, useReducer, useRef, useState } from 'react'
 
-import '@kpi-ui/components/src/style'
+import '@kpi-ui/components/src/style/theme/colors.scss'
 import './style.scss'
 
 const App: React.FC = () => {
@@ -14,7 +14,7 @@ const App: React.FC = () => {
           height: '100vh',
         }}
       >
-        <Segmented block={!false} options={['Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly']} />
+        {/* <Segmented block={!false} options={['Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly']} /> */}
         {/* <Pagination total={100} current={a} onChange={set} /> */}
       </div>
     </div>
