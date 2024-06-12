@@ -1,7 +1,7 @@
 @import '../variables.scss'; // 引入变量
 
 .#{$prefix}-touch-effect {
-  --wave-color: var(--#{$prefix}-color-primary-default);
+  --wave-color: var(--#{$prefix}-color-primary);
 
   background-color: transparent;
   pointer-events: none;
@@ -19,7 +19,7 @@
 
   animation-name: #{$prefix}-wave;
 
-  animation-timing-function: var(--#{$prefix}-motion-out-circ);
+  animation-timing-function: var(--#{$prefix}-motion-ease-out-circ);
 
   animation-duration: 2s;
 

@@ -8,6 +8,7 @@
 
   &-enter-active,
   &-exit-active {
-    transition: opacity var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out-circ);
+    transition: opacity var(--#{$prefix}-motion-duration-3)
+      var(--#{$prefix}-motion-ease-in-out-circ);
   }
 }

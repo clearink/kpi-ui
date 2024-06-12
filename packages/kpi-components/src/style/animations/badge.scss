@@ -14,7 +14,7 @@
   &-move,
   &-enter-active,
   &-exit-active {
-    transition: all var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-out-back);
+    transition: all var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-ease-out-back);
   }
 
   &-exit-active {

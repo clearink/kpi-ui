@@ -2,9 +2,9 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  color: var(--#{$prefix}-color-text-regular);
-  font-size: var(--#{$prefix}-font-size-default);
-  line-height: var(--#{$prefix}-line-height-default);
+  color: var(--#{$prefix}-color-text);
+  font-size: var(--#{$prefix}-font-size);
+  line-height: var(--#{$prefix}-line-height);
   font-family: var(--#{$prefix}-font-family);
   list-style: none;
 }
