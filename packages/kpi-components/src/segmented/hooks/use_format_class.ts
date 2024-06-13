@@ -3,13 +3,16 @@ import { cls } from '@kpi-ui/utils'
 import type { SegmentedProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: SegmentedProps) {
-  const { block, className, classNames = {} } = props
+  const { size, block, disabled, className, classNames = {} } = props
 
   return {
     root: cls(
       prefixCls,
       {
         [`${prefixCls}--block`]: block,
+        [`${prefixCls}--disabled`]: disabled,
+        [`${prefixCls}--sm`]: size === 'small',
+        [`${prefixCls}--lg`]: size === 'large',
       },
       className,
       classNames.root

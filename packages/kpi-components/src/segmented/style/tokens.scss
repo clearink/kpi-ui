@@ -1,1 +1,13 @@
+$kpi-segmented-padding: calc(var(--#{$prefix}-padding-xxs) / 2);
 
+$kpi-segmented-px-sm: var(--#{$prefix}-padding-xs);
+$kpi-segmented-px: var(--#{$prefix}-padding-sm);
+$kpi-segmented-px-lg: var(--#{$prefix}-padding);
+
+$kpi-segmented-border-radius-sm: var(--#{$prefix}-border-radius-sm);
+$kpi-segmented-border-radius: var(--#{$prefix}-border-radius);
+$kpi-segmented-border-radius-lg: var(--#{$prefix}-border-radius-lg);
+
+$kpi-segmented-height-sm: calc(var(--#{$prefix}-control-height-sm) - var(--#{$prefix}-padding-xxs));
+$kpi-segmented-height: calc(var(--#{$prefix}-control-height) - var(--#{$prefix}-padding-xxs));
+$kpi-segmented-height-lg: calc(var(--#{$prefix}-control-height-lg) - var(--#{$prefix}-padding-xxs));

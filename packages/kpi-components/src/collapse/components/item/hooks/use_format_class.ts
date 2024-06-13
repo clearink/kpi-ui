@@ -10,40 +10,38 @@ export default function useFormatClass(
 ) {
   const { className, classNames, disabled } = props
 
-  const name = `${prefixCls}-item`
-
   return {
     root: cls(
-      name,
+      prefixCls,
       {
-        [`${name}--disabled`]: disabled,
-        [`${name}--expanded`]: expanded,
+        [`${prefixCls}--disabled`]: disabled,
+        [`${prefixCls}--expanded`]: expanded,
       },
       className,
       classNames?.root
     ),
     header: cls(
-      `${name}__header`,
+      `${prefixCls}__header`,
       {
-        [`${name}__collapsible`]: ctx.collapsible === 'header',
+        [`${prefixCls}__collapsible`]: ctx.collapsible === 'header',
       },
       classNames?.header
     ),
     icon: cls(
-      `${name}__icon`,
+      `${prefixCls}__icon`,
       {
-        [`${name}__collapsible`]: ctx.collapsible === 'icon',
+        [`${prefixCls}__collapsible`]: ctx.collapsible === 'icon',
       },
       classNames?.icon
     ),
     title: cls(
-      `${name}__title`,
+      `${prefixCls}__title`,
       {
-        [`${name}__collapsible`]: ctx.collapsible === 'title',
+        [`${prefixCls}__collapsible`]: ctx.collapsible === 'title',
       },
       classNames?.title
     ),
-    extra: cls(`${name}__extra`, classNames?.extra),
-    content: cls(`${name}__content`, classNames?.content),
+    extra: cls(`${prefixCls}__extra`, classNames?.extra),
+    content: cls(`${prefixCls}__content`, classNames?.content),
   }
 }

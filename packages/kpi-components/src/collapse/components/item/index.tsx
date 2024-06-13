@@ -60,7 +60,7 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
 
   const { name, title, extra, disabled, showExpandIcon, expandIcon, style, styles: _styles } = props
 
-  const prefixCls = usePrefixCls('collapse')
+  const prefixCls = usePrefixCls('collapse-item')
 
   const expanded = hasItem(ctx.expandedNames, name)
 
@@ -121,7 +121,7 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
         when={expanded}
         mountOnEnter={!props.keepMounted}
         unmountOnExit={!props.keepMounted && props.unmountOnExit}
-        name={`${prefixCls}-transition`}
+        name={`${prefixCls}-motion`}
         {...handlers}
       >
         <div role={ctx.accordion ? 'tabpanel' : undefined}>

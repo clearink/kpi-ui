@@ -1,14 +1,14 @@
 @import './colors.scss';
 @import './layout.scss';
 
-@include global() {
+:root {
   @include kpi-typography();
 
   @include kpi-size();
 
-  @include kpi-control-height();
+  @include kpi-unit();
 
-  @include kpi-control-width();
+  @include kpi-control-height();
 
   @include kpi-margin();
 
@@ -25,10 +25,14 @@
   @include kpi-color-neutral();
 
   @include kpi-color-link();
+
+  @include kpi-misc();
 }
 
 // 亮色模式
-@include light() {
+:root,
+:root[data-theme='light'],
+:root[data-prefers-color='light'] {
   @include kpi-color-blue('light');
 
   @include kpi-color-volcano('light');
@@ -75,7 +79,8 @@
 }
 
 // 深色模式
-@include dark() {
+:root[data-theme='dark'],
+:root[data-prefers-color='dark'] {
   @include kpi-color-blue('dark');
 
   @include kpi-color-volcano('dark');

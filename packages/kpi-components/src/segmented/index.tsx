@@ -10,7 +10,7 @@ import { normalizeOptions } from './utils/helpers'
 import { CSSTransition } from '../_internal/transition'
 import SegmentedItem from './components/item'
 // types
-import type { SegmentedProps, SegmentedType } from './props'
+import type { SegmentedProps } from './props'
 
 const defaultProps: Partial<SegmentedProps> = {
   block: false,
@@ -24,9 +24,7 @@ function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
 
   const { style, options: _options, styles: _styles, disabled } = props
 
-  const rootPrefixCls = usePrefixCls()
-
-  const prefixCls = `${rootPrefixCls}-segmented`
+  const prefixCls = usePrefixCls('segmented')
 
   const classNames = useFormatClass(prefixCls, props)
 
@@ -48,7 +46,7 @@ function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
             key={active}
             when
             appear
-            name={`${rootPrefixCls}-segmented-thumb`}
+            name={`${prefixCls}-thumb-motion`}
             onEnter={actions.onThumbEnter}
             onEntering={actions.onThumbEntering}
             onEntered={actions.onThumbEntered}
@@ -75,6 +73,6 @@ function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
   )
 }
 
-export default withDisplayName(forwardRef(Segmented), 'Segmented') as <T extends SegmentedType>(
+export default withDisplayName(forwardRef(Segmented), 'Segmented') as <T>(
   props: SegmentedProps<T> & React.RefAttributes<HTMLDivElement>
 ) => JSX.Element

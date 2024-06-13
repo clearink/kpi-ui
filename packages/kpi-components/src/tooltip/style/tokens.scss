@@ -1,17 +1,4 @@
-$comp: #{$prefix}-tooltip;
-
-@include light() {
-  .#{$comp} {
-    --#{$comp}-color: #{rgba($color-black, 0.85)};
-  }
-}
-
-@include dark() {
-  .#{$comp} {
-    --#{$comp}-color: #424242;
-  }
-}
-
+$kpi-tooltip-max-width: var(--#{$prefix}-unit-64);
+$kpi-tooltip-px: calc(var(--#{$prefix}-padding-xs) / 2);
+$kpi-tooltip-py: var(--#{$prefix}-padding-xs);
 $kpi-tooltip-arrow-size: 16px;
-$kpi-tooltip-color-bg: var(--#{$comp}-color);
-$kpi-tooltip-color-text: $color-white;

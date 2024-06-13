@@ -64,7 +64,7 @@
   --#{$prefix}-border-radius-xs: 2px;
   --#{$prefix}-border-radius-sm: 2px;
   --#{$prefix}-border-radius: 4px;
-  --#{$prefix}-border-radius-lg: 8px;
+  --#{$prefix}-border-radius-lg: 6px;
 }
 
 @mixin kpi-motion() {
@@ -98,6 +98,34 @@
   --#{$prefix}-size-xxl: 48px;
 }
 
+@mixin kpi-unit() {
+  --#{$prefix}-unit-0: 0px;
+  --#{$prefix}-unit-1: 4px;
+  --#{$prefix}-unit-1_5: 6px;
+  --#{$prefix}-unit-2: 8px;
+  --#{$prefix}-unit-3: 12px;
+  --#{$prefix}-unit-3_5: 14px;
+  --#{$prefix}-unit-4: 16px;
+  --#{$prefix}-unit-5: 20px;
+  --#{$prefix}-unit-6: 24px;
+  --#{$prefix}-unit-7: 28px;
+  --#{$prefix}-unit-8: 32px;
+  --#{$prefix}-unit-9: 36px;
+  --#{$prefix}-unit-10: 40px;
+  --#{$prefix}-unit-11: 44px;
+  --#{$prefix}-unit-12: 48px;
+  --#{$prefix}-unit-13: 52px;
+  --#{$prefix}-unit-14: 56px;
+  --#{$prefix}-unit-15: 60px;
+  --#{$prefix}-unit-16: 64px;
+  --#{$prefix}-unit-17: 68px;
+  --#{$prefix}-unit-18: 72px;
+  --#{$prefix}-unit-24: 96px;
+  --#{$prefix}-unit-32: 128px;
+  --#{$prefix}-unit-64: 256px;
+  --#{$prefix}-unit-96: 384px;
+}
+
 @mixin kpi-control-height() {
   --#{$prefix}-control-height-xs: 16px;
   --#{$prefix}-control-height-sm: 24px;
@@ -105,6 +133,7 @@
   --#{$prefix}-control-height-lg: 40px;
 }
 
-@mixin kpi-control-width() {
-  --#{$prefix}-control-width-line: 1px;
+@mixin kpi-misc() {
+  --#{$prefix}-line-width: 1px;
+  --#{$prefix}-line-type: solid;
 }

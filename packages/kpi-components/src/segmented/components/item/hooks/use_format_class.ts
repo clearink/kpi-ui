@@ -3,13 +3,14 @@ import { cls } from '@kpi-ui/utils'
 import type { SegmentedItemProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: SegmentedItemProps) {
-  const { checked, showThumb, className, classNames = {} } = props
+  const { checked, showThumb, disabled, className, classNames = {} } = props
 
   return {
     root: cls(
       prefixCls,
       {
         [`${prefixCls}--selected`]: checked && !showThumb,
+        [`${prefixCls}--disabled`]: disabled,
       },
       className,
       classNames.root

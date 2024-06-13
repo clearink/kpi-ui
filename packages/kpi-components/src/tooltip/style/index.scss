@@ -6,17 +6,21 @@
 @import './tokens.scss';
 @import './mixins.scss';
 
+$comp: #{$prefix}-tooltip;
+
 .#{$comp} {
   @include reset-component();
 
   position: absolute;
   width: max-content;
-  max-width: var(--#{$prefix}-size-unit-64);
-  padding: var(--#{$prefix}-size-unit-1) var(--#{$prefix}-size-unit-2);
-  border-radius: var(--#{$prefix}-border-radius-default);
+  min-width: 1em;
+  max-width: $kpi-tooltip-max-width;
+  padding: $kpi-tooltip-px $kpi-tooltip-py;
+  border-radius: var(--#{$prefix}-border-radius);
   transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
-  color: $kpi-tooltip-color-text;
-  background-color: $kpi-tooltip-color-bg;
+  color: var(--#{$prefix}-color-text-light-solid);
+  background-color: var(--#{$prefix}-color-bg-spot-light);
+  box-shadow: var(--#{$prefix}-box-shadow-secondary);
   will-change: transform;
 }
 
@@ -27,6 +31,7 @@
   width: $kpi-tooltip-arrow-size;
   height: $kpi-tooltip-arrow-size;
   clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+  box-shadow: var(--#{$prefix}-box-shadow-secondary);
 
   &::before {
     content: '';
@@ -35,6 +40,6 @@
     height: 50%;
     transform: translate3d(50%, 50%, 0) rotate(45deg);
     border-bottom-right-radius: 2px;
-    background-color: $kpi-tooltip-color-bg;
+    background-color: var(--#{$prefix}-color-bg-spot-light);
   }
 }
