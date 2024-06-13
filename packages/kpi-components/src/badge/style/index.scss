@@ -9,12 +9,37 @@ $comp: #{$prefix}-badge;
 
 .#{$comp} {
   @include reset-component();
-}
 
-.#{$comp}__indicator {
-  position: relative;
-}
+  &__indicator {
+    position: relative;
+    overflow: hidden;
+  }
 
-.#{$comp}__scroll-number {
-  display: inline-block;
+  &__scroll-number {
+    display: inline-block;
+    position: relative;
+    top: 10px;
+  }
+
+  &-scroll-number {
+    &-enter-from {
+      opacity: 0;
+      transform: translate3d(0, 5px, 0);
+    }
+
+    &-exit-to {
+      opacity: 0;
+      transform: translate3d(0, -5px, 0);
+    }
+
+    &-move,
+    &-enter-active,
+    &-exit-active {
+      transition: all var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-ease-out-back);
+    }
+
+    &-exit-active {
+      position: absolute;
+    }
+  }
 }

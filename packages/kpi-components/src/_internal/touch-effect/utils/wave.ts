@@ -1,5 +1,5 @@
 // types
-import { makeFrameTimeout } from '@kpi-ui/utils'
+import { getElementStyle, makeFrameTimeout } from '@kpi-ui/utils'
 import type { TouchEffectInfo } from '../_shared/context'
 
 // 白色，透明 不合格
@@ -14,7 +14,7 @@ function isValidColor(color: string) {
 }
 
 function getWaveColor(node: HTMLElement) {
-  const { borderTopColor, borderColor, backgroundColor } = getComputedStyle(node)
+  const { borderTopColor, borderColor, backgroundColor } = getElementStyle(node)
 
   if (isValidColor(borderTopColor)) return borderTopColor
 
@@ -34,6 +34,7 @@ export default function wave(info: TouchEffectInfo) {
 
   const div = document.createElement('div')
 
+  // TODO: 定位元素到target 左上角
   div.style.setProperty('--wave-color', waveColor)
 
   div.className = className

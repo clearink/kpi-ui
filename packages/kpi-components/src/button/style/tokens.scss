@@ -1,24 +1,24 @@
 $kpi-btn-border: 1px solid transparent;
 
-$kpi-btn-padding-small: 0 7px;
+$kpi-btn-padding-sm: 0 7px;
 
-$kpi-btn-padding-default: 0 15px;
+$kpi-btn-padding: 0 15px;
 
-$kpi-btn-padding-large: 0px 19px;
+$kpi-btn-padding-lg: 0px 19px;
 
-$kpi-btn-height-small: var(--#{$prefix}-size-unit-6);
+$kpi-btn-height-sm: var(--#{$prefix}-unit-6);
 
-$kpi-btn-height-default: var(--#{$prefix}-size-unit-8);
+$kpi-btn-height: var(--#{$prefix}-unit-8);
 
-$kpi-btn-height-large: var(--#{$prefix}-size-unit-10);
+$kpi-btn-height-lg: var(--#{$prefix}-unit-10);
 
-$kpi-btn-font-size-small: var(--#{$prefix}-font-size-extra-small);
+$kpi-btn-font-size-sm: var(--#{$prefix}-font-size-sm);
 
-$kpi-btn-font-size-default: var(--#{$prefix}-font-size-default);
+$kpi-btn-font-size: var(--#{$prefix}-font-size);
 
-$kpi-btn-font-size-large: var(--#{$prefix}-font-size-default);
+$kpi-btn-font-size-lg: var(--#{$prefix}-font-size);
 
-$kpi-btn-transition: all var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-in-out),
+$kpi-btn-transition: all var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-ease-in-out),
   outline 0s, outline-offset 0s;
 
 $kpi-btn-outline-width: 3px;

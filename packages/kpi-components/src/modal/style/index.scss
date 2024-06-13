@@ -7,16 +7,6 @@
 
 $comp: #{$prefix}-modal;
 
-.#{$comp}-mask {
-  @include full-screen();
-  pointer-events: none;
-  background-color: var(--#{$prefix}-color-overlay-lighter);
-}
-
-.#{$comp}-wrap {
-  @include full-screen();
-}
-
 .#{$comp} {
   @include reset-component();
 
@@ -24,64 +14,74 @@ $comp: #{$prefix}-modal;
   margin: 0 auto;
   position: relative;
   top: 100px;
-  max-width: calc(100vw - var(--#{$prefix}-size-unit-8));
-  padding-bottom: var(--#{$prefix}-size-unit-6);
+  max-width: calc(100vw - var(--#{$prefix}-unit-8));
+  padding-bottom: var(--#{$prefix}-unit-6);
   width: 520px;
 
-  .#{$comp}__close {
+  &__close {
     position: absolute;
-    right: var(--#{$prefix}-size-unit-6);
-    top: var(--#{$prefix}-size-unit-5);
+    right: var(--#{$prefix}-unit-6);
+    top: var(--#{$prefix}-unit-5);
     padding: 0;
     // color: ;
     text-decoration: none;
     background-color: transparent;
     border: 0;
     cursor: pointer;
-    width: var(--#{$prefix}-line-height-small);
-    height: var(--#{$prefix}-line-height-small);
+    width: var(--#{$prefix}-unit-4);
+    height: var(--#{$prefix}-unit-4);
 
     &:focus-visible {
-      outline-width: $kpi-modal-close-outline-width;
-      outline-offset: $kpi-modal-close-outline-offset;
-      outline-color: $kpi-modal-close-outline-color;
+      outline-width: var(--#{$prefix}-line-width);
+      outline-offset: calc(var(--#{$prefix}-unit-1) - var(--#{$prefix}-line-width));
+      outline-color: var(--#{$prefix}-color-primary);
     }
   }
 
-  .#{$comp}__main {
+  &__main {
     position: relative;
-    background-color: var(--#{$prefix}-color-background-default);
-    border-radius: var(--#{$prefix}-border-radius-default);
-    box-shadow: var(--#{$prefix}-box-shadow-default);
+    background-color: var(--#{$prefix}-color-bg-container);
+    border-radius: var(--#{$prefix}-border-radius);
+    box-shadow: var(--#{$prefix}-box-shadow);
     pointer-events: auto;
-    padding: var(--#{$prefix}-size-unit-5) var(--#{$prefix}-size-unit-6);
+    padding: var(--#{$prefix}-unit-5) var(--#{$prefix}-unit-6);
   }
 
-  .#{$comp}__header {
-    margin-bottom: var(--#{$prefix}-size-unit-2);
+  &__header {
+    margin-bottom: var(--#{$prefix}-unit-2);
   }
 
-  .#{$comp}__title {
-    line-height: var(--#{$prefix}-line-height-medium);
-    font-size: var(--#{$prefix}-font-size-medium);
-    font-weight: var(--#{$prefix}-font-weight-bold);
-    color: var(--#{$prefix}-color-text-primary);
-    margin-right: var(--#{$prefix}-size-unit-3);
+  &__title {
+    line-height: var(--#{$prefix}-line-height);
+    font-size: var(--#{$prefix}-font-size);
+    font-weight: var(--#{$prefix}-font-weight-strong);
+    color: var(--#{$prefix}-color-text);
+    margin-right: var(--#{$prefix}-unit-3);
     word-wrap: break-word;
     display: inline-block;
   }
 
-  .#{$comp}__body {
-    font-size: var(--#{$prefix}-font-size-default);
+  &__body {
+    font-size: var(--#{$prefix}-font-size);
     word-wrap: break-word;
   }
 
-  .#{$comp}__footer {
+  &__footer {
     text-align: end;
-    margin-top: var(--#{$prefix}-size-unit-3);
+    margin-top: var(--#{$prefix}-unit-3);
 
     .#{$prefix}-button + .#{$prefix}-button {
-      margin-left: var(--#{$prefix}-size-unit-2);
+      margin-left: var(--#{$prefix}-unit-2);
     }
+  }
+
+  &-mask {
+    @include full-screen();
+    pointer-events: none;
+    background-color: var(--#{$prefix}-color-bg-mask);
+  }
+
+  &-wrap {
+    @include full-screen();
   }
 }

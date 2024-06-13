@@ -16,7 +16,7 @@ $comp: #{$prefix}-checkbox;
   cursor: pointer;
 
   &:hover .#{$comp}__input {
-    border-color: var(--#{$prefix}-color-primary-default);
+    border-color: var(--#{$prefix}-color-primary);
   }
 }
 
@@ -30,7 +30,7 @@ $comp: #{$prefix}-checkbox;
   z-index: -1;
 
   &:focus-visible + .#{$comp}__input {
-    outline-color: var(--#{$prefix}-color-primary-light-3);
+    outline-color: var(--#{$prefix}-color-primary-active);
     outline-offset: $kpi-checkbox-outline-offset;
   }
 }
@@ -39,11 +39,11 @@ $comp: #{$prefix}-checkbox;
   position: relative;
   display: inline-block;
   box-sizing: border-box;
-  border: 1px solid var(--#{$prefix}-color-border-default);
-  border-radius: var(--#{$prefix}-border-radius-small);
+  border: 1px solid var(--#{$prefix}-color-border);
+  border-radius: var(--#{$prefix}-border-radius-sm);
+  background-color: var(--#{$prefix}-color-bg-base);
   width: $kpi-checkbox-input-width;
   height: $kpi-checkbox-input-height;
-  background-color: var(--#{$prefix}-color-fill-blank);
   transition: $kpi-checkbox-input-transition;
   z-index: 1;
   outline: transparent solid $kpi-checkbox-outline-width;
@@ -54,7 +54,7 @@ $comp: #{$prefix}-checkbox;
     box-sizing: border-box;
     width: $kpi-checkbox-arrow-width;
     height: $kpi-checkbox-arrow-height;
-    border: 2px solid #{$color-white};
+    border: 2px solid var(--#{$prefix}-color-white);
     border-top: 0;
     border-left: 0;
     left: calc($kpi-checkbox-arrow-width / 2);
@@ -66,13 +66,13 @@ $comp: #{$prefix}-checkbox;
 
 .#{$comp}__label {
   padding: 0 8px;
-  color: var(--#{$prefix}-color-text-regular);
+  color: var(--#{$prefix}-color-text);
 }
 
 .#{$comp}--checked {
-  &.#{$comp}__input {
-    border-color: var(--#{$prefix}-color-primary-default);
-    background-color: var(--#{$prefix}-color-primary-default);
+  .#{$comp}__input {
+    border-color: var(--#{$prefix}-color-primary);
+    background-color: var(--#{$prefix}-color-primary);
 
     &::after {
       transform: scale(1) rotate(45deg) translate(-50%, -50%);
@@ -82,8 +82,8 @@ $comp: #{$prefix}-checkbox;
 
   &:hover {
     &.#{$comp}__input {
-      border-color: var(--#{$prefix}-color-primary-light-3);
-      background-color: var(--#{$prefix}-color-primary-light-3);
+      border-color: var(--#{$prefix}-color-primary-hover);
+      // background-color: var(--#{$prefix}-color-primary-active);
     }
   }
 }

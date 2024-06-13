@@ -309,6 +309,26 @@
   --#{$prefix}-color-link-active: var(--#{$prefix}-color-blue-7);
 }
 
+@mixin kpi-color-fill($theme) {
+  @if $theme == 'light' {
+    --#{$prefix}-color-fill: rgba(0, 0, 0, 0.15);
+    --#{$prefix}-color-fill-secondary: rgba(0, 0, 0, 0.06);
+    --#{$prefix}-color-fill-tertiary: rgba(0, 0, 0, 0.04);
+    --#{$prefix}-color-fill-quaternary: rgba(0, 0, 0, 0.02);
+    --#{$prefix}-color-fill-content: var(--#{$prefix}-color-fill-secondary);
+    --#{$prefix}-color-fill-content-hover: var(--#{$prefix}-color-fill);
+    --#{$prefix}-color-fill-alter: var(--#{$prefix}-color-fill-quaternary);
+  } @else if $theme == 'dark' {
+    --#{$prefix}-color-fill: rgba(255, 255, 255, 0.18);
+    --#{$prefix}-color-fill-secondary: rgba(255, 255, 255, 0.12);
+    --#{$prefix}-color-fill-tertiary: rgba(255, 255, 255, 0.08);
+    --#{$prefix}-color-fill-quaternary: rgba(255, 255, 255, 0.04);
+    --#{$prefix}-color-fill-content: var(--#{$prefix}-color-fill-secondary);
+    --#{$prefix}-color-fill-content-hover: var(--#{$prefix}-color-fill);
+    --#{$prefix}-color-fill-alter: var(--#{$prefix}-color-fill-quaternary);
+  }
+}
+
 @mixin kpi-color-background($theme) {
   @if $theme == 'light' {
     --#{$prefix}-color-bg-container: var(--#{$prefix}-color-bg-base);
@@ -342,25 +362,5 @@
     --#{$prefix}-color-border: #424242;
     --#{$prefix}-color-border-secondary: #303030;
     --#{$prefix}-color-border-split: rgba(255, 255, 255, 0.06);
-  }
-}
-
-@mixin kpi-color-fill($theme) {
-  @if $theme == 'light' {
-    --#{$prefix}-color-fill: rgba(0, 0, 0, 0.15);
-    --#{$prefix}-color-fill-secondary: rgba(0, 0, 0, 0.06);
-    --#{$prefix}-color-fill-tertiary: rgba(0, 0, 0, 0.04);
-    --#{$prefix}-color-fill-quaternary: rgba(0, 0, 0, 0.02);
-    --#{$prefix}-color-fill-content: var(--#{$prefix}-color-fill-secondary);
-    --#{$prefix}-color-fill-content-hover: var(--#{$prefix}-color-fill);
-    --#{$prefix}-color-fill-alter: var(--#{$prefix}-color-fill-quaternary);
-  } @else if $theme == 'dark' {
-    --#{$prefix}-color-fill: rgba(255, 255, 255, 0.18);
-    --#{$prefix}-color-fill-secondary: rgba(255, 255, 255, 0.12);
-    --#{$prefix}-color-fill-tertiary: rgba(255, 255, 255, 0.08);
-    --#{$prefix}-color-fill-quaternary: rgba(255, 255, 255, 0.04);
-    --#{$prefix}-color-fill-content: var(--#{$prefix}-color-fill-secondary);
-    --#{$prefix}-color-fill-content-hover: var(--#{$prefix}-color-fill);
-    --#{$prefix}-color-fill-alter: var(--#{$prefix}-color-fill-quaternary);
   }
 }

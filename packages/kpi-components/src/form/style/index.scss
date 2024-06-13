@@ -27,13 +27,13 @@ $comp: #{$prefix}-form;
   vertical-align: middle;
 
   > label {
-    height: var(--#{$prefix}-size-unit-8);
+    height: var(--#{$prefix}-unit-8);
     position: relative;
     display: inline-flex;
     align-items: center;
     max-width: 100%;
-    color: var(--#{$prefix}-color-text-regular);
-    font-size: var(--#{$prefix}-font-size-default);
+    color: var(--#{$prefix}-color-text);
+    font-size: var(--#{$prefix}-font-size);
     &::after {
       content: '\a0';
       position: relative;
@@ -47,8 +47,8 @@ $comp: #{$prefix}-form;
       content: '*';
       display: inline-block;
       margin-right: 4px;
-      color: var(--#{$prefix}-color-danger-default);
-      font-size: var(--#{$prefix}-font-size-default);
+      color: var(--#{$prefix}-color-error);
+      font-size: var(--#{$prefix}-font-size);
       line-height: 1;
     }
   }
@@ -80,10 +80,10 @@ $comp: #{$prefix}-form;
   @include form-item-tip();
 
   &--error {
-    color: var(--#{$prefix}-color-danger-default);
+    color: var(--#{$prefix}-color-error);
   }
 
   &--warning {
-    color: var(--#{$prefix}-color-warning-default);
+    color: var(--#{$prefix}-color-warning);
   }
 }

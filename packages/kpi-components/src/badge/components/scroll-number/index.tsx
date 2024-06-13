@@ -15,6 +15,7 @@ export default function ScrollNumber(props: ScrollNumberProps) {
 
     if (value > maxCount) chars.push('+')
 
+    // TODO: key 需要记录上次的值
     return chars.map((value, index) => ({ key: `${index}-${value}`, value }))
   }, [value, maxCount])
 
