@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { GroupTransition } from '../../../_internal/transition'
 import { usePrefixCls } from '../../../_shared/hooks'
 import { min } from '../../../_shared/utils'
-
+// types
 import type { ScrollNumberProps } from './props'
 
 export default function ScrollNumber(props: ScrollNumberProps) {

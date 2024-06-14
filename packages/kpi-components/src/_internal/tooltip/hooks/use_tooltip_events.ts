@@ -24,8 +24,8 @@ export default function useTooltipEvents(
 
     if (!element || !clickToHide) return
 
-    const handler = ({ target }: MouseEvent) => {
-      setOpen((state) => (!state || isInPopupChain(states, target as Element) ? state : false))
+    const handler = (event: MouseEvent) => {
+      setOpen((state) => (!state || isInPopupChain(states, event) ? state : false))
     }
 
     const shadowRoot = getShadowRoot(element)

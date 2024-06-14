@@ -40,18 +40,22 @@ export function getElementCoords(el: HTMLElement) {
   }
 }
 
-export function getPositionedCoords(el: Element) {
+export function getPositionedElement(el: Element) {
   let parent = el.parentElement
 
   while (parent) {
     const { position } = getElementStyle(parent)
 
-    if (position !== 'static') return getElementCoords(parent)
+    if (position !== 'static') return parent
 
     parent = parent.parentElement
   }
 
   const root = ownerDocument(el)
 
-  return getElementCoords(root.documentElement || root.body)
+  return root.documentElement || root.body
+}
+
+export function getPositionedCoords(el: Element) {
+  return getElementCoords(getPositionedElement(el))
 }

@@ -1,27 +1,20 @@
-@import '../variables.scss'; // 引入变量
+// 优化打包性能引入除了 preset 的内容, 顺序不可该变
+@import '../../style/variables.scss'; // 引入 变量
+@import '../../style/mixins/index.scss'; // 引入 reset
 
-.#{$prefix}-touch-effect {
+.#{$prefix}-wave {
   --wave-color: var(--#{$prefix}-color-primary);
 
-  background-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
   pointer-events: none;
   border-radius: inherit;
   box-sizing: border-box;
   box-shadow: 0 0 0 0 var(--wave-color);
   opacity: 0.25;
 
-  position: absolute;
-  inset: 0;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-
-  animation-name: #{$prefix}-wave;
-
-  animation-timing-function: var(--#{$prefix}-motion-ease-out-circ);
-
-  animation-duration: 2s;
+  animation: #{$prefix}-wave 2s var(--#{$prefix}-motion-ease-out-circ);
 
   @keyframes #{$prefix}-wave {
     0% {

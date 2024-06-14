@@ -35,6 +35,7 @@ $comp: #{$prefix}-badge;
     &-move,
     &-enter-active,
     &-exit-active {
+      --#{$prefix}-motion-duration-3: 6s;
       transition: all var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-ease-out-back);
     }
 

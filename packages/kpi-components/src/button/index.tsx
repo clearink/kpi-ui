@@ -5,7 +5,7 @@ import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 import { isBorderedVariant } from './utils/helpers'
 // comps
-import TouchEffect from '../_internal/touch-effect'
+import TouchEffect from '../touch-effect'
 // types
 import type { ButtonProps } from './props'
 

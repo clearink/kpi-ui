@@ -6,8 +6,10 @@ import type useTooltipOpen from '../hooks/use_tooltip_open'
 import type { TooltipState } from '../hooks/use_tooltip_store'
 import type { TriggerEvent } from '../props'
 
-export function isInPopupChain(states: TooltipState, el: Element) {
+export function isInPopupChain(states: TooltipState, event: MouseEvent) {
   const { trigger, popup, popups } = states
+
+  const el = event.target as Element
 
   const isInChain = (item: Element | null) =>
     item && (item === el || item.contains(el) || getShadowRoot(item)?.host === el)

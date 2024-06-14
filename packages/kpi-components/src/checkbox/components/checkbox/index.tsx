@@ -4,7 +4,7 @@ import { usePrefixCls } from '../../../_shared/hooks'
 import { CheckboxGroupContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
 // comps
-import TouchEffect from '../../../_internal/touch-effect'
+import TouchEffect from '../../../touch-effect'
 // types
 import type { CheckboxProps } from './props'
 import useCheckboxValue from './hooks/use_checkbox_value'

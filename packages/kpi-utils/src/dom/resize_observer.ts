@@ -1,8 +1,9 @@
-import { ownerWindow } from '@kpi-ui/utils'
-// types
-import type { ResizeCallback } from '../props'
+import { ownerWindow } from './global'
 
-export class ElementResizeObserver {
+// types
+export type ResizeCallback = (el: Element) => void
+
+class ElementResizeObserver {
   private _instance: ResizeObserver | null = null
 
   private _listeners = new Map<Element, Set<ResizeCallback>>()
@@ -23,9 +24,7 @@ export class ElementResizeObserver {
   }
 
   private _getInstance() {
-    if (typeof ResizeObserver === 'undefined') {
-      throw new Error('not support ResizeObserver')
-    }
+    if (typeof ResizeObserver === 'undefined') return
 
     // prettier-ignore
     this._instance = this._instance || new ResizeObserver((entries) => {
@@ -45,7 +44,7 @@ export class ElementResizeObserver {
     if (!this._listeners.has(el)) {
       this._listeners.set(el, new Set())
 
-      this._getInstance().observe(el, { box: 'border-box' })
+      this._getInstance()?.observe(el, { box: 'border-box' })
     }
 
     {
@@ -62,7 +61,7 @@ export class ElementResizeObserver {
       if (listeners && !listeners.size) {
         this._listeners.delete(el)
 
-        this._getInstance().unobserve(el)
+        this._getInstance()?.unobserve(el)
       }
 
       if (!this._listeners.size) this._removeWindowResizeHandler(el)
@@ -70,4 +69,4 @@ export class ElementResizeObserver {
   }
 }
 
-export default new ElementResizeObserver().observe
+export const observe = new ElementResizeObserver().observe
