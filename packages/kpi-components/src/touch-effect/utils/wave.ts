@@ -40,17 +40,17 @@ export default function showWaveEffect(info: TouchEffectInfo) {
   div.className = `${prefixCls}-wave`
 
   const resize = () => {
-    const rect1 = getClientCoords(target)
+    const targetCoords = getClientCoords(target)
 
-    const rect2 = getClientCoords(getPositionedElement(div))
+    const divCoords = getClientCoords(getPositionedElement(div))
 
-    div.style.height = `${rect1.height}px`
+    div.style.height = `${targetCoords.height}px`
 
-    div.style.width = `${rect1.width}px`
+    div.style.width = `${targetCoords.width}px`
 
-    const dx = rect1.left - rect2.left
+    const dx = targetCoords.left - divCoords.left
 
-    const dy = rect1.top - rect2.top
+    const dy = targetCoords.top - divCoords.top
 
     div.style.transform = `translate3d(${dx}px, ${dy}px, 0)`
   }

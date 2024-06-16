@@ -117,11 +117,11 @@ export default function useSegmentedStore(active: SegmentedType) {
   let returnEarly = false
 
   useWatchValue(active, () => {
+    returnEarly = states.showThumb !== true
+
     actions.setHistory(active)
 
     actions.setShowThumb(true)
-
-    returnEarly = states.showThumb !== true
   })
 
   return { returnEarly, states, actions }

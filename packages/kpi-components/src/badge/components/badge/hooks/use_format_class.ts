@@ -5,5 +5,8 @@ import type { BadgeProps } from '../props'
 export default function useFormatClass(prefixCls: string, props: BadgeProps) {
   const { className } = props
 
-  return cls(prefixCls, {}, className)
+  return {
+    root: cls(prefixCls, {}, className),
+    indicator: cls(`${prefixCls}__indicator`),
+  }
 }

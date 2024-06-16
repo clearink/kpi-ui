@@ -11,7 +11,7 @@ export default function useTouchEffect(props: TouchEffectProps) {
 
   const { disabled, showEffect } = TouchEffectContext.useState()
 
-  const prefixCls = usePrefixCls()
+  const prefixCls = usePrefixCls('touch-effect')
 
   return useThrottleFrame((container: HTMLElement, event: MouseEvent) => {
     if (isBoolean(disabled) && disabled) return

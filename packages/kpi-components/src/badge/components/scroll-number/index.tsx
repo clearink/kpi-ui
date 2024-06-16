@@ -1,31 +1,47 @@
-import { useMemo } from 'react'
-import { GroupTransition } from '../../../_internal/transition'
+import { withDisplayName } from '@kpi-ui/utils'
 import { usePrefixCls } from '../../../_shared/hooks'
-import { min } from '../../../_shared/utils'
+import { NaturalList } from '../../constants'
+import useScrollNumberStore from './hooks/use_scroll_number_store'
+// comps
+import { CSSTransition } from '../../../_internal/transition'
 // types
 import type { ScrollNumberProps } from './props'
 
-export default function ScrollNumber(props: ScrollNumberProps) {
-  const { value, maxCount } = props
+function ScrollNumber(props: ScrollNumberProps) {
+  const { char } = props
 
-  const prefixCls = usePrefixCls('badge')
+  const prefixCls = usePrefixCls('badge-scroll-number')
 
-  const list = useMemo(() => {
-    const chars = String(min([value, maxCount])).split('')
+  const { returnEarly, states, action } = useScrollNumberStore(props)
 
-    if (value > maxCount) chars.push('+')
+  if (returnEarly) return null
 
-    // TODO: key 需要记录上次的值
-    return chars.map((value, index) => ({ key: `${index}-${value}`, value }))
-  }, [value, maxCount])
+  if (states.showRawChar) return <span>{char}</span>
 
   return (
-    <GroupTransition name={`${prefixCls}-scroll-number`} flip>
-      {list.map((item) => (
-        <span key={item.key} className={`${prefixCls}__scroll-number`}>
-          {item.value}
-        </span>
-      ))}
-    </GroupTransition>
+    <CSSTransition
+      key={char}
+      when
+      appear
+      name={`${prefixCls}-motion`}
+      onEnter={action.onEnter}
+      onEntering={action.onEntering}
+      onEntered={action.onEntered}
+    >
+      <span ref={states.$wrap} className={prefixCls}>
+        {NaturalList.map((natural) => (
+          <span
+            key={natural}
+            ref={(el) => {
+              action.setItem(`${natural}`, el)
+            }}
+          >
+            {natural}
+          </span>
+        ))}
+      </span>
+    </CSSTransition>
   )
 }
+
+export default withDisplayName(ScrollNumber)

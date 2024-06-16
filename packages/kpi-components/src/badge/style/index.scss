@@ -10,37 +10,56 @@ $comp: #{$prefix}-badge;
 .#{$comp} {
   @include reset-component();
 
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+
   &__indicator {
-    position: relative;
+    vertical-align: super;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    transform-origin: 100% 0%;
+    display: inline-block;
+    height: $kpi-badge-indicator-height;
+    line-height: $kpi-badge-indicator-height;
+    border-radius: $kpi-badge-indicator-radius;
+    background-color: var(--#{$prefix}-color-error);
+    padding: 0 var(--#{$prefix}-unit-2);
+    color: var(--#{$prefix}-color-bg-container);
+  }
+
+  &-scroll-group {
+    display: inline-block;
+    height: 100%;
     overflow: hidden;
   }
 
-  &__scroll-number {
-    display: inline-block;
-    position: relative;
-    top: 10px;
+  &-scroll-number {
+    display: flex;
+    flex-direction: column;
   }
 
-  &-scroll-number {
-    &-enter-from {
-      opacity: 0;
-      transform: translate3d(0, 5px, 0);
+  &-scroll-number-motion {
+    &-enter-active {
+      will-change: transform;
+      transition: transform var(--kpi-motion-duration-3) var(--kpi-motion-ease-in-out);
     }
+  }
 
+  &-scroll-group-motion {
+    &-enter-from,
     &-exit-to {
       opacity: 0;
-      transform: translate3d(0, -5px, 0);
     }
 
-    &-move,
     &-enter-active,
     &-exit-active {
-      --#{$prefix}-motion-duration-3: 6s;
-      transition: all var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-ease-out-back);
-    }
-
-    &-exit-active {
-      position: absolute;
+      overflow: hidden;
+      will-change: opacity, width;
+      transition: opacity var(--kpi-motion-duration-3) var(--kpi-motion-ease-in-out),
+        width var(--kpi-motion-duration-3) var(--kpi-motion-ease-in-out);
     }
   }
 }

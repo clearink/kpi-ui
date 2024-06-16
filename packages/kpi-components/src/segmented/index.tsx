@@ -61,7 +61,6 @@ function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
               actions.setItem(item.value, el)
             }}
             key={item.value}
-            prefixCls={`${prefixCls}-item`}
             showThumb={states.showThumb}
             checked={active === item.value}
             disabled={disabled || item.disabled}

@@ -65,6 +65,7 @@
   --#{$prefix}-border-radius-sm: 2px;
   --#{$prefix}-border-radius: 4px;
   --#{$prefix}-border-radius-lg: 6px;
+  --#{$prefix}-border-radius-circle: 50%;
 }
 
 @mixin kpi-motion() {

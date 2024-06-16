@@ -2,7 +2,9 @@
 @import '../../style/variables.scss'; // 引入 变量
 @import '../../style/mixins/index.scss'; // 引入 reset
 
-.#{$prefix}-wave {
+$comp: #{$prefix}-touch-effect;
+
+.#{$comp}-wave {
   --wave-color: var(--#{$prefix}-color-primary);
 
   position: absolute;
