@@ -1,5 +1,5 @@
 import { fallback, withDisplayName } from '@kpi-ui/utils'
-import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
+import { usePrefixCls, useSemanticStyles } from '_hooks'
 import useFormatClass from './hooks/use_format_class'
 // comps
 import Tooltip from '../tooltip'

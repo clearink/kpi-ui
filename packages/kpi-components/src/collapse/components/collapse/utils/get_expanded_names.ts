@@ -1,5 +1,5 @@
 import { toArray } from '@kpi-ui/utils'
-import { ExpandedName } from '../../../props'
+import { ExpandedName } from '@/collapse/props'
 
 export default function getExpandedNames(
   names?: ExpandedName | ExpandedName[],

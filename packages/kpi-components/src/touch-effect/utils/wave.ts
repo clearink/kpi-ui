@@ -1,5 +1,5 @@
 import { getClientCoords, getElementStyle, makeFrameTimeout, observe } from '@kpi-ui/utils'
-import { getPositionedElement } from '../../_shared/utils'
+import { getPositionedElement } from '_utils'
 // types
 import type { TouchEffectInfo } from '../_shared/context'
 

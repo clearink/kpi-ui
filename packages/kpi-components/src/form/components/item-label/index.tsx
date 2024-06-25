@@ -1,8 +1,9 @@
 import { isString, withDefaults } from '@kpi-ui/utils'
-import { usePrefixCls } from '../../../_shared/hooks'
-import Col from '../../../col'
+import { usePrefixCls } from '_hooks'
 import { FormContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
+// comps
+import Col from '@/col'
 import normalizeChildren from './utils/normalize_children'
 // types
 import type { FormItemLabelProps } from './props'

@@ -1,4 +1,4 @@
-import { useControllableState } from '@kpi-ui/hooks'
+import { useControllableState } from '_hooks'
 // types
 import type { CheckboxProps } from '../props'
 

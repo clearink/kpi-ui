@@ -1,9 +1,9 @@
 import { withDisplayName } from '@kpi-ui/utils'
-import { usePrefixCls } from '../../../_shared/hooks'
+import { usePrefixCls } from '_hooks'
 import { NaturalList } from '../../constants'
 import useScrollNumberStore from './hooks/use_scroll_number_store'
 // comps
-import { CSSTransition } from '../../../_internal/transition'
+import { CSSTransition } from '_components'
 // types
 import type { ScrollNumberProps } from './props'
 

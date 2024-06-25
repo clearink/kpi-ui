@@ -1,5 +1,3 @@
-import { CaretRightOutlined as svg } from '@kpi-ui/icons-svg'
-
 // TODO: 待完善
 const CaretRightOutlined = (props: any) => {
   return (

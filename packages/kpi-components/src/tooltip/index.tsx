@@ -1,8 +1,8 @@
 import { fallback, withDisplayName } from '@kpi-ui/utils'
-import { usePrefixCls } from '../_shared/hooks'
+import { usePrefixCls } from '_hooks'
 import useFormatClass from './hooks/use_format_class'
 // comps
-import InternalTooltip from '../_internal/tooltip'
+import { Tooltip as InternalTooltip } from '_components'
 // types
 import type { TooltipProps } from './props'
 

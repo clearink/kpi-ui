@@ -1,3 +1,3 @@
-import type { InternalTooltipProps } from '../_internal/tooltip/_shared/props'
+import type { InternalTooltipProps } from '_components'
 
 export interface TooltipProps extends InternalTooltipProps {}

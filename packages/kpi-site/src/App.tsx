@@ -1,4 +1,4 @@
-import { Badge, Button } from '@kpi-ui/components'
+import { Badge, Button, Segmented } from '@kpi-ui/components'
 import { useState } from 'react'
 
 import '@kpi-ui/components/src/style'
@@ -28,6 +28,9 @@ const App: React.FC = () => {
         </Badge>
       </div>
       <div>{a}</div>
+      <div>
+        <Segmented options={['a', 'b', 'c', 'd']} />
+      </div>
     </div>
   )
 }

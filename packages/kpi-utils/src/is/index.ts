@@ -27,5 +27,3 @@ export const isSymbol = (obj: any): obj is symbol => rawType(obj) === 'Symbol'
 
 export const isPromiseLike = (obj: any): obj is PromiseLike<any> =>
   rawType(obj) === 'Promise' || (isObjectLike(obj) && isFunction(obj.then))
-
-export const isNaN = Number.isNaN ? Number.isNaN.bind(null) : (obj: any) => obj !== obj

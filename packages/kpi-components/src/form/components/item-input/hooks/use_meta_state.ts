@@ -1,4 +1,4 @@
-import { useDebounceState } from '@kpi-ui/hooks'
+import { useDebounceState } from '_hooks'
 import { useCallback, startTransition } from 'react'
 // types
 import type { FieldMeta } from '../../../props'

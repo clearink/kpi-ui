@@ -1,13 +1,13 @@
+import { CheckboxGroupContext } from '@/checkbox/_shared/context'
 import { isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { DisabledContext } from '../../../_shared/context'
-import { usePrefixCls } from '../../../_shared/hooks'
-import { CheckboxGroupContext } from '../../_shared/context'
+import { DisabledContext } from '_contexts'
+import { usePrefixCls } from '_hooks'
 import useFormatClass from './hooks/use_format_class'
 // comps
-import TouchEffect from '../../../touch-effect'
+import TouchEffect from '@/touch-effect'
 // types
-import type { CheckboxProps } from './props'
 import useCheckboxValue from './hooks/use_checkbox_value'
+import type { CheckboxProps } from './props'
 
 const excluded = [
   'autoFocus',

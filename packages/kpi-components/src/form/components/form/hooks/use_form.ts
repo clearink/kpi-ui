@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import InternalForm from '../../../../_internal/form'
+import { Form as InternalForm } from '_components'
 // types
 import type { FormInstance } from '../props'
 import type { NamePath } from '../../../props'
@@ -8,7 +8,7 @@ import type { NamePath } from '../../../props'
 export default function useForm<S = any>(form?: FormInstance<S>) {
   const internalForm = InternalForm.useForm<S>()
 
-  return useMemo<FormInstance>(() => {
+  return useMemo<FormInstance<S>>(() => {
     return (
       form ?? {
         ...internalForm,

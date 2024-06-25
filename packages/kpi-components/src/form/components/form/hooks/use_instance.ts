@@ -1,4 +1,4 @@
-import { FormContext } from '../../../_shared/context'
+import { FormContext } from '@/form/_shared/context'
 
 export default function useFormInstance() {
   return FormContext.useState().form

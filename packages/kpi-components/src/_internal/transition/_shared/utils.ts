@@ -1,3 +1,0 @@
-export { default as makeUniqueId } from '../utils/unique_id'
-export { min, max } from '../utils/math'
-export { showElement, hideElement } from '../components/css-transition/utils/display'

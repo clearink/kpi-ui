@@ -1,2 +1,3 @@
-export * from '../../_internal/transition/_shared/utils'
-export * from '../../_internal/tooltip/_shared/utils'
+export * from './get_positioned_element'
+export * from './element_display'
+export * from './make_unique_id'

@@ -1,6 +1,5 @@
 import { isNumber } from '@kpi-ui/utils'
 import { useMemo } from 'react'
-import { min } from '../../../../_shared/utils'
 // comps
 // types
 import type { BadgeProps } from '../props'
@@ -11,7 +10,7 @@ export default function useScrollGroups(props: BadgeProps) {
   return useMemo(() => {
     if (!isNumber(count)) return null
 
-    const num = min([count, maxCount!])
+    const num = Math.min(count, maxCount!)
 
     const _groups = `${Math.abs(num)}`.split('').map((char, i) => ({
       key: `${i}`,

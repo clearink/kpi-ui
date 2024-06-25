@@ -10,7 +10,8 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint -c .eslintrc.js --ext .js,.ts,.jsx,.tsx ./packages/**/src/*",
-    "dev": "pnpm -F @kpi-ui/site dev"
+    "dev": "pnpm -F @kpi-ui/site dev",
+    "c": "node ./rollup.config.mjs"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.0",

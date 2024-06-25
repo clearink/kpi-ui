@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { TouchEffectState } from '../_shared/context'
+import type { TouchEffectState } from '_contexts'
 import type { SizeType } from './contexts/size'
 import type { SpaceProps } from '../space/props'
 

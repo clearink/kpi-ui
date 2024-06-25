@@ -1,4 +1,4 @@
-import { useControllableState } from '@kpi-ui/hooks'
+import { useControllableState } from '_hooks'
 import { fallback } from '@kpi-ui/utils'
 // types
 import type { SegmentedOption, SegmentedProps, SegmentedType } from '../props'

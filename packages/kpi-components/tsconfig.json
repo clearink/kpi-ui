@@ -3,9 +3,19 @@
   "include": ["src"],
   "exclude": ["node_modules"],
   "compilerOptions": {
-    "noEmit": false,
-    "declaration": true,
-    "declarationDir": "esm",
-    "emitDeclarationOnly": true
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "_components": ["src/_shared/components"],
+      "_components/*": ["src/_shared/components/*"],
+      "_constants": ["src/_shared/constants"],
+      "_constants/*": ["src/_shared/constants/*"],
+      "_contexts": ["src/_shared/contexts"],
+      "_contexts/*": ["src/_shared/contexts/*"],
+      "_hooks": ["src/_shared/hooks"],
+      "_hooks/*": ["src/_shared/hooks/*"],
+      "_utils": ["src/_shared/utils"],
+      "_utils/*": ["src/_shared/utils/*"]
+    }
   }
 }

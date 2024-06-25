@@ -1,4 +1,4 @@
-import { useConstant, useForceUpdate, useWatchValue } from '@kpi-ui/hooks'
+import { useConstant, useForceUpdate, useWatchValue } from '_hooks'
 import { getClientCoords, reflow } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 // types

@@ -1,7 +1,7 @@
 import { fallback, flattenChildren, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { Fragment, type CSSProperties, type ReactElement } from 'react'
-import { ConfigContext } from '../_shared/context'
-import { usePrefixCls } from '../_shared/hooks'
+import { ConfigContext } from '_contexts'
+import { usePrefixCls } from '_hooks'
 import useFormatClass from './hooks/use_format_class'
 import useSpaceGutter from './hooks/use_space_gutter'
 // types

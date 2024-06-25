@@ -1,2 +1,2 @@
-export * from '../../_internal/transition/_shared/constants'
+export * from '_components/transition/constants'
 export * from './keyboard'

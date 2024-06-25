@@ -1,4 +1,4 @@
-import { List, useWatch } from '../_internal/form'
+import { List as InternalList, useWatch } from '_components'
 import ErrorList from './components/error-list'
 import Form from './components/form'
 import useForm from './components/form/hooks/use_form'
@@ -9,7 +9,7 @@ import useFormItemStatus from './components/item/hooks/use_item_status'
 // CompoundedForm
 export default Object.assign(Form, {
   Item: Object.assign(FormItem, { useFormItemStatus }),
-  List,
+  List: InternalList,
   ErrorList,
   useForm,
   useFormInstance,

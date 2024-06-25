@@ -1,6 +1,6 @@
-import { isNullish, withDisplayName, omit, withDefaults } from '@kpi-ui/utils'
+import { isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { usePrefixCls } from '_hooks'
 import { useMemo } from 'react'
-import { usePrefixCls } from '../_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 // types
 import type { DividerProps } from './props'

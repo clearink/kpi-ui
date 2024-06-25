@@ -1,4 +1,4 @@
-import { useDebounceValue } from '@kpi-ui/hooks'
+import { useDebounceValue } from '_hooks'
 import { fallback, isString, pushItem } from '@kpi-ui/utils'
 import { useMemo, type ReactNode } from 'react'
 // types

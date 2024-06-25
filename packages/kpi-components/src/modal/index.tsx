@@ -7,15 +7,14 @@ import {
   withDefaults,
   withDisplayName,
 } from '@kpi-ui/utils'
+import { Keyboard } from '_constants'
+import { usePrefixCls, useSemanticStyles } from '_hooks'
+import { hideElement, showElement } from '_utils'
 import { useId, useRef, type KeyboardEvent, type SyntheticEvent } from 'react'
-import { Keyboard } from '../_shared/constants'
-import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
-import { hideElement, showElement } from '../_shared/utils'
 import useFormatClass from './hooks/use_format_class'
 // comps
-import FocusTrap from '../_internal/focus-trap'
-import Overlay from '../_internal/overlay'
-import Button from '../button'
+import Button from '@/button'
+import { FocusTrap, Overlay } from '_components'
 // types
 import type { ModalProps } from './props'
 

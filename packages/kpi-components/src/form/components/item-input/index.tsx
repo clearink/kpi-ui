@@ -1,12 +1,12 @@
 import { getElementStyle, isNullish, withDefaults } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
-import { usePrefixCls } from '../../../_shared/hooks'
+import { usePrefixCls } from '_hooks'
 import { FormContext, FormItemContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
 import useFormatStatus from './hooks/use_format_status'
 import useMetaState from './hooks/use_meta_state'
 // comps
-import Col from '../../../col'
+import Col from '@/col'
 import FormErrorList from '../error-list'
 // types
 import type { FormItemInputProps } from './props'

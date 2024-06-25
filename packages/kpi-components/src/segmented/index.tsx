@@ -1,13 +1,13 @@
 import { withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { forwardRef, useMemo, type ForwardedRef } from 'react'
-import { SizeContext } from '../_shared/context'
-import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
+import { SizeContext } from '_contexts'
+import { usePrefixCls, useSemanticStyles } from '_hooks'
 import useFormatClass from './hooks/use_format_class'
 import useSegmentedStore from './hooks/use_segmented_store'
 import useSegmentedValue from './hooks/use_segmented_value'
 import { normalizeOptions } from './utils/helpers'
 // comps
-import { CSSTransition } from '../_internal/transition'
+import { CSSTransition } from '_components'
 import SegmentedItem from './components/item'
 // types
 import type { SegmentedProps } from './props'

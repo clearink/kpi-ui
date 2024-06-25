@@ -1,7 +1,7 @@
 import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { forwardRef, type ForwardedRef, type MouseEvent } from 'react'
-import { DisabledContext, SizeContext } from '../_shared/context'
-import { usePrefixCls, useSemanticStyles } from '../_shared/hooks'
+import { DisabledContext, SizeContext } from '_contexts'
+import { usePrefixCls, useSemanticStyles } from '_hooks'
 import useFormatClass from './hooks/use_format_class'
 import { isBorderedVariant } from './utils/helpers'
 // comps
