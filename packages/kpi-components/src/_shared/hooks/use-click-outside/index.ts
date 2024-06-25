@@ -1,6 +1,6 @@
 import { getTargetElement, type GetTargetElement } from '@kpi-ui/utils'
 import { useEffect, useState } from 'react'
-import useEvent from '../use-event'
+import { useEvent } from '../use-event'
 // types
 import type { MayBe } from '@kpi-ui/types'
 

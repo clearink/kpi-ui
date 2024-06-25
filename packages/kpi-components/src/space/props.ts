@@ -1,6 +1,6 @@
-import type { HTMLAttributes, ReactNode } from 'react'
-import type { SizeType } from '_contexts'
 import type { SemanticStyledProps } from '@kpi-ui/types'
+import type { SizeType } from '_shared/contexts'
+import type { HTMLAttributes, ReactNode } from 'react'
 
 type SpaceSize = SizeType | number
 export interface SpaceProps extends SemanticStyledProps<'root'>, HTMLAttributes<HTMLDivElement> {

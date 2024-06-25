@@ -1,4 +1,4 @@
-import { useConstant, useForceUpdate, useMounted } from '_hooks'
+import { useConstant, useForceUpdate, useMounted } from '_shared/hooks'
 import FormGroupControl from '../control'
 // types
 import type { ExternalFormInstance } from '../control/props'

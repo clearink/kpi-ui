@@ -1,12 +1,12 @@
 import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { DisabledContext, SizeContext } from '_contexts'
-import { useEvent, usePrefixCls } from '_hooks'
+import { DisabledContext, SizeContext } from '_shared/contexts'
+import { useEvent, usePrefixCls } from '_shared/hooks'
 import { forwardRef, useImperativeHandle, useMemo, type ForwardedRef } from 'react'
 import { FormContext, FormContextState } from '../../_shared/context'
 import useForm from './hooks/use_form'
 import useFormatClass from './hooks/use_format_class'
 // comps
-import { Form as InternalForm } from '_components'
+import { Form as InternalForm } from '_shared/components'
 // types
 import type { FormInstance, FormProps } from './props'
 

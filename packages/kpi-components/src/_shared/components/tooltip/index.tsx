@@ -1,5 +1,5 @@
 import { batch, cls, noop, removeItem, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { useSemanticStyles, useThrottleFrame, useThrottleTick } from '_hooks'
+import { useSemanticStyles, useThrottleFrame, useThrottleTick } from '_shared/hooks'
 import { useMemo } from 'react'
 import { InternalToolTipContext, type InternalToolTipContextState } from './_shared/context'
 import useTooltipEvents from './hooks/use_tooltip_events'

@@ -1,4 +1,4 @@
-import { TouchEffectContext } from '_contexts'
+import { TouchEffectContext } from '_shared/contexts'
 import { DisabledContext } from './contexts/disabled'
 import { SizeContext } from './contexts/size'
 

@@ -1,7 +1,7 @@
+import type { TouchEffectState } from '_shared/contexts'
 import type { ReactNode } from 'react'
-import type { TouchEffectState } from '_contexts'
-import type { SizeType } from './contexts/size'
 import type { SpaceProps } from '../space/props'
+import type { SizeType } from './contexts/size'
 
 export interface ConfigProviderProps {
   children?: ReactNode

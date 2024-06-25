@@ -1,5 +1,5 @@
 import { cls } from '@kpi-ui/utils'
-import { usePrefixCls } from '_hooks'
+import { usePrefixCls } from '_shared/hooks'
 // types
 import type { BackTopProps } from '../props'
 

@@ -1,5 +1,5 @@
-import { useConstant, useDeepMemo } from '_hooks'
 import { isArray, isFunction, isUndefined, logger, rawType, toArray } from '@kpi-ui/utils'
+import { useConstant, useDeepMemo } from '_shared/hooks'
 import { useMemo } from 'react'
 import { InternalFormInstanceContext } from '../../_shared/context'
 import { getIn } from '../../utils/value'

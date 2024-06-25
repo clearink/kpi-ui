@@ -1,8 +1,8 @@
-import { useConstant, useForceUpdate } from '_hooks'
+import { useConstant, useForceUpdate } from '_shared/hooks'
 import { useMemo } from 'react'
 import aligners from '../utils/aligner'
 // types
-import type { ArrowCoords, PopupCoords, InternalTooltipProps } from '../props'
+import type { ArrowCoords, InternalTooltipProps, PopupCoords } from '../props'
 
 export class TooltipState {
   $trigger = {

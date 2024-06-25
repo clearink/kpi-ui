@@ -1,6 +1,5 @@
-import { useThrottleFrame } from '_hooks'
 import { isBoolean, isFunction } from '@kpi-ui/utils'
-import { usePrefixCls } from '_hooks'
+import { usePrefixCls, useThrottleFrame } from '_shared/hooks'
 import { TouchEffectContext } from '../_shared/context'
 import showWaveEffect from '../utils/wave'
 // types

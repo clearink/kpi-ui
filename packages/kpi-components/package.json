@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint -c .eslintrc.js --ext .js,.ts,.jsx,.tsx  ./src",
-    "build": "rollup --config rollup.config.mjs"
+    "build": "rollup --config rollup.config.mjs",
+    "gu": "gulp"
   },
   "peerDependencies": {
     "react": "^18.2.0",
@@ -18,7 +19,8 @@
     "@kpi-ui/icons": "workspace:^",
     "@kpi-ui/types": "workspace:^",
     "@kpi-ui/utils": "workspace:^",
-    "@kpi-ui/validator": "workspace:^"
+    "@kpi-ui/validator": "workspace:^",
+    "gulp-babel": "^8.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
@@ -38,6 +40,9 @@
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "fast-glob": "^3.3.1",
+    "gulp": "^5.0.0",
+    "gulp-cli": "^3.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rollup": "^4.18.0",

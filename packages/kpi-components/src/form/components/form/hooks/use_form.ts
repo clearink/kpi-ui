@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Form as InternalForm } from '_components'
+import { Form as InternalForm } from '_shared/components'
 // types
 import type { FormInstance } from '../props'
 import type { NamePath } from '../../../props'

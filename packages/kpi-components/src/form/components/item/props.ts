@@ -1,4 +1,4 @@
-import type { ExternalFormFieldProps } from '_components'
+import type { ExternalFormFieldProps } from '_shared/components'
 import type { CSSProperties, ReactNode } from 'react'
 import type { ValidateStatus } from '../../props'
 import type { FormInstance } from '../form/props'

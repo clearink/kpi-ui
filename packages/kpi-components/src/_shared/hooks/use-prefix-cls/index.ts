@@ -1,4 +1,4 @@
-import { ConfigContext } from '_contexts'
+import { ConfigContext } from '_shared/contexts'
 
 export function usePrefixCls(name?: string) {
   const { prefixCls = 'kpi' } = ConfigContext.useState()

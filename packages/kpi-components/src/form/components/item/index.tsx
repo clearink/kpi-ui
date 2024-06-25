@@ -1,14 +1,14 @@
 import { isNullish, isUndefined, pick } from '@kpi-ui/utils'
 import { hasRequired } from '@kpi-ui/validator'
-import { usePrefixCls } from '_hooks'
+import { usePrefixCls } from '_shared/hooks'
 import { createElement, useCallback, useMemo, useRef } from 'react'
 import { FormContext, NoStyleContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
 import useFormItemId from './hooks/use_item_id'
 import normalizeChildren from './utils/normalize_children'
 // comps
-import { Form as InternalForm } from '_components'
 import Row from '@/row'
+import { Form as InternalForm } from '_shared/components'
 import FormItemInput from '../item-input'
 import FormItemLabel from '../item-label'
 // types

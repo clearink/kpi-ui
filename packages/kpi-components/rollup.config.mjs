@@ -8,6 +8,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import { createRequire } from 'module'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import glob from 'fast-glob'
 
 const pkg = createRequire(import.meta.url)('./package.json')
 
@@ -24,23 +25,17 @@ const external = [
 const extensions = ['.js', '.jsx', '.ts', '.tsx']
 
 export default defineConfig({
-  input: ['src/index.ts'],
+  // input: glob.sync('./src/**/*.ts{,x}', {
+  //   ignore: ['**/style/*'],
+  // }),
+  input: ['./src/ttt/index.ts'],
   external,
   plugins: [
-    // {
-    //   resolveId(source, importer) {
-    //     console.log(source, importer)
-    //   },
-    // },
     resolve({ extensions }),
     alias({
       entries: [
         { find: '@', replacement: path.resolve(__dirname, './src') },
-        { find: '_components', replacement: path.resolve(__dirname, './src/_shared/components') },
-        { find: '_constants', replacement: path.resolve(__dirname, './src/_shared/constants') },
-        { find: '_contexts', replacement: path.resolve(__dirname, './src/_shared/contexts') },
-        { find: '_hooks', replacement: path.resolve(__dirname, './src/_shared/hooks') },
-        { find: '_utils', replacement: path.resolve(__dirname, './src/_shared/utils') },
+        { find: '_shared', replacement: path.resolve(__dirname, './src/_shared') },
       ],
     }),
     // terser(),

@@ -1,5 +1,5 @@
-import { useConstant, useForceUpdate, useWatchValue } from '_hooks'
 import { getClientCoords, reflow } from '@kpi-ui/utils'
+import { useConstant, useForceUpdate, useWatchValue } from '_shared/hooks'
 import { useMemo } from 'react'
 // types
 import type { SegmentedType } from '../props'

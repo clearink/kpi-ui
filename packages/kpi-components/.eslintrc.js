@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   extends: ['../../.eslintrc.js'],
-  ignorePatterns: ['.eslintrc.js', 'rollup.config.mjs'],
+  ignorePatterns: ['.eslintrc.js', 'rollup.config.mjs', 'rollup.mjs', 'build/'],
   parserOptions: {
     project: './tsconfig.json',
     tsconfigRootDir: __dirname,

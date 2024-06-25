@@ -1,5 +1,5 @@
-import { useConstant, useForceUpdate, useWatchValue } from '_hooks'
-import { showElement } from '_utils'
+import { useConstant, useForceUpdate, useWatchValue } from '_shared/hooks'
+import { showElement } from '_shared/utils'
 import { useMemo } from 'react'
 import {
   APPEAR,

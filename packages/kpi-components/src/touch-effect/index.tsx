@@ -1,5 +1,5 @@
-import { useComposeRefs } from '_hooks'
 import { makeEventListener, withDisplayName } from '@kpi-ui/utils'
+import { useComposeRefs } from '_shared/hooks'
 import { cloneElement, useEffect, useRef } from 'react'
 import useTouchEffect from './hooks/use_touch_effect'
 // types

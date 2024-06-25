@@ -1,6 +1,6 @@
 import { withDisplayName } from '@kpi-ui/utils'
+import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
 import { forwardRef, type ForwardedRef } from 'react'
-import { usePrefixCls, useSemanticStyles } from '_hooks'
 import useFormatClass from './hooks/use_format_class'
 // types
 import type { SegmentedItemProps } from './props'

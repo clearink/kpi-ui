@@ -1,5 +1,5 @@
 import { omit } from '@kpi-ui/utils'
-import { usePrefixCls } from '_hooks'
+import { usePrefixCls } from '_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 
 import type { CheckboxGroupProps } from './props'

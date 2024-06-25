@@ -1,6 +1,6 @@
-import { useConstant, useWatchValue } from '_hooks'
 import { isUndefined } from '@kpi-ui/utils'
-import { ZIndexContext } from '_contexts'
+import { ZIndexContext } from '_shared/contexts'
+import { useConstant, useWatchValue } from '_shared/hooks'
 // types
 import type { OverlayProps } from '../props'
 

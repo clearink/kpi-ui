@@ -7,15 +7,15 @@ import {
   withDefaults,
   withDisplayName,
 } from '@kpi-ui/utils'
-import { Keyboard } from '_constants'
+import { Keyboard } from '_shared/constants'
+import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
 import { forwardRef, type ForwardedRef } from 'react'
-import { usePrefixCls, useSemanticStyles } from '_hooks'
 import { CollapseContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
 import handlers from './utils/transition_handlers'
 // comps
 import { CaretRightOutlined } from '@kpi-ui/icons'
-import { CSSTransition } from '_components/transition'
+import { CSSTransition } from '_shared/components'
 // types
 import type { CollapsibleType } from '../collapse/props'
 import type { CollapseItemProps } from './props'

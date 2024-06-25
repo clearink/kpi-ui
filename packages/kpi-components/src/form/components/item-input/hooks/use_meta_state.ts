@@ -1,5 +1,5 @@
-import { useDebounceState } from '_hooks'
-import { useCallback, startTransition } from 'react'
+import { useDebounceState } from '_shared/hooks'
+import { startTransition, useCallback } from 'react'
 // types
 import type { FieldMeta } from '../../../props'
 

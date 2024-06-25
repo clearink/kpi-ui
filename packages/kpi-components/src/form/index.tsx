@@ -1,4 +1,4 @@
-import { List as InternalList, useWatch } from '_components'
+import { List as InternalList, useWatch } from '_shared/components'
 import ErrorList from './components/error-list'
 import Form from './components/form'
 import useForm from './components/form/hooks/use_form'

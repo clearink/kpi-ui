@@ -1,6 +1,6 @@
 import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { RowContext } from '_contexts'
-import { usePrefixCls } from '_hooks'
+import { RowContext } from '_shared/contexts'
+import { usePrefixCls } from '_shared/hooks'
 import { forwardRef, type CSSProperties, type ForwardedRef } from 'react'
 import useFormatClass from './hooks/use_format_class'
 import useRowGutter from './hooks/use_row_gutter'

@@ -1,5 +1,5 @@
 import { isString, withDefaults } from '@kpi-ui/utils'
-import { usePrefixCls } from '_hooks'
+import { usePrefixCls } from '_shared/hooks'
 import { FormContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
 // comps

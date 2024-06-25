@@ -1,6 +1,6 @@
-import { useConstant, useForceUpdate } from '_hooks'
 import { batch, omit } from '@kpi-ui/utils'
-import { makeUniqueId } from '_utils'
+import { useConstant, useForceUpdate } from '_shared/hooks'
+import { makeUniqueId } from '_shared/utils'
 import { cloneElement, createElement, useMemo, type ReactElement } from 'react'
 import runCounter from '../../../utils/run_counter'
 // comps

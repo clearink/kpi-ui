@@ -1,5 +1,5 @@
-import { useDeepMemo } from '_hooks'
 import { batch, getShadowRoot, makeEventListener, ownerWindow, toArray } from '@kpi-ui/utils'
+import { useDeepMemo } from '_shared/hooks'
 import { useEffect, useMemo } from 'react'
 import { formatTriggerEvents, isInPopupChain } from '../utils/helpers'
 // types

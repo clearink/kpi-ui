@@ -1,5 +1,5 @@
-import { useConstant, useWatchValue } from '_hooks'
 import { isEqual, isFunction, isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { useConstant, useWatchValue } from '_shared/hooks'
 import { createElement, forwardRef, useEffect, useImperativeHandle, useMemo } from 'react'
 import { InternalFormContext, InternalFormInstanceContext } from '../../_shared/context'
 import { HOOK_MARK } from './control'

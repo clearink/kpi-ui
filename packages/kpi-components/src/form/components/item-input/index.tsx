@@ -1,6 +1,6 @@
 import { getElementStyle, isNullish, withDefaults } from '@kpi-ui/utils'
+import { usePrefixCls } from '_shared/hooks'
 import { useEffect, useMemo, useState } from 'react'
-import { usePrefixCls } from '_hooks'
 import { FormContext, FormItemContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
 import useFormatStatus from './hooks/use_format_status'

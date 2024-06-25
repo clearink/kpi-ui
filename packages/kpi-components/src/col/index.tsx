@@ -1,8 +1,8 @@
 import { omit } from '@kpi-ui/utils'
+import { BREAKPOINT_NAME } from '_shared/hooks/use-breakpoint/breakpoint'
+import { RowContext } from '_shared/contexts'
+import { usePrefixCls } from '_shared/hooks'
 import { forwardRef, type ForwardedRef } from 'react'
-import { RowContext } from '_contexts'
-import { usePrefixCls } from '_hooks'
-import { BREAKPOINT_NAME } from '_hooks/use-breakpoint/breakpoint'
 import useColFlex from './hooks/use_col_flex'
 import useFormatClass from './hooks/use_format_class'
 

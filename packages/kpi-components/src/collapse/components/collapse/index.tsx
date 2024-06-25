@@ -1,5 +1,5 @@
 import { isArray, isUndefined, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { useControllableState, useEvent, usePrefixCls, useSemanticStyles } from '_hooks'
+import { useControllableState, useEvent, usePrefixCls, useSemanticStyles } from '_shared/hooks'
 import { forwardRef, useMemo, type ForwardedRef } from 'react'
 import { CollapseContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'

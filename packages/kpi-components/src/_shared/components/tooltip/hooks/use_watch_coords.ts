@@ -1,5 +1,5 @@
-import { useWatchValue } from '_hooks'
 import { isEqual } from '@kpi-ui/utils'
+import { useWatchValue } from '_shared/hooks'
 // types
 import type { InternalTooltipProps } from '../props'
 

@@ -1,5 +1,5 @@
-import { useWatchValue } from '_hooks'
 import { isNullish, omit, withDisplayName } from '@kpi-ui/utils'
+import { useWatchValue } from '_shared/hooks'
 import { createElement, useEffect } from 'react'
 import { isElementsEqual } from '../../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'

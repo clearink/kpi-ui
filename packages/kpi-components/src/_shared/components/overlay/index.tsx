@@ -1,11 +1,11 @@
 import { cls, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { useSemanticStyles } from '_hooks'
+import { useSemanticStyles } from '_shared/hooks'
 import { forwardRef, type ForwardedRef, type ReactElement, type RefCallback } from 'react'
 import useOverlayLevel from './hooks/use_overlay_level'
 import useOverlayStore from './hooks/use_overlay_store'
 // comps
-import { CSSTransition } from '../transition'
 import Portal from '../portal'
+import { CSSTransition } from '../transition'
 import ForwardFunctional from './components/forward-functional'
 // types
 import type { OverlayProps, OverlayRef } from './props'

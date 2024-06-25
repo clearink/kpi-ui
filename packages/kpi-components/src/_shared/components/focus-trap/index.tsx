@@ -1,9 +1,9 @@
-import { useComposeRefs, useEvent } from '_hooks'
 import { nextFrame, ownerDocument, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { useComposeRefs, useEvent } from '_shared/hooks'
 import { cloneElement, useEffect } from 'react'
+import { guardStyles } from './constants'
 import useFocusTrapStore from './hooks/use_trap_store'
 import defaultGetTabbable from './utils/tabbable'
-import { guardStyles } from './constants'
 // types
 import type { FocusTrapProps } from './props'
 

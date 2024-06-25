@@ -1,5 +1,5 @@
 import { isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { usePrefixCls } from '_hooks'
+import { usePrefixCls } from '_shared/hooks'
 import { useMemo } from 'react'
 import useFormatClass from './hooks/use_format_class'
 // types

@@ -1,10 +1,10 @@
 import { isArray, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { usePrefixCls } from '_hooks'
+import { usePrefixCls } from '_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 import useScrollGroups from './hooks/use_scroll_groups'
 import { handlers } from './utils/transition_handlers'
 // comps
-import { GroupTransition } from '_components'
+import { GroupTransition } from '_shared/components'
 import ScrollNumber from '../scroll-number'
 // types
 import type { BadgeProps } from './props'

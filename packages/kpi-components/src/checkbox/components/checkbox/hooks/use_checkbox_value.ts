@@ -1,4 +1,4 @@
-import { useControllableState } from '_hooks'
+import { useControllableState } from '_shared/hooks'
 // types
 import type { CheckboxProps } from '../props'
 

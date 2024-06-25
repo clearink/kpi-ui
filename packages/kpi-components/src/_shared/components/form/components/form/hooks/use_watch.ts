@@ -1,5 +1,5 @@
-import { useDeepMemo, useEvent } from '_hooks'
 import { logger, shallowEqual, toArray } from '@kpi-ui/utils'
+import { useDeepMemo, useEvent } from '_shared/hooks'
 import { useEffect, useMemo, useState } from 'react'
 import { InternalFormInstanceContext } from '../../../_shared/context'
 import { HOOK_MARK } from '../control'

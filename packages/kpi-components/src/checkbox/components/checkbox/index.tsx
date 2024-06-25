@@ -1,7 +1,7 @@
 import { CheckboxGroupContext } from '@/checkbox/_shared/context'
 import { isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { DisabledContext } from '_contexts'
-import { usePrefixCls } from '_hooks'
+import { DisabledContext } from '_shared/contexts'
+import { usePrefixCls } from '_shared/hooks'
 import useFormatClass from './hooks/use_format_class'
 // comps
 import TouchEffect from '@/touch-effect'

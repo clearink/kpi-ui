@@ -1,5 +1,5 @@
-import { useDebounceValue } from '_hooks'
 import { fallback, isString, pushItem } from '@kpi-ui/utils'
+import { useDebounceValue } from '_shared/hooks'
 import { useMemo, type ReactNode } from 'react'
 // types
 import type { ValidateStatus } from '../../../props'

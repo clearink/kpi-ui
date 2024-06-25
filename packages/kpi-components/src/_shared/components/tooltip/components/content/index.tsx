@@ -1,5 +1,5 @@
-import { useComposeRefs, useResizeObserver } from '_hooks'
 import { ownerWindow, withDisplayName } from '@kpi-ui/utils'
+import { useComposeRefs, useResizeObserver } from '_shared/hooks'
 import { cloneElement, forwardRef, useEffect, useRef, type ForwardedRef } from 'react'
 import { getScrollElements } from '../../utils/elements'
 // types
