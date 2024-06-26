@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { Command } from 'commander'
-import compileCode from './compile/code'
-import compileType from './compile/type'
-import compileStyle from './compile/style'
+import ui from './build/ui'
+import icon from './build/icon'
+import validator from './build/validator'
 
 const program = new Command()
   .name('@kpi-ui/scripts')
@@ -11,30 +11,30 @@ const program = new Command()
 
 // 编译脚本文件
 program
-  .command('compile:code')
-  .description('compile js,ts,jsx,tsx use babel')
-  .option('-e, --entry <entry>', 'compile entry dir', 'src')
-  .option('-w, --watch', 'watch mode', false)
-  .option('-d, --out-dir <outDir>', 'output dir', 'es')
-  .option('-f, --format <format>', 'output format=es|cjs', 'es')
-  .action(compileCode)
+  .command('build:ui')
+  .description('build ui library')
+  // .option('-e, --entry <entry>', 'compile entry dir', 'src')
+  // .option('-w, --watch', 'watch mode', false)
+  // .option('-d, --out-dir <outDir>', 'output dir', 'es')
+  // .option('-f, --format <format>', 'output format=es|cjs', 'es')
+  .action(ui)
 
 // 编译类型声明文件
 program
-  .command('compile:type')
-  .description('generate direction files use tsc')
-  .option('-e, --entry [input]', 'compile entry dir', 'src')
-  .option('-w, --watch', 'watch mode', false)
-  .option('-d, --out-dir [output]', 'output dir', 'es')
-  .action(compileType)
+  .command('build:icon')
+  .description('build icon library')
+  // .option('-e, --entry [input]', 'compile entry dir', 'src')
+  // .option('-w, --watch', 'watch mode', false)
+  // .option('-d, --out-dir [output]', 'output dir', 'es')
+  .action(icon)
 
 // 编译类型声明文件
 program
-  .command('compile:style')
-  .description('compile scss files use sass')
-  .option('-e, --entry [input]', 'compile entry dir', 'src')
-  .option('-w, --watch', 'watch mode', false)
-  .option('-d, --out-dir [output]', 'output dir', 'es')
-  .action(compileStyle)
+  .command('build:validator')
+  .description('build form-validator library')
+  // .option('-e, --entry [input]', 'compile entry dir', 'src')
+  // .option('-w, --watch', 'watch mode', false)
+  // .option('-d, --out-dir [output]', 'output dir', 'es')
+  .action(validator)
 
 program.parse(process.argv)

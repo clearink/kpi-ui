@@ -1,4 +1,4 @@
-import isBrowser from './is_browser'
+import { isBrowser } from './is_browser'
 
 export default function isMobile() {
   if (!isBrowser || typeof navigator === 'undefined') return false

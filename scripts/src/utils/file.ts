@@ -1,7 +1,7 @@
 import { ensureFileSync, existsSync, removeSync, writeFileSync } from 'fs-extra'
 import { resolve } from 'node:path'
 import { getTargetFilename } from './path'
-import { CompileCommandOptions } from '../compile/code'
+import { CompileCommandOptions } from '../build2/js'
 
 export function safeRemoveFile(cwd: string, options: CompileCommandOptions, file: string) {
   const { outDir, entry } = options

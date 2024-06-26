@@ -1,0 +1,53 @@
+{
+  "name": "kpi-ui",
+  "version": "0.0.1",
+  "description": "kpi-ui components",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint -c .eslintrc.js --ext .js,.ts,.jsx,.tsx  ./src",
+    "build": "kpi-scripts build:ui"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.24.7",
+    "@kpi-ui/icons": "workspace:^",
+    "@kpi-ui/types": "workspace:^",
+    "@kpi-ui/validator": "workspace:^",
+    "classnames": "^2.5.1",
+    "react-fast-compare": "^3.2.0",
+    "react-is": "^18.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.7",
+    "@babel/plugin-transform-runtime": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
+    "@kpi-ui/scripts": "workspace:^",
+    "@rollup/plugin-alias": "^5.1.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "eslint": "^8.45.0",
+    "eslint-plugin-jsx-a11y": "^6.6.0",
+    "eslint-plugin-react": "^7.30.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "fast-glob": "^3.3.1",
+    "gulp": "^5.0.0",
+    "gulp-cli": "^3.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rollup": "^4.18.0",
+    "rollup-plugin-visualizer": "^5.12.0",
+    "typescript": "^5.0.2"
+  }
+}
