@@ -1,5 +1,4 @@
 import { isNullish, isUndefined, pick } from '@kpi-ui/utils'
-import { hasRequired } from '@kpi-ui/validator'
 import { usePrefixCls } from '_shared/hooks'
 import { createElement, useCallback, useMemo, useRef } from 'react'
 import { FormContext, NoStyleContext } from '../../_shared/context'
@@ -42,7 +41,7 @@ function NoStyleFormItem(props: FormItemProps) {
 }
 
 function CommonFormItem(props: FormItemProps) {
-  const { name, rule, label, style, required: _required } = props
+  const { name, label, style, required } = props
 
   const { formName, form: formInstance } = FormContext.useState()
 
@@ -51,12 +50,6 @@ function CommonFormItem(props: FormItemProps) {
   const itemId = useFormItemId(name, formName)
 
   const classes = useFormatClass(prefixCls, props)
-
-  const required = useMemo(() => {
-    if (!isUndefined(_required)) return _required
-
-    return !isNullish(name) && hasRequired(rule)
-  }, [_required, name, rule])
 
   const $outer = useRef<HTMLDivElement>(null)
 

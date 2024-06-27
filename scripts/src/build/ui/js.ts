@@ -7,42 +7,56 @@ import terser from '@rollup/plugin-terser'
 import path from 'path'
 import glob from 'fast-glob'
 import constants from '../../utils/constants'
+import { clean, getPackageDependencies, validatePkgName } from '../../utils/helpers'
 
 export default async function buildJs() {
+  await Promise.all([
+    validatePkgName(constants.componentsDir, '@kpi-ui/components'),
+    validatePkgName(constants.utilsDir, '@kpi-ui/utils'),
+  ])
+
   const entries = glob
-    .sync('./src/**/*.ts{,x}', {
-      ignore: ['**/style/*'],
-      cwd: constants._resolve('../kpi-components'),
-    })
+    .sync('./src/**/*.ts{,x}', { ignore: ['**/style/*'], cwd: constants.componentsDir })
     .reduce<Record<string, string>>((result, file) => {
       const name = path.relative('src', file).slice(0, -path.extname(file).length)
 
-      result[name] = constants._resolve('../kpi-components', file)
+      result[name] = path.resolve(constants.componentsDir, file)
 
       return result
     }, {})
 
-  glob
-    .sync('./src/**/*.ts{,x}', {
-      cwd: constants._resolve('../kpi-utils'),
-    })
-    .forEach((file) => {
-      const name = path.relative('src', file).slice(0, -path.extname(file).length)
+  glob.sync('./src/**/*.ts{,x}', { cwd: constants.utilsDir }).forEach((file) => {
+    const name = path.relative('src', file).slice(0, -path.extname(file).length)
 
-      entries[`_workspace/utils/${name}`] = constants._resolve('../kpi-utils', file)
-    })
+    entries[`_workspace/utils/${name}`] = path.resolve(constants.utilsDir, file)
+  })
+
+  await Promise.all([
+    // 删除 dist
+    clean(constants.outputEsmDir),
+    clean(constants.outputCjsDir),
+    clean(constants.outputUmdDir),
+  ])
+
+  const dependencies = await getPackageDependencies(constants.resolveCwd('package.json'))
+
+  const external: (RegExp | string)[] = dependencies.filter((e) => {
+    return e !== '@kpi-ui/utils' && e !== '@kpi-ui/types'
+  })
+
+  external.push(/node_modules/)
 
   const bundle = await rollup({
     input: entries,
-    external: constants.external,
+    external,
     treeshake: false,
     plugins: [
-      resolve({ extensions: constants.extensions.js }),
+      resolve({ extensions: constants.jsExtensions }),
       commonjs(),
       babel({
         babelHelpers: 'runtime',
         babelrc: false,
-        extensions: constants.extensions.js,
+        extensions: constants.jsExtensions,
         presets: [
           [
             '@babel/preset-env',
@@ -62,8 +76,8 @@ export default async function buildJs() {
       }),
       alias({
         entries: [
-          { find: '@', replacement: constants._resolve('../kpi-components/src') },
-          { find: '_shared', replacement: constants._resolve('../kpi-components/src/_shared') },
+          { find: '@', replacement: constants.resolveComponents('src') },
+          { find: '_shared', replacement: constants.resolveComponents('src/_shared') },
         ],
       }),
     ],
@@ -71,16 +85,16 @@ export default async function buildJs() {
 
   await Promise.all([
     bundle.write({
-      dir: constants.esm,
+      dir: constants.outputEsmDir,
       format: 'esm',
       preserveModules: true,
-      preserveModulesRoot: constants._resolve('./src'),
+      preserveModulesRoot: constants.resolveCwd('src'),
     }),
     bundle.write({
-      dir: constants.lib,
+      dir: constants.outputCjsDir,
       format: 'cjs',
       preserveModules: true,
-      preserveModulesRoot: constants._resolve('./src'),
+      preserveModulesRoot: constants.resolveCwd('src'),
       exports: 'named',
     }),
   ])

@@ -16,8 +16,6 @@ import buildJs from './js'
 
 // console.log('build ui library')
 export default async function build() {
-  // build js
-
   buildJs()
 
   buildCss()

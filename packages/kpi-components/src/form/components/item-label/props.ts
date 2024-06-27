@@ -13,5 +13,5 @@ export interface FormItemLabelProps {
   tooltip?: any
 
   // extra
-  required: boolean
+  required?: boolean
 }

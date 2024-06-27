@@ -1,6 +1,7 @@
 {
   "name": "@kpi-ui/types",
   "private": true,
+  "version": "0.0.1",
   "description": "@kpi-ui types",
   "license": "MIT",
   "main": "src/index.ts",

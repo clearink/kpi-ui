@@ -9,37 +9,36 @@ class Constant {
 
 export default new Constant()
   .add(() => ({
+    root: path.resolve(__dirname, '..', '..'),
     cwd: fse.realpathSync(process.cwd()),
-    extensions: {
-      js: ['.js', '.jsx', '.ts', '.tsx'],
-      css: ['.scss', '.sass', '.css'],
-    },
+  }))
+  .add(() => ({
+    jsExtensions: ['.js', '.jsx', '.ts', '.tsx'],
+    cssExtensions: ['.scss', '.sass', '.css'],
   }))
   .add((instance) => ({
-    _resolve: path.resolve.bind(instance.cwd),
+    resolveCwd: path.resolve.bind(null, instance.cwd),
+    resolveRoot: path.resolve.bind(null, instance.root),
   }))
   .add((instance) => ({
-    pkg: fse.readJSONSync(instance._resolve('./package.json')) || {},
+    componentsDir: instance.resolveRoot('packages', 'kpi-components'),
+    utilsDir: instance.resolveRoot('packages', 'kpi-utils'),
+    iconsDir: instance.resolveRoot('packages', 'kpi-icons'),
+    typesDir: instance.resolveRoot('packages', 'kpi-types'),
+    validatorDir: instance.resolveRoot('packages', 'kpi-validator'),
   }))
   .add((instance) => ({
-    project: instance._resolve('.'),
-    version: instance.pkg.version,
-    external: [
-      /node_modules/,
-      ...Object.keys({
-        ...instance.pkg.dependencies,
-        ...instance.pkg.peerDependencies,
-      }),
-    ].filter(Boolean),
-  }))
-
-  .add((instance) => ({
-    // input
-    src: instance._resolve('src'),
+    resolveComponents: path.resolve.bind(null, instance.componentsDir),
+    resolveUtils: path.resolve.bind(null, instance.utilsDir),
   }))
   .add((instance) => ({
     // output
-    esm: instance._resolve('./esm'),
-    lib: instance._resolve('./lib'),
-    dist: instance._resolve('./dist'),
+    outputEsmDir: instance.resolveCwd('./esm'),
+    outputCjsDir: instance.resolveCwd('./lib'),
+    outputUmdDir: instance.resolveCwd('./dist'),
+  }))
+  .add(() => ({
+    uiUmdName: 'kpi-ui',
+    iconsUmdName: '@kpi-ui/icons',
+    validatorUmdName: '@kpi-ui/validator',
   }))

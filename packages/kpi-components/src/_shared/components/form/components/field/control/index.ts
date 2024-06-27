@@ -1,17 +1,16 @@
 import { isEqual, isFunction, isNullish, isUndefined, toArray } from '@kpi-ui/utils'
 import { _getName } from '../../../utils/path'
 import { getIn } from '../../../utils/value'
-
+// types
 import type {
   ExternalNamePath,
   FormActionType,
   InternalFieldMeta,
   InternalNamePath,
+  RuleOptions,
+  RuleIssue,
 } from '../../../props'
 import type { InternalFormFieldProps } from '../props'
-
-type SchemaIssue = any
-type Options = any
 
 export class FormFieldControl {
   public _key = ''
@@ -128,7 +127,7 @@ export class FormFieldControl {
   private lastValidate: null | Promise<any> = null
 
   // 字段校验
-  public validate = async (value: any, options?: Options) => {
+  public validate = async (value: any, options?: RuleOptions) => {
     const { rule: validator } = this._props
 
     // 没有操作过的字段不能校验, 没有校验规则的也不用校验
@@ -144,7 +143,7 @@ export class FormFieldControl {
       .then((error = {}) => {
         if (this.lastValidate !== promise) return
 
-        const { issues = [] } = error as { issues: SchemaIssue[] }
+        const { issues = [] } = error as { issues: RuleIssue[] }
         const errors = issues.map((issue) => issue.message) as string[]
 
         this.metaUpdate({ validating: false, errors })

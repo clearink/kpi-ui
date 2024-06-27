@@ -1,7 +1,7 @@
 {
   "name": "kpi-ui",
-  "version": "0.0.0",
   "description": "kpi ui design",
+  "version": "0.0.1",
   "private": "true",
   "keywords": [
     "ui"
@@ -10,11 +10,9 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint -c .eslintrc.js --ext .js,.ts,.jsx,.tsx ./packages/**/src/*",
-    "dev": "pnpm -F @kpi-ui/site dev",
-    "c": "node ./rollup.config.mjs"
+    "dev": "pnpm -F @kpi-ui/site dev"
   },
   "devDependencies": {
-    "@babel/cli": "^7.23.0",
     "@babel/core": "^7.20.12",
     "@babel/plugin-transform-runtime": "^7.19.6",
     "@babel/preset-env": "^7.20.2",
@@ -26,7 +24,6 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "autoprefixer": "^10.4.13",
-    "chokidar": "^3.5.3",
     "cross-env": "^7.0.3",
     "eslint": "^8.45.0",
     "eslint-plugin-import": "^2.26.0",
@@ -39,7 +36,6 @@
     "postcss": "^8.4.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rimraf": "^4.1.2",
     "sass": "^1.58.3",
     "tslib": "^2.5.0",
     "typescript": "^5.0.2"
@@ -52,7 +48,6 @@
     "pnpm": ">3"
   },
   "dependencies": {
-    "chalk": "^5.3.0",
     "react-fast-compare": "^3.2.0",
     "react-is": "^18.2.0"
   }

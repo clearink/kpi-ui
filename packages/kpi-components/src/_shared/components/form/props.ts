@@ -51,3 +51,13 @@ export type FormAction =
       type: 'resetFields'
       nameList?: ExternalNamePath[]
     }
+
+export interface RuleOptions {
+  abortEarly?: boolean
+}
+export interface RuleIssue {
+  message: any
+}
+export interface RuleLike<T> {
+  validate: (value: any, options?: RuleOptions) => Promise<T>
+}

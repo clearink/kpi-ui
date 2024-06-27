@@ -1,5 +1,4 @@
 import type { AnyObject } from '@kpi-ui/types'
-import type { BaseSchema } from '@kpi-ui/validator'
 import type { ReactNode } from 'react'
 import type {
   ExternalFieldMeta,
@@ -7,6 +6,7 @@ import type {
   FormActionType,
   InternalFieldMeta,
   InternalNamePath,
+  RuleLike,
 } from '../../props'
 import type { ExternalFormInstance } from '../form/control/props'
 
@@ -33,7 +33,7 @@ export interface InternalFormFieldProps<S = any> {
   /**
    * @zh 校验规则，设置字段的校验逻辑
    */
-  rule?: BaseSchema<any>
+  rule?: RuleLike<S>
 
   /**
    * @zh 字段删除时仍然保留数据
