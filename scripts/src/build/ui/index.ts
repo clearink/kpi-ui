@@ -1,24 +1,17 @@
-import { rollup } from 'rollup'
-import resolve from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs'
-import babel from '@rollup/plugin-babel'
-import alias from '@rollup/plugin-alias'
-import terser from '@rollup/plugin-terser'
-import { visualizer } from 'rollup-plugin-visualizer'
-import { createRequire } from 'module'
-import path from 'path'
-import { fileURLToPath } from 'url'
-import glob from 'fast-glob'
 import constants from '../../utils/constants'
 import buildCss from './css'
 import buildDts from './dts'
-import buildJs from './js'
+import buildCode from './code'
+import consola from 'consola'
 
 // console.log('build ui library')
 export default async function build() {
-  buildJs()
+  consola.box('starting build ui library...')
 
-  buildCss()
+  await constants.clean(constants.esm, constants.cjs, constants.umd)
+  consola.success('clean dist successfully')
 
-  buildDts()
+  await Promise.all([buildCode(), buildCss(), buildDts()])
+
+  consola.success('build ui library successfully !')
 }

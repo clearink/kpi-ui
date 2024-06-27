@@ -12,13 +12,14 @@ const target = resolve(__dirname, '../kpi-components')
 export default defineConfig({
   plugins: [react(), eslint()],
   resolve: {
-    // alias: [
-    //   { find: '@', replacement: resolve(target, 'src') },
-    //   { find: '_components', replacement: resolve(target, 'src/_shared/components') },
-    //   { find: '_constants', replacement: resolve(target, 'src/_shared/constants') },
-    //   { find: '_contexts', replacement: resolve(target, 'src/_shared/contexts') },
-    //   { find: '_hooks', replacement: resolve(target, 'src/_shared/hooks') },
-    //   { find: '_utils', replacement: resolve(target, 'src/_shared/utils') },
-    // ],
+    alias: [
+      { find: '@', replacement: resolve(target, 'src') },
+      { find: '_shared', replacement: resolve(target, 'src/_shared') },
+      //   { find: '_components', replacement: resolve(target, 'src/_shared/components') },
+      //   { find: '_constants', replacement: resolve(target, 'src/_shared/constants') },
+      //   { find: '_contexts', replacement: resolve(target, 'src/_shared/contexts') },
+      //   { find: '_hooks', replacement: resolve(target, 'src/_shared/hooks') },
+      //   { find: '_utils', replacement: resolve(target, 'src/_shared/utils') },
+    ],
   },
 })

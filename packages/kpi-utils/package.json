@@ -5,19 +5,5 @@
   "description": "@kpi-ui utils",
   "license": "MIT",
   "main": "src/index.ts",
-  "module": "src/index.ts",
-  "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
-  },
-  "dependencies": {
-    "@kpi-ui/types": "workspace:^",
-    "classnames": "^2.5.1",
-    "react-fast-compare": "^3.2.0",
-    "react-is": "^18.2.0"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.15",
-    "@types/react-is": "^18.2.3",
-    "react": "^18.2.0"
-  }
+  "module": "src/index.ts"
 }

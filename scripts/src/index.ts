@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { Command } from 'commander'
 import ui from './build/ui'
-import icon from './build/icon'
+import icons from './build/icons'
 import validator from './build/validator'
 
 const program = new Command()
@@ -26,7 +26,7 @@ program
   // .option('-e, --entry [input]', 'compile entry dir', 'src')
   // .option('-w, --watch', 'watch mode', false)
   // .option('-d, --out-dir [output]', 'output dir', 'es')
-  .action(icon)
+  .action(icons)
 
 // 编译类型声明文件
 program

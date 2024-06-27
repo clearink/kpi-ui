@@ -20,10 +20,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.24.7",
-    "@kpi-ui/components": "workspace:^",
     "@kpi-ui/icons": "workspace:^",
-    "@kpi-ui/types": "workspace:^",
-    "@kpi-ui/utils": "workspace:^",
     "@kpi-ui/validator": "workspace:^",
     "classnames": "^2.5.1",
     "react-fast-compare": "^3.2.0",

@@ -12,18 +12,35 @@
     "lint": "eslint -c .eslintrc.js --ext .js,.ts,.jsx,.tsx ./packages/**/src/*",
     "dev": "pnpm -F @kpi-ui/site dev"
   },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.24.7",
+    "@kpi-ui/components": "workspace:^",
+    "@kpi-ui/icons": "workspace:^",
+    "@kpi-ui/types": "workspace:^",
+    "@kpi-ui/utils": "workspace:^",
+    "@kpi-ui/validator": "workspace:^",
+    "classnames": "^2.5.1",
+    "react-fast-compare": "^3.2.0",
+    "react-is": "^18.2.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@babel/plugin-transform-runtime": "^7.19.6",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
+    "@kpi-ui/scripts": "workspace:^",
     "@types/babel__core": "^7.20.0",
     "@types/fs-extra": "^11.0.1",
     "@types/node": "^18.11.18",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
-    "autoprefixer": "^10.4.13",
     "cross-env": "^7.0.3",
     "eslint": "^8.45.0",
     "eslint-plugin-import": "^2.26.0",
@@ -33,7 +50,6 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "fast-glob": "^3.3.1",
     "fs-extra": "^11.1.0",
-    "postcss": "^8.4.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sass": "^1.58.3",
@@ -46,9 +62,5 @@
   "engines": {
     "node": ">=14",
     "pnpm": ">3"
-  },
-  "dependencies": {
-    "react-fast-compare": "^3.2.0",
-    "react-is": "^18.2.0"
   }
 }

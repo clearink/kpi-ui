@@ -9,24 +9,5 @@
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.24.7",
-    "@kpi-ui/icons": "workspace:^",
-    "@kpi-ui/types": "workspace:^",
-    "@kpi-ui/utils": "workspace:^",
-    "@kpi-ui/validator": "workspace:^"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "eslint": "^8.45.0",
-    "eslint-plugin-jsx-a11y": "^6.6.0",
-    "eslint-plugin-react": "^7.30.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "typescript": "^5.0.2"
   }
 }

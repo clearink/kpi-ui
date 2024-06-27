@@ -4,9 +4,5 @@
   "description": "kpi-ui form validator lib",
   "main": "src/index.ts",
   "module": "src/index.ts",
-  "license": "MIT",
-  "dependencies": {
-    "@kpi-ui/utils": "workspace:^",
-    "@kpi-ui/types": "workspace:^"
-  }
+  "license": "MIT"
 }
