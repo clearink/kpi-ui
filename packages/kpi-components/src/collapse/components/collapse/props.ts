@@ -1,6 +1,6 @@
 import type { HasChildren, SemanticStyledProps } from '@kpi-ui/types'
+import type { SizeType } from '_shared/contexts'
 import type { ReactNode, RefObject } from 'react'
-import type { SizeType } from '../../../_shared/context'
 import type { ExpandedName } from '../../props'
 import type { CollapseItemProps } from '../item/props'
 

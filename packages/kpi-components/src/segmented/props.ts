@@ -1,5 +1,5 @@
 import type { SemanticStyledProps } from '@kpi-ui/types'
-import type { SizeType } from '../_shared/context'
+import type { SizeType } from '_shared/contexts'
 
 export type SegmentedType = string | number
 

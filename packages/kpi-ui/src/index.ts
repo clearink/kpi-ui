@@ -1,5 +1,0 @@
-export * from '@kpi-ui/components'
-export * from '@kpi-ui/icons'
-export * from '@kpi-ui/types'
-export * from '@kpi-ui/utils'
-export * from '@kpi-ui/validator'

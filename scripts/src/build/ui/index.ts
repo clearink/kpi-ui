@@ -11,7 +11,11 @@ export default async function build() {
   await constants.clean(constants.esm, constants.cjs, constants.umd)
   consola.success('clean dist successfully')
 
-  await Promise.all([buildCode(), buildCss(), buildDts()])
+  await Promise.all([
+    // buildCode(),
+    // buildCss(),
+    buildDts(),
+  ])
 
   consola.success('build ui library successfully !')
 }

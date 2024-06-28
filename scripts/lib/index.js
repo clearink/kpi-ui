@@ -2,22 +2,11 @@
 'use strict';
 
 var commander = require('commander');
-var rollup = require('rollup');
-var resolve = require('@rollup/plugin-node-resolve');
-var commonjs = require('@rollup/plugin-commonjs');
-var babel = require('@rollup/plugin-babel');
-var alias = require('@rollup/plugin-alias');
 var path = require('path');
-var glob = require('fast-glob');
 var fse = require('fs-extra');
-
-async function buildCss() {
-  console.log('build css');
-}
-
-async function buildDts() {
-  console.log('build dts');
-}
+var glob = require('fast-glob');
+var consola = require('consola');
+var ts = require('typescript');
 
 class Constant {
   add(fn) {
@@ -25,125 +14,103 @@ class Constant {
   }
 }
 var constants = new Constant().add(() => ({
-  root: path.resolve(__dirname, '..', '..'),
+  root: path.resolve(__dirname, '../../'),
   cwd: fse.realpathSync(process.cwd())
-})).add(() => ({
-  jsExtensions: ['.js', '.jsx', '.ts', '.tsx'],
-  cssExtensions: ['.scss', '.sass', '.css']
 })).add(instance => ({
   resolveCwd: path.resolve.bind(null, instance.cwd),
   resolveRoot: path.resolve.bind(null, instance.root)
 })).add(instance => ({
-  componentsDir: instance.resolveRoot('packages', 'kpi-components'),
-  utilsDir: instance.resolveRoot('packages', 'kpi-utils'),
-  iconsDir: instance.resolveRoot('packages', 'kpi-icons'),
-  typesDir: instance.resolveRoot('packages', 'kpi-types'),
-  validatorDir: instance.resolveRoot('packages', 'kpi-validator')
+  esm: instance.resolveCwd('./esm'),
+  cjs: instance.resolveCwd('./lib'),
+  umd: instance.resolveCwd('./dist'),
+  components: instance.resolveRoot('packages', 'kpi-components'),
+  utils: instance.resolveRoot('packages', 'kpi-utils'),
+  icons: instance.resolveRoot('packages', 'kpi-icons'),
+  types: instance.resolveRoot('packages', 'kpi-types'),
+  validator: instance.resolveRoot('packages', 'kpi-validator')
 })).add(instance => ({
-  resolveComponents: path.resolve.bind(null, instance.componentsDir),
-  resolveUtils: path.resolve.bind(null, instance.utilsDir)
-})).add(instance => ({
-  // output
-  outputEsmDir: instance.resolveCwd('./esm'),
-  outputCjsDir: instance.resolveCwd('./lib'),
-  outputUmdDir: instance.resolveCwd('./dist')
+  resolveComps: path.resolve.bind(null, instance.components),
+  resolveUtils: path.resolve.bind(null, instance.utils),
+  resolveEsm: path.resolve.bind(null, instance.esm),
+  resolveCjs: path.resolve.bind(null, instance.cjs),
+  resolveUmd: path.resolve.bind(null, instance.umd)
 })).add(() => ({
-  uiUmdName: 'kpi-ui',
-  iconsUmdName: '@kpi-ui/icons',
-  validatorUmdName: '@kpi-ui/validator'
-}));
-
-async function validatePkgName(root, name) {
-  const fullPath = path.resolve(root, './package.json');
-  const stat = await fse.lstat(fullPath);
-  if (stat.isFile()) {
-    const pkg = await fse.readJson(fullPath, {
-      encoding: 'utf-8'
-    });
-    if (pkg.name === name) return;
-  }
-  throw new Error(`not found ${name} package`);
-}
-async function getPackageDependencies(filepath) {
-  const pkg = await fse.readJson(filepath);
-  return Object.keys({
-    ...pkg.dependencies,
-    ...pkg.peerDependencies
-  });
-}
-async function clean(dist) {
-  await fse.remove(dist);
-}
-
-async function buildJs() {
-  await Promise.all([validatePkgName(constants.componentsDir, '@kpi-ui/components'), validatePkgName(constants.utilsDir, '@kpi-ui/utils')]);
-  const entries = glob.sync('./src/**/*.ts{,x}', {
-    ignore: ['**/style/*'],
-    cwd: constants.componentsDir
-  }).reduce((result, file) => {
-    const name = path.relative('src', file).slice(0, -path.extname(file).length);
-    result[name] = path.resolve(constants.componentsDir, file);
-    return result;
-  }, {});
-  glob.sync('./src/**/*.ts{,x}', {
-    cwd: constants.utilsDir
-  }).forEach(file => {
-    const name = path.relative('src', file).slice(0, -path.extname(file).length);
-    entries[`_workspace/utils/${name}`] = path.resolve(constants.utilsDir, file);
-  });
-  await Promise.all([
-  // 删除 dist
-  clean(constants.outputEsmDir), clean(constants.outputCjsDir), clean(constants.outputUmdDir)]);
-  const dependencies = await getPackageDependencies(constants.resolveCwd('package.json'));
-  const external = dependencies.filter(e => {
-    return e !== '@kpi-ui/utils' && e !== '@kpi-ui/types';
-  });
-  external.push(/node_modules/);
-  const bundle = await rollup.rollup({
-    input: entries,
-    external,
-    treeshake: false,
-    plugins: [resolve({
-      extensions: constants.jsExtensions
-    }), commonjs(), babel({
+  jsExtensions: ['.js', '.jsx', '.ts', '.tsx'],
+  cssExtensions: ['.scss', '.sass', '.css']
+})).add(instance => {
+  const browserslist = ['> 0.5%', 'last 2 versions', 'not dead'];
+  return {
+    browserslist,
+    babelOptions: {
       babelHelpers: 'runtime',
       babelrc: false,
-      extensions: constants.jsExtensions,
+      extensions: instance.jsExtensions,
       presets: [['@babel/preset-env', {
-        targets: ['> 0.5%', 'last 2 versions', 'not dead']
+        targets: browserslist
       }], ['@babel/preset-react', {
         runtime: 'automatic'
       }], '@babel/preset-typescript'],
       plugins: ['@babel/plugin-transform-runtime']
-    }), alias({
-      entries: [{
-        find: '@',
-        replacement: constants.resolveComponents('src')
-      }, {
-        find: '_shared',
-        replacement: constants.resolveComponents('src/_shared')
-      }]
-    })]
-  });
-  await Promise.all([bundle.write({
-    dir: constants.outputEsmDir,
-    format: 'esm',
-    preserveModules: true,
-    preserveModulesRoot: constants.resolveCwd('src')
-  }), bundle.write({
-    dir: constants.outputCjsDir,
-    format: 'cjs',
-    preserveModules: true,
-    preserveModulesRoot: constants.resolveCwd('src'),
-    exports: 'named'
-  })]);
+    }
+  };
+}).add(instance => ({
+  clean: function () {
+    for (var _len = arguments.length, files = new Array(_len), _key = 0; _key < _len; _key++) {
+      files[_key] = arguments[_key];
+    }
+    return Promise.all(files.map(file => fse.remove(file)));
+  },
+  safeWriteFile: async (filepath, data, options) => {
+    await fse.ensureFile(filepath);
+    return fse.writeFile(filepath, data, options);
+  },
+  getExternal: async () => {
+    const pkg = await fse.readJson(instance.resolveCwd('./package.json'));
+    return [/node_modules/].concat(Object.keys(pkg.dependencies), Object.keys(pkg.peerDependencies)).filter(Boolean);
+  }
+}));
+
+async function buildDts() {
+  consola.start('starting build dts files...');
+  const options = {
+    project: constants.components,
+    allowJs: true,
+    declaration: true,
+    emitDeclarationOnly: true,
+    declarationDir: constants.esm,
+    target: ts.ScriptTarget.ES2015
+  };
+  const host = ts.createCompilerHost(options);
+  const files = await glob.sync('./src/**/*.ts{,x}', {
+    ignore: ['**/style/*'],
+    cwd: constants.components
+  }).map(file => constants.resolveComps(file));
+  const program = ts.createProgram(files, options, host);
+  program.emit();
+  // const entries: Record<string, string> = {}
+
+  // glob
+  //   .sync('./src/**/*.ts{,x}', {
+  //     ignore: ['**/style/*'],
+  //     cwd: constants.components,
+  //   })
+  //   .forEach((file) => {
+  //     const entry = path.relative('src', file).slice(0, -path.extname(file).length)
+
+  //     entries[entry] = constants.resolveComps(file)
+  //   })
 }
 
 // console.log('build ui library')
 async function build$2() {
-  buildJs();
-  buildCss();
-  buildDts();
+  consola.box('starting build ui library...');
+  await constants.clean(constants.esm, constants.cjs, constants.umd);
+  consola.success('clean dist successfully');
+  await Promise.all([
+  // buildCode(),
+  // buildCss(),
+  buildDts()]);
+  consola.success('build ui library successfully !');
 }
 
 function build$1() {}

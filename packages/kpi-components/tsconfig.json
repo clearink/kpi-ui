@@ -6,7 +6,11 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
-      "_shared/*": ["src/_shared/*"],
-    }
+      "_shared/*": ["src/_shared/*"]
+    },
+    "noEmit": false,
+    "declaration": true,
+    "declarationDir": "esm",
+    "emitDeclarationOnly": true
   }
 }

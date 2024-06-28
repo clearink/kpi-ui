@@ -3,12 +3,14 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import babel from '@rollup/plugin-babel'
 import alias from '@rollup/plugin-alias'
-import terser from '@rollup/plugin-terser'
 import path from 'path'
 import glob from 'fast-glob'
 import constants from '../../utils/constants'
+import consola from 'consola'
 
 export default async function buildCode() {
+  consola.start('starting build source files...')
+
   const entries: Record<string, string> = {}
 
   glob
@@ -41,27 +43,7 @@ export default async function buildCode() {
     plugins: [
       resolve({ extensions: constants.jsExtensions }),
       commonjs(),
-      babel({
-        babelHelpers: 'runtime',
-        babelrc: false,
-        extensions: constants.jsExtensions,
-        presets: [
-          [
-            '@babel/preset-env',
-            {
-              targets: ['> 0.5%', 'last 2 versions', 'not dead'],
-            },
-          ],
-          [
-            '@babel/preset-react',
-            {
-              runtime: 'automatic',
-            },
-          ],
-          '@babel/preset-typescript',
-        ],
-        plugins: ['@babel/plugin-transform-runtime'],
-      }),
+      babel(constants.babelOptions),
       alias({
         entries: [
           { find: '@', replacement: constants.resolveComps('src') },

@@ -1,5 +1,5 @@
 // 内部使用
-import type { ExternalNamePath, ExternalFieldMeta } from '../_internal/form/_shared/props'
+import type { ExternalNamePath, ExternalFieldMeta } from '_shared/components'
 
 export type NamePath = ExternalNamePath
 

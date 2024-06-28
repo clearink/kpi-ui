@@ -54,6 +54,7 @@ export type FormAction =
 
 export interface RuleOptions {
   abortEarly?: boolean
+  path: InternalNamePath
 }
 export interface RuleIssue {
   message: any

@@ -1,4 +1,3 @@
-import { rollup } from 'rollup'
 import postcss from 'postcss'
 import sass from 'sass'
 import glob from 'fast-glob'
@@ -6,52 +5,63 @@ import constants from '../../utils/constants'
 import consola from 'consola'
 import autoprefixer from 'autoprefixer'
 import cssnano from 'cssnano'
-import fse from 'fs-extra'
 import path from 'path'
 
 export default async function buildCss() {
   consola.start('starting build css files...')
 
   const processor = postcss([
-    autoprefixer({
-      overrideBrowserslist: ['> 0.5%', 'last 2 versions', 'not dead'],
-    }),
+    autoprefixer({ overrideBrowserslist: constants.browserslist }),
     cssnano({ preset: 'default' }),
   ])
+
   glob
-    .sync('./src/**/style/index.{css,sass,scss}', {
+    .async('./src/**/style/index.{c,sa,sc}ss', {
       cwd: constants.components,
     })
-    .forEach(async (file) => {
-      const filepath = constants.resolveComps(file)
-
-      sass
-        .compileAsync(filepath, { style: 'expanded' })
-        .then(({ css }) => processor.process(css, { from: filepath }))
-        .then((res) => {
-          const entry = path.relative('src', file).slice(0, -path.extname(file).length)
-
-          {
-            const output = path.resolve(constants.esm, `${entry}.css`)
-
-            fse.ensureFileSync(output)
-            fse.writeFileSync(output, res.content, { encoding: 'utf-8' })
-          }
-
-          {
-            const output = path.resolve(constants.cjs, `${entry}.css`)
-
-            fse.ensureFileSync(output)
-            fse.writeFileSync(output, res.content, { encoding: 'utf-8' })
-          }
-        })
-
-      // console.log({ from: filepath, to: constants.resolveCwd(`./esm/${file}.css`) })
+    .then((files) =>
+      files.forEach((file) => {
+        sass
+          .compileAsync(constants.resolveComps(file))
+          .then(({ css }) => processor.process(css))
+          .then(({ css }) => {
+            const entry = path.relative('src', file).slice(0, -path.extname(file).length)
+            constants.safeWriteFile(constants.resolveEsm(`${entry}.css`), css, {
+              encoding: 'utf-8',
+            })
+            constants.safeWriteFile(constants.resolveCjs(`${entry}.css`), css, {
+              encoding: 'utf-8',
+            })
+          })
+      })
+    )
+  glob
+    .async('./src/style/css.{c,sa,sc}ss', {
+      cwd: constants.components,
     })
-  // .reduce<Record<string, string>>((result, file) => {
-
-  //   result[entry] = constants.resolveComps(file)
-
-  //   return result
-  // }, {})
+    .then((files) =>
+      files.forEach((file) => {
+        sass
+          .compileAsync(constants.resolveComps(file))
+          .then((res) => {
+            constants.safeWriteFile(constants.resolveUmd(`style.css`), res.css, {
+              encoding: 'utf-8',
+            })
+            return res
+          })
+          .then(({ css }) => processor.process(css))
+          .then(({ css }) => {
+            const entry = path.relative('src', file).slice(0, -path.extname(file).length)
+            constants.safeWriteFile(constants.resolveEsm(`${entry}.css`), css, {
+              encoding: 'utf-8',
+            })
+            constants.safeWriteFile(constants.resolveCjs(`${entry}.css`), css, {
+              encoding: 'utf-8',
+            })
+            constants.safeWriteFile(constants.resolveUmd(`style.min.css`), css, {
+              encoding: 'utf-8',
+            })
+          })
+      })
+    )
 }

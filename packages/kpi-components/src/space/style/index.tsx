@@ -1,5 +1,2 @@
-// 实现按需引入
-
-// 样式配置
-import '../../style/index.scss'
+// 按需引入
 import './index.scss'

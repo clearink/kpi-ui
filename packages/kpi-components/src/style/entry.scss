@@ -1,14 +1,8 @@
-// 变量
-@import './variables.scss';
-
 // normalize
 @import './preset/normalize.scss';
 
 // 预设样式
 @import './preset/preset.scss';
-
-// util mixins
-@import './mixins/index.scss';
 
 // 动画
 @import './motion/index.scss';

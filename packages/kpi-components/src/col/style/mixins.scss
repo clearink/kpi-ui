@@ -10,7 +10,7 @@ $name: #{$prefix}-col;
         display: none;
       }
     } @else {
-      $percent: math.div($col, $count) * 100%;
+      $percent: math.percentage(math.div($col, $count));
       .#{$col-name}-#{$col} {
         display: block;
         flex: 0 0 $percent;

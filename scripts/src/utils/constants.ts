@@ -1,6 +1,5 @@
 import path from 'path'
-import fse from 'fs-extra'
-import { fileURLToPath } from 'url'
+import fse, { type WriteFileOptions } from 'fs-extra'
 
 class Constant {
   public add<R extends object>(fn: (constant: this) => R) {
@@ -30,12 +29,38 @@ export default new Constant()
   .add((instance) => ({
     resolveComps: path.resolve.bind(null, instance.components),
     resolveUtils: path.resolve.bind(null, instance.utils),
+
+    resolveEsm: path.resolve.bind(null, instance.esm),
+    resolveCjs: path.resolve.bind(null, instance.cjs),
+    resolveUmd: path.resolve.bind(null, instance.umd),
   }))
   .add(() => ({
     jsExtensions: ['.js', '.jsx', '.ts', '.tsx'],
     cssExtensions: ['.scss', '.sass', '.css'],
   }))
+  .add((instance) => {
+    const browserslist = ['> 0.5%', 'last 2 versions', 'not dead']
+    return {
+      browserslist,
+      babelOptions: {
+        babelHelpers: 'runtime' as const,
+        babelrc: false,
+        extensions: instance.jsExtensions,
+        presets: [
+          ['@babel/preset-env', { targets: browserslist }],
+          ['@babel/preset-react', { runtime: 'automatic' }],
+          '@babel/preset-typescript',
+        ],
+        plugins: ['@babel/plugin-transform-runtime'],
+      },
+    }
+  })
   .add((instance) => ({
+    clean: (...files: string[]) => Promise.all(files.map((file) => fse.remove(file))),
+    safeWriteFile: async (filepath: string, data: string, options: WriteFileOptions) => {
+      await fse.ensureFile(filepath)
+      return fse.writeFile(filepath, data, options)
+    },
     getExternal: async () => {
       const pkg = await fse.readJson(instance.resolveCwd('./package.json'))
 
@@ -43,5 +68,4 @@ export default new Constant()
         .concat(Object.keys(pkg.dependencies), Object.keys(pkg.peerDependencies))
         .filter(Boolean)
     },
-    clean: (...files: string[]) => Promise.all(files.map((file) => fse.remove(file))),
   }))
