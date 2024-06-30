@@ -1,0 +1,28 @@
+import { isString } from '@kpi-ui/utils'
+// types
+import type { FormContextState } from '../../../_shared/context'
+import type { FormItemLabelProps } from '../props'
+
+// 格式化 FormItemLabel
+export default function normalizeChildren(props: FormItemLabelProps, ctx: FormContextState) {
+  const { required, tooltip, label, colon, requiredMark } = props
+
+  const hasColon = ctx.layout !== 'vertical' && colon
+
+  let labelNode = label
+
+  if (hasColon && isString(labelNode)) {
+    // 去除用户输入的 colon
+    labelNode = labelNode.replace(/[:|：]\s*$/, '')
+  }
+  // TODO: optional mark
+  if (requiredMark === 'optional' && !required) {
+    //
+  }
+  // TODO: tooltip
+  if (tooltip) {
+    //
+  }
+
+  return labelNode
+}

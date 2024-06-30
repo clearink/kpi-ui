@@ -10,7 +10,8 @@
   "sideEffects": [
     "dist/*",
     "esm/**/style/*",
-    "lib/**/style/*"
+    "lib/**/style/*",
+    "*.scss"
   ],
   "peerDependencies": {
     "react": "^18.2.0",

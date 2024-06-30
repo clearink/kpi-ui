@@ -1,0 +1,54 @@
+// 引入 css 基础配置文件
+@import '../../style/base.scss';
+
+@import './tokens.scss';
+@import './mixins.scss';
+
+$comp: #{$prefix}-row;
+
+.#{$comp} {
+  @include reset-component();
+
+  display: flex;
+  flex-direction: row;
+  &::before,
+  &::after {
+    display: flex;
+  }
+}
+
+.#{$comp}--wrap {
+  flex-wrap: wrap;
+}
+
+.#{$comp}--start {
+  justify-content: flex-start;
+}
+.#{$comp}--end {
+  justify-content: flex-end;
+}
+.#{$comp}--center {
+  justify-content: center;
+}
+.#{$comp}--space-around {
+  justify-content: space-around;
+}
+.#{$comp}--space-between {
+  justify-content: space-between;
+}
+.#{$comp}--space-evenly {
+  justify-content: space-evenly;
+}
+
+.#{$comp}--top {
+  align-items: flex-start;
+}
+.#{$comp}--middle {
+  align-items: center;
+}
+.#{$comp}--bottom {
+  align-items: flex-end;
+}
+.#{$comp}--stretch {
+  align-items: stretch;
+}

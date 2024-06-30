@@ -1,15 +1,25 @@
-import constants from '../../utils/constants'
+import { constants, logger } from '../../utils/helpers'
+import fse from 'fs-extra'
 import buildCss from './css'
 import buildDts from './dts'
 import buildCode from './code'
-import consola from 'consola'
 
 // console.log('build ui library')
 export default async function build() {
-  consola.box('starting build ui library...')
+  logger.info('|-----------------------------------|')
+  logger.info('|                                   |')
+  logger.info('|   starting build ui library...    |')
+  logger.info('|                                   |')
+  logger.info('|-----------------------------------|')
 
-  await constants.clean(constants.esm, constants.cjs, constants.umd)
-  consola.success('clean dist successfully')
+  await constants.clean(constants.esm, constants.cjs, constants.umd, constants.resolveCwd('src'))
+
+  // copy files
+  await fse.copy(constants.resolveComps('src'), constants.resolveCwd('src'))
+
+  await fse.copy(constants.resolveUtils('src'), constants.resolveCwd('src', '_internal', 'utils'))
+
+  await fse.copy(constants.resolveTypes('src'), constants.resolveCwd('src', '_internal', 'types'))
 
   await Promise.all([
     // buildCode(),
@@ -17,5 +27,5 @@ export default async function build() {
     buildDts(),
   ])
 
-  consola.success('build ui library successfully !')
+  logger.success('build ui library successfully !')
 }

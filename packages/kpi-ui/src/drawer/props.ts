@@ -1,0 +1,29 @@
+// types
+import type { SemanticStyledProps } from '@kpi-ui/types'
+import type { OverlayProps } from '_shared/components'
+import type { ReactNode } from 'react'
+
+export interface DrawerProps
+  extends SemanticStyledProps<'root' | 'main' | 'close' | 'header' | 'body' | 'footer'>,
+    Pick<
+      OverlayProps,
+      'getContainer' | 'mask' | 'open' | 'transitions' | 'keepMounted' | 'unmountOnExit'
+    > {
+  closeOnEscape?: boolean
+
+  children?: ReactNode
+
+  title?: ReactNode
+
+  footer?: ReactNode
+
+  beforeClose?: () => void
+
+  afterClose?: () => void
+
+  beforeOpen?: () => void
+
+  afterOpen?: () => void
+
+  onOpenChange?: (open: boolean) => void
+}

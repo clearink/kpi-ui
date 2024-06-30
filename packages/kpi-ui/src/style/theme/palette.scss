@@ -1,0 +1,301 @@
+@use 'sass:color';
+
+$color-blue: (
+  // light
+  'light-blue-1': #e6f4ff,
+  'light-blue-2': #bae0ff,
+  'light-blue-3': #91caff,
+  'light-blue-4': #69b1ff,
+  'light-blue-5': #4096ff,
+  'light-blue-6': #1677ff,
+  'light-blue-7': #0958d9,
+  'light-blue-8': #003eb3,
+  'light-blue-9': #002c8c,
+  'light-blue-10': #001d66,
+  // dark
+  'dark-blue-1': #111a2c,
+  'dark-blue-2': #112545,
+  'dark-blue-3': #15325b,
+  'dark-blue-4': #15417e,
+  'dark-blue-5': #1554ad,
+  'dark-blue-6': #1668dc,
+  'dark-blue-7': #3c89e8,
+  'dark-blue-8': #65a9f3,
+  'dark-blue-9': #8dc5f8,
+  'dark-blue-10': #b7dcfa
+);
+
+$color-cyan: (
+  // light
+  'light-cyan-1': #e6fffb,
+  'light-cyan-2': #b5f5ec,
+  'light-cyan-3': #87e8de,
+  'light-cyan-4': #5cdbd3,
+  'light-cyan-5': #36cfc9,
+  'light-cyan-6': #13c2c2,
+  'light-cyan-7': #08979c,
+  'light-cyan-8': #006d75,
+  'light-cyan-9': #00474f,
+  'light-cyan-10': #002329,
+  // dark
+  'dark-cyan-1': #112123,
+  'dark-cyan-2': #113536,
+  'dark-cyan-3': #144848,
+  'dark-cyan-4': #146262,
+  'dark-cyan-5': #138585,
+  'dark-cyan-6': #13a8a8,
+  'dark-cyan-7': #33bcb7,
+  'dark-cyan-8': #58d1c9,
+  'dark-cyan-9': #84e2d8,
+  'dark-cyan-10': #b2f1e8
+);
+
+$color-geek-blue: (
+  // light
+  'light-geek-blue-1': #f0f5ff,
+  'light-geek-blue-2': #d6e4ff,
+  'light-geek-blue-3': #adc6ff,
+  'light-geek-blue-4': #85a5ff,
+  'light-geek-blue-5': #597ef7,
+  'light-geek-blue-6': #2f54eb,
+  'light-geek-blue-7': #1d39c4,
+  'light-geek-blue-8': #10239e,
+  'light-geek-blue-9': #061178,
+  'light-geek-blue-10': #030852,
+  // dark
+  'dark-geek-blue-1': #131629,
+  'dark-geek-blue-2': #161d40,
+  'dark-geek-blue-3': #1c2755,
+  'dark-geek-blue-4': #203175,
+  'dark-geek-blue-5': #263ea0,
+  'dark-geek-blue-6': #2b4acb,
+  'dark-geek-blue-7': #5273e0,
+  'dark-geek-blue-8': #7f9ef3,
+  'dark-geek-blue-9': #a8c1f8,
+  'dark-geek-blue-10': #d2e0fa
+);
+
+$color-gold: (
+  // light
+  'light-gold-1': #fffbe6,
+  'light-gold-2': #fff1b8,
+  'light-gold-3': #ffe58f,
+  'light-gold-4': #ffd666,
+  'light-gold-5': #ffc53d,
+  'light-gold-6': #faad14,
+  'light-gold-7': #d48806,
+  'light-gold-8': #ad6800,
+  'light-gold-9': #874d00,
+  'light-gold-10': #613400,
+  // dark
+  'dark-gold-1': #2b2111,
+  'dark-gold-2': #443111,
+  'dark-gold-3': #594214,
+  'dark-gold-4': #7c5914,
+  'dark-gold-5': #aa7714,
+  'dark-gold-6': #d89614,
+  'dark-gold-7': #e8b339,
+  'dark-gold-8': #f3cc62,
+  'dark-gold-9': #f8df8b,
+  'dark-gold-10': #faedb5
+);
+
+$color-green: (
+  // light
+  'light-green-1': #f6ffed,
+  'light-green-2': #d9f7be,
+  'light-green-3': #b7eb8f,
+  'light-green-4': #95de64,
+  'light-green-5': #73d13d,
+  'light-green-6': #52c41a,
+  'light-green-7': #389e0d,
+  'light-green-8': #237804,
+  'light-green-9': #135200,
+  'light-green-10': #092b00,
+  // dark
+  'dark-green-1': #162312,
+  'dark-green-2': #1d3712,
+  'dark-green-3': #274916,
+  'dark-green-4': #306317,
+  'dark-green-5': #3c8618,
+  'dark-green-6': #49aa19,
+  'dark-green-7': #6abe39,
+  'dark-green-8': #8fd460,
+  'dark-green-9': #b2e58b,
+  'dark-green-10': #d5f2bb
+);
+
+$color-lime: (
+  // light
+  'light-lime-1': #fcffe6,
+  'light-lime-2': #f4ffb8,
+  'light-lime-3': #eaff8f,
+  'light-lime-4': #d3f261,
+  'light-lime-5': #bae637,
+  'light-lime-6': #a0d911,
+  'light-lime-7': #7cb305,
+  'light-lime-8': #5b8c00,
+  'light-lime-9': #3f6600,
+  'light-lime-10': #254000,
+  // dark
+  'dark-lime-1': #1f2611,
+  'dark-lime-2': #2e3c10,
+  'dark-lime-3': #3e4f13,
+  'dark-lime-4': #536d13,
+  'dark-lime-5': #6f9412,
+  'dark-lime-6': #8bbb11,
+  'dark-lime-7': #a9d134,
+  'dark-lime-8': #c9e75d,
+  'dark-lime-9': #e4f88b,
+  'dark-lime-10': #f0fab5
+);
+
+$color-magenta: (
+  // light
+  'light-magenta-1': #fff0f6,
+  'light-magenta-2': #ffd6e7,
+  'light-magenta-3': #ffadd2,
+  'light-magenta-4': #ff85c0,
+  'light-magenta-5': #f759ab,
+  'light-magenta-6': #eb2f96,
+  'light-magenta-7': #c41d7f,
+  'light-magenta-8': #9e1068,
+  'light-magenta-9': #780650,
+  'light-magenta-10': #520339,
+  // dark
+  'dark-magenta-1': #111a2c,
+  'dark-magenta-2': #40162f,
+  'dark-magenta-3': #551c3b,
+  'dark-magenta-4': #75204f,
+  'dark-magenta-5': #a02669,
+  'dark-magenta-6': #cb2b83,
+  'dark-magenta-7': #e0529c,
+  'dark-magenta-8': #f37fb7,
+  'dark-magenta-9': #f8a8cc,
+  'dark-magenta-10': #fad2e3
+);
+
+$color-orange: (
+  // light
+  'light-orange-1': #fff7e6,
+  'light-orange-2': #ffe7ba,
+  'light-orange-3': #ffd591,
+  'light-orange-4': #ffc069,
+  'light-orange-5': #ffa940,
+  'light-orange-6': #fa8c16,
+  'light-orange-7': #d46b08,
+  'light-orange-8': #ad4e00,
+  'light-orange-9': #873800,
+  'light-orange-10': #612500,
+  // dark
+  'dark-orange-1': #2b1d11,
+  'dark-orange-2': #442a11,
+  'dark-orange-3': #593815,
+  'dark-orange-4': #7c4a15,
+  'dark-orange-5': #aa6215,
+  'dark-orange-6': #d87a16,
+  'dark-orange-7': #e89a3c,
+  'dark-orange-8': #f3b765,
+  'dark-orange-9': #f8cf8d,
+  'dark-orange-10': #fae3b7
+);
+
+$color-purple: (
+  // light
+  'light-purple-1': #f9f0ff,
+  'light-purple-2': #efdbff,
+  'light-purple-3': #d3adf7,
+  'light-purple-4': #b37feb,
+  'light-purple-5': #9254de,
+  'light-purple-6': #722ed1,
+  'light-purple-7': #531dab,
+  'light-purple-8': #391085,
+  'light-purple-9': #22075e,
+  'light-purple-10': #120338,
+  // dark
+  'dark-purple-1': #1a1325,
+  'dark-purple-2': #24163a,
+  'dark-purple-3': #301c4d,
+  'dark-purple-4': #3e2069,
+  'dark-purple-5': #51258f,
+  'dark-purple-6': #642ab5,
+  'dark-purple-7': #854eca,
+  'dark-purple-8': #ab7ae0,
+  'dark-purple-9': #cda8f0,
+  'dark-purple-10': #ebd7fa
+);
+
+$color-red: (
+  // light
+  'light-red-1': #fff1f0,
+  'light-red-2': #ffccc7,
+  'light-red-3': #ffa39e,
+  'light-red-4': #ff7875,
+  'light-red-5': #ff4d4f,
+  'light-red-6': #f5222d,
+  'light-red-7': #cf1322,
+  'light-red-8': #a8071a,
+  'light-red-9': #820014,
+  'light-red-10': #5c0011,
+  // dark
+  'dark-red-1': #2a1215,
+  'dark-red-2': #431418,
+  'dark-red-3': #58181c,
+  'dark-red-4': #791a1f,
+  'dark-red-5': #a61d24,
+  'dark-red-6': #d32029,
+  'dark-red-7': #e84749,
+  'dark-red-8': #f37370,
+  'dark-red-9': #f89f9a,
+  'dark-red-10': #fac8c3
+);
+
+$color-volcano: (
+  // light
+  'light-volcano-1': #fff2e8,
+  'light-volcano-2': #ffd8bf,
+  'light-volcano-3': #ffbb96,
+  'light-volcano-4': #ff9c6e,
+  'light-volcano-5': #ff7a45,
+  'light-volcano-6': #fa541c,
+  'light-volcano-7': #d4380d,
+  'light-volcano-8': #ad2102,
+  'light-volcano-9': #871400,
+  'light-volcano-10': #610b00,
+  // dark
+  'dark-volcano-1': #2b1611,
+  'dark-volcano-2': #441d12,
+  'dark-volcano-3': #592716,
+  'dark-volcano-4': #7c3118,
+  'dark-volcano-5': #aa3e19,
+  'dark-volcano-6': #d84a1b,
+  'dark-volcano-7': #e87040,
+  'dark-volcano-8': #f3956a,
+  'dark-volcano-9': #f8b692,
+  'dark-volcano-10': #fad4bc
+);
+
+$color-yellow: (
+  // light
+  'light-yellow-1': #feffe6,
+  'light-yellow-2': #ffffb8,
+  'light-yellow-3': #fffb8f,
+  'light-yellow-4': #fff566,
+  'light-yellow-5': #ffec3d,
+  'light-yellow-6': #fadb14,
+  'light-yellow-7': #d4b106,
+  'light-yellow-8': #ad8b00,
+  'light-yellow-9': #876800,
+  'light-yellow-10': #614700,
+  // dark
+  'dark-yellow-1': #2b2611,
+  'dark-yellow-2': #443b11,
+  'dark-yellow-3': #595014,
+  'dark-yellow-4': #7c6e14,
+  'dark-yellow-5': #aa9514,
+  'dark-yellow-6': #d8bd14,
+  'dark-yellow-7': #e8d639,
+  'dark-yellow-8': #f3ea62,
+  'dark-yellow-9': #f8f48b,
+  'dark-yellow-10': #fafab5
+);

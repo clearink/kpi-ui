@@ -1,0 +1,43 @@
+// 引入 css 基础配置文件
+@import '../../style/base.scss';
+
+@import './tokens.scss';
+@import './mixins.scss';
+
+$comp: #{$prefix}-tooltip;
+
+.#{$comp} {
+  @include reset-component();
+
+  position: absolute;
+  width: max-content;
+  min-width: 1em;
+  max-width: $kpi-tooltip-max-width;
+  padding: $kpi-tooltip-px $kpi-tooltip-py;
+  border-radius: var(--#{$prefix}-border-radius);
+  transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
+  color: var(--#{$prefix}-color-text-light-solid);
+  background-color: var(--#{$prefix}-color-bg-spot-light);
+  box-shadow: var(--#{$prefix}-box-shadow-secondary);
+  will-change: transform;
+}
+
+.#{$comp}__arrow {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  width: $kpi-tooltip-arrow-size;
+  height: $kpi-tooltip-arrow-size;
+  clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+  box-shadow: var(--#{$prefix}-box-shadow-secondary);
+
+  &::before {
+    content: '';
+    display: block;
+    width: 50%;
+    height: 50%;
+    transform: translate3d(50%, 50%, 0) rotate(45deg);
+    border-bottom-right-radius: 2px;
+    background-color: var(--#{$prefix}-color-bg-spot-light);
+  }
+}

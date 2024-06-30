@@ -1,71 +1,106 @@
-import { rollup } from 'rollup'
+import { RollupOptions, OutputOptions, rollup } from 'rollup'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import babel from '@rollup/plugin-babel'
 import alias from '@rollup/plugin-alias'
+import terser from '@rollup/plugin-terser'
+import replace from '@rollup/plugin-replace'
+import { constants } from '../../utils/helpers'
+import { glob } from 'fast-glob'
 import path from 'path'
-import glob from 'fast-glob'
-import constants from '../../utils/constants'
-import consola from 'consola'
 
-export default async function buildCode() {
-  consola.start('starting build source files...')
+interface BuildCodeOptions {
+  external: RollupOptions['external']
+  input: string | Record<string, string>
+  outputOptions: OutputOptions[]
+  minify?: boolean
+}
 
-  const entries: Record<string, string> = {}
-
-  glob
-    .sync('./src/**/*.ts{,x}', {
-      ignore: ['**/style/*'],
-      cwd: constants.components,
-    })
-    .forEach((file) => {
-      const entry = path.relative('src', file).slice(0, -path.extname(file).length)
-
-      entries[entry] = constants.resolveComps(file)
-    })
-
-  glob
-    .sync('./src/**/*.ts{,x}', {
-      cwd: constants.utils,
-    })
-    .forEach((file) => {
-      const name = path.relative('src', file).slice(0, -path.extname(file).length)
-
-      entries[`_workspace/utils/${name}`] = constants.resolveUtils(file)
-    })
-
-  const external = await constants.getExternal()
+async function buildCode(options: BuildCodeOptions) {
+  const { input, external, outputOptions } = options
 
   const bundle = await rollup({
-    input: entries,
+    input,
     external,
-    treeshake: false,
+    treeshake: typeof input === 'string' ? true : false,
+    logLevel: 'silent',
     plugins: [
       resolve({ extensions: constants.jsExtensions }),
       commonjs(),
       babel(constants.babelOptions),
-      alias({
-        entries: [
-          { find: '@', replacement: constants.resolveComps('src') },
-          { find: '_shared', replacement: constants.resolveComps('src/_shared') },
-        ],
-      }),
-    ],
+      alias({ entries: constants.alias }),
+      typeof input === 'string' &&
+        replace({
+          'process.env.NODE_ENV': JSON.stringify('production'),
+        }),
+    ].filter(Boolean),
   })
 
+  return Promise.all(outputOptions.map((config) => bundle.write(config)))
+}
+
+export default async function build() {
+  const entries: Record<string, string> = {}
+
+  const root = constants.resolveCwd('src')
+  glob
+    .sync('**/*.ts{,x}', {
+      ignore: ['**/__tests__', '**/_demo', '**/_design'],
+      cwd: root,
+    })
+    .forEach((file) => {
+      const name = constants.removeExtname(file)
+
+      entries[name] = path.resolve(root, file)
+    })
+
+  const pkgJson = await constants.getPkgJson()
+
+  const external = constants.normalizeExternals(pkgJson)
+
+  external.push(/\.(css|scss|sass)$/)
+
   await Promise.all([
-    bundle.write({
-      dir: constants.esm,
-      format: 'esm',
-      preserveModules: true,
-      preserveModulesRoot: constants.resolveCwd('src'),
+    buildCode({
+      input: path.resolve(root, 'index.ts'),
+      external,
+      outputOptions: [
+        {
+          dir: constants.umd,
+          format: 'umd',
+          name: pkgJson.name,
+          entryFileNames: '[name].js',
+          sourcemap: true,
+        },
+        {
+          dir: constants.umd,
+          format: 'umd',
+          name: pkgJson.name,
+          entryFileNames: '[name].min.js',
+          plugins: [terser()],
+          sourcemap: true,
+        },
+      ],
     }),
-    bundle.write({
-      dir: constants.cjs,
-      format: 'cjs',
-      preserveModules: true,
-      preserveModulesRoot: constants.resolveCwd('src'),
-      exports: 'named',
+    buildCode({
+      input: entries,
+      external,
+      outputOptions: [
+        {
+          dir: constants.esm,
+          format: 'esm',
+          entryFileNames: '[name].mjs',
+          preserveModules: true,
+          sourcemap: true,
+        },
+        {
+          dir: constants.cjs,
+          format: 'cjs',
+          preserveModules: true,
+          exports: 'named',
+          sourcemap: true,
+        },
+      ],
     }),
   ])
 }

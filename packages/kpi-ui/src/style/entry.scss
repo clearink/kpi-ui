@@ -1,0 +1,11 @@
+// normalize
+@import './preset/normalize.scss';
+
+// 预设样式
+@import './preset/preset.scss';
+
+// 动画
+@import './motion/index.scss';
+
+// 主题
+@import './theme/index.scss';

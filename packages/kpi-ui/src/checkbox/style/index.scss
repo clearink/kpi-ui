@@ -1,0 +1,92 @@
+// 引入 css 基础配置文件
+@import '../../style/base.scss';
+
+@import './tokens.scss';
+@import './mixins.scss';
+
+$comp: #{$prefix}-checkbox;
+
+.#{$comp} {
+  @include reset-component();
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+
+  &:hover .#{$comp}__input {
+    border-color: var(--#{$prefix}-color-primary);
+  }
+}
+
+.#{$comp}__original {
+  position: absolute;
+  opacity: 0;
+  outline: none;
+  margin: 0;
+  width: 0;
+  height: 0;
+  z-index: -1;
+
+  &:focus-visible + .#{$comp}__input {
+    outline-color: var(--#{$prefix}-color-primary-active);
+    outline-offset: $kpi-checkbox-outline-offset;
+  }
+}
+
+.#{$comp}__input {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  border: 1px solid var(--#{$prefix}-color-border);
+  border-radius: var(--#{$prefix}-border-radius-sm);
+  background-color: var(--#{$prefix}-color-bg-base);
+  width: $kpi-checkbox-input-width;
+  height: $kpi-checkbox-input-height;
+  transition: $kpi-checkbox-input-transition;
+  z-index: 1;
+  outline: transparent solid $kpi-checkbox-outline-width;
+
+  &::after {
+    content: '';
+    position: absolute;
+    box-sizing: border-box;
+    width: $kpi-checkbox-arrow-width;
+    height: $kpi-checkbox-arrow-height;
+    border: 2px solid var(--#{$prefix}-color-white);
+    border-top: 0;
+    border-left: 0;
+    left: calc($kpi-checkbox-arrow-width / 2);
+    top: 50%;
+    transition: $kpi-checkbox-arrow-transition-enter;
+    transform: scale(0) rotate(45deg) translate(-50%, -50%);
+  }
+}
+
+.#{$comp}__label {
+  padding: 0 8px;
+  color: var(--#{$prefix}-color-text);
+}
+
+.#{$comp}--checked {
+  .#{$comp}__input {
+    border-color: var(--#{$prefix}-color-primary);
+    background-color: var(--#{$prefix}-color-primary);
+
+    &::after {
+      transform: scale(1) rotate(45deg) translate(-50%, -50%);
+      transition: $kpi-checkbox-arrow-transition-exit;
+    }
+  }
+
+  &:hover {
+    &.#{$comp}__input {
+      border-color: var(--#{$prefix}-color-primary-hover);
+      // background-color: var(--#{$prefix}-color-primary-active);
+    }
+  }
+}
+
+.#{$comp}-group {
+  @include reset-component();
+}

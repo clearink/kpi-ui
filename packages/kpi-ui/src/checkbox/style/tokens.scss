@@ -1,0 +1,21 @@
+$kpi-checkbox-outline-width: 2px;
+
+$kpi-checkbox-input-width: var(--#{$prefix}-unit-4);
+
+$kpi-checkbox-input-height: var(--#{$prefix}-unit-4);
+
+$kpi-checkbox-arrow-width: calc($kpi-checkbox-input-width / 14 * 5);
+
+$kpi-checkbox-arrow-height: calc($kpi-checkbox-input-height / 14 * 8);
+
+$kpi-checkbox-arrow-transition-enter: all var(--#{$prefix}-motion-duration-1)
+    var(--#{$prefix}-motion-ease-in-back),
+  opacity var(--#{$prefix}-motion-duration-1);
+
+$kpi-checkbox-arrow-transition-exit: all var(--#{$prefix}-motion-duration-2)
+    var(--#{$prefix}-motion-ease-out-back),
+  opacity var(--#{$prefix}-motion-duration-1);
+
+$kpi-checkbox-input-transition: all var(--#{$prefix}-motion-duration-3);
+
+$kpi-checkbox-outline-offset: 1px;
