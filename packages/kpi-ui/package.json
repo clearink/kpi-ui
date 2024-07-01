@@ -13,6 +13,12 @@
     "lib/**/style/*",
     "*.scss"
   ],
+  "files": [
+    "dist",
+    "esm",
+    "lib",
+    "README.md"
+  ],
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

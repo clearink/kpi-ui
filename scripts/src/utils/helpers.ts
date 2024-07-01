@@ -1,7 +1,6 @@
 import path from 'path'
 import fse from 'fs-extra'
 import chalk from 'chalk'
-import { glob } from 'fast-glob'
 
 class Constant {
   public add<R extends object>(fn: (constant: this) => R) {
@@ -48,8 +47,10 @@ export const constants = new Constant()
   }))
   .add((instance) => ({
     alias: [
-      { find: '@', replacement: instance.resolveComps('src') },
-      { find: '_shared', replacement: instance.resolveComps('src/_shared') },
+      { find: '@', replacement: instance.resolveCwd('src') },
+      { find: '@kpi-ui/utils', replacement: instance.resolveCwd('src/_internal/utils') },
+      { find: '@kpi-ui/types', replacement: instance.resolveCwd('src/_internal/types') },
+      { find: '_shared', replacement: instance.resolveCwd('src/_shared') },
     ],
     babelOptions: {
       babelHelpers: 'runtime' as const,
@@ -73,7 +74,7 @@ export const constants = new Constant()
     },
     getPkgJson: () => fse.readJson(instance.resolveCwd('./package.json')),
     normalizeExternals: (pkgJson: Record<string, any>) => {
-      return ([/node_modules/] as any[])
+      return ([/node_modules/] as (RegExp | string)[])
         .concat(Object.keys(pkgJson.dependencies), Object.keys(pkgJson.peerDependencies))
         .filter(Boolean)
     },
@@ -81,16 +82,54 @@ export const constants = new Constant()
   }))
 
 export const logger = {
-  info: (text: string) => {
-    console.log(chalk.hex('#3498db')(text))
+  info: (text: string, log = true) => {
+    const str = chalk.hex('#3498db')(text)
+    if (!log) return str
+    console.log(str)
   },
-  success: (text: string) => {
-    console.log(chalk.hex('#2ecc71')(text))
+  success: (text: string, log = true) => {
+    const str = chalk.hex('#2ecc71')(text)
+    if (!log) return str
+    console.log(str)
   },
-  warning: (text: string) => {
-    console.log(chalk.hex('#f39c12')(text))
+  warning: (text: string, log = true) => {
+    const str = chalk.hex('#f39c12')(text)
+    if (!log) return str
+    console.log(str)
   },
-  error: (text: string) => {
-    console.log(chalk.hex('#e74c3c')(text))
+  error: (text: string, log = true) => {
+    const str = chalk.hex('#e74c3c')(text)
+    if (!log) return str
+    console.log(str)
   },
+}
+
+export function findBestAlias(moduleName: string, alias: typeof constants.alias) {
+  const getMatchCount = (text: string) => {
+    let count = 0
+
+    const len = Math.min(moduleName.length, text.length)
+
+    for (let i = 0; i < len; i++) {
+      if (moduleName[i] !== text[i]) return count
+      count += 1
+    }
+
+    return count
+  }
+
+  const bestMatch: [number, number] = [-1, -1]
+
+  alias.forEach(({ find }, i) => {
+    if (!moduleName.startsWith(find)) return
+
+    const maxCount = getMatchCount(find)
+
+    if (bestMatch[1] > maxCount) return
+
+    bestMatch[0] = i
+    bestMatch[1] = maxCount
+  })
+
+  return bestMatch[0] === -1 ? null : alias[bestMatch[0]]
 }

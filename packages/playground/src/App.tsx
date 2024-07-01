@@ -1,7 +1,7 @@
 import { Badge, Button, Segmented } from '@kpi-ui/components'
 import { useState } from 'react'
 
-import '@kpi-ui/components/src/style/css'
+import '@kpi-ui/components/src/style'
 import './style.scss'
 
 const random = (min: number, max: number) => {

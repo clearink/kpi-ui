@@ -2,136 +2,185 @@
 'use strict';
 
 var commander = require('commander');
-var path = require('path');
+var helpers = require('./helpers.js');
+var ora = require('ora');
 var fse = require('fs-extra');
-var chalk = require('chalk');
+var path = require('path');
 var glob = require('fast-glob');
-var ts = require('typescript');
-
-class Constant {
-  add(fn) {
-    return Object.assign(this, fn(this));
-  }
-}
-const constants = new Constant().add(() => ({
-  root: path.resolve(__dirname, '../../'),
-  cwd: fse.realpathSync(process.cwd())
-})).add(instance => ({
-  resolveCwd: path.resolve.bind(null, instance.cwd),
-  resolveRoot: path.resolve.bind(null, instance.root)
-})).add(instance => ({
-  resolveEsm: instance.resolveCwd.bind(null, 'esm'),
-  resolveCjs: instance.resolveCwd.bind(null, 'lib'),
-  resolveUmd: instance.resolveCwd.bind(null, 'dist'),
-  resolveComps: instance.resolveRoot.bind(null, 'packages', 'components'),
-  resolveUtils: instance.resolveRoot.bind(null, 'packages', 'utils'),
-  resolveUi: instance.resolveRoot.bind(null, 'packages', 'kpi-ui'),
-  resolveTypes: instance.resolveRoot.bind(null, 'packages', 'types'),
-  resolveIcons: instance.resolveRoot.bind(null, 'packages', 'icons'),
-  resolveValidator: instance.resolveRoot.bind(null, 'packages', 'validator')
-})).add(instance => ({
-  esm: instance.resolveEsm('.'),
-  cjs: instance.resolveCjs('.'),
-  umd: instance.resolveUmd('.'),
-  comps: instance.resolveComps('.'),
-  utils: instance.resolveUtils('.'),
-  ui: instance.resolveUi('.'),
-  icons: instance.resolveIcons('.'),
-  types: instance.resolveTypes('.'),
-  validator: instance.resolveValidator('.')
-})).add(() => ({
-  browserslist: ['> 0.5%', 'last 2 versions', 'not dead'],
-  jsExtensions: ['.js', '.jsx', '.ts', '.tsx'],
-  cssExtensions: ['.scss', '.sass', '.css']
-})).add(instance => ({
-  alias: [{
-    find: '@',
-    replacement: instance.resolveComps('src')
-  }, {
-    find: '_shared',
-    replacement: instance.resolveComps('src/_shared')
-  }],
-  babelOptions: {
-    babelHelpers: 'runtime',
-    babelrc: false,
-    extensions: instance.jsExtensions,
-    presets: [['@babel/preset-env', {
-      targets: instance.browserslist
-    }], ['@babel/preset-react', {
-      runtime: 'automatic'
-    }], '@babel/preset-typescript'],
-    plugins: ['@babel/plugin-transform-runtime']
-  }
-})).add(instance => ({
-  clean: function () {
-    for (var _len = arguments.length, files = new Array(_len), _key = 0; _key < _len; _key++) {
-      files[_key] = arguments[_key];
-    }
-    return Promise.all(files.map(file => fse.remove(file)));
-  },
-  safeWriteFile: async (filepath, data) => {
-    await fse.ensureFile(filepath);
-    return fse.writeFile(filepath, data, {
-      encoding: 'utf-8'
-    });
-  },
-  getPkgJson: () => fse.readJson(instance.resolveCwd('./package.json')),
-  normalizeExternals: pkgJson => {
-    return [/node_modules/].concat(Object.keys(pkgJson.dependencies), Object.keys(pkgJson.peerDependencies)).filter(Boolean);
-  },
-  removeExtname: file => file.slice(0, -path.extname(file).length)
-}));
-const logger = {
-  info: text => {
-    console.log(chalk.hex('#3498db')(text));
-  },
-  success: text => {
-    console.log(chalk.hex('#2ecc71')(text));
-  },
-  warning: text => {
-    console.log(chalk.hex('#f39c12')(text));
-  },
-  error: text => {
-    console.log(chalk.hex('#e74c3c')(text));
-  }
-};
+var tsm = require('ts-morph');
+var slash = require('slash');
+var rollup = require('rollup');
+var resolve = require('@rollup/plugin-node-resolve');
+var commonjs = require('@rollup/plugin-commonjs');
+var babel = require('@rollup/plugin-babel');
+var alias = require('@rollup/plugin-alias');
+var terser = require('@rollup/plugin-terser');
+var replace = require('@rollup/plugin-replace');
+require('chalk');
 
 async function buildDts() {
-  const options = {
-    project: constants.ui,
-    allowJs: true,
-    declaration: true,
-    emitDeclarationOnly: true,
-    declarationDir: constants.esm
-  };
-  const host = ts.createCompilerHost(options);
-  const root = constants.resolveCwd('src');
-  const files = glob.sync('**/*.ts{,x}', {
+  const project = new tsm.Project({
+    skipAddingFilesFromTsConfig: true,
+    compilerOptions: {
+      allowJs: true,
+      declaration: true,
+      emitDeclarationOnly: true,
+      declarationDir: helpers.constants.esm
+    }
+  });
+  const root = helpers.constants.resolveCwd('src');
+  const pkgJson = await helpers.constants.getPkgJson();
+  const externals = helpers.constants.normalizeExternals(pkgJson);
+  const sourceFiles = glob.sync('**/*.ts{,x}', {
     cwd: root
-  }).filter(file => file.startsWith('space')).map(file => path.resolve(root, file));
-  console.log(files, options);
-  const program = ts.createProgram(files, options, host);
-  program.emit();
+  }).map(file => project.addSourceFileAtPath(path.resolve(root, file)));
+  const resolve = (filepath, text) => {
+    const isExternal = externals.find(e => {
+      return e instanceof RegExp ? e.test(text) : text.startsWith(e);
+    });
+    if (isExternal) return;
+    const matched = helpers.findBestAlias(text, helpers.constants.alias);
+    if (!matched) return;
+    let rel = path.relative(path.dirname(filepath), matched.replacement);
+    if (!rel.startsWith('.')) rel = './' + rel;
+    const re = new RegExp(`^${matched.find}`);
+    return slash(text.replace(re, rel));
+  };
+  sourceFiles.forEach(sourceFile => {
+    const filepath = sourceFile.getFilePath();
+    sourceFile.getImportDeclarations().forEach(node => {
+      const text = node.getModuleSpecifierValue();
+      const newText = resolve(filepath, text);
+      if (newText) node.setModuleSpecifier(newText);
+    });
+    sourceFile.getExportDeclarations().forEach(node => {
+      const text = node.getModuleSpecifierValue();
+      if (!text) return;
+      const newText = resolve(filepath, text);
+      if (newText) node.setModuleSpecifier(newText);
+    });
+  });
+  await project.emit({
+    emitOnlyDtsFiles: true
+  });
+
+  // copy dts files to lib
+  await Promise.all(glob.sync('**/*.d.ts', {
+    cwd: helpers.constants.esm
+  }).map(file => {
+    const filepath = path.resolve(helpers.constants.esm, file);
+    return fse.copy(filepath, helpers.constants.resolveCjs(file));
+  }));
 }
 
-// console.log('build ui library')
+async function buildCode(options) {
+  const {
+    input,
+    external,
+    outputOptions
+  } = options;
+  const bundle = await rollup.rollup({
+    input,
+    external,
+    treeshake: typeof input === 'string' ? true : false,
+    logLevel: 'silent',
+    plugins: [resolve({
+      extensions: helpers.constants.jsExtensions
+    }), commonjs(), babel(helpers.constants.babelOptions), alias({
+      entries: helpers.constants.alias
+    }), typeof input === 'string' && replace({
+      'process.env.NODE_ENV': JSON.stringify('production')
+    })].filter(Boolean)
+  });
+  return Promise.all(outputOptions.map(config => bundle.write(config)));
+}
+async function build$3() {
+  const entries = {};
+  const root = helpers.constants.resolveCwd('src');
+  glob.glob.sync('**/*.ts{,x}', {
+    ignore: ['**/__tests__', '**/_demo', '**/_design'],
+    cwd: root
+  }).forEach(file => {
+    const name = helpers.constants.removeExtname(file);
+    entries[name] = path.resolve(root, file);
+  });
+  const pkgJson = await helpers.constants.getPkgJson();
+  const externals = helpers.constants.normalizeExternals(pkgJson);
+  externals.push(/\.(css|scss|sass)$/);
+  await Promise.all([buildCode({
+    input: path.resolve(root, 'index.ts'),
+    external: externals,
+    outputOptions: [{
+      dir: helpers.constants.umd,
+      format: 'umd',
+      name: pkgJson.name,
+      entryFileNames: '[name].js',
+      sourcemap: true
+    }, {
+      dir: helpers.constants.umd,
+      format: 'umd',
+      name: pkgJson.name,
+      entryFileNames: '[name].min.js',
+      plugins: [terser()],
+      sourcemap: true
+    }]
+  }), buildCode({
+    input: entries,
+    external: externals,
+    outputOptions: [{
+      dir: helpers.constants.esm,
+      format: 'esm',
+      entryFileNames: '[name].mjs',
+      preserveModules: true,
+      sourcemap: true
+    }, {
+      dir: helpers.constants.cjs,
+      format: 'cjs',
+      preserveModules: true,
+      exports: 'named',
+      sourcemap: true
+    }]
+  })]);
+}
+
 async function build$2() {
-  logger.info('|-----------------------------------|');
-  logger.info('|                                   |');
-  logger.info('|   starting build ui library...    |');
-  logger.info('|                                   |');
-  logger.info('|-----------------------------------|');
-  await constants.clean(constants.esm, constants.cjs, constants.umd, constants.resolveCwd('src'));
+  helpers.logger.info('|-----------------------------------|');
+  helpers.logger.info('|                                   |');
+  helpers.logger.info('|    starting build ui library...   |');
+  helpers.logger.info('|                                   |');
+  helpers.logger.info('|-----------------------------------|');
+  {
+    const spinner = ora(helpers.logger.info('clean dist and source files', false)).start();
+    await helpers.constants.clean(helpers.constants.esm, helpers.constants.cjs, helpers.constants.umd, helpers.constants.resolveCwd('src'));
+    spinner.succeed('clean dist and source files successfully !');
+  }
 
   // copy files
-  await fse.copy(constants.resolveComps('src'), constants.resolveCwd('src'));
-  await fse.copy(constants.resolveUtils('src'), constants.resolveCwd('src', '_internal', 'utils'));
-  await fse.copy(constants.resolveTypes('src'), constants.resolveCwd('src', '_internal', 'types'));
-  await Promise.all([
-  // buildCode(),
-  // buildCss(),
-  buildDts()]);
-  logger.success('build ui library successfully !');
+  {
+    const spinner = ora(helpers.logger.info('copy source files to kpi-ui', false)).start();
+    await fse.copy(helpers.constants.resolveComps('src'), helpers.constants.resolveCwd('src'));
+    await fse.copy(helpers.constants.resolveUtils('src'), helpers.constants.resolveCwd('src', '_internal', 'utils'));
+    await fse.copy(helpers.constants.resolveTypes('src'), helpers.constants.resolveCwd('src', '_internal', 'types'));
+    spinner.succeed(helpers.logger.info('copy source files successfully!'));
+  }
+  {
+    const spinner = ora(helpers.logger.info('starting build code', false)).start();
+    await build$3();
+    spinner.succeed(helpers.logger.info('starting build code successfully!'));
+  }
+
+  // {
+  //   const spinner = ora(logger.info('starting build css', false)).start()
+  //   await buildCss()
+  //   spinner.succeed(logger.info('starting build css successfully!'))
+  // }
+
+  {
+    const spinner = ora(helpers.logger.info('starting build dts', false)).start();
+    await buildDts();
+    spinner.succeed(helpers.logger.info('starting build dts successfully!'));
+  }
+  helpers.logger.success('build ui library successfully !');
 }
 
 function build$1() {}

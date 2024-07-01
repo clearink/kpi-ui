@@ -15,7 +15,7 @@ const external = [
 const extensions = ['.js', '.jsx', '.ts', '.tsx']
 
 export default defineConfig({
-  input: './src/index.ts',
+  input: ['./src/index.ts', './src/utils/helpers'],
   external,
   plugins: [
     resolve({ extensions }),
@@ -43,7 +43,7 @@ export default defineConfig({
   ],
   output: [
     {
-      file: './lib/index.js',
+      dir: 'lib',
       format: 'cjs',
     },
   ],

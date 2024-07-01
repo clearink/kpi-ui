@@ -56,14 +56,14 @@ export default async function build() {
 
   const pkgJson = await constants.getPkgJson()
 
-  const external = constants.normalizeExternals(pkgJson)
+  const externals = constants.normalizeExternals(pkgJson)
 
-  external.push(/\.(css|scss|sass)$/)
+  externals.push(/\.(css|scss|sass)$/)
 
   await Promise.all([
     buildCode({
       input: path.resolve(root, 'index.ts'),
-      external,
+      external: externals,
       outputOptions: [
         {
           dir: constants.umd,
@@ -84,7 +84,7 @@ export default async function build() {
     }),
     buildCode({
       input: entries,
-      external,
+      external: externals,
       outputOptions: [
         {
           dir: constants.esm,

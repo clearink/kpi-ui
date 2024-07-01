@@ -1,31 +1,49 @@
 import { constants, logger } from '../../utils/helpers'
+import ora from 'ora'
 import fse from 'fs-extra'
 import buildCss from './css'
 import buildDts from './dts'
 import buildCode from './code'
 
-// console.log('build ui library')
 export default async function build() {
   logger.info('|-----------------------------------|')
   logger.info('|                                   |')
-  logger.info('|   starting build ui library...    |')
+  logger.info('|    starting build ui library...   |')
   logger.info('|                                   |')
   logger.info('|-----------------------------------|')
 
-  await constants.clean(constants.esm, constants.cjs, constants.umd, constants.resolveCwd('src'))
+  {
+    const spinner = ora(logger.info('clean dist and source files', false)).start()
+    await constants.clean(constants.esm, constants.cjs, constants.umd, constants.resolveCwd('src'))
+    spinner.succeed('clean dist and source files successfully !')
+  }
 
   // copy files
-  await fse.copy(constants.resolveComps('src'), constants.resolveCwd('src'))
+  {
+    const spinner = ora(logger.info('copy source files to kpi-ui', false)).start()
+    await fse.copy(constants.resolveComps('src'), constants.resolveCwd('src'))
+    await fse.copy(constants.resolveUtils('src'), constants.resolveCwd('src', '_internal', 'utils'))
+    await fse.copy(constants.resolveTypes('src'), constants.resolveCwd('src', '_internal', 'types'))
+    spinner.succeed(logger.info('copy source files successfully!'))
+  }
 
-  await fse.copy(constants.resolveUtils('src'), constants.resolveCwd('src', '_internal', 'utils'))
+  {
+    const spinner = ora(logger.info('starting build code', false)).start()
+    await buildCode()
+    spinner.succeed(logger.info('starting build code successfully!'))
+  }
 
-  await fse.copy(constants.resolveTypes('src'), constants.resolveCwd('src', '_internal', 'types'))
+  // {
+  //   const spinner = ora(logger.info('starting build css', false)).start()
+  //   await buildCss()
+  //   spinner.succeed(logger.info('starting build css successfully!'))
+  // }
 
-  await Promise.all([
-    // buildCode(),
-    // buildCss(),
-    buildDts(),
-  ])
+  {
+    const spinner = ora(logger.info('starting build dts', false)).start()
+    await buildDts()
+    spinner.succeed(logger.info('starting build dts successfully!'))
+  }
 
   logger.success('build ui library successfully !')
 }
