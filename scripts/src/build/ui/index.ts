@@ -11,39 +11,39 @@ export default async function build() {
   logger.info('|                                   |')
   logger.info('|    starting build ui library...   |')
   logger.info('|                                   |')
-  logger.info('|-----------------------------------|')
+  logger.info('|-----------------------------------|\n')
 
   {
-    const spinner = ora(logger.info('clean dist and source files', false)).start()
+    const spinner = ora(logger.info('clean dist and source files\n', false)).start()
     await clean(constants.esm, constants.cjs, constants.umd, constants.resolveCwd('src'))
-    spinner.succeed('clean dist and source files successfully !')
+    spinner.succeed(logger.success('clean dist and source files successfully !\n'))
   }
 
   // copy files
   {
-    const spinner = ora(logger.info('copy source files to kpi-ui', false)).start()
+    const spinner = ora(logger.info('copy source files to kpi-ui\n', false)).start()
     await fse.copy(constants.resolveComps('src'), constants.resolveCwd('src'))
     await fse.copy(constants.resolveUtils('src'), constants.resolveCwd('src', '_internal', 'utils'))
     await fse.copy(constants.resolveTypes('src'), constants.resolveCwd('src', '_internal', 'types'))
-    spinner.succeed(logger.info('copy source files successfully!'))
+    spinner.succeed(logger.success('copy source files successfully!\n'))
   }
 
   {
-    const spinner = ora(logger.info('starting build code', false)).start()
+    const spinner = ora(logger.info('starting build code\n', false)).start()
     await buildCode()
-    spinner.succeed(logger.info('starting build code successfully!'))
+    spinner.succeed(logger.success('build code successfully!\n'))
   }
 
   {
-    const spinner = ora(logger.info('starting build dts', false)).start()
+    const spinner = ora(logger.info('starting build dts\n', false)).start()
     await buildDts()
-    spinner.succeed(logger.info('starting build dts successfully!'))
+    spinner.succeed(logger.success('build dts successfully!\n'))
   }
 
   {
-    const spinner = ora(logger.info('starting build css', false)).start()
+    const spinner = ora(logger.info('starting build css\n', false)).start()
     await buildCss()
-    spinner.succeed(logger.info('starting build css successfully!'))
+    spinner.succeed(logger.success('build css successfully!\n'))
   }
 
   logger.success('build ui library successfully !')

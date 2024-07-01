@@ -144,9 +144,12 @@ async function build$2() {
       preset: 'default'
     })]);
     const pkgJson = await helpers.getPkgJson();
-    sass.compileAsync(path.resolve(root, 'style', 'components.scss')).then(async res => {
+    const rootCssPath = path.resolve(root, 'style', 'components.scss');
+    sass.compileAsync(rootCssPath).then(async res => {
       await helpers.safeWriteFile(helpers.constants.resolveUmd(`${pkgJson.name || 'style'}.css`), res.css);
-      return processor.process(res.css);
+      return processor.process(res.css, {
+        from: rootCssPath
+      });
     }).then(res => {
       return helpers.safeWriteFile(helpers.constants.resolveUmd(`${pkgJson.name || 'style'}.min.css`), res.css);
     });
@@ -205,33 +208,33 @@ async function build$1() {
   helpers.logger.info('|                                   |');
   helpers.logger.info('|    starting build ui library...   |');
   helpers.logger.info('|                                   |');
-  helpers.logger.info('|-----------------------------------|');
+  helpers.logger.info('|-----------------------------------|\n');
   {
-    const spinner = ora(helpers.logger.info('clean dist and source files', false)).start();
+    const spinner = ora(helpers.logger.info('clean dist and source files\n', false)).start();
     await helpers.clean(helpers.constants.esm, helpers.constants.cjs, helpers.constants.umd, helpers.constants.resolveCwd('src'));
-    spinner.succeed('clean dist and source files successfully !');
+    spinner.succeed(helpers.logger.success('clean dist and source files successfully !\n'));
   }
   {
-    const spinner = ora(helpers.logger.info('copy source files to kpi-ui', false)).start();
+    const spinner = ora(helpers.logger.info('copy source files to kpi-ui\n', false)).start();
     await fse.copy(helpers.constants.resolveComps('src'), helpers.constants.resolveCwd('src'));
     await fse.copy(helpers.constants.resolveUtils('src'), helpers.constants.resolveCwd('src', '_internal', 'utils'));
     await fse.copy(helpers.constants.resolveTypes('src'), helpers.constants.resolveCwd('src', '_internal', 'types'));
-    spinner.succeed(helpers.logger.info('copy source files successfully!'));
+    spinner.succeed(helpers.logger.success('copy source files successfully!\n'));
   }
   {
-    const spinner = ora(helpers.logger.info('starting build code', false)).start();
+    const spinner = ora(helpers.logger.info('starting build code\n', false)).start();
     await build$3();
-    spinner.succeed(helpers.logger.info('starting build code successfully!'));
+    spinner.succeed(helpers.logger.success('build code successfully!\n'));
   }
   {
-    const spinner = ora(helpers.logger.info('starting build dts', false)).start();
+    const spinner = ora(helpers.logger.info('starting build dts\n', false)).start();
     await buildDts();
-    spinner.succeed(helpers.logger.info('starting build dts successfully!'));
+    spinner.succeed(helpers.logger.success('build dts successfully!\n'));
   }
   {
-    const spinner = ora(helpers.logger.info('starting build css', false)).start();
+    const spinner = ora(helpers.logger.info('starting build css\n', false)).start();
     await build$2();
-    spinner.succeed(helpers.logger.info('starting build css successfully!'));
+    spinner.succeed(helpers.logger.success('build css successfully!\n'));
   }
   helpers.logger.success('build ui library successfully !');
 }
