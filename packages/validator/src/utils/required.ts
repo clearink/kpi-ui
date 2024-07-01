@@ -1,7 +1,7 @@
 import { isUndefined } from '@kpi-ui/utils'
-import { EffectSchema } from '../schema/base'
 
 import type BaseSchema from '../schema/base'
+import { EffectSchema } from '../schema/base'
 
 export default function hasRequired(schema?: BaseSchema) {
   let tail = schema

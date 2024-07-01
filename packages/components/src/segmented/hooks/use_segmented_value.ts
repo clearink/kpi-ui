@@ -1,6 +1,6 @@
-import { fallback } from '@kpi-ui/utils'
 import { useControllableState } from '_shared/hooks'
-// types
+import { fallback } from '@kpi-ui/utils'
+
 import type { SegmentedOption, SegmentedProps, SegmentedType } from '../props'
 
 export default function useSegmentedValue<T extends SegmentedType = SegmentedType>(

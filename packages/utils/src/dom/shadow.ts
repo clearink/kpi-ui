@@ -1,6 +1,7 @@
-import { isFunction } from '../is'
 // types
 import type { MayBe } from '@kpi-ui/types'
+
+import { isFunction } from '../is'
 
 export function getShadowRoot(el: MayBe<Node>) {
   const root = el?.getRootNode?.()

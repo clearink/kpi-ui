@@ -1,5 +1,5 @@
 import { cls } from '@kpi-ui/utils'
-// types
+
 import type { DrawerProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: DrawerProps) {

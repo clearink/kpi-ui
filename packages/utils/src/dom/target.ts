@@ -1,5 +1,6 @@
 import { MayBe } from '@kpi-ui/types'
 import { MutableRefObject } from 'react'
+
 import { isFunction, isNullish, isObjectLike, isString } from '../is'
 import { ownerDocument } from './global'
 import { isBrowser } from './is_browser'

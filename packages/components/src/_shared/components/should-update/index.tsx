@@ -1,6 +1,6 @@
 import { isFunction, withDisplayName } from '@kpi-ui/utils'
 import { memo } from 'react'
-// types
+
 import type { ShouldUpdateProps } from './props'
 
 export default withDisplayName(

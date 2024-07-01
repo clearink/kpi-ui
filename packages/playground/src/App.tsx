@@ -1,8 +1,8 @@
-import { Badge, Button, Segmented } from '@kpi-ui/components'
-import { useState } from 'react'
-
 import '@kpi-ui/components/src/style'
 import './style.scss'
+
+import { Badge, Button, Segmented } from '@kpi-ui/components'
+import { useState } from 'react'
 
 const random = (min: number, max: number) => {
   return min + Math.floor(Math.random() * (max - min))

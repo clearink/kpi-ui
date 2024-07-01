@@ -1,6 +1,6 @@
 import { cls } from '@kpi-ui/utils'
 import { isUndefined } from '@kpi-ui/utils'
-// types
+
 import type { DividerProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: DividerProps) {

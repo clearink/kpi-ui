@@ -1,9 +1,9 @@
 import { isNumber, isUndefined } from '@kpi-ui/utils'
-import BaseSchema from './base'
-import { number } from '../locales/default'
-import { Invalid, makeRule, Valid } from '../make_rule'
 
 import type { Context, Message } from '../interface'
+import { number } from '../locales/default'
+import { Invalid, makeRule, Valid } from '../make_rule'
+import BaseSchema from './base'
 
 export default class NumberSchema extends BaseSchema<number | undefined> {
   static create(message: Message = number.invalid) {

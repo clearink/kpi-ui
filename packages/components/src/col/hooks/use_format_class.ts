@@ -1,6 +1,6 @@
+import { BREAKPOINT_NAME } from '_shared/hooks/use-breakpoint/breakpoint'
 import { cls, isObject, isUndefined } from '@kpi-ui/utils'
 import { useMemo } from 'react'
-import { BREAKPOINT_NAME } from '_shared/hooks/use-breakpoint/breakpoint'
 
 import type { ColProps } from '../props'
 

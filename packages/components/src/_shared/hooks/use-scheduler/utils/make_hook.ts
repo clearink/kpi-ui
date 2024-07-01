@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react'
-import { useEvent } from '../../use-event'
-// types
+
 import type { AnyFn } from '@kpi-ui/types'
+import { useEffect, useRef } from 'react'
+
+import { useEvent } from '../../use-event'
 
 export interface SchedulerOptions<T> {
   initialValue: T

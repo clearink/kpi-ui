@@ -1,9 +1,0 @@
-@mixin divider-percent($left: 50%) {
-  &::before {
-    width: $left;
-  }
-
-  &::after {
-    width: #{100% - $left};
-  }
-}

@@ -1,7 +1,7 @@
 import { getTargetElement, isNullish, ownerBody, withDisplayName } from '@kpi-ui/utils'
 import { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { createPortal } from 'react-dom'
-// types
+
 import type { PortalProps, PortalRef } from './props'
 
 const defaultProps: Partial<PortalProps> = {}

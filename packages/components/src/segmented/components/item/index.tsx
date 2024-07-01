@@ -1,8 +1,8 @@
-import { withDisplayName } from '@kpi-ui/utils'
 import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
-import { forwardRef, type ForwardedRef } from 'react'
+import { withDisplayName } from '@kpi-ui/utils'
+import { type ForwardedRef, forwardRef } from 'react'
+
 import useFormatClass from './hooks/use_format_class'
-// types
 import type { SegmentedItemProps } from './props'
 
 function SegmentedItem(props: SegmentedItemProps, _ref: ForwardedRef<HTMLLabelElement>) {

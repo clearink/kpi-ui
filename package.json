@@ -9,7 +9,7 @@
   "author": "clearink",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint -c .eslintrc.js --ext .js,.ts,.jsx,.tsx ./packages/**/src/*",
+    "lint": "eslint --ext .ts,.tsx",
     "dev": "pnpm -F @kpi-ui/playground dev"
   },
   "peerDependencies": {
@@ -44,11 +44,11 @@
     "@typescript-eslint/parser": "^6.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.45.0",
-    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsx-a11y": "^6.6.0",
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "eslint-plugin-simple-import-sort": "^12.1.0",
     "fast-glob": "^3.3.1",
     "fs-extra": "^11.1.0",
     "react": "^18.2.0",

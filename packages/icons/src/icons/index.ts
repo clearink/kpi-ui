@@ -1,2 +1,2 @@
-export { default as LoadingOutlined } from './LoadingOutlined'
 export { default as CaretRightOutlined } from './CaretRightOutlined'
+export { default as LoadingOutlined } from './LoadingOutlined'

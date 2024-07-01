@@ -1,5 +1,5 @@
 import { type DOMAttributes, type MouseEventHandler } from 'react'
-// types
+
 import type useTooltipOpen from '../hooks/use_tooltip_open'
 
 // 除了 hover 时， popup 都是使用 click 结束 close 的

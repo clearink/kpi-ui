@@ -1,5 +1,6 @@
 import { isEqual } from '@kpi-ui/utils'
-import { useMemo, type DependencyList } from 'react'
+import { type DependencyList,useMemo } from 'react'
+
 import { useConstant } from '../use-constant'
 
 export function useDeepMemo<T>(factory: () => T, deps?: DependencyList): T {

@@ -1,15 +1,15 @@
 import { isEqual, isFunction, isNullish, isUndefined, toArray } from '@kpi-ui/utils'
-import { _getName } from '../../../utils/path'
-import { getIn } from '../../../utils/value'
-// types
+
 import type {
   ExternalNamePath,
   FormActionType,
   InternalFieldMeta,
   InternalNamePath,
-  RuleOptions,
   RuleIssue,
+  RuleOptions,
 } from '../../../props'
+import { _getName } from '../../../utils/path'
+import { getIn } from '../../../utils/value'
 import type { InternalFormFieldProps } from '../props'
 
 export class FormFieldControl {

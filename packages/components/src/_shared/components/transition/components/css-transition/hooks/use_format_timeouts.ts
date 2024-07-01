@@ -1,7 +1,7 @@
 import { isNullish, isNumber } from '@kpi-ui/utils'
 import { useMemo } from 'react'
+
 import { APPEAR, ENTER, EXIT } from '../../../constants'
-// types
 import type { CSSTransitionProps } from '../props'
 
 export default function useFormatTimeouts(duration: CSSTransitionProps['duration']) {

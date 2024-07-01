@@ -1,5 +1,5 @@
 import { cls, isUndefined } from '@kpi-ui/utils'
-// types
+
 import type { SpaceProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: SpaceProps) {

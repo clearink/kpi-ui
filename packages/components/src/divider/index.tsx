@@ -1,8 +1,8 @@
-import { isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { usePrefixCls } from '_shared/hooks'
+import { isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { useMemo } from 'react'
+
 import useFormatClass from './hooks/use_format_class'
-// types
 import type { DividerProps } from './props'
 
 const excluded = [

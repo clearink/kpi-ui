@@ -1,12 +1,11 @@
-import { fallback, isNull, isNullish, pick, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { FocusTrap, Overlay } from '_shared/components'
 import { Keyboard } from '_shared/constants'
 import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
+import { fallback, isNull, isNullish, pick, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { useId } from 'react'
-import useFormatClass from './hooks/use_format_class'
-// comps
-import { FocusTrap, Overlay } from '_shared/components'
+
 import Button from '../button'
-// types
+import useFormatClass from './hooks/use_format_class'
 import type { DrawerProps } from './props'
 
 const included = [

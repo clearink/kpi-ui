@@ -1,14 +1,14 @@
-import { getElementStyle, isNullish, withDefaults } from '@kpi-ui/utils'
 import { usePrefixCls } from '_shared/hooks'
+import { getElementStyle, isNullish, withDefaults } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
+
+import Col from '@/col'
+
 import { FormContext, FormItemContext } from '../../_shared/context'
+import FormErrorList from '../error-list'
 import useFormatClass from './hooks/use_format_class'
 import useFormatStatus from './hooks/use_format_status'
 import useMetaState from './hooks/use_meta_state'
-// comps
-import Col from '@/col'
-import FormErrorList from '../error-list'
-// types
 import type { FormItemInputProps } from './props'
 
 // TODO: refactor offset logic

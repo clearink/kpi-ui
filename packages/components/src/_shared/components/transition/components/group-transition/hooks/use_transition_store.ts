@@ -1,17 +1,17 @@
-import { addClassNames, batch, delClassNames, pick, reflow } from '@kpi-ui/utils'
 import { useConstant, useForceUpdate } from '_shared/hooks'
 import { makeUniqueId } from '_shared/utils'
-import { cloneElement, createElement, useEffect, useMemo, type ReactElement } from 'react'
+import { addClassNames, batch, delClassNames, pick, reflow } from '@kpi-ui/utils'
+import { cloneElement, createElement, type ReactElement,useEffect, useMemo } from 'react'
+
 import { ENTER, isExit, isExited } from '../../../constants'
 import CSSTransition from '../../css-transition'
-import diff from '../utils/diff'
-import union from '../utils/union'
-// types
 import type {
   CSSTransitionProps as CssProps,
   CSSTransitionRef as CssRef,
 } from '../../css-transition/props'
 import type { GroupTransitionProps as Group } from '../props'
+import diff from '../utils/diff'
+import union from '../utils/union'
 
 const uniqueId = makeUniqueId('gt-')
 

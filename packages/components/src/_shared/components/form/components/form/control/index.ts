@@ -9,15 +9,6 @@ import {
   removeItem,
   toArray,
 } from '@kpi-ui/utils'
-import { _getName } from '../../../utils/path'
-import {
-  cloneWithPath,
-  deleteIn,
-  getIn,
-  hasOwnWithPath,
-  mergeValue,
-  setIn,
-} from '../../../utils/value'
 
 import type { InternalFormContextState } from '../../../_shared/context'
 import type {
@@ -28,7 +19,16 @@ import type {
   InternalNamePath,
   WatchCallBack,
 } from '../../../props'
-import { InvalidFieldControl, type FormFieldControl } from '../../field/control'
+import { _getName } from '../../../utils/path'
+import {
+  cloneWithPath,
+  deleteIn,
+  getIn,
+  hasOwnWithPath,
+  mergeValue,
+  setIn,
+} from '../../../utils/value'
+import { type FormFieldControl,InvalidFieldControl } from '../../field/control'
 import type { InternalFormProps } from '../props'
 import type { ControlFindReturn, InternalFormInstance, InternalHookReturn } from './props'
 

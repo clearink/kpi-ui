@@ -1,5 +1,5 @@
-import { getClientCoords, getElementStyle } from '@kpi-ui/utils'
 import { getPositionedElement } from '_shared/utils'
+import { getClientCoords, getElementStyle } from '@kpi-ui/utils'
 
 function isScrollable(el: Element) {
   const { overflow: o, overflowX: ox, overflowY: oy } = getElementStyle(el)

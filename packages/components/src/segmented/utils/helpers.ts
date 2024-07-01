@@ -1,5 +1,5 @@
 import { fallback, isObjectLike } from '@kpi-ui/utils'
-// types
+
 import type { SegmentedOption, SegmentedProps, SegmentedType } from '../props'
 
 export function normalizeOptions<T extends SegmentedType = SegmentedType>(

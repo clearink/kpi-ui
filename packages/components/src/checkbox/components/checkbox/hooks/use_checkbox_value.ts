@@ -1,5 +1,5 @@
 import { useControllableState } from '_shared/hooks'
-// types
+
 import type { CheckboxProps } from '../props'
 
 export default function useCheckboxValue(props: CheckboxProps) {

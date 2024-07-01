@@ -1,6 +1,7 @@
 import { fallback } from '@kpi-ui/utils'
-import { PaginationProps } from '../props'
 import { useMemo } from 'react'
+
+import { PaginationProps } from '../props'
 
 // 对分页数据切片
 export default function usePageChunk(props: PaginationProps) {

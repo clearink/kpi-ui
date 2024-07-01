@@ -1,9 +1,9 @@
 import { isUndefined, toArray } from '@kpi-ui/utils'
-import { isValidIndex } from '../../../utils/path'
-import { HOOK_MARK } from '../../form/control'
 
 import type { InternalNamePath } from '../../../props'
+import { isValidIndex } from '../../../utils/path'
 import type { InternalFormFieldProps } from '../../field/props'
+import { HOOK_MARK } from '../../form/control'
 import type { InternalFormInstance } from '../../form/control/props'
 import type { FormListHelpers } from './props'
 

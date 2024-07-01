@@ -1,12 +1,12 @@
-import { isUndefined, toArray, withDefaults } from '@kpi-ui/utils'
 import { useConstant, useDeepMemo } from '_shared/hooks'
+import { isUndefined, toArray, withDefaults } from '@kpi-ui/utils'
 import { Fragment, useEffect, useMemo } from 'react'
+
 import { InternalFormInstanceContext } from '../../_shared/context'
 import { _getName } from '../../utils/path'
 import { HOOK_MARK } from '../form/control'
 import useFieldControl from './hooks/use_field_control'
 import useInjectField from './hooks/use_inject_field'
-// types
 import type { ExternalFormFieldProps, InternalFormFieldProps } from './props'
 
 const defaultProps: Partial<InternalFormFieldProps> = {

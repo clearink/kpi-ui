@@ -13,6 +13,6 @@ const Form = Object.assign(InternalForm, {
   Provider: Provider,
 })
 
-export { Form, Field, List, Provider, useForm, useWatch }
+export { Field, Form, List, Provider, useForm, useWatch }
 
 export default Form

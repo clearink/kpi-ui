@@ -1,6 +1,6 @@
-import path from 'path'
-import fse from 'fs-extra'
 import chalk from 'chalk'
+import fse from 'fs-extra'
+import path from 'path'
 
 class Constant {
   public add<R extends object>(fn: (constant: this) => R) {
@@ -33,6 +33,7 @@ export const constants = new Constant()
     esm: instance.resolveEsm('.'),
     cjs: instance.resolveCjs('.'),
     umd: instance.resolveUmd('.'),
+
     comps: instance.resolveComps('.'),
     utils: instance.resolveUtils('.'),
     ui: instance.resolveUi('.'),
@@ -64,22 +65,41 @@ export const constants = new Constant()
       plugins: ['@babel/plugin-transform-runtime'],
     },
   }))
-  .add((instance) => ({
-    clean: (...files: string[]) => {
-      return Promise.all(files.map((file) => fse.remove(file)))
-    },
-    safeWriteFile: async (filepath: string, data: string) => {
-      await fse.ensureFile(filepath)
-      return fse.writeFile(filepath, data, { encoding: 'utf-8' })
-    },
-    getPkgJson: () => fse.readJson(instance.resolveCwd('./package.json')),
-    normalizeExternals: (pkgJson: Record<string, any>) => {
-      return ([/node_modules/] as (RegExp | string)[])
-        .concat(Object.keys(pkgJson.dependencies), Object.keys(pkgJson.peerDependencies))
-        .filter(Boolean)
-    },
-    removeExtname: (file: string) => file.slice(0, -path.extname(file).length),
-  }))
+
+export function clean(...files: string[]) {
+  return Promise.all(files.map((file) => fse.remove(file)))
+}
+
+export async function getPkgJson() {
+  return fse.readJson(constants.resolveCwd('./package.json'))
+}
+
+export function formatExternals(pkgJson: Record<string, string>) {
+  return ([/node_modules/] as (RegExp | string)[])
+    .concat(Object.keys(pkgJson.dependencies), Object.keys(pkgJson.peerDependencies))
+    .filter(Boolean)
+}
+
+export function removeExtname(file: string) {
+  return file.slice(0, -path.extname(file).length)
+}
+
+export async function safeWriteFile(filepath: string, data: string) {
+  await fse.ensureFile(filepath)
+  return fse.writeFile(filepath, data, { encoding: 'utf-8' })
+}
+
+export function specifierMatches(pattern: string | RegExp, value: string) {
+  if (pattern instanceof RegExp) {
+    return pattern.test(value)
+  }
+
+  if (pattern.length > value.length) {
+    return false
+  }
+
+  return pattern === value || value.startsWith(`${value}/`)
+}
 
 export const logger = {
   info: (text: string, log = true) => {
@@ -102,12 +122,4 @@ export const logger = {
     if (!log) return str
     console.log(str)
   },
-}
-
-export function aliasMatches(pattern: string, target: string) {
-  if (pattern.length > target.length) {
-    return false
-  }
-
-  return pattern === target || target.startsWith(pattern + '/')
 }

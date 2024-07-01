@@ -1,9 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import { isNull, isNullish, isUndefined, omit } from '@kpi-ui/utils'
-import SchemaContext from '../context'
-import { base, union } from '../locales/default'
-import { Invalid, Valid, makeRule } from '../make_rule'
 
+import SchemaContext from '../context'
 import type {
   Context,
   EffectOptions,
@@ -14,6 +12,8 @@ import type {
   RuleReturn,
   ValidateReturn,
 } from '../interface'
+import { base, union } from '../locales/default'
+import { Invalid, makeRule,Valid } from '../make_rule'
 
 /** ========================================================================== */
 /** ========================================================================== */

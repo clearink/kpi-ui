@@ -1,11 +1,11 @@
 import { isArray, isUndefined } from '@kpi-ui/utils'
-import BaseSchema from './base'
-import AnySchema from './any'
+
 import SchemaContext from '../context'
+import type { Context, Message } from '../interface'
 import { array } from '../locales/default'
 import { Invalid, makeRule, Valid } from '../make_rule'
-
-import type { Context, Message } from '../interface'
+import AnySchema from './any'
+import BaseSchema from './base'
 
 export type MakeInnerType<T extends any[]> = T extends Array<infer I>
   ? I extends BaseSchema

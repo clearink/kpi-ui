@@ -1,18 +1,17 @@
-import { batch, cls, noop, removeItem, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { useSemanticStyles, useThrottleFrame, useThrottleTick } from '_shared/hooks'
+import { batch, cls, noop, removeItem, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { useMemo } from 'react'
+
+import Overlay from '../overlay'
+import ShouldUpdate from '../should-update'
 import { InternalToolTipContext, type InternalToolTipContextState } from './_shared/context'
+import TooltipArrow from './components/arrow'
+import TooltipContent from './components/content'
+import TooltipTrigger from './components/trigger'
 import useTooltipEvents from './hooks/use_tooltip_events'
 import useTooltipOpen from './hooks/use_tooltip_open'
 import useTooltipStore from './hooks/use_tooltip_store'
 import useWatchCoords from './hooks/use_watch_coords'
-// comps
-import Overlay from '../overlay'
-import ShouldUpdate from '../should-update'
-import TooltipArrow from './components/arrow'
-import TooltipContent from './components/content'
-import TooltipTrigger from './components/trigger'
-// types
 import type { InternalTooltipProps } from './props'
 
 const defaultProps: Partial<InternalTooltipProps> = {

@@ -1,10 +1,10 @@
-import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { RowContext } from '_shared/contexts'
 import { usePrefixCls } from '_shared/hooks'
-import { forwardRef, type CSSProperties, type ForwardedRef } from 'react'
+import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { type CSSProperties, type ForwardedRef, forwardRef } from 'react'
+
 import useFormatClass from './hooks/use_format_class'
 import useRowGutter from './hooks/use_row_gutter'
-//types
 import type { RowProps } from './props'
 
 const excluded = ['children', 'gutter', 'align', 'justify', 'wrap'] as const

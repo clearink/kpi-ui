@@ -1,11 +1,10 @@
-import { withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { CSSTransition } from '_shared/components'
 import { usePrefixCls } from '_shared/hooks'
+import { withDefaults, withDisplayName } from '@kpi-ui/utils'
+
 import useFormatClass from './hooks/use_format_class'
 import usePageChunk from './hooks/use_page_chunk'
 import useSharedLayout from './hooks/use_shared_layout'
-// comps
-import { CSSTransition } from '_shared/components'
-// types
 import type { PaginationProps } from './props'
 
 const defaultProps: Partial<PaginationProps> = {

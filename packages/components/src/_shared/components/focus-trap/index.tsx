@@ -1,11 +1,11 @@
-import { nextFrame, ownerDocument, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { useComposeRefs, useEvent } from '_shared/hooks'
+import { nextFrame, ownerDocument, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, useEffect } from 'react'
+
 import { guardStyles } from './constants'
 import useFocusTrapStore from './hooks/use_trap_store'
-import defaultGetTabbable from './utils/tabbable'
-// types
 import type { FocusTrapProps } from './props'
+import defaultGetTabbable from './utils/tabbable'
 
 const defaultProps: Partial<FocusTrapProps> = {
   getTabbable: defaultGetTabbable,

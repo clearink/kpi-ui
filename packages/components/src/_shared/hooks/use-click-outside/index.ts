@@ -1,8 +1,9 @@
-import { getTargetElement, type GetTargetElement } from '@kpi-ui/utils'
-import { useEffect, useState } from 'react'
-import { useEvent } from '../use-event'
-// types
+
 import type { MayBe } from '@kpi-ui/types'
+import { type GetTargetElement,getTargetElement } from '@kpi-ui/utils'
+import { useEffect, useState } from 'react'
+
+import { useEvent } from '../use-event'
 
 export default function useClickOutside<T extends Element>(
   target: GetTargetElement<T>,

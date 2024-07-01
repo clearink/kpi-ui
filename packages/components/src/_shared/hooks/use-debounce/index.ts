@@ -1,9 +1,10 @@
+
+import type { AnyFn } from '@kpi-ui/types'
 import { makeFrameTimeout } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
+
 import { useEvent } from '../use-event'
 import { useMounted } from '../use-mounted'
-// types
-import type { AnyFn } from '@kpi-ui/types'
 
 // 防抖 函数
 export function debounce<F extends AnyFn>(fn: F, delay: number) {

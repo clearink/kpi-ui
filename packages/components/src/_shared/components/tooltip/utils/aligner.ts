@@ -1,6 +1,5 @@
 import { fallback, isArray, isEqual, isObject, isUndefined, ownerDocument } from '@kpi-ui/utils'
-import { getElementCoords, getPositionedCoords } from './elements'
-// types
+
 import type {
   AlignerConfig,
   ArrowCoords,
@@ -16,6 +15,7 @@ import type {
   VerticalCrossAxis,
   VerticalMainAxis,
 } from '../props'
+import { getElementCoords, getPositionedCoords } from './elements'
 
 const _size = 8
 const _sqrt = (_size / 2) * 1.41

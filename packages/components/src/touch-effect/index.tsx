@@ -1,8 +1,8 @@
-import { makeEventListener, withDisplayName } from '@kpi-ui/utils'
 import { useComposeRefs } from '_shared/hooks'
+import { makeEventListener, withDisplayName } from '@kpi-ui/utils'
 import { cloneElement, useEffect, useRef } from 'react'
+
 import useTouchEffect from './hooks/use_touch_effect'
-// types
 import type { TouchEffectProps } from './props'
 
 // button checkbox radio 等一些组件中点击动效

@@ -1,11 +1,11 @@
-import { omit } from '@kpi-ui/utils'
-import { BREAKPOINT_NAME } from '_shared/hooks/use-breakpoint/breakpoint'
 import { RowContext } from '_shared/contexts'
 import { usePrefixCls } from '_shared/hooks'
-import { forwardRef, type ForwardedRef } from 'react'
+import { BREAKPOINT_NAME } from '_shared/hooks/use-breakpoint/breakpoint'
+import { omit } from '@kpi-ui/utils'
+import { type ForwardedRef,forwardRef } from 'react'
+
 import useColFlex from './hooks/use_col_flex'
 import useFormatClass from './hooks/use_format_class'
-
 import type { ColProps } from './props'
 
 const excluded = [

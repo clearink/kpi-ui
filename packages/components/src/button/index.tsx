@@ -1,13 +1,12 @@
-import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { DisabledContext, SizeContext } from '_shared/contexts'
 import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
-import { forwardRef, type ForwardedRef, type MouseEvent } from 'react'
-import useFormatClass from './hooks/use_format_class'
-import { isBorderedVariant } from './utils/helpers'
-// comps
+import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { type ForwardedRef, forwardRef, type MouseEvent } from 'react'
+
 import TouchEffect from '../touch-effect'
-// types
+import useFormatClass from './hooks/use_format_class'
 import type { ButtonProps } from './props'
+import { isBorderedVariant } from './utils/helpers'
 
 const excluded = [
   'theme',

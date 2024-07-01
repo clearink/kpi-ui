@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import { Command } from 'commander'
-import ui from './build/ui'
+
 import icons from './build/icons'
+import ui from './build/ui'
 import validator from './build/validator'
 
 const program = new Command()

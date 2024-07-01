@@ -1,10 +1,10 @@
 import { isNullish, isString, isUndefined } from '@kpi-ui/utils'
-import BaseSchema, { EffectSchema } from './base'
+
+import type { Context, Message } from '../interface'
 import { base, string } from '../locales/default'
 import { Invalid, makeRule, Valid } from '../make_rule'
 import * as REGEX from '../utils/regex'
-
-import type { Context, Message } from '../interface'
+import BaseSchema, { EffectSchema } from './base'
 
 export default class StringSchema extends BaseSchema<string | undefined> {
   static create(message: Message = string.invalid) {

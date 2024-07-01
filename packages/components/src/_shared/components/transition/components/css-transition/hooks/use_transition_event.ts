@@ -1,13 +1,13 @@
-import { batch, isUndefined, makeEventListener, makeFrameTimeout } from '@kpi-ui/utils'
 import { hideElement } from '_shared/utils'
+import { batch, isUndefined, makeEventListener, makeFrameTimeout } from '@kpi-ui/utils'
+
 import { isAppear, isEnter, isExit } from '../../../constants'
 import runCounter from '../../../utils/run_counter'
+import type { CSSTransitionProps, TransitionStep } from '../props'
 import { delTransitionClass } from '../utils/classnames'
 import collectTimeoutInfo from '../utils/collect'
 import useFormatClassNames from './use_format_class_names'
 import useTransitionStore from './use_transition_store'
-// types
-import type { CSSTransitionProps, TransitionStep } from '../props'
 
 export default function useTransitionEvent<E extends HTMLElement>(
   states: ReturnType<typeof useTransitionStore<E>>['states'],

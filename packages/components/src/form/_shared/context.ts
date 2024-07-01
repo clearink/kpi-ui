@@ -1,8 +1,8 @@
 import { ctxHelper, noop } from '@kpi-ui/utils'
 
 import type { ColProps } from '../../col/props'
-import type { FieldMeta, FormLabelAlign, FormLayout, RequiredMark, ValidateStatus } from '../props'
 import type { FormInstance } from '../components/form/props'
+import type { FieldMeta, FormLabelAlign, FormLayout, RequiredMark, ValidateStatus } from '../props'
 
 export interface FormContextState {
   layout?: FormLayout

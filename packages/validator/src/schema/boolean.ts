@@ -1,9 +1,9 @@
 import { isBoolean, isUndefined } from '@kpi-ui/utils'
-import BaseSchema from './base'
-import { boolean } from '../locales/default'
-import { Invalid, makeRule, Valid } from '../make_rule'
 
 import type { Context, Message } from '../interface'
+import { boolean } from '../locales/default'
+import { Invalid, makeRule, Valid } from '../make_rule'
+import BaseSchema from './base'
 
 export default class BooleanSchema extends BaseSchema<boolean | undefined> {
   static create(message: Message = boolean.invalid) {

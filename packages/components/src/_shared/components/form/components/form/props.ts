@@ -1,6 +1,7 @@
 import type { ComponentType, FormEvent, FormHTMLAttributes, ReactNode } from 'react'
-import type { ExternalFormInstance } from './control/props'
+
 import type { InternalFieldData } from '../../props'
+import type { ExternalFormInstance } from './control/props'
 
 export interface InternalFormProps<S = any>
   extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'children'> {

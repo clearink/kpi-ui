@@ -1,6 +1,6 @@
-import { cls } from '@kpi-ui/utils'
 import { usePrefixCls } from '_shared/hooks'
-// types
+import { cls } from '@kpi-ui/utils'
+
 import type { BackTopProps } from '../props'
 
 export default function useFormatClass(props: BackTopProps) {

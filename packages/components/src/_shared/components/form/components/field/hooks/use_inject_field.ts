@@ -1,11 +1,11 @@
 import { logger } from '@kpi-ui/utils'
 import { cloneElement, type ReactElement } from 'react'
-import normalizeChildren from '../utils/children'
-import collectInjectProps from '../utils/collect'
-// types
+
 import type { InternalFormInstance, InternalHookReturn } from '../../form/control/props'
 import type { FormFieldControl } from '../control'
 import type { InternalFormFieldProps } from '../props'
+import normalizeChildren from '../utils/children'
+import collectInjectProps from '../utils/collect'
 
 // 向 Form.Field 包裹的组件内部注入数据
 export default function useInjectField(

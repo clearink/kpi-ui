@@ -1,6 +1,6 @@
-// types
-import type { HasChildren, SemanticStyledProps } from '@kpi-ui/types'
+
 import type { OverlayProps } from '_shared/components'
+import type { HasChildren, SemanticStyledProps } from '@kpi-ui/types'
 import type { ReactElement, ReactNode } from 'react'
 
 export interface ModalProps

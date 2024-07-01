@@ -1,8 +1,8 @@
-import { atIndex, makeEventListener, noop } from '@kpi-ui/utils'
 import { Keyboard } from '_shared/constants'
 import { useConstant } from '_shared/hooks'
+import { atIndex, makeEventListener, noop } from '@kpi-ui/utils'
 import { useMemo } from 'react'
-// types
+
 import type { FocusTrapProps } from '../props'
 
 let __stack: {

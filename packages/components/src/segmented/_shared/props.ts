@@ -1,1 +1,1 @@
-export type { SegmentedProps, SegmentedOption } from '../props'
+export type { SegmentedOption,SegmentedProps } from '../props'

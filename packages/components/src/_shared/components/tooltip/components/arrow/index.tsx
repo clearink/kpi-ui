@@ -1,5 +1,5 @@
 import { withDisplayName } from '@kpi-ui/utils'
-// types
+
 import type { TooltipArrowProps } from './props'
 
 function TooltipArrow(props: TooltipArrowProps) {

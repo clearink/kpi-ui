@@ -1,10 +1,10 @@
 import { getShadowRoot, shallowMerge } from '@kpi-ui/utils'
 import { type DOMAttributes } from 'react'
-import { getClickEvents, getContextMenuEvents, getFocusEvents, getHoverEvents } from './events'
-// types
+
 import type useTooltipOpen from '../hooks/use_tooltip_open'
 import type { TooltipState } from '../hooks/use_tooltip_store'
 import type { TriggerEvent } from '../props'
+import { getClickEvents, getContextMenuEvents, getFocusEvents, getHoverEvents } from './events'
 
 export function isInPopupChain(states: TooltipState, event: MouseEvent) {
   const { trigger, popup, popups } = states

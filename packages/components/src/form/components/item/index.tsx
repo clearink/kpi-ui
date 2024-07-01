@@ -1,17 +1,17 @@
-import { isNullish, isUndefined, pick } from '@kpi-ui/utils'
-import { usePrefixCls } from '_shared/hooks'
-import { createElement, useCallback, useMemo, useRef } from 'react'
-import { FormContext, NoStyleContext } from '../../_shared/context'
-import useFormatClass from './hooks/use_format_class'
-import useFormItemId from './hooks/use_item_id'
-import normalizeChildren from './utils/normalize_children'
-// comps
-import Row from '@/row'
 import { Form as InternalForm } from '_shared/components'
+import { usePrefixCls } from '_shared/hooks'
+import { isNullish, isUndefined, pick } from '@kpi-ui/utils'
+import { createElement, useCallback, useMemo, useRef } from 'react'
+
+import Row from '@/row'
+
+import { FormContext, NoStyleContext } from '../../_shared/context'
 import FormItemInput from '../item-input'
 import FormItemLabel from '../item-label'
-// types
+import useFormatClass from './hooks/use_format_class'
+import useFormItemId from './hooks/use_item_id'
 import type { FormItemProps } from './props'
+import normalizeChildren from './utils/normalize_children'
 
 const labelIncluded = [
   'colon',

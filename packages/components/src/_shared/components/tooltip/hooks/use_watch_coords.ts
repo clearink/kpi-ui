@@ -1,6 +1,6 @@
-import { isEqual } from '@kpi-ui/utils'
 import { useWatchValue } from '_shared/hooks'
-// types
+import { isEqual } from '@kpi-ui/utils'
+
 import type { InternalTooltipProps } from '../props'
 
 export default function useWatchCoords(props: InternalTooltipProps, onCallback: () => void) {

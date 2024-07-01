@@ -1,4 +1,5 @@
 import { getElementStyle } from '@kpi-ui/utils'
+
 import { TabbableQuery } from '../constants'
 
 const isContentEditable = (node: HTMLElement) => {

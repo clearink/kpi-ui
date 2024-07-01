@@ -1,12 +1,12 @@
-import { isString, withDefaults } from '@kpi-ui/utils'
 import { usePrefixCls } from '_shared/hooks'
+import { isString, withDefaults } from '@kpi-ui/utils'
+
+import Col from '@/col'
+
 import { FormContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
-// comps
-import Col from '@/col'
-import normalizeChildren from './utils/normalize_children'
-// types
 import type { FormItemLabelProps } from './props'
+import normalizeChildren from './utils/normalize_children'
 
 function FormItemLabel(_props: FormItemLabelProps) {
   const ctx = FormContext.useState()

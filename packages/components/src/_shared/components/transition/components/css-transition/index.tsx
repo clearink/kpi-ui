@@ -1,15 +1,15 @@
-import { fillRef, nextFrame, nextTick, reflow, withDisplayName } from '@kpi-ui/utils'
 import { useEvent } from '_shared/hooks'
 import { hideElement } from '_shared/utils'
-import { cloneElement, forwardRef, useEffect, useImperativeHandle, type Ref } from 'react'
+import { fillRef, nextFrame, nextTick, reflow, withDisplayName } from '@kpi-ui/utils'
+import { cloneElement, forwardRef, type Ref, useEffect, useImperativeHandle } from 'react'
+
 import { APPEAR, ENTER, EXIT, isAppear, isExit, isExited } from '../../constants'
 import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'
 import useTransitionEvent from './hooks/use_transition_event'
 import useTransitionStore from './hooks/use_transition_store'
-import { addTransitionClass, delTransitionClass, recoverTransitionClass } from './utils/classnames'
-// types
 import type { CSSTransitionProps, CSSTransitionRef, TransitionStep } from './props'
+import { addTransitionClass, delTransitionClass, recoverTransitionClass } from './utils/classnames'
 
 function CSSTransition<E extends HTMLElement>(
   props: CSSTransitionProps<E>,

@@ -1,5 +1,5 @@
 import { cls } from '@kpi-ui/utils'
-// types
+
 import type { ValidateStatus } from '../../../props'
 import type { FormItemInputProps } from '../props'
 

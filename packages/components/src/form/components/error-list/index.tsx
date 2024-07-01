@@ -1,11 +1,10 @@
-import { cls } from '@kpi-ui/utils'
-import { usePrefixCls } from '_shared/hooks'
-import useFormatExplains from './hooks/use_format_explains'
-import handlers from './utils/transition_handlers'
-// comps
 import { GroupTransition } from '_shared/components'
-// types
+import { usePrefixCls } from '_shared/hooks'
+import { cls } from '@kpi-ui/utils'
+
+import useFormatExplains from './hooks/use_format_explains'
 import type { FormErrorListProps } from './props'
+import handlers from './utils/transition_handlers'
 
 export default function FormErrorList(props: FormErrorListProps) {
   const { className, onExitComplete } = props

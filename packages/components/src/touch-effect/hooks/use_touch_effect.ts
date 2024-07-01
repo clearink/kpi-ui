@@ -1,9 +1,9 @@
-import { isBoolean, isFunction } from '@kpi-ui/utils'
 import { usePrefixCls, useThrottleFrame } from '_shared/hooks'
+import { isBoolean, isFunction } from '@kpi-ui/utils'
+
 import { TouchEffectContext } from '../_shared/context'
-import showWaveEffect from '../utils/wave'
-// types
 import type { TouchEffectProps } from '../props'
+import showWaveEffect from '../utils/wave'
 
 export default function useTouchEffect(props: TouchEffectProps) {
   const { component, selector } = props

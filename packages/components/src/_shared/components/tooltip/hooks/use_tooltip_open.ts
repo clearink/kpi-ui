@@ -1,7 +1,7 @@
-import { makeFrameTimeout } from '@kpi-ui/utils'
 import { useControllableState, useEvent, useWatchValue } from '_shared/hooks'
+import { makeFrameTimeout } from '@kpi-ui/utils'
 import { useEffect, useRef } from 'react'
-// types
+
 import type { InternalTooltipProps } from '../props'
 
 export default function useTooltipOpen(props: InternalTooltipProps) {

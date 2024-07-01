@@ -56,9 +56,10 @@ export default class Constant<T extends readonly ConstantItem[]> {
 
       this.options.push(item)
 
-      const properties = { [key]: { value }, [value]: { value: label } }
-
-      Object.defineProperties(this.enums, properties)
+      Object.defineProperties(this.enums, {
+        [key]: { value },
+        [value]: { value: label, enumerable: true },
+      })
 
       k_map.set(key, item)
 

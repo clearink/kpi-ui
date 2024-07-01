@@ -1,6 +1,6 @@
-// types
-import type { SemanticStyledProps } from '@kpi-ui/types'
+
 import type { OverlayProps } from '_shared/components'
+import type { SemanticStyledProps } from '@kpi-ui/types'
 import type { ReactNode } from 'react'
 
 export interface DrawerProps

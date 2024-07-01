@@ -1,6 +1,6 @@
 import { cls } from '@kpi-ui/utils'
 import { useMemo } from 'react'
-// types
+
 import type { PagerProps } from './props'
 
 export default function PageItem(props: PagerProps) {

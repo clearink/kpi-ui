@@ -1,11 +1,11 @@
+import type { Full, MayBe, NonUndefined } from '@kpi-ui/types'
 import { isObject, isUndefined } from '@kpi-ui/utils'
+
 import SchemaContext from '../context'
+import type { Context } from '../interface'
 import { object } from '../locales/default'
 import { Invalid, Valid } from '../make_rule'
 import BaseSchema from './base'
-
-import type { Full, MayBe, NonUndefined } from '@kpi-ui/types'
-import type { Context } from '../interface'
 
 export type ObjectShape = Record<string, BaseSchema>
 

@@ -1,5 +1,5 @@
 import { rawType, toArray } from '@kpi-ui/utils'
-// types
+
 import type { ExternalNamePath } from '../props'
 
 export function _getName(namePath?: ExternalNamePath) {

@@ -1,7 +1,8 @@
-import { getElementCoords } from './utils/elements'
-// types
+
 import type { HasChildren, SemanticStyledProps } from '@kpi-ui/types'
+
 import type { OverlayProps } from '../overlay/props'
+import { getElementCoords } from './utils/elements'
 
 export type TriggerEvent = 'hover' | 'focus' | 'click' | 'contextMenu'
 

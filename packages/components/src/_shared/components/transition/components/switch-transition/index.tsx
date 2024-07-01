@@ -1,8 +1,8 @@
-import { withDisplayName } from '@kpi-ui/utils'
 import { useWatchValue } from '_shared/hooks'
+import { withDisplayName } from '@kpi-ui/utils'
+
 import { isElementEqual } from '../../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
-// types
 import type { SwitchTransitionProps } from './props'
 
 // 转场动画

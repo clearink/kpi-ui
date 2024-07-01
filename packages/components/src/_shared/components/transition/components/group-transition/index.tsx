@@ -1,9 +1,9 @@
-import { isNullish, omit, withDisplayName } from '@kpi-ui/utils'
 import { useWatchValue } from '_shared/hooks'
+import { isNullish, omit, withDisplayName } from '@kpi-ui/utils'
 import { createElement, useEffect } from 'react'
+
 import { isElementsEqual } from '../../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
-// types
 import type { GroupTransitionProps } from './props'
 
 const excluded = [

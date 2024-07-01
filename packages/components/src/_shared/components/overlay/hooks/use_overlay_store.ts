@@ -1,7 +1,7 @@
 import { isExited } from '_shared/constants'
 import { useConstant, useForceUpdate, useWatchValue } from '_shared/hooks'
 import { useMemo } from 'react'
-// types
+
 import type { CSSTransitionRef as CSSRef } from '../../transition/_shared/props'
 import type { OverlayProps } from '../props'
 

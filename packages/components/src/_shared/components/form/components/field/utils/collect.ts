@@ -1,6 +1,7 @@
-import { hasOwn, isFunction, isObjectLike, toArray } from '@kpi-ui/utils'
-// types
+
 import type { AnyObject } from '@kpi-ui/types'
+import { hasOwn, isFunction, isObjectLike, toArray } from '@kpi-ui/utils'
+
 import type { InternalFormInstance, InternalHookReturn } from '../../form/control/props'
 import type { FormFieldControl } from '../control'
 import type { InternalFormFieldProps } from '../props'

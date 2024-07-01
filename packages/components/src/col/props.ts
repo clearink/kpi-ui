@@ -1,6 +1,6 @@
+import type { Breakpoint } from '_shared/hooks/use-breakpoint/breakpoint'
 import type { LiteralUnion } from '@kpi-ui/types'
 import type { HTMLAttributes } from 'react'
-import type { Breakpoint } from '_shared/hooks/use-breakpoint/breakpoint'
 
 export type FlexType = number | LiteralUnion<'none' | 'auto', string>
 export type ColSpanType = number

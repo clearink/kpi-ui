@@ -8,9 +8,10 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
   ],
-  ignorePatterns: ['dist', '.eslintrc.js', 'lib', 'es', 'esm', 'lib', 'types'],
+  ignorePatterns: ['.eslintrc.js', 'dist', 'esm', 'lib'],
+
   parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh'],
+  plugins: ['react-refresh', 'simple-import-sort'],
   settings: {
     react: {
       version: 'detect',
@@ -72,6 +73,8 @@ module.exports = {
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
 
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
     // // jsx-a11y
     // 'jsx-a11y/alt-text': 'warn',
     // 'jsx-a11y/anchor-has-content': 'warn',

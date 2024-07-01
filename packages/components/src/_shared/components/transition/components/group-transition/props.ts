@@ -1,4 +1,5 @@
-import type { CSSProperties, ComponentType, ReactElement } from 'react'
+import type { ComponentType, CSSProperties, ReactElement } from 'react'
+
 import type { CSSTransitionProps } from '../css-transition/props'
 
 export interface GroupTransitionProps<E extends HTMLElement = HTMLElement>

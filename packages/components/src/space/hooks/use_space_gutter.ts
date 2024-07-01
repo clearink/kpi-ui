@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
 import { isArray } from '@kpi-ui/utils'
+import { useMemo } from 'react'
+
 import { SpaceProps } from '../props'
 
 const SPACE_SIZE = { small: 8, default: 16, large: 24 }

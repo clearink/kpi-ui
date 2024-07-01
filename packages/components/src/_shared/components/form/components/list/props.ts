@@ -1,4 +1,4 @@
-import type { InternalFieldMeta, ExternalNamePath } from '../../props'
+import type { ExternalNamePath,InternalFieldMeta } from '../../props'
 import type { ExternalFormFieldProps } from '../field/props'
 import type { FormListHelpers, InternalListField } from './control/props'
 

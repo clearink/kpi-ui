@@ -1,5 +1,6 @@
 import type { SemanticStyledProps } from '@kpi-ui/types'
 import type { RefCallback } from 'react'
+
 import type { PortalProps, PortalRef } from '../portal/props'
 import type { CSSTransitionProps } from '../transition/_shared/props'
 

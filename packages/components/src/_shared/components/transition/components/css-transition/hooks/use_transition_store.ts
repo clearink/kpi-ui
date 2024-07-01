@@ -1,6 +1,7 @@
 import { useConstant, useForceUpdate, useWatchValue } from '_shared/hooks'
 import { showElement } from '_shared/utils'
 import { useMemo } from 'react'
+
 import {
   APPEAR,
   ENTER,
@@ -12,7 +13,6 @@ import {
   isExit,
   isExited,
 } from '../../../constants'
-// types
 import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
 
 export class TransitionState<E extends HTMLElement> {

@@ -1,11 +1,10 @@
-import { batch, omit } from '@kpi-ui/utils'
 import { useConstant, useForceUpdate } from '_shared/hooks'
 import { makeUniqueId } from '_shared/utils'
-import { cloneElement, createElement, useMemo, type ReactElement } from 'react'
+import { batch, omit } from '@kpi-ui/utils'
+import { cloneElement, createElement, type ReactElement,useMemo } from 'react'
+
 import runCounter from '../../../utils/run_counter'
-// comps
 import CSSTransition from '../../css-transition'
-// types
 import type { CSSTransitionProps as CSS } from '../../css-transition/props'
 import type { SwitchTransitionProps as Switch } from '../props'
 

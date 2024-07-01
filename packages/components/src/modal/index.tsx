@@ -1,3 +1,7 @@
+import { FocusTrap, Overlay } from '_shared/components'
+import { Keyboard } from '_shared/constants'
+import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
+import { hideElement, showElement } from '_shared/utils'
 import {
   fallback,
   isFunction,
@@ -7,15 +11,11 @@ import {
   withDefaults,
   withDisplayName,
 } from '@kpi-ui/utils'
-import { Keyboard } from '_shared/constants'
-import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
-import { hideElement, showElement } from '_shared/utils'
-import { useId, useRef, type KeyboardEvent, type SyntheticEvent } from 'react'
-import useFormatClass from './hooks/use_format_class'
-// comps
+import { type KeyboardEvent, type SyntheticEvent, useId, useRef } from 'react'
+
 import Button from '@/button'
-import { FocusTrap, Overlay } from '_shared/components'
-// types
+
+import useFormatClass from './hooks/use_format_class'
 import type { ModalProps } from './props'
 
 const included = [

@@ -1,7 +1,6 @@
 import { isNumber } from '@kpi-ui/utils'
 import { useMemo } from 'react'
-// comps
-// types
+
 import type { BadgeProps } from '../props'
 
 export default function useScrollGroups(props: BadgeProps) {

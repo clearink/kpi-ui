@@ -1,7 +1,7 @@
 import { TouchEffectContext } from '_shared/contexts'
+
 import { DisabledContext } from './contexts/disabled'
 import { SizeContext } from './contexts/size'
-
 import type { ConfigProviderProps } from './props'
 
 function ConfigProvider(props: ConfigProviderProps) {

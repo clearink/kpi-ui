@@ -1,5 +1,5 @@
 import { ctxHelper, noop } from '@kpi-ui/utils'
-// types
+
 import type { CollapsibleType, ExpandIconPosition } from '../components/collapse/props'
 import type { CollapseProps, ExpandedName } from './props'
 

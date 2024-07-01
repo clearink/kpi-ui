@@ -1,4 +1,5 @@
 import { isFunction } from '@kpi-ui/utils'
+
 import { BREAKPOINT_MAP, INIT_MATCHES, type ScreenMatch } from './breakpoint'
 
 class BreakpointObserver {

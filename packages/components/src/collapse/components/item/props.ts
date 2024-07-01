@@ -1,5 +1,6 @@
-import type { SemanticStyledProps, HasChildren } from '@kpi-ui/types'
+import type { HasChildren,SemanticStyledProps } from '@kpi-ui/types'
 import type { HTMLAttributes, ReactNode } from 'react'
+
 import type { ExpandedName } from '../../props'
 
 export interface CollapseItemProps

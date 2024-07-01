@@ -1,9 +1,8 @@
-import { fallback, withDisplayName } from '@kpi-ui/utils'
-import { usePrefixCls } from '_shared/hooks'
-import useFormatClass from './hooks/use_format_class'
-// comps
 import { Tooltip as InternalTooltip } from '_shared/components'
-// types
+import { usePrefixCls } from '_shared/hooks'
+import { fallback, withDisplayName } from '@kpi-ui/utils'
+
+import useFormatClass from './hooks/use_format_class'
 import type { TooltipProps } from './props'
 
 function Tooltip(props: TooltipProps) {

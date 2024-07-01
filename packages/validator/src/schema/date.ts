@@ -1,9 +1,9 @@
 import { isDate, isUndefined } from '@kpi-ui/utils'
-import BaseSchema from './base'
-import { date } from '../locales/default'
-import { Invalid, makeRule, Valid } from '../make_rule'
 
 import type { Context, Message } from '../interface'
+import { date } from '../locales/default'
+import { Invalid, makeRule, Valid } from '../make_rule'
+import BaseSchema from './base'
 
 export default class DateSchema extends BaseSchema<Date | undefined> {
   static create(message: Message = date.invalid) {

@@ -1,13 +1,14 @@
 /* eslint-disable no-param-reassign */
 import {
-  isNumber,
+  hasOwn,
   isArray,
-  isObject,
   isNullish,
+  isNumber,
+  isObject,
   isObjectLike,
   rawType,
-  hasOwn,
 } from '@kpi-ui/utils'
+
 import type { InternalNamePath } from '../props'
 
 function internalSetIn<V = any>(source: V, paths: InternalNamePath, value: any): V {

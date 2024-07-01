@@ -1,6 +1,7 @@
-import { isFunction } from '../is'
 // types
 import type { AnyFn, MayBe } from '@kpi-ui/types'
+
+import { isFunction } from '../is'
 
 export function batch<T extends AnyFn>(...funcs: MayBe<T>[]) {
   const filtered = funcs.filter(isFunction).reverse() as T[]

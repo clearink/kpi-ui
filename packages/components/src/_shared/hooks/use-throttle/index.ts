@@ -1,9 +1,10 @@
-import { noop, makeFrameTimeout } from '@kpi-ui/utils'
+
+import type { AnyFn } from '@kpi-ui/types'
+import { makeFrameTimeout,noop } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
+
 import { useEvent } from '../use-event'
 import { useMounted } from '../use-mounted'
-// types
-import type { AnyFn } from '@kpi-ui/types'
 
 // 节流 函数
 export function throttle<F extends AnyFn>(fn: F, delay: number) {

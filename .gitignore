@@ -6,6 +6,7 @@ dist
 packages/*/lib/
 packages/*/es/
 packages/*/esm/
+packages/kpi-ui/src/
 scripts/es/
 scripts/esm/
 scripts/lib/

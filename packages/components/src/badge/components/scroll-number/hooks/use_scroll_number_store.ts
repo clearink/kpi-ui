@@ -1,7 +1,7 @@
-import { getClientCoords, reflow } from '@kpi-ui/utils'
 import { useConstant, useForceUpdate, useWatchValue } from '_shared/hooks'
+import { getClientCoords, reflow } from '@kpi-ui/utils'
 import { useMemo } from 'react'
-// types
+
 import type { ScrollNumberProps } from '../props'
 
 export class ScrollNumberState {

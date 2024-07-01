@@ -1,7 +1,7 @@
 import { cls } from '@kpi-ui/utils'
-// types
-import type { CollapseItemProps } from '../props'
+
 import type { CollapseContextState } from '../../../_shared/context'
+import type { CollapseItemProps } from '../props'
 
 export default function useFormatClass(
   prefixCls: string,

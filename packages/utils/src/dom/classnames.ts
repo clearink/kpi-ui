@@ -1,6 +1,6 @@
-import classNames from 'classnames'
 // types
 import type { ArgumentArray } from 'classnames'
+import classNames from 'classnames'
 
 export function addClassNames(el: Element, ...classes: (string | undefined)[]) {
   classes.forEach((cls) => {

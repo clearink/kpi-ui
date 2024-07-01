@@ -1,6 +1,6 @@
-import { getClientCoords, getElementStyle, makeFrameTimeout, observe } from '@kpi-ui/utils'
 import { getPositionedElement } from '_shared/utils'
-// types
+import { getClientCoords, getElementStyle, makeFrameTimeout, observe } from '@kpi-ui/utils'
+
 import type { TouchEffectInfo } from '../_shared/context'
 
 // 白色，透明 不合格

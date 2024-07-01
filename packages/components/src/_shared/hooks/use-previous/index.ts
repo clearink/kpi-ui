@@ -1,5 +1,6 @@
 import { shallowEqual } from '@kpi-ui/utils'
 import { useMemo } from 'react'
+
 import { useConstant } from '../use-constant'
 
 export function usePrevious<T>(value: T) {

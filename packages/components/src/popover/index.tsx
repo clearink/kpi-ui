@@ -1,9 +1,8 @@
-import { withDisplayName } from '@kpi-ui/utils'
 import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
-import useFormatClass from './hooks/use_format_class'
-// comps
+import { withDisplayName } from '@kpi-ui/utils'
+
 import Tooltip from '../tooltip'
-// types
+import useFormatClass from './hooks/use_format_class'
 import type { PopoverProps } from './props'
 
 const defaultProps: Partial<PopoverProps> = {}

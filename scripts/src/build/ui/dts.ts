@@ -1,79 +1,84 @@
-import path from 'path'
-import glob from 'fast-glob'
-import { constants, aliasMatches } from '../../utils/helpers'
-import tsm from 'ts-morph'
-import fse from 'fs-extra'
-import slash from 'slash'
+import glob from "fast-glob";
+import fse from "fs-extra";
+import path from "path";
+import slash from "slash";
+import tsm from "ts-morph";
+
+import {
+	constants,
+	formatExternals,
+	getPkgJson,
+	specifierMatches,
+} from "../../utils/helpers";
 
 export default async function buildDts() {
-  const project = new tsm.Project({
-    skipAddingFilesFromTsConfig: true,
-    compilerOptions: {
-      allowJs: true,
-      declaration: true,
-      emitDeclarationOnly: true,
-      declarationDir: constants.esm,
-    },
-  })
+	const project = new tsm.Project({
+		skipAddingFilesFromTsConfig: true,
+		compilerOptions: {
+			allowJs: true,
+			declaration: true,
+			emitDeclarationOnly: true,
+			declarationDir: constants.esm,
+		},
+	});
 
-  const root = constants.resolveCwd('src')
+	const root = constants.resolveCwd("src");
 
-  const pkgJson = await constants.getPkgJson()
+	const pkgJson = await getPkgJson();
 
-  const externals = constants.normalizeExternals(pkgJson)
+	const externals = formatExternals(pkgJson);
 
-  const sourceFiles = glob
-    .sync('**/*.ts{,x}', { cwd: root })
-    .map((file) => project.addSourceFileAtPath(path.resolve(root, file)))
+	const sourceFiles = glob
+		.sync("**/*.ts{,x}", { cwd: root })
+		.map((file) => project.addSourceFileAtPath(path.resolve(root, file)));
 
-  const resolve = (filepath: string, text: string) => {
-    const isExternal = externals.find((e) => {
-      return e instanceof RegExp ? e.test(text) : text.startsWith(e)
-    })
+	const resolve = (filepath: string, text: string) => {
+		const isExternal = externals.find((e) => specifierMatches(e, text));
 
-    if (isExternal) return
+		if (isExternal) return;
 
-    const matched = constants.alias.find((e) => aliasMatches(e.find, text))
+		const matched = constants.alias.find((e) => specifierMatches(e.find, text));
 
-    if (!matched) return
+		if (!matched) return;
 
-    let rel = path.relative(path.dirname(filepath), matched.replacement)
+		let rel = path.relative(path.dirname(filepath), matched.replacement);
 
-    if (!rel.startsWith('.')) rel = './' + rel
+		if (!rel.startsWith(".")) rel = `./${rel}`;
 
-    const re = new RegExp(`^${matched.find}`)
+		const re = new RegExp(`^${matched.find}`);
 
-    return slash(text.replace(re, rel))
-  }
+		return slash(text.replace(re, rel));
+	};
 
-  sourceFiles.forEach((sourceFile) => {
-    const filepath = sourceFile.getFilePath()
+	sourceFiles.forEach((sourceFile) => {
+		const filepath = sourceFile.getFilePath();
 
-    sourceFile.getImportDeclarations().forEach((node) => {
-      const text = node.getModuleSpecifierValue()
+		sourceFile.getImportDeclarations().forEach((node) => {
+			const text = node.getModuleSpecifierValue();
 
-      const newText = resolve(filepath, text)
+			const newText = resolve(filepath, text);
 
-      if (newText) node.setModuleSpecifier(newText)
-    })
-    sourceFile.getExportDeclarations().forEach((node) => {
-      const text = node.getModuleSpecifierValue()
+			if (newText) node.setModuleSpecifier(newText);
+		});
 
-      if (!text) return
+		sourceFile.getExportDeclarations().forEach((node) => {
+			const text = node.getModuleSpecifierValue();
 
-      const newText = resolve(filepath, text)
+			if (!text) return;
 
-      if (newText) node.setModuleSpecifier(newText)
-    })
-  })
+			const newText = resolve(filepath, text);
 
-  await project.emit({ emitOnlyDtsFiles: true })
+			if (newText) node.setModuleSpecifier(newText);
+		});
+	});
 
-  // copy dts files to lib
-  await Promise.all(
-    glob.sync('**/*.d.ts', { cwd: constants.esm }).map((file) => {
-      const filepath = path.resolve(constants.esm, file)
-      return fse.copy(filepath, constants.resolveCjs(file))
-    })
-  )
+	await project.emit({ emitOnlyDtsFiles: true });
+
+	// copy dts files to lib
+	await Promise.all(
+		glob.sync("**/*.d.ts", { cwd: constants.esm }).map((file) => {
+			const filepath = path.resolve(constants.esm, file);
+			return fse.copy(filepath, constants.resolveCjs(file));
+		}),
+	);
 }

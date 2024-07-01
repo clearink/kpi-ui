@@ -1,1 +1,0 @@
-# generate @kpi-ui/utils and @kpi-ui/types files in this folder

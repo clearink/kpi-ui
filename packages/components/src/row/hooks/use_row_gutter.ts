@@ -1,6 +1,6 @@
-import { isArray, isNumber } from '@kpi-ui/utils'
 import { matchBreakpoint, useBreakpoint } from '_shared/hooks'
-// types
+import { isArray, isNumber } from '@kpi-ui/utils'
+
 import type { RowProps } from '../props'
 
 export default function useRowGutter(gutter: NonNullable<RowProps['gutter']>) {

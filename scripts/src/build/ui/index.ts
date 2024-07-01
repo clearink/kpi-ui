@@ -1,9 +1,10 @@
-import { constants, logger } from '../../utils/helpers'
-import ora from 'ora'
 import fse from 'fs-extra'
+import ora from 'ora'
+
+import { clean,constants, logger } from '../../utils/helpers'
+import buildCode from './code'
 import buildCss from './css'
 import buildDts from './dts'
-import buildCode from './code'
 
 export default async function build() {
   logger.info('|-----------------------------------|')
@@ -14,7 +15,7 @@ export default async function build() {
 
   {
     const spinner = ora(logger.info('clean dist and source files', false)).start()
-    await constants.clean(constants.esm, constants.cjs, constants.umd, constants.resolveCwd('src'))
+    await clean(constants.esm, constants.cjs, constants.umd, constants.resolveCwd('src'))
     spinner.succeed('clean dist and source files successfully !')
   }
 
