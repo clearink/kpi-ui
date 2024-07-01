@@ -2,7 +2,7 @@ import { RowContext } from '_shared/contexts'
 import { usePrefixCls } from '_shared/hooks'
 import { BREAKPOINT_NAME } from '_shared/hooks/use-breakpoint/breakpoint'
 import { omit } from '@kpi-ui/utils'
-import { type ForwardedRef,forwardRef } from 'react'
+import { type ForwardedRef, forwardRef } from 'react'
 
 import useColFlex from './hooks/use_col_flex'
 import useFormatClass from './hooks/use_format_class'

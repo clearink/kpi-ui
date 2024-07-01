@@ -1,4 +1,4 @@
-import type { ExternalNamePath,InternalFieldMeta } from '../../props'
+import type { ExternalNamePath, InternalFieldMeta } from '../../props'
 import type { ExternalFormFieldProps } from '../field/props'
 import type { FormListHelpers, InternalListField } from './control/props'
 
@@ -7,7 +7,7 @@ export interface InternalFormListProps extends Pick<ExternalFormFieldProps, 'rul
   children: (
     fields: InternalListField[],
     helpers: FormListHelpers,
-    meta: InternalFieldMeta
+    meta: InternalFieldMeta,
   ) => React.ReactNode
 
   /**

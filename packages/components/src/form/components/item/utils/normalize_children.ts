@@ -23,7 +23,7 @@ export function isInvalidUsage(props: FormItemProps) {
       logger(
         true,
         'Form.Item',
-        "Do not use `name` with `children` of render props since it's not a field."
+        "Do not use `name` with `children` of render props since it's not a field.",
       )
     }
     return true
@@ -42,7 +42,7 @@ export function isInvalidUsage(props: FormItemProps) {
       logger(
         true,
         'Form.Item',
-        '`children` of render props only work with `shouldUpdate` or `dependencies`.'
+        '`children` of render props only work with `shouldUpdate` or `dependencies`.',
       )
     }
     return true
@@ -61,7 +61,7 @@ export function isInvalidUsage(props: FormItemProps) {
       logger(
         true,
         'Form.Item',
-        '`name` is only used for validate React element. If you are using Form.Item as layout display, please remove `name` instead. '
+        '`name` is only used for validate React element. If you are using Form.Item as layout display, please remove `name` instead. ',
       )
     }
     // 仅提示
@@ -73,7 +73,7 @@ export function isInvalidUsage(props: FormItemProps) {
 export default function normalizeChildren(
   props: FormItemProps,
   formInstance?: FormInstance,
-  itemId?: string
+  itemId?: string,
 ) {
   const { children } = props
 

@@ -16,7 +16,7 @@ export type GetTargetElement<T extends TargetElement> =
 export function getTargetElement<T extends TargetElement>(target: GetTargetElement<T>): MayBe<T>
 export function getTargetElement<T extends TargetElement>(
   target: GetTargetElement<T>,
-  defaultElement: T
+  defaultElement: T,
 ): MayBe<T>
 export function getTargetElement<T extends TargetElement>(...args: [GetTargetElement<T>, T?]) {
   const [target, defaultElement] = args

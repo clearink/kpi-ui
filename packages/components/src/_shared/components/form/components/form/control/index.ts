@@ -28,7 +28,7 @@ import {
   mergeValue,
   setIn,
 } from '../../../utils/value'
-import { type FormFieldControl,InvalidFieldControl } from '../../field/control'
+import { type FormFieldControl, InvalidFieldControl } from '../../field/control'
 import type { InternalFormProps } from '../props'
 import type { ControlFindReturn, InternalFormInstance, InternalHookReturn } from './props'
 
@@ -58,7 +58,7 @@ export default class FormGroupControl<State = any> {
       this.$props,
       this.$controls,
       this.$state,
-      this.$initial
+      this.$initial,
     )
   }
 
@@ -260,7 +260,7 @@ export class FormInitialControl<State = any> {
     if (process.env.NODE_ENV !== 'production') {
       logger(
         !isUndefined(topInitial) && !isUndefined($initialValue),
-        "form has initialValues, don't set field initialValue"
+        "form has initialValues, don't set field initialValue",
       )
     }
 
@@ -329,7 +329,7 @@ export class FormControlsControl {
   // 获取相同name的字段,不传参数认为获取全部有name的字段
   getControlsByName = <R extends boolean>(
     removeInvalid: R,
-    nameList?: ExternalNamePath[]
+    nameList?: ExternalNamePath[],
   ): ControlFindReturn<R> => {
     if (isUndefined(nameList)) return this.getControls(true)
 
@@ -524,7 +524,7 @@ export class FormDispatchControl<State = any> {
     private $props: FormPropsControl,
     private $controls: FormControlsControl,
     public $state: FormStateControl<State>,
-    public $initial: FormInitialControl
+    public $initial: FormInitialControl,
   ) {}
 
   // 注册字段

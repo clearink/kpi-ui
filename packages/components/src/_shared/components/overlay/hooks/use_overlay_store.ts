@@ -6,7 +6,10 @@ import type { CSSTransitionRef as CSSRef } from '../../transition/_shared/props'
 import type { OverlayProps } from '../props'
 
 export class OverlayState {
-  constructor(props: OverlayProps, public forceUpdate: () => void) {
+  constructor(
+    props: OverlayProps,
+    public forceUpdate: () => void,
+  ) {
     this.isMounted = !!props.keepMounted || !!props.open
   }
 
@@ -19,7 +22,10 @@ export class OverlayState {
 }
 
 export class OverlayAction {
-  constructor(private forceUpdate: () => void, private states: OverlayState) {}
+  constructor(
+    private forceUpdate: () => void,
+    private states: OverlayState,
+  ) {}
 
   get isExited() {
     const el = this.states.$content.current

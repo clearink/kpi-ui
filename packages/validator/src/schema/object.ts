@@ -21,15 +21,14 @@ export type GroupPartial<T extends ObjectShape> = {
   [P in RequiredKeys<T>]: NonUndefined<T[P]['_Out']>
 }
 
-export type MakePartial<T extends MayBe<ObjectShape>> = T extends Record<string, any>
-  ? Full<GroupPartial<T>>
-  : T
+export type MakePartial<T extends MayBe<ObjectShape>> =
+  T extends Record<string, any> ? Full<GroupPartial<T>> : T
 
 /** schema =================================================================== */
 
 export default class ObjectSchema<
   T extends ObjectShape,
-  Out = MakePartial<T> | undefined
+  Out = MakePartial<T> | undefined,
 > extends BaseSchema<Out> {
   constructor(public readonly inner: T) {
     super()

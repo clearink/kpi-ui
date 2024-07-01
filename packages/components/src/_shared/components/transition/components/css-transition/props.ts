@@ -1,4 +1,3 @@
-
 import type { ReactElement } from 'react'
 
 import type { APPEAR, ENTER, ENTERED, EXIT, EXITED } from '../../constants'

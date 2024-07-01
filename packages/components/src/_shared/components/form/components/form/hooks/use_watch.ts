@@ -21,7 +21,7 @@ export default function useWatch<T>(namePath?: ExternalNamePath, form?: External
   if (process.env.NODE_ENV !== 'production') {
     logger(
       !instance,
-      'useWatch requires a form instance since it can not auto detect from context.'
+      'useWatch requires a form instance since it can not auto detect from context.',
     )
   }
 
@@ -30,7 +30,7 @@ export default function useWatch<T>(namePath?: ExternalNamePath, form?: External
       const nextValue = instance?.getFieldValue(currentPath)
       // 只浅比较
       if (!shallowEqual(nextValue, value)) setValue(nextValue)
-    })
+    }),
   )
 
   useEffect(registerWatch, [registerWatch, currentPath])

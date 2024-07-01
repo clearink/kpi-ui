@@ -26,11 +26,14 @@ function TooltipTrigger(props: TooltipTriggerProps, _ref: ForwardedRef<any>) {
 
   const ref = useComposeRefs((children as any).ref, _ref, dom)
 
-  const cloneProps = Object.entries(events).reduce((result, [key, fn]) => {
-    result[key] = batch(fn, children.props[key])
+  const cloneProps = Object.entries(events).reduce(
+    (result, [key, fn]) => {
+      result[key] = batch(fn, children.props[key])
 
-    return result
-  }, {} as typeof events)
+      return result
+    },
+    {} as typeof events,
+  )
 
   return cloneElement(children, { ref, ...cloneProps })
 }

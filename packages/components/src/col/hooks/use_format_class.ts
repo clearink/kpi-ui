@@ -37,7 +37,7 @@ export default function useFormatClass(prefixCls: string, props: ColProps) {
         [`${prefixCls}-push-${push}`]: push,
         [`${prefixCls}-order-${order}`]: order,
       },
-      className
+      className,
     )
   }, [className, offset, order, prefixCls, props, pull, push, span])
 }

@@ -1,4 +1,4 @@
-import { isNumber,isUndefined } from '@kpi-ui/utils'
+import { isNumber, isUndefined } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 
 import type { ColProps } from '../props'

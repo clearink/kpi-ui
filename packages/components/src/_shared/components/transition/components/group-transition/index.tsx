@@ -66,5 +66,5 @@ function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransi
 }
 
 export default withDisplayName(GroupTransition) as <E extends HTMLElement>(
-  props: GroupTransitionProps<E>
+  props: GroupTransitionProps<E>,
 ) => JSX.Element

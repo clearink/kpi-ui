@@ -17,6 +17,6 @@ export default function useFormatClass(prefixCls: string, props: DividerProps) {
       [`${prefixCls}--custom-margin`]:
         (align === 'left' || align === 'right') && !isUndefined(margin),
     },
-    className
+    className,
   )
 }

@@ -31,5 +31,5 @@ function SwitchTransition<E extends HTMLElement = HTMLElement>(props: SwitchTran
 }
 
 export default withDisplayName(SwitchTransition) as <E extends HTMLElement>(
-  props: SwitchTransitionProps<E>
+  props: SwitchTransitionProps<E>,
 ) => JSX.Element

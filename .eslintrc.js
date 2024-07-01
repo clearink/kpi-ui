@@ -7,9 +7,9 @@ module.exports = {
     'plugin:react/jsx-runtime',
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
+    'plugin:prettier/recommended',
   ],
   ignorePatterns: ['.eslintrc.js', 'dist', 'esm', 'lib'],
-
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh', 'simple-import-sort'],
   settings: {
@@ -18,6 +18,14 @@ module.exports = {
     },
   },
   rules: {
+    // prettier
+    'prettier/prettier': [
+      'error',
+      {},
+      {
+        usePrettierrc: true,
+      },
+    ],
     // eslint
     'no-restricted-syntax': [
       'error',
@@ -75,6 +83,7 @@ module.exports = {
 
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
+
     // // jsx-a11y
     // 'jsx-a11y/alt-text': 'warn',
     // 'jsx-a11y/anchor-has-content': 'warn',

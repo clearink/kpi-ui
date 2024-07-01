@@ -2,7 +2,7 @@ import { hasItem } from '../array'
 
 export function omit<T extends Record<string, any>, K extends keyof T>(
   source: T,
-  excluded: readonly K[]
+  excluded: readonly K[],
 ): Omit<T, K> {
   const target = {} as T
 

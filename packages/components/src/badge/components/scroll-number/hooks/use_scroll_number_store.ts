@@ -25,7 +25,10 @@ export class ScrollNumberState {
 }
 
 export class ScrollNumberAction {
-  constructor(private forceUpdate: () => void, private states: ScrollNumberState) {}
+  constructor(
+    private forceUpdate: () => void,
+    private states: ScrollNumberState,
+  ) {}
 
   setItem = (key: string, el: HTMLElement | null) => {
     this.states.items.set(key, el)

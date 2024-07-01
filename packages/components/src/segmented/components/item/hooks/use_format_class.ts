@@ -13,7 +13,7 @@ export default function useFormatClass(prefixCls: string, props: SegmentedItemPr
         [`${prefixCls}--disabled`]: disabled,
       },
       className,
-      classNames.root
+      classNames.root,
     ),
     radio: cls(`${prefixCls}__radio`),
     label: cls(`${prefixCls}__label`, classNames.label),

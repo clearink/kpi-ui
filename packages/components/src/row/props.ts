@@ -8,7 +8,7 @@ export type JustifyType = [
   'center',
   'space-around',
   'space-between',
-  'space-evenly'
+  'space-evenly',
 ][number]
 export type Gutter = number | Partial<Record<Breakpoint, number>>
 export interface RowProps extends HTMLAttributes<HTMLDivElement> {

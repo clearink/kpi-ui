@@ -4,9 +4,8 @@ dist
 
 # bundle files
 packages/*/lib/
-packages/*/es/
 packages/*/esm/
 packages/kpi-ui/src/
-scripts/es/
 scripts/esm/
 scripts/lib/
+scripts/lib/index.js

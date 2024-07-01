@@ -5,7 +5,7 @@ import type { SegmentedOption, SegmentedProps, SegmentedType } from '../props'
 
 export default function useSegmentedValue<T extends SegmentedType = SegmentedType>(
   props: SegmentedProps<T>,
-  options: SegmentedOption<T>[]
+  options: SegmentedOption<T>[],
 ) {
   const { value, defaultValue, onChange } = props
 

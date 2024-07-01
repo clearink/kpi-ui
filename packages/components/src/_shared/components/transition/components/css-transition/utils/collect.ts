@@ -2,7 +2,7 @@ const ms = (s: string) => (parseFloat(s) || 0) * 1e3
 
 export default function collectTimeoutInfo(
   collection: CSSStyleDeclaration,
-  type: 'transition' | 'animation'
+  type: 'transition' | 'animation',
 ) {
   const style = (property: string): string[] => `${collection[property] || ''}`.split(', ')
 

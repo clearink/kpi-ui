@@ -1,8 +1,15 @@
 // 基础配置
 @import './base.scss';
 
-// 入口
-@import './entry.scss';
+// normalize
+@import './preset/normalize.scss';
 
-// 组件
-@import './components.scss';
+// 预设样式
+@import './preset/preset.scss';
+
+// 动画
+@import './motion/index.scss';
+
+// 主题
+@import './theme/index.scss';
+

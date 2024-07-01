@@ -1,4 +1,3 @@
-
 import type { HasChildren, SemanticStyledProps } from '@kpi-ui/types'
 
 import type { OverlayProps } from '../overlay/props'
@@ -104,27 +103,27 @@ export interface AlignerConfig {
   getScreenCoords: (
     props: InternalTooltipProps,
     popup: ElementCoords,
-    trigger: ElementCoords
+    trigger: ElementCoords,
   ) => ScreenCoords
 
   keepArrowCenter: (
     props: InternalTooltipProps,
     screen: ScreenCoords,
-    trigger: ElementCoords
+    trigger: ElementCoords,
   ) => ScreenCoords
 
   // 调整
   shiftPopupCoords: (
     props: InternalTooltipProps,
     screen: ScreenCoords,
-    trigger: ElementCoords
+    trigger: ElementCoords,
   ) => ScreenCoords
 
   // 翻转
   flipPopupCoords: (
     props: InternalTooltipProps,
     screen: ScreenCoords,
-    trigger: ElementCoords
+    trigger: ElementCoords,
   ) => ScreenCoords
 
   // 箭头位置

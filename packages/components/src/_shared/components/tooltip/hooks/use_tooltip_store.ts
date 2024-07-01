@@ -29,7 +29,10 @@ export class TooltipState {
 }
 
 export class TooltipAction {
-  constructor(private forceUpdate: () => void, private states: TooltipState) {}
+  constructor(
+    private forceUpdate: () => void,
+    private states: TooltipState,
+  ) {}
 
   private setPopupCoords = (value: PopupCoords | null) => {
     if (!value) return

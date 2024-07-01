@@ -1,5 +1,5 @@
 import { isEqual } from '@kpi-ui/utils'
-import { type DependencyList,useMemo } from 'react'
+import { type DependencyList, useMemo } from 'react'
 
 import { useConstant } from '../use-constant'
 

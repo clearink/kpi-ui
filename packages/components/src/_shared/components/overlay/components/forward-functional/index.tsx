@@ -6,7 +6,7 @@ import type { ForwardFunctionalProps } from './props'
 
 function ForwardFunctional<T extends React.ReactElement, R extends ReactRef<any>>(
   props: ForwardFunctionalProps<T, R>,
-  ref: R
+  ref: R,
 ) {
   const { children } = props
 
@@ -19,7 +19,7 @@ function ForwardFunctional<T extends React.ReactElement, R extends ReactRef<any>
 
 export default withDisplayName(forwardRef(ForwardFunctional), 'ForwardFunctional') as <
   T extends React.ReactElement,
-  R extends ReactRef<any> = ReactRef<any>
+  R extends ReactRef<any> = ReactRef<any>,
 >(
-  props: ForwardFunctionalProps<T, R> & React.RefAttributes<R>
+  props: ForwardFunctionalProps<T, R> & React.RefAttributes<R>,
 ) => JSX.Element

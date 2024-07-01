@@ -13,7 +13,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
   states: ReturnType<typeof useTransitionStore<E>>['states'],
   actions: ReturnType<typeof useTransitionStore<E>>['actions'],
   classNames: ReturnType<typeof useFormatClassNames>,
-  props: CSSTransitionProps<E>
+  props: CSSTransitionProps<E>,
 ) {
   const { type, unmountOnExit, addEndListener, onEntered, onExited, onEnterCancel, onExitCancel } =
     props
@@ -62,27 +62,27 @@ export default function useTransitionEvent<E extends HTMLElement>(
     if (type === 'transition' && transition.timeout > 0) {
       return batch(
         makeEventListener(el, 'transitionend', runCounter(transition.count, resolve)),
-        makeFrameTimeout(transition.timeout, resolve)
+        makeFrameTimeout(transition.timeout, resolve),
       )
     }
 
     if (type === 'animation' && animation.timeout > 0) {
       return batch(
         makeEventListener(el, 'animationend', runCounter(animation.count, resolve)),
-        makeFrameTimeout(animation.timeout, resolve)
+        makeFrameTimeout(animation.timeout, resolve),
       )
     }
 
     if (transition.timeout > animation.timeout) {
       return batch(
         makeEventListener(el, 'transitionend', runCounter(transition.count, resolve)),
-        makeFrameTimeout(transition.timeout, resolve)
+        makeFrameTimeout(transition.timeout, resolve),
       )
     }
 
     return batch(
       makeEventListener(el, 'animationend', runCounter(animation.count, resolve)),
-      makeFrameTimeout(animation.timeout, resolve)
+      makeFrameTimeout(animation.timeout, resolve),
     )
   }
 

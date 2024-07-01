@@ -1,7 +1,7 @@
 import { useConstant, useForceUpdate } from '_shared/hooks'
 import { makeUniqueId } from '_shared/utils'
 import { addClassNames, batch, delClassNames, pick, reflow } from '@kpi-ui/utils'
-import { cloneElement, createElement, type ReactElement,useEffect, useMemo } from 'react'
+import { cloneElement, createElement, type ReactElement, useEffect, useMemo } from 'react'
 
 import { ENTER, isExit, isExited } from '../../../constants'
 import CSSTransition from '../../css-transition'
@@ -77,7 +77,10 @@ class TransitionState<E extends HTMLElement> {
 }
 
 class TransitionAction<E extends HTMLElement> {
-  constructor(private forceUpdate: () => void, private states: TransitionState<E>) {}
+  constructor(
+    private forceUpdate: () => void,
+    private states: TransitionState<E>,
+  ) {}
 
   injectLatestProps = (props: Group<E>) => {
     this.states.props = props

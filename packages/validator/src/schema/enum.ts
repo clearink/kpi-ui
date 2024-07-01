@@ -16,7 +16,7 @@ export default class EnumSchema<T extends EnumInput> extends BaseSchema<T[number
   }
 
   static create<U extends EnumItem, E extends Readonly<[U, ...U[]]>>(
-    inner: E
+    inner: E,
   ): EnumSchema<Writable<E>>
   static create<U extends EnumItem, E extends [U, ...U[]]>(inner: E) {
     return new EnumSchema<E>(inner)

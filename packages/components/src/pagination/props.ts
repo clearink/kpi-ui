@@ -104,7 +104,7 @@ export interface PaginationProps {
 export type ItemRenderHandler = (
   page: number,
   type: 'page' | 'prev' | 'next',
-  element: ReactNode
+  element: ReactNode,
 ) => ReactNode
 
 export type TotalRenderHandler = (total: number, range: [number, number]) => ReactNode

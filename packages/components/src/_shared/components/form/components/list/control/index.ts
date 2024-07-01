@@ -44,7 +44,7 @@ export default class FormListControl {
   public setInternalFormListMisc = (
     context: InternalFormInstance,
     listPath: InternalNamePath,
-    rule: InternalFormFieldProps['rule']
+    rule: InternalFormFieldProps['rule'],
   ) => {
     this._context = context
     this._listPath = listPath

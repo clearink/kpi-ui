@@ -28,7 +28,7 @@ const _effect = _size / 2
 
 function getTopOrBottomScreenCoords(
   main: VerticalMainAxis,
-  cross: VerticalCrossAxis
+  cross: VerticalCrossAxis,
 ): AlignerConfig['getScreenCoords'] {
   return (props, popup, trigger) => {
     const dy = (props.arrow ? _effect : 0) + _offset
@@ -57,7 +57,7 @@ function getTopOrBottomScreenCoords(
 
 function getLeftOrRightScreenCoords(
   main: HorizontalMainAxis,
-  cross: HorizontalCrossAxis
+  cross: HorizontalCrossAxis,
 ): AlignerConfig['getScreenCoords'] {
   return (props, popup, trigger) => {
     const dx = (props.arrow ? _effect : 0) + _offset

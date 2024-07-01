@@ -28,5 +28,5 @@ export const BREAKPOINT_MAP = Object.entries(BREAKPOINT).reduce(
     const query = `(${mode}-width: ${size}px)`
     return map.set(query, breakpoint)
   },
-  new Map<string, string>()
+  new Map<string, string>(),
 )

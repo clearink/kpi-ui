@@ -7,17 +7,14 @@ import { Invalid, makeRule, Valid } from '../make_rule'
 import AnySchema from './any'
 import BaseSchema from './base'
 
-export type MakeInnerType<T extends any[]> = T extends Array<infer I>
-  ? I extends BaseSchema
-    ? I['_Out'][]
-    : any[]
-  : any[]
+export type MakeInnerType<T extends any[]> =
+  T extends Array<infer I> ? (I extends BaseSchema ? I['_Out'][] : any[]) : any[]
 
 /** schema =================================================================== */
 
 export default class ArraySchema<
   T extends BaseSchema,
-  Out = MakeInnerType<T[]> | undefined
+  Out = MakeInnerType<T[]> | undefined,
 > extends BaseSchema<Out> {
   constructor(private readonly inner: T) {
     super()

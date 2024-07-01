@@ -14,6 +14,6 @@ export default function useFormatClass(prefixCls: string, props: SpaceProps) {
       [`${prefixCls}--align-${align}`]: align,
       [`${prefixCls}--wrap`]: wrap,
     },
-    className
+    className,
   )
 }

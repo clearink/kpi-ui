@@ -1,7 +1,7 @@
 import { useConstant, useForceUpdate } from '_shared/hooks'
 import { makeUniqueId } from '_shared/utils'
 import { batch, omit } from '@kpi-ui/utils'
-import { cloneElement, createElement, type ReactElement,useMemo } from 'react'
+import { cloneElement, createElement, type ReactElement, useMemo } from 'react'
 
 import runCounter from '../../../utils/run_counter'
 import CSSTransition from '../../css-transition'
@@ -11,7 +11,10 @@ import type { SwitchTransitionProps as Switch } from '../props'
 const uniqueId = makeUniqueId('st-')
 
 class TransitionState<E extends HTMLElement> {
-  constructor(public forceUpdate: () => void, props: Switch<E>) {
+  constructor(
+    public forceUpdate: () => void,
+    props: Switch<E>,
+  ) {
     this.props = props
 
     this.current = props.children
@@ -36,7 +39,10 @@ class TransitionState<E extends HTMLElement> {
 }
 
 class TransitionAction<E extends HTMLElement> {
-  constructor(public forceUpdate: () => void, private states: TransitionState<E>) {}
+  constructor(
+    public forceUpdate: () => void,
+    private states: TransitionState<E>,
+  ) {}
 
   injectLatestProps = (value: Switch<E>) => {
     this.states.props = value

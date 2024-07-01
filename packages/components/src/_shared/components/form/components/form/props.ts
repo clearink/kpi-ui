@@ -65,7 +65,7 @@ export interface InternalFormProps<S = any>
    */
   onFieldsChange?: (
     changedFields: InternalFieldData[],
-    getFields: () => InternalFieldData[]
+    getFields: () => InternalFieldData[],
   ) => void
 
   /**

@@ -1,7 +1,7 @@
 import fse from 'fs-extra'
 import ora from 'ora'
 
-import { clean,constants, logger } from '../../utils/helpers'
+import { clean, constants, logger } from '../../utils/helpers'
 import buildCode from './code'
 import buildCss from './css'
 import buildDts from './dts'
@@ -34,16 +34,16 @@ export default async function build() {
     spinner.succeed(logger.info('starting build code successfully!'))
   }
 
-  // {
-  //   const spinner = ora(logger.info('starting build css', false)).start()
-  //   await buildCss()
-  //   spinner.succeed(logger.info('starting build css successfully!'))
-  // }
-
   {
     const spinner = ora(logger.info('starting build dts', false)).start()
     await buildDts()
     spinner.succeed(logger.info('starting build dts successfully!'))
+  }
+
+  {
+    const spinner = ora(logger.info('starting build css', false)).start()
+    await buildCss()
+    spinner.succeed(logger.info('starting build css successfully!'))
   }
 
   logger.success('build ui library successfully !')

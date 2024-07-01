@@ -1,4 +1,3 @@
-
 import type { AnyObject } from '@kpi-ui/types'
 import { flattenChildren, isFunction } from '@kpi-ui/utils'
 import { isValidElement, type ReactElement, type ReactNode } from 'react'
@@ -11,7 +10,7 @@ import { InternalFormFieldProps } from '../props'
 export default function normalizeChildren(
   collectInject: () => AnyObject,
   instance: InternalFormInstance,
-  control: FormFieldControl
+  control: FormFieldControl,
 ) {
   return function normalizeInner(children: InternalFormFieldProps['children']): {
     functional?: true

@@ -19,7 +19,7 @@ export function isInPopupChain(states: TooltipState, event: MouseEvent) {
 
 export function formatTriggerEvents(
   actions: Set<TriggerEvent>,
-  setOpen: ReturnType<typeof useTooltipOpen>[1]
+  setOpen: ReturnType<typeof useTooltipOpen>[1],
 ) {
   const events: [DOMAttributes<HTMLElement>, DOMAttributes<HTMLElement>][] = []
 

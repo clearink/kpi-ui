@@ -1,8 +1,8 @@
+import { withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { CSSTransition } from '_shared/components'
 import { SizeContext } from '_shared/contexts'
 import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
-import { withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { type ForwardedRef, forwardRef, useMemo } from 'react'
+import { forwardRef, useMemo, type ForwardedRef } from 'react'
 
 import SegmentedItem from './components/item'
 import useFormatClass from './hooks/use_format_class'
@@ -72,5 +72,5 @@ function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
 }
 
 export default withDisplayName(forwardRef(Segmented), 'Segmented') as <T>(
-  props: SegmentedProps<T> & React.RefAttributes<HTMLDivElement>
+  props: SegmentedProps<T> & React.RefAttributes<HTMLDivElement>,
 ) => JSX.Element

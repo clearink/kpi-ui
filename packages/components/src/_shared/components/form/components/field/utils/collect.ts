@@ -1,4 +1,3 @@
-
 import type { AnyObject } from '@kpi-ui/types'
 import { hasOwn, isFunction, isObjectLike, toArray } from '@kpi-ui/utils'
 
@@ -23,7 +22,7 @@ export default function collectInjectProps(
   props: InternalFormFieldProps,
   instance: InternalFormInstance,
   control: FormFieldControl,
-  internalHooks?: InternalHookReturn
+  internalHooks?: InternalHookReturn,
 ) {
   const {
     name,

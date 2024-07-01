@@ -34,7 +34,7 @@ const defaultProps: Partial<InternalFormProps> = {
 
 function InternalForm<State = any>(
   _props: InternalFormProps<State>,
-  ref: ForwardedRef<InternalFormInstance<State>>
+  ref: ForwardedRef<InternalFormInstance<State>>,
 ) {
   const props = withDefaults(_props, defaultProps)
 
@@ -101,5 +101,5 @@ function InternalForm<State = any>(
 }
 
 export default withDisplayName(forwardRef(InternalForm), 'InternalForm') as <State = any>(
-  props: InternalFormProps<State> & React.RefAttributes<InternalFormInstance<State>>
+  props: InternalFormProps<State> & React.RefAttributes<InternalFormInstance<State>>,
 ) => JSX.Element

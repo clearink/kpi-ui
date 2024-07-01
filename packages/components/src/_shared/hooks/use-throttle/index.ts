@@ -1,6 +1,5 @@
-
 import type { AnyFn } from '@kpi-ui/types'
-import { makeFrameTimeout,noop } from '@kpi-ui/utils'
+import { makeFrameTimeout, noop } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
 
 import { useEvent } from '../use-event'

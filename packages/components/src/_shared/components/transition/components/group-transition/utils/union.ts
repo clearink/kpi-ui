@@ -5,7 +5,7 @@ import type { ReactElement } from 'react'
 export default function union(
   map: Map<ReactElement['key'], { fresh: boolean; el: ReactElement }>,
   enters: Set<ReactElement['key']>,
-  children: ReactElement[]
+  children: ReactElement[],
 ) {
   let lastIndex = -1
 

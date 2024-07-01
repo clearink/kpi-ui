@@ -13,7 +13,7 @@ import { addTransitionClass, delTransitionClass, recoverTransitionClass } from '
 
 function CSSTransition<E extends HTMLElement>(
   props: CSSTransitionProps<E>,
-  ref: Ref<CSSTransitionRef<E>>
+  ref: Ref<CSSTransitionRef<E>>,
 ) {
   const { children, name, when, duration, onEnter, onEntering, onExit, onExiting } = props
 
@@ -104,7 +104,7 @@ function CSSTransition<E extends HTMLElement>(
 }
 
 export default withDisplayName(forwardRef(CSSTransition), 'CSSTransition') as <
-  E extends HTMLElement
+  E extends HTMLElement,
 >(
-  props: CSSTransitionProps<E> & React.RefAttributes<CSSTransitionRef<E>>
+  props: CSSTransitionProps<E> & React.RefAttributes<CSSTransitionRef<E>>,
 ) => JSX.Element | null

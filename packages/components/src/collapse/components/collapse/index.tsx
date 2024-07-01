@@ -85,7 +85,7 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
       unmountOnExit,
       collapsible,
       disabled,
-    ]
+    ],
   )
 
   return (
@@ -105,5 +105,5 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
 }
 
 export default withDisplayName(forwardRef(Collapse), 'Collapse') as <K extends ExpandedName>(
-  props: CollapseProps<K> & React.RefAttributes<HTMLDivElement>
+  props: CollapseProps<K> & React.RefAttributes<HTMLDivElement>,
 ) => JSX.Element

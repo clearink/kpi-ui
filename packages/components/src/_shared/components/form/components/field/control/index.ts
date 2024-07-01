@@ -24,7 +24,7 @@ export class FormFieldControl {
   public constructor(
     _forceUpdate: () => void,
     private _reset: () => void,
-    private mounted: () => boolean
+    private mounted: () => boolean,
   ) {
     this.forceUpdate = () => mounted() && _forceUpdate()
   }

@@ -41,7 +41,7 @@ function Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
       ...defaultProps,
       size: SizeContext.useState(),
       disabled: DisabledContext.useState(),
-    }
+    },
   )
 
   const { children, onClick, loading, disabled, variant, style, styles: _styles } = props

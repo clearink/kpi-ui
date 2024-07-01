@@ -29,7 +29,7 @@ function Checkbox(_props: CheckboxProps) {
     },
     {
       disabled: DisabledContext.useState(),
-    }
+    },
   )
 
   const { disabled, children } = props

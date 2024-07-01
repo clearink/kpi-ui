@@ -4,7 +4,7 @@ export function makeEventListener<E extends Node | Window, K extends keyof Event
   el: E,
   type: K,
   listener: (event: EventMap[K]) => any,
-  options?: AddEventListenerOptions | boolean
+  options?: AddEventListenerOptions | boolean,
 ) {
   el.addEventListener(type, listener as any, options)
 

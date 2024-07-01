@@ -6,7 +6,7 @@ import type { CollapseItemProps } from '../props'
 export default function useFormatClass(
   prefixCls: string,
   props: CollapseItemProps,
-  { ctx, expanded }: { ctx: CollapseContextState; expanded: boolean }
+  { ctx, expanded }: { ctx: CollapseContextState; expanded: boolean },
 ) {
   const { className, classNames, disabled } = props
 
@@ -18,28 +18,28 @@ export default function useFormatClass(
         [`${prefixCls}--expanded`]: expanded,
       },
       className,
-      classNames?.root
+      classNames?.root,
     ),
     header: cls(
       `${prefixCls}__header`,
       {
         [`${prefixCls}__collapsible`]: ctx.collapsible === 'header',
       },
-      classNames?.header
+      classNames?.header,
     ),
     icon: cls(
       `${prefixCls}__icon`,
       {
         [`${prefixCls}__collapsible`]: ctx.collapsible === 'icon',
       },
-      classNames?.icon
+      classNames?.icon,
     ),
     title: cls(
       `${prefixCls}__title`,
       {
         [`${prefixCls}__collapsible`]: ctx.collapsible === 'title',
       },
-      classNames?.title
+      classNames?.title,
     ),
     extra: cls(`${prefixCls}__extra`, classNames?.extra),
     content: cls(`${prefixCls}__content`, classNames?.content),

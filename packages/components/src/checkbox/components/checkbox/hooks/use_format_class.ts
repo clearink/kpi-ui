@@ -5,7 +5,7 @@ import type { CheckboxProps } from '../props'
 export default function useFormatClass(
   prefixCls: string,
   props: CheckboxProps,
-  others: Pick<CheckboxProps, 'checked' | 'disabled'>
+  others: Pick<CheckboxProps, 'checked' | 'disabled'>,
 ) {
   const { className, indeterminate } = props
 
@@ -18,6 +18,6 @@ export default function useFormatClass(
       [`${prefixCls}--disabled`]: disabled,
       [`${prefixCls}--indeterminate`]: indeterminate,
     },
-    className
+    className,
   )
 }

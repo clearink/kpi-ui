@@ -5,7 +5,7 @@ import type { CSSTransitionProps } from '../props'
 
 export default function useFormatClassNames(
   name: CSSTransitionProps['name'],
-  classNames: CSSTransitionProps['classNames'] = {}
+  classNames: CSSTransitionProps['classNames'] = {},
 ) {
   return useMemo(() => {
     const enter = {

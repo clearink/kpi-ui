@@ -15,7 +15,7 @@ export default function useFormatClass(prefixCls: string, props: SegmentedProps)
         [`${prefixCls}--lg`]: size === 'large',
       },
       className,
-      classNames.root
+      classNames.root,
     ),
     group: cls(`${prefixCls}__group`, classNames.group),
     thumb: cls(`${prefixCls}__thumb`, classNames.thumb),

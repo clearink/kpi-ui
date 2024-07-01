@@ -54,7 +54,7 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
       keepMounted: ctx.keepMounted,
       unmountOnExit: ctx.unmountOnExit,
       expandIcon: fallback(ctx.expandIcon, <CaretRightOutlined />),
-    }
+    },
   )
 
   const { name, title, extra, disabled, showExpandIcon, expandIcon, style, styles: _styles } = props

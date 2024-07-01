@@ -1,3 +1,3 @@
 // 按需引入
-import '../../style/entry.scss'
+import '../../style/index.scss'
 import './index.scss'

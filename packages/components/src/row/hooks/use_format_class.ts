@@ -12,6 +12,6 @@ export default function useFormatClass(prefixCls: string, props: RowProps) {
       [`${prefixCls}--${align}`]: align,
       [`${prefixCls}--wrap`]: wrap,
     },
-    className
+    className,
   )
 }

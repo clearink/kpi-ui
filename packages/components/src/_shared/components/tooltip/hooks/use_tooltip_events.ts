@@ -11,7 +11,7 @@ import type { TooltipState } from './use_tooltip_store'
 export default function useTooltipEvents(
   props: InternalTooltipProps,
   states: TooltipState,
-  setOpen: ReturnType<typeof useTooltipOpen>[1]
+  setOpen: ReturnType<typeof useTooltipOpen>[1],
 ) {
   const { trigger } = props
 
@@ -36,7 +36,7 @@ export default function useTooltipEvents(
       makeEventListener(thisWindow, 'mousedown', handler, true),
       makeEventListener(thisWindow, 'contextmenu', handler, true),
       shadowRoot && makeEventListener(shadowRoot, 'mousedown', handler, true),
-      shadowRoot && makeEventListener(shadowRoot, 'contextmenu', handler, true)
+      shadowRoot && makeEventListener(shadowRoot, 'contextmenu', handler, true),
     )
   }, [states, clickToHide, setOpen])
 

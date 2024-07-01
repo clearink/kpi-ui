@@ -12,6 +12,6 @@ export default function useFormatClass(prefixCls: string, props: FormProps) {
       [`${prefixCls}--hide-required-mark`]: !requiredMark,
       [`${prefixCls}--${size}`]: size,
     },
-    className
+    className,
   )
 }

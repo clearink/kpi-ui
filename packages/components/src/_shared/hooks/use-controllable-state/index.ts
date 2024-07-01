@@ -1,5 +1,5 @@
 import { isFunction, isUndefined, shallowUnequal } from '@kpi-ui/utils'
-import { type Dispatch, type SetStateAction,useState } from 'react'
+import { type Dispatch, type SetStateAction, useState } from 'react'
 
 import { useEvent } from '../use-event'
 

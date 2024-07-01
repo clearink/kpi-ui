@@ -39,7 +39,10 @@ export class TransitionState<E extends HTMLElement> {
 }
 
 export class TransitionAction<E extends HTMLElement> {
-  constructor(private forceUpdate: () => void, private states: TransitionState<E>) {}
+  constructor(
+    private forceUpdate: () => void,
+    private states: TransitionState<E>,
+  ) {}
 
   runCleanupHook = () => {
     this.states.cleanupHook?.()

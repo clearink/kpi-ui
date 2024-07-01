@@ -30,7 +30,7 @@ export default function useFormatClass(prefixCls: string, props: ButtonProps) {
         [`${prefixCls}--disabled`]: disabled,
       },
       className,
-      classNames.root
+      classNames.root,
     ),
     icon: cls(`${prefixCls}__icon`, classNames.icon),
     text: cls(`${prefixCls}__text`, classNames.text),

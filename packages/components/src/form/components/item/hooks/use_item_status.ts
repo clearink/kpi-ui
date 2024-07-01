@@ -9,7 +9,7 @@ export default function useFormItemStatus() {
     logger(
       isUndefined(validateStatus),
       'Form.Item',
-      `Form.Item.useStatus should be used under Form.Item component`
+      `Form.Item.useStatus should be used under Form.Item component`,
     )
   }
 

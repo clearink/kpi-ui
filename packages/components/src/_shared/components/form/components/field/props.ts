@@ -22,7 +22,7 @@ export interface InternalFormFieldProps<S = any> {
     | ((
         control: AnyObject,
         meta: InternalFieldMeta,
-        formInstance: ExternalFormInstance<S>
+        formInstance: ExternalFormInstance<S>,
       ) => React.ReactNode)
 
   /**

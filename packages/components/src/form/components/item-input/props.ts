@@ -13,6 +13,6 @@ export interface FormItemInputProps {
   getOuter: () => HTMLDivElement | null
   children: (
     onMetaChange: (meta: FieldMeta) => void,
-    onSubMetaChange: (meta: FieldMeta) => void
+    onSubMetaChange: (meta: FieldMeta) => void,
   ) => ReactNode
 }

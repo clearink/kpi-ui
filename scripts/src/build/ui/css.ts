@@ -1,24 +1,114 @@
-import path from 'node:path'
-
-import commonjs from '@rollup/plugin-commonjs'
-import resolve from '@rollup/plugin-node-resolve'
 import autoprefixer from 'autoprefixer'
 import cssnano from 'cssnano'
-import { glob } from 'fast-glob'
+import glob from 'fast-glob'
 import fse from 'fs-extra'
+import path from 'path'
 import postcss from 'postcss'
-import { rollup } from 'rollup'
 import sass from 'sass'
+import tsm from 'ts-morph'
 
-import { constants } from '../../utils/helpers'
+import { constants, getPkgJson, removeExtname, safeWriteFile } from '../../utils/helpers'
 
 export default async function build() {
-  // const entries: Record<string, string> = {}
-  // const root = constants.resolveCwd('src')
-  // glob.sync(['**/style/index.ts{,x}', '**/style/index.scss'], { cwd: root }).forEach((file) => {
-  //   const name = constants.removeExtname(file)
-  //   entries[name] = path.resolve(root, file)
-  // })
+  const root = constants.resolveCwd('src')
+
+  // copy style source files
+  await Promise.all(
+    glob
+      .sync('**/*.{sc,c,sa}ss', {
+        ignore: ['**/__tests__', '**/_demo', '**/_design'],
+        cwd: root,
+      })
+      .map((file) => {
+        const filepath = path.resolve(root, file)
+        return Promise.all([
+          fse.copy(filepath, constants.resolveEsm(file)),
+          fse.copy(filepath, constants.resolveCjs(file)),
+        ])
+      }),
+  )
+
+  // build comps css entry
+  await Promise.all(
+    glob
+      .sync('**/style/index.{sc,c,sa}ss', {
+        ignore: ['**/__tests__', '**/_demo', '**/_design'],
+        cwd: root,
+      })
+      .map((file) => {
+        const filename = removeExtname(file)
+
+        const sourcePath = path.resolve(root, file)
+
+        return sass.compileAsync(sourcePath).then(async ({ css }) => {
+          return Promise.all([
+            safeWriteFile(constants.resolveEsm(`${filename}.css`), css),
+            safeWriteFile(constants.resolveCjs(`${filename}.css`), css),
+          ])
+        })
+      }),
+  )
+
+  // transform babel-plugin-import helpers
+  {
+    const project = new tsm.Project({
+      skipAddingFilesFromTsConfig: true,
+      compilerOptions: {
+        allowJs: true,
+      },
+    })
+
+    glob
+      .sync('**/style/index.ts{,x}', {
+        ignore: ['**/__tests__', '**/_demo', '**/_design'],
+        cwd: root,
+      })
+      .forEach((file) => {
+        const filename = removeExtname(file)
+
+        const filepath = path.resolve(root, file)
+
+        const sourceFile = project.addSourceFileAtPath(filepath)
+
+        sourceFile.getImportDeclarations().forEach((node) => {
+          const text = node.getModuleSpecifierValue()
+
+          const filename = removeExtname(text)
+
+          node.setModuleSpecifier(`${filename}.css`)
+        })
+
+        const sourceText = sourceFile.getText()
+
+        safeWriteFile(constants.resolveEsm(path.dirname(filename), `css.js`), sourceText)
+        safeWriteFile(constants.resolveCjs(path.dirname(filename), `css.js`), sourceText)
+      })
+  }
+
+  // build all style file
+  {
+    const processor = postcss([autoprefixer(), cssnano({ preset: 'default' })])
+
+    const pkgJson = await getPkgJson()
+
+    sass
+      .compileAsync(path.resolve(root, 'style', 'components.scss'))
+      .then(async (res) => {
+        await safeWriteFile(constants.resolveUmd(`${pkgJson.name || 'style'}.css`), res.css)
+        return processor.process(res.css)
+      })
+      .then((res) => {
+        return safeWriteFile(constants.resolveUmd(`${pkgJson.name || 'style'}.min.css`), res.css)
+      })
+
+    // .forEach((file) => {
+    //   const filepath = path.resolve(constants.esm, file)
+    //   const str = fse.readFileSync(filepath, { encoding: 'utf-8' })
+    //   fse.ensureFileSync(constants.resolveUmd('kpi-ui.css'))
+    //   fse.appendFileSync(constants.resolveUmd('kpi-ui.css'), str)
+    // })
+  }
+
   // const bundle = await rollup({
   //   input: entries,
   //   plugins: [

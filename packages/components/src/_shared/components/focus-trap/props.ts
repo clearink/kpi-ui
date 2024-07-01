@@ -1,4 +1,3 @@
-
 import type { SemanticStyledProps } from '@kpi-ui/types'
 import type { ReactElement } from 'react'
 

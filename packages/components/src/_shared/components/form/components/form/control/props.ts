@@ -80,7 +80,7 @@ export interface InternalFormInstance<S = any> {
    * @zh 获取一组字段错误信息
    */
   getFieldsError: (
-    fields?: ExternalNamePath[]
+    fields?: ExternalNamePath[],
   ) => Pick<InternalFieldData, 'errors' | 'name' | 'warnings'>[]
 
   /**

@@ -31,7 +31,10 @@ export class SegmentedState {
 }
 
 export class SegmentedAction {
-  constructor(private forceUpdate: () => void, private states: SegmentedState) {}
+  constructor(
+    private forceUpdate: () => void,
+    private states: SegmentedState,
+  ) {}
 
   setItem = (value: SegmentedType, el: HTMLElement | null) => {
     const { items } = this.states

@@ -12,7 +12,7 @@ export default function PageItem(props: PagerProps) {
       [`${prefix}-item--active`]: active,
       [`${prefix}-item--disabled`]: disabled,
     },
-    className
+    className,
   )
 
   const title = useMemo(() => (showHtmlTitle ? `${page}` : undefined), [page, showHtmlTitle])

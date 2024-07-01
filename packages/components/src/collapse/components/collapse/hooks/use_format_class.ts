@@ -16,7 +16,7 @@ export default function useFormatClass(prefixCls: string, props: CollapseProps) 
         [`${prefixCls}--lg`]: size === 'large',
       },
       className,
-      classNames?.root
+      classNames?.root,
     ),
   }
 }

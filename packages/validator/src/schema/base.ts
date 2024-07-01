@@ -13,7 +13,7 @@ import type {
   ValidateReturn,
 } from '../interface'
 import { base, union } from '../locales/default'
-import { Invalid, makeRule,Valid } from '../make_rule'
+import { Invalid, makeRule, Valid } from '../make_rule'
 
 /** ========================================================================== */
 /** ========================================================================== */
@@ -85,15 +85,15 @@ export default abstract class BaseSchema<Out = any, In = Out> {
   // refine 自定义验证
   refine<Next extends Out>(
     rule: (value: Out) => value is Next,
-    message?: Message
+    message?: Message,
   ): EffectSchema<this, Next>
   refine(
     rule: (value: Out) => boolean | Promise<boolean>,
-    message?: Message
+    message?: Message,
   ): EffectSchema<this, Out>
   refine(
     rule: (value: Out) => boolean | Promise<boolean>,
-    message: Message = base.invalid
+    message: Message = base.invalid,
   ): EffectSchema<this, Out> {
     return EffectSchema.refinement(this, rule, message)
   }
@@ -117,13 +117,13 @@ export default abstract class BaseSchema<Out = any, In = Out> {
 export class EffectSchema<
   T extends BaseSchema<any>,
   Out = T['_Out'],
-  In = T['_In']
+  In = T['_In'],
 > extends BaseSchema<Out, In> {
   // 数据转换 <NewOut>(value:Out) => NewOut | Promise<NewOut>
   // 可以改变数据类型
   static transform<S extends BaseSchema, Next = S['_Out']>(
     schema: S,
-    handler: (value: S['_Out']) => Next | Promise<Next>
+    handler: (value: S['_Out']) => Next | Promise<Next>,
   ) {
     return new EffectSchema(schema, { type: 'transform', handler })
   }
@@ -132,7 +132,7 @@ export class EffectSchema<
   static refinement<S extends BaseSchema, Out = S['_Out']>(
     schema: S,
     rule: (value: Out) => boolean | Promise<boolean>,
-    message: Message
+    message: Message,
   ) {
     const handler = makeRule(rule, message)
     return new EffectSchema(schema, { type: 'refinement', handler })
@@ -141,7 +141,7 @@ export class EffectSchema<
   // 改变后才进行校验
   static preprocess<S extends BaseSchema, Next = S['_Out']>(
     schema: S,
-    handler: (value: S['_Out']) => Next | Promise<Next>
+    handler: (value: S['_Out']) => Next | Promise<Next>,
   ) {
     return new EffectSchema(schema, { type: 'preprocess', handler })
   }
@@ -149,7 +149,7 @@ export class EffectSchema<
   // 必填
   static required<S extends BaseSchema>(
     schema: S,
-    handler: (value: S['_Out'], context: Context) => Promise<RuleReturn<S['_Out']>>
+    handler: (value: S['_Out'], context: Context) => Promise<RuleReturn<S['_Out']>>,
   ) {
     return new EffectSchema(schema, { type: 'required', handler })
   }
@@ -163,7 +163,10 @@ export class EffectSchema<
     return this.options.type
   }
 
-  constructor(private schema: T, private options: EffectOptions<Out>) {
+  constructor(
+    private schema: T,
+    private options: EffectOptions<Out>,
+  ) {
     super()
   }
 
@@ -222,7 +225,7 @@ export type UnionInnerReturn<T> = (readonly [Context, RuleReturn<T>])[]
 export class UnionSchema<
   T extends UnionInput,
   Out = T[number]['_Out'] | undefined,
-  In = T[number]['_In'] | undefined
+  In = T[number]['_In'] | undefined,
 > extends BaseSchema<Out, In> {
   static create<U extends UnionInput>(inner: U) {
     return new UnionSchema(inner)
@@ -247,7 +250,7 @@ export class UnionSchema<
         } catch (error) {
           return [ctx, error as InValidType]
         }
-      })
+      }),
     )
 
     // 存在合法的就返回
