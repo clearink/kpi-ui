@@ -10,7 +10,8 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint --ext .ts,.tsx",
-    "dev": "pnpm -F @kpi-ui/playground dev"
+    "dev": "pnpm -F @kpi-ui/playground dev",
+    "build": "pnpm -F kpi-ui build"
   },
   "peerDependencies": {
     "react": "^18.2.0",
