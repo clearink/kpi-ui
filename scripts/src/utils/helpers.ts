@@ -104,32 +104,10 @@ export const logger = {
   },
 }
 
-export function findBestAlias(moduleName: string, alias: typeof constants.alias) {
-  const getMatchCount = (text: string) => {
-    let count = 0
-
-    const len = Math.min(moduleName.length, text.length)
-
-    for (let i = 0; i < len; i++) {
-      if (moduleName[i] !== text[i]) return count
-      count += 1
-    }
-
-    return count
+export function aliasMatches(pattern: string, target: string) {
+  if (pattern.length > target.length) {
+    return false
   }
 
-  const bestMatch: [number, number] = [-1, -1]
-
-  alias.forEach(({ find }, i) => {
-    if (!moduleName.startsWith(find)) return
-
-    const maxCount = getMatchCount(find)
-
-    if (bestMatch[1] > maxCount) return
-
-    bestMatch[0] = i
-    bestMatch[1] = maxCount
-  })
-
-  return bestMatch[0] === -1 ? null : alias[bestMatch[0]]
+  return pattern === target || target.startsWith(pattern + '/')
 }

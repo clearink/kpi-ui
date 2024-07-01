@@ -1,6 +1,6 @@
 import path from 'path'
 import glob from 'fast-glob'
-import { constants, findBestAlias } from '../../utils/helpers'
+import { constants, aliasMatches } from '../../utils/helpers'
 import tsm from 'ts-morph'
 import fse from 'fs-extra'
 import slash from 'slash'
@@ -33,7 +33,7 @@ export default async function buildDts() {
 
     if (isExternal) return
 
-    const matched = findBestAlias(text, constants.alias)
+    const matched = constants.alias.find((e) => aliasMatches(e.find, text))
 
     if (!matched) return
 

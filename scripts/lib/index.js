@@ -39,7 +39,7 @@ async function buildDts() {
       return e instanceof RegExp ? e.test(text) : text.startsWith(e);
     });
     if (isExternal) return;
-    const matched = helpers.findBestAlias(text, helpers.constants.alias);
+    const matched = helpers.constants.alias.find(e => helpers.aliasMatches(e.find, text));
     if (!matched) return;
     let rel = path.relative(path.dirname(filepath), matched.replacement);
     if (!rel.startsWith('.')) rel = './' + rel;
