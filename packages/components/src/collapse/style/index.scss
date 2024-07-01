@@ -126,7 +126,8 @@ $comp: #{$prefix}-collapse;
     &-exit-active {
       overflow: hidden;
       will-change: opacity, height;
-      transition: opacity var(--#{$prefix}-motion-duration-2) var(--#{$prefix}-motion-ease-in-out),
+      transition:
+        opacity var(--#{$prefix}-motion-duration-2) var(--#{$prefix}-motion-ease-in-out),
         height var(--#{$prefix}-motion-duration-2) var(--#{$prefix}-motion-ease-in-out);
     }
   }

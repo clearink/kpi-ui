@@ -7,6 +7,6 @@
     "paths": {
       "@/*": ["src/*"],
       "_shared/*": ["src/_shared/*"]
-    },
+    }
   }
 }

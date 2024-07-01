@@ -21,7 +21,7 @@ export default defineConfig({
     resolve({ extensions }),
     babel({
       babelrc: false,
-      comments:false,
+      comments: false,
       babelHelpers: 'bundled',
       extensions,
       presets: [

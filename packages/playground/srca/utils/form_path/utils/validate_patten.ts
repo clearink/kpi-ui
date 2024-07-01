@@ -32,7 +32,7 @@ export default function validatePatten($input: string) {
 
   // 不满足数组元素匹配
   const hasErrorItem = Array.from(input.matchAll(/\w\[(.*?)\]/g)).some(
-    (item) => !/^\d+$/.test(item[1])
+    (item) => !/^\d+$/.test(item[1]),
   )
   if (hasErrorItem) throw new Error('数组元素匹配错误') // 17 18
 

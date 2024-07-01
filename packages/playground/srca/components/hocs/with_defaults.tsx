@@ -14,7 +14,7 @@ type SomeDefault<T extends object> = Readonly<Partial<T>>
  */
 export default function withDefaults<P extends object, D extends SomeDefault<P> = SomeDefault<P>>(
   WrappedComponent: ComponentType<P>,
-  defaultProps?: D
+  defaultProps?: D,
 ) {
   WrappedComponent.defaultProps = defaultProps
 

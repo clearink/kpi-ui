@@ -55,7 +55,8 @@ $comp: #{$prefix}-badge;
     &-exit-active {
       overflow: hidden;
       will-change: opacity, width;
-      transition: opacity var(--kpi-motion-duration-3) var(--kpi-motion-ease-in-out),
+      transition:
+        opacity var(--kpi-motion-duration-3) var(--kpi-motion-ease-in-out),
         width var(--kpi-motion-duration-3) var(--kpi-motion-ease-in-out);
     }
   }
