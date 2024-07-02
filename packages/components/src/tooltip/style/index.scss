@@ -9,13 +9,13 @@ $comp: #{$prefix}-tooltip;
   @include reset-component();
 
   position: absolute;
-  border-radius: var(--#{$prefix}-border-radius);
-  padding: $kpi-tooltip-px $kpi-tooltip-py;
   width: max-content;
   min-width: 1em;
   max-width: $kpi-tooltip-max-width;
+  padding: $kpi-tooltip-px $kpi-tooltip-py;
   color: var(--#{$prefix}-color-text-light-solid);
   background-color: var(--#{$prefix}-color-bg-spot-light);
+  border-radius: var(--#{$prefix}-border-radius);
   box-shadow: var(--#{$prefix}-box-shadow-secondary);
   transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
   will-change: transform;
@@ -24,19 +24,19 @@ $comp: #{$prefix}-tooltip;
 .#{$comp}__arrow {
   position: absolute;
   z-index: -1;
-  pointer-events: none;
   width: $kpi-tooltip-arrow-size;
   height: $kpi-tooltip-arrow-size;
-  clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
   box-shadow: var(--#{$prefix}-box-shadow-secondary);
+  clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+  pointer-events: none;
 
   &::before {
-    content: '';
     display: block;
     width: 50%;
     height: 50%;
-    transform: translate3d(50%, 50%, 0) rotate(45deg);
-    border-bottom-right-radius: 2px;
     background-color: var(--#{$prefix}-color-bg-spot-light);
+    border-bottom-right-radius: 2px;
+    transform: translate3d(50%, 50%, 0) rotate(45deg);
+    content: '';
   }
 }

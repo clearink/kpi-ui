@@ -1,6 +1,6 @@
 @mixin form-item-tip() {
   clear: both;
-  font-size: var(--#{$prefix}-font-size-default);
   color: var(--#{$prefix}-color-text-secondary);
+  font-size: var(--#{$prefix}-font-size-default);
   will-change: transform, height, opacity;
 }

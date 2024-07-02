@@ -21,11 +21,11 @@ $comp: #{$prefix}-checkbox;
 .#{$comp}__original {
   position: absolute;
   z-index: -1;
-  margin: 0;
   width: 0;
   height: 0;
-  opacity: 0;
+  margin: 0;
   outline: none;
+  opacity: 0;
 
   &:focus-visible + .#{$comp}__input {
     outline-color: var(--#{$prefix}-color-primary-active);
@@ -37,28 +37,28 @@ $comp: #{$prefix}-checkbox;
   position: relative;
   z-index: 1;
   display: inline-block;
-  border: 1px solid var(--#{$prefix}-color-border);
-  border-radius: var(--#{$prefix}-border-radius-sm);
+  box-sizing: border-box;
   width: $kpi-checkbox-input-width;
   height: $kpi-checkbox-input-height;
   background-color: var(--#{$prefix}-color-bg-base);
+  border: 1px solid var(--#{$prefix}-color-border);
+  border-radius: var(--#{$prefix}-border-radius-sm);
   outline: transparent solid $kpi-checkbox-outline-width;
   transition: $kpi-checkbox-input-transition;
-  box-sizing: border-box;
 
   &::after {
     position: absolute;
     top: 50%;
     left: calc($kpi-checkbox-arrow-width / 2);
+    box-sizing: border-box;
+    width: $kpi-checkbox-arrow-width;
+    height: $kpi-checkbox-arrow-height;
     border: 2px solid var(--#{$prefix}-color-white);
     border-top: 0;
     border-left: 0;
-    width: $kpi-checkbox-arrow-width;
-    height: $kpi-checkbox-arrow-height;
+    transform: scale(0) rotate(45deg) translate(-50%, -50%);
     transition: $kpi-checkbox-arrow-transition-enter;
     content: '';
-    box-sizing: border-box;
-    transform: scale(0) rotate(45deg) translate(-50%, -50%);
   }
 }
 
@@ -69,8 +69,8 @@ $comp: #{$prefix}-checkbox;
 
 .#{$comp}--checked {
   .#{$comp}__input {
-    border-color: var(--#{$prefix}-color-primary);
     background-color: var(--#{$prefix}-color-primary);
+    border-color: var(--#{$prefix}-color-primary);
 
     &::after {
       transform: scale(1) rotate(45deg) translate(-50%, -50%);

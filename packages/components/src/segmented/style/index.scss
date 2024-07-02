@@ -9,17 +9,17 @@ $comp: #{$prefix}-segmented;
   @include reset-component();
 
   display: inline-block;
-  border-radius: $kpi-segmented-border-radius;
   padding: $kpi-segmented-padding;
   color: var(--#{$prefix}-color-text-label);
   background: var(--#{$prefix}-color-bg-layout);
+  border-radius: $kpi-segmented-border-radius;
   transition: all var(--#{$prefix}-motion-duration-2) var(--#{$prefix}-motion-ease-in-out);
 
   &__group {
     position: relative;
     display: flex;
-    justify-content: flex-start;
     align-items: stretch;
+    justify-content: flex-start;
     width: 100%;
   }
 
@@ -27,20 +27,20 @@ $comp: #{$prefix}-segmented;
     @include reset-component();
 
     position: relative;
-    border-radius: $kpi-segmented-border-radius;
     text-align: center;
-    transition: color var(--#{$prefix}-motion-duration-2) var(--#{$prefix}-motion-ease-in-out);
-    cursor: pointer;
+    border-radius: $kpi-segmented-border-radius;
     transform: translateZ(0);
+    cursor: pointer;
+    transition: color var(--#{$prefix}-motion-duration-2) var(--#{$prefix}-motion-ease-in-out);
 
     &::after {
       position: absolute;
       top: 0;
       left: 0;
       z-index: -1;
-      border-radius: inherit;
       width: 100%;
       height: 100%;
+      border-radius: inherit;
       transition: background-color var(--#{$prefix}-motion-duration-2)
         var(--#{$prefix}-motion-ease-in-out);
       content: '';
@@ -86,21 +86,21 @@ $comp: #{$prefix}-segmented;
   }
 
   &-item__label {
-    overflow: hidden;
-    padding: 0 $kpi-segmented-px;
     min-height: $kpi-segmented-height;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    padding: 0 $kpi-segmented-px;
+    overflow: hidden;
     line-height: $kpi-segmented-height;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   &__thumb {
     position: absolute;
-    border-radius: $kpi-segmented-border-radius;
-    padding: $kpi-segmented-padding 0;
     width: 0;
     height: 100%;
+    padding: $kpi-segmented-padding 0;
     background-color: var(--#{$prefix}-color-bg-elevated);
+    border-radius: $kpi-segmented-border-radius;
     box-shadow: var(--#{$prefix}-box-shadow-tertiary);
 
     & ~ .#{$comp}-item:not(.#{$comp}-item--selected):not(.#{$comp}-item--disabled)::after {
@@ -110,11 +110,11 @@ $comp: #{$prefix}-segmented;
 
   &-thumb-motion {
     &-enter-active {
-      user-select: none;
-      will-change: transform, width;
       transition:
         transform var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-ease-in-out),
         width var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-ease-in-out);
+      user-select: none;
+      will-change: transform, width;
     }
   }
 
@@ -130,8 +130,8 @@ $comp: #{$prefix}-segmented;
   &--lg {
     border-radius: $kpi-segmented-border-radius-lg;
     .#{$comp}-item__label {
-      padding: 0 $kpi-segmented-px-lg;
       min-height: $kpi-segmented-height-lg;
+      padding: 0 $kpi-segmented-px-lg;
       font-size: var(--#{$prefix}-font-size-lg);
       line-height: $kpi-segmented-height-lg;
     }
@@ -145,8 +145,8 @@ $comp: #{$prefix}-segmented;
   &--sm {
     border-radius: $kpi-segmented-border-radius-sm;
     .#{$comp}-item__label {
-      padding: 0 $kpi-segmented-px-sm;
       min-height: $kpi-segmented-height-sm;
+      padding: 0 $kpi-segmented-px-sm;
       line-height: $kpi-segmented-height-sm;
     }
 

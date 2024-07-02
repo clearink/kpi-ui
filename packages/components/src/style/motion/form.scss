@@ -3,8 +3,8 @@
 .#{$prefix}-form-item-message-error {
   &-enter-from,
   &-exit-to {
-    opacity: 0;
     transform: translate3d(0, -5px, 0);
+    opacity: 0;
   }
 
   &-enter-active,

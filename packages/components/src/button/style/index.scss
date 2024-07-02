@@ -33,28 +33,27 @@ $comp: #{$prefix}-button;
   @include btn-base();
   @include btn-radius(var(--#{$prefix}-border-radius));
 
+  // size
+  height: var(--#{$prefix}-btn-height);
+  padding: var(--#{$prefix}-btn-padding);
+  color: var(--#{$prefix}-btn-color-text);
+  font-size: var(--#{$prefix}-btn-font);
+  background-color: var(--#{$prefix}-btn-color-bg);
   border-color: var(--#{$prefix}-btn-color-border);
 
   // shape
   border-radius: var(--#{$prefix}-btn-radius);
-  padding: var(--#{$prefix}-btn-padding);
-
-  // size
-  height: var(--#{$prefix}-btn-height);
-  font-size: var(--#{$prefix}-btn-font);
-  color: var(--#{$prefix}-btn-color-text);
-  background-color: var(--#{$prefix}-btn-color-bg);
 
   &:hover {
-    border-color: var(--#{$prefix}-btn-color-border-hover);
     color: var(--#{$prefix}-btn-color-text-hover);
     background-color: var(--#{$prefix}-btn-color-bg-hover);
+    border-color: var(--#{$prefix}-btn-color-border-hover);
   }
 
   &:active {
-    border-color: var(--#{$prefix}-btn-color-border-active);
     color: var(--#{$prefix}-btn-color-text-active);
     background-color: var(--#{$prefix}-btn-color-bg-active);
+    border-color: var(--#{$prefix}-btn-color-border-active);
   }
 
   &:focus-visible {

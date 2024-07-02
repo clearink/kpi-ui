@@ -3,16 +3,16 @@
 @mixin btn-base() {
   position: relative;
   display: inline-flex;
-  justify-content: center;
   align-items: center;
-  border: $kpi-btn-border;
+  justify-content: center;
   font-weight: var(--#{$prefix}-font-weight-regular);
-  text-align: center;
   white-space: nowrap;
-  outline: transparent solid $kpi-btn-outline-width;
-  transition: $kpi-btn-transition;
+  text-align: center;
   background-image: none;
+  border: $kpi-btn-border;
+  outline: transparent solid $kpi-btn-outline-width;
   cursor: pointer;
+  transition: $kpi-btn-transition;
   user-select: none;
   touch-action: manipulation;
 
@@ -39,8 +39,8 @@
 }
 
 @mixin btn-size($height, $padding, $font) {
-  padding: $padding;
   height: $height;
+  padding: $padding;
   font-size: $font;
 }
 

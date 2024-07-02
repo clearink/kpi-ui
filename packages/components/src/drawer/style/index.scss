@@ -10,38 +10,38 @@ $comp: #{$prefix}-drawer;
 
   position: relative;
   top: 100px;
-  margin: 0 auto;
-  padding-bottom: var(--#{$prefix}-unit-6);
   width: 520px;
   max-width: calc(100vw - var(--#{$prefix}-unit-8));
+  margin: 0 auto;
+  padding-bottom: var(--#{$prefix}-unit-6);
   pointer-events: none;
 
   &__close {
     position: absolute;
     top: var(--#{$prefix}-unit-5);
     right: var(--#{$prefix}-unit-6);
-    border: 0;
-    padding: 0;
     width: var(--#{$prefix}-unit-4);
     height: var(--#{$prefix}-unit-4);
+    padding: 0;
 
     // color: ;
     text-decoration: none;
     background-color: transparent;
+    border: 0;
     cursor: pointer;
 
     &:focus-visible {
       outline-width: var(--#{$prefix}-line-width);
-      outline-offset: calc(var(--#{$prefix}-unit-1) - var(--#{$prefix}-line-width));
       outline-color: var(--#{$prefix}-color-primary);
+      outline-offset: calc(var(--#{$prefix}-unit-1) - var(--#{$prefix}-line-width));
     }
   }
 
   &__main {
     position: relative;
-    border-radius: var(--#{$prefix}-border-radius);
     padding: var(--#{$prefix}-unit-5) var(--#{$prefix}-unit-6);
     background-color: var(--#{$prefix}-color-bg-container);
+    border-radius: var(--#{$prefix}-border-radius);
     box-shadow: var(--#{$prefix}-box-shadow);
     pointer-events: auto;
   }
@@ -53,9 +53,9 @@ $comp: #{$prefix}-drawer;
   &__title {
     display: inline-block;
     margin-right: var(--#{$prefix}-unit-3);
-    font-size: var(--#{$prefix}-font-size);
-    font-weight: var(--#{$prefix}-font-weight-strong);
     color: var(--#{$prefix}-color-text);
+    font-weight: var(--#{$prefix}-font-weight-strong);
+    font-size: var(--#{$prefix}-font-size);
     line-height: var(--#{$prefix}-line-height);
     word-wrap: break-word;
   }
@@ -77,8 +77,8 @@ $comp: #{$prefix}-drawer;
   &-mask {
     @include full-screen();
 
-    pointer-events: none;
     background-color: var(--#{$prefix}-color-bg-mask);
+    pointer-events: none;
   }
 
   &-wrap {

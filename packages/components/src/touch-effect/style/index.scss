@@ -9,12 +9,12 @@ $comp: #{$prefix}-touch-effect;
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: inherit;
-  opacity: 0.25;
-  box-shadow: 0 0 0 0 var(--wave-color);
-  pointer-events: none;
   box-sizing: border-box;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 var(--wave-color);
+  opacity: 0.25;
   animation: #{$prefix}-wave 2s var(--#{$prefix}-motion-ease-out-circ);
+  pointer-events: none;
 
   @keyframes #{$prefix}-wave {
     0% {
@@ -26,8 +26,8 @@ $comp: #{$prefix}-touch-effect;
     }
 
     100% {
-      opacity: 0;
       box-shadow: 0 0 0 6px var(--wave-color);
+      opacity: 0;
     }
   }
 }

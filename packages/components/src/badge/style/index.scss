@@ -16,20 +16,20 @@ $comp: #{$prefix}-badge;
     top: 0;
     right: 0;
     display: inline-block;
-    border-radius: $kpi-badge-indicator-radius;
-    padding: 0 var(--#{$prefix}-unit-2);
     height: $kpi-badge-indicator-height;
+    padding: 0 var(--#{$prefix}-unit-2);
     color: var(--#{$prefix}-color-bg-container);
+    line-height: $kpi-badge-indicator-height;
     background-color: var(--#{$prefix}-color-error);
+    border-radius: $kpi-badge-indicator-radius;
     transform: translate(50%, -50%);
     transform-origin: 100% 0%;
-    line-height: $kpi-badge-indicator-height;
   }
 
   &-scroll-group {
     display: inline-block;
-    overflow: hidden;
     height: 100%;
+    overflow: hidden;
   }
 
   &-scroll-number {
@@ -39,8 +39,8 @@ $comp: #{$prefix}-badge;
 
   &-scroll-number-motion {
     &-enter-active {
-      will-change: transform;
       transition: transform var(--kpi-motion-duration-3) var(--kpi-motion-ease-in-out);
+      will-change: transform;
     }
   }
 
@@ -53,10 +53,10 @@ $comp: #{$prefix}-badge;
     &-enter-active,
     &-exit-active {
       overflow: hidden;
-      will-change: opacity, width;
       transition:
         opacity var(--kpi-motion-duration-3) var(--kpi-motion-ease-in-out),
         width var(--kpi-motion-duration-3) var(--kpi-motion-ease-in-out);
+      will-change: opacity, width;
     }
   }
 }

@@ -18,10 +18,10 @@ $comp: #{$prefix}-form;
 
 .#{$comp}-item__label {
   display: inline-block;
-  overflow: hidden;
-  text-align: right;
-  white-space: nowrap;
   flex-grow: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: right;
   vertical-align: middle;
 
   > label {
@@ -30,14 +30,14 @@ $comp: #{$prefix}-form;
     align-items: center;
     max-width: 100%;
     height: var(--#{$prefix}-unit-8);
-    font-size: var(--#{$prefix}-font-size);
     color: var(--#{$prefix}-color-text);
+    font-size: var(--#{$prefix}-font-size);
 
     &::after {
-      content: '\a0';
       position: relative;
       top: -0.5px;
       margin: $form-item-label-colon-margin;
+      content: '\a0';
     }
   }
 
@@ -45,10 +45,10 @@ $comp: #{$prefix}-form;
     > label::before {
       display: inline-block;
       margin-right: 4px;
-      font-size: var(--#{$prefix}-font-size);
       color: var(--#{$prefix}-color-error);
-      content: '*';
+      font-size: var(--#{$prefix}-font-size);
       line-height: 1;
+      content: '*';
     }
   }
 

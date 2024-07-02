@@ -1,10 +1,10 @@
 @mixin reset-component() {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  color: var(--#{$prefix}-color-text);
   font-size: var(--#{$prefix}-font-size);
   font-family: var(--#{$prefix}-font-family);
-  color: var(--#{$prefix}-color-text);
-  list-style: none;
-  box-sizing: border-box;
   line-height: var(--#{$prefix}-line-height);
+  list-style: none;
 }

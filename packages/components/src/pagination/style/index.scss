@@ -14,11 +14,11 @@ $comp: #{$prefix}-pagination;
 .#{$comp}__item {
   position: relative;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 0 12px;
+  justify-content: center;
   min-width: 32px;
   height: 32px;
+  padding: 0 12px;
   background-color: #f5f5f5;
   cursor: pointer;
   user-select: none;
@@ -32,15 +32,15 @@ $comp: #{$prefix}-pagination;
 
 .#{$comp}__active {
   position: absolute;
-  inset: 2px 0;
   z-index: 1;
-  border-radius: 4px;
   background-color: #fff;
+  border-radius: 4px;
   box-shadow:
     1px 2px 0 rgb(0 0 0 / 3%),
     0 1px 6px -1px rgb(0 0 0 / 2%),
     0 2px 4px 0 rgb(0 0 0 / 2%);
   pointer-events: none;
+  inset: 2px 0;
 }
 
 .#{$comp}__text {

@@ -57,6 +57,7 @@
     "react-dom": "^18.2.0",
     "sass": "^1.58.3",
     "stylelint": "^16.6.1",
+    "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard-scss": "^13.1.0",
     "stylelint-order": "^6.0.4",
     "tslib": "^2.5.0",
