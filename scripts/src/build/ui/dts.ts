@@ -23,14 +23,7 @@ export default async function buildDts() {
 
   const externals = formatExternals(pkgJson)
 
-  const sourceFiles = glob
-    .sync('**/*.ts{,x}', {
-      ignore: ['**/__tests__', '**/_demo', '**/_design'],
-      cwd: root,
-    })
-    .map((file) => project.addSourceFileAtPath(path.resolve(root, file)))
-
-  const resolve = (filepath: string, text: string) => {
+  const resolveAlias = (filepath: string, text: string) => {
     const isExternal = externals.find((e) => specifierMatches(e, text))
 
     if (isExternal) return
@@ -48,22 +41,25 @@ export default async function buildDts() {
     return slash(text.replace(re, rel))
   }
 
-  sourceFiles.forEach((sourceFile) => {
-    const filepath = sourceFile.getFilePath()
+  glob
+    .sync('**/*.ts{,x}', { ignore: constants.ignoreFiles, cwd: root })
+    .map((file) => project.addSourceFileAtPath(path.resolve(root, file)))
+    .forEach((sourceFile) => {
+      const filepath = sourceFile.getFilePath()
 
-    sourceFile
-      .getExportDeclarations()
-      .concat(sourceFile.getImportDeclarations() as any)
-      .forEach((node) => {
-        const text = node.getModuleSpecifierValue()
+      sourceFile
+        .getExportDeclarations()
+        .concat(sourceFile.getImportDeclarations() as any[])
+        .forEach((node) => {
+          const text = node.getModuleSpecifierValue()
 
-        if (!text) return
+          if (!text) return
 
-        const newText = resolve(filepath, text)
+          const newText = resolveAlias(filepath, text)
 
-        if (newText) node.setModuleSpecifier(newText)
-      })
-  })
+          if (newText) node.setModuleSpecifier(newText)
+        })
+    })
 
   await project.emit({ emitOnlyDtsFiles: true })
 

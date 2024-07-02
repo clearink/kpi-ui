@@ -4,7 +4,7 @@ import path from 'path'
 
 class Constant {
   public add<R extends object>(fn: (constant: this) => R) {
-    return Object.assign(this, fn(this))
+    return Object.assign(this, Object.freeze(fn(this)))
   }
 }
 
@@ -45,6 +45,7 @@ export const constants = new Constant()
     browserslist: ['> 0.5%', 'last 2 versions', 'not dead'],
     jsExtensions: ['.js', '.jsx', '.ts', '.tsx'],
     cssExtensions: ['.scss', '.sass', '.css'],
+    ignoreFiles: ['**/__tests__', '**/_demo', '**/_design'],
   }))
   .add((instance) => ({
     alias: [
@@ -63,6 +64,10 @@ export const constants = new Constant()
         '@babel/preset-typescript',
       ],
       plugins: ['@babel/plugin-transform-runtime'],
+    },
+    replaces: {
+      preventAssignment: true,
+      'process.env.NODE_ENV': JSON.stringify('production'),
     },
   }))
 

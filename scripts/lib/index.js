@@ -24,31 +24,10 @@ require('chalk');
 
 function build$4() {}
 
-async function buildCode(options) {
-  const {
-    input,
-    external,
-    outputOptions
-  } = options;
-  const bundle = await rollup.rollup({
-    input,
-    external,
-    treeshake: typeof input === 'string',
-    logLevel: 'silent',
-    plugins: [resolve({
-      extensions: helpers.constants.jsExtensions
-    }), commonjs(), babel(helpers.constants.babelOptions), alias({
-      entries: helpers.constants.alias
-    }), typeof input === 'string' && replace({
-      'process.env.NODE_ENV': JSON.stringify('production')
-    })].filter(Boolean)
-  });
-  return Promise.all(outputOptions.map(config => bundle.write(config)));
-}
 async function build$3() {
   const root = helpers.constants.resolveCwd('src');
   const entries = glob.glob.sync('**/*.ts{,x}', {
-    ignore: ['**/__tests__', '**/_demo', '**/_design'],
+    ignore: helpers.constants.ignoreFiles,
     cwd: root
   }).reduce((result, file) => {
     result[helpers.removeExtname(file)] = path.resolve(root, file);
@@ -57,103 +36,120 @@ async function build$3() {
   const pkgJson = await helpers.getPkgJson();
   const externals = helpers.formatExternals(pkgJson);
   externals.push(/\.(css|scss|sass)$/);
-  await Promise.all([buildCode({
+  const plugins = [resolve({
+    extensions: helpers.constants.jsExtensions
+  }), commonjs(), babel(helpers.constants.babelOptions), alias({
+    entries: helpers.constants.alias
+  })];
+  await Promise.all([rollup.rollup({
+    input: entries,
+    external: externals,
+    treeshake: false,
+    logLevel: 'silent',
+    plugins
+  }).then(async bundle => {
+    return Promise.all([bundle.write({
+      dir: helpers.constants.esm,
+      format: 'esm',
+      entryFileNames: '[name].mjs',
+      preserveModules: true,
+      sourcemap: true
+    }), bundle.write({
+      dir: helpers.constants.cjs,
+      format: 'cjs',
+      preserveModules: true,
+      exports: 'named',
+      sourcemap: true
+    })]);
+  }), rollup.rollup({
     input: path.resolve(root, 'index.ts'),
     external: externals,
-    outputOptions: [{
+    logLevel: 'silent',
+    plugins: plugins.concat(replace(helpers.constants.replaces))
+  }).then(async bundle => {
+    return Promise.all([bundle.write({
       dir: helpers.constants.umd,
       format: 'umd',
       name: pkgJson.name,
       entryFileNames: '[name].js',
       sourcemap: true
-    }, {
+    }), bundle.write({
       dir: helpers.constants.umd,
       format: 'umd',
       name: pkgJson.name,
       entryFileNames: '[name].min.js',
       plugins: [terser()],
       sourcemap: true
-    }]
-  }), buildCode({
-    input: entries,
-    external: externals,
-    outputOptions: [{
-      dir: helpers.constants.esm,
-      format: 'esm',
-      entryFileNames: '[name].mjs',
-      preserveModules: true,
-      sourcemap: true
-    }, {
-      dir: helpers.constants.cjs,
-      format: 'cjs',
-      preserveModules: true,
-      exports: 'named',
-      sourcemap: true
-    }]
+    })]);
   })]);
 }
 
-async function build$2() {
+function copyScssFiles() {
   const root = helpers.constants.resolveCwd('src');
-  await Promise.all(glob.sync('**/*.{sc,c,sa}ss', {
-    ignore: ['**/__tests__', '**/_demo', '**/_design'],
+  const options = {
+    ignore: helpers.constants.ignoreFiles,
     cwd: root
-  }).map(file => {
+  };
+  return glob.sync('**/*.{sc,sa,c}ss', options).map(file => {
     const filepath = path.resolve(root, file);
     return Promise.all([fse.copy(filepath, helpers.constants.resolveEsm(file)), fse.copy(filepath, helpers.constants.resolveCjs(file))]);
-  }));
-  await Promise.all(glob.sync('**/style/index.{sc,c,sa}ss', {
-    ignore: ['**/__tests__', '**/_demo', '**/_design'],
+  });
+}
+function compileScssFiles() {
+  const root = helpers.constants.resolveCwd('src');
+  const options = {
+    ignore: helpers.constants.ignoreFiles,
     cwd: root
-  }).map(file => {
+  };
+  return glob.sync('**/style/index.{sc,sa,c}ss', options).map(file => {
     const filename = helpers.removeExtname(file);
-    const sourcePath = path.resolve(root, file);
-    return sass.compileAsync(sourcePath).then(async _ref => {
-      let {
-        css
-      } = _ref;
-      return Promise.all([helpers.safeWriteFile(helpers.constants.resolveEsm(`${filename}.css`), css), helpers.safeWriteFile(helpers.constants.resolveCjs(`${filename}.css`), css)]);
+    const filepath = path.resolve(root, file);
+    return sass.compileAsync(filepath).then(res => {
+      return Promise.all([helpers.safeWriteFile(helpers.constants.resolveEsm(`${filename}.css`), res.css), helpers.safeWriteFile(helpers.constants.resolveCjs(`${filename}.css`), res.css)]);
     });
-  }));
-  {
-    const project = new tsm.Project({
-      skipAddingFilesFromTsConfig: true,
-      compilerOptions: {
-        allowJs: true
-      }
+  });
+}
+async function compileCompScssFiles() {
+  const processor = postcss([autoprefixer(), cssnano({
+    preset: 'default'
+  })]);
+  const pkgJson = await helpers.getPkgJson();
+  const filename = pkgJson.name || 'style';
+  const filepath = helpers.constants.resolveCwd('./src/style/components.scss');
+  const sassResult = await sass.compileAsync(filepath);
+  const cssResult = await processor.process(sassResult.css, {
+    from: filepath
+  });
+  return Promise.all([helpers.safeWriteFile(helpers.constants.resolveUmd(`${filename}.css`), sassResult.css), helpers.safeWriteFile(helpers.constants.resolveUmd(`${filename}.min.css`), cssResult.css)]);
+}
+function buildPluginImportFiles() {
+  const project = new tsm.Project({
+    skipAddingFilesFromTsConfig: true,
+    compilerOptions: {
+      allowJs: true
+    }
+  });
+  const root = helpers.constants.resolveCwd('src');
+  const options = {
+    ignore: helpers.constants.ignoreFiles,
+    cwd: root
+  };
+  return glob.sync('**/style/index.ts{,x}', options).map(file => {
+    const filename = helpers.removeExtname(file);
+    const filepath = path.resolve(root, file);
+    const sourceFile = project.addSourceFileAtPath(filepath);
+    sourceFile.getImportDeclarations().forEach(node => {
+      const text = node.getModuleSpecifierValue();
+      const filename = helpers.removeExtname(text);
+      node.setModuleSpecifier(`${filename}.css`);
     });
-    glob.sync('**/style/index.ts{,x}', {
-      ignore: ['**/__tests__', '**/_demo', '**/_design'],
-      cwd: root
-    }).forEach(file => {
-      const filename = helpers.removeExtname(file);
-      const filepath = path.resolve(root, file);
-      const sourceFile = project.addSourceFileAtPath(filepath);
-      sourceFile.getImportDeclarations().forEach(node => {
-        const text = node.getModuleSpecifierValue();
-        const filename = helpers.removeExtname(text);
-        node.setModuleSpecifier(`${filename}.css`);
-      });
-      const sourceText = sourceFile.getText();
-      helpers.safeWriteFile(helpers.constants.resolveEsm(path.dirname(filename), `css.js`), sourceText);
-      helpers.safeWriteFile(helpers.constants.resolveCjs(path.dirname(filename), `css.js`), sourceText);
-    });
-  }
-  {
-    const processor = postcss([autoprefixer(), cssnano({
-      preset: 'default'
-    })]);
-    const pkgJson = await helpers.getPkgJson();
-    const rootCssPath = path.resolve(root, 'style', 'components.scss');
-    sass.compileAsync(rootCssPath).then(async res => {
-      await helpers.safeWriteFile(helpers.constants.resolveUmd(`${pkgJson.name || 'style'}.css`), res.css);
-      return processor.process(res.css, {
-        from: rootCssPath
-      });
-    }).then(res => {
-      return helpers.safeWriteFile(helpers.constants.resolveUmd(`${pkgJson.name || 'style'}.min.css`), res.css);
-    });
-  }
+    const sourceText = sourceFile.getText();
+    const targetDir = path.dirname(filename);
+    return Promise.all([helpers.safeWriteFile(helpers.constants.resolveEsm(targetDir, `css.mjs`), sourceText), helpers.safeWriteFile(helpers.constants.resolveCjs(targetDir, `css.js`), sourceText)]);
+  });
+}
+async function build$2() {
+  return Promise.all([copyScssFiles(), compileScssFiles(), compileCompScssFiles(), buildPluginImportFiles()]);
 }
 
 async function buildDts() {
@@ -169,11 +165,7 @@ async function buildDts() {
   const root = helpers.constants.resolveCwd('src');
   const pkgJson = await helpers.getPkgJson();
   const externals = helpers.formatExternals(pkgJson);
-  const sourceFiles = glob.sync('**/*.ts{,x}', {
-    ignore: ['**/__tests__', '**/_demo', '**/_design'],
-    cwd: root
-  }).map(file => project.addSourceFileAtPath(path.resolve(root, file)));
-  const resolve = (filepath, text) => {
+  const resolveAlias = (filepath, text) => {
     const isExternal = externals.find(e => helpers.specifierMatches(e, text));
     if (isExternal) return;
     const matched = helpers.constants.alias.find(e => helpers.specifierMatches(e.find, text));
@@ -183,12 +175,15 @@ async function buildDts() {
     const re = new RegExp(`^${matched.find}`);
     return slash(text.replace(re, rel));
   };
-  sourceFiles.forEach(sourceFile => {
+  glob.sync('**/*.ts{,x}', {
+    ignore: helpers.constants.ignoreFiles,
+    cwd: root
+  }).map(file => project.addSourceFileAtPath(path.resolve(root, file))).forEach(sourceFile => {
     const filepath = sourceFile.getFilePath();
     sourceFile.getExportDeclarations().concat(sourceFile.getImportDeclarations()).forEach(node => {
       const text = node.getModuleSpecifierValue();
       if (!text) return;
-      const newText = resolve(filepath, text);
+      const newText = resolveAlias(filepath, text);
       if (newText) node.setModuleSpecifier(newText);
     });
   });
@@ -212,29 +207,34 @@ async function build$1() {
   {
     const spinner = ora(helpers.logger.info('clean dist and source files\n', false)).start();
     await helpers.clean(helpers.constants.esm, helpers.constants.cjs, helpers.constants.umd, helpers.constants.resolveCwd('src'));
-    spinner.succeed(helpers.logger.success('clean dist and source files successfully !\n'));
+    spinner.succeed(helpers.logger.success('clean dist and source files successfully !\n', false));
+    spinner.clear();
   }
   {
     const spinner = ora(helpers.logger.info('copy source files to kpi-ui\n', false)).start();
     await fse.copy(helpers.constants.resolveComps('src'), helpers.constants.resolveCwd('src'));
     await fse.copy(helpers.constants.resolveUtils('src'), helpers.constants.resolveCwd('src', '_internal', 'utils'));
     await fse.copy(helpers.constants.resolveTypes('src'), helpers.constants.resolveCwd('src', '_internal', 'types'));
-    spinner.succeed(helpers.logger.success('copy source files successfully!\n'));
+    spinner.succeed(helpers.logger.success('copy source files successfully!\n', false));
+    spinner.clear();
   }
   {
     const spinner = ora(helpers.logger.info('starting build code\n', false)).start();
     await build$3();
-    spinner.succeed(helpers.logger.success('build code successfully!\n'));
+    spinner.succeed(helpers.logger.success('build code successfully!\n', false));
+    spinner.clear();
   }
   {
     const spinner = ora(helpers.logger.info('starting build dts\n', false)).start();
     await buildDts();
-    spinner.succeed(helpers.logger.success('build dts successfully!\n'));
+    spinner.succeed(helpers.logger.success('build dts successfully!\n', false));
+    spinner.clear();
   }
   {
     const spinner = ora(helpers.logger.info('starting build css\n', false)).start();
     await build$2();
-    spinner.succeed(helpers.logger.success('build css successfully!\n'));
+    spinner.succeed(helpers.logger.success('build css successfully!\n', false));
+    spinner.clear();
   }
   helpers.logger.success('build ui library successfully !');
 }
