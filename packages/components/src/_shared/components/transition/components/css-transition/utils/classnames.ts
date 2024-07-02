@@ -2,8 +2,8 @@ import { addClassNames, delClassNames } from '@kpi-ui/utils'
 
 const additional = Symbol.for('additional-class')
 
-export const addTransitionClass = (el: Element, ...classes: (string | undefined)[]) => {
-  const dom = el as Element & { [additional]?: Set<string | undefined> }
+export function addTransitionClass(el: Element, ...classes: (string | undefined)[]) {
+  const dom = el as { [additional]?: Set<string | undefined> } & Element
 
   addClassNames(dom, ...classes)
 
@@ -13,8 +13,8 @@ export const addTransitionClass = (el: Element, ...classes: (string | undefined)
   classes.forEach((cls) => { dom[additional]!.add(cls) })
 }
 
-export const delTransitionClass = (el: Element, ...classes: (string | undefined)[]) => {
-  const dom = el as Element & { [additional]?: Set<string | undefined> }
+export function delTransitionClass(el: Element, ...classes: (string | undefined)[]) {
+  const dom = el as { [additional]?: Set<string | undefined> } & Element
 
   delClassNames(dom, ...classes)
 
@@ -22,8 +22,8 @@ export const delTransitionClass = (el: Element, ...classes: (string | undefined)
   if (dom[additional]) classes.forEach((cls) => { dom[additional]!.delete(cls) })
 }
 
-export const recoverTransitionClass = (el: Element) => {
-  const dom = el as Element & { [additional]?: Set<string | undefined> }
+export function recoverTransitionClass(el: Element) {
+  const dom = el as { [additional]?: Set<string | undefined> } & Element
 
   // prettier-ignore
   if (dom[additional]) dom[additional].forEach((cls) => { addClassNames(dom, cls) })

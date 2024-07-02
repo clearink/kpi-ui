@@ -7,8 +7,8 @@ export type FieldMeta = ExternalFieldMeta
 
 export type FormLabelAlign = 'left' | 'right'
 
-export type ValidateStatus = 'success' | 'warning' | 'error' | 'validating' | ''
+export type ValidateStatus = '' | 'error' | 'success' | 'validating' | 'warning'
 
-export type RequiredMark = boolean | 'optional'
+export type RequiredMark = 'optional' | boolean
 
 export type FormLayout = 'horizontal' | 'inline' | 'vertical'

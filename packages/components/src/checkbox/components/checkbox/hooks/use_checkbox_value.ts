@@ -6,8 +6,8 @@ export default function useCheckboxValue(props: CheckboxProps) {
   const { checked, defaultChecked, onChange } = props
 
   return useControllableState({
-    value: checked,
     defaultValue: defaultChecked,
-    onChange: onChange,
+    onChange,
+    value: checked,
   })
 }

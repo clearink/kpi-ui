@@ -1,4 +1,5 @@
 import type { AnyFn } from '@kpi-ui/types'
+
 import { makeFrameTimeout, noop } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
 
@@ -48,7 +49,7 @@ export function useThrottleValue<Value = any>(delay: number, value: Value) {
   return state
 }
 
-export function useThrottleState<S = undefined>(delay: number, initialState: S | (() => S)) {
+export function useThrottleState<S = undefined>(delay: number, initialState: (() => S) | S) {
   const [state, set] = useState(initialState)
 
   const setState = useThrottleTimeout(delay, set)

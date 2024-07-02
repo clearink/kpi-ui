@@ -11,15 +11,8 @@ export default function useFormatClass(
   const { className, classNames, disabled } = props
 
   return {
-    root: cls(
-      prefixCls,
-      {
-        [`${prefixCls}--disabled`]: disabled,
-        [`${prefixCls}--expanded`]: expanded,
-      },
-      className,
-      classNames?.root,
-    ),
+    content: cls(`${prefixCls}__content`, classNames?.content),
+    extra: cls(`${prefixCls}__extra`, classNames?.extra),
     header: cls(
       `${prefixCls}__header`,
       {
@@ -34,6 +27,15 @@ export default function useFormatClass(
       },
       classNames?.icon,
     ),
+    root: cls(
+      prefixCls,
+      {
+        [`${prefixCls}--disabled`]: disabled,
+        [`${prefixCls}--expanded`]: expanded,
+      },
+      className,
+      classNames?.root,
+    ),
     title: cls(
       `${prefixCls}__title`,
       {
@@ -41,7 +43,5 @@ export default function useFormatClass(
       },
       classNames?.title,
     ),
-    extra: cls(`${prefixCls}__extra`, classNames?.extra),
-    content: cls(`${prefixCls}__content`, classNames?.content),
   }
 }

@@ -1,7 +1,5 @@
-/* eslint-disable max-classes-per-file */
 import { isNull, isNullish, isUndefined, omit } from '@kpi-ui/utils'
 
-import SchemaContext from '../context'
 import type {
   Context,
   EffectOptions,
@@ -12,8 +10,10 @@ import type {
   RuleReturn,
   ValidateReturn,
 } from '../interface'
+
+import SchemaContext from '../context'
 import { base, union } from '../locales/default'
-import { Invalid, makeRule, Valid } from '../make_rule'
+import { Invalid, Valid, makeRule } from '../make_rule'
 
 /** ========================================================================== */
 /** ========================================================================== */
@@ -25,17 +25,23 @@ export default abstract class BaseSchema<Out = any, In = Out> {
 
   readonly _Out!: Out
 
-  // 暂不提供同步校验方法
-  async validate(value: any, options?: Options) {
-    const context = SchemaContext.ensure({ ...options, issue: undefined })
-    const ret = await this._validate(value, context)
-    if (ret.status === 'valid') return ret.value
-    throw context.issue
+  // 规则
+  private readonly rules = new Map<number | string, MakeRuleReturn<Out>>()
+
+  protected _refine(name: number | string, rule: MakeRuleReturn<any>) {
+    this.rules.set(name, rule)
+    return this
+  }
+
+  // 删除某一项规则
+  protected _remove(name: number | string) {
+    this.rules.delete(name)
+    return this
   }
 
   // 内部校验
   _validate(value: Out, context: Context): ValidateReturn<Out> {
-    const list = [...this.rules.values()].map((rule) => rule(value, context))
+    const list = [...this.rules.values()].map(rule => rule(value, context))
     return Promise.all(list).then((results) => {
       for (let i = 0; i < results.length; i += 1) {
         const result = results[i]
@@ -45,41 +51,22 @@ export default abstract class BaseSchema<Out = any, In = Out> {
     })
   }
 
-  // 规则
-  private readonly rules = new Map<string | number, MakeRuleReturn<Out>>()
-
-  protected _refine(name: string | number, rule: MakeRuleReturn<any>) {
-    this.rules.set(name, rule)
-    return this
-  }
-
-  // 删除某一项规则
-  protected _remove(name: string | number) {
-    this.rules.delete(name)
-    return this
+  // 可以传 null
+  nullable(): EffectSchema<this, Out | null> {
+    return EffectSchema.nullable(this) as any
   }
 
   /** ==================================================== */
   /** operator                                             */
   /** ==================================================== */
 
-  required(message: Message = base.required): EffectSchema<this, NonNullable<Out>> {
-    const rule = (value: any) => !isNullish(value)
-    return EffectSchema.required(this, makeRule(rule, message)) as any
-  }
-
-  // 可以传 null
-  nullable(): EffectSchema<this, Out | null> {
-    return EffectSchema.nullable(this) as any
-  }
-
-  /** alias or */
-  union<U extends BaseSchema>(schema: U): UnionSchema<[this, U]> {
-    return UnionSchema.create([this, schema])
-  }
-
   or<U extends BaseSchema>(schema: U): UnionSchema<[this, U]> {
     return UnionSchema.create([this, schema])
+  }
+
+  // 数据预处理
+  preprocess<Next>(handler: (value: any) => Next | Promise<Next>): EffectSchema<this, Next> {
+    return EffectSchema.preprocess(this, handler) as any
   }
 
   // refine 自定义验证
@@ -87,15 +74,22 @@ export default abstract class BaseSchema<Out = any, In = Out> {
     rule: (value: Out) => value is Next,
     message?: Message,
   ): EffectSchema<this, Next>
+
   refine(
-    rule: (value: Out) => boolean | Promise<boolean>,
+    rule: (value: Out) => Promise<boolean> | boolean,
     message?: Message,
   ): EffectSchema<this, Out>
+
   refine(
-    rule: (value: Out) => boolean | Promise<boolean>,
+    rule: (value: Out) => Promise<boolean> | boolean,
     message: Message = base.invalid,
   ): EffectSchema<this, Out> {
     return EffectSchema.refinement(this, rule, message)
+  }
+
+  required(message: Message = base.required): EffectSchema<this, NonNullable<Out>> {
+    const rule = (value: any) => !isNullish(value)
+    return EffectSchema.required(this, makeRule(rule, message)) as any
   }
 
   // 数据转换
@@ -103,9 +97,17 @@ export default abstract class BaseSchema<Out = any, In = Out> {
     return EffectSchema.transform(this, handler) as any
   }
 
-  // 数据预处理
-  preprocess<Next>(handler: (value: any) => Next | Promise<Next>): EffectSchema<this, Next> {
-    return EffectSchema.preprocess(this, handler) as any
+  /** alias or */
+  union<U extends BaseSchema>(schema: U): UnionSchema<[this, U]> {
+    return UnionSchema.create([this, schema])
+  }
+
+  // 暂不提供同步校验方法
+  async validate(value: any, options?: Options) {
+    const context = SchemaContext.ensure({ ...options, issue: undefined })
+    const ret = await this._validate(value, context)
+    if (ret.status === 'valid') return ret.value
+    throw context.issue
   }
 }
 
@@ -120,38 +122,11 @@ export class EffectSchema<
   In = T['_In'],
 > extends BaseSchema<Out, In> {
   // 数据转换 <NewOut>(value:Out) => NewOut | Promise<NewOut>
-  // 可以改变数据类型
-  static transform<S extends BaseSchema, Next = S['_Out']>(
-    schema: S,
-    handler: (value: S['_Out']) => Next | Promise<Next>,
+  constructor(
+    private schema: T,
+    private options: EffectOptions<Out>,
   ) {
-    return new EffectSchema(schema, { type: 'transform', handler })
-  }
-
-  // 不改变数据类型
-  static refinement<S extends BaseSchema, Out = S['_Out']>(
-    schema: S,
-    rule: (value: Out) => boolean | Promise<boolean>,
-    message: Message,
-  ) {
-    const handler = makeRule(rule, message)
-    return new EffectSchema(schema, { type: 'refinement', handler })
-  }
-
-  // 改变后才进行校验
-  static preprocess<S extends BaseSchema, Next = S['_Out']>(
-    schema: S,
-    handler: (value: S['_Out']) => Next | Promise<Next>,
-  ) {
-    return new EffectSchema(schema, { type: 'preprocess', handler })
-  }
-
-  // 必填
-  static required<S extends BaseSchema>(
-    schema: S,
-    handler: (value: S['_Out'], context: Context) => Promise<RuleReturn<S['_Out']>>,
-  ) {
-    return new EffectSchema(schema, { type: 'required', handler })
+    super()
   }
 
   // 可传 null
@@ -159,15 +134,42 @@ export class EffectSchema<
     return new EffectSchema(schema, { type: 'nullable' })
   }
 
-  get _type() {
-    return this.options.type
+  // 改变后才进行校验
+  static preprocess<S extends BaseSchema, Next = S['_Out']>(
+    schema: S,
+    handler: (value: S['_Out']) => Next | Promise<Next>,
+  ) {
+    return new EffectSchema(schema, { handler, type: 'preprocess' })
   }
 
-  constructor(
-    private schema: T,
-    private options: EffectOptions<Out>,
+  // 不改变数据类型
+  static refinement<S extends BaseSchema, Out = S['_Out']>(
+    schema: S,
+    rule: (value: Out) => Promise<boolean> | boolean,
+    message: Message,
   ) {
-    super()
+    const handler = makeRule(rule, message)
+    return new EffectSchema(schema, { handler, type: 'refinement' })
+  }
+
+  // 必填
+  static required<S extends BaseSchema>(
+    schema: S,
+    handler: (value: S['_Out'], context: Context) => Promise<RuleReturn<S['_Out']>>,
+  ) {
+    return new EffectSchema(schema, { handler, type: 'required' })
+  }
+
+  // 可以改变数据类型
+  static transform<S extends BaseSchema, Next = S['_Out']>(
+    schema: S,
+    handler: (value: S['_Out']) => Next | Promise<Next>,
+  ) {
+    return new EffectSchema(schema, { handler, type: 'transform' })
+  }
+
+  get _type() {
+    return this.options.type
   }
 
   /** ==================================================== */
@@ -227,12 +229,12 @@ export class UnionSchema<
   Out = T[number]['_Out'] | undefined,
   In = T[number]['_In'] | undefined,
 > extends BaseSchema<Out, In> {
-  static create<U extends UnionInput>(inner: U) {
-    return new UnionSchema(inner)
-  }
-
   constructor(private inner: T) {
     super()
+  }
+
+  static create<U extends UnionInput>(inner: U) {
+    return new UnionSchema(inner)
   }
 
   /** ==================================================== */
@@ -247,7 +249,8 @@ export class UnionSchema<
         const ctx = SchemaContext.ensure(omit(context, ['issue']))
         try {
           return [ctx, await schema._validate(value, ctx)]
-        } catch (error) {
+        }
+        catch (error) {
           return [ctx, error as InValidType]
         }
       }),

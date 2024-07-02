@@ -2,7 +2,7 @@ import autoprefixer from 'autoprefixer'
 import cssnano from 'cssnano'
 import glob from 'fast-glob'
 import fse from 'fs-extra'
-import path from 'path'
+import path from 'node:path'
 import postcss from 'postcss'
 import sass from 'sass'
 import tsm from 'ts-morph'
@@ -13,7 +13,7 @@ import { constants, getPkgJson, removeExtname, safeWriteFile } from '../../utils
 function copyScssFiles() {
   const root = constants.resolveCwd('src')
 
-  const options = { ignore: constants.ignoreFiles, cwd: root }
+  const options = { cwd: root, ignore: constants.ignoreFiles }
 
   return glob.sync('**/*.{sc,sa,c}ss', options).map((file) => {
     const filepath = path.resolve(root, file)
@@ -28,7 +28,7 @@ function copyScssFiles() {
 function compileScssFiles() {
   const root = constants.resolveCwd('src')
 
-  const options = { ignore: constants.ignoreFiles, cwd: root }
+  const options = { cwd: root, ignore: constants.ignoreFiles }
 
   return glob.sync('**/style/index.{sc,sa,c}ss', options).map((file) => {
     const filename = removeExtname(file)
@@ -67,13 +67,13 @@ async function compileCompScssFiles() {
 // 生成 babel-plugin-import 文件
 function buildPluginImportFiles() {
   const project = new tsm.Project({
-    skipAddingFilesFromTsConfig: true,
     compilerOptions: { allowJs: true },
+    skipAddingFilesFromTsConfig: true,
   })
 
   const root = constants.resolveCwd('src')
 
-  const options = { ignore: constants.ignoreFiles, cwd: root }
+  const options = { cwd: root, ignore: constants.ignoreFiles }
 
   return glob.sync('**/style/index.ts{,x}', options).map((file) => {
     const filename = removeExtname(file)
@@ -95,8 +95,8 @@ function buildPluginImportFiles() {
     const targetDir = path.dirname(filename)
 
     return Promise.all([
-      safeWriteFile(constants.resolveEsm(targetDir, `css.mjs`), sourceText),
-      safeWriteFile(constants.resolveCjs(targetDir, `css.js`), sourceText),
+      safeWriteFile(constants.resolveEsm(targetDir, 'css.mjs'), sourceText),
+      safeWriteFile(constants.resolveCjs(targetDir, 'css.js'), sourceText),
     ])
   })
 }

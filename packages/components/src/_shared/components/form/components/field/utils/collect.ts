@@ -1,5 +1,6 @@
 import type { AnyObject } from '@kpi-ui/types'
-import { hasOwn, isFunction, isObjectLike, toArray } from '@kpi-ui/utils'
+
+import { hasOwn, isFunction, isObjectLike, toArray, withDefaults } from '@kpi-ui/utils'
 
 import type { InternalFormInstance, InternalHookReturn } from '../../form/control/props'
 import type { FormFieldControl } from '../control'
@@ -19,22 +20,24 @@ function defaultGetValueProps(valuePropName: string) {
 }
 /** 收集注入到Form.Field children 的属性 */
 export default function collectInjectProps(
-  props: InternalFormFieldProps,
+  _props: InternalFormFieldProps,
   instance: InternalFormInstance,
   control: FormFieldControl,
   internalHooks?: InternalHookReturn,
 ) {
   const {
+    formatter,
+    getValueFromEvent,
+    getValueProps,
     name,
     rule,
     trigger,
     validateTrigger,
-    valuePropName,
-    getValueFromEvent = defaultGetValueFromEvent(valuePropName!),
-    formatter,
+  } = withDefaults(_props, {
+    getValueFromEvent: defaultGetValueFromEvent(_props.valuePropName!),
     // 获取 event value 字段函数 getValueProps 与 valuePropName 互斥
-    getValueProps = defaultGetValueProps(valuePropName!),
-  } = props
+    getValueProps: defaultGetValueProps(_props.valuePropName!),
+  })
 
   return (childProps: AnyObject = {}) => {
     // name 不合法不应该提供下列数据
@@ -44,16 +47,16 @@ export default function collectInjectProps(
 
     const injectProps = {
       ...childProps,
-      ...getValueProps(value),
+      ...getValueProps!(value),
       // 触发条件
       [trigger!]: (...args: any[]) => {
-        let next = getValueFromEvent(...args)
+        let next = getValueFromEvent!(...args)
 
         if (isFunction(formatter)) next = formatter(next, value, () => instance.getFieldsValue())
 
-        internalHooks?.metaUpdate(name, { touched: true, dirty: true })
+        internalHooks?.metaUpdate(name, { dirty: true, touched: true })
 
-        internalHooks?.dispatch({ type: 'fieldEvent', control, value: next })
+        internalHooks?.dispatch({ control, type: 'fieldEvent', value: next })
 
         trigger && childProps[trigger]?.(...args)
       },

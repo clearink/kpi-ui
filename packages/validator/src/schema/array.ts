@@ -1,11 +1,12 @@
 import { isArray, isUndefined } from '@kpi-ui/utils'
 
-import SchemaContext from '../context'
 import type { Context, Message } from '../interface'
+
+import { Invalid, Valid, makeRule } from '../make_rule'
 import { array } from '../locales/default'
-import { Invalid, makeRule, Valid } from '../make_rule'
-import AnySchema from './any'
+import SchemaContext from '../context'
 import BaseSchema from './base'
+import AnySchema from './any'
 
 export type MakeInnerType<T extends any[]> =
   T extends Array<infer I> ? (I extends BaseSchema ? I['_Out'][] : any[]) : any[]
@@ -28,7 +29,7 @@ export default class ArraySchema<
   /** validate                                             */
   /** ==================================================== */
 
-  async _validateInner(value: Out & any[], context: Context) {
+  async _validateInner(value: any[] & Out, context: Context) {
     const list = value.map((item, index) => {
       const ctx = SchemaContext.ensure(context, index)
       return this.inner._validate(item, ctx)
@@ -58,13 +59,9 @@ export default class ArraySchema<
   /** feature                                              */
   /** ==================================================== */
 
-  get element() {
-    return this.inner
-  }
-
-  min(min: number, message: Message = array.min) {
-    const rule = (value: any[]) => value.length >= min
-    return this._refine('min', makeRule(rule, message, { min }))
+  length(length: number, message: Message = array.length) {
+    const rule = (value: any[]) => value.length === length
+    return this._refine('length', makeRule(rule, message, { length }))
   }
 
   max(max: number, message: Message = array.max) {
@@ -72,12 +69,16 @@ export default class ArraySchema<
     return this._refine('max', makeRule(rule, message, { max }))
   }
 
-  length(length: number, message: Message = array.length) {
-    const rule = (value: any[]) => value.length === length
-    return this._refine('length', makeRule(rule, message, { length }))
+  min(min: number, message: Message = array.min) {
+    const rule = (value: any[]) => value.length >= min
+    return this._refine('min', makeRule(rule, message, { min }))
   }
 
   nonempty(message: Message = array.nonempty) {
     return this.min(1, message)
+  }
+
+  get element() {
+    return this.inner
   }
 }

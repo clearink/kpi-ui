@@ -26,7 +26,7 @@ export function getClickEvents(
   setOpen: ReturnType<typeof useTooltipOpen>[1],
 ): [DOMAttributes<HTMLElement>, DOMAttributes<HTMLElement>] {
   const onClick = () => {
-    setOpen((state) => !state)
+    setOpen(state => !state)
   }
 
   return [{ onClick }, {}]
@@ -44,7 +44,7 @@ export function getFocusEvents(
     setOpen(() => false)
   }
 
-  return [{ onFocus, onBlur }, {}]
+  return [{ onBlur, onFocus }, {}]
 }
 
 // contextmenu
@@ -54,7 +54,7 @@ export function getContextMenuEvents(
   const onContextMenu: MouseEventHandler = (e) => {
     e.preventDefault()
 
-    setOpen((state) => !state)
+    setOpen(state => !state)
   }
 
   return [{ onContextMenu }, {}]

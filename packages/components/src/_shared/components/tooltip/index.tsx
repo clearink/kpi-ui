@@ -1,6 +1,8 @@
-import { useSemanticStyles, useThrottleFrame, useThrottleTick } from '_shared/hooks'
 import { batch, cls, noop, removeItem, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { useSemanticStyles, useThrottleFrame, useThrottleTick } from '_shared/hooks'
 import { useMemo } from 'react'
+
+import type { InternalTooltipProps } from './props'
 
 import Overlay from '../overlay'
 import ShouldUpdate from '../should-update'
@@ -12,45 +14,44 @@ import useTooltipEvents from './hooks/use_tooltip_events'
 import useTooltipOpen from './hooks/use_tooltip_open'
 import useTooltipStore from './hooks/use_tooltip_store'
 import useWatchCoords from './hooks/use_watch_coords'
-import type { InternalTooltipProps } from './props'
 
 const defaultProps: Partial<InternalTooltipProps> = {
-  trigger: 'hover',
-  openDelay: 100,
+  arrow: true,
   closeDelay: 200,
   defaultOpen: false,
-  placement: 'top',
-  shift: true,
   flip: true,
   offset: 0,
-  arrow: true,
+  openDelay: 100,
+  placement: 'top',
+  shift: true,
+  trigger: 'hover',
 }
 
 function InternalTooltip(_props: InternalTooltipProps) {
   const props = withDefaults(_props, defaultProps)
 
   const {
-    // overlay
-    zIndex,
-    keepMounted,
-    unmountOnExit,
-    getContainer,
-    transition,
     arrow,
-    fresh,
-    content,
     children,
     className,
     classNames = {},
+    content,
+    fresh,
+    getContainer,
+    keepMounted,
     style,
     styles: _styles,
+    transition,
+    unmountOnExit,
+    // overlay
+    zIndex,
   } = props
 
   const styles = useSemanticStyles(style, _styles)
 
   const [open, setOpen] = useTooltipOpen(props)
 
-  const { states, actions } = useTooltipStore()
+  const { actions, states } = useTooltipStore()
 
   const parentContext = InternalToolTipContext.useState()
 
@@ -79,40 +80,40 @@ function InternalTooltip(_props: InternalTooltipProps) {
   return (
     <>
       <TooltipTrigger
-        ref={states.$trigger}
-        open={open}
+        events={triggerEvents}
         onResize={handleResize}
         onScroll={handleScroll}
-        events={triggerEvents}
+        open={open}
+        ref={states.$trigger}
       >
         {children}
       </TooltipTrigger>
 
       <Overlay
-        style={{ left: 0, top: 0 }}
+        getContainer={getContainer}
+        keepMounted={keepMounted}
         mask={false}
         open={open}
-        zIndex={zIndex}
-        keepMounted={keepMounted}
-        unmountOnExit={unmountOnExit}
-        getContainer={getContainer}
+        style={{ left: 0, top: 0 }}
         transitions={{ content: transition }}
+        unmountOnExit={unmountOnExit}
+        zIndex={zIndex}
       >
         <TooltipContent
-          open={open}
+          onMounted={tooltipContext}
           onResize={handleResize}
           onScroll={handleScroll}
-          onMounted={tooltipContext}
+          open={open}
         >
           <div
-            ref={states.$popup}
             className={cls(className, classNames.root)}
+            ref={states.$popup}
             style={{ ...styles.root, ...states.popupCoords }}
             {...popupEvents}
           >
             <TooltipArrow
-              show={!!arrow}
               className={classNames.arrow}
+              show={!!arrow}
               style={{ ...styles.arrow, ...states.arrowCoords }}
             />
             <InternalToolTipContext.Provider value={tooltipContext}>

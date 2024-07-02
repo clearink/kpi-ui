@@ -1,4 +1,5 @@
 import type { MayBe } from '@kpi-ui/types'
+
 import { type GetTargetElement, getTargetElement, observe } from '@kpi-ui/utils'
 import { useEffect, useState } from 'react'
 
@@ -15,5 +16,5 @@ export function useResizeObserver<T extends Element>(
   // prettier-ignore
   useEffect(() => { set(getTargetElement(target)) }, [target])
 
-  useEffect(() => (el ? observe(el, callback) : void 0), [el, callback])
+  useEffect(() => (el ? observe(el, callback) : undefined), [el, callback])
 }

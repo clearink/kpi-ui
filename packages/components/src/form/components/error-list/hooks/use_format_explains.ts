@@ -1,19 +1,17 @@
-import { useDebounceValue } from '_shared/hooks'
 import { fallback, isString, pushItem } from '@kpi-ui/utils'
+import { useDebounceValue } from '_shared/hooks'
 import { type ReactNode, useMemo } from 'react'
 
 import type { ValidateStatus } from '../../../props'
 import type { FormErrorListProps } from '../props'
 
-const makeExplains = (
-  type: 'help' | 'error' | 'warning',
+function makeExplains(type: 'error' | 'help' | 'warning',
   items: ReactNode[],
-  status?: ValidateStatus,
-) => {
+  status?: ValidateStatus) {
   return items.map((item, index) => ({
     key: isString(item) ? item : `${type}_${index}`,
-    value: item,
     status: fallback(status, type),
+    value: item,
   }))
 }
 

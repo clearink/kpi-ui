@@ -30,26 +30,27 @@ export default async function build() {
     spinner.clear()
   }
 
-  {
-    const spinner = ora(logger.info('starting build code\n', false)).start()
-    await buildCode()
-    spinner.succeed(logger.success('build code successfully!\n', false))
-    spinner.clear()
-  }
+  // {
+  //   const spinner = ora(logger.info('starting build code\n', false)).start()
+  //  await buildCode()
+  //   spinner.succeed(logger.success('build code successfully!\n', false))
+  //   spinner.clear()
+  // }
 
+  // eslint-disable-next-line no-lone-blocks
   {
-    const spinner = ora(logger.info('starting build dts\n', false)).start()
+    // const spinner = ora(logger.info('starting build dts\n', false)).start()
     await buildDts()
-    spinner.succeed(logger.success('build dts successfully!\n', false))
-    spinner.clear()
+    // spinner.succeed(logger.success('build dts successfully!\n', false))
+    // spinner.clear()
   }
 
-  {
-    const spinner = ora(logger.info('starting build css\n', false)).start()
-    await buildCss()
-    spinner.succeed(logger.success('build css successfully!\n', false))
-    spinner.clear()
-  }
+  // {
+  //   const spinner = ora(logger.info('starting build css\n', false)).start()
+  //    await buildCss()
+  //   spinner.succeed(logger.success('build css successfully!\n', false))
+  //   spinner.clear()
+  // }
 
   logger.success('build ui library successfully !')
 }

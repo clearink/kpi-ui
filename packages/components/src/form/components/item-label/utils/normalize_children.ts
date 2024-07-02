@@ -5,7 +5,7 @@ import type { FormItemLabelProps } from '../props'
 
 // 格式化 FormItemLabel
 export default function normalizeChildren(props: FormItemLabelProps, ctx: FormContextState) {
-  const { required, tooltip, label, colon, requiredMark } = props
+  const { colon, label, required, requiredMark, tooltip } = props
 
   const hasColon = ctx.layout !== 'vertical' && colon
 

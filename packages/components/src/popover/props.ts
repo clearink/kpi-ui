@@ -5,7 +5,7 @@ import type { TooltipProps } from '../tooltip/_shared/props'
 
 export interface PopoverProps
   extends Omit<TooltipProps, 'classNames' | 'styles'>,
-    SemanticStyledProps<'root' | 'arrow' | 'title' | 'content'> {
-  title?: ReactNode
+  SemanticStyledProps<'arrow' | 'content' | 'root' | 'title'> {
   content?: ReactNode
+  title?: ReactNode
 }

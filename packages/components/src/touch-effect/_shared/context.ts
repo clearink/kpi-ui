@@ -1,14 +1,14 @@
 import { ctxHelper } from '@kpi-ui/utils'
 
 export interface TouchEffectInfo {
+  component: string
   event: MouseEvent
   prefixCls: string
-  component: string
   target: HTMLElement | null
 }
 
 export interface TouchEffectState {
-  disabled?: boolean | ((info: TouchEffectInfo) => boolean)
+  disabled?: ((info: TouchEffectInfo) => boolean) | boolean
   showEffect?: (info: TouchEffectInfo) => void
 }
 

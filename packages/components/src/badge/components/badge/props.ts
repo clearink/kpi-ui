@@ -1,17 +1,17 @@
 import type { CSSProperties, ReactNode } from 'react'
 
 export interface BadgeProps {
+  children?: ReactNode
+  className?: string
   color?: string
   count?: ReactNode
   dot?: boolean
-  offset?: [number, number]
-  maxCount?: number
   hidden?: boolean
+  maxCount?: number
+  offset?: [number, number]
   size?: 'default' | 'small'
-  status?: 'success' | 'processing' | 'default' | 'error' | 'warning'
+  status?: 'default' | 'error' | 'processing' | 'success' | 'warning'
+  style?: CSSProperties
   text?: ReactNode
   title?: ReactNode
-  style?: CSSProperties
-  className?: string
-  children?: ReactNode
 }

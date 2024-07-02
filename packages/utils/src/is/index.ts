@@ -12,8 +12,9 @@ export const isFunction = (obj: any): obj is (...args: any[]) => any => typeof o
 
 export const isObject = (obj: any): obj is object => rawType(obj) === 'Object'
 
-export const isObjectLike = (obj: any): obj is Record<string, any> =>
-  obj != null && typeof obj === 'object'
+export function isObjectLike(obj: any): obj is Record<string, any> {
+  return obj != null && typeof obj === 'object'
+}
 
 export const isNumber = (obj: any): obj is number => rawType(obj) === 'Number'
 
@@ -25,5 +26,6 @@ export const isDate = (obj: any): obj is Date => rawType(obj) === 'Date'
 
 export const isSymbol = (obj: any): obj is symbol => rawType(obj) === 'Symbol'
 
-export const isPromiseLike = (obj: any): obj is PromiseLike<any> =>
-  rawType(obj) === 'Promise' || (isObjectLike(obj) && isFunction(obj.then))
+export function isPromiseLike(obj: any): obj is PromiseLike<any> {
+  return rawType(obj) === 'Promise' || (isObjectLike(obj) && isFunction(obj.then))
+}

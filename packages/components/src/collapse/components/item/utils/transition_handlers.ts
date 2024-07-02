@@ -1,26 +1,26 @@
 type E = HTMLDivElement
 
-const reset = (el: E) => {
+function reset(el: E) {
   el.style.height = ''
 }
 
-const full = (el: E) => {
+function full(el: E) {
   el.style.height = `${el.scrollHeight}px`
 }
 
-const none = (el: E) => {
+function none(el: E) {
   el.style.height = '0px'
 }
 
 const handlers = {
   onEnter: none,
-  onEntering: full,
-  onEntered: reset,
   onEnterCancel: full,
+  onEntered: reset,
+  onEntering: full,
   onExit: full,
-  onExiting: none,
-  onExited: reset,
   onExitCancel: full,
+  onExited: reset,
+  onExiting: none,
 }
 
 export default handlers

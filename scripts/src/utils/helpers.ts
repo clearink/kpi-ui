@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 import fse from 'fs-extra'
-import path from 'path'
+import path from 'node:path'
 
 class Constant {
   public add<R extends object>(fn: (constant: this) => R) {
@@ -10,44 +10,44 @@ class Constant {
 
 export const constants = new Constant()
   .add(() => ({
-    root: path.resolve(__dirname, '../../'),
     cwd: fse.realpathSync(process.cwd()),
+    root: path.resolve(__dirname, '../../'),
   }))
-  .add((instance) => ({
+  .add(instance => ({
     resolveCwd: path.resolve.bind(null, instance.cwd),
     resolveRoot: path.resolve.bind(null, instance.root),
   }))
-  .add((instance) => ({
-    resolveEsm: instance.resolveCwd.bind(null, 'esm'),
+  .add(instance => ({
     resolveCjs: instance.resolveCwd.bind(null, 'lib'),
-    resolveUmd: instance.resolveCwd.bind(null, 'dist'),
-
     resolveComps: instance.resolveRoot.bind(null, 'packages', 'components'),
-    resolveUtils: instance.resolveRoot.bind(null, 'packages', 'utils'),
-    resolveUi: instance.resolveRoot.bind(null, 'packages', 'kpi-ui'),
-    resolveTypes: instance.resolveRoot.bind(null, 'packages', 'types'),
+    resolveEsm: instance.resolveCwd.bind(null, 'esm'),
+
     resolveIcons: instance.resolveRoot.bind(null, 'packages', 'icons'),
+    resolveTypes: instance.resolveRoot.bind(null, 'packages', 'types'),
+    resolveUi: instance.resolveRoot.bind(null, 'packages', 'kpi-ui'),
+    resolveUmd: instance.resolveCwd.bind(null, 'dist'),
+    resolveUtils: instance.resolveRoot.bind(null, 'packages', 'utils'),
     resolveValidator: instance.resolveRoot.bind(null, 'packages', 'validator'),
   }))
-  .add((instance) => ({
-    esm: instance.resolveEsm('.'),
+  .add(instance => ({
     cjs: instance.resolveCjs('.'),
-    umd: instance.resolveUmd('.'),
-
     comps: instance.resolveComps('.'),
-    utils: instance.resolveUtils('.'),
-    ui: instance.resolveUi('.'),
+    esm: instance.resolveEsm('.'),
+
     icons: instance.resolveIcons('.'),
     types: instance.resolveTypes('.'),
+    ui: instance.resolveUi('.'),
+    umd: instance.resolveUmd('.'),
+    utils: instance.resolveUtils('.'),
     validator: instance.resolveValidator('.'),
   }))
   .add(() => ({
     browserslist: ['> 0.5%', 'last 2 versions', 'not dead'],
-    jsExtensions: ['.js', '.jsx', '.ts', '.tsx'],
     cssExtensions: ['.scss', '.sass', '.css'],
     ignoreFiles: ['**/__tests__', '**/_demo', '**/_design'],
+    jsExtensions: ['.js', '.jsx', '.ts', '.tsx'],
   }))
-  .add((instance) => ({
+  .add(instance => ({
     alias: [
       { find: '@', replacement: instance.resolveCwd('src') },
       { find: '@kpi-ui/utils', replacement: instance.resolveCwd('src/_internal/utils') },
@@ -58,21 +58,21 @@ export const constants = new Constant()
       babelHelpers: 'runtime' as const,
       babelrc: false,
       extensions: instance.jsExtensions,
+      plugins: ['@babel/plugin-transform-runtime'],
       presets: [
         ['@babel/preset-env', { targets: instance.browserslist }],
         ['@babel/preset-react', { runtime: 'automatic' }],
         '@babel/preset-typescript',
       ],
-      plugins: ['@babel/plugin-transform-runtime'],
     },
     replaces: {
-      preventAssignment: true,
+      'preventAssignment': true,
       'process.env.NODE_ENV': JSON.stringify('production'),
     },
   }))
 
 export function clean(...files: string[]) {
-  return Promise.all(files.map((file) => fse.remove(file)))
+  return Promise.all(files.map(file => fse.remove(file)))
 }
 
 export async function getPkgJson() {
@@ -94,19 +94,20 @@ export async function safeWriteFile(filepath: string, data: string) {
   return fse.writeFile(filepath, data, { encoding: 'utf-8' })
 }
 
-export function specifierMatches(pattern: string | RegExp, value: string) {
-  if (pattern instanceof RegExp) {
-    return pattern.test(value)
-  }
+export function specifierMatches(pattern: RegExp | string, value: string) {
+  if (pattern instanceof RegExp) { return pattern.test(value) }
 
-  if (pattern.length > value.length) {
-    return false
-  }
+  if (pattern.length > value.length) return false
 
-  return pattern === value || value.startsWith(`${value}/`)
+  return pattern === value || value.startsWith(`${pattern}/`)
 }
 
 export const logger = {
+  error: (text: string, log = true) => {
+    const str = chalk.hex('#e74c3c')(text)
+    if (!log) return str
+    console.log(str)
+  },
   info: (text: string, log = true) => {
     const str = chalk.hex('#3498db')(text)
     if (!log) return str
@@ -119,11 +120,6 @@ export const logger = {
   },
   warning: (text: string, log = true) => {
     const str = chalk.hex('#f39c12')(text)
-    if (!log) return str
-    console.log(str)
-  },
-  error: (text: string, log = true) => {
-    const str = chalk.hex('#e74c3c')(text)
     if (!log) return str
     console.log(str)
   },

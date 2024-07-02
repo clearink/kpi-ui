@@ -6,11 +6,11 @@ export default function useFormatClass(prefixCls: string, props: ModalProps) {
   const { className, classNames = {} } = props
 
   return {
-    root: cls(prefixCls, className, classNames.root),
-    main: cls(`${prefixCls}__main`, classNames.main),
-    close: cls(`${prefixCls}__close`, classNames.close),
-    header: cls(`${prefixCls}__header`, classNames.header),
     body: cls(`${prefixCls}__body`, classNames.body),
+    close: cls(`${prefixCls}__close`, classNames.close),
     footer: cls(`${prefixCls}__footer`, classNames.footer),
+    header: cls(`${prefixCls}__header`, classNames.header),
+    main: cls(`${prefixCls}__main`, classNames.main),
+    root: cls(prefixCls, className, classNames.root),
   }
 }

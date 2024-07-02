@@ -1,16 +1,16 @@
+import Row from '@/row'
+import { isNullish, pick } from '@kpi-ui/utils'
 import { Form as InternalForm } from '_shared/components'
 import { usePrefixCls } from '_shared/hooks'
-import { isNullish, isUndefined, pick } from '@kpi-ui/utils'
-import { createElement, useCallback, useMemo, useRef } from 'react'
+import { createElement, useCallback, useRef } from 'react'
 
-import Row from '@/row'
+import type { FormItemProps } from './props'
 
 import { FormContext, NoStyleContext } from '../../_shared/context'
 import FormItemInput from '../item-input'
 import FormItemLabel from '../item-label'
 import useFormatClass from './hooks/use_format_class'
 import useFormItemId from './hooks/use_item_id'
-import type { FormItemProps } from './props'
 import normalizeChildren from './utils/normalize_children'
 
 const labelIncluded = [
@@ -41,9 +41,9 @@ function NoStyleFormItem(props: FormItemProps) {
 }
 
 function CommonFormItem(props: FormItemProps) {
-  const { name, label, style, required } = props
+  const { label, name, required, style } = props
 
-  const { formName, form: formInstance } = FormContext.useState()
+  const { form: formInstance, formName } = FormContext.useState()
 
   const prefixCls = usePrefixCls('form-item')
 
@@ -64,7 +64,7 @@ function CommonFormItem(props: FormItemProps) {
   // }
 
   return (
-    <Row className={classes} style={style} ref={$outer}>
+    <Row className={classes} ref={$outer} style={style}>
       {!isNullish(label) && <FormItemLabel htmlFor={itemId} required={required} {...labelProps} />}
       <FormItemInput {...inputProps} getOuter={getOuter}>
         {(onMetaChange, onSubMetaChange) => (

@@ -2,7 +2,7 @@
   "name": "@kpi-ui/validator",
   "version": "0.0.1",
   "description": "kpi-ui form validator lib",
+  "license": "MIT",
   "main": "src/index.ts",
-  "module": "src/index.ts",
-  "license": "MIT"
+  "module": "src/index.ts"
 }

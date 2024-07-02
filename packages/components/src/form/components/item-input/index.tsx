@@ -1,15 +1,15 @@
-import { usePrefixCls } from '_shared/hooks'
+import Col from '@/col'
 import { getElementStyle, isNullish, withDefaults } from '@kpi-ui/utils'
+import { usePrefixCls } from '_shared/hooks'
 import { useEffect, useMemo, useState } from 'react'
 
-import Col from '@/col'
+import type { FormItemInputProps } from './props'
 
 import { FormContext, FormItemContext } from '../../_shared/context'
 import FormErrorList from '../error-list'
 import useFormatClass from './hooks/use_format_class'
 import useFormatStatus from './hooks/use_format_status'
 import useMetaState from './hooks/use_meta_state'
-import type { FormItemInputProps } from './props'
 
 // TODO: refactor offset logic
 function FormItemInput(_props: FormItemInputProps) {
@@ -19,7 +19,7 @@ function FormItemInput(_props: FormItemInputProps) {
     wrapperCol: ctx.wrapperCol,
   })
 
-  const { children, validateStatus: _status, extra, wrapperCol, help, getOuter } = props
+  const { children, extra, getOuter, help, validateStatus: _status, wrapperCol } = props
 
   const [meta, onMetaChange] = useMetaState()
 
@@ -50,7 +50,7 @@ function FormItemInput(_props: FormItemInputProps) {
 
     const styles = getElementStyle($outer)
 
-    setOffset(parseFloat(styles.marginBottom))
+    setOffset(Number.parseFloat(styles.marginBottom))
   }, [getOuter, hasError])
 
   return (
@@ -62,11 +62,11 @@ function FormItemInput(_props: FormItemInputProps) {
           <div className={`${prefixCls}-status`}>
             {!!offset && <div className={`${prefixCls}-holder`} style={{ height: offset }} />}
             <FormErrorList
-              help={help}
               errors={errors}
-              warnings={warnings}
+              help={help}
               helpStatus={status}
               onExitComplete={() => !hasError && setOffset(0)}
+              warnings={warnings}
             />
           </div>
         )}

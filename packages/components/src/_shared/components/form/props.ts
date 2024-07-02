@@ -1,25 +1,25 @@
 import type { FormFieldControl } from './components/field/control'
 
-export type InternalNamePath = (string | number)[]
+export type InternalNamePath = (number | string)[]
 
-export type ExternalNamePath = string | number | InternalNamePath
+export type ExternalNamePath = InternalNamePath | number | string
 
 export interface InternalFieldMeta {
-  name: InternalNamePath
   dirty: boolean
+  errors: string[]
+  name: InternalNamePath
   touched: boolean
   validating: boolean // 字段级别的校验
-  errors: string[]
   warnings: string[]
 }
 
-export type ExternalFieldMeta = InternalFieldMeta & { mounted: boolean }
+export type ExternalFieldMeta = { mounted: boolean } & InternalFieldMeta
 
-export type InternalFieldData = InternalFieldMeta & { value: any }
+export type InternalFieldData = { value: any } & InternalFieldMeta
 
-export type ExternalFieldData = Partial<Omit<InternalFieldData, 'name'>> & {
+export type ExternalFieldData = {
   name: ExternalNamePath
-}
+} & Partial<Omit<InternalFieldData, 'name'>>
 
 export type WatchCallBack = () => void
 
@@ -27,30 +27,30 @@ export type FormActionType = FormAction['type']
 
 export type FormAction =
   | {
-      type: 'fieldEvent' // 用户调用事件主动触发
-      control: FormFieldControl
-      value: any
-    }
+    control: FormFieldControl
+    type: 'fieldEvent' // 用户调用事件主动触发
+    value: any
+  }
   | {
-      type: 'setFields' //  setFields
-      fields: ExternalFieldData[]
-    }
+    control: FormFieldControl
+    type: 'registerField'
+  }
   | {
-      type: 'setFieldsValue' // setFieldsValue
-      state: any
-    }
+    control: FormFieldControl
+    type: 'removeField' // 卸载字段时触发
+  }
   | {
-      type: 'removeField' // 卸载字段时触发
-      control: FormFieldControl
-    }
+    fields: ExternalFieldData[]
+    type: 'setFields' //  setFields
+  }
   | {
-      type: 'registerField'
-      control: FormFieldControl
-    }
+    nameList?: ExternalNamePath[]
+    type: 'resetFields'
+  }
   | {
-      type: 'resetFields'
-      nameList?: ExternalNamePath[]
-    }
+    state: any
+    type: 'setFieldsValue' // setFieldsValue
+  }
 
 export interface RuleOptions {
   abortEarly?: boolean

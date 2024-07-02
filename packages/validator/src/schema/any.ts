@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import { Valid } from '../make_rule'
 import BaseSchema from './base'
 

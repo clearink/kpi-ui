@@ -1,6 +1,6 @@
 import glob from 'fast-glob'
 import fse from 'fs-extra'
-import path from 'path'
+import path from 'node:path'
 import slash from 'slash'
 import tsm from 'ts-morph'
 
@@ -8,13 +8,13 @@ import { constants, formatExternals, getPkgJson, specifierMatches } from '../../
 
 export default async function buildDts() {
   const project = new tsm.Project({
-    skipAddingFilesFromTsConfig: true,
     compilerOptions: {
       allowJs: true,
       declaration: true,
-      emitDeclarationOnly: true,
       declarationDir: constants.esm,
+      emitDeclarationOnly: true,
     },
+    skipAddingFilesFromTsConfig: true,
   })
 
   const root = constants.resolveCwd('src')
@@ -24,11 +24,11 @@ export default async function buildDts() {
   const externals = formatExternals(pkgJson)
 
   const resolveAlias = (filepath: string, text: string) => {
-    const isExternal = externals.find((e) => specifierMatches(e, text))
+    const isExternal = externals.find(e => specifierMatches(e, text))
 
     if (isExternal) return
 
-    const matched = constants.alias.find((e) => specifierMatches(e.find, text))
+    const matched = constants.alias.find(e => specifierMatches(e.find, text))
 
     if (!matched) return
 
@@ -42,8 +42,8 @@ export default async function buildDts() {
   }
 
   glob
-    .sync('**/*.ts{,x}', { ignore: constants.ignoreFiles, cwd: root })
-    .map((file) => project.addSourceFileAtPath(path.resolve(root, file)))
+    .sync('**/*.ts{,x}', { cwd: root, ignore: constants.ignoreFiles })
+    .map(file => project.addSourceFileAtPath(path.resolve(root, file)))
     .forEach((sourceFile) => {
       const filepath = sourceFile.getFilePath()
 

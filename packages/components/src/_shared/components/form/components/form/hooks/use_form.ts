@@ -1,7 +1,8 @@
 import { useConstant, useForceUpdate, useMounted } from '_shared/hooks'
 
-import FormGroupControl from '../control'
 import type { ExternalFormInstance } from '../control/props'
+
+import FormGroupControl from '../control'
 
 export default function useForm<S = any>(form?: ExternalFormInstance<S>) {
   const mounted = useMounted()

@@ -1,11 +1,11 @@
-import { usePrefixCls } from '_shared/hooks'
-import { isString, withDefaults } from '@kpi-ui/utils'
-
 import Col from '@/col'
+import { isString, withDefaults } from '@kpi-ui/utils'
+import { usePrefixCls } from '_shared/hooks'
+
+import type { FormItemLabelProps } from './props'
 
 import { FormContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
-import type { FormItemLabelProps } from './props'
 import normalizeChildren from './utils/normalize_children'
 
 function FormItemLabel(_props: FormItemLabelProps) {

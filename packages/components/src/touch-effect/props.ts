@@ -4,5 +4,5 @@ export interface TouchEffectProps {
   children: ReactElement
   component: string
   disabled?: boolean
-  selector?: string | ((container: HTMLElement) => HTMLElement | null)
+  selector?: ((container: HTMLElement) => HTMLElement | null) | string
 }

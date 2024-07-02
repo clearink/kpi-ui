@@ -1,1 +1,1 @@
-export type ExpandedName = string | number
+export type ExpandedName = number | string

@@ -1,12 +1,13 @@
-import { useComposeRefs, useResizeObserver } from '_shared/hooks'
 import { ownerWindow, withDisplayName } from '@kpi-ui/utils'
-import { cloneElement, type ForwardedRef, forwardRef, useEffect, useRef } from 'react'
+import { useComposeRefs, useResizeObserver } from '_shared/hooks'
+import { type ForwardedRef, cloneElement, forwardRef, useEffect, useRef } from 'react'
 
-import { getScrollElements } from '../../utils/elements'
 import type { TooltipContentProps } from './props'
 
+import { getScrollElements } from '../../utils/elements'
+
 function TooltipContent(props: TooltipContentProps, _ref: ForwardedRef<any>) {
-  const { open, children, onResize, onScroll, onMounted } = props
+  const { children, onMounted, onResize, onScroll, open } = props
 
   const dom = useRef<Element>(null)
 
@@ -23,7 +24,7 @@ function TooltipContent(props: TooltipContentProps, _ref: ForwardedRef<any>) {
     elements.forEach((el) => { el.addEventListener('scroll', onScroll, { passive: true }) })
 
     // prettier-ignore
-    return () => { elements.forEach((el) => { el.removeEventListener('scroll', onScroll) })}
+    return () => { elements.forEach((el) => { el.removeEventListener('scroll', onScroll) }) }
   }, [open, onScroll])
 
   const ref = useComposeRefs((children as any).ref, _ref, dom)

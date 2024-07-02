@@ -1,4 +1,4 @@
-import { isValidElement, type ReactElement, type ReactNode } from 'react'
+import { type ReactElement, type ReactNode, isValidElement } from 'react'
 
 export function isElementEqual(current: ReactNode, next: ReactNode) {
   if (current === next) return true

@@ -10,14 +10,14 @@ export function useControllableProp<T>(prop: T | undefined, state: T) {
 }
 
 export interface ControllableStateProps<T> {
-  value?: T
+  defaultValue?: (() => T) | T
   onChange?: (value: T) => any
-  defaultValue?: T | (() => T)
   shouldUpdate?: (prev: T, next: T) => boolean
+  value?: T
 }
 
 export function useControllableState<T>(props: ControllableStateProps<T>) {
-  const { value, onChange, defaultValue, shouldUpdate = shallowUnequal } = props
+  const { defaultValue, onChange, shouldUpdate = shallowUnequal, value } = props
 
   const [internal, setInternal] = useState(defaultValue as T)
 

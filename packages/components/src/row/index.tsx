@@ -1,11 +1,12 @@
+import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { RowContext } from '_shared/contexts'
 import { usePrefixCls } from '_shared/hooks'
-import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { type CSSProperties, type ForwardedRef, forwardRef } from 'react'
+
+import type { RowProps } from './props'
 
 import useFormatClass from './hooks/use_format_class'
 import useRowGutter from './hooks/use_row_gutter'
-import type { RowProps } from './props'
 
 const excluded = ['children', 'gutter', 'align', 'justify', 'wrap'] as const
 
@@ -17,7 +18,7 @@ const defaultProps: Partial<RowProps> = {
 function Row(_props: RowProps, ref: ForwardedRef<HTMLDivElement>) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children, style, gutter } = props
+  const { children, gutter, style } = props
 
   const prefixCls = usePrefixCls('row')
 

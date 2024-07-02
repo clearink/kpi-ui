@@ -1,10 +1,11 @@
-import { useWatchValue } from '_shared/hooks'
 import { isNullish, omit, withDisplayName } from '@kpi-ui/utils'
+import { useWatchValue } from '_shared/hooks'
 import { createElement, useEffect } from 'react'
+
+import type { GroupTransitionProps } from './props'
 
 import { isElementsEqual } from '../../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
-import type { GroupTransitionProps } from './props'
 
 const excluded = [
   'when',
@@ -31,9 +32,9 @@ const excluded = [
 ] as const
 
 function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransitionProps<E>) {
-  const { tag, children } = props
+  const { children, tag } = props
 
-  const { states, actions } = useTransitionStore(props)
+  const { actions, states } = useTransitionStore(props)
 
   const shouldTransition = !isElementsEqual(states.current, children)
 

@@ -1,12 +1,12 @@
-import { FocusTrap, Overlay } from '_shared/components'
-import { Keyboard } from '_shared/constants'
-import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
 import { fallback, isNull, isNullish, pick, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { FocusTrap, Overlay } from '_shared/components'
+import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
 import { useId } from 'react'
+
+import type { DrawerProps } from './props'
 
 import Button from '../button'
 import useFormatClass from './hooks/use_format_class'
-import type { DrawerProps } from './props'
 
 const included = [
   'getContainer',
@@ -24,7 +24,7 @@ const defaultProps: Partial<DrawerProps> = {
 function Drawer(_props: DrawerProps) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children, open, title, footer, style, styles: _styles, transitions = {} } = props
+  const { children, footer, open, style, styles: _styles, title, transitions = {} } = props
 
   const ariaId = useId()
 
@@ -36,44 +36,46 @@ function Drawer(_props: DrawerProps) {
 
   const styles = useSemanticStyles(style, _styles)
 
-  const onEscape = props.closeOnEscape
-    ? (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === Keyboard.esc) props.onOpenChange?.(!open)
-      }
-    : undefined
+  // const onEscapeDown = !props.closeOnEscape
+  //   ? undefined
+  //   : (e: React.KeyboardEvent<HTMLDivElement>) => {
+  //       if (e.key === Keyboard.esc) return
+
+  //       props.onOpenChange?.(!open)
+  //     }
 
   return (
     <Overlay
       {...pick(props, included)}
-      transitions={{
-        mask: fallback(transitions.mask, `${rootPrefixCls}-fade-in`),
-        content: fallback(transitions.content, `${rootPrefixCls}-slide-bottom`),
-      }}
       classNames={{
         mask: `${prefixCls}-mask`,
       }}
+      transitions={{
+        content: fallback(transitions.content, `${rootPrefixCls}-slide-bottom`),
+        mask: fallback(transitions.mask, `${rootPrefixCls}-fade-in`),
+      }}
     >
       <div
-        role="dialog"
         aria-labelledby={title ? ariaId : undefined}
         aria-modal="true"
         className={classNames.root}
+        role="dialog"
         style={styles.root}
       >
         <FocusTrap active={open}>
           <div className={classNames.main} style={styles.main}>
             <button
-              type="button"
               aria-label="close"
               className={classNames.close}
-              style={styles.close}
               onClick={() => props.onOpenChange?.(!open)}
+              style={styles.close}
+              type="button"
             >
               X
             </button>
             <div className={classNames.header} style={styles.header}>
               {!isNullish(title) && (
-                <span id={ariaId} className={`${prefixCls}__title`}>
+                <span className={`${prefixCls}__title`} id={ariaId}>
                   {title}
                 </span>
               )}

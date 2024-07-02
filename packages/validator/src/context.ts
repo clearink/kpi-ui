@@ -2,7 +2,7 @@ import { isFunction, isNullish, isNumber, isString } from '@kpi-ui/utils'
 
 import type { Context, Message, Name, SchemaIssue } from './interface'
 
-const pathToString = (path: Name[] = []) => {
+function pathToString(path: Name[] = []) {
   return path.reduce((ret: string, item) => {
     if (isNumber(item)) return `${ret}[${item}]`
     if (item.includes('.')) return `${ret}['${item}']`
@@ -11,12 +11,14 @@ const pathToString = (path: Name[] = []) => {
 }
 
 export default class SchemaContext extends TypeError {
+  issues: SchemaIssue[] = []
+
   static ensure(ctx?: Partial<Context>, name?: Name | Name[]): Context {
     const path = ctx?.path || []
     return {
       abortEarly: ctx?.abortEarly ?? false,
-      path: isNullish(name) ? path : path.concat(name),
       issue: ctx?.issue ?? new SchemaContext(),
+      path: isNullish(name) ? path : path.concat(name),
     }
   }
 
@@ -35,15 +37,9 @@ export default class SchemaContext extends TypeError {
     }
   }
 
-  issues: SchemaIssue[] = []
-
-  get isEmpty() {
-    return !this.issues.length
-  }
-
   addIssue(message: Message, path: Name[], params?: any) {
     const msg = SchemaContext.format(message, path)(params)
-    this.issues.push({ path, message: msg })
+    this.issues.push({ message: msg, path })
   }
 
   addIssues(issues: SchemaIssue[]) {
@@ -51,13 +47,18 @@ export default class SchemaContext extends TypeError {
     return this
   }
 
+  get isEmpty() {
+    return !this.issues.length
+  }
+
   get message() {
     const issues = this.issues.map((issue) => {
       try {
         JSON.stringify(issue.message)
         return issue.message
-      } catch (error) {
-        return `error can not stringify`
+      }
+      catch (error) {
+        return 'error can not stringify'
       }
     })
 

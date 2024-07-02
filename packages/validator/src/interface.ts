@@ -1,11 +1,11 @@
 import type SchemaContext from './context'
 
-export type Name = string | number
+export type Name = number | string
 
 export interface Context {
-  path: Name[]
-  issue: SchemaContext
   abortEarly?: boolean
+  issue: SchemaContext
+  path: Name[]
 }
 export type Options = Partial<Omit<Context, 'issue'>>
 
@@ -15,36 +15,36 @@ export interface SchemaIssue {
 }
 
 export type Message =
-  | SchemaIssue['message']
   | ((params: Record<string, any>) => SchemaIssue['message'])
+  | SchemaIssue['message']
 
-export type ValidType<T> = { status: 'valid'; value: T }
-export type InValidType = { status: 'invalid' }
+export interface ValidType<T> { status: 'valid'; value: T }
+export interface InValidType { status: 'invalid' }
 
-export type RuleReturn<T = any> = ValidType<T> | InValidType
+export type RuleReturn<T = any> = InValidType | ValidType<T>
 export type MakeRuleReturn<T = any> = (value: T, context: Context) => Promise<RuleReturn<T>>
-export type ValidateReturn<T> = RuleReturn<T> | Promise<RuleReturn<T>>
+export type ValidateReturn<T> = Promise<RuleReturn<T>> | RuleReturn<T>
 
 export type EffectOptions<Prev, Next = Prev> =
   | {
-      type: 'transform'
-      handler: (value: Prev) => Next | Promise<Next>
-    }
+    handler: (value: Prev) => Next | Promise<Next>
+    type: 'preprocess'
+  }
   | {
-      type: 'refinement'
-      handler: (value: Prev, context: Context) => Promise<RuleReturn<Prev>>
-    }
+    handler: (value: Prev) => Next | Promise<Next>
+    type: 'transform'
+  }
   | {
-      type: 'preprocess'
-      handler: (value: Prev) => Next | Promise<Next>
-    }
+    handler: (value: Prev, context: Context) => Promise<RuleReturn<Prev>>
+    type: 'refinement'
+  }
   | {
-      type: 'required'
-      handler: (value: Prev, context: Context) => Promise<RuleReturn<Prev>>
-    }
+    handler: (value: Prev, context: Context) => Promise<RuleReturn<Prev>>
+    type: 'required'
+  }
   | {
-      type: 'nullable'
-    }
+    type: 'nullable'
+  }
 
 export interface ValidateOptions {
   /**

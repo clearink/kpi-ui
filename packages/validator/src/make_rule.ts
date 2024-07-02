@@ -3,11 +3,11 @@ import type { Context, Message, RuleReturn } from './interface'
 // 校验结果
 export const Valid = <T>(value: T) => ({ status: 'valid', value }) as const
 
-export const Invalid = (context: Context) => {
+export function Invalid(context: Context) {
   return (message: Message, params?: any) => {
-    if (context.abortEarly && !context.issue.isEmpty) {
+    if (context.abortEarly && !context.issue.isEmpty)
       return Promise.reject(context.issue)
-    }
+
     context.issue.addIssue(message, context.path, params)
     return { status: 'invalid' } as const
   }
@@ -15,7 +15,7 @@ export const Invalid = (context: Context) => {
 
 // 生成校验函数
 export function makeRule<T = any>(
-  handler: (value: T) => boolean | Promise<boolean>,
+  handler: (value: T) => Promise<boolean> | boolean,
   message: Message,
   params?: any,
 ) {

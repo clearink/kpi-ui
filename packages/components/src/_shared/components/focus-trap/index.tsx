@@ -1,10 +1,11 @@
-import { useComposeRefs, useEvent } from '_shared/hooks'
 import { nextFrame, ownerDocument, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { useComposeRefs, useEvent } from '_shared/hooks'
 import { cloneElement, useEffect } from 'react'
+
+import type { FocusTrapProps } from './props'
 
 import { guardStyles } from './constants'
 import useFocusTrapStore from './hooks/use_trap_store'
-import type { FocusTrapProps } from './props'
 import defaultGetTabbable from './utils/tabbable'
 
 const defaultProps: Partial<FocusTrapProps> = {
@@ -14,9 +15,9 @@ const defaultProps: Partial<FocusTrapProps> = {
 function FocusTrap(_props: FocusTrapProps) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children, active, onEnter, onExit, getTabbable } = props
+  const { active, children, getTabbable, onEnter, onExit } = props
 
-  const { states, actions } = useFocusTrapStore()
+  const { actions, states } = useFocusTrapStore()
 
   const ref = useComposeRefs(states.$content, (children as any).ref)
 
@@ -49,13 +50,13 @@ function FocusTrap(_props: FocusTrapProps) {
 
   return (
     <>
-      <div ref={states.$start} tabIndex={active ? 0 : -1} style={guardStyles}></div>
+      <div ref={states.$start} style={guardStyles} tabIndex={active ? 0 : -1}></div>
       {cloneElement(children, { ref })}
       <div
-        ref={states.$end}
         aria-hidden="true"
-        tabIndex={active ? 0 : -1}
+        ref={states.$end}
         style={guardStyles}
+        tabIndex={active ? 0 : -1}
       ></div>
     </>
   )

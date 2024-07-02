@@ -1,30 +1,31 @@
+import { fillRef, nextFrame, nextTick, reflow, withDisplayName } from '@kpi-ui/utils'
 import { useEvent } from '_shared/hooks'
 import { hideElement } from '_shared/utils'
-import { fillRef, nextFrame, nextTick, reflow, withDisplayName } from '@kpi-ui/utils'
-import { cloneElement, forwardRef, type Ref, useEffect, useImperativeHandle } from 'react'
+import { type Ref, cloneElement, forwardRef, useEffect, useImperativeHandle } from 'react'
+
+import type { CSSTransitionProps, CSSTransitionRef, TransitionStep } from './props'
 
 import { APPEAR, ENTER, EXIT, isAppear, isExit, isExited } from '../../constants'
 import useFormatClassNames from './hooks/use_format_class_names'
 import useFormatTimeouts from './hooks/use_format_timeouts'
 import useTransitionEvent from './hooks/use_transition_event'
 import useTransitionStore from './hooks/use_transition_store'
-import type { CSSTransitionProps, CSSTransitionRef, TransitionStep } from './props'
 import { addTransitionClass, delTransitionClass, recoverTransitionClass } from './utils/classnames'
 
 function CSSTransition<E extends HTMLElement>(
   props: CSSTransitionProps<E>,
   ref: Ref<CSSTransitionRef<E>>,
 ) {
-  const { children, name, when, duration, onEnter, onEntering, onExit, onExiting } = props
+  const { children, duration, name, onEnter, onEntering, onExit, onExiting, when } = props
 
   const display = children.props.style?.display
 
-  const { states, actions, returnEarly } = useTransitionStore<E>(props)
+  const { actions, returnEarly, states } = useTransitionStore<E>(props)
 
   // prettier-ignore
-  useImperativeHandle(ref, () => ({ 
-    get instance(){ return states.instance }, 
-    get status(){ return states.status } 
+  useImperativeHandle(ref, () => ({
+    get instance() { return states.instance },
+    get status() { return states.status },
   }), [states])
 
   const classNames = useFormatClassNames(name, props.classNames)
@@ -46,7 +47,7 @@ function CSSTransition<E extends HTMLElement>(
   }
 
   const runTransition = useEvent((el: E, step: TransitionStep) => {
-    const { from, active, to } = classNames[step]
+    const { active, from, to } = classNames[step]
 
     const runTickCleanup = nextTick(() => {
       actions.startTransition(step, display)

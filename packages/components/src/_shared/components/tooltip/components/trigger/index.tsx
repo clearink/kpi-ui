@@ -1,12 +1,13 @@
-import { useComposeRefs, useResizeObserver } from '_shared/hooks'
 import { batch, withDisplayName } from '@kpi-ui/utils'
-import { cloneElement, type ForwardedRef, forwardRef, useEffect, useRef } from 'react'
+import { useComposeRefs, useResizeObserver } from '_shared/hooks'
+import { type ForwardedRef, cloneElement, forwardRef, useEffect, useRef } from 'react'
 
-import { getScrollElements } from '../../utils/elements'
 import type { TooltipTriggerProps } from './props'
 
+import { getScrollElements } from '../../utils/elements'
+
 function TooltipTrigger(props: TooltipTriggerProps, _ref: ForwardedRef<any>) {
-  const { open, children, events, onResize, onScroll } = props
+  const { children, events, onResize, onScroll, open } = props
 
   const dom = useRef<Element>(null)
 

@@ -7,21 +7,21 @@ import type { CSSTransitionProps } from '../transition/_shared/props'
 export type OverlayRef = PortalRef
 
 export interface OverlayProps
-  extends SemanticStyledProps<'root' | 'mask'>,
-    Pick<PortalProps, 'getContainer'>,
-    Pick<
+  extends SemanticStyledProps<'mask' | 'root'>,
+  Pick<PortalProps, 'getContainer'>,
+  Pick<
       CSSTransitionProps,
-      'onEnter' | 'onEntering' | 'onEntered' | 'onExit' | 'onExiting' | 'onExited'
+      'onEnter' | 'onEntered' | 'onEntering' | 'onExit' | 'onExited' | 'onExiting'
     > {
-  children: React.ReactElement | ((ref: RefCallback<HTMLDivElement>) => React.ReactElement)
+  children: ((ref: RefCallback<HTMLDivElement>) => React.ReactElement) | React.ReactElement
+
+  keepMounted?: boolean
 
   mask?: boolean
 
   open?: boolean
 
-  transitions?: { mask?: string; content?: string }
-
-  keepMounted?: boolean
+  transitions?: { content?: string; mask?: string }
 
   unmountOnExit?: boolean
 

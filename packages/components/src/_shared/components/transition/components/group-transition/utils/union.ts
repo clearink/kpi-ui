@@ -1,20 +1,21 @@
-import { isNullish } from '@kpi-ui/utils'
 import type { ReactElement } from 'react'
+
+import { isNullish } from '@kpi-ui/utils'
 
 // 并集且有序
 export default function union(
-  map: Map<ReactElement['key'], { fresh: boolean; el: ReactElement }>,
+  map: Map<ReactElement['key'], { el: ReactElement; fresh: boolean }>,
   enters: Set<ReactElement['key']>,
   children: ReactElement[],
 ) {
   let lastIndex = -1
 
   const sequences = children
-    .map((el) => [el.key, enters.has(el.key) ? el : map.get(el.key)?.el])
-    .filter((item) => !isNullish(item[1])) as [ReactElement['key'], ReactElement][]
+    .map(el => [el.key, enters.has(el.key) ? el : map.get(el.key)?.el])
+    .filter(item => !isNullish(item[1])) as [ReactElement['key'], ReactElement][]
 
   return Array.from(map).reduce((result, [key, { el }]) => {
-    const index = result.findIndex((item) => item[0] === key)
+    const index = result.findIndex(item => item[0] === key)
 
     if (index < 0) result.splice(++lastIndex, 0, [key, el])
     else lastIndex = Math.max(index, lastIndex)

@@ -1,5 +1,5 @@
 import { ctxHelper } from '@kpi-ui/utils'
 
-import { ConfigProviderProps } from '../props'
+import type { ConfigProviderProps } from '../props'
 
 export const ConfigContext = ctxHelper<ConfigProviderProps>({})

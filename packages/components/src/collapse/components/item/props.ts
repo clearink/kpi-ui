@@ -5,15 +5,15 @@ import type { ExpandedName } from '../../props'
 
 export interface CollapseItemProps
   extends HasChildren,
-    SemanticStyledProps<'root' | 'header' | 'icon' | 'title' | 'extra' | 'content'>,
-    Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
-  name: ExpandedName
-  title?: ReactNode
-  extra?: ReactNode
+  SemanticStyledProps<'content' | 'extra' | 'header' | 'icon' | 'root' | 'title'>,
+  Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   disabled?: boolean
-  showExpandIcon?: boolean
-
+  expandIcon?: ((props: { expanded: boolean; name: ExpandedName }) => ReactNode) | ReactNode
+  extra?: ReactNode
   keepMounted?: boolean
+  name: ExpandedName
+
+  showExpandIcon?: boolean
+  title?: ReactNode
   unmountOnExit?: boolean
-  expandIcon?: ReactNode | ((props: { name: ExpandedName; expanded: boolean }) => ReactNode)
 }

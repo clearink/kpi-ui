@@ -1,55 +1,72 @@
 module.exports = {
-  root: true,
-  env: { browser: true, es2020: true },
   extends: [
-    'eslint:recommended',
-    // 'plugin:jsx-a11y/recommended',
+    '@antfu/eslint-config-ts',
     'plugin:react/jsx-runtime',
-    'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
-    'plugin:prettier/recommended',
+    'plugin:perfectionist/recommended-natural',
   ],
-  ignorePatterns: ['.eslintrc.js', 'dist', 'esm', 'lib'],
-  parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh', 'simple-import-sort'],
-  settings: {
-    react: {
-      version: 'detect',
-    },
-  },
+  ignorePatterns: ['dist', 'esm', 'lib'],
+  plugins: ['react-refresh', 'perfectionist'],
+  root: true,
   rules: {
-    // prettier
-    'prettier/prettier': [
+    '@typescript-eslint/no-empty-function': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/no-unused-expressions': [
       'error',
-      {},
       {
-        usePrettierrc: true,
+        allowShortCircuit: true,
+        allowTaggedTemplates: true,
+        allowTernary: true,
       },
     ],
+    // typescript
+    '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-use-before-define': [
+      'warn',
+      {
+        classes: false,
+        functions: false,
+        typedefs: false,
+        variables: false,
+      },
+    ],
+    'antfu/if-new-line': 'off',
+    'antfu/if-newline': 'off',
+    'curly': ['error', 'multi-line', 'consistent'],
+    'import/order': 'off', // handled by perfectionist
+
+    'max-statements-per-line': ['error', { max: 4 }],
+    'n/prefer-global/process': 'off',
+    'no-console': 'off',
+
     // eslint
     'no-restricted-syntax': [
       'error',
       {
-        selector: 'ForInStatement',
         message:
           'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.',
+        selector: 'ForInStatement',
       },
       {
-        selector: 'LabeledStatement',
         message:
           'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.',
+        selector: 'LabeledStatement',
       },
       {
-        selector: 'WithStatement',
         message:
           '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.',
+        selector: 'WithStatement',
       },
     ],
+    'perfectionist/sort-exports': 'error',
 
+    'perfectionist/sort-imports': 'error',
+
+    'perfectionist/sort-named-imports': 'error',
+    'react/destructuring-assignment': 'off',
     // react
     'react/jsx-props-no-spreading': 'off',
-    'react/destructuring-assignment': 'off',
-
     // react-hooks
     'react-hooks/exhaustive-deps': [
       'error',
@@ -57,55 +74,6 @@ module.exports = {
         additionalHooks: 'useIsomorphicEffect|useDeepMemo',
       },
     ],
-
-    // typescript
-    '@typescript-eslint/no-unused-vars': 'warn',
-    '@typescript-eslint/no-use-before-define': [
-      'warn',
-      {
-        functions: false,
-        classes: false,
-        variables: false,
-        typedefs: false,
-      },
-    ],
-    '@typescript-eslint/no-unused-expressions': [
-      'error',
-      {
-        allowShortCircuit: true,
-        allowTernary: true,
-        allowTaggedTemplates: true,
-      },
-    ],
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-empty-function': 'off',
-    '@typescript-eslint/no-non-null-assertion': 'off',
-
-    'simple-import-sort/imports': 'error',
-    'simple-import-sort/exports': 'error',
-
-    // // jsx-a11y
-    // 'jsx-a11y/alt-text': 'warn',
-    // 'jsx-a11y/anchor-has-content': 'warn',
-    // 'jsx-a11y/anchor-is-valid': [
-    //   'warn',
-    //   {
-    //     aspects: ['invalidHref'],
-    //   },
-    // ],
-    // 'jsx-a11y/aria-activedescendant-has-tabindex': 'warn',
-    // 'jsx-a11y/aria-props': 'warn',
-    // 'jsx-a11y/aria-proptypes': 'warn',
-    // 'jsx-a11y/aria-role': ['warn', { ignoreNonDOM: true }],
-    // 'jsx-a11y/aria-unsupported-elements': 'warn',
-    // 'jsx-a11y/heading-has-content': 'warn',
-    // 'jsx-a11y/iframe-has-title': 'warn',
-    // 'jsx-a11y/img-redundant-alt': 'warn',
-    // 'jsx-a11y/no-access-key': 'warn',
-    // 'jsx-a11y/no-distracting-elements': 'warn',
-    // 'jsx-a11y/no-redundant-roles': 'warn',
-    // 'jsx-a11y/role-has-required-aria-props': 'warn',
-    // 'jsx-a11y/role-supports-aria-props': 'warn',
-    // 'jsx-a11y/scope': 'warn',
+    'sort-imports': 'off', // handled by perfectionist
   },
 }

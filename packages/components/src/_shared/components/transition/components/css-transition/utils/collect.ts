@@ -1,8 +1,8 @@
-const ms = (s: string) => (parseFloat(s) || 0) * 1e3
+const ms = (s: string) => (Number.parseFloat(s) || 0) * 1e3
 
 export default function collectTimeoutInfo(
   collection: CSSStyleDeclaration,
-  type: 'transition' | 'animation',
+  type: 'animation' | 'transition',
 ) {
   const style = (property: string): string[] => `${collection[property] || ''}`.split(', ')
 
@@ -14,5 +14,5 @@ export default function collectTimeoutInfo(
 
   const timeout = Math.max.apply(null, durations)
 
-  return { timeout, count: durations.length }
+  return { count: durations.length, timeout }
 }

@@ -2,6 +2,8 @@ import { useConstant, useForceUpdate, useWatchValue } from '_shared/hooks'
 import { showElement } from '_shared/utils'
 import { useMemo } from 'react'
 
+import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
+
 import {
   APPEAR,
   ENTER,
@@ -13,36 +15,36 @@ import {
   isExit,
   isExited,
 } from '../../../constants'
-import type { CSSTransitionProps as CSS, TransitionStatus, TransitionStep } from '../props'
 
 export class TransitionState<E extends HTMLElement> {
+  cleanupHook: (() => void) | void = undefined
+
+  hasMounted = false
+
+  instance: E | null = null
+
+  isInitial = true
+
+  isMounted = false
+
+  status: TransitionStatus
+
   constructor(props: CSS<E>) {
-    const { appear, when, mountOnEnter, unmountOnExit } = props
+    const { appear, mountOnEnter, unmountOnExit, when } = props
 
     this.isMounted = when || !(unmountOnExit || mountOnEnter)
 
     if (!when) this.status = EXITED
     else this.status = appear ? APPEAR : ENTERED
   }
-
-  isInitial = true
-
-  hasMounted = false
-
-  status: TransitionStatus
-
-  isMounted = false
-
-  instance: E | null = null
-
-  cleanupHook: void | (() => void) = undefined
 }
 
 export class TransitionAction<E extends HTMLElement> {
-  constructor(
-    private forceUpdate: () => void,
-    private states: TransitionState<E>,
-  ) {}
+  finishTransition = (step: TransitionStep) => {
+    this.states.status = isExit(step) ? EXITED : ENTERED
+
+    this.runCleanupHook()
+  }
 
   runCleanupHook = () => {
     this.states.cleanupHook?.()
@@ -50,32 +52,14 @@ export class TransitionAction<E extends HTMLElement> {
     this.states.cleanupHook = undefined
   }
 
-  setIsMounted = (value: boolean) => {
-    if (this.states.isMounted !== value) this.forceUpdate()
-
-    this.states.isMounted = value
-  }
-
   setIsInitial = (value: boolean) => {
     this.states.isInitial = value
   }
 
-  startTransition = (step: TransitionStep, display: string | undefined) => {
-    this.states.status = isExit(step) ? EXIT : ENTER
+  setIsMounted = (value: boolean) => {
+    if (this.states.isMounted !== value) this.forceUpdate()
 
-    !isExit(step) && showElement(this.states.instance, display)
-  }
-
-  finishTransition = (step: TransitionStep) => {
-    this.states.status = isExit(step) ? EXITED : ENTERED
-
-    this.runCleanupHook()
-  }
-
-  shouldTransition = (when: boolean | undefined) => {
-    const { status } = this.states
-
-    return when ? !isEntered(status) : !isExited(status)
+    this.states.isMounted = value
   }
 
   shouldAppear = (isInitial: boolean, when: boolean | undefined) => {
@@ -91,10 +75,27 @@ export class TransitionAction<E extends HTMLElement> {
 
     return !isInitial && !when && !isExited(status) && !isAppear(status)
   }
+
+  shouldTransition = (when: boolean | undefined) => {
+    const { status } = this.states
+
+    return when ? !isEntered(status) : !isExited(status)
+  }
+
+  startTransition = (step: TransitionStep, display: string | undefined) => {
+    this.states.status = isExit(step) ? EXIT : ENTER
+
+    !isExit(step) && showElement(this.states.instance, display)
+  }
+
+  constructor(
+    private forceUpdate: () => void,
+    private states: TransitionState<E>,
+  ) {}
 }
 
 export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>) {
-  const { when, unmountOnExit, mountOnEnter } = props
+  const { mountOnEnter, unmountOnExit, when } = props
 
   const update = useForceUpdate()
 
@@ -122,5 +123,5 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
     actions.setIsMounted(true)
   })
 
-  return { states, actions, returnEarly }
+  return { actions, returnEarly, states }
 }

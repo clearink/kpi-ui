@@ -9,17 +9,6 @@
     "lib/**/style/*",
     "*.scss"
   ],
-  "files": [
-    "dist",
-    "esm",
-    "lib",
-    "README.md"
-  ],
-  "main": "lib/index.js",
-  "module": "esm/index.mjs",
-  "types": "esm/index.d.ts",
-  "unpkg": "dist/index.min.js",
-  "jsdelivr": "dist/index.min.js",
   "exports": {
     ".": {
       "types": "./esm/index.d.ts",
@@ -28,8 +17,18 @@
     },
     "./*": "./*"
   },
+  "main": "lib/index.js",
+  "module": "esm/index.mjs",
+  "unpkg": "dist/index.min.js",
+  "jsdelivr": "dist/index.min.js",
+  "types": "esm/index.d.ts",
+  "files": [
+    "dist",
+    "esm",
+    "lib",
+    "README.md"
+  ],
   "scripts": {
-    "lint": "eslint -c .eslintrc.js --ext .js,.ts,.jsx,.tsx  ./src",
     "build": "kpi-scripts build:ui"
   },
   "peerDependencies": {

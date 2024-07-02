@@ -1,8 +1,9 @@
-import { usePrefixCls, useThrottleFrame } from '_shared/hooks'
 import { isBoolean, isFunction } from '@kpi-ui/utils'
+import { usePrefixCls, useThrottleFrame } from '_shared/hooks'
+
+import type { TouchEffectProps } from '../props'
 
 import { TouchEffectContext } from '../_shared/context'
-import type { TouchEffectProps } from '../props'
 import showWaveEffect from '../utils/wave'
 
 export default function useTouchEffect(props: TouchEffectProps) {
@@ -20,7 +21,7 @@ export default function useTouchEffect(props: TouchEffectProps) {
     if (isFunction(selector)) target = selector(container)
     else if (selector) target = container.querySelector(selector)
 
-    const info = { event, prefixCls, component, target }
+    const info = { component, event, prefixCls, target }
 
     if (isFunction(disabled) && disabled(info)) return
 

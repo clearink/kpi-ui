@@ -1,15 +1,16 @@
-import { useWatchValue } from '_shared/hooks'
 import { withDisplayName } from '@kpi-ui/utils'
+import { useWatchValue } from '_shared/hooks'
+
+import type { SwitchTransitionProps } from './props'
 
 import { isElementEqual } from '../../utils/equal'
 import useTransitionStore from './hooks/use_transition_store'
-import type { SwitchTransitionProps } from './props'
 
 // 转场动画
 function SwitchTransition<E extends HTMLElement = HTMLElement>(props: SwitchTransitionProps<E>) {
   const { children, mode } = props
 
-  const { states, actions } = useTransitionStore(props)
+  const { actions, states } = useTransitionStore(props)
 
   const shouldTransition = !isElementEqual(states.current, children)
 

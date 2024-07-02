@@ -5,19 +5,19 @@ import type { CollapseProps, ExpandedName } from './props'
 
 export interface CollapseContextState {
   accordion?: CollapseProps['accordion']
-  expandedNames: ExpandedName[]
-  expandIconPosition?: ExpandIconPosition
   collapsible?: CollapsibleType
-  onItemClick: (key: ExpandedName) => void
-
-  keepMounted?: boolean
-  unmountOnExit?: boolean
-  expandIcon?: CollapseProps['expandIcon']
   disabled?: boolean
+  expandIcon?: CollapseProps['expandIcon']
+  expandIconPosition?: ExpandIconPosition
+
+  expandedNames: ExpandedName[]
+  keepMounted?: boolean
+  onItemClick: (key: ExpandedName) => void
+  unmountOnExit?: boolean
 }
 
 export const CollapseContext = ctxHelper<CollapseContextState>({
+  collapsible: 'header',
   expandedNames: [],
   onItemClick: noop,
-  collapsible: 'header',
 })

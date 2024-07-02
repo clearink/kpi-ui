@@ -1,4 +1,5 @@
-import { MayBe } from '@kpi-ui/types'
+import type { MayBe } from '@kpi-ui/types'
+
 import { type GetTargetElement } from '@kpi-ui/utils'
 
 export type ContainerType = Element | false

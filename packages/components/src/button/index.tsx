@@ -1,11 +1,12 @@
+import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { DisabledContext, SizeContext } from '_shared/contexts'
 import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
-import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
-import { type ForwardedRef, forwardRef, type MouseEvent } from 'react'
+import { type ForwardedRef, type MouseEvent, forwardRef } from 'react'
+
+import type { ButtonProps } from './props'
 
 import TouchEffect from '../touch-effect'
 import useFormatClass from './hooks/use_format_class'
-import type { ButtonProps } from './props'
 import { isBorderedVariant } from './utils/helpers'
 
 const excluded = [
@@ -29,8 +30,8 @@ const excluded = [
 
 const defaultProps: Partial<ButtonProps> = {
   theme: 'primary',
-  variant: 'default',
   type: 'button',
+  variant: 'default',
 }
 
 function Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
@@ -39,12 +40,12 @@ function Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
     // disabled: _props.disabled || ButtonGroupCtx.disabled
     {
       ...defaultProps,
-      size: SizeContext.useState(),
       disabled: DisabledContext.useState(),
+      size: SizeContext.useState(),
     },
   )
 
-  const { children, onClick, loading, disabled, variant, style, styles: _styles } = props
+  const { children, disabled, loading, onClick, style, styles: _styles, variant } = props
 
   const styles = useSemanticStyles(style, _styles)
 
@@ -63,9 +64,9 @@ function Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
     <button
       {...attrs}
       className={classNames.root}
-      style={styles.root}
-      ref={ref}
       onClick={handleClick}
+      ref={ref}
+      style={styles.root}
     >
       <span className={classNames.text} style={styles.text}>
         {children}

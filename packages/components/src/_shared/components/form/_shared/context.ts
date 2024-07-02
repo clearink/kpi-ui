@@ -1,4 +1,5 @@
 import type { AnyObject } from '@kpi-ui/types'
+
 import { ctxHelper, logger, noop } from '@kpi-ui/utils'
 
 import type { ExternalFieldData, ExternalFormInstance, InternalFormInstance } from './props'
@@ -17,38 +18,37 @@ export const InternalFormContext = ctxHelper<InternalFormContextState>({
 })
 
 const notFoundContext: any = () => {
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production')
     logger(true, 'Can not find FormContext. Please make sure you wrap Field under Form.')
-  }
 }
 
 export const InternalFormInstanceContext = ctxHelper<InternalFormInstance>({
   getFieldError: notFoundContext,
-  getFieldsError: notFoundContext,
   getFieldValue: notFoundContext,
+  getFieldsError: notFoundContext,
   getFieldsValue: notFoundContext,
-  setFieldValue: notFoundContext,
-  setFieldsValue: notFoundContext,
-  validateFields: notFoundContext,
-  validateField: notFoundContext,
-  submitForm: notFoundContext,
-  resetFields: notFoundContext,
-  isFieldTouched: notFoundContext,
-  isFieldsTouched: notFoundContext,
-  isFieldValidating: notFoundContext,
-  isFieldsValidating: notFoundContext,
   getInternalHooks: () => ({
-    setPreserve: notFoundContext,
-    setInitialValues: notFoundContext,
-    registerField: notFoundContext,
-    setFields: notFoundContext,
-    registerWatch: notFoundContext,
-    subscribe: notFoundContext,
+    dispatch: notFoundContext,
     ensureInitialized: notFoundContext,
     getControl: notFoundContext,
     metaUpdate: notFoundContext,
-    setInternalFormMisc: notFoundContext,
-    dispatch: notFoundContext,
+    registerField: notFoundContext,
     registerSubscribe: notFoundContext,
+    registerWatch: notFoundContext,
+    setFields: notFoundContext,
+    setInitialValues: notFoundContext,
+    setInternalFormMisc: notFoundContext,
+    setPreserve: notFoundContext,
+    subscribe: notFoundContext,
   }),
+  isFieldTouched: notFoundContext,
+  isFieldValidating: notFoundContext,
+  isFieldsTouched: notFoundContext,
+  isFieldsValidating: notFoundContext,
+  resetFields: notFoundContext,
+  setFieldValue: notFoundContext,
+  setFieldsValue: notFoundContext,
+  submitForm: notFoundContext,
+  validateField: notFoundContext,
+  validateFields: notFoundContext,
 })

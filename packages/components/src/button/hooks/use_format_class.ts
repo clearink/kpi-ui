@@ -4,35 +4,35 @@ import type { ButtonProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: ButtonProps) {
   const {
-    size,
-    disabled,
-    theme,
-    variant,
     block,
-    shape,
-    ghost,
-    loading,
     className,
     classNames = {},
+    disabled,
+    ghost,
+    loading,
+    shape,
+    size,
+    theme,
+    variant,
   } = props
 
   return {
+    icon: cls(`${prefixCls}__icon`, classNames.icon),
     root: cls(
       prefixCls,
       {
-        [`${prefixCls}--theme-${theme}`]: theme && theme !== 'primary',
-        [`${prefixCls}--variant-${variant}`]: variant && variant !== 'default',
+        [`${prefixCls}--block`]: block,
+        [`${prefixCls}--disabled`]: disabled,
+        [`${prefixCls}--ghost`]: ghost,
+        [`${prefixCls}--loading`]: loading,
         [`${prefixCls}--shape-${shape}`]: shape && shape !== 'default',
         [`${prefixCls}--size-${size}`]: size && size !== 'middle',
-        [`${prefixCls}--loading`]: loading,
-        [`${prefixCls}--block`]: block,
-        [`${prefixCls}--ghost`]: ghost,
-        [`${prefixCls}--disabled`]: disabled,
+        [`${prefixCls}--theme-${theme}`]: theme && theme !== 'primary',
+        [`${prefixCls}--variant-${variant}`]: variant && variant !== 'default',
       },
       className,
       classNames.root,
     ),
-    icon: cls(`${prefixCls}__icon`, classNames.icon),
     text: cls(`${prefixCls}__text`, classNames.text),
   }
 }

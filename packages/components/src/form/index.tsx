@@ -9,9 +9,9 @@ import useFormItemStatus from './components/item/hooks/use_item_status'
 
 // CompoundedForm
 export default Object.assign(Form, {
+  ErrorList,
   Item: Object.assign(FormItem, { useFormItemStatus }),
   List: InternalList,
-  ErrorList,
   useForm,
   useFormInstance,
   useWatch,

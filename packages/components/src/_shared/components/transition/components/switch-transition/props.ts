@@ -1,7 +1,7 @@
 import type { CSSTransitionProps } from '../css-transition/props'
 
-export type SwitchMode = 'out-in' | 'in-out' | 'default'
+export type SwitchMode = 'default' | 'in-out' | 'out-in'
 export interface SwitchTransitionProps<E extends HTMLElement = HTMLElement>
-  extends Omit<CSSTransitionProps<E>, 'when' | 'unmountOnExit'> {
+  extends Omit<CSSTransitionProps<E>, 'unmountOnExit' | 'when'> {
   mode?: SwitchMode
 }

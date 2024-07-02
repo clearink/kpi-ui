@@ -11,7 +11,7 @@ import type { FormItemProps } from '../props'
  * 4. 使用 dependencies 时必须设置 name 或者使用 render props
  */
 export function isInvalidUsage(props: FormItemProps) {
-  const { name, shouldUpdate, children, dependencies = [] } = props
+  const { children, dependencies = [], name, shouldUpdate } = props
 
   const hasName = toArray(name).length
 
@@ -23,16 +23,16 @@ export function isInvalidUsage(props: FormItemProps) {
       logger(
         true,
         'Form.Item',
-        "Do not use `name` with `children` of render props since it's not a field.",
+        'Do not use `name` with `children` of render props since it\'s not a field.',
       )
     }
     return true
   }
 
   if (shouldUpdate && dependencies.length) {
-    if (process.env.NODE_ENV !== 'production') {
-      logger(true, 'Form.Item', "`shouldUpdate` and `dependencies` shouldn't be used together.")
-    }
+    if (process.env.NODE_ENV !== 'production')
+      logger(true, 'Form.Item', '`shouldUpdate` and `dependencies` shouldn\'t be used together.')
+
     return true
   }
 
@@ -50,9 +50,9 @@ export function isInvalidUsage(props: FormItemProps) {
 
   if (dependencies.length && !(functional || hasName)) {
     // dependencies 仅在 render props 或者 name 合法时使用
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== 'production')
       logger(true, 'Form.Item', 'Must set `name` or use render props when `dependencies` is set.')
-    }
+
     return true
   }
 

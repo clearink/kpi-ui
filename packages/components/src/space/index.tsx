@@ -1,11 +1,12 @@
+import { fallback, flattenChildren, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { ConfigContext } from '_shared/contexts'
 import { usePrefixCls } from '_shared/hooks'
-import { fallback, flattenChildren, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { type CSSProperties, Fragment, type ReactElement } from 'react'
+
+import type { SpaceProps } from './props'
 
 import useFormatClass from './hooks/use_format_class'
 import useSpaceGutter from './hooks/use_space_gutter'
-import type { SpaceProps } from './props'
 
 const excluded = [
   'align',
@@ -32,7 +33,7 @@ function Space(_props: SpaceProps) {
     size: fallback(space?.size, defaultProps.size),
   })
 
-  const { children, style, split, size } = props
+  const { children, size, split, style } = props
 
   const prefixCls = usePrefixCls('space')
 
@@ -41,7 +42,7 @@ function Space(_props: SpaceProps) {
   // 水平 垂直 间距
   const [h, v] = useSpaceGutter(size, !!split)
 
-  const gap: CSSProperties = { rowGap: v, columnGap: h }
+  const gap: CSSProperties = { columnGap: h, rowGap: v }
 
   // 处理 children
   const renderNode = flattenChildren(children).map((child, index, childList) => {

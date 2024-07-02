@@ -15,6 +15,7 @@ import type {
   VerticalCrossAxis,
   VerticalMainAxis,
 } from '../props'
+
 import { getElementCoords, getPositionedCoords } from './elements'
 
 const _size = 8
@@ -42,15 +43,15 @@ function getTopOrBottomScreenCoords(
     const root = ownerDocument(trigger.el).documentElement
 
     return {
-      top,
-      left,
-      main,
-      cross,
-      _width: popup._width,
+      _delta: 0,
       _height: popup._height,
       _mx: root.clientWidth,
       _my: root.clientHeight,
-      _delta: 0,
+      _width: popup._width,
+      cross,
+      left,
+      main,
+      top,
     }
   }
 }
@@ -71,15 +72,15 @@ function getLeftOrRightScreenCoords(
     const root = ownerDocument(trigger.el).documentElement
 
     return {
-      top,
-      left,
-      main,
-      cross,
-      _width: popup._width,
+      _delta: 0,
       _height: popup._height,
       _mx: root.clientWidth,
       _my: root.clientHeight,
-      _delta: 0,
+      _width: popup._width,
+      cross,
+      left,
+      main,
+      top,
     }
   }
 }
@@ -88,7 +89,7 @@ function getLeftOrRightScreenCoords(
 
 function keepTopOrBottomArrowCenter(): AlignerConfig['keepArrowCenter'] {
   const getLeftCoords = (screen: ScreenCoords, trigger: ElementCoords) => {
-    const { left, cross } = screen
+    const { cross, left } = screen
 
     const dx = trigger.width / 2 - _px - _size
 
@@ -104,13 +105,13 @@ function keepTopOrBottomArrowCenter(): AlignerConfig['keepArrowCenter'] {
 
     const [left, _delta] = getLeftCoords(screen, trigger)
 
-    return { ...screen, left, _delta }
+    return { ...screen, _delta, left }
   }
 }
 
 function keepLeftOrRightArrowCenter(): AlignerConfig['keepArrowCenter'] {
   const getTopCoords = (popup: ScreenCoords, trigger: ElementCoords) => {
-    const { top, cross } = popup
+    const { cross, top } = popup
 
     const dy = trigger.height / 2 - _py - _size
 
@@ -126,14 +127,14 @@ function keepLeftOrRightArrowCenter(): AlignerConfig['keepArrowCenter'] {
 
     const [top, _delta] = getTopCoords(popup, trigger)
 
-    return { ...popup, top, _delta }
+    return { ...popup, _delta, top }
   }
 }
 
 /* ****************************** popup offset ****************************** */
 
 function offsetPopupCoords({ offset }: InternalTooltipProps, popup: ScreenCoords): ScreenCoords {
-  const { top, left, main } = popup
+  const { left, main, top } = popup
 
   const [horizontal, vertical] = isArray(offset) ? [offset[0], offset[1]] : [offset, 0]
 
@@ -141,8 +142,8 @@ function offsetPopupCoords({ offset }: InternalTooltipProps, popup: ScreenCoords
 
   return {
     ...popup,
-    top: top + (vertical || 0) * factor,
     left: left + (horizontal || 0) * factor,
+    top: top + (vertical || 0) * factor,
   }
 }
 
@@ -223,8 +224,8 @@ function flipTopOrBottomPopupCoords(): AlignerConfig['flipPopupCoords'] {
 
     return {
       ...popup,
-      top: flipped ? top : popup.top,
       main: flipped ? _main : popup.main,
+      top: flipped ? top : popup.top,
     }
   }
 }
@@ -280,7 +281,7 @@ function getTopOrBottomArrowCoords(): AlignerConfig['getArrowCoords'] {
     else if (popup.cross === 'right') left += max - dx - popup._delta
     else left += (max + min) / 2 - _size
 
-    return { top, left, transform: `rotate(${rotate}deg)` }
+    return { left, top, transform: `rotate(${rotate}deg)` }
   }
 }
 
@@ -302,7 +303,7 @@ function getLeftOrRightArrowCoords(): AlignerConfig['getArrowCoords'] {
     else if (popup.cross === 'bottom') top += max - dy - popup._delta
     else top += (max + min) / 2 - _size
 
-    return { top, left, transform: `rotate(${rotate}deg)` }
+    return { left, top, transform: `rotate(${rotate}deg)` }
   }
 }
 
@@ -313,8 +314,8 @@ function getTopOrBottomOriginCoords() {
     const factor = popup.main === 'top' ? 1 : -1
 
     return {
-      top: arrow.top + _size + factor * _sqrt,
       left: arrow.left + _size,
+      top: arrow.top + _size + factor * _sqrt,
     }
   }
 }
@@ -324,8 +325,8 @@ function getLeftOrRightOriginCoords() {
     const factor = popup.main === 'left' ? 1 : -1
 
     return {
-      top: arrow.top + _size,
       left: arrow.left + _size + factor * _sqrt,
+      top: arrow.top + _size,
     }
   }
 }
@@ -392,28 +393,28 @@ function aligner(main: MainAxis, cross: CrossAxis) {
     return [
       makeArrowCoordsGetter(arrowCoords),
       makePopupCoordsGetter({
-        top: screenCoords.top - positionedCoords.top,
-        left: screenCoords.left - positionedCoords.left,
-        '--origin-y': `${originCoords.top.toFixed(1)}px`,
         '--origin-x': `${originCoords.left.toFixed(1)}px`,
+        '--origin-y': `${originCoords.top.toFixed(1)}px`,
+        'left': screenCoords.left - positionedCoords.left,
+        'top': screenCoords.top - positionedCoords.top,
       }),
     ] as const
   }
 }
 
 const aligners: Record<TooltipPlacement, ReturnType<typeof aligner>> = {
-  topLeft: aligner('top', 'left'),
-  top: aligner('top', 'center'),
-  topRight: aligner('top', 'right'),
-  bottomLeft: aligner('bottom', 'left'),
   bottom: aligner('bottom', 'center'),
+  bottomLeft: aligner('bottom', 'left'),
   bottomRight: aligner('bottom', 'right'),
-  leftTop: aligner('left', 'top'),
   left: aligner('left', 'center'),
   leftBottom: aligner('left', 'bottom'),
-  rightTop: aligner('right', 'top'),
+  leftTop: aligner('left', 'top'),
   right: aligner('right', 'center'),
   rightBottom: aligner('right', 'bottom'),
+  rightTop: aligner('right', 'top'),
+  top: aligner('top', 'center'),
+  topLeft: aligner('top', 'left'),
+  topRight: aligner('top', 'right'),
 }
 
 export default aligners

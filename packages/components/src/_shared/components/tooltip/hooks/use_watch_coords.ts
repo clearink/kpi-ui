@@ -1,10 +1,10 @@
-import { useWatchValue } from '_shared/hooks'
 import { isEqual } from '@kpi-ui/utils'
+import { useWatchValue } from '_shared/hooks'
 
 import type { InternalTooltipProps } from '../props'
 
 export default function useWatchCoords(props: InternalTooltipProps, onCallback: () => void) {
-  const { placement, offset, arrow, shift, flip } = props
+  const { arrow, flip, offset, placement, shift } = props
 
   const options = { compare: isEqual, listener: onCallback }
 

@@ -1,9 +1,8 @@
 import { withDisplayName } from '@kpi-ui/utils'
 
-import useFormatClass from './hooks/use_format_class'
 import type { BackTopProps } from './props'
 
-const defaultProps: Partial<BackTopProps> = {}
+import useFormatClass from './hooks/use_format_class'
 
 function BackTop(props: BackTopProps) {
   const classes = useFormatClass(props)

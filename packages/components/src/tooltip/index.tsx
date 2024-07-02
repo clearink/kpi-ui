@@ -1,9 +1,10 @@
+import { fallback, withDisplayName } from '@kpi-ui/utils'
 import { Tooltip as InternalTooltip } from '_shared/components'
 import { usePrefixCls } from '_shared/hooks'
-import { fallback, withDisplayName } from '@kpi-ui/utils'
+
+import type { TooltipProps } from './props'
 
 import useFormatClass from './hooks/use_format_class'
-import type { TooltipProps } from './props'
 
 function Tooltip(props: TooltipProps) {
   const { transition } = props

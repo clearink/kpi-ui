@@ -1,11 +1,12 @@
-import { useDeepMemo } from '_shared/hooks'
 import { batch, getShadowRoot, makeEventListener, ownerWindow, toArray } from '@kpi-ui/utils'
+import { useDeepMemo } from '_shared/hooks'
 import { useEffect, useMemo } from 'react'
 
 import type { InternalTooltipProps } from '../props'
-import { formatTriggerEvents, isInPopupChain } from '../utils/helpers'
 import type useTooltipOpen from './use_tooltip_open'
 import type { TooltipState } from './use_tooltip_store'
+
+import { formatTriggerEvents, isInPopupChain } from '../utils/helpers'
 
 // 触发事件
 export default function useTooltipEvents(
@@ -25,7 +26,7 @@ export default function useTooltipEvents(
     if (!element || !clickToHide) return
 
     const handler = (event: MouseEvent) => {
-      setOpen((state) => (!state || isInPopupChain(states, event) ? state : false))
+      setOpen(state => (!state || isInPopupChain(states, event) ? state : false))
     }
 
     const shadowRoot = getShadowRoot(element)

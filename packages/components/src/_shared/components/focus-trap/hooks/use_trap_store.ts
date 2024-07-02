@@ -1,21 +1,21 @@
+import { atIndex, makeEventListener, noop } from '@kpi-ui/utils'
 import { Keyboard } from '_shared/constants'
 import { useConstant } from '_shared/hooks'
-import { atIndex, makeEventListener, noop } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 
 import type { FocusTrapProps } from '../props'
 
 let __stack: {
-  onKeyDown: (e: KeyboardEvent) => void
   onFocusIn: (e: FocusEvent) => void
+  onKeyDown: (e: KeyboardEvent) => void
 }[] = []
 
 let __cleanupKeyDown = noop
 
 let __cleanupFocusIn = noop
 
-const initTrapEvent = (root: Document) => {
-  const getTopEvent = (type: 'onKeyDown' | 'onFocusIn') => (e: any) => {
+function initTrapEvent(root: Document) {
+  const getTopEvent = (type: 'onFocusIn' | 'onKeyDown') => (e: any) => {
     const topListeners = atIndex(__stack, -1)
     topListeners && topListeners[type](e)
   }
@@ -26,15 +26,15 @@ const initTrapEvent = (root: Document) => {
 }
 
 export class FocusTrapState {
-  $start = {
-    current: null as HTMLDivElement | null,
-  }
-
   $content = {
     current: null as HTMLElement | null,
   }
 
   $end = {
+    current: null as HTMLDivElement | null,
+  }
+
+  $start = {
     current: null as HTMLDivElement | null,
   }
 
@@ -46,16 +46,6 @@ export class FocusTrapState {
 }
 
 export class FocusTrapAction {
-  constructor(private states: FocusTrapState) {}
-
-  setReturnFocus = (value: Element | null) => {
-    this.states.returnFocus = value
-  }
-
-  setLatestFocus = (value: HTMLElement | null) => {
-    this.states.latestFocus = value
-  }
-
   focusElement = (el: HTMLElement | null) => {
     el && el.focus({ preventScroll: true })
   }
@@ -76,7 +66,7 @@ export class FocusTrapAction {
 
       const target = e.target as HTMLElement
 
-      const { $start, $content, $end, isShiftTab, latestFocus } = this.states
+      const { $content, $end, $start, isShiftTab, latestFocus } = this.states
 
       const container = $content.current
 
@@ -97,14 +87,14 @@ export class FocusTrapAction {
       this.focusElement(atIndex(tabbable, isShiftTab ? -1 : 0))
     }
 
-    const listeners = { onKeyDown, onFocusIn }
+    const listeners = { onFocusIn, onKeyDown }
 
     __stack.push(listeners)
 
     if (__stack.length === 1) initTrapEvent(root)
 
     return () => {
-      __stack = __stack.filter((item) => item !== listeners)
+      __stack = __stack.filter(item => item !== listeners)
 
       if (!__stack.length) {
         __cleanupFocusIn()
@@ -113,11 +103,21 @@ export class FocusTrapAction {
       }
     }
   }
+
+  setLatestFocus = (value: HTMLElement | null) => {
+    this.states.latestFocus = value
+  }
+
+  setReturnFocus = (value: Element | null) => {
+    this.states.returnFocus = value
+  }
+
+  constructor(private states: FocusTrapState) {}
 }
 export default function useFocusTrapStore() {
   const states = useConstant(() => new FocusTrapState())
 
   const actions = useMemo(() => new FocusTrapAction(states), [states])
 
-  return { states, actions }
+  return { actions, states }
 }

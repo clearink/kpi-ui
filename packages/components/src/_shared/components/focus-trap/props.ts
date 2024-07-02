@@ -2,9 +2,9 @@ import type { SemanticStyledProps } from '@kpi-ui/types'
 import type { ReactElement } from 'react'
 
 export interface FocusTrapProps extends SemanticStyledProps<'root'> {
-  children: ReactElement
-
   active?: boolean
+
+  children: ReactElement
 
   getTabbable?: (container: HTMLElement) => HTMLElement[]
 

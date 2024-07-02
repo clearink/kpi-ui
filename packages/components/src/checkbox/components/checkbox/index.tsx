@@ -1,13 +1,13 @@
-import { DisabledContext } from '_shared/contexts'
-import { usePrefixCls } from '_shared/hooks'
-import { isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
-
 import { CheckboxGroupContext } from '@/checkbox/_shared/context'
 import TouchEffect from '@/touch-effect'
+import { isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { DisabledContext } from '_shared/contexts'
+import { usePrefixCls } from '_shared/hooks'
+
+import type { CheckboxProps } from './props'
 
 import useCheckboxValue from './hooks/use_checkbox_value'
 import useFormatClass from './hooks/use_format_class'
-import type { CheckboxProps } from './props'
 
 const excluded = [
   'autoFocus',
@@ -32,7 +32,7 @@ function Checkbox(_props: CheckboxProps) {
     },
   )
 
-  const { disabled, children } = props
+  const { children, disabled } = props
 
   const prefixCls = usePrefixCls('checkbox')
 
@@ -49,12 +49,12 @@ function Checkbox(_props: CheckboxProps) {
     <TouchEffect component="Checkbox" disabled={checked} selector={`.${prefixCls}__input`}>
       <label {...attrs} className={classes}>
         <input
-          className={`${prefixCls}__original`}
           checked={!!checked}
-          type="checkbox"
+          className={`${prefixCls}__original`}
           onChange={(e) => {
             !disabled && setChecked(e.target.checked)
           }}
+          type="checkbox"
         />
         <span className={`${prefixCls}__input`}></span>
         {!isNullish(children) && <span className={`${prefixCls}__label`}>{children}</span>}

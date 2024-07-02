@@ -1,13 +1,15 @@
-import { useConstant, useWatchValue } from '_shared/hooks'
-import { isEqual, isFunction, isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import type { FormEvent, ForwardedRef } from 'react'
+
+import { isEqual, isFunction, isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { useConstant, useWatchValue } from '_shared/hooks'
 import { createElement, forwardRef, useEffect, useImperativeHandle, useMemo } from 'react'
+
+import type { InternalFormInstance } from './control/props'
+import type { InternalFormProps } from './props'
 
 import { InternalFormContext, InternalFormInstanceContext } from '../../_shared/context'
 import { HOOK_MARK } from './control'
-import type { InternalFormInstance } from './control/props'
 import useForm from './hooks/use_form'
-import type { InternalFormProps } from './props'
 
 const excluded = [
   'name',
@@ -27,8 +29,8 @@ const excluded = [
 ] as const
 
 const defaultProps: Partial<InternalFormProps> = {
-  tag: 'form',
   preserve: true,
+  tag: 'form',
   validateTrigger: 'onChange',
 }
 
@@ -38,7 +40,7 @@ function InternalForm<State = any>(
 ) {
   const props = withDefaults(_props, defaultProps)
 
-  const { name, tag, form, fields, children, onReset, initialValues, validateTrigger } = props
+  const { children, fields, form, initialValues, name, onReset, tag, validateTrigger } = props
 
   const instance = useForm(form) as InternalFormInstance<State>
 
@@ -79,7 +81,7 @@ function InternalForm<State = any>(
   }
 
   const instanceContext = useMemo(() => {
-    return { ...instance, validateTrigger, formName: name }
+    return { ...instance, formName: name, validateTrigger }
   }, [instance, validateTrigger, name])
 
   const elements = (
@@ -93,8 +95,8 @@ function InternalForm<State = any>(
   // 表单剩余字段
   const attrs = {
     ...omit(props, excluded),
-    onSubmit: handleSubmit,
     onReset: handleReset,
+    onSubmit: handleSubmit,
   }
 
   return createElement(tag as any, attrs, elements)

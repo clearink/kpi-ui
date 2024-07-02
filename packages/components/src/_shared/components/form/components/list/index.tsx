@@ -1,19 +1,19 @@
-import { useConstant, useDeepMemo } from '_shared/hooks'
 import { isArray, isFunction, isUndefined, logger, rawType, toArray } from '@kpi-ui/utils'
+import { useConstant, useDeepMemo } from '_shared/hooks'
 import { useMemo } from 'react'
+
+import type { InternalFormListProps } from './props'
 
 import { InternalFormInstanceContext } from '../../_shared/context'
 import { getIn } from '../../utils/value'
 import InternalFormField from '../field'
 import FormListControl from './control'
-import type { InternalFormListProps } from './props'
 
 export default function InternalFormList(props: InternalFormListProps) {
-  const { name, rule, initialValue, preserve, children } = props
+  const { children, initialValue, name, preserve, rule } = props
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production')
     logger(isUndefined(name), 'Form.List', 'Miss `name` prop.')
-  }
 
   const instance = InternalFormInstanceContext.useState()
 
@@ -31,18 +31,18 @@ export default function InternalFormList(props: InternalFormListProps) {
 
   const invalidChildren = !isFunction(children)
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production')
     logger(invalidChildren, 'Form.List only accepts function as children.')
-  }
+
   if (invalidChildren) return null
 
   return (
     <InternalFormInstanceContext.Provider value={instanceContext}>
       <InternalFormField
-        name={[]}
-        rule={rule}
         initialValue={initialValue}
+        name={[]}
         preserve={preserve}
+        rule={rule}
         shouldUpdate={(prev, next, type) => {
           const path = toArray(name)
 
@@ -61,14 +61,13 @@ export default function InternalFormList(props: InternalFormListProps) {
       >
         {({ value }: any, meta) => {
           const fields = toArray(value, true).map((_, index) => ({
-            name: index,
-            key: control.ensureFieldKey(index),
             isListField: true,
+            key: control.ensureFieldKey(index),
+            name: index,
           }))
 
-          if (process.env.NODE_ENV !== 'production') {
+          if (process.env.NODE_ENV !== 'production')
             logger(!isArray(value), `'${listPath.join(' > ')}' is not an array`)
-          }
 
           return children(fields, helpers, meta)
         }}

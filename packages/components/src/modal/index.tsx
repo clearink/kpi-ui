@@ -1,7 +1,4 @@
-import { FocusTrap, Overlay } from '_shared/components'
-import { Keyboard } from '_shared/constants'
-import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
-import { hideElement, showElement } from '_shared/utils'
+import Button from '@/button'
 import {
   fallback,
   isFunction,
@@ -11,12 +8,15 @@ import {
   withDefaults,
   withDisplayName,
 } from '@kpi-ui/utils'
+import { FocusTrap, Overlay } from '_shared/components'
+import { Keyboard } from '_shared/constants'
+import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
+import { hideElement, showElement } from '_shared/utils'
 import { type KeyboardEvent, type SyntheticEvent, useId, useRef } from 'react'
 
-import Button from '@/button'
+import type { ModalProps } from './props'
 
 import useFormatClass from './hooks/use_format_class'
-import type { ModalProps } from './props'
 
 const included = [
   'getContainer',
@@ -30,9 +30,9 @@ const included = [
 
 const defaultProps: Partial<ModalProps> = {
   closeOnEscape: true,
+  mask: true,
   maskClosable: true,
   returnFocus: true,
-  mask: true,
 }
 
 function Modal(_props: ModalProps) {
@@ -40,14 +40,14 @@ function Modal(_props: ModalProps) {
 
   const {
     children,
-    open,
-    title,
     footer,
-    onOk,
-    onCancel,
     modalRender,
+    onCancel,
+    onOk,
+    open,
     style,
     styles: _styles,
+    title,
     transitions = {},
   } = props
 
@@ -73,13 +73,12 @@ function Modal(_props: ModalProps) {
         onCancel?.()
       }
 
-  const onMaskClick =
-    !props.maskClosable || !props.mask
+  const onMaskClick
+    = !props.maskClosable || !props.mask
       ? undefined
       : (e: SyntheticEvent) => {
-          if (e.target && e.target === $wrap.current) {
+          if (e.target && e.target === $wrap.current)
             onCancel?.()
-          }
         }
 
   const onTrapExit = !props.returnFocus
@@ -93,17 +92,17 @@ function Modal(_props: ModalProps) {
   const renderNode = (
     <div className={classNames.main} style={styles.main}>
       <button
-        type="button"
         aria-label="close"
         className={classNames.close}
-        style={styles.close}
         onClick={onCancel}
+        style={styles.close}
+        type="button"
       >
         X
       </button>
       <div className={classNames.header} style={styles.header}>
         {!isNullish(title) && (
-          <span id={ariaId} className={`${prefixCls}__title`}>
+          <span className={`${prefixCls}__title`} id={ariaId}>
             {title}
           </span>
         )}
@@ -114,7 +113,7 @@ function Modal(_props: ModalProps) {
       {!isNull(footer) && (
         <div className={classNames.footer} style={styles.footer}>
           <Button onClick={onCancel}>取消</Button>
-          <Button variant="filled" onClick={onOk}>
+          <Button onClick={onOk} variant="filled">
             确定
           </Button>
         </div>
@@ -126,31 +125,31 @@ function Modal(_props: ModalProps) {
     <Overlay
       {...pick(props, included)}
       classNames={{ mask: `${prefixCls}-mask` }}
-      transitions={{
-        mask: fallback(transitions.mask, `${rootPrefixCls}-fade-in`),
-        content: fallback(transitions.content, `${rootPrefixCls}-slide-bottom`),
-      }}
       onEnter={() => {
         showElement($wrap.current)
       }}
       onExited={() => {
         hideElement($wrap.current)
       }}
+      transitions={{
+        content: fallback(transitions.content, `${rootPrefixCls}-slide-bottom`),
+        mask: fallback(transitions.mask, `${rootPrefixCls}-fade-in`),
+      }}
     >
-      {(ref) => (
+      {ref => (
         <div
-          tabIndex={-1}
-          ref={$wrap}
-          onKeyDown={onEscapeDown}
-          onClick={onMaskClick}
           className={`${prefixCls}-wrap`}
+          onClick={onMaskClick}
+          onKeyDown={onEscapeDown}
+          ref={$wrap}
+          tabIndex={-1}
         >
           <div
-            role="dialog"
-            ref={ref}
             aria-labelledby={title ? ariaId : undefined}
             aria-modal="true"
             className={classNames.root}
+            ref={ref}
+            role="dialog"
             style={styles.root}
           >
             <FocusTrap active={open} onExit={onTrapExit}>

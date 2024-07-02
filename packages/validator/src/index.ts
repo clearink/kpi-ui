@@ -1,6 +1,8 @@
+import type BaseSchema from './schema/base'
+
 import AnySchema from './schema/any'
 import ArraySchema from './schema/array'
-import BaseSchema, { EffectSchema, UnionSchema } from './schema/base'
+import { EffectSchema, UnionSchema } from './schema/base'
 import BooleanSchema from './schema/boolean'
 import DateSchema from './schema/date'
 import EnumSchema from './schema/enum'
@@ -24,20 +26,20 @@ export const enums = EnumSchema.create
 export const date = DateSchema.create
 export const union = UnionSchema.create
 export const refine = EffectSchema.refinement
-export const { refinement, transform, preprocess } = EffectSchema
+export const { preprocess, refinement, transform } = EffectSchema
 export { default as hasRequired } from './utils/required'
 
 export default {
-  string,
-  number,
-  boolean,
-  object,
   any,
   array,
-  enums,
+  boolean,
   date,
-  union,
-  refine,
-  transform,
+  enums,
+  number,
+  object,
   preprocess,
+  refine,
+  string,
+  transform,
+  union,
 }

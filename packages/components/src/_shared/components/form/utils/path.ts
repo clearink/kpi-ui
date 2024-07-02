@@ -10,5 +10,5 @@ export function _getName(namePath?: ExternalNamePath) {
 
 export function isValidIndex(array: any[], ...positions: number[]) {
   const len = array.length
-  return positions.every((position) => position < len && position >= 0)
+  return positions.every(position => position < len && position >= 0)
 }

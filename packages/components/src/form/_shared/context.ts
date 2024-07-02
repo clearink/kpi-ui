@@ -5,20 +5,20 @@ import type { FormInstance } from '../components/form/props'
 import type { FieldMeta, FormLabelAlign, FormLayout, RequiredMark, ValidateStatus } from '../props'
 
 export interface FormContextState {
-  layout?: FormLayout
-  formName?: string
   colon?: boolean
-  labelAlign?: FormLabelAlign
-  labelWrap?: boolean
-  labelCol?: ColProps
-  wrapperCol?: ColProps
-  requiredMark?: RequiredMark
   form?: FormInstance
+  formName?: string
+  labelAlign?: FormLabelAlign
+  labelCol?: ColProps
+  labelWrap?: boolean
+  layout?: FormLayout
+  requiredMark?: RequiredMark
+  wrapperCol?: ColProps
 }
 
 export const FormContext = ctxHelper<FormContextState>({
-  layout: 'horizontal',
   labelAlign: 'right',
+  layout: 'horizontal',
 })
 
 export interface FormItemContextState {

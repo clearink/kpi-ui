@@ -1,37 +1,54 @@
-import { useConstant, useForceUpdate, useWatchValue } from '_shared/hooks'
 import { getClientCoords, reflow } from '@kpi-ui/utils'
+import { useConstant, useForceUpdate, useWatchValue } from '_shared/hooks'
 import { useMemo } from 'react'
 
 import type { ScrollNumberProps } from '../props'
 
 export class ScrollNumberState {
-  items = new Map<string | null, HTMLElement | null>()
-
   $wrap = {
     current: null as HTMLDivElement | null,
+  }
+
+  history: [null | string, string]
+
+  items = new Map<null | string, HTMLElement | null>()
+
+  showRawChar = true
+
+  constructor(char: string) {
+    this.history = [null, char]
   }
 
   get wrap() {
     return this.$wrap.current
   }
-
-  showRawChar = true
-
-  history: [string | null, string]
-
-  constructor(char: string) {
-    this.history = [null, char]
-  }
 }
 
 export class ScrollNumberAction {
-  constructor(
-    private forceUpdate: () => void,
-    private states: ScrollNumberState,
-  ) {}
+  onEnter = (el: HTMLElement) => {
+    const { history, items, wrap } = this.states
 
-  setItem = (key: string, el: HTMLElement | null) => {
-    this.states.items.set(key, el)
+    const item = items.get(history[0])
+
+    if (!wrap || !item) return
+
+    this.setOffsetStyles(el, wrap, item)
+
+    reflow(el)
+  }
+
+  onEntered = () => {
+    this.setShowRawChar(true)
+  }
+
+  onEntering = (el: HTMLElement) => {
+    const { history, items, wrap } = this.states
+
+    const item = items.get(history[1])
+
+    if (!wrap || !item) return
+
+    this.setOffsetStyles(el, wrap, item)
   }
 
   setHistory = (char: string) => {
@@ -40,12 +57,8 @@ export class ScrollNumberAction {
     this.states.history = [history[1], char]
   }
 
-  setShowRawChar = (value: boolean) => {
-    const { showRawChar } = this.states
-
-    if (showRawChar !== value) this.forceUpdate()
-
-    this.states.showRawChar = value
+  setItem = (key: string, el: HTMLElement | null) => {
+    this.states.items.set(key, el)
   }
 
   setOffsetStyles = (el: HTMLElement, wrap: HTMLElement, item: HTMLElement) => {
@@ -58,31 +71,18 @@ export class ScrollNumberAction {
     el.style.setProperty('transform', `translate3d(0, ${delta}px, 0)`)
   }
 
-  onEnter = (el: HTMLElement) => {
-    const { wrap, history, items } = this.states
+  setShowRawChar = (value: boolean) => {
+    const { showRawChar } = this.states
 
-    const item = items.get(history[0])
+    if (showRawChar !== value) this.forceUpdate()
 
-    if (!wrap || !item) return
-
-    this.setOffsetStyles(el, wrap, item)
-
-    reflow(el)
+    this.states.showRawChar = value
   }
 
-  onEntering = (el: HTMLElement) => {
-    const { wrap, history, items } = this.states
-
-    const item = items.get(history[1])
-
-    if (!wrap || !item) return
-
-    this.setOffsetStyles(el, wrap, item)
-  }
-
-  onEntered = () => {
-    this.setShowRawChar(true)
-  }
+  constructor(
+    private forceUpdate: () => void,
+    private states: ScrollNumberState,
+  ) {}
 }
 
 export default function useScrollNumberStore(props: ScrollNumberProps) {
@@ -104,5 +104,5 @@ export default function useScrollNumberStore(props: ScrollNumberProps) {
     action.setShowRawChar(false)
   })
 
-  return { returnEarly, states, action }
+  return { action, returnEarly, states }
 }

@@ -12,7 +12,9 @@ export default function useForm<S = any>(form?: FormInstance<S>) {
     return (
       form ?? {
         ...internalForm,
-        scrollToField: (name: NamePath) => {},
+        scrollToField: (name: NamePath) => {
+          console.log(name)
+        },
       }
     )
   }, [internalForm, form])

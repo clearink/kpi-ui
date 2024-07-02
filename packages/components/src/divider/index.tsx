@@ -1,9 +1,10 @@
-import { usePrefixCls } from '_shared/hooks'
 import { isNullish, omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { usePrefixCls } from '_shared/hooks'
 import { useMemo } from 'react'
 
-import useFormatClass from './hooks/use_format_class'
 import type { DividerProps } from './props'
+
+import useFormatClass from './hooks/use_format_class'
 
 const excluded = [
   'children',
@@ -20,8 +21,8 @@ const excluded = [
 ] as const
 
 const defaultProps: Partial<DividerProps> = {
-  dashed: false,
   align: 'center',
+  dashed: false,
   direction: 'horizontal',
   plain: false,
 }
@@ -29,7 +30,7 @@ const defaultProps: Partial<DividerProps> = {
 function Divider(_props: DividerProps) {
   const props = withDefaults(_props, defaultProps)
 
-  const { children, direction, align, margin } = props
+  const { align, children, direction, margin } = props
 
   const prefixCls = usePrefixCls('divider')
 

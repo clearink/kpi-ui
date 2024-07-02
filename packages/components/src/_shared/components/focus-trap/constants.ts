@@ -13,11 +13,11 @@ export const TabbableQuery = [
 ].join(',')
 
 export const guardStyles: React.CSSProperties = {
-  position: 'fixed',
-  width: 1,
   height: 0,
-  padding: 0,
-  overflow: 'hidden',
-  top: -1,
   left: -1,
+  overflow: 'hidden',
+  padding: 0,
+  position: 'fixed',
+  top: -1,
+  width: 1,
 }

@@ -4,17 +4,18 @@ import { type DOMAttributes } from 'react'
 import type useTooltipOpen from '../hooks/use_tooltip_open'
 import type { TooltipState } from '../hooks/use_tooltip_store'
 import type { TriggerEvent } from '../props'
+
 import { getClickEvents, getContextMenuEvents, getFocusEvents, getHoverEvents } from './events'
 
 export function isInPopupChain(states: TooltipState, event: MouseEvent) {
-  const { trigger, popup, popups } = states
+  const { popup, popups, trigger } = states
 
   const el = event.target as Element
 
   const isInChain = (item: Element | null) =>
     item && (item === el || item.contains(el) || getShadowRoot(item)?.host === el)
 
-  return isInChain(trigger) || isInChain(popup) || popups.some((item) => isInChain(item))
+  return isInChain(trigger) || isInChain(popup) || popups.some(item => isInChain(item))
 }
 
 export function formatTriggerEvents(

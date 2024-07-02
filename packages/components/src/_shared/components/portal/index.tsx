@@ -1,10 +1,10 @@
+import type { ForwardedRef } from 'react'
+
 import { getTargetElement, isNullish, ownerBody, withDisplayName } from '@kpi-ui/utils'
-import { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import type { PortalProps, PortalRef } from './props'
-
-const defaultProps: Partial<PortalProps> = {}
 
 function Portal(props: PortalProps, ref: ForwardedRef<PortalRef>) {
   const { children, getContainer: _container } = props

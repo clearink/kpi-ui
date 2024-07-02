@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import type { PagerProps } from './props'
 
 export default function PageItem(props: PagerProps) {
-  const { page, itemRender, disabled, active, className, prefix, showHtmlTitle, ...rest } = props
+  const { active, className, disabled, itemRender, page, prefix, showHtmlTitle, ...rest } = props
 
   const classes = cls(
     `${prefix}-item`,
@@ -18,7 +18,7 @@ export default function PageItem(props: PagerProps) {
   const title = useMemo(() => (showHtmlTitle ? `${page}` : undefined), [page, showHtmlTitle])
 
   return (
-    <li className={classes} title={title} tabIndex={disabled ? -1 : 0} {...rest}>
+    <li className={classes} tabIndex={disabled ? -1 : 0} title={title} {...rest}>
       {itemRender(page, 'page', <a rel="nofollow">{page}</a>)}
     </li>
   )

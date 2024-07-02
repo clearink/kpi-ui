@@ -1,4 +1,5 @@
 import type { AnyFn } from '@kpi-ui/types'
+
 import { useEffect, useRef } from 'react'
 
 import { useEvent } from '../../use-event'
@@ -11,7 +12,7 @@ export interface SchedulerOptions<T> {
 }
 
 export default function makeSchedulerHook<Fn extends AnyFn, T>(options: SchedulerOptions<T>) {
-  const { initialValue, onCleanup, shouldPrevent, onScheduler } = options
+  const { initialValue, onCleanup, onScheduler, shouldPrevent } = options
 
   return (callback: Fn) => {
     const ref = useRef(initialValue)

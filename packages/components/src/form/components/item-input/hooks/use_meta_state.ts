@@ -5,13 +5,13 @@ import type { FieldMeta } from '../../../props'
 
 export function initFieldMeta(): FieldMeta {
   return {
-    name: [],
     dirty: false,
+    errors: [],
+    mounted: false,
+    name: [],
     touched: false,
     validating: false,
-    errors: [],
     warnings: [],
-    mounted: false,
   }
 }
 

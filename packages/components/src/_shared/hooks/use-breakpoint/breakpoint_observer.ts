@@ -3,36 +3,21 @@ import { isFunction } from '@kpi-ui/utils'
 import { BREAKPOINT_MAP, INIT_MATCHES, type ScreenMatch } from './breakpoint'
 
 class BreakpointObserver {
-  // 订阅事件
-  private listeners = new Set<(e: ScreenMatch<boolean>) => void>()
-
-  private queryList: MediaQueryList[] = []
-
-  // 断点响应值
-  private matches = { ...INIT_MATCHES }
-
-  public getCurrentMatches = () => ({ ...this.matches })
-
   private dispatch = (e: MediaQueryListEvent) => {
     const breakpoint = BREAKPOINT_MAP.get(e.media)
     if (breakpoint && this.matches[breakpoint] !== e.matches) {
       this.matches[breakpoint] = e.matches
-      this.listeners.forEach((handler) => handler({ ...this.matches }))
+      this.listeners.forEach(handler => handler({ ...this.matches }))
     }
   }
 
-  public subscribe = (handler: (e: ScreenMatch<boolean>) => void) => {
-    if (!this.listeners.size) this.register()
+  // 订阅事件
+  private listeners = new Set<(e: ScreenMatch<boolean>) => void>()
 
-    this.listeners.add(handler)
+  // 断点响应值
+  private matches = { ...INIT_MATCHES }
 
-    handler({ ...this.matches })
-
-    return () => {
-      this.listeners.delete(handler)
-      if (!this.listeners.size) this.unregister()
-    }
-  }
+  private queryList: MediaQueryList[] = []
 
   private register = () => {
     if (!window || !isFunction(window.matchMedia)) return
@@ -54,6 +39,21 @@ class BreakpointObserver {
     })
 
     this.queryList = []
+  }
+
+  public getCurrentMatches = () => ({ ...this.matches })
+
+  public subscribe = (handler: (e: ScreenMatch<boolean>) => void) => {
+    if (!this.listeners.size) this.register()
+
+    this.listeners.add(handler)
+
+    handler({ ...this.matches })
+
+    return () => {
+      this.listeners.delete(handler)
+      if (!this.listeners.size) this.unregister()
+    }
   }
 }
 

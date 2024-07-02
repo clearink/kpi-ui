@@ -1,6 +1,7 @@
 import { isUndefined } from '@kpi-ui/utils'
 
 import type BaseSchema from '../schema/base'
+
 import { EffectSchema } from '../schema/base'
 
 export default function hasRequired(schema?: BaseSchema) {

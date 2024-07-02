@@ -1,5 +1,5 @@
-import { getPositionedElement } from '_shared/utils'
 import { getClientCoords, getElementStyle, makeFrameTimeout, observe } from '@kpi-ui/utils'
+import { getPositionedElement } from '_shared/utils'
 
 import type { TouchEffectInfo } from '../_shared/context'
 
@@ -15,7 +15,7 @@ function isValidColor(color: string) {
 }
 
 function getWaveColor(node: HTMLElement) {
-  const { borderTopColor, borderColor, backgroundColor } = getElementStyle(node)
+  const { backgroundColor, borderColor, borderTopColor } = getElementStyle(node)
 
   if (isValidColor(borderTopColor)) return borderTopColor
 
@@ -25,7 +25,7 @@ function getWaveColor(node: HTMLElement) {
 }
 
 export default function showWaveEffect(info: TouchEffectInfo) {
-  const { target, prefixCls } = info
+  const { prefixCls, target } = info
 
   if (!target) return
 

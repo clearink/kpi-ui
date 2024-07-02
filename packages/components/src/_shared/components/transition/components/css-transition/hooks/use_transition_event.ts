@@ -1,13 +1,14 @@
-import { hideElement } from '_shared/utils'
 import { batch, isUndefined, makeEventListener, makeFrameTimeout } from '@kpi-ui/utils'
+import { hideElement } from '_shared/utils'
+
+import type { CSSTransitionProps, TransitionStep } from '../props'
+import type useFormatClassNames from './use_format_class_names'
+import type useTransitionStore from './use_transition_store'
 
 import { isAppear, isEnter, isExit } from '../../../constants'
 import runCounter from '../../../utils/run_counter'
-import type { CSSTransitionProps, TransitionStep } from '../props'
 import { delTransitionClass } from '../utils/classnames'
 import collectTimeoutInfo from '../utils/collect'
-import useFormatClassNames from './use_format_class_names'
-import useTransitionStore from './use_transition_store'
 
 export default function useTransitionEvent<E extends HTMLElement>(
   states: ReturnType<typeof useTransitionStore<E>>['states'],
@@ -15,13 +16,13 @@ export default function useTransitionEvent<E extends HTMLElement>(
   classNames: ReturnType<typeof useFormatClassNames>,
   props: CSSTransitionProps<E>,
 ) {
-  const { type, unmountOnExit, addEndListener, onEntered, onExited, onEnterCancel, onExitCancel } =
-    props
+  const { addEndListener, onEnterCancel, onEntered, onExitCancel, onExited, type, unmountOnExit }
+    = props
 
   const done = (el: E, step: TransitionStep) => {
     actions.finishTransition(step)
 
-    const { from, active, to } = classNames[step]
+    const { active, from, to } = classNames[step]
 
     delTransitionClass(el, from, active, to)
 
@@ -37,7 +38,7 @@ export default function useTransitionEvent<E extends HTMLElement>(
   const runCancel = (el: E, step: TransitionStep) => {
     if (!isEnter(states.status) && !isExit(states.status)) return
 
-    const { from, active, to } = classNames[step]
+    const { active, from, to } = classNames[step]
 
     isExit(step) ? onExitCancel?.(el) : onEnterCancel?.(el, isAppear(step))
 

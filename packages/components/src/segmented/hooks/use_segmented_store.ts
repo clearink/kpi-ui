@@ -1,5 +1,5 @@
-import { useConstant, useForceUpdate, useWatchValue } from '_shared/hooks'
 import { getClientCoords, reflow } from '@kpi-ui/utils'
+import { useConstant, useForceUpdate, useWatchValue } from '_shared/hooks'
 import { useMemo } from 'react'
 
 import type { SegmentedType } from '../props'
@@ -9,77 +9,30 @@ export class SegmentedState {
     current: null as HTMLDivElement | null,
   }
 
-  get group() {
-    return this.$group.current
-  }
-
-  thumb: HTMLDivElement | null = null
-
   history: [SegmentedType | null, SegmentedType | null]
-
-  latest: DOMRect | null = null
-
-  showThumb = false
 
   inTransition = false
 
   items = new Map<SegmentedType | null, HTMLElement | null>()
 
+  latest: DOMRect | null = null
+
+  showThumb = false
+
+  thumb: HTMLDivElement | null = null
+
   constructor(active: SegmentedType) {
     this.history = [null, active]
+  }
+
+  get group() {
+    return this.$group.current
   }
 }
 
 export class SegmentedAction {
-  constructor(
-    private forceUpdate: () => void,
-    private states: SegmentedState,
-  ) {}
-
-  setItem = (value: SegmentedType, el: HTMLElement | null) => {
-    const { items } = this.states
-
-    el ? items.set(value, el) : items.delete(value)
-  }
-
-  setThumb = (el: HTMLDivElement | null) => {
-    const { thumb } = this.states
-
-    if (!el && thumb) this.states.latest = getClientCoords(thumb)
-
-    this.states.thumb = el
-  }
-
-  setHistory = (value: SegmentedType) => {
-    const { history } = this.states
-
-    this.states.history = [history[1], value]
-  }
-
-  setShowThumb = (value: boolean) => {
-    const { showThumb } = this.states
-
-    if (showThumb !== value) this.forceUpdate()
-
-    this.states.showThumb = value
-  }
-
-  setInTransition = (value: boolean) => {
-    this.states.inTransition = value
-  }
-
-  setThumbStyles = (el: HTMLElement, group: HTMLElement, itemCoords: DOMRect) => {
-    const groupCoords = getClientCoords(group)
-
-    const delta = itemCoords.left - groupCoords.left
-
-    el.style.setProperty('transform', `translate3d(${delta}px, 0, 0)`)
-
-    el.style.setProperty('width', `${itemCoords.width}px`)
-  }
-
   onThumbEnter = (el: HTMLElement) => {
-    const { items, history, group, latest, inTransition } = this.states
+    const { group, history, inTransition, items, latest } = this.states
 
     const from = items.get(history[0])
 
@@ -94,8 +47,13 @@ export class SegmentedAction {
     reflow(el)
   }
 
+  onThumbEntered = () => {
+    this.setShowThumb(false)
+    this.setInTransition(false)
+  }
+
   onThumbEntering = (el: HTMLElement) => {
-    const { items, history, group } = this.states
+    const { group, history, items } = this.states
 
     const target = items.get(history[1])
 
@@ -104,10 +62,52 @@ export class SegmentedAction {
     this.setThumbStyles(el, group, getClientCoords(target))
   }
 
-  onThumbEntered = () => {
-    this.setShowThumb(false)
-    this.setInTransition(false)
+  setHistory = (value: SegmentedType) => {
+    const { history } = this.states
+
+    this.states.history = [history[1], value]
   }
+
+  setInTransition = (value: boolean) => {
+    this.states.inTransition = value
+  }
+
+  setItem = (value: SegmentedType, el: HTMLElement | null) => {
+    const { items } = this.states
+
+    el ? items.set(value, el) : items.delete(value)
+  }
+
+  setShowThumb = (value: boolean) => {
+    const { showThumb } = this.states
+
+    if (showThumb !== value) this.forceUpdate()
+
+    this.states.showThumb = value
+  }
+
+  setThumb = (el: HTMLDivElement | null) => {
+    const { thumb } = this.states
+
+    if (!el && thumb) this.states.latest = getClientCoords(thumb)
+
+    this.states.thumb = el
+  }
+
+  setThumbStyles = (el: HTMLElement, group: HTMLElement, itemCoords: DOMRect) => {
+    const groupCoords = getClientCoords(group)
+
+    const delta = itemCoords.left - groupCoords.left
+
+    el.style.setProperty('transform', `translate3d(${delta}px, 0, 0)`)
+
+    el.style.setProperty('width', `${itemCoords.width}px`)
+  }
+
+  constructor(
+    private forceUpdate: () => void,
+    private states: SegmentedState,
+  ) {}
 }
 
 export default function useSegmentedStore(active: SegmentedType) {
@@ -127,5 +127,5 @@ export default function useSegmentedStore(active: SegmentedType) {
     actions.setShowThumb(true)
   })
 
-  return { returnEarly, states, actions }
+  return { actions, returnEarly, states }
 }

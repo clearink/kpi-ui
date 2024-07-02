@@ -8,9 +8,16 @@ import type { FormItemLabelProps } from '../item-label/props'
 
 export interface FormItemProps<State = any>
   extends Omit<FormItemLabelProps, 'required'>,
-    Pick<FormItemInputProps, 'wrapperCol' | 'extra' | 'help'>,
-    Omit<ExternalFormFieldProps<State>, 'children' | 'onMetaChange'> {
-  children?: ReactNode | ((form: FormInstance<State>) => ReactNode)
+  Pick<FormItemInputProps, 'extra' | 'help' | 'wrapperCol'>,
+  Omit<ExternalFormFieldProps<State>, 'children' | 'onMetaChange'> {
+  children?: ((form: FormInstance<State>) => ReactNode) | ReactNode
+
+  className?: string
+
+  /**
+   * @zh 隐藏控件
+   */
+  hidden?: boolean
 
   /**
    * @zh `label` 标签的文本
@@ -28,17 +35,10 @@ export interface FormItemProps<State = any>
    */
   required?: boolean
 
+  style?: CSSProperties
+
   /**
    * @zh 校验状态，如不设置，则会根据校验规则自动生成，可选：'success' 'warning' 'error' 'validating'
    */
   validateStatus?: ValidateStatus
-
-  className?: string
-
-  style?: CSSProperties
-
-  /**
-   * @zh 隐藏控件
-   */
-  hidden?: boolean
 }

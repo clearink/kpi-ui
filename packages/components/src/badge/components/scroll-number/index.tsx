@@ -1,17 +1,18 @@
+import { withDisplayName } from '@kpi-ui/utils'
 import { CSSTransition } from '_shared/components'
 import { usePrefixCls } from '_shared/hooks'
-import { withDisplayName } from '@kpi-ui/utils'
+
+import type { ScrollNumberProps } from './props'
 
 import { NaturalList } from '../../constants'
 import useScrollNumberStore from './hooks/use_scroll_number_store'
-import type { ScrollNumberProps } from './props'
 
 function ScrollNumber(props: ScrollNumberProps) {
   const { char } = props
 
   const prefixCls = usePrefixCls('badge-scroll-number')
 
-  const { returnEarly, states, action } = useScrollNumberStore(props)
+  const { action, returnEarly, states } = useScrollNumberStore(props)
 
   if (returnEarly) return null
 
@@ -19,16 +20,16 @@ function ScrollNumber(props: ScrollNumberProps) {
 
   return (
     <CSSTransition
-      key={char}
-      when
       appear
+      key={char}
       name={`${prefixCls}-motion`}
       onEnter={action.onEnter}
-      onEntering={action.onEntering}
       onEntered={action.onEntered}
+      onEntering={action.onEntering}
+      when
     >
-      <span ref={states.$wrap} className={prefixCls}>
-        {NaturalList.map((natural) => (
+      <span className={prefixCls} ref={states.$wrap}>
+        {NaturalList.map(natural => (
           <span
             key={natural}
             ref={(el) => {

@@ -1,6 +1,6 @@
 export const Keyboard = {
-  tab: 'Tab',
   enter: 'Enter',
   esc: 'Escape',
   shift: 'Shift',
+  tab: 'Tab',
 }

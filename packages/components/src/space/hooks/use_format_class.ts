@@ -3,7 +3,7 @@ import { cls, isUndefined } from '@kpi-ui/utils'
 import type { SpaceProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: SpaceProps) {
-  const { className, direction, align: _align, wrap } = props
+  const { align: _align, className, direction, wrap } = props
 
   const align = direction === 'horizontal' && isUndefined(_align) ? 'center' : _align
 

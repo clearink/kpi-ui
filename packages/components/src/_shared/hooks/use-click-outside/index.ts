@@ -1,4 +1,5 @@
 import type { MayBe } from '@kpi-ui/types'
+
 import { type GetTargetElement, getTargetElement } from '@kpi-ui/utils'
 import { useEffect, useState } from 'react'
 
@@ -6,7 +7,7 @@ import { useEvent } from '../use-event'
 
 export default function useClickOutside<T extends Element>(
   target: GetTargetElement<T>,
-  handler: (event: PointerEvent | FocusEvent) => void,
+  handler: (event: FocusEvent | PointerEvent) => void,
 ) {
   const callback = useEvent(handler)
 
@@ -17,7 +18,7 @@ export default function useClickOutside<T extends Element>(
 
   useEffect(() => {
     if (!el) return
-
+    console.log(el)
     // TODO...
   }, [el, callback])
 }

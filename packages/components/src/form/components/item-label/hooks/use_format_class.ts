@@ -8,17 +8,17 @@ export default function useFormatClass(
   props: FormItemLabelProps,
   ctx: FormContextState,
 ) {
-  const { required, colon, labelAlign, labelCol = {}, labelWrap, requiredMark } = props
+  const { colon, labelAlign, labelCol = {}, labelWrap, required, requiredMark } = props
 
   return cls(
     prefixCls,
     {
       [`${prefixCls}--${labelAlign}`]: labelAlign,
-      [`${prefixCls}--wrap`]: labelWrap,
       [`${prefixCls}--colon`]: colon,
+      [`${prefixCls}--has-colon`]: colon && ctx.layout !== 'vertical',
       [`${prefixCls}--required`]: required,
       [`${prefixCls}--required-optional`]: requiredMark === 'optional',
-      [`${prefixCls}--has-colon`]: colon && ctx.layout !== 'vertical',
+      [`${prefixCls}--wrap`]: labelWrap,
     },
     labelCol.className,
   )

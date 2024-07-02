@@ -1,11 +1,11 @@
-import { BREAKPOINT_NAME } from '_shared/hooks/use-breakpoint/breakpoint'
 import { cls, isObject, isUndefined } from '@kpi-ui/utils'
+import { BREAKPOINT_NAME } from '_shared/hooks/use-breakpoint/breakpoint'
 import { useMemo } from 'react'
 
 import type { ColProps } from '../props'
 
 export default function useFormatClass(prefixCls: string, props: ColProps) {
-  const { className, span, offset, pull, push, order } = props
+  const { className, offset, order, pull, push, span } = props
 
   return useMemo(() => {
     const extraClass = BREAKPOINT_NAME.reduce((res, size) => {
@@ -33,9 +33,9 @@ export default function useFormatClass(prefixCls: string, props: ColProps) {
       {
         [`${prefixCls}-${span}`]: !isUndefined(span),
         [`${prefixCls}-offset-${offset}`]: offset,
+        [`${prefixCls}-order-${order}`]: order,
         [`${prefixCls}-pull-${pull}`]: pull,
         [`${prefixCls}-push-${push}`]: push,
-        [`${prefixCls}-order-${order}`]: order,
       },
       className,
     )

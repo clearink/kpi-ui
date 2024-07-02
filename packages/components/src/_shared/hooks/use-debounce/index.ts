@@ -1,4 +1,5 @@
 import type { AnyFn } from '@kpi-ui/types'
+
 import { makeFrameTimeout } from '@kpi-ui/utils'
 import { useEffect, useMemo, useState } from 'react'
 
@@ -46,7 +47,7 @@ export function useDebounceValue<Value>(delay: number, value: Value) {
   return state
 }
 
-export function useDebounceState<S>(delay: number, initialState: S | (() => S)) {
+export function useDebounceState<S>(delay: number, initialState: (() => S) | S) {
   const [state, set] = useState(initialState)
 
   const setState = useDebounceTimeout(delay, set)

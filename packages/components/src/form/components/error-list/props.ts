@@ -3,10 +3,10 @@ import type { ReactNode } from 'react'
 import type { ValidateStatus } from '../../props'
 
 export interface FormErrorListProps {
+  className?: string
   errors?: ReactNode[]
-  warnings?: ReactNode[]
   help?: ReactNode
   helpStatus?: ValidateStatus
-  className?: string
   onExitComplete?: () => void
+  warnings?: ReactNode[]
 }

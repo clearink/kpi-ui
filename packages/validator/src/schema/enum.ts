@@ -1,11 +1,14 @@
 import type { Writable } from '@kpi-ui/types'
+
 import { isUndefined } from '@kpi-ui/utils'
 
 import type { Context } from '../interface'
+
 import { enums } from '../locales/default'
 import { Invalid, Valid } from '../make_rule'
 import BaseSchema from './base'
-export type EnumItem = string | number | symbol | boolean
+
+export type EnumItem = boolean | number | string | symbol
 export type EnumInput = Readonly<[EnumItem, ...EnumItem[]]>
 
 /** schema =================================================================== */
@@ -29,9 +32,9 @@ export default class EnumSchema<T extends EnumInput> extends BaseSchema<T[number
   _validate(value: T[number] | undefined, context: Context) {
     if (isUndefined(value)) return Valid(value)
 
-    if (!this.inner.includes(value)) {
+    if (!this.inner.includes(value))
       return Invalid(context)(enums.invalid, { enums: this.inner, value })
-    }
+
     return super._validate(value, context)
   }
 

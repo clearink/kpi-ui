@@ -1,8 +1,9 @@
-import { usePrefixCls } from '_shared/hooks'
 import { omit } from '@kpi-ui/utils'
+import { usePrefixCls } from '_shared/hooks'
+
+import type { CheckboxGroupProps } from './props'
 
 import useFormatClass from './hooks/use_format_class'
-import type { CheckboxGroupProps } from './props'
 
 const excluded = ['children'] as const
 

@@ -2,10 +2,10 @@
   "name": "@kpi-ui/icons",
   "version": "0.0.1",
   "description": "@kpi-ui icons",
+  "author": "clearink",
+  "license": "MIT",
   "main": "src/index.ts",
   "module": "src/index.ts",
-  "license": "MIT",
-  "author": "clearink",
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

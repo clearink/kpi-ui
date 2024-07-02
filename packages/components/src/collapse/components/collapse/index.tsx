@@ -1,13 +1,14 @@
-import { useControllableState, useEvent, usePrefixCls, useSemanticStyles } from '_shared/hooks'
 import { isArray, isUndefined, withDefaults, withDisplayName } from '@kpi-ui/utils'
+import { useControllableState, useEvent, usePrefixCls, useSemanticStyles } from '_shared/hooks'
 import { type ForwardedRef, forwardRef, useMemo } from 'react'
 
 import type { CollapseContextState } from '../../_shared/context'
-import { CollapseContext } from '../../_shared/context'
 import type { ExpandedName } from '../../props'
+import type { CollapseProps } from './props'
+
+import { CollapseContext } from '../../_shared/context'
 import CollapseItem from '../item'
 import useFormatClass from './hooks/use_format_class'
-import type { CollapseProps } from './props'
 import getExpandedNames from './utils/get_expanded_names'
 
 const defaultProps: Partial<CollapseProps> = {
@@ -20,20 +21,20 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
   const props = withDefaults(_props, defaultProps)
 
   const {
-    items,
-    children,
-    expandedNames: _names,
-    defaultExpandedNames: _default,
     accordion,
-    expandIconPosition,
-    keepMounted,
-    unmountOnExit,
-    expandIcon,
-    disabled,
+    children,
     collapsible,
+    defaultExpandedNames: _default,
+    disabled,
+    expandIcon,
+    expandIconPosition,
+    expandedNames: _names,
+    items,
+    keepMounted,
     onChange,
     style,
     styles: _styles,
+    unmountOnExit,
   } = props
 
   const styles = useSemanticStyles(style, _styles)
@@ -43,8 +44,8 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
   const classNames = useFormatClass(prefixCls, props)
 
   const [expandedNames, setExpandedNames] = useControllableState({
-    value: isUndefined(_names) ? undefined : getExpandedNames(_names, accordion),
     defaultValue: () => getExpandedNames(_default, accordion),
+    value: isUndefined(_names) ? undefined : getExpandedNames(_names, accordion),
   })
 
   const onItemClick = useEvent((name: ExpandedName) => {
@@ -66,14 +67,14 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
   const collapseContext = useMemo<CollapseContextState>(
     () => ({
       accordion,
-      expandIconPosition,
-      onItemClick,
-      expandedNames,
-      keepMounted,
-      unmountOnExit,
-      expandIcon,
       collapsible,
       disabled,
+      expandIcon,
+      expandIconPosition,
+      expandedNames,
+      keepMounted,
+      onItemClick,
+      unmountOnExit,
     }),
     [
       accordion,
@@ -90,14 +91,14 @@ function Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
 
   return (
     <div
-      ref={ref}
       className={classNames.root}
-      style={styles.root}
+      ref={ref}
       role={accordion ? 'tablist' : undefined}
+      style={styles.root}
     >
       <CollapseContext.Provider value={collapseContext}>
         {isArray(items)
-          ? items.map((item) => <CollapseItem {...item} key={item.name} />)
+          ? items.map(item => <CollapseItem {...item} key={item.name} />)
           : children}
       </CollapseContext.Provider>
     </div>

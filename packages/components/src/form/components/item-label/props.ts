@@ -7,11 +7,11 @@ export interface FormItemLabelProps {
   label?: React.ReactNode
   labelAlign?: FormLabelAlign
   labelCol?: ColProps
-  requiredMark?: RequiredMark
   labelWrap?: boolean
-  // TODO: 待完善
-  tooltip?: any
-
   // extra
   required?: boolean
+  requiredMark?: RequiredMark
+
+  // TODO: 待完善
+  tooltip?: any
 }

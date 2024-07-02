@@ -1,11 +1,11 @@
 import { fallback } from '@kpi-ui/utils'
 import { useMemo } from 'react'
 
-import { PaginationProps } from '../props'
+import type { PaginationProps } from '../props'
 
 // 对分页数据切片
 export default function usePageChunk(props: PaginationProps) {
-  const { total, defaultCurrent, current: _current, defaultPageSize, pageSize: _pageSize } = props
+  const { current: _current, defaultCurrent, defaultPageSize, pageSize: _pageSize, total } = props
 
   return useMemo(() => {
     const current = fallback(_current, defaultCurrent)!

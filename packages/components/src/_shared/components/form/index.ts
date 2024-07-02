@@ -6,11 +6,11 @@ import List from './components/list'
 import Provider from './components/provider'
 
 const Form = Object.assign(InternalForm, {
-  Field: Field,
-  List: List,
-  useForm: useForm,
-  useWatch: useWatch,
-  Provider: Provider,
+  Field,
+  List,
+  Provider,
+  useForm,
+  useWatch,
 })
 
 export { Field, Form, List, Provider, useForm, useWatch }

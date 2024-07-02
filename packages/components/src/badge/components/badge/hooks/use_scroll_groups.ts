@@ -12,14 +12,14 @@ export default function useScrollGroups(props: BadgeProps) {
     const num = Math.min(count, maxCount!)
 
     const _groups = `${Math.abs(num)}`.split('').map((char, i) => ({
-      key: `${i}`,
       char,
+      key: `${i}`,
       scroll: true,
     }))
 
-    if (num < 0) _groups.unshift({ key: '-', char: '-', scroll: false })
+    if (num < 0) _groups.unshift({ char: '-', key: '-', scroll: false })
 
-    if (count > maxCount!) _groups.push({ key: '+', char: '+', scroll: false })
+    if (count > maxCount!) _groups.push({ char: '+', key: '+', scroll: false })
 
     return _groups
   }, [count, maxCount])

@@ -1,5 +1,5 @@
-import { usePrefixCls } from '_shared/hooks'
 import { cls } from '@kpi-ui/utils'
+import { usePrefixCls } from '_shared/hooks'
 
 // import { BreadcrumbProps } from '../props';
 

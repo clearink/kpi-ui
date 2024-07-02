@@ -1,13 +1,15 @@
+import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { Form as InternalForm } from '_shared/components'
 import { DisabledContext, SizeContext } from '_shared/contexts'
 import { useEvent, usePrefixCls } from '_shared/hooks'
-import { omit, withDefaults, withDisplayName } from '@kpi-ui/utils'
 import { type ForwardedRef, forwardRef, useImperativeHandle, useMemo } from 'react'
 
-import { FormContext, FormContextState } from '../../_shared/context'
+import type { FormContextState } from '../../_shared/context'
+import type { FormInstance, FormProps } from './props'
+
+import { FormContext } from '../../_shared/context'
 import useForm from './hooks/use_form'
 import useFormatClass from './hooks/use_format_class'
-import type { FormInstance, FormProps } from './props'
 
 const excluded = [
   'form',
@@ -24,9 +26,9 @@ const excluded = [
 ] as const
 
 const defaultProps: Partial<FormProps> = {
+  colon: true,
   layout: 'horizontal',
   requiredMark: true,
-  colon: true,
 }
 
 function Form<State = any>(_props: FormProps<State>, ref: ForwardedRef<FormInstance<State>>) {
@@ -40,19 +42,19 @@ function Form<State = any>(_props: FormProps<State>, ref: ForwardedRef<FormInsta
   })
 
   const {
-    name,
     colon,
-    size,
     disabled,
-    labelAlign,
-    labelWrap,
-    labelCol,
-    wrapperCol,
     form,
+    labelAlign,
+    labelCol,
+    labelWrap,
     layout,
+    name,
     onFailed,
     requiredMark,
     scrollToFirstError,
+    size,
+    wrapperCol,
   } = props
 
   const prefixCls = usePrefixCls('form')
@@ -65,21 +67,22 @@ function Form<State = any>(_props: FormProps<State>, ref: ForwardedRef<FormInsta
 
   const formContext = useMemo<FormContextState>(() => {
     return {
+      colon,
+      form: formInstance,
       formName: name,
       labelAlign,
-      labelWrap,
       labelCol,
-      wrapperCol,
-      colon,
-      requiredMark,
-      form: formInstance,
+      labelWrap,
       layout,
+      requiredMark,
+      wrapperCol,
     }
   }, [colon, requiredMark, formInstance, labelAlign, labelCol, labelWrap, layout, name, wrapperCol])
 
   const onFailedWithEffect = useEvent((errors: any) => {
     onFailed?.(errors)
-    if (!scrollToFirstError) return
+    console.log(scrollToFirstError)
+    // if (!scrollToFirstError) return
     // formInstance.scrollToField()
   })
 
@@ -91,9 +94,9 @@ function Form<State = any>(_props: FormProps<State>, ref: ForwardedRef<FormInsta
         <FormContext.Provider value={formContext}>
           <InternalForm<State>
             {...attrs}
-            name={name}
             className={classes}
             form={formInstance}
+            name={name}
             onFailed={onFailedWithEffect}
           />
         </FormContext.Provider>

@@ -2,25 +2,25 @@ import type { ReactNode } from 'react'
 
 interface CopyableConfig {
   icon?: ReactNode
-  text?: string
-  tooltips?: false | ReactNode
   onCopy?: () => void
+  text?: string
+  tooltips?: ReactNode | false
 }
 interface EditableConfig {}
 interface EllipsisConfig {}
 
 export interface TypographyBaseProps {
   code?: boolean
-  copyable?: boolean | CopyableConfig
+  copyable?: CopyableConfig | boolean
   delete?: boolean
   disabled?: boolean
-  editable?: boolean | EditableConfig
-  ellipsis?: boolean | EllipsisConfig
+  editable?: EditableConfig | boolean
+  ellipsis?: EllipsisConfig | boolean
+  italic?: boolean
   mark?: boolean
   onClick?: (event: MouseEvent) => void
   strong?: boolean
-  italic?: boolean
-  type?: 'secondary' | 'success' | 'warning' | 'danger'
+  type?: 'danger' | 'secondary' | 'success' | 'warning'
   underline?: boolean
 }
 

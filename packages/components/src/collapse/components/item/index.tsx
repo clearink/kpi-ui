@@ -1,6 +1,3 @@
-import { CSSTransition } from '_shared/components'
-import { Keyboard } from '_shared/constants'
-import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
 import { CaretRightOutlined } from '@kpi-ui/icons'
 import {
   fallback,
@@ -11,12 +8,16 @@ import {
   withDefaults,
   withDisplayName,
 } from '@kpi-ui/utils'
+import { CSSTransition } from '_shared/components'
+import { Keyboard } from '_shared/constants'
+import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
 import { type ForwardedRef, forwardRef } from 'react'
 
-import { CollapseContext } from '../../_shared/context'
 import type { CollapsibleType } from '../collapse/props'
-import useFormatClass from './hooks/use_format_class'
 import type { CollapseItemProps } from './props'
+
+import { CollapseContext } from '../../_shared/context'
+import useFormatClass from './hooks/use_format_class'
 import handlers from './utils/transition_handlers'
 
 const defaultProps: Partial<CollapseItemProps> = {
@@ -51,13 +52,13 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
     },
     {
       ...defaultProps,
+      expandIcon: fallback(ctx.expandIcon, <CaretRightOutlined />),
       keepMounted: ctx.keepMounted,
       unmountOnExit: ctx.unmountOnExit,
-      expandIcon: fallback(ctx.expandIcon, <CaretRightOutlined />),
     },
   )
 
-  const { name, title, extra, disabled, showExpandIcon, expandIcon, style, styles: _styles } = props
+  const { disabled, expandIcon, extra, name, showExpandIcon, style, styles: _styles, title } = props
 
   const prefixCls = usePrefixCls('collapse-item')
 
@@ -83,30 +84,30 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
   const attrs = omit(props, excluded)
 
   return (
-    <div {...attrs} ref={ref} className={classNames.root} style={styles.root}>
+    <div {...attrs} className={classNames.root} ref={ref} style={styles.root}>
       <div
-        className={classNames.header}
-        style={styles.header}
-        aria-expanded={!!expanded}
         aria-disabled={!!disabled}
-        role={ctx.accordion ? 'tab' : 'button'}
-        tabIndex={0}
-        onKeyDown={handleHeaderEnter}
+        aria-expanded={!!expanded}
+        className={classNames.header}
         onClick={getItemClickHandler('header')}
+        onKeyDown={handleHeaderEnter}
+        role={ctx.accordion ? 'tab' : 'button'}
+        style={styles.header}
+        tabIndex={0}
       >
         {!!showExpandIcon && (
           <span
             className={classNames.icon}
-            style={styles.icon}
             onClick={getItemClickHandler('icon')}
+            style={styles.icon}
           >
-            {isFunction(expandIcon) ? expandIcon({ name, expanded }) : expandIcon}
+            {isFunction(expandIcon) ? expandIcon({ expanded, name }) : expandIcon}
           </span>
         )}
         <span
           className={classNames.title}
-          style={styles.title}
           onClick={getItemClickHandler('title')}
+          style={styles.title}
         >
           {title}
         </span>
@@ -117,10 +118,10 @@ function CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElemen
         )}
       </div>
       <CSSTransition
-        when={expanded}
         mountOnEnter={!props.keepMounted}
-        unmountOnExit={!props.keepMounted && props.unmountOnExit}
         name={`${prefixCls}-motion`}
+        unmountOnExit={!props.keepMounted && props.unmountOnExit}
+        when={expanded}
         {...handlers}
       >
         <div role={ctx.accordion ? 'tabpanel' : undefined}>

@@ -1,11 +1,10 @@
-import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
 import { withDisplayName } from '@kpi-ui/utils'
+import { usePrefixCls, useSemanticStyles } from '_shared/hooks'
+
+import type { PopoverProps } from './props'
 
 import Tooltip from '../tooltip'
 import useFormatClass from './hooks/use_format_class'
-import type { PopoverProps } from './props'
-
-const defaultProps: Partial<PopoverProps> = {}
 
 function Popover(props: PopoverProps) {
   const { style, styles: _styles } = props
@@ -22,13 +21,13 @@ function Popover(props: PopoverProps) {
     <Tooltip
       {...props}
       classNames={classNames}
-      styles={styles}
       content={
         <>
           <div className={classNames.title}>title</div>
           <div className={classNames.content}>content</div>
         </>
       }
+      styles={styles}
     />
   )
 }

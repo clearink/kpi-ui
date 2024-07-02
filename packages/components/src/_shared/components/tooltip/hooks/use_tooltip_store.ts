@@ -2,37 +2,41 @@ import { useConstant, useForceUpdate } from '_shared/hooks'
 import { useMemo } from 'react'
 
 import type { ArrowCoords, InternalTooltipProps, PopupCoords } from '../props'
+
 import aligners from '../utils/aligner'
 
 export class TooltipState {
-  $trigger = {
-    current: null as HTMLElement | null,
-  }
-
   $popup = {
     current: null as HTMLDivElement | null,
   }
 
-  popups: Element[] = []
-
-  popupCoords: Partial<PopupCoords> = { left: '-1000vw', top: '-1000vh' }
+  $trigger = {
+    current: null as HTMLElement | null,
+  }
 
   arrowCoords: Partial<ArrowCoords> = {}
 
-  get trigger() {
-    return this.$trigger.current
-  }
+  popupCoords: Partial<PopupCoords> = { left: '-1000vw', top: '-1000vh' }
+
+  popups: Element[] = []
 
   get popup() {
     return this.$popup.current
   }
+
+  get trigger() {
+    return this.$trigger.current
+  }
 }
 
 export class TooltipAction {
-  constructor(
-    private forceUpdate: () => void,
-    private states: TooltipState,
-  ) {}
+  private setArrowCoords = (value: ArrowCoords | null) => {
+    if (!value) return
+
+    this.states.arrowCoords = value
+
+    this.forceUpdate()
+  }
 
   private setPopupCoords = (value: PopupCoords | null) => {
     if (!value) return
@@ -42,16 +46,8 @@ export class TooltipAction {
     this.forceUpdate()
   }
 
-  private setArrowCoords = (value: ArrowCoords | null) => {
-    if (!value) return
-
-    this.states.arrowCoords = value
-
-    this.forceUpdate()
-  }
-
   updateCoords = (props: InternalTooltipProps) => {
-    const { popup, trigger, arrowCoords, popupCoords } = this.states
+    const { arrowCoords, popup, popupCoords, trigger } = this.states
 
     if (!popup || !trigger) return
 
@@ -63,6 +59,11 @@ export class TooltipAction {
 
     this.setPopupCoords(getPopupCoords(popupCoords))
   }
+
+  constructor(
+    private forceUpdate: () => void,
+    private states: TooltipState,
+  ) {}
 }
 
 export default function useTooltipStore() {
@@ -72,5 +73,5 @@ export default function useTooltipStore() {
 
   const actions = useMemo(() => new TooltipAction(update, states), [update, states])
 
-  return { states, actions }
+  return { actions, states }
 }

@@ -6,7 +6,7 @@ export default function useFormatClass(prefixCls: string, props: TooltipProps) {
   const { className, classNames = {} } = props
 
   return {
-    root: cls(prefixCls, className, classNames.root),
     arrow: cls(`${prefixCls}__arrow`, classNames.arrow),
+    root: cls(prefixCls, className, classNames.root),
   }
 }

@@ -6,7 +6,7 @@ import { FormFieldControl } from '../control'
 export default function useFieldControl() {
   const mounted = useMounted()
   // 重置次数
-  const [resetCount, resetField] = useReducer((count) => count + 1, 0)
+  const [resetCount, resetField] = useReducer(count => count + 1, 0)
   // 强制更新视图
   const update = useForceUpdate()
 

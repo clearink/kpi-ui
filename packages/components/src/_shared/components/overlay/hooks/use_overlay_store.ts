@@ -6,22 +6,28 @@ import type { CSSTransitionRef as CSSRef } from '../../transition/_shared/props'
 import type { OverlayProps } from '../props'
 
 export class OverlayState {
+  $content = {
+    current: null as CSSRef | null,
+  }
+
+  // 能否挂载元素
+  isMounted: boolean
+
   constructor(
     props: OverlayProps,
     public forceUpdate: () => void,
   ) {
     this.isMounted = !!props.keepMounted || !!props.open
   }
-
-  // 能否挂载元素
-  isMounted: boolean
-
-  $content = {
-    current: null as CSSRef | null,
-  }
 }
 
 export class OverlayAction {
+  setIsMounted = (value: boolean) => {
+    if (this.states.isMounted !== value) this.forceUpdate()
+
+    this.states.isMounted = value
+  }
+
   constructor(
     private forceUpdate: () => void,
     private states: OverlayState,
@@ -31,16 +37,10 @@ export class OverlayAction {
     const el = this.states.$content.current
     return el && isExited(el.status)
   }
-
-  setIsMounted = (value: boolean) => {
-    if (this.states.isMounted !== value) this.forceUpdate()
-
-    this.states.isMounted = value
-  }
 }
 
 export default function useOverlayStore(props: OverlayProps) {
-  const { keepMounted, unmountOnExit, open } = props
+  const { keepMounted, open, unmountOnExit } = props
 
   const update = useForceUpdate()
 
@@ -70,5 +70,5 @@ export default function useOverlayStore(props: OverlayProps) {
     actions.setIsMounted(true)
   })
 
-  return { states, actions, returnEarly }
+  return { actions, returnEarly, states }
 }

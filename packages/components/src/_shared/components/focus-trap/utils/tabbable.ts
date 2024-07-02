@@ -2,7 +2,7 @@ import { getElementStyle } from '@kpi-ui/utils'
 
 import { TabbableQuery } from '../constants'
 
-const isContentEditable = (node: HTMLElement) => {
+function isContentEditable(node: HTMLElement) {
   const attr = node.getAttribute('contenteditable')
   return attr === '' || attr === 'true'
 }
@@ -12,9 +12,9 @@ function isInputHidden(el: HTMLElement) {
   return node.tagName === 'INPUT' && node.type === 'hidden'
 }
 
-const hasTabIndex = (node: HTMLElement) => {
+function hasTabIndex(node: HTMLElement) {
   const attr = node.getAttribute('tabindex') || ''
-  return !Number.isNaN(parseInt(attr, 10))
+  return !Number.isNaN(Number.parseInt(attr, 10))
 }
 
 function getTabIndex(node: HTMLElement) {
@@ -57,5 +57,5 @@ export default function tabbable(container: HTMLElement) {
 
   const nodeCache = new WeakMap<HTMLElement, boolean>()
 
-  return Array.from(nodes).filter((el) => !isHidden(el, nodeCache) && isFocusable(el))
+  return Array.from(nodes).filter(el => !isHidden(el, nodeCache) && isFocusable(el))
 }

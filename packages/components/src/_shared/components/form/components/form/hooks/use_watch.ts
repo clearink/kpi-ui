@@ -1,11 +1,12 @@
-import { useDeepMemo, useEvent } from '_shared/hooks'
 import { logger, shallowEqual, toArray } from '@kpi-ui/utils'
+import { useDeepMemo, useEvent } from '_shared/hooks'
 import { useEffect, useMemo, useState } from 'react'
 
-import { InternalFormInstanceContext } from '../../../_shared/context'
 import type { ExternalNamePath } from '../../../props'
-import { HOOK_MARK } from '../control'
 import type { ExternalFormInstance, InternalFormInstance } from '../control/props'
+
+import { InternalFormInstanceContext } from '../../../_shared/context'
+import { HOOK_MARK } from '../control'
 
 export default function useWatch<T>(namePath?: ExternalNamePath, form?: ExternalFormInstance) {
   const [value, setValue] = useState<T | undefined>()

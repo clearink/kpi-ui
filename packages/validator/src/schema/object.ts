@@ -1,8 +1,10 @@
 import type { Full, MayBe, NonUndefined } from '@kpi-ui/types'
+
 import { isObject, isUndefined } from '@kpi-ui/utils'
 
-import SchemaContext from '../context'
 import type { Context } from '../interface'
+
+import SchemaContext from '../context'
 import { object } from '../locales/default'
 import { Invalid, Valid } from '../make_rule'
 import BaseSchema from './base'
@@ -42,6 +44,16 @@ export default class ObjectSchema<
   /** validate                                             */
   /** ==================================================== */
 
+  async _validate(value: Out, context: Context) {
+    if (isUndefined(value)) return Valid(value)
+
+    if (!isObject(value)) return Invalid(context)(object.invalid, { value })
+
+    const ret = await super._validate(value, context)
+    if (ret.status === 'invalid') return ret
+    return this._validateInner(value, context)
+  }
+
   async _validateInner(value: Out, context: Context) {
     // 是否要舍弃未指定的key?
     const list = Object.entries(this.shape).map(([key, schema]) => {
@@ -58,22 +70,14 @@ export default class ObjectSchema<
     })
   }
 
-  async _validate(value: Out, context: Context) {
-    if (isUndefined(value)) return Valid(value)
-
-    if (!isObject(value)) return Invalid(context)(object.invalid, { value })
-
-    const ret = await super._validate(value, context)
-    if (ret.status === 'invalid') return ret
-    return this._validateInner(value, context)
-  }
-
   /** ==================================================== */
   /** feature                                              */
   /** ==================================================== */
 
-  get shape() {
-    return this.inner
+  // TODO: 保留不存在的属性
+  passthrough() {
+    this._remove('strict')
+    return this
   }
 
   // // TODO: 舍弃不存在的属性
@@ -83,9 +87,7 @@ export default class ObjectSchema<
   //   return this
   // }
 
-  // TODO: 保留不存在的属性
-  passthrough() {
-    this._remove('strict')
-    return this
+  get shape() {
+    return this.inner
   }
 }

@@ -10,10 +10,10 @@ export type JustifyType = [
   'space-between',
   'space-evenly',
 ][number]
-export type Gutter = number | Partial<Record<Breakpoint, number>>
+export type Gutter = Partial<Record<Breakpoint, number>> | number
 export interface RowProps extends HTMLAttributes<HTMLDivElement> {
   align?: AlignType
+  gutter?: [Gutter, Gutter] | Gutter
   justify?: JustifyType
-  gutter?: Gutter | [Gutter, Gutter]
   wrap?: boolean
 }
