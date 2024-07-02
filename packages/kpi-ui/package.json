@@ -3,10 +3,6 @@
   "version": "0.0.1",
   "description": "kpi-ui components",
   "license": "MIT",
-  "scripts": {
-    "lint": "eslint -c .eslintrc.js --ext .js,.ts,.jsx,.tsx  ./src",
-    "build": "kpi-scripts build:ui"
-  },
   "sideEffects": [
     "dist/*",
     "esm/**/style/*",
@@ -19,6 +15,23 @@
     "lib",
     "README.md"
   ],
+  "main": "lib/index.js",
+  "module": "esm/index.mjs",
+  "types": "esm/index.d.ts",
+  "unpkg": "dist/index.min.js",
+  "jsdelivr": "dist/index.min.js",
+  "exports": {
+    ".": {
+      "types": "./esm/index.d.ts",
+      "import": "./esm/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./*": "./*"
+  },
+  "scripts": {
+    "lint": "eslint -c .eslintrc.js --ext .js,.ts,.jsx,.tsx  ./src",
+    "build": "kpi-scripts build:ui"
+  },
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
