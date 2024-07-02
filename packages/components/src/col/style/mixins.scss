@@ -4,6 +4,7 @@ $name: #{$prefix}-col;
 
 @mixin generate-grid($size: null, $count: 24) {
   $col-name: if($size, $name + '-' + $size, $name);
+
   @for $col from 0 through $count {
     @if $col == 0 {
       .#{$col-name}-#{$col} {

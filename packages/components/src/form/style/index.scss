@@ -1,6 +1,5 @@
 // 引入 css 基础配置文件
 @import '../../style/base.scss';
-
 @import './tokens.scss';
 @import './mixins.scss';
 
@@ -19,20 +18,21 @@ $comp: #{$prefix}-form;
 
 .#{$comp}-item__label {
   display: inline-block;
-  flex-grow: 0;
   overflow: hidden;
-  white-space: nowrap;
   text-align: right;
+  white-space: nowrap;
+  flex-grow: 0;
   vertical-align: middle;
 
   > label {
-    height: var(--#{$prefix}-unit-8);
     position: relative;
     display: inline-flex;
     align-items: center;
     max-width: 100%;
-    color: var(--#{$prefix}-color-text);
+    height: var(--#{$prefix}-unit-8);
     font-size: var(--#{$prefix}-font-size);
+    color: var(--#{$prefix}-color-text);
+
     &::after {
       content: '\a0';
       position: relative;
@@ -43,11 +43,11 @@ $comp: #{$prefix}-form;
 
   &--required {
     > label::before {
-      content: '*';
       display: inline-block;
       margin-right: 4px;
-      color: var(--#{$prefix}-color-error);
       font-size: var(--#{$prefix}-font-size);
+      color: var(--#{$prefix}-color-error);
+      content: '*';
       line-height: 1;
     }
   }
@@ -59,8 +59,8 @@ $comp: #{$prefix}-form;
   }
 
   &--wrap {
-    white-space: unset;
     overflow: unset;
+    white-space: unset;
   }
 }
 

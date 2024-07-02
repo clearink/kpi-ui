@@ -1,1 +1,5 @@
-export default function build() {}
+import { logger } from '../../utils/helpers'
+
+export default function build() {
+  logger.info('build validator')
+}

@@ -18,7 +18,6 @@ export function initFieldMeta(): FieldMeta {
 export default function useMetaState() {
   const [state, setState] = useDebounceState(100, initFieldMeta)
 
-  // prettier-ignore
   const update = useCallback((meta: FieldMeta) => {
     meta.mounted && startTransition(() => {
       setState(meta)

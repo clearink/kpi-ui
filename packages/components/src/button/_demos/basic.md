@@ -13,9 +13,9 @@ title:
 There are `primary`, `secondary`, `dashed`, `outline` and `text` button types.
 
 ```tsx
-import { Button, Space } from '@kpi/ui';
+import { Button, Space } from '@kpi/ui'
 
-const App = () => {
+function App() {
   return (
     <Space wrap>
       <Button type="primary">Primary Button</Button>
@@ -23,8 +23,8 @@ const App = () => {
       <Button type="dashed">Dashed Button</Button>
       <Button type="text">Text Button</Button>
     </Space>
-  );
-};
+  )
+}
 
-export default App;
+export default App
 ```

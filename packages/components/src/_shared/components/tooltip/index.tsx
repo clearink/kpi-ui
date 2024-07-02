@@ -61,14 +61,12 @@ function InternalTooltip(_props: InternalTooltipProps) {
 
       states.popups.push(el)
 
-      // prettier-ignore
       return () => { removeItem(states.popups, el) }
     })
   }, [parentContext, states.popups])
 
   const [triggerEvents, popupEvents] = useTooltipEvents(props, states, setOpen)
 
-  // prettier-ignore
   const onUpdate = () => { open && actions.updateCoords(props) }
 
   useWatchCoords(props, onUpdate)

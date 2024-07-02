@@ -13,11 +13,9 @@ export function debounce<F extends AnyFn>(fn: F, delay: number) {
   function inner(this: unknown, ...args: any[]) {
     cleanup()
 
-    // prettier-ignore
     cleanup = makeFrameTimeout(delay, () => { fn.apply(this, args) })
   }
 
-  // prettier-ignore
   return [inner as F, () => { cleanup() }] as const
 }
 
@@ -39,7 +37,6 @@ export function useDebounceValue<Value>(delay: number, value: Value) {
 
   const mounted = useMounted()
 
-  // prettier-ignore
   const callback = useDebounceTimeout(delay, () => { mounted() && setState(value) })
 
   useEffect(callback, [callback, value])

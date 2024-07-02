@@ -1,25 +1,25 @@
 {
   "compilerOptions": {
     "target": "ES2015",
-    "jsx": "react-jsx",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "react-jsx",
     "experimentalDecorators": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "allowJs": true,
+    "noEmit": true,
+    "importHelpers": true,
+    "downlevelIteration": true,
+    "stripInternal": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     // 不用显式返回 any
     "noImplicitAny": false,
-    "downlevelIteration": true,
-    "importHelpers": true,
-    "noEmit": true,
-    "stripInternal": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
     "skipLibCheck": true
   }
 }

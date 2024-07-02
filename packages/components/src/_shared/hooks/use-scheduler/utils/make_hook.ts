@@ -17,13 +17,11 @@ export default function makeSchedulerHook<Fn extends AnyFn, T>(options: Schedule
   return (callback: Fn) => {
     const ref = useRef(initialValue)
 
-    // prettier-ignore
     useEffect(() => { onCleanup(ref.current) }, [])
 
     return useEvent((...args: any[]) => {
       if (shouldPrevent(ref.current)) return
 
-      // prettier-ignore
       ref.current = onScheduler(() => { ref.current = initialValue; callback(...args) })
     }) as Fn
   }

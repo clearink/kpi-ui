@@ -1,6 +1,5 @@
 // 引入 css 基础配置文件
 @import '../../style/base.scss';
-
 @import './tokens.scss';
 
 $comp: #{$prefix}-badge;
@@ -16,21 +15,21 @@ $comp: #{$prefix}-badge;
     position: absolute;
     top: 0;
     right: 0;
+    display: inline-block;
+    border-radius: $kpi-badge-indicator-radius;
+    padding: 0 var(--#{$prefix}-unit-2);
+    height: $kpi-badge-indicator-height;
+    color: var(--#{$prefix}-color-bg-container);
+    background-color: var(--#{$prefix}-color-error);
     transform: translate(50%, -50%);
     transform-origin: 100% 0%;
-    display: inline-block;
-    height: $kpi-badge-indicator-height;
     line-height: $kpi-badge-indicator-height;
-    border-radius: $kpi-badge-indicator-radius;
-    background-color: var(--#{$prefix}-color-error);
-    padding: 0 var(--#{$prefix}-unit-2);
-    color: var(--#{$prefix}-color-bg-container);
   }
 
   &-scroll-group {
     display: inline-block;
-    height: 100%;
     overflow: hidden;
+    height: 100%;
   }
 
   &-scroll-number {

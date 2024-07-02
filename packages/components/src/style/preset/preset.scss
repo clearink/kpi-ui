@@ -18,5 +18,6 @@
 
 body {
   @include reset-component();
+
   background-color: var(--#{$prefix}-color-bg-base);
 }

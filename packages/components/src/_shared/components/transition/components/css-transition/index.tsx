@@ -22,7 +22,6 @@ function CSSTransition<E extends HTMLElement>(
 
   const { actions, returnEarly, states } = useTransitionStore<E>(props)
 
-  // prettier-ignore
   useImperativeHandle(ref, () => ({
     get instance() { return states.instance },
     get status() { return states.status },
@@ -96,7 +95,6 @@ function CSSTransition<E extends HTMLElement>(
     if (actions.shouldExit(isInitial, when)) return runTransition(el, EXIT)
   }, [runTransition, when, states, actions])
 
-  // prettier-ignore
   useEffect(() => () => { actions.setIsInitial(true) }, [actions])
 
   if (returnEarly || !states.isMounted) return null

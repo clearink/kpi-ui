@@ -36,8 +36,7 @@ function Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
 
   const { actions, returnEarly, states } = useSegmentedStore(active)
 
-  if (returnEarly)
-    return null
+  if (returnEarly) return null
 
   return (
     <div className={classNames.root} ref={_ref} style={styles.root}>

@@ -65,7 +65,6 @@ export default function collectInjectProps(
     // 校验触发时机
     const triggerList = toArray(validateTrigger ?? instance.validateTrigger)
 
-    // prettier-ignore
     return triggerList.reduce((result, triggerName) => {
       if (triggerName === false) return result
 

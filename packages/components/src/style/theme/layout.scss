@@ -1,35 +1,29 @@
 @mixin kpi-typography() {
-  --#{$prefix}-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+  --#{$prefix}-font-family: -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, 'Helvetica Neue',
+    arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
-  --#{$prefix}-font-family-code: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
+  --#{$prefix}-font-family-code: 'SFMono-Regular', consolas, 'Liberation Mono', menlo, courier,
     monospace;
-
   --#{$prefix}-font-size-sm: 12px;
   --#{$prefix}-font-size: 14px;
   --#{$prefix}-font-size-lg: 16px;
   --#{$prefix}-font-size-xl: 16px;
-
   --#{$prefix}-line-height-sm: 20px;
   --#{$prefix}-line-height: 22px;
   --#{$prefix}-line-height-lg: 24px;
   --#{$prefix}-line-height-xl: 24px;
-
   --#{$prefix}-font-weight: 400;
   --#{$prefix}-font-weight-strong: 600;
-
   --#{$prefix}-font-size-heading-1: 38px;
   --#{$prefix}-font-size-heading-2: 30px;
   --#{$prefix}-font-size-heading-3: 24px;
   --#{$prefix}-font-size-heading-4: 20px;
   --#{$prefix}-font-size-heading-5: 16px;
-
   --#{$prefix}-line-height-heading-1: 46px;
   --#{$prefix}-line-height-heading-2: 38px;
   --#{$prefix}-line-height-heading-3: 32px;
   --#{$prefix}-line-height-heading-4: 28px;
   --#{$prefix}-line-height-heading-5: 24px;
-
   --#{$prefix}-font-size-icon: 12px;
 }
 
@@ -77,7 +71,6 @@
   --#{$prefix}-motion-ease-in-back: cubic-bezier(0.71, -0.46, 0.88, 0.6);
   --#{$prefix}-motion-ease-in-quint: cubic-bezier(0.755, 0.05, 0.855, 0.06);
   --#{$prefix}-motion-ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
-
   --#{$prefix}-motion-duration-1: 0.1s;
   --#{$prefix}-motion-duration-1_5: 0.15s;
   --#{$prefix}-motion-duration-2: 0.2s;

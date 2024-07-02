@@ -13,7 +13,6 @@ export function useResizeObserver<T extends Element>(
 
   const [el, set] = useState<MayBe<T>>(null)
 
-  // prettier-ignore
   useEffect(() => { set(getTargetElement(target)) }, [target])
 
   useEffect(() => (el ? observe(el, callback) : undefined), [el, callback])

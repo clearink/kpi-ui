@@ -9,7 +9,8 @@
     "ui"
   ],
   "scripts": {
-    "lint": "eslint --ext .ts,.tsx ./packages/**/src/* --fix",
+    "lint:js": "eslint --ext .ts,.tsx ./packages/**/src/* --fix",
+    "lint:css": "stylelint \"**/*.scss\"",
     "dev": "pnpm -F @kpi-ui/playground dev",
     "build": "pnpm -F kpi-ui build"
   },
@@ -45,7 +46,7 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "cross-env": "^7.0.3",
-    "eslint": "^8.45.0",
+    "eslint": "^8.57.0",
     "eslint-plugin-perfectionist": "^2.11.0",
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -55,6 +56,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sass": "^1.58.3",
+    "stylelint": "^16.6.1",
+    "stylelint-config-standard-scss": "^13.1.0",
+    "stylelint-order": "^6.0.4",
     "tslib": "^2.5.0",
     "typescript": "^5.0.2"
   },

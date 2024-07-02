@@ -1,8 +1,11 @@
+@use "sass:map";
+
 @mixin media($break-point: md, $type: min) {
-  $width: map-get(
+  $width: map.get(
     $map: $map-break-point,
     $key: $break-point,
   );
+
   @if $width {
     @media screen and (#{$type}-width: $width) {
       @content;

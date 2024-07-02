@@ -13,24 +13,24 @@ title:
 危险按钮
 
 ```tsx
-import { Button, Space } from '@kpi/ui';
+import { Button, Space } from 'kpi-ui'
 
-const App = () => {
+function App() {
   return (
     <Space wrap>
-      <Button type="primary" danger>
+      <Button danger type="primary">
         Primary
       </Button>
       <Button danger>Default</Button>
-      <Button type="dashed" danger>
+      <Button danger type="dashed">
         Dashed
       </Button>
-      <Button type="text" danger>
+      <Button danger type="text">
         Text
       </Button>
     </Space>
-  );
-};
+  )
+}
 
-export default App;
+export default App
 ```

@@ -1,6 +1,5 @@
 // 引入 css 基础配置文件
 @import '../../style/base.scss';
-
 @import './tokens.scss';
 @import './mixins.scss';
 
@@ -10,15 +9,15 @@ $comp: #{$prefix}-tooltip;
   @include reset-component();
 
   position: absolute;
+  border-radius: var(--#{$prefix}-border-radius);
+  padding: $kpi-tooltip-px $kpi-tooltip-py;
   width: max-content;
   min-width: 1em;
   max-width: $kpi-tooltip-max-width;
-  padding: $kpi-tooltip-px $kpi-tooltip-py;
-  border-radius: var(--#{$prefix}-border-radius);
-  transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
   color: var(--#{$prefix}-color-text-light-solid);
   background-color: var(--#{$prefix}-color-bg-spot-light);
   box-shadow: var(--#{$prefix}-box-shadow-secondary);
+  transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
   will-change: transform;
 }
 

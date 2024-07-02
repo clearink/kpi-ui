@@ -1,4 +1,4 @@
-@import '../variables.scss'; //引入变量
+@import '../variables.scss'; // 引入变量
 
 .#{$prefix}-fade-in {
   &-enter-from,
@@ -8,7 +8,6 @@
 
   &-enter-active,
   &-exit-active {
-    transition: opacity var(--#{$prefix}-motion-duration-3)
-      var(--#{$prefix}-motion-ease-in-out-circ);
+    transition: opacity var(--#{$prefix}-motion-duration-3) var(--#{$prefix}-motion-ease-in-out-circ);
   }
 }

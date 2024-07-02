@@ -21,7 +21,6 @@ export default function FormProvider(props: InternalFormProviderProps) {
 
         forms.current[name] = form
 
-        // prettier-ignore
         return () => { delete forms.current[name] }
       }),
       triggerFormChange: parentContext.triggerFormChange,

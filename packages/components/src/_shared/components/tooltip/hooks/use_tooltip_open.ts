@@ -9,7 +9,6 @@ export default function useTooltipOpen(props: InternalTooltipProps) {
 
   const timer = useRef(() => {})
 
-  // prettier-ignore
   useEffect(() => () => { timer.current() }, [])
 
   const [open, setOpen] = useControllableState({
@@ -18,7 +17,6 @@ export default function useTooltipOpen(props: InternalTooltipProps) {
     value: _open && !!content,
   })
 
-  // prettier-ignore
   useWatchValue(content, () => { setOpen(open && !!content) })
 
   return [

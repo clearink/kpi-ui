@@ -1,6 +1,5 @@
 // 引入 css 基础配置文件
 @import '../../style/base.scss';
-
 @import './tokens.scss';
 @import './mixins.scss';
 
@@ -9,26 +8,27 @@ $comp: #{$prefix}-drawer;
 .#{$comp} {
   @include reset-component();
 
-  pointer-events: none;
-  margin: 0 auto;
   position: relative;
   top: 100px;
-  max-width: calc(100vw - var(--#{$prefix}-unit-8));
+  margin: 0 auto;
   padding-bottom: var(--#{$prefix}-unit-6);
   width: 520px;
+  max-width: calc(100vw - var(--#{$prefix}-unit-8));
+  pointer-events: none;
 
   &__close {
     position: absolute;
-    right: var(--#{$prefix}-unit-6);
     top: var(--#{$prefix}-unit-5);
+    right: var(--#{$prefix}-unit-6);
+    border: 0;
     padding: 0;
+    width: var(--#{$prefix}-unit-4);
+    height: var(--#{$prefix}-unit-4);
+
     // color: ;
     text-decoration: none;
     background-color: transparent;
-    border: 0;
     cursor: pointer;
-    width: var(--#{$prefix}-unit-4);
-    height: var(--#{$prefix}-unit-4);
 
     &:focus-visible {
       outline-width: var(--#{$prefix}-line-width);
@@ -39,11 +39,11 @@ $comp: #{$prefix}-drawer;
 
   &__main {
     position: relative;
-    background-color: var(--#{$prefix}-color-bg-container);
     border-radius: var(--#{$prefix}-border-radius);
+    padding: var(--#{$prefix}-unit-5) var(--#{$prefix}-unit-6);
+    background-color: var(--#{$prefix}-color-bg-container);
     box-shadow: var(--#{$prefix}-box-shadow);
     pointer-events: auto;
-    padding: var(--#{$prefix}-unit-5) var(--#{$prefix}-unit-6);
   }
 
   &__header {
@@ -51,13 +51,13 @@ $comp: #{$prefix}-drawer;
   }
 
   &__title {
-    line-height: var(--#{$prefix}-line-height);
+    display: inline-block;
+    margin-right: var(--#{$prefix}-unit-3);
     font-size: var(--#{$prefix}-font-size);
     font-weight: var(--#{$prefix}-font-weight-strong);
     color: var(--#{$prefix}-color-text);
-    margin-right: var(--#{$prefix}-unit-3);
+    line-height: var(--#{$prefix}-line-height);
     word-wrap: break-word;
-    display: inline-block;
   }
 
   &__body {
@@ -66,8 +66,8 @@ $comp: #{$prefix}-drawer;
   }
 
   &__footer {
-    text-align: end;
     margin-top: var(--#{$prefix}-unit-3);
+    text-align: end;
 
     .#{$prefix}-button + .#{$prefix}-button {
       margin-left: var(--#{$prefix}-unit-2);
@@ -76,6 +76,7 @@ $comp: #{$prefix}-drawer;
 
   &-mask {
     @include full-screen();
+
     pointer-events: none;
     background-color: var(--#{$prefix}-color-bg-mask);
   }

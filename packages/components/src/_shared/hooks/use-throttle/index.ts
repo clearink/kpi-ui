@@ -13,13 +13,11 @@ export function throttle<F extends AnyFn>(fn: F, delay: number) {
   function inner(this: unknown, ...args: any[]) {
     if (cleanup !== noop) return
 
-    // prettier-ignore
     const callback = () => { cleanup = noop; fn.apply(this, args) }
 
     cleanup = makeFrameTimeout(delay, callback)
   }
 
-  // prettier-ignore
   return [inner, () => { cleanup() }] as const
 }
 
@@ -41,7 +39,6 @@ export function useThrottleValue<Value = any>(delay: number, value: Value) {
 
   const mounted = useMounted()
 
-  // prettier-ignore
   const callback = useThrottleTimeout(delay, () => { mounted() && setState(value) })
 
   useEffect(callback, [callback, value])

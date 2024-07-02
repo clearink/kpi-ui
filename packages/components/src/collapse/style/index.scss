@@ -1,6 +1,5 @@
 // 引入 css 基础配置文件
 @import '../../style/base.scss';
-
 @import './tokens.scss';
 @import './mixins.scss';
 
@@ -9,8 +8,8 @@ $comp: #{$prefix}-collapse;
 .#{$comp} {
   @include reset-component();
 
-  background-color: var(--#{$prefix}-color-fill-alter);
   border-radius: var(--#{$prefix}-border-radius);
+  background-color: var(--#{$prefix}-color-fill-alter);
 
   &-item {
     @include reset-component();
@@ -22,8 +21,8 @@ $comp: #{$prefix}-collapse;
     }
 
     &:last-child {
-      border-radius: 0 0 var(--#{$prefix}-unit-1) var(--#{$prefix}-unit-1);
       border-bottom: 0;
+      border-radius: 0 0 var(--#{$prefix}-unit-1) var(--#{$prefix}-unit-1);
     }
 
     &--expanded {
@@ -37,8 +36,8 @@ $comp: #{$prefix}-collapse;
   }
 
   &-item__header {
-    padding: var(--#{$prefix}-unit-3) var(--#{$prefix}-unit-4);
     display: flex;
+    padding: var(--#{$prefix}-unit-3) var(--#{$prefix}-unit-4);
     outline: 0;
 
     &:focus-visible {
@@ -59,11 +58,11 @@ $comp: #{$prefix}-collapse;
   }
 
   &-item__icon {
+    margin-right: var(--#{$prefix}-unit-3);
     font-size: var(--#{$prefix}-font-size-sm);
     transition-property: transform;
     will-change: transform;
     transition-duration: var(--#{$prefix}-motion-duration-3);
-    margin-right: var(--#{$prefix}-unit-3);
   }
 
   &-item__collapsible {
@@ -74,12 +73,13 @@ $comp: #{$prefix}-collapse;
     background-color: transparent;
 
     .#{$comp}-item {
-      border-left: 1px solid var(--#{$prefix}-color-border);
       border-right: 1px solid var(--#{$prefix}-color-border);
+      border-left: 1px solid var(--#{$prefix}-color-border);
 
       &:first-child {
         border-top: 1px solid var(--#{$prefix}-color-border);
       }
+
       &:last-child {
         border-bottom: 1px solid var(--#{$prefix}-color-border);
       }
@@ -99,9 +99,9 @@ $comp: #{$prefix}-collapse;
 
   &--icon-end {
     .#{$comp}-item__icon {
-      order: 1;
-      margin-left: var(--#{$prefix}-unit-3);
       margin-right: 0;
+      margin-left: var(--#{$prefix}-unit-3);
+      order: 1;
     }
   }
 
@@ -110,6 +110,7 @@ $comp: #{$prefix}-collapse;
       padding: var(--#{$prefix}-unit-3);
     }
   }
+
   &--lg {
     .#{$comp}-item__content {
       padding: var(--#{$prefix}-unit-3);

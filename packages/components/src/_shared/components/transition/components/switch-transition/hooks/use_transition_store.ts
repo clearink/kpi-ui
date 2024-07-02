@@ -165,7 +165,6 @@ export default function useTransitionStore<E extends HTMLElement = HTMLElement>(
 
   const actions = useMemo(() => new TransitionAction(update, states), [update, states])
 
-  // prettier-ignore
   useMemo(() => { actions.injectLatestProps(props) }, [actions, props])
 
   return { actions, states }

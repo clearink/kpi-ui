@@ -180,18 +180,13 @@ class TransitionAction<E extends HTMLElement> {
     this.setFlipCleanup(moves.map(fn => fn()))
   }
 
-  runFlipCleanup = () => {
-    // prettier-ignore
-    this.states.cancels.forEach((fn) => { fn() })
-  }
+  runFlipCleanup = () => { this.states.cancels.forEach((fn) => { fn() }) }
 
   setFlipCleanup = (value: (() => void)[]) => {
     this.states.cancels = value
   }
 
-  setIsInitial = (value: boolean) => {
-    this.states.isInitial = value
-  }
+  setIsInitial = (value: boolean) => { this.states.isInitial = value }
 
   shouldFlip = (isInitial: boolean) => !isInitial && this.isCanFlip()
 
@@ -205,7 +200,6 @@ class TransitionAction<E extends HTMLElement> {
     this.states.elements = allElements.reduce((result, [key, el]) => {
       if (result.has(key)) throw new Error(`two children with the same key, '${key}'. `)
 
-      // prettier-ignore
       if (enters.has(key)) {
         return result.set(key, {
           el: this.states.makeElement(el, { appear: true, when: true }),
@@ -241,7 +235,6 @@ export default function useTransitionStore<E extends HTMLElement = HTMLElement>(
   const actions = useMemo(() => new TransitionAction(update, states), [update, states])
 
   // 不能直接在渲染期间 write ref
-  // prettier-ignore
   useMemo(() => { actions.injectLatestProps(props) }, [actions, props])
 
   useEffect(() => actions.runFlipCleanup, [actions])

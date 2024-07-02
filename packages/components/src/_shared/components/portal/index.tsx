@@ -13,7 +13,6 @@ function Portal(props: PortalProps, ref: ForwardedRef<PortalRef>) {
 
   useImperativeHandle<PortalRef, PortalRef>(ref, () => container, [container])
 
-  // prettier-ignore
   useEffect(() => { set(getTargetElement(_container, ownerBody())) }, [_container])
 
   if (isNullish(container)) return null

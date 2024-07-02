@@ -30,17 +30,17 @@ function compileScssFiles() {
 
   const options = { cwd: root, ignore: constants.ignoreFiles }
 
-  return glob.sync('**/style/index.{sc,sa,c}ss', options).map((file) => {
+  return glob.sync('**/style/index.{sc,sa,c}ss', options).map(async (file) => {
     const filename = removeExtname(file)
 
     const filepath = path.resolve(root, file)
 
-    return sass.compileAsync(filepath).then((res) => {
-      return Promise.all([
-        safeWriteFile(constants.resolveEsm(`${filename}.css`), res.css),
-        safeWriteFile(constants.resolveCjs(`${filename}.css`), res.css),
-      ])
-    })
+    const res = await sass.compileAsync(filepath)
+
+    return Promise.all([
+      safeWriteFile(constants.resolveEsm(`${filename}.css`), res.css),
+      safeWriteFile(constants.resolveCjs(`${filename}.css`), res.css),
+    ])
   })
 }
 

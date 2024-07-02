@@ -5,6 +5,7 @@
   // Auto fix
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit",
     "source.organizeImports": "never"
   },
   // Enable eslint for all supported languages
@@ -23,11 +24,7 @@
     "xml",
     "gql",
     "graphql",
-    "astro",
-    "css",
-    "less",
-    "scss",
-    "pcss",
-    "postcss"
-  ]
+    "astro"
+  ],
+  "stylelint.validate": ["css", "scss", "sass"]
 }

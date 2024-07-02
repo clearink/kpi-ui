@@ -1,6 +1,5 @@
 // 引入 css 基础配置文件
 @import '../../style/base.scss';
-
 @import './tokens.scss';
 @import './mixins.scss';
 
@@ -8,20 +7,21 @@ $comp: #{$prefix}-pagination;
 
 .#{$comp} {
   @include reset-component();
+
   display: flex;
 }
 
 .#{$comp}__item {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 12px;
+  min-width: 32px;
+  height: 32px;
+  background-color: #f5f5f5;
   cursor: pointer;
   user-select: none;
-  background-color: #f5f5f5;
-  min-width: 32px;
-  padding: 0 12px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .#{$comp}__text {
@@ -32,22 +32,19 @@ $comp: #{$prefix}-pagination;
 
 .#{$comp}__active {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 2px;
-  bottom: 2px;
+  inset: 2px 0;
+  z-index: 1;
   border-radius: 4px;
   background-color: #fff;
-  pointer-events: none;
   box-shadow:
-    1px 2px 0 rgba(0, 0, 0, 0.03),
-    0 1px 6px -1px rgba(0, 0, 0, 0.02),
-    0 2px 4px 0 rgba(0, 0, 0, 0.02);
-  z-index: 1;
+    1px 2px 0 rgb(0 0 0 / 3%),
+    0 1px 6px -1px rgb(0 0 0 / 2%),
+    0 2px 4px 0 rgb(0 0 0 / 2%);
+  pointer-events: none;
 }
 
 .#{$comp}__text {
-  color: rgba(0, 0, 0, 0.65);
+  color: rgb(0 0 0 / 65%);
 }
 
 .#{$comp}__pre {

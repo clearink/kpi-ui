@@ -1,6 +1,5 @@
 // 引入 css 变量文件
 @import '../../style/base.scss';
-
 @import './tokens.scss';
 @import './mixins.scss';
 
@@ -8,6 +7,7 @@ $comp: #{$prefix}-space;
 
 .#{$comp} {
   @include reset-component();
+
   display: inline-flex;
 }
 

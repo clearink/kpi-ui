@@ -18,10 +18,8 @@ function TooltipTrigger(props: TooltipTriggerProps, _ref: ForwardedRef<any>) {
 
     const elements = getScrollElements(dom.current)
 
-    // prettier-ignore
     elements.forEach((el) => { el.addEventListener('scroll', onScroll, { passive: true }) })
 
-    // prettier-ignore
     return () => { elements.forEach((el) => { el.removeEventListener('scroll', onScroll) }) }
   }, [open, onScroll])
 

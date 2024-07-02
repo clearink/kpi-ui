@@ -1,6 +1,5 @@
 // 引入 css 基础配置文件
 @import '../../style/base.scss';
-
 @import './tokens.scss';
 @import './mixins.scss';
 
@@ -20,19 +19,19 @@ $comp: #{$prefix}-divider;
 .#{$comp}--horizontal {
   display: flex;
   clear: both;
+  margin: $kpi-divider-margin-horizontal;
   width: 100%;
   min-width: 100%;
-  margin: $kpi-divider-margin-horizontal;
 
   &.#{$comp}--with-text {
     // 设定了文字
     margin: $kpi-divider-margin-with-text;
-    color: $kpi-divider-color-text;
-    font-weight: 500;
-    font-size: 16px;
-    white-space: nowrap;
     border-top: none;
+    font-size: 16px;
+    font-weight: 500;
     text-align: center;
+    white-space: nowrap;
+    color: $kpi-divider-color-text;
 
     &::before,
     &::after {
@@ -78,9 +77,9 @@ $comp: #{$prefix}-divider;
   position: relative;
   top: -0.06em;
   display: inline-block;
-  height: 0.9em;
   margin: $kpi-divider-margin-vertical;
-  vertical-align: middle;
   border-top: none;
   border-left: $kpi-divider-border;
+  height: 0.9em;
+  vertical-align: middle;
 }

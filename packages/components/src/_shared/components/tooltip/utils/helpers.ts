@@ -32,7 +32,6 @@ export function formatTriggerEvents(
 
   if (actions.has('contextMenu')) events.push(getContextMenuEvents(setOpen))
 
-  // prettier-ignore
   return events.reduce((result, tuple) => {
     result[0] = shallowMerge(result[0], tuple[0])
     result[1] = shallowMerge(result[1], tuple[1])

@@ -57,7 +57,6 @@ export default function showWaveEffect(info: TouchEffectInfo) {
 
   const disconnect = observe(target, resize)
 
-  // prettier-ignore
   const destroy = () => { disconnect(); div.remove() }
 
   div.addEventListener('animationstart', resize)

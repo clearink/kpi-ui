@@ -1,13 +1,8 @@
 module.exports = {
-  root: true,
   extends: ['../../.eslintrc.js'],
-  ignorePatterns: ['.eslintrc.js'],
-  parserOptions: {
-    project: './tsconfig.json',
-    tsconfigRootDir: __dirname,
-  },
+  root: true,
   rules: {
-    'react/require-default-props': 'off',
     'react/no-unused-prop-types': 'off',
+    'react/require-default-props': 'off',
   },
 }

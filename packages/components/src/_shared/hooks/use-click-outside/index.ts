@@ -13,7 +13,6 @@ export default function useClickOutside<T extends Element>(
 
   const [el, set] = useState<MayBe<T>>(null)
 
-  // prettier-ignore
   useEffect(() => { set(getTargetElement(target)) }, [target])
 
   useEffect(() => {

@@ -9,6 +9,10 @@ module.exports = {
   plugins: ['react-refresh', 'perfectionist'],
   root: true,
   rules: {
+    '@typescript-eslint/consistent-type-imports': ['error', {
+      fixStyle: 'inline-type-imports',
+      prefer: 'type-imports',
+    }],
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
@@ -31,7 +35,6 @@ module.exports = {
         variables: false,
       },
     ],
-    'antfu/if-new-line': 'off',
     'antfu/if-newline': 'off',
     'curly': ['error', 'multi-line', 'consistent'],
     'import/order': 'off', // handled by perfectionist
@@ -64,6 +67,7 @@ module.exports = {
     'perfectionist/sort-imports': 'error',
 
     'perfectionist/sort-named-imports': 'error',
+
     'react/destructuring-assignment': 'off',
     // react
     'react/jsx-props-no-spreading': 'off',
@@ -74,6 +78,5 @@ module.exports = {
         additionalHooks: 'useIsomorphicEffect|useDeepMemo',
       },
     ],
-    'sort-imports': 'off', // handled by perfectionist
   },
 }

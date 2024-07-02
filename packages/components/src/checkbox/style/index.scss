@@ -1,6 +1,5 @@
 // 引入 css 基础配置文件
 @import '../../style/base.scss';
-
 @import './tokens.scss';
 @import './mixins.scss';
 
@@ -8,8 +7,8 @@ $comp: #{$prefix}-checkbox;
 
 .#{$comp} {
   @include reset-component();
-  position: relative;
 
+  position: relative;
   display: inline-flex;
   align-items: center;
   cursor: pointer;
@@ -21,12 +20,12 @@ $comp: #{$prefix}-checkbox;
 
 .#{$comp}__original {
   position: absolute;
-  opacity: 0;
-  outline: none;
+  z-index: -1;
   margin: 0;
   width: 0;
   height: 0;
-  z-index: -1;
+  opacity: 0;
+  outline: none;
 
   &:focus-visible + .#{$comp}__input {
     outline-color: var(--#{$prefix}-color-primary-active);
@@ -36,29 +35,29 @@ $comp: #{$prefix}-checkbox;
 
 .#{$comp}__input {
   position: relative;
+  z-index: 1;
   display: inline-block;
-  box-sizing: border-box;
   border: 1px solid var(--#{$prefix}-color-border);
   border-radius: var(--#{$prefix}-border-radius-sm);
-  background-color: var(--#{$prefix}-color-bg-base);
   width: $kpi-checkbox-input-width;
   height: $kpi-checkbox-input-height;
-  transition: $kpi-checkbox-input-transition;
-  z-index: 1;
+  background-color: var(--#{$prefix}-color-bg-base);
   outline: transparent solid $kpi-checkbox-outline-width;
+  transition: $kpi-checkbox-input-transition;
+  box-sizing: border-box;
 
   &::after {
-    content: '';
     position: absolute;
-    box-sizing: border-box;
-    width: $kpi-checkbox-arrow-width;
-    height: $kpi-checkbox-arrow-height;
+    top: 50%;
+    left: calc($kpi-checkbox-arrow-width / 2);
     border: 2px solid var(--#{$prefix}-color-white);
     border-top: 0;
     border-left: 0;
-    left: calc($kpi-checkbox-arrow-width / 2);
-    top: 50%;
+    width: $kpi-checkbox-arrow-width;
+    height: $kpi-checkbox-arrow-height;
     transition: $kpi-checkbox-arrow-transition-enter;
+    content: '';
+    box-sizing: border-box;
     transform: scale(0) rotate(45deg) translate(-50%, -50%);
   }
 }
@@ -82,6 +81,7 @@ $comp: #{$prefix}-checkbox;
   &:hover {
     &.#{$comp}__input {
       border-color: var(--#{$prefix}-color-primary-hover);
+
       // background-color: var(--#{$prefix}-color-primary-active);
     }
   }

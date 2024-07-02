@@ -6,7 +6,14 @@ import buildCode from './code'
 import buildCss from './css'
 import buildDts from './dts'
 
-export default async function build() {
+export interface BuildCodeOptions {
+  css: boolean
+  dts: boolean
+  js: boolean
+}
+
+export default async function build(options: BuildCodeOptions) {
+  console.log(options)
   logger.info('|-----------------------------------|')
   logger.info('|                                   |')
   logger.info('|    starting build ui library...   |')
@@ -30,27 +37,26 @@ export default async function build() {
     spinner.clear()
   }
 
-  // {
-  //   const spinner = ora(logger.info('starting build code\n', false)).start()
-  //  await buildCode()
-  //   spinner.succeed(logger.success('build code successfully!\n', false))
-  //   spinner.clear()
-  // }
-
-  // eslint-disable-next-line no-lone-blocks
-  {
-    // const spinner = ora(logger.info('starting build dts\n', false)).start()
-    await buildDts()
-    // spinner.succeed(logger.success('build dts successfully!\n', false))
-    // spinner.clear()
+  if (options.js) {
+    const spinner = ora(logger.info('starting build code\n', false)).start()
+    await buildCode()
+    spinner.succeed(logger.success('build code successfully!\n', false))
+    spinner.clear()
   }
 
-  // {
-  //   const spinner = ora(logger.info('starting build css\n', false)).start()
-  //    await buildCss()
-  //   spinner.succeed(logger.success('build css successfully!\n', false))
-  //   spinner.clear()
-  // }
+  if (options.dts) {
+    const spinner = ora(logger.info('starting build dts\n', false)).start()
+    await buildDts()
+    spinner.succeed(logger.success('build dts successfully!\n', false))
+    spinner.clear()
+  }
+
+  if (options.css) {
+    const spinner = ora(logger.info('starting build css\n', false)).start()
+    await buildCss()
+    spinner.succeed(logger.success('build css successfully!\n', false))
+    spinner.clear()
+  }
 
   logger.success('build ui library successfully !')
 }

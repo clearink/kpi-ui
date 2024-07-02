@@ -20,10 +20,8 @@ function TooltipContent(props: TooltipContentProps, _ref: ForwardedRef<any>) {
 
     const elements = new Set([...getScrollElements(dom.current), ownerWindow(dom.current)])
 
-    // prettier-ignore
     elements.forEach((el) => { el.addEventListener('scroll', onScroll, { passive: true }) })
 
-    // prettier-ignore
     return () => { elements.forEach((el) => { el.removeEventListener('scroll', onScroll) }) }
   }, [open, onScroll])
 

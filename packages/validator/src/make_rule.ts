@@ -5,8 +5,9 @@ export const Valid = <T>(value: T) => ({ status: 'valid', value }) as const
 
 export function Invalid(context: Context) {
   return (message: Message, params?: any) => {
-    if (context.abortEarly && !context.issue.isEmpty)
+    if (context.abortEarly && !context.issue.isEmpty) {
       return Promise.reject(context.issue)
+    }
 
     context.issue.addIssue(message, context.path, params)
     return { status: 'invalid' } as const

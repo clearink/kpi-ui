@@ -56,7 +56,6 @@ function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransi
     else if (actions.shouldFlip(isInitial)) actions.runFlip()
   }, [shouldTransition, states, actions])
 
-  // prettier-ignore
   useEffect(() => () => { actions.setIsInitial(true) }, [actions])
 
   if (returnEarly) return null

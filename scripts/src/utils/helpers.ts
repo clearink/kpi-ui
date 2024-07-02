@@ -44,7 +44,7 @@ export const constants = new Constant()
   .add(() => ({
     browserslist: ['> 0.5%', 'last 2 versions', 'not dead'],
     cssExtensions: ['.scss', '.sass', '.css'],
-    ignoreFiles: ['**/__tests__', '**/_demo', '**/_design'],
+    ignoreFiles: ['**/__tests__', '**/_demos', '**/_design'],
     jsExtensions: ['.js', '.jsx', '.ts', '.tsx'],
   }))
   .add(instance => ({

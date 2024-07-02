@@ -13,30 +13,30 @@ title:
 `block` 属性将使按钮适合其父宽度。
 
 ```tsx
-import { Button, Space } from '@kpi/ui';
+import { Button, Space } from '@kpi/ui'
 
-const App = () => {
+function App() {
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Button type="primary" block>
+      <Button block type="primary">
         Primary
       </Button>
       <Button block>Default</Button>
-      <Button type="dashed" block>
+      <Button block type="dashed">
         Dashed
       </Button>
-      <Button disabled block>
+      <Button block disabled>
         disabled
       </Button>
-      <Button type="text" block>
+      <Button block type="text">
         text
       </Button>
-      <Button type="link" block>
+      <Button block type="link">
         Link
       </Button>
     </Space>
-  );
-};
+  )
+}
 
-export default App;
+export default App
 ```

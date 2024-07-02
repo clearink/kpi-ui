@@ -1,0 +1,55 @@
+[{
+  "label": "设计",
+  "id": "design",
+  "children": []
+}, {
+  "label": "组件",
+  "id": "components",
+  "children": [{
+    "label": "基础组件",
+    "id": "base",
+    "children": [
+      {
+        "label": "Button 按钮",
+        "id": "button",
+        "pkg": "components",
+        "source": "./button"
+      },
+      {
+        "label": "FloatButton 悬浮按钮",
+        "id": "button",
+        "pkg": "components",
+        "source": "./button"
+      },
+      {
+        "label": "Icon 图标",
+        "id": "icon",
+        "pkg": "docs",
+        "source": "./icon"
+      },
+      {
+        "label": "Typography 排版",
+        "id": "button",
+        "pkg": "components",
+        "source": "./button"
+      }
+    ]
+
+  }, {
+    "label": "布局组件"
+  }, {
+    "label": "导航组件"
+  }, {
+    "label": "数据录入"
+  }, {
+    "label": "操作反馈"
+  }, {
+    "label": "展示组件"
+  }]
+},
+{
+  "label": "博客",
+  "id": "blog",
+  "children": []
+
+}]

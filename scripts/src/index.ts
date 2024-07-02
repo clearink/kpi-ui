@@ -14,10 +14,9 @@ const program = new Command()
 program
   .command('build:ui')
   .description('build ui library')
-  // .option('-e, --entry <entry>', 'compile entry dir', 'src')
-  // .option('-w, --watch', 'watch mode', false)
-  // .option('-d, --out-dir <outDir>', 'output dir', 'es')
-  // .option('-f, --format <format>', 'output format=es|cjs', 'es')
+  .option('--no-dts', 'don\'t generate dts files', true)
+  .option('--no-js', 'don\'t generate js files', true)
+  .option('--no-css', 'don\'t generate css files', true)
   .action(ui)
 
 // 编译类型声明文件
