@@ -33,6 +33,8 @@ export default function useItemInputOffset(props: FormItemInputProps, hasError: 
     returnEarly = hasError && !!getOuter()
 
     updateOffset()
+
+    if (returnEarly) forceUpdate()
   })
 
   useEffect(() => nextTick(updateOffset), [updateOffset])

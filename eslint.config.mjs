@@ -26,6 +26,7 @@ export default antfu({
   stylistic: {
     overrides: {
       'style/jsx-curly-spacing': ['error', { when: 'never', children: true }],
+      'style/jsx-props-no-multi-spaces': 'error',
       'style/max-statements-per-line': ['error', { max: 4 }],
       'style/no-extra-parens': ['error', 'all', {
         ignoreJSX: 'all',
