@@ -17,13 +17,11 @@ function GroupTransition<E extends HTMLElement = HTMLElement>(props: GroupTransi
 
   const shouldTransition = !isElementsEqual(states.current, children)
 
-  let returnEarly = false
-
-  useWatchValue(shouldTransition, () => {
-    returnEarly = !isCanFlip() && shouldTransition
-
+  const returnEarly = useWatchValue(shouldTransition, () => {
     if (isCanFlip()) !shouldTransition && updateCoords()
     else if (shouldTransition) actions.updateElements()
+
+    return !isCanFlip() && shouldTransition
   })
 
   useEffect(() => {

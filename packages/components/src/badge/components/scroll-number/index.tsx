@@ -12,7 +12,7 @@ function ScrollNumber(props: ScrollNumberProps) {
 
   const prefixCls = usePrefixCls('badge-scroll-number')
 
-  const { action, returnEarly, states } = useScrollNumberStore(props)
+  const { actions, returnEarly, states } = useScrollNumberStore(props)
 
   if (returnEarly) return null
 
@@ -24,17 +24,15 @@ function ScrollNumber(props: ScrollNumberProps) {
       appear
       when
       name={`${prefixCls}-motion`}
-      onEnter={action.handleEnter}
-      onEntered={action.handleEntered}
-      onEntering={action.handleEntering}
+      onEnter={actions.handleEnter}
+      onEntered={actions.handleEntered}
+      onEntering={actions.handleEntering}
     >
       <span ref={states.$wrap} className={prefixCls}>
         {naturalList.map(natural => (
           <span
             key={natural}
-            ref={(el) => {
-              action.setItem(`${natural}`, el)
-            }}
+            ref={(el) => { actions.setItem(natural, el) }}
           >
             {natural}
           </span>

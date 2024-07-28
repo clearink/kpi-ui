@@ -40,7 +40,7 @@ function FormItemInput(_props: FormItemInputProps) {
 
   const hasError = !isNullish(help) || !!(errors.length || warnings.length)
 
-  const { returnEarly, offset, handleCleanOffset } = useItemInputOffset(props, hasError)
+  const { returnEarly, offset, cleanOffset } = useItemInputOffset(props, hasError)
 
   if (returnEarly) return null
 
@@ -50,14 +50,13 @@ function FormItemInput(_props: FormItemInputProps) {
         <div className={`${prefixCls}-input`}>{children(onMetaChange, onSubMetaChange)}</div>
 
         {!!(hasError || offset) && (
-          <div className={`${prefixCls}-status`}>
-            {!!offset && <div className={`${prefixCls}-holder`} style={{ height: offset }} />}
+          <div className={`${prefixCls}-status`} style={{ minHeight: offset }}>
             <FormErrorList
               errors={errors}
               help={help}
               helpStatus={status}
               warnings={warnings}
-              onExitComplete={handleCleanOffset}
+              onExitComplete={cleanOffset}
             />
           </div>
         )}

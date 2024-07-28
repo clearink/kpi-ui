@@ -16,7 +16,7 @@ export function initFieldMeta(): FieldMeta {
 }
 
 export default function useMetaState() {
-  const [state, setState] = useDebounceState(40, initFieldMeta)
+  const [state, setState] = useDebounceState(80, initFieldMeta)
 
   const update = useCallback((meta: FieldMeta) => {
     meta.mounted && setState(meta)

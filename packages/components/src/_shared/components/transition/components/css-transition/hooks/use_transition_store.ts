@@ -117,25 +117,23 @@ export default function useTransitionStore<E extends HTMLElement>(props: CSS<E>)
 
   const actions = useMemo(() => new TransitionAction<E>(update, states), [states, update])
 
-  let returnEarly = false
-
   // 监听 unmountOnExit 与 mountOnEnter
-  useWatchValue(`${unmountOnExit}-${mountOnEnter}`, () => {
-    if (!isExited(states.status)) return
+  const returnEarly1 = useWatchValue(`${unmountOnExit}-${mountOnEnter}`, () => {
+    if (!isExited(states.status)) return false
 
     const isMounted = !(unmountOnExit || (!states.hasMounted && mountOnEnter))
 
-    returnEarly = isMounted !== states.isMounted
-
     actions.setIsMounted(isMounted)
+
+    return isMounted !== states.isMounted
   })
 
   // when 变化时需要保证页面处于渲染中,
-  useWatchValue(when, () => {
-    returnEarly = states.isMounted !== true
-
+  const returnEarly2 = useWatchValue(when, () => {
     actions.setIsMounted(true)
+
+    return states.isMounted !== true
   })
 
-  return { actions, returnEarly, states }
+  return { returnEarly: returnEarly1 || returnEarly2, actions, states }
 }

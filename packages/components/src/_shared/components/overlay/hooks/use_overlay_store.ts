@@ -45,27 +45,26 @@ export default function useOverlayStore(props: OverlayProps) {
 
   const actions = useMemo(() => new OverlayAction(update, states), [update, states])
 
-  let returnEarly = false
-
   // 监听 keepMounted, unmountOnExit
-  useWatchValue(`${keepMounted}-${unmountOnExit}`, () => {
+  const returnEarly1 = useWatchValue(`${keepMounted}-${unmountOnExit}`, () => {
     // keepMounted 优先级高于 unmountOnExit
     let isMounted = states.isMounted
 
     if (keepMounted) isMounted = true
     else if (unmountOnExit && actions.isExited) isMounted = false
 
-    returnEarly = states.isMounted !== isMounted
-
     actions.setIsMounted(isMounted)
+
+    return states.isMounted !== isMounted
   })
 
   // when 变化时需要保证页面处于渲染中,
-  useWatchValue(open, () => {
-    returnEarly = states.isMounted !== true
 
+  const returnEarly2 = useWatchValue(open, () => {
     actions.setIsMounted(true)
+
+    return states.isMounted !== true
   })
 
-  return { actions, returnEarly, states }
+  return { returnEarly: returnEarly1 || returnEarly2, actions, states }
 }

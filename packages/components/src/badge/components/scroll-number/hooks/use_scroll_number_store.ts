@@ -1,3 +1,5 @@
+import type { VoidFn } from '@internal/types'
+
 import { useConstant, useForceUpdate, useWatchValue } from '@comps/_shared/hooks'
 import { getClientCoords, reflow } from '@internal/utils'
 import { useMemo } from 'react'
@@ -79,10 +81,7 @@ export class ScrollNumberAction {
     this.states.showRawChar = value
   }
 
-  constructor(
-    private forceUpdate: () => void,
-    private states: ScrollNumberState,
-  ) {}
+  constructor(public forceUpdate: VoidFn, private states: ScrollNumberState) {}
 }
 
 export default function useScrollNumberStore(props: ScrollNumberProps) {
@@ -92,17 +91,15 @@ export default function useScrollNumberStore(props: ScrollNumberProps) {
 
   const states = useConstant(() => new ScrollNumberState(char))
 
-  const action = useMemo(() => new ScrollNumberAction(update, states), [update, states])
+  const actions = useMemo(() => new ScrollNumberAction(update, states), [update, states])
 
-  let returnEarly = false
+  const returnEarly = useWatchValue(char, () => {
+    actions.setHistory(char)
 
-  useWatchValue(char, () => {
-    returnEarly = states.showRawChar !== false
+    actions.setShowRawChar(false)
 
-    action.setHistory(char)
-
-    action.setShowRawChar(false)
+    return states.showRawChar !== false
   })
 
-  return { action, returnEarly, states }
+  return { actions, returnEarly, states }
 }

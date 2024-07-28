@@ -14,16 +14,14 @@ function SwitchTransition<E extends HTMLElement = HTMLElement>(props: SwitchTran
 
   const shouldTransition = !isElementEqual(states.current, children)
 
-  let returnEarly = false
-
-  useWatchValue(shouldTransition, () => {
-    if (!shouldTransition) return
+  const returnEarly = useWatchValue(shouldTransition, () => {
+    if (!shouldTransition) return false
 
     if (mode === 'out-in') actions.runOutInSwitch()
     else if (mode === 'in-out') actions.runInOutSwitch()
     else actions.runDefaultSwitch()
 
-    returnEarly = true
+    return true
   })
 
   return returnEarly ? null : <>{actions.renderNodes()}</>

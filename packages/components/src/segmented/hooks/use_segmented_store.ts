@@ -117,14 +117,11 @@ export default function useSegmentedStore(active: SegmentedType) {
 
   const actions = useMemo(() => new SegmentedAction(update, states), [update, states])
 
-  let returnEarly = false
-
-  useWatchValue(active, () => {
-    returnEarly = states.showThumb !== true
-
+  const returnEarly = useWatchValue(active, () => {
     actions.setHistory(active)
-
     actions.setShowThumb(true)
+
+    return states.showThumb !== true
   })
 
   return { actions, returnEarly, states }

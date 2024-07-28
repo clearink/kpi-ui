@@ -21,8 +21,6 @@ export class NotificationAction {
 
   appendNotice = (notice: NotificationConfig) => {
     this.states.notices.push(notice)
-
-    this.forceUpdate()
   }
 
   updateNotices = (notices: NotificationState['notices']) => {
@@ -41,12 +39,12 @@ export default function useNotificationStore(props: NotificationListProps) {
 
   const actions = useMemo(() => new NotificationAction(update, states), [update, states])
 
-  let returnEarly = false
-
-  useWatchValue(notice, () => {
-    returnEarly = true
-
+  const returnEarly = useWatchValue(notice, () => {
     actions.appendNotice(notice)
+
+    actions.forceUpdate()
+
+    return true
   })
 
   return { returnEarly, states, actions }

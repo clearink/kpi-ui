@@ -3,25 +3,27 @@ import { useMemo, useRef } from 'react'
 
 export interface WatchOptions<S> {
   compare: (current: S, previous: S) => boolean
-  listener: (current: S, previous: S) => void
+  listener: (current: S, previous: S) => boolean | void
 }
 
-function useWatchValue<S>(current: S, args: WatchOptions<S>): void
-function useWatchValue<S>(current: S, args: WatchOptions<S>['listener']): void
-function useWatchValue<S>(current: S, args: any): void {
+function useWatchValue<S>(current: S, args: WatchOptions<S>): boolean
+function useWatchValue<S>(current: S, args: WatchOptions<S>['listener']): boolean
+function useWatchValue<S>(current: S, args: any): boolean {
   const ref = useRef(current)
 
   // 兼容 react devtool
-  useMemo(() => {
+  return useMemo(() => {
     const compare = isFunction(args) ? shallowEqual : args.compare
 
-    if (compare(current, ref.current)) return
+    if (compare(current, ref.current)) return false
 
     const listener = isFunction(args) ? args : args.listener
 
-    listener(current, ref.current)
+    const returnEarly = listener(current, ref.current)
 
     ref.current = current
+
+    return !!returnEarly
   }, [args, current])
 }
 

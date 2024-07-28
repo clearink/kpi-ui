@@ -63,9 +63,13 @@ function _InternalForm<State = any>(
   useEffect(() => parentForm.register(instance, name), [instance, name, parentForm])
 
   // 同步 fields 字段
-  useWatchValue(fields, {
+  const returnEarly = useWatchValue(fields, {
     compare: isEqual,
-    listener: () => fields && internalHook.setFields(fields),
+    listener: () => {
+      fields && internalHook.setFields(fields)
+
+      return !!fields
+    },
   })
 
   const handleSubmit = (e?: FormEvent) => {
@@ -87,6 +91,8 @@ function _InternalForm<State = any>(
   const instanceContext = useMemo(() => {
     return { ...instance, formName: name, validateTrigger }
   }, [instance, validateTrigger, name])
+
+  if (returnEarly) return null
 
   const elements = (
     <InternalFormInstanceContext.Provider value={instanceContext}>

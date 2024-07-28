@@ -17,29 +17,25 @@ export default function useItemInputOffset(props: FormItemInputProps, hasError: 
     states.offset = offset
   }
 
-  const updateOffset = useEvent(() => {
+  const cleanOffset = () => { !hasError && setOffset(0) }
+
+  const updateOffset = useEvent((isForceUpdate: boolean) => {
     const $outer = getOuter()
 
-    if (!hasError || !$outer) return
+    if (!hasError || !$outer) return false
 
     const styles = getElementStyle($outer)
 
     setOffset(Number.parseFloat(styles.marginBottom))
+
+    if (isForceUpdate) forceUpdate()
+
+    return true
   })
 
-  let returnEarly = false
+  const returnEarly = useWatchValue(hasError, () => { updateOffset(true) })
 
-  useWatchValue(hasError, () => {
-    returnEarly = hasError && !!getOuter()
+  useEffect(() => nextTick(() => { updateOffset(false) }), [updateOffset])
 
-    updateOffset()
-
-    if (returnEarly) forceUpdate()
-  })
-
-  useEffect(() => nextTick(updateOffset), [updateOffset])
-
-  const handleCleanOffset = () => { !hasError && setOffset(0) }
-
-  return { returnEarly, offset: states.offset, handleCleanOffset }
+  return { returnEarly, offset: states.offset, cleanOffset }
 }
