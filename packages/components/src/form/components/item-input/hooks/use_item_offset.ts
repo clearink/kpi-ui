@@ -33,7 +33,7 @@ export default function useItemInputOffset(props: FormItemInputProps, hasError: 
     return true
   })
 
-  const returnEarly = useWatchValue(hasError, () => { updateOffset(true) })
+  const returnEarly = useWatchValue(hasError, () => updateOffset(true))
 
   useEffect(() => nextTick(() => { updateOffset(false) }), [updateOffset])
 
