@@ -1,5 +1,5 @@
 import { CSSTransition } from '@comps/_shared/components'
-import { Keyboard, styledProps } from '@comps/_shared/constants'
+import { Keyboard, StyledAttrs } from '@comps/_shared/constants'
 import { usePrefixCls, useSemanticStyles } from '@comps/_shared/hooks'
 import { attachDisplayName, withDefaults } from '@comps/_shared/utils'
 import CaretRightOutlined from '@ink-ui/icons/esm/icons/CaretRightOutlined'
@@ -29,7 +29,7 @@ const excluded = [
   // 子元素
   'children',
   // 样式
-  ...styledProps,
+  ...StyledAttrs,
 ] as const
 
 function _CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement>) {

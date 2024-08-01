@@ -5,7 +5,7 @@ import InfoCircleFilled from '@ink-ui/icons/esm/icons/InfoCircleFilled'
 
 import type { StatusType } from '../types'
 
-export const presetStatusIcons = {
+export const PresetStatusIcons = {
   success: <CheckCircleFilled />,
   info: <InfoCircleFilled />,
   error: <CloseCircleFilled />,
@@ -13,5 +13,5 @@ export const presetStatusIcons = {
 }
 
 export function getPresetStatusIcon(type?: StatusType) {
-  return type ? presetStatusIcons[type] || null : null
+  return type ? PresetStatusIcons[type] || null : null
 }

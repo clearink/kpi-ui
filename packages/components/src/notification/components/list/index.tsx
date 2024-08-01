@@ -9,7 +9,7 @@ import NotificationNotice from '../notice'
 import useNotificationStore from './hooks/use_notification_store'
 
 function NotificationList(props: NotificationListProps) {
-  const { onFinish } = props
+  const { onFinish, type } = props
 
   const prefixCls = usePrefixCls('notification')
 
@@ -20,7 +20,7 @@ function NotificationList(props: NotificationListProps) {
   if (returnEarly) return null
 
   return (
-    <div className={`${prefixCls}-list`}>
+    <div className={`${prefixCls}-list ${prefixCls}-list--${type}`}>
       <NotificationContext.Provider value={notificationContext}>
         {states.notices.map((item) => {
         // 计算需要偏移的位置

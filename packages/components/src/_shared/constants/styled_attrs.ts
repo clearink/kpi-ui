@@ -1,4 +1,4 @@
-export const styledProps = [
+export const StyledAttrs = [
   'className',
   'classNames',
   'style',

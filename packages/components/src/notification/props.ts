@@ -1,10 +1,6 @@
-import type { HasClosable, NoticePlacement, SemanticStyledProps } from '@comps/_shared/types'
+import type { HasClosable, NoticePlacement, NoticeType, SemanticStyledProps } from '@comps/_shared/types'
 import type { GetTargetElement } from '@comps/_shared/utils'
 import type { DOMAttributes, MouseEventHandler, ReactNode } from 'react'
-
-export interface NotificationType {
-  success: (config?: any) => void
-}
 
 // 调用 notification 函数时的参数
 export interface NotificationProps extends HasClosable, SemanticStyledProps<'closeBtn' | 'root' | 'wrap'> {
@@ -81,3 +77,5 @@ export interface NotificationConfig extends NotificationProps {
 
   maxCount?: number
 }
+
+export type StaticNoticeUtils = Record<NoticeType, (config: NotificationConfig) => void>
