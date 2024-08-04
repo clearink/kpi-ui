@@ -1,15 +1,15 @@
-import type { NoticeType } from '@comps/_shared/types'
+import type { NotificationType } from '@comps/_shared/types'
 
-import { PresetStatus } from '@comps/_shared/constants/status'
+import { PresetNotificationType } from '@comps/_shared/constants/status'
 import { makeUniqueId, withDefaults } from '@comps/_shared/utils'
 import React from 'react'
 
-import type { NotificationConfig, StaticNoticeUtils } from '../props'
+import type { NotificationConfig, NotificationMethods } from '../props'
 
 import NotificationList from '../components/list'
 import { buildHolder } from './holder'
 
-export default function builderNoticeUtils() {
+export default function makeStaticMethods() {
   const getHolder = buildHolder()
 
   const uniqueId = makeUniqueId('notice-')
@@ -18,7 +18,7 @@ export default function builderNoticeUtils() {
     placement: 'topRight',
   }
 
-  const impl = (type: NoticeType) => (_config: NotificationConfig) => {
+  const impl = (type: NotificationType) => (_config: NotificationConfig) => {
     const config = withDefaults(_config, {
       ...defaultConfig,
       key: uniqueId(),
@@ -33,9 +33,11 @@ export default function builderNoticeUtils() {
     )
   }
 
-  return PresetStatus.reduce((result, type) => {
+  const notificationMethods = PresetNotificationType.reduce((result, type) => {
     result[type] = impl(type)
 
     return result
-  }, {} as StaticNoticeUtils)
+  }, {} as NotificationMethods)
+
+  return notificationMethods
 }

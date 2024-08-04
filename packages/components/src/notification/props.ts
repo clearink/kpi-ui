@@ -1,4 +1,4 @@
-import type { HasClosable, NoticePlacement, NoticeType, SemanticStyledProps } from '@comps/_shared/types'
+import type { HasClosable, NotificationPlacement, NotificationType, SemanticStyledProps } from '@comps/_shared/types'
 import type { GetTargetElement } from '@comps/_shared/utils'
 import type { DOMAttributes, MouseEventHandler, ReactNode } from 'react'
 
@@ -41,7 +41,7 @@ export interface NotificationProps extends HasClosable, SemanticStyledProps<'clo
    * @description 弹出位置
    * @enum 'top'|'topLeft'|'topRight'...
    */
-  placement?: NoticePlacement
+  placement?: NotificationPlacement
 
   /**
    * @description 点击通知时触发的函数
@@ -78,4 +78,8 @@ export interface NotificationConfig extends NotificationProps {
   maxCount?: number
 }
 
-export type StaticNoticeUtils = Record<NoticeType, (config: NotificationConfig) => void>
+export interface NotificationBaseMethods {
+
+}
+
+export type NotificationMethods = Record<NotificationType, (config: NotificationConfig) => void>

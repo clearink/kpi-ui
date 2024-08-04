@@ -1,3 +1,5 @@
+import type { NotificationPlacement } from '@comps/_shared/types'
+
 import { getTargetElement } from '@comps/_shared/utils'
 import { ownerDocument } from '@internal/utils'
 import { createRoot } from 'react-dom/client'
@@ -27,19 +29,19 @@ function createHolder(getContainer: NotificationConfig['getContainer']) {
 }
 
 export function buildHolder() {
-  const cache = new Map<NotificationConfig['placement'], ReturnType<typeof createHolder>>()
+  const cache: Partial<Record<NotificationPlacement, ReturnType<typeof createHolder>>> = {}
 
   return function getInstance(config: NotificationConfig) {
     const { placement, getContainer } = config
 
-    if (!cache.has(placement))
-      cache.set(placement, createHolder(getContainer))
+    if (!cache[placement!])
+      cache[placement!] = createHolder(getContainer)
 
-    const { root, unmount, notices } = cache.get(placement)!
+    const { root, unmount, notices } = cache[placement!]!
 
     const destroy = () => {
       unmount()
-      cache.delete(placement)
+      delete cache[placement!]
     }
 
     return { root, destroy, notices }

@@ -20,7 +20,7 @@ export type PopupPlacement =
   | 'right' | 'rightBottom' | 'rightTop'
   | 'top' | 'topLeft' | 'topRight'
 
-export type NoticePlacement =
+export type NotificationPlacement =
   | 'bottom' | 'bottomLeft' | 'bottomRight'
   | 'top' | 'topLeft' | 'topRight'
 
@@ -40,4 +40,4 @@ export interface HasIconRenderClosable extends HasClosable {
 export type StatusType = 'error' | 'info' | 'success' | 'warning'
 
 // 提醒类型
-export type NoticeType = StatusType
+export type NotificationType = StatusType

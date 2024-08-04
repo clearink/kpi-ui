@@ -1,9 +1,7 @@
 import useNotification from './hooks/use_notification'
-import builderNoticeUtils from './utils/builder'
+import makeStaticMethods from './utils/make_static_methods'
 
-// const globalNotification = notificationBuilder()
-
-const notification = Object.assign(builderNoticeUtils(), {
+const notification = Object.assign(makeStaticMethods(), {
   useNotification,
 })
 

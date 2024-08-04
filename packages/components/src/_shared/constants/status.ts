@@ -1,3 +1,5 @@
-import type { NoticeType } from '../types'
+import type { NotificationType, StatusType } from '../types'
 
-export const PresetStatus: NoticeType[] = ['error', 'info', 'success', 'warning']
+export const PresetStatus: StatusType[] = ['error', 'info', 'success', 'warning']
+
+export const PresetNotificationType: NotificationType[] = PresetStatus.concat()
