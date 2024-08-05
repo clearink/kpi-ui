@@ -2,25 +2,13 @@ import { CSSTransition } from '@comps/_shared/components'
 import { usePrefixCls } from '@comps/_shared/hooks'
 import { attachDisplayName, withDefaults } from '@comps/_shared/utils'
 
-import type { PaginationProps } from './props'
-
 import useFormatClass from './hooks/use_format_class'
 import usePageChunk from './hooks/use_page_chunk'
 import useSharedLayout from './hooks/use_shared_layout'
-
-const defaultProps: Partial<PaginationProps> = {
-  defaultCurrent: 1,
-  defaultPageSize: 10,
-  hideOnSinglePage: false,
-  showHtmlTitle: true,
-  showJumper: false,
-  simple: false,
-  total: 0,
-  totalBoundaryShowSizeChanger: 50,
-}
+import { type PaginationProps, defaultPaginationProps } from './props'
 
 function Pagination(_props: PaginationProps) {
-  const props = withDefaults(_props, defaultProps)
+  const props = withDefaults(_props, defaultPaginationProps)
 
   const { onChange } = props
 

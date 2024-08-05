@@ -120,3 +120,18 @@ export interface NotificationConfig extends HasClosable,
 }
 
 export type NotificationMethods = Record<StatusType, (props: NotificationProps) => void>
+
+/**
+ * |-----------------------------------|
+ * |-----------------------------------|
+ * |           default props           |
+ * |-----------------------------------|
+ * |-----------------------------------|
+ */
+
+export const defaultNotificationProps: Partial<NotificationProps> = {
+  duration: 4.5,
+  placement: 'topRight',
+  showProgress: false,
+  pauseOnHover: true,
+}

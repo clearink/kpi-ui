@@ -9,3 +9,18 @@ export interface DividerProps extends SemanticStyledProps<'root' | 'text'> {
   margin?: number | string
   plain?: boolean
 }
+
+/**
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ * |                      default props                      |
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ */
+
+export const defaultDividerProps: Partial<DividerProps> = {
+  align: 'center',
+  dashed: false,
+  direction: 'horizontal',
+  plain: false,
+}

@@ -7,15 +7,11 @@ import { fallback, hasItem, isFunction, isNullish, omit } from '@internal/utils'
 import { type ForwardedRef, forwardRef } from 'react'
 
 import type { CollapsibleType } from '../collapse/props'
-import type { CollapseItemProps } from './props'
 
 import { CollapseContext } from '../../_shared/context'
 import useFormatClass from './hooks/use_format_class'
+import { type CollapseItemProps, defaultCollapseItemProps } from './props'
 import handlers from './utils/transition_handlers'
-
-const defaultProps: Partial<CollapseItemProps> = {
-  showExpandIcon: true,
-}
 
 const excluded = [
   'name',
@@ -41,7 +37,7 @@ function _CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivEleme
       disabled: _props.disabled || ctx.disabled,
     },
     {
-      ...defaultProps,
+      ...defaultCollapseItemProps,
       expandIcon: ctx.expandIcon,
       keepMounted: ctx.keepMounted,
       unmountOnExit: ctx.unmountOnExit,

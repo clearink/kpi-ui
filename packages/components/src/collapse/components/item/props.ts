@@ -16,3 +16,15 @@ export interface CollapseItemProps
   title?: ReactNode
   unmountOnExit?: boolean
 }
+
+/**
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ * |                      default props                      |
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ */
+
+export const defaultCollapseItemProps: Partial<CollapseItemProps> = {
+  showExpandIcon: true,
+}

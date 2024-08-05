@@ -7,9 +7,8 @@ import Button from '@comps/button'
 import { fallback, isFunction, isNullish, pick } from '@internal/utils'
 import { type KeyboardEvent, type SyntheticEvent, useId, useRef } from 'react'
 
-import type { ModalProps } from './props'
-
 import useFormatClass from './hooks/use_format_class'
+import { type ModalProps, defaultModalProps } from './props'
 
 const included = [
   'getContainer',
@@ -21,16 +20,8 @@ const included = [
   'zIndex',
 ] as const
 
-const defaultProps: Partial<ModalProps> = {
-  closeOnEscape: true,
-  closable: true,
-  mask: true,
-  maskClosable: true,
-  returnFocus: true,
-}
-
 function Modal(_props: ModalProps) {
-  const props = withDefaults(_props, defaultProps)
+  const props = withDefaults(_props, defaultModalProps)
 
   const { children, footer, modalRender, onCancel, onOk, open, title, transitions = {} } = props
 

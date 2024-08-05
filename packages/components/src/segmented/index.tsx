@@ -4,21 +4,16 @@ import { usePrefixCls, useSemanticStyles } from '@comps/_shared/hooks'
 import { attachDisplayName, withDefaults } from '@comps/_shared/utils'
 import { type ForwardedRef, forwardRef, useMemo } from 'react'
 
-import type { SegmentedProps } from './props'
-
 import SegmentedItem from './components/item'
 import useFormatClass from './hooks/use_format_class'
 import useSegmentedStore from './hooks/use_segmented_store'
 import useSegmentedValue from './hooks/use_segmented_value'
+import { type SegmentedProps, defaultSegmentedProps } from './props'
 import { normalizeOptions } from './utils/helpers'
-
-const defaultProps: Partial<SegmentedProps> = {
-  block: false,
-}
 
 function _Segmented(_props: SegmentedProps, _ref: ForwardedRef<HTMLDivElement>) {
   const props = withDefaults(_props, {
-    ...defaultProps,
+    ...defaultSegmentedProps,
     size: SizeContext.useState(),
   })
 

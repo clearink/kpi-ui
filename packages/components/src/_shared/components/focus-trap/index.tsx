@@ -3,18 +3,12 @@ import { attachDisplayName, withDefaults } from '@comps/_shared/utils'
 import { nextFrame, ownerDocument } from '@internal/utils'
 import { cloneElement, useEffect } from 'react'
 
-import type { FocusTrapProps } from './props'
-
 import { guardStyles } from './constants'
 import useFocusTrapStore from './hooks/use_trap_store'
-import defaultGetTabbable from './utils/tabbable'
-
-const defaultProps: Partial<FocusTrapProps> = {
-  getTabbable: defaultGetTabbable,
-}
+import { type FocusTrapProps, defaultFocusTrapProps } from './props'
 
 function FocusTrap(_props: FocusTrapProps) {
-  const props = withDefaults(_props, defaultProps)
+  const props = withDefaults(_props, defaultFocusTrapProps)
 
   const { active, children, getTabbable, onEnter, onExit } = props
 

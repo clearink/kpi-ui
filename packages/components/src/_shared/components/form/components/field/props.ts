@@ -105,3 +105,16 @@ export interface ExternalFormFieldProps<S = any> extends Omit<InternalFormFieldP
    */
   name?: ExternalNamePath
 }
+
+/**
+ * |-----------------------------------|
+ * |-----------------------------------|
+ * |           default props           |
+ * |-----------------------------------|
+ * |-----------------------------------|
+ */
+
+export const defaultInternalFormFieldProps: Partial<InternalFormFieldProps> = {
+  trigger: 'onChange',
+  valuePropName: 'value',
+}

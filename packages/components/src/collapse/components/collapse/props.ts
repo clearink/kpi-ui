@@ -30,3 +30,17 @@ export interface CollapseProps<K extends ExpandedName = ExpandedName>
   size?: SizeType
   unmountOnExit?: boolean
 }
+
+/**
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ * |                      default props                      |
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ */
+
+export const defaultCollapseProps: Partial<CollapseProps> = {
+  bordered: true,
+  collapsible: 'header',
+  expandIconPosition: 'start',
+}

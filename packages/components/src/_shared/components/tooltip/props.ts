@@ -118,3 +118,23 @@ export interface AlignerConfig {
     trigger: ElementCoords,
   ) => ScreenCoords
 }
+
+/**
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ * |                      default props                      |
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ */
+
+export const defaultInternalTooltipProps: Partial<InternalTooltipProps> = {
+  arrow: true,
+  closeDelay: 200,
+  defaultOpen: false,
+  flip: true,
+  offset: 0,
+  openDelay: 100,
+  placement: 'top',
+  shift: true,
+  trigger: 'hover',
+}

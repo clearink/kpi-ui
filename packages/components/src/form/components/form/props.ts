@@ -43,3 +43,17 @@ export interface FormProps<S = any> extends Omit<InternalFormProps<S>, 'form'> {
 
   wrapperCol?: ColProps
 }
+
+/**
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ * |                      default props                      |
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ */
+
+export const defaultFormProps: Partial<FormProps> = {
+  colon: true,
+  layout: 'horizontal',
+  requiredMark: true,
+}

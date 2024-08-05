@@ -3,8 +3,6 @@ import { attachDisplayName, cls, withDefaults } from '@comps/_shared/utils'
 import { batch, noop } from '@internal/utils'
 import { useMemo } from 'react'
 
-import type { InternalTooltipProps } from './props'
-
 import Overlay from '../overlay'
 import ShouldUpdate from '../should-update'
 import { InternalToolTipContext, type InternalToolTipContextState } from './_shared/context'
@@ -15,21 +13,10 @@ import useTooltipEvents from './hooks/use_tooltip_events'
 import useTooltipOpen from './hooks/use_tooltip_open'
 import useTooltipStore from './hooks/use_tooltip_store'
 import useWatchCoords from './hooks/use_watch_coords'
-
-const defaultProps: Partial<InternalTooltipProps> = {
-  arrow: true,
-  closeDelay: 200,
-  defaultOpen: false,
-  flip: true,
-  offset: 0,
-  openDelay: 100,
-  placement: 'top',
-  shift: true,
-  trigger: 'hover',
-}
+import { type InternalTooltipProps, defaultInternalTooltipProps } from './props'
 
 function InternalTooltip(_props: InternalTooltipProps) {
-  const props = withDefaults(_props, defaultProps)
+  const props = withDefaults(_props, defaultInternalTooltipProps)
 
   const {
     arrow,

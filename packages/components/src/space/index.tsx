@@ -4,10 +4,9 @@ import { attachDisplayName, flattenChildren, withDefaults } from '@comps/_shared
 import { fallback, omit } from '@internal/utils'
 import { type CSSProperties, Fragment, type ReactElement } from 'react'
 
-import type { SpaceProps } from './props'
-
 import useFormatClass from './hooks/use_format_class'
 import useSpaceGutter from './hooks/use_space_gutter'
+import { type SpaceProps, defaultSpaceProps } from './props'
 
 const excluded = [
   'align',
@@ -20,18 +19,12 @@ const excluded = [
   'wrap',
 ] as const
 
-const defaultProps: Partial<SpaceProps> = {
-  direction: 'horizontal',
-  size: 'small',
-  wrap: false,
-}
-
 function Space(_props: SpaceProps) {
   const { space } = ConfigContext.useState()
 
   const props = withDefaults(_props, {
-    ...defaultProps,
-    size: fallback(space?.size, defaultProps.size),
+    ...defaultSpaceProps,
+    size: fallback(space?.size, defaultSpaceProps.size),
   })
 
   const { children, size, split, style } = props

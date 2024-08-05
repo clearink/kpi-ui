@@ -3,19 +3,14 @@ import { usePrefixCls } from '@comps/_shared/hooks'
 import { attachDisplayName, withDefaults } from '@comps/_shared/utils'
 import { isArray } from '@internal/utils'
 
-import type { BadgeProps } from './props'
-
 import ScrollNumber from '../scroll-number'
 import useFormatClass from './hooks/use_format_class'
 import useScrollGroups from './hooks/use_scroll_groups'
+import { type BadgeProps, defaultBadgeProps } from './props'
 import { handlers } from './utils/transition_handlers'
 
-const defaultProps: Partial<BadgeProps> = {
-  maxCount: 99,
-}
-
 function Badge(_props: BadgeProps) {
-  const props = withDefaults(_props, defaultProps)
+  const props = withDefaults(_props, defaultBadgeProps)
 
   const { children } = props
 

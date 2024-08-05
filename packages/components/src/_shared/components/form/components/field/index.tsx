@@ -3,21 +3,15 @@ import { attachDisplayName, withDefaults } from '@comps/_shared/utils'
 import { isUndefined, toArray } from '@internal/utils'
 import { Fragment, useEffect, useMemo } from 'react'
 
-import type { ExternalFormFieldProps, InternalFormFieldProps } from './props'
-
 import { InternalFormInstanceContext } from '../../_shared/context'
 import { _getName } from '../../utils/path'
 import { HOOK_MARK } from '../form/control'
 import useFieldControl from './hooks/use_field_control'
 import useInjectField from './hooks/use_inject_field'
-
-const defaultProps: Partial<InternalFormFieldProps> = {
-  trigger: 'onChange',
-  valuePropName: 'value',
-}
+import { type ExternalFormFieldProps, type InternalFormFieldProps, defaultInternalFormFieldProps } from './props'
 
 function _InternalFormField(_props: InternalFormFieldProps) {
-  const props = withDefaults(_props, defaultProps)
+  const props = withDefaults(_props, defaultInternalFormFieldProps)
 
   // 父级表单方法
   const instance = InternalFormInstanceContext.useState()

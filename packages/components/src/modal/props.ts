@@ -26,3 +26,19 @@ export interface ModalProps extends HasChildren, HasClosable,
 
   title?: ReactNode
 }
+
+/**
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ * |                      default props                      |
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ */
+
+export const defaultModalProps: Partial<ModalProps> = {
+  closeOnEscape: true,
+  closable: true,
+  mask: true,
+  maskClosable: true,
+  returnFocus: true,
+}

@@ -2,18 +2,15 @@ import { useSemanticStyles } from '@comps/_shared/hooks'
 import { attachDisplayName, cls, withDefaults } from '@comps/_shared/utils'
 import { type ForwardedRef, type ReactElement, type RefCallback, forwardRef } from 'react'
 
-import type { OverlayProps, OverlayRef } from './props'
-
 import Portal from '../portal'
 import { CSSTransition } from '../transition'
 import ForwardFunctional from './components/forward-functional'
 import useOverlayLevel from './hooks/use_overlay_level'
 import useOverlayStore from './hooks/use_overlay_store'
-
-const defaultProps: Partial<OverlayProps> = { mask: true }
+import { type OverlayProps, type OverlayRef, defaultOverlayProps } from './props'
 
 function _Overlay(_props: OverlayProps, ref: ForwardedRef<OverlayRef>) {
-  const props = withDefaults(_props, defaultProps)
+  const props = withDefaults(_props, defaultOverlayProps)
 
   const {
     open,

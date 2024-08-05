@@ -7,11 +7,11 @@ import { createElement, forwardRef, useEffect, useImperativeHandle, useMemo } fr
 import isEqual from 'react-fast-compare'
 
 import type { InternalFormInstance } from './control/props'
-import type { InternalFormProps } from './props'
 
 import { InternalFormContext, InternalFormInstanceContext } from '../../_shared/context'
 import { HOOK_MARK } from './control'
 import useForm from './hooks/use_form'
+import { type InternalFormProps, defaultInternalFormProps } from './props'
 
 const excluded = [
   'name',
@@ -30,17 +30,11 @@ const excluded = [
   'onFailed',
 ] as const
 
-const defaultProps: Partial<InternalFormProps> = {
-  preserve: true,
-  tag: 'form',
-  validateTrigger: 'onChange',
-}
-
 function _InternalForm<State = any>(
   _props: InternalFormProps<State>,
   ref: ForwardedRef<InternalFormInstance<State>>,
 ) {
-  const props = withDefaults(_props, defaultProps)
+  const props = withDefaults(_props, defaultInternalFormProps)
 
   const { children, fields, form, initialValues, name, onReset, tag, validateTrigger } = props
 

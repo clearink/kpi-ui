@@ -121,3 +121,22 @@ export interface PagerProps {
   prefix: string
   showHtmlTitle: boolean
 }
+
+/**
+ * |-----------------------------------|
+ * |-----------------------------------|
+ * |           default props           |
+ * |-----------------------------------|
+ * |-----------------------------------|
+ */
+
+export const defaultPaginationProps: Partial<PaginationProps> = {
+  defaultCurrent: 1,
+  defaultPageSize: 10,
+  hideOnSinglePage: false,
+  showHtmlTitle: true,
+  showJumper: false,
+  simple: false,
+  total: 0,
+  totalBoundaryShowSizeChanger: 50,
+}

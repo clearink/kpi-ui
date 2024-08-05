@@ -4,21 +4,15 @@ import { isArray, isUndefined } from '@internal/utils'
 import { type ForwardedRef, forwardRef, useMemo } from 'react'
 
 import type { ExpandedName } from '../../props'
-import type { CollapseProps } from './props'
 
 import { CollapseContext, type CollapseContextState } from '../../_shared/context'
 import CollapseItem from '../item'
 import useFormatClass from './hooks/use_format_class'
+import { type CollapseProps, defaultCollapseProps } from './props'
 import getExpandedNames from './utils/get_expanded_names'
 
-const defaultProps: Partial<CollapseProps> = {
-  bordered: true,
-  collapsible: 'header',
-  expandIconPosition: 'start',
-}
-
 function _Collapse(_props: CollapseProps, ref: ForwardedRef<HTMLDivElement>) {
-  const props = withDefaults(_props, defaultProps)
+  const props = withDefaults(_props, defaultCollapseProps)
 
   const {
     accordion,

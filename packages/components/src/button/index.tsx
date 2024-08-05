@@ -5,11 +5,10 @@ import { attachDisplayName, withDefaults } from '@comps/_shared/utils'
 import { omit } from '@internal/utils'
 import { type ForwardedRef, type MouseEvent, forwardRef } from 'react'
 
-import type { ButtonProps } from './props'
-
 import TouchEffect from '../touch-effect'
 import { ButtonGroupContext } from './_shared/context'
 import useFormatClass from './hooks/use_format_class'
+import { type ButtonProps, defaultButtonProps } from './props'
 import { isBorderedVariant } from './utils/helpers'
 
 const excluded = [
@@ -28,12 +27,6 @@ const excluded = [
   ...styledAttrs,
 ] as const
 
-const defaultProps: Partial<ButtonProps> = {
-  theme: 'primary',
-  type: 'button',
-  variant: 'outlined',
-}
-
 function _Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
   const buttonGroupCtx = ButtonGroupContext.useState()
 
@@ -43,7 +36,7 @@ function _Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
       disabled: _props.disabled || buttonGroupCtx.disabled,
     },
     {
-      ...defaultProps,
+      ...defaultButtonProps,
       disabled: DisabledContext.useState(),
       size: SizeContext.useState(),
     },

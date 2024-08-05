@@ -6,19 +6,16 @@ export function withDefaults<V extends Record<string, any>>(source: V, partial: 
 
 // 能够深层次合并默认值
 export function withDeepDefaults<V extends Record<string, any>>(source: V, partial: Partial<V>) {
-  const result = { ...source } as Record<any, any>
+  const result = { ...source } as any
 
   const keys = Object.keys(partial)
 
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i]
+  for (let i = 0, len = keys.length; i < len; i++) {
+    const k = keys[i]
 
-    // 直接赋值
-    if (isUndefined(source[key])) { result[key] = partial[key] }
-    else if (isPlainObject(source[key]) && isPlainObject(partial[key])) {
-      // 深层合并?
-      result[key] = withDeepDefaults(source[key], partial[key] as any)
-    }
+    if (isUndefined(result[k])) result[k] = partial[k]
+    else if (isPlainObject(result[k]) && isPlainObject(partial[k]))
+      result[k] = withDeepDefaults(result[k], partial[k] as any)
   }
 
   return result as V

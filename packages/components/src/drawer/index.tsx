@@ -4,10 +4,9 @@ import { attachDisplayName, withDefaults } from '@comps/_shared/utils'
 import { fallback, isNullish, pick } from '@internal/utils'
 import { useId } from 'react'
 
-import type { DrawerProps } from './props'
-
 import Button from '../button'
 import useFormatClass from './hooks/use_format_class'
+import { type DrawerProps, defaultDrawerProps } from './props'
 
 const included = [
   'getContainer',
@@ -18,12 +17,8 @@ const included = [
   'unmountOnExit',
 ] as const
 
-const defaultProps: Partial<DrawerProps> = {
-  closeOnEscape: true,
-}
-
 function Drawer(_props: DrawerProps) {
-  const props = withDefaults(_props, defaultProps)
+  const props = withDefaults(_props, defaultDrawerProps)
 
   const { children, footer, open, title, transitions = {} } = props
 

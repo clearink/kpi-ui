@@ -1,17 +1,10 @@
 import { attachDisplayName, withDefaults } from '@comps/_shared/utils'
 import { forwardRef } from 'react'
 
-import type { NotificationProps } from '../../props'
-
-const defaultProps: Partial<NotificationProps> = {
-  duration: 4.5,
-  placement: 'topRight',
-  showProgress: false,
-  pauseOnHover: true,
-}
+import { type NotificationProps, defaultNotificationProps } from '../../props'
 
 function _Notification(_props: NotificationProps, ref: any) {
-  const props = withDefaults(_props, defaultProps)
+  const __props = withDefaults(_props, defaultNotificationProps)
 
   return <div ref={ref}>132</div>
 }

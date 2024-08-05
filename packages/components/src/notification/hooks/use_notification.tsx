@@ -3,12 +3,10 @@ import type { VoidFn } from '@internal/types'
 import { Portal } from '@comps/_shared/components'
 import { useConstant, useForceUpdate } from '@comps/_shared/hooks'
 import { makeUniqueId, withDefaults } from '@comps/_shared/utils'
-import { ownerBody, pick } from '@internal/utils'
+import { pick } from '@internal/utils'
 import React, { useMemo } from 'react'
 
 import type { NotificationConfig } from '../props'
-
-import NotificationList from '../components/list'
 
 export class NotificationState {
   topLeftNotices = []
@@ -98,21 +96,21 @@ export function useNotification(_config: NotificationConfig) {
 }
 
 export function makeStaticMethods() {
-  const root = createRoot(ownerBody())
+  // const root = createRoot(ownerBody())
 
-  const impl = (type: StatusType) => (_config: NotificationConfig) => {
-    const config = withDeepDefaults(_config, defaultConfig)
+  // const impl = (type: StatusType) => (_config: NotificationConfig) => {
+  //   const config = withDeepDefaults(_config, defaultConfig)
 
-    root.render(<NotificationList />)
-  }
+  //   root.render(<NotificationList />)
+  // }
 
-  const staticMethods = presetStatus.reduce((result, type) => {
-    result[type] = impl(type)
+  // const staticMethods = presetStatus.reduce((result, type) => {
+  //   result[type] = impl(type)
 
-    return result
-  }, {} as NotificationMethods)
+  //   return result
+  // }, {} as NotificationMethods){}
 
-  return staticMethods
+  return {} as any
 
   // 怎样才能返回那几个方法呢?
 }

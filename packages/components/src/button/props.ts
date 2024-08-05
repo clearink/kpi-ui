@@ -66,3 +66,17 @@ export interface ButtonProps
    */
   variant?: 'dashed' | 'filled' | 'link' | 'outlined' | 'text'
 }
+
+/**
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ * |                      default props                      |
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ */
+
+export const defaultButtonProps: Partial<ButtonProps> = {
+  theme: 'primary',
+  type: 'button',
+  variant: 'outlined',
+}

@@ -5,11 +5,10 @@ import { attachDisplayName, withDefaults } from '@comps/_shared/utils'
 import { omit } from '@internal/utils'
 import { type ForwardedRef, forwardRef, useImperativeHandle, useMemo } from 'react'
 
-import type { FormInstance, FormProps } from './props'
-
 import { FormContext, type FormContextState } from '../../_shared/context'
 import useForm from './hooks/use_form'
 import useFormatClass from './hooks/use_format_class'
+import { type FormInstance, type FormProps, defaultFormProps } from './props'
 
 const excluded = [
   'form',
@@ -25,15 +24,9 @@ const excluded = [
   'requiredMark',
 ] as const
 
-const defaultProps: Partial<FormProps> = {
-  colon: true,
-  layout: 'horizontal',
-  requiredMark: true,
-}
-
 function _Form<State = any>(_props: FormProps<State>, ref: ForwardedRef<FormInstance<State>>) {
   const props = withDefaults(_props, {
-    ...defaultProps,
+    ...defaultFormProps,
     disabled: DisabledContext.useState(),
     size: SizeContext.useState(),
     // ...ConfigContext.useState().form,

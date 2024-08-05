@@ -73,3 +73,17 @@ export interface InternalFormProps<S = any>
    */
   validationSchema?: any // BaseSchema<S>
 }
+
+/**
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ * |                      default props                      |
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ */
+
+export const defaultInternalFormProps: Partial<InternalFormProps> = {
+  preserve: true,
+  tag: 'form',
+  validateTrigger: 'onChange',
+}
