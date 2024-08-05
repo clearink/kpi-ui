@@ -46,7 +46,7 @@ export default class ArraySchema<
       return this.inner._validate(item, ctx)
     })
     return Promise.all(list).then((results) => {
-      for (let i = 0; i < results.length; i += 1) {
+      for (let i = 0, len = results.length; i < len; i++) {
         const result = results[i]
         if (result.status === 'invalid') return result
       }

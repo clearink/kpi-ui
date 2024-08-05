@@ -42,7 +42,8 @@ export interface ButtonProps
 
   /**
    * @zh 形状
-   * @default 'default'
+   * @enum
+   * @default default
    */
   shape?: 'circle' | 'default' | 'round'
 
@@ -53,13 +54,15 @@ export interface ButtonProps
 
   /**
    * @zh  按钮主题
-   * @default 'primary'
+   * @enum
+   * @default primary
    */
   theme?: 'danger' | 'info' | 'primary' | 'success' | 'warning'
 
   /**
    * @zh 变体(在不影响布局属性的情况下所派生出的类型)
-   * @default 'default'
+   * @enum
+   * @default default
    */
   variant?: 'dashed' | 'filled' | 'link' | 'outlined' | 'text'
 }

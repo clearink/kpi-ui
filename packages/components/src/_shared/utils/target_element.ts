@@ -3,7 +3,7 @@ import type { MutableRefObject } from 'react'
 
 import { isBrowser, isFunction, isNullish, isObject, isString, ownerDocument } from '@internal/utils'
 
-type TargetElement = Document | Element | HTMLElement | Window | false
+type TargetElement = DocumentFragment | Element | false
 
 export type GetTargetElement<T extends TargetElement = TargetElement> =
   | (() => MayBe<T>)

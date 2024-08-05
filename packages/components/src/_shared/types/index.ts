@@ -38,6 +38,3 @@ export interface HasIconRenderClosable extends HasClosable {
 
 // 状态类型
 export type StatusType = 'error' | 'info' | 'success' | 'warning'
-
-// 提醒类型
-export type NotificationType = StatusType

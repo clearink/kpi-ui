@@ -17,6 +17,7 @@ export function isFunction(obj: any): obj is AnyFn {
 export function isObject(obj: any): obj is AnyObj {
   return obj != null && typeof obj === 'object'
 }
+export const isPlainObject = (obj: any): obj is AnyObj => rawType(obj) === 'Object'
 
 export const isNumber = (obj: any): obj is number => rawType(obj) === 'Number'
 

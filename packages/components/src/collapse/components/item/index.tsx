@@ -1,5 +1,5 @@
 import { CSSTransition } from '@comps/_shared/components'
-import { Keyboard, StyledAttrs } from '@comps/_shared/constants'
+import { keyboard, styledAttrs } from '@comps/_shared/constants'
 import { usePrefixCls, useSemanticStyles } from '@comps/_shared/hooks'
 import { attachDisplayName, withDefaults } from '@comps/_shared/utils'
 import CaretRightOutlined from '@ink-ui/icons/esm/icons/CaretRightOutlined'
@@ -29,7 +29,7 @@ const excluded = [
   // 子元素
   'children',
   // 样式
-  ...StyledAttrs,
+  ...styledAttrs,
 ] as const
 
 function _CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivElement>) {
@@ -68,7 +68,7 @@ function _CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivEleme
   }
 
   const handleHeaderEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === Keyboard.enter) ctx.onItemClick(name)
+    if (e.key === keyboard.enter) ctx.onItemClick(name)
   }
 
   const attrs = omit(props, excluded)

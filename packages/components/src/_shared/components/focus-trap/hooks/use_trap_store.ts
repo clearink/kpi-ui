@@ -1,4 +1,4 @@
-import { Keyboard } from '@comps/_shared/constants'
+import { keyboard } from '@comps/_shared/constants'
 import { useConstant } from '@comps/_shared/hooks'
 import { atIndex, makeEventListener, noop } from '@internal/utils'
 import { useMemo } from 'react'
@@ -58,7 +58,7 @@ export class FocusTrapAction {
 
   onFocusTrap = (root: Document, getTabbable: FocusTrapProps['getTabbable']) => {
     const onKeyDown = (e) => {
-      this.states.isShiftTab = e.key === Keyboard.tab && e.shiftKey
+      this.states.isShiftTab = e.key === keyboard.tab && e.shiftKey
     }
 
     const onFocusIn = (e: FocusEvent) => {

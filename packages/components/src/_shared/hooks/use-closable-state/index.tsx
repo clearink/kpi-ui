@@ -2,8 +2,9 @@ import type { HasClosable, HasIconRenderClosable } from '@comps/_shared/types'
 import type { MayBe } from '@internal/types'
 import type { ReactNode } from 'react'
 
-import { shallowMerges, withDefaults } from '@comps/_shared/utils'
+import { withDefaults } from '@comps/_shared/utils'
 import CloseOutlined from '@ink-ui/icons/esm/icons/CloseOutlined'
+import { shallowMerges } from '@internal/utils'
 import { useMemo } from 'react'
 
 import formatIcon from './utils/format_icon'

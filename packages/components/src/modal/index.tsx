@@ -1,5 +1,5 @@
 import { FocusTrap, Overlay } from '@comps/_shared/components'
-import { Keyboard } from '@comps/_shared/constants'
+import { keyboard } from '@comps/_shared/constants'
 import { ConfigContext } from '@comps/_shared/contexts'
 import { useClosableState, usePrefixCls, useSemanticStyles } from '@comps/_shared/hooks'
 import { attachDisplayName, hideElement, showElement, withDefaults } from '@comps/_shared/utils'
@@ -65,7 +65,7 @@ function Modal(_props: ModalProps) {
   const onEscapeDown = !props.closeOnEscape
     ? undefined
     : (e: KeyboardEvent<HTMLDivElement>) => {
-        if (e.key !== Keyboard.esc) return
+        if (e.key !== keyboard.esc) return
 
         e.stopPropagation()
 

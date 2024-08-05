@@ -61,7 +61,7 @@ export default class ObjectSchema<
       return schema._validate(value[key], ctx)
     })
     return Promise.all(list).then((results) => {
-      for (let i = 0; i < results.length; i += 1) {
+      for (let i = 0, len = results.length; i < len; i++) {
         const result = results[i][1]
         if (result.status === 'invalid') return result
       }

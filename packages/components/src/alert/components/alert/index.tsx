@@ -1,7 +1,7 @@
 import type { ForwardedRef } from 'react'
 
 import { CSSTransition } from '@comps/_shared/components'
-import { StyledAttrs, getPresetStatusIcon } from '@comps/_shared/constants'
+import { getPresetStatusIcon, styledAttrs } from '@comps/_shared/constants'
 import { ConfigContext } from '@comps/_shared/contexts'
 import { useClosableState, usePrefixCls, useSemanticStyles } from '@comps/_shared/hooks'
 import { attachDisplayName, cls, withDefaults, withFallbackCloneElement } from '@comps/_shared/utils'
@@ -24,7 +24,7 @@ const excluded = [
   'message',
   'showIcon',
   'type',
-  ...StyledAttrs,
+  ...styledAttrs,
 ] as const
 
 function _Alert(_props: AlertProps, ref: ForwardedRef<AlertRef>) {

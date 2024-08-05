@@ -1,43 +1,43 @@
-import type { NotificationType } from '@comps/_shared/types'
+import type { StatusType } from '@comps/_shared/types'
 
-import { PresetNotificationType } from '@comps/_shared/constants/status'
-import { makeUniqueId, withDefaults } from '@comps/_shared/utils'
+import { presetStatus } from '@comps/_shared/constants/status'
+import { makeUniqueId, withDeepDefaults, withDefaults } from '@comps/_shared/utils'
+import { ownerBody } from '@internal/utils'
 import React from 'react'
+import { createRoot } from 'react-dom/client'
 
 import type { NotificationConfig, NotificationMethods } from '../props'
 
 import NotificationList from '../components/list'
+import useNotification from '../hooks/use_notification'
 import { buildHolder } from './holder'
 
+const defaultConfig: Partial<NotificationConfig> = {
+  top: 24,
+  bottom: 24,
+  duration: 4.5,
+  placement: 'topRight',
+  showProgress: false,
+  pauseOnHover: true,
+  stack: { threshold: 3 },
+}
+
 export default function makeStaticMethods() {
-  const getHolder = buildHolder()
+  const root = createRoot(ownerBody())
 
-  const uniqueId = makeUniqueId('notice-')
+  const impl = (type: StatusType) => (_config: NotificationConfig) => {
+    const config = withDeepDefaults(_config, defaultConfig)
 
-  const defaultConfig: Partial<NotificationConfig> = {
-    placement: 'topRight',
+    root.render(<NotificationList />)
   }
 
-  const impl = (type: NotificationType) => (_config: NotificationConfig) => {
-    const config = withDefaults(_config, {
-      ...defaultConfig,
-      key: uniqueId(),
-    })
-
-    const { root, destroy } = getHolder(config)
-
-    root.render(
-      <React.StrictMode>
-        <NotificationList notice={config} onFinish={destroy} type={type} />
-      </React.StrictMode>,
-    )
-  }
-
-  const notificationMethods = PresetNotificationType.reduce((result, type) => {
+  const staticMethods = presetStatus.reduce((result, type) => {
     result[type] = impl(type)
 
     return result
   }, {} as NotificationMethods)
 
-  return notificationMethods
+  return staticMethods
+
+  // 怎样才能返回那几个方法呢?
 }

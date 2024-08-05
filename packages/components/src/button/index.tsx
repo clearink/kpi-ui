@@ -1,3 +1,4 @@
+import { styledAttrs } from '@comps/_shared/constants'
 import { DisabledContext, SizeContext } from '@comps/_shared/contexts'
 import { usePrefixCls, useSemanticStyles } from '@comps/_shared/hooks'
 import { attachDisplayName, withDefaults } from '@comps/_shared/utils'
@@ -7,6 +8,7 @@ import { type ForwardedRef, type MouseEvent, forwardRef } from 'react'
 import type { ButtonProps } from './props'
 
 import TouchEffect from '../touch-effect'
+import { ButtonGroupContext } from './_shared/context'
 import useFormatClass from './hooks/use_format_class'
 import { isBorderedVariant } from './utils/helpers'
 
@@ -23,10 +25,7 @@ const excluded = [
   // 子元素
   'children',
   // 样式
-  'className',
-  'classNames',
-  'style',
-  'styles',
+  ...styledAttrs,
 ] as const
 
 const defaultProps: Partial<ButtonProps> = {
@@ -36,9 +35,13 @@ const defaultProps: Partial<ButtonProps> = {
 }
 
 function _Button(_props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
+  const buttonGroupCtx = ButtonGroupContext.useState()
+
   const props = withDefaults(
-    { ..._props, disabled: _props.disabled },
-    // disabled: _props.disabled || ButtonGroupCtx.disabled
+    {
+      ..._props,
+      disabled: _props.disabled || buttonGroupCtx.disabled,
+    },
     {
       ...defaultProps,
       disabled: DisabledContext.useState(),

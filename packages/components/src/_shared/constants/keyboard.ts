@@ -1,4 +1,4 @@
-export const Keyboard = {
+export const keyboard = {
   enter: 'Enter',
   esc: 'Escape',
   shift: 'Shift',
