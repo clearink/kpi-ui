@@ -1,21 +1,27 @@
+import type { StatusType } from '@comps/_shared/types'
 import type { VoidFn } from '@internal/types'
+import type { Root } from 'react-dom/client'
 
 import { Portal } from '@comps/_shared/components'
+import { presetStatus } from '@comps/_shared/constants'
 import { useConstant, useForceUpdate } from '@comps/_shared/hooks'
-import { makeUniqueId, withDefaults } from '@comps/_shared/utils'
-import { pick } from '@internal/utils'
+import { getTargetElement, makeUniqueId, withDefaults } from '@comps/_shared/utils'
+import { ownerDocument, pick } from '@internal/utils'
 import React, { useMemo } from 'react'
+import { createRoot } from 'react-dom/client'
 
-import type { NotificationConfig } from '../props'
+import type { NotificationConfig, NotificationMethods, NotificationProps } from '../props'
+
+import { defaultNotificationConfig } from '../props'
 
 export class NotificationState {
-  topLeftNotices = []
-
-  topRightNotices = []
-
-  bottomLeftNotices = []
-
-  bottomRightNotices = []
+  // 存储通知详情,用于渲染数据
+  notices = {
+    topLeft: [],
+    topRight: [],
+    bottomLeft: [],
+    bottomRight: [],
+  }
 }
 
 export class NotificationAction {
@@ -38,19 +44,8 @@ export class NotificationAction {
   error = () => {}
 }
 
-const defaultConfig: Partial<NotificationConfig> = {
-  top: 24,
-  bottom: 24,
-  getContainer: () => document.body,
-  stack: { threshold: 3 },
-  duration: 4.5,
-  pauseOnHover: true,
-  placement: 'topRight',
-  showProgress: false,
-}
-
 export function useNotification(_config: NotificationConfig) {
-  const config = withDefaults(_config, defaultConfig)
+  const config = withDefaults(_config, defaultNotificationConfig)
 
   const { getContainer } = config
 
@@ -95,22 +90,49 @@ export function useNotification(_config: NotificationConfig) {
   return [methods, holder] as const
 }
 
+function Wrapper() {
+  const [_, holder] = useNotification({})
+
+  return holder
+}
+
 export function makeStaticMethods() {
+  const _globalConfig = {
+    ...defaultNotificationConfig,
+  }
+
+  let root: Root | null = null
+
+  const _buildHolder = () => {
+    const doc = ownerDocument()
+
+    const holder = doc.createDocumentFragment()
+
+    const container = getTargetElement(null, doc.body)
+
+    container?.appendChild(holder)
+
+    root = createRoot(holder)
+  }
+
   // const root = createRoot(ownerBody())
 
-  // const impl = (type: StatusType) => (_config: NotificationConfig) => {
-  //   const config = withDeepDefaults(_config, defaultConfig)
+  const impl = (_type: StatusType) => (_config: NotificationProps) => {
+    // const config = withDeepDefaults(_config, globalConfig)
 
-  //   root.render(<NotificationList />)
-  // }
+    root?.render(
+      <React.StrictMode>
+        <Wrapper />
+      </React.StrictMode>,
+    )
+  }
 
-  // const staticMethods = presetStatus.reduce((result, type) => {
-  //   result[type] = impl(type)
+  const staticMethods = presetStatus.reduce((result, type) => {
+    result[type] = impl(type)
 
-  //   return result
-  // }, {} as NotificationMethods){}
-
-  return {} as any
+    return result
+  }, {} as NotificationMethods)
 
   // 怎样才能返回那几个方法呢?
+  return staticMethods
 }

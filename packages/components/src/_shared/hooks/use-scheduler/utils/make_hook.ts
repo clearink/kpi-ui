@@ -17,7 +17,7 @@ export default function makeSchedulerHook<Fn extends AnyFn, T>(options: Schedule
   return (callback: Fn) => {
     const ref = useRef(initialValue)
 
-    useEffect(() => { onCleanup(ref.current) }, [])
+    useEffect(() => () => { onCleanup(ref.current) }, [])
 
     return useEvent((...args: any[]) => {
       if (shouldPrevent(ref.current)) return

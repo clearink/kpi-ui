@@ -1,14 +1,20 @@
 export const now = typeof performance === 'undefined' ? () => Date.now() : () => performance.now()
 
-export const raf
+export const raf: typeof requestAnimationFrame
   = typeof requestAnimationFrame === 'undefined'
-    ? ((callback => setTimeout(callback, 16.667)) as typeof requestAnimationFrame)
+    ? callback => setTimeout(callback, 16.667)
     : requestAnimationFrame
 
-export const caf
+export const caf: typeof cancelAnimationFrame
   = typeof cancelAnimationFrame === 'undefined'
-    ? (clearTimeout as typeof cancelAnimationFrame)
+    ? clearTimeout
     : cancelAnimationFrame
+
+export function currFrame(callback: (time: number) => void) {
+  const id = raf(callback)
+
+  return () => { caf(id) }
+}
 
 export function nextFrame(callback: (time: number) => void) {
   const ids = [-1, -1]

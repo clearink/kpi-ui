@@ -1,5 +1,6 @@
 import { logger } from '@comps/_shared/utils'
 import {
+  execute,
   hasOwn,
   isBoolean,
   isFunction,
@@ -204,7 +205,7 @@ export class FormDependenciesControl {
 export class FormWatchValueControl {
   private _watchList = new Set<WatchCallBack>()
 
-  publishWatch = () => { this._watchList.forEach((callback) => { callback() }) }
+  publishWatch = () => { this._watchList.forEach(execute) }
 
   // 通知监听字段
   registerWatch = (callback: WatchCallBack) => {

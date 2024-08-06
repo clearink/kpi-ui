@@ -16,12 +16,12 @@ export default function useTouchEffect(props: TouchEffectProps) {
   return useThrottleFrame((container: HTMLElement, event: MouseEvent) => {
     if (isBoolean(disabled) && disabled) return
 
-    let target: HTMLElement | null = container
+    let target: HTMLElement | null = null
 
     if (isFunction(selector)) target = selector(container)
     else if (selector) target = container.querySelector(selector)
 
-    const info = { component, event, prefixCls, target }
+    const info = { component, container, event, prefixCls, target }
 
     if (isFunction(disabled) && disabled(info)) return
 

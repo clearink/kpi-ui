@@ -2,6 +2,8 @@ import type { HasClosable, NotificationPlacement, SemanticStyledProps, StatusTyp
 import type { GetTargetElement } from '@comps/_shared/utils'
 import type { DOMAttributes, MouseEventHandler, ReactNode } from 'react'
 
+import { ownerBody } from '@internal/utils'
+
 // 调用 notification 函数时的参数
 export interface NotificationProps extends HasClosable, SemanticStyledProps<'closeBtn' | 'root' | 'wrap'> {
   /**
@@ -108,9 +110,9 @@ export interface NotificationConfig extends HasClosable,
 
   /**
    * @zh 堆叠模式，超过阈值时会将所有消息收起
-   * @default '{ threshold:3 }'
+   * @default '{ threshold: 3, offset: 8, gap: 16 }'
    */
-  stack?: { threshold: number } | boolean
+  stack?: { gap?: number, offset?: number, threshold?: number } | boolean
 
   /**
    * @zh 最大显示数, 超过限制时,最早的消息会被自动关闭
@@ -122,11 +124,11 @@ export interface NotificationConfig extends HasClosable,
 export type NotificationMethods = Record<StatusType, (props: NotificationProps) => void>
 
 /**
- * |-----------------------------------|
- * |-----------------------------------|
- * |           default props           |
- * |-----------------------------------|
- * |-----------------------------------|
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
+ * |                      default props                      |
+ * |---------------------------------------------------------|
+ * |---------------------------------------------------------|
  */
 
 export const defaultNotificationProps: Partial<NotificationProps> = {
@@ -134,4 +136,15 @@ export const defaultNotificationProps: Partial<NotificationProps> = {
   placement: 'topRight',
   showProgress: false,
   pauseOnHover: true,
+}
+
+export const defaultNotificationConfig: Partial<NotificationConfig> = {
+  top: 24,
+  bottom: 24,
+  duration: 4.5,
+  placement: 'topRight',
+  showProgress: false,
+  pauseOnHover: true,
+  getContainer: ownerBody,
+  stack: { threshold: 3, offset: 8, gap: 16 },
 }

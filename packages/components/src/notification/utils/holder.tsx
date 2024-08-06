@@ -23,9 +23,7 @@ function createHolder(getContainer: NotificationConfig['getContainer']) {
     container.removeChild(div)
   }
 
-  const notices: NotificationConfig[] = []
-
-  return { root, unmount, notices }
+  return { root, unmount }
 }
 
 export function buildHolder() {
@@ -37,13 +35,13 @@ export function buildHolder() {
     if (!cache[placement!])
       cache[placement!] = createHolder(getContainer)
 
-    const { root, unmount, notices } = cache[placement!]!
+    const { root, unmount } = cache[placement!]!
 
     const destroy = () => {
       unmount()
       delete cache[placement!]
     }
 
-    return { root, destroy, notices }
+    return { root, destroy }
   }
 }

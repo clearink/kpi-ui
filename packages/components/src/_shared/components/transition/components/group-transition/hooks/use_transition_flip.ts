@@ -1,7 +1,7 @@
 import type { VoidFn } from '@internal/types'
 
 import { useConstant, useEvent } from '@comps/_shared/hooks'
-import { addClassNames, caf, delClassNames, getClientCoords, raf, reflow } from '@internal/utils'
+import { addClassNames, caf, delClassNames, execute, getClientCoords, raf, reflow } from '@internal/utils'
 import { useEffect } from 'react'
 
 import type { FlipState, GroupTransitionProps } from '../props'
@@ -39,7 +39,7 @@ export default function useTransitionFlip<E extends HTMLElement>(
   }
 
   const runCleanup = useEvent(() => {
-    values.cancels.forEach((fn) => { fn() })
+    values.cancels.forEach(execute)
 
     values.cancels = []
   })
