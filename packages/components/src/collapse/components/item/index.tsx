@@ -3,7 +3,7 @@ import { keyboard, styledAttrs } from '@comps/_shared/constants'
 import { usePrefixCls, useSemanticStyles } from '@comps/_shared/hooks'
 import { attachDisplayName, withDefaults } from '@comps/_shared/utils'
 import CaretRightOutlined from '@ink-ui/icons/esm/icons/CaretRightOutlined'
-import { fallback, hasItem, isFunction, isNullish, omit } from '@internal/utils'
+import { isFunction, isNullish, omit, pick } from '@internal/utils'
 import { type ForwardedRef, forwardRef } from 'react'
 
 import type { CollapsibleType } from '../collapse/props'
@@ -32,28 +32,18 @@ function _CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivEleme
   const ctx = CollapseContext.useState()
 
   const props = withDefaults(
-    {
-      ..._props,
-      disabled: _props.disabled || ctx.disabled,
-    },
-    {
-      ...defaultCollapseItemProps,
-      expandIcon: ctx.expandIcon,
-      keepMounted: ctx.keepMounted,
-      unmountOnExit: ctx.unmountOnExit,
-    },
+    { ..._props, disabled: _props.disabled || ctx.disabled },
+    pick(ctx, ['expandIcon', 'keepMounted', 'unmountOnExit']),
+    { ...defaultCollapseItemProps, expandIcon: <CaretRightOutlined /> },
   )
 
   const { disabled, expandIcon, extra, name, showExpandIcon, title } = props
 
   const prefixCls = usePrefixCls('collapse-item')
 
-  const expanded = hasItem(ctx.expandedNames, name)
+  const expanded = ctx.expandedNames.includes(name)
 
-  const classNames = useFormatClass(prefixCls, props, {
-    ctx,
-    expanded,
-  })
+  const classNames = useFormatClass(prefixCls, props, { ctx, expanded })
 
   const styles = useSemanticStyles(props)
 
@@ -87,9 +77,7 @@ function _CollapseItem(_props: CollapseItemProps, ref: ForwardedRef<HTMLDivEleme
             style={styles.icon}
             onClick={getItemClickHandler('icon')}
           >
-            {isFunction(expandIcon)
-              ? expandIcon({ expanded, name })
-              : fallback(expandIcon, <CaretRightOutlined />)}
+            {isFunction(expandIcon) ? expandIcon({ expanded, name }) : expandIcon}
           </span>
         )}
         <span

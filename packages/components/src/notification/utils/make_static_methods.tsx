@@ -1,34 +1,37 @@
 import type { StatusType } from '@comps/_shared/types'
 
 import { presetStatus } from '@comps/_shared/constants/status'
-import { makeUniqueId, withDeepDefaults, withDefaults } from '@comps/_shared/utils'
-import { ownerBody } from '@internal/utils'
-import React from 'react'
+import { nextTick, noop, ownerBody } from '@internal/utils'
+import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { createRoot } from 'react-dom/client'
 
-import type { NotificationConfig, NotificationMethods } from '../props'
+import type { NotificationMethods, NotificationProps } from '../props'
 
-import NotificationList from '../components/list'
-import useNotification from '../hooks/use_notification'
-import { buildHolder } from './holder'
-
-const defaultConfig: Partial<NotificationConfig> = {
-  top: 24,
-  bottom: 24,
-  duration: 4.5,
-  placement: 'topRight',
-  showProgress: false,
-  pauseOnHover: true,
-  stack: { threshold: 3 },
+function W() {
+  useEffect(() => {
+    console.log('mounted')
+  }, [])
+  return createPortal(<div>12312123</div>, ownerBody())
 }
 
 export default function makeStaticMethods() {
-  const root = createRoot(ownerBody())
+  // 闭包保存数据
+  let cleanup = noop
+  // 1. 创建的render,container...
+  // 此处只负责创建一个新的 ReactDOMRoot
+  const impl = (_type: StatusType) => (_props: NotificationProps) => {
+    cleanup()
 
-  const impl = (type: StatusType) => (_config: NotificationConfig) => {
-    const config = withDeepDefaults(_config, defaultConfig)
+    const fragment = document.createDocumentFragment()
 
-    root.render(<NotificationList />)
+    const root = createRoot(fragment)
+
+    root.render(<W />)
+
+    cleanup = nextTick(() => {
+
+    })
   }
 
   const staticMethods = presetStatus.reduce((result, type) => {

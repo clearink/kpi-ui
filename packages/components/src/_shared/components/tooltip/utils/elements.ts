@@ -4,9 +4,9 @@ import { getClientCoords, getElementStyle } from '@internal/utils'
 function isScrollable(el: Element) {
   const { overflow: o, overflowX: ox, overflowY: oy } = getElementStyle(el)
 
-  const builtin = ['auto', 'scroll', 'hidden', 'clip']
+  const builtin = new Set(['auto', 'scroll', 'hidden', 'clip'])
 
-  return builtin.includes(o) || builtin.includes(ox) || builtin.includes(oy)
+  return builtin.has(o) || builtin.has(ox) || builtin.has(oy)
 }
 
 export function getScrollElements(element: Element) {

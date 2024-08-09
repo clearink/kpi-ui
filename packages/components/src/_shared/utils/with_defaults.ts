@@ -1,22 +1,14 @@
-import { isPlainObject, isUndefined, shallowMerge } from '@internal/utils'
+import type { MayBe } from '@internal/types'
 
-export function withDefaults<V extends Record<string, any>>(source: V, partial: Partial<V>) {
-  return shallowMerge(source, partial) as V
-}
+import { isObject, shallowMerge } from '@internal/utils'
 
-// 能够深层次合并默认值
-export function withDeepDefaults<V extends Record<string, any>>(source: V, partial: Partial<V>) {
-  const result = { ...source } as any
+export function withDefaults<V extends Record<string, any>>(source: V, ...partials: MayBe<Partial<V>>[]) {
+  let result = { ...source }
 
-  const keys = Object.keys(partial)
+  for (let i = 0, len = partials.length; i < len; i++) {
+    const partial = partials[i]
 
-  for (let i = 0, len = keys.length; i < len; i++) {
-    const k = keys[i]
-
-    if (isUndefined(result[k])) result[k] = partial[k]
-    else if (isPlainObject(result[k]) && isPlainObject(partial[k]))
-      result[k] = withDeepDefaults(result[k], partial[k] as any)
+    if (isObject(partial)) result = shallowMerge(result, partial)
   }
-
-  return result as V
+  return result
 }

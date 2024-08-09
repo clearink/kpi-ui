@@ -4,7 +4,6 @@ import type { ReactNode } from 'react'
 
 import { withDefaults } from '@comps/_shared/utils'
 import CloseOutlined from '@ink-ui/icons/esm/icons/CloseOutlined'
-import { shallowMerges } from '@internal/utils'
 import { useMemo } from 'react'
 
 import formatIcon from './utils/format_icon'
@@ -27,11 +26,11 @@ export function useClosableState(
     const closableConfig = (() => {
       if (propsState === false) return false
 
-      if (propsState) return shallowMerges(propsState, ctxState, defaultConfig)
+      if (propsState) return withDefaults(propsState, ctxState || null, defaultConfig)
 
       if (ctxState === false) return false
 
-      if (ctxState) return shallowMerges(ctxState, defaultConfig)
+      if (ctxState) return withDefaults(ctxState, defaultConfig)
 
       return defaultConfig.closable ? defaultConfig : false
     })()

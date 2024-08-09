@@ -6,10 +6,12 @@ export function omit<T extends Record<string, any>, K extends keyof T>(
 
   const keys = Object.keys(source) as K[]
 
+  const set = new Set(excluded)
+
   for (let i = 0, len = keys.length; i < len; i++) {
     const key = keys[i]
 
-    if (!excluded.includes(key)) target[key] = source[key]
+    if (!set.has(key)) target[key] = source[key]
   }
 
   return target

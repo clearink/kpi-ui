@@ -10,9 +10,7 @@ export const isNullish = (obj: any): obj is null | undefined => obj == null
 
 export const { isArray } = Array
 
-export function isFunction(obj: any): obj is AnyFn {
-  return typeof obj === 'function'
-}
+export const isFunction = (obj: any): obj is AnyFn => typeof obj === 'function'
 
 export function isObject(obj: any): obj is AnyObj {
   return obj != null && typeof obj === 'object'
